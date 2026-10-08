@@ -18,6 +18,15 @@ const MIN_VALUE = 1;
 const MAX_VALUE = 60;
 
 /**
+ * The message key of a relative boundary whose number is out of range.
+ *
+ * @since TBD
+ *
+ * @type {string}
+ */
+export const RELATIVE_VALUE_OUT_OF_RANGE = 'relative_value_out_of_range';
+
+/**
  * Returns whether a relative boundary's number is one the server takes.
  *
  * @since TBD
@@ -28,6 +37,22 @@ const MAX_VALUE = 60;
  */
 function isInRange( value ) {
 	return Number.isInteger( value ) && value >= MIN_VALUE && value <= MAX_VALUE;
+}
+
+/**
+ * Returns the boundary whose relative number is out of range, the start first.
+ *
+ * @since TBD
+ *
+ * @param {import( '../sale-window' ).SaleWindowRule} rule The rule the form expresses.
+ *
+ * @return {string|null} `start` or `end`, or `null` when both numbers are in range.
+ */
+export function getOutOfRangeBoundary( rule ) {
+	return (
+		[ 'start', 'end' ].find( ( key ) => MODE_RELATIVE === rule[ key ].mode && ! isInRange( rule[ key ].value ) ) ||
+		null
+	);
 }
 
 /**
@@ -45,14 +70,13 @@ function isInRange( value ) {
  * @param {{start: string|null, end: string|null}}    formDates  The start and end dates the form sends,
  *                                                               `YYYY-MM-DD HH:mm:ss` in the event timezone.
  *
- * @return {string|null} The message key of the error, or `null` when the window is valid.
+ * @return {string|null} The message key of the error, `RELATIVE_VALUE_OUT_OF_RANGE` or a `validation.js` one, or
+ *                       `null` when the window is valid.
  */
 export function getWindowError( rule, eventDates, formDates ) {
-	// The server rejects a rule with a number out of range with the same error, and the input's own range is not enforced.
-	const isOutOfRange = ( key ) => MODE_RELATIVE === rule[ key ].mode && ! isInRange( rule[ key ].value );
-
-	if ( isOutOfRange( 'start' ) || isOutOfRange( 'end' ) ) {
-		return SALES_END_BEFORE_START;
+	// The input's own range is not enforced, and the server's error for such a rule names neither the field nor the range.
+	if ( getOutOfRangeBoundary( rule ) ) {
+		return RELATIVE_VALUE_OUT_OF_RANGE;
 	}
 
 	const resolved = resolveSaleWindow( rule, eventDates.start, eventDates.end, eventDates.timezone );
