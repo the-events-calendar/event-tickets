@@ -15,6 +15,7 @@ import rsvpDisabled from './rsvp-disabled';
 import attendees from './attendees';
 import { isV2Enabled } from '../data/blocks/rsvp-v2/config';
 import { initTicketsBlockFilters } from '../data/blocks/rsvp-v2/tickets-block-filters';
+import withBlockWrapper from './with-block-wrapper';
 
 /**
  * Check if RSVP is disabled via editor config.
@@ -66,7 +67,11 @@ let blocks = [ rsvp, attendees ];
  */
 blocks = applyFilters( 'tec.tickets.blocks.beforeRegistration', blocks );
 
-blocks.forEach( ( block ) => registerBlockType( `tribe/${ block.id }`, block ) );
+/*
+ * Wrapping after the filter so the RSVP variants it swaps in, and any block a third party adds,
+ * register at the current Block API version too.
+ */
+blocks.forEach( ( block ) => registerBlockType( `tribe/${ block.id }`, withBlockWrapper( block ) ) );
 
 /**
  * Fires an action after Event Tickets blocks are registered.

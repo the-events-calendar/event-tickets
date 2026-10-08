@@ -14,7 +14,9 @@ global.wp = {
 	apiRequest: {},
 	components: {},
 	data: {},
-	blockEditor: {},
+	blockEditor: {
+		useBlockProps: () => ( { className: 'wp-block' } ),
+	},
 	editor: {},
 	hooks: {},
 	i18n: {
