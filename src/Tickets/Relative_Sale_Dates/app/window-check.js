@@ -80,7 +80,6 @@ export function getWindowError( rule, eventDates, formDates ) {
 	}
 
 	const resolved = resolveSaleWindow( rule, eventDates.start, eventDates.end, eventDates.timezone );
-	const now = moment();
 	const dates = {};
 
 	for ( const key of [ 'start', 'end' ] ) {
@@ -99,6 +98,7 @@ export function getWindowError( rule, eventDates, formDates ) {
 		}
 
 		const date = fromEventLocal( formDates[ key ], eventDates.timezone );
+		const now = moment();
 		dates[ key ] = MODE_DEFAULT === rule[ key ].mode && date.isAfter( now ) ? now : date;
 	}
 
