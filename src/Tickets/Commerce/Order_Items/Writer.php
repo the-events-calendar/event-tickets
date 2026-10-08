@@ -119,6 +119,7 @@ class Writer extends Controller_Contract {
 			 * truncated by `wp site empty`, and would otherwise be read back as this order's lines.
 			 */
 			$this->repository->delete_by_order( $order_id );
+
 			/*
 			 * One INSERT is atomic on its own; opening a transaction here would commit a caller's,
 			 * e.g. Square's duplicate-order check.
