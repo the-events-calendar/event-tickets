@@ -474,8 +474,11 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 						break;
 				}
 
-				// jQuery UI fires `change` after a pick only when there is no `onSelect`, and other scripts listen for it.
-				$( this ).trigger( 'change' );
+				/*
+				 * jQuery UI fires no `change` after a pick when there is an `onSelect`. The namespaced event tells the
+				 * Relative Sale Dates script without firing `change` for every other script that listens for it.
+				 */
+				$( this ).trigger( 'change.tecRelativeSaleDates' );
 			},
 		};
 

@@ -17,7 +17,7 @@ import { resolveSaleWindow } from '../sale-window';
 import { readDateTime, readEventDates } from './event-dates';
 import { formatHelperText } from './helper-text';
 import { readRule, writeRule } from './rule';
-import { getWindowError } from './window-check';
+import { getOutOfRangeBoundary, getWindowError, RELATIVE_VALUE_OUT_OF_RANGE } from './window-check';
 
 const MODE_RELATIVE = 'relative';
 
@@ -125,37 +125,42 @@ function updateHelperText() {
 }
 
 /**
- * Shows an error under the sales window, marking its end invalid when the error is about the window, or clears both.
+ * Shows an error under the sales window, marking the field it is about invalid, or clears both.
  *
- * The end is marked with `aria-invalid` rather than common's `tribe-validation-error` class: common validates the form
- * again after the save click and strips that class from every field it does not flag itself.
+ * The field is marked with `aria-invalid` rather than common's `tribe-validation-error` class: common validates the
+ * form again after the save click and strips that class from every field it does not flag itself.
  *
  * @since TBD
  *
- * @param {string}  message        The error, or an empty string to clear it.
- * @param {boolean} [markEnd=true] Whether the error is about the sales window, so its end is marked invalid.
+ * @param {string}      message                           The error, or an empty string to clear it.
+ * @param {string|null} [fieldId='ticket_sales_end_mode'] The id of the field the error is about, or `null` for an
+ *                                                        error that is not about a field.
  *
- * @return {void}
+ * @return {HTMLElement|null} The field marked invalid, or `null` when none is.
  */
-function showWindowError( message, markEnd = true ) {
+function showWindowError( message, fieldId = 'ticket_sales_end_mode' ) {
 	const error = document.getElementById( 'ticket_sales_window_error' );
-	const endMode = document.getElementById( 'ticket_sales_end_mode' );
 
-	if ( ! error || ! endMode ) {
-		return;
+	if ( ! error ) {
+		return null;
 	}
 
 	error.textContent = message;
+	document.querySelectorAll( `[aria-describedby="${ error.id }"]` ).forEach( ( marked ) => {
+		marked.removeAttribute( 'aria-invalid' );
+		marked.removeAttribute( 'aria-describedby' );
+	} );
 
-	if ( '' === message || ! markEnd ) {
-		endMode.removeAttribute( 'aria-invalid' );
-		endMode.removeAttribute( 'aria-describedby' );
+	const field = '' === message || ! fieldId ? null : document.getElementById( fieldId );
 
-		return;
+	if ( ! field ) {
+		return null;
 	}
 
-	endMode.setAttribute( 'aria-invalid', 'true' );
-	endMode.setAttribute( 'aria-describedby', error.id );
+	field.setAttribute( 'aria-invalid', 'true' );
+	field.setAttribute( 'aria-describedby', error.id );
+
+	return field;
 }
 
 /**
@@ -205,7 +210,13 @@ function validateSaleWindow( event, valid ) {
 		return answer;
 	}
 
-	showWindowError( settings.text.invalidWindow );
+	const outOfRange = RELATIVE_VALUE_OUT_OF_RANGE === error ? getOutOfRangeBoundary( readRule( document ) ) : null;
+	const marked = outOfRange
+		? showWindowError( settings.text.relativeValueOutOfRange, `ticket_sales_${ outOfRange }_value` )
+		: showWindowError( settings.text.invalidWindow );
+
+	// The save button keeps the focus otherwise, away from the field that blocks the save.
+	marked?.focus();
 	event.stopImmediatePropagation();
 
 	return false;
@@ -232,7 +243,7 @@ function showServerError( response ) {
 	const settings = window.tec?.tickets?.relativeSaleDates?.classicData;
 
 	// Only the sales window error is about the window; another reason is shown without marking the window invalid.
-	showWindowError( text, text === settings?.text?.invalidWindow );
+	showWindowError( text, text === settings?.text?.invalidWindow ? 'ticket_sales_end_mode' : null );
 }
 
 /**
@@ -260,7 +271,12 @@ jQuery( () => {
 } );
 
 jQuery( document ).on( 'change', EVENT_FIELDS, onWindowChange );
-jQuery( document ).on( 'change input', `${ RULE_FIELDS }, ${ SPECIFIC_DATE_FIELDS }`, onWindowChange );
+// `tickets.js` tells this script of a date picked from the calendar with the namespaced event, which a plain change fires too.
+jQuery( document ).on(
+	'change.tecRelativeSaleDates input',
+	`${ RULE_FIELDS }, ${ SPECIFIC_DATE_FIELDS }`,
+	onWindowChange
+);
 
 addAction( 'tec.tickets.admin.panels.refreshed', 'tec.tickets.relativeSaleDates', updateHelperText );
 addAction( 'tec.tickets.admin.ticketSaveFailed', 'tec.tickets.relativeSaleDates', showServerError );

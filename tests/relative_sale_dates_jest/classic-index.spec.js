@@ -88,6 +88,8 @@ function renderPanel( { value, unit, anchor }, end = { mode: 'relative', value: 
 
 const INVALID_WINDOW = 'Ticket sales cannot end before they start. Please adjust the sales window.';
 
+const OUT_OF_RANGE = 'Enter a number from 1 to 60.';
+
 /**
  * Asks for the extra validation `tickets.js` runs before it saves a ticket.
  *
@@ -135,6 +137,7 @@ describe( 'classic editor script', () => {
 				start: 'Sales start %1$s at %2$s',
 				end: 'Sales end %1$s at %2$s',
 				invalidWindow: 'Ticket sales cannot end before they start. Please adjust the sales window.',
+				relativeValueOutOfRange: OUT_OF_RANGE,
 			},
 		};
 		window.tribe_dynamic_help_text = {
@@ -236,6 +239,42 @@ describe( 'classic editor script', () => {
 		expect( isEndMarkedInvalid() ).toBe( true );
 	} );
 
+	it( 'should name a number out of range and mark that number, not the end of the window', async () => {
+		renderEventForm( { value: 0, unit: UNIT_WEEKS, anchor: 'start' } );
+		await loadScript();
+
+		expect( validateTicket() ).toBe( false );
+
+		const startValue = document.getElementById( 'ticket_sales_start_value' );
+		expect( getWindowError() ).toBe( OUT_OF_RANGE );
+		expect( startValue.getAttribute( 'aria-invalid' ) ).toBe( 'true' );
+		expect( startValue.getAttribute( 'aria-describedby' ) ).toBe( 'ticket_sales_window_error' );
+		expect( isEndMarkedInvalid() ).toBe( false );
+		expect( document.activeElement ).toBe( startValue );
+	} );
+
+	it( 'should move the focus to the end of a window that ends before it starts', async () => {
+		renderEventForm( { value: 1, unit: 3600, anchor: 'start' }, { mode: 'relative', value: 2, unit: UNIT_DAYS, anchor: 'start' } );
+		await loadScript();
+
+		expect( validateTicket() ).toBe( false );
+
+		expect( document.activeElement ).toBe( document.getElementById( 'ticket_sales_end_mode' ) );
+	} );
+
+	it( 'should clear the mark of a number once it is fixed', async () => {
+		renderEventForm( { value: 0, unit: UNIT_WEEKS, anchor: 'start' } );
+		await loadScript();
+		validateTicket();
+		const startValue = document.getElementById( 'ticket_sales_start_value' );
+
+		startValue.value = '2';
+		jQuery( startValue ).trigger( 'input' );
+
+		expect( startValue.hasAttribute( 'aria-invalid' ) ).toBe( false );
+		expect( getWindowError() ).toBe( '' );
+	} );
+
 	it( 'should let a valid window be saved', async () => {
 		renderEventForm();
 		await loadScript();
@@ -312,7 +351,8 @@ describe( 'classic editor script', () => {
 		jQuery( `#ticket_sales_${ end }_value` ).val( value );
 
 		expect( validateTicket() ).toBe( false );
-		expect( getWindowError() ).toBe( INVALID_WINDOW );
+		expect( getWindowError() ).toBe( OUT_OF_RANGE );
+		expect( document.getElementById( `ticket_sales_${ end }_value` ).getAttribute( 'aria-invalid' ) ).toBe( 'true' );
 	} );
 
 	// The ends of the range the server takes, with an end an hour before the event and a start further back.

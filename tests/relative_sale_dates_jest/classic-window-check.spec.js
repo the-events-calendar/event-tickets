@@ -1,4 +1,8 @@
-import { getWindowError } from '@tec/tickets/relative-sale-dates/classic/window-check';
+import {
+	getOutOfRangeBoundary,
+	getWindowError,
+	RELATIVE_VALUE_OUT_OF_RANGE,
+} from '@tec/tickets/relative-sale-dates/classic/window-check';
 import { SALES_END_BEFORE_START } from '@tec/tickets/relative-sale-dates/validation';
 
 const UNIT_WEEKS = 604800;
@@ -30,5 +34,20 @@ describe( 'getWindowError', () => {
 		const rule = { start: { mode: 'specific' }, end: { mode: 'default' } };
 
 		expect( getWindowError( rule, EVENT_DATES, { start: null, end: null } ) ).toBe( SALES_END_BEFORE_START );
+	} );
+
+	it.each( [
+		[ 'start', 0 ],
+		[ 'end', 61 ],
+		[ 'start', Number.NaN ],
+	] )( 'should name the %s whose number %s is out of range', ( key, value ) => {
+		const rule = {
+			start: { mode: 'relative', value: 2, unit: UNIT_WEEKS, anchor: 'start' },
+			end: { mode: 'relative', value: 1, unit: UNIT_WEEKS, anchor: 'start' },
+		};
+		rule[ key ] = { ...rule[ key ], value };
+
+		expect( getWindowError( rule, EVENT_DATES, { start: null, end: null } ) ).toBe( RELATIVE_VALUE_OUT_OF_RANGE );
+		expect( getOutOfRangeBoundary( rule ) ).toBe( key );
 	} );
 } );
