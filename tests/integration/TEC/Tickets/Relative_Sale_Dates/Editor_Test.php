@@ -97,6 +97,28 @@ class Editor_Test extends Controller_Test_Case {
 	}
 
 	/**
+	 * The script names the units again as the number changes, with this msgid and context.
+	 *
+	 * @test
+	 */
+	public function should_name_each_unit_with_the_translation_the_script_uses(): void {
+		$this->make_controller()->register();
+		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
+		$ticket_id = $this->create_tc_ticket( $event_id );
+		tribe( Rule_Store::class )->save( $ticket_id, [ 'start' => $this->relative( 1, WEEK_IN_SECONDS ), 'end' => [ 'mode' => 'default' ] ] );
+		add_filter(
+			'ngettext_with_context_event-tickets',
+			static fn( $translation, $single, $plural, $number, $context ) => 'week' === $single && 'Unit of a relative ticket sale date.' === $context ? 'semana' : $translation,
+			10,
+			5
+		);
+
+		$form = $this->render_ticket_form( $event_id, $ticket_id );
+
+		$this->assertContains( 'semana', $this->get_option_labels( $form, 'ticket_sales_start_unit' ) );
+	}
+
+	/**
 	 * @test
 	 */
 	public function should_leave_the_sales_window_options_out_of_the_submitted_fields(): void {

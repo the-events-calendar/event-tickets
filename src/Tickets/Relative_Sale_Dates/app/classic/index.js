@@ -9,7 +9,7 @@
  */
 import moment from 'moment-timezone';
 import { addAction } from '@wordpress/hooks';
-import { _n } from '@wordpress/i18n';
+import { _nx } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -44,17 +44,17 @@ const RULE_FIELDS = [ 'start', 'end' ]
 	.join( ', ' );
 
 /**
- * The name of each unit for a number of it, keyed by the unit in seconds. The msgids match the template's.
+ * The name of each unit for a number of it, keyed by the unit in seconds. The msgids and context match the template's.
  *
  * @since TBD
  *
  * @type {Object<string, function( number ): string>}
  */
 const UNIT_NAMES = {
-	60: ( number ) => _n( 'minute', 'minutes', number, 'event-tickets' ),
-	3600: ( number ) => _n( 'hour', 'hours', number, 'event-tickets' ),
-	86400: ( number ) => _n( 'day', 'days', number, 'event-tickets' ),
-	604800: ( number ) => _n( 'week', 'weeks', number, 'event-tickets' ),
+	60: ( number ) => _nx( 'minute', 'minutes', number, 'Unit of a relative ticket sale date.', 'event-tickets' ),
+	3600: ( number ) => _nx( 'hour', 'hours', number, 'Unit of a relative ticket sale date.', 'event-tickets' ),
+	86400: ( number ) => _nx( 'day', 'days', number, 'Unit of a relative ticket sale date.', 'event-tickets' ),
+	604800: ( number ) => _nx( 'week', 'weeks', number, 'Unit of a relative ticket sale date.', 'event-tickets' ),
 };
 
 /**

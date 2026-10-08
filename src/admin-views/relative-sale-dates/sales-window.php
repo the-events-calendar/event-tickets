@@ -53,14 +53,14 @@ $modes = [
 ];
 
 /*
- * The unit names follow the number, as the script does when it changes; the msgids match the script's so one
- * translation serves both.
+ * The unit names follow the number, as the script does when it changes; the msgids and context match the script's so
+ * one translation serves both.
  */
 $get_units = static fn( int $value ): array => [
-	MINUTE_IN_SECONDS => _n( 'minute', 'minutes', $value, 'event-tickets' ),
-	HOUR_IN_SECONDS   => _n( 'hour', 'hours', $value, 'event-tickets' ),
-	DAY_IN_SECONDS    => _n( 'day', 'days', $value, 'event-tickets' ),
-	WEEK_IN_SECONDS   => _n( 'week', 'weeks', $value, 'event-tickets' ),
+	MINUTE_IN_SECONDS => _nx( 'minute', 'minutes', $value, 'Unit of a relative ticket sale date.', 'event-tickets' ),
+	HOUR_IN_SECONDS   => _nx( 'hour', 'hours', $value, 'Unit of a relative ticket sale date.', 'event-tickets' ),
+	DAY_IN_SECONDS    => _nx( 'day', 'days', $value, 'Unit of a relative ticket sale date.', 'event-tickets' ),
+	WEEK_IN_SECONDS   => _nx( 'week', 'weeks', $value, 'Unit of a relative ticket sale date.', 'event-tickets' ),
 ];
 
 $anchors = [
