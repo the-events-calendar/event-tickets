@@ -678,15 +678,7 @@ export function* createNewTicket( action ) {
 			const saleDates = yield call( getTicketSaleDates, ticket );
 			const salePriceDates = yield call( getTicketSalePriceDates, ticket );
 
-			const [
-				title,
-				description,
-				price,
-				sku,
-				iac,
-				capacityType,
-				capacity,
-			] = yield all( [
+			const [ title, description, price, sku, iac, capacityType, capacity ] = yield all( [
 				select( selectors.getTicketTempTitle, props ),
 				select( selectors.getTicketTempDescription, props ),
 				select( selectors.getTicketTempPrice, props ),
@@ -786,15 +778,7 @@ export function* updateTicket( action ) {
 			const saleDates = yield call( getTicketSaleDates, ticket );
 			const salePriceDates = yield call( getTicketSalePriceDates, ticket );
 
-			const [
-				title,
-				description,
-				price,
-				sku,
-				iac,
-				capacityType,
-				capacity,
-			] = yield all( [
+			const [ title, description, price, sku, iac, capacityType, capacity ] = yield all( [
 				select( selectors.getTicketTempTitle, props ),
 				select( selectors.getTicketTempDescription, props ),
 				select( selectors.getTicketTempPrice, props ),
