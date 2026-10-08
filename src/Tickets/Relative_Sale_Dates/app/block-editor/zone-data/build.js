@@ -12,33 +12,19 @@ const moment = require( 'moment-timezone' );
 require( 'moment-timezone/moment-timezone-utils' );
 const latest = require( 'moment-timezone/data/packed/latest.json' );
 
-const START_YEAR = new Date().getUTCFullYear() - 1;
-const END_YEAR = START_YEAR + 26;
-
-const zones = new Map(
-	latest.zones.map( ( packed ) => {
-		const zone = moment.tz.unpack( packed );
-
-		return [ zone.name, zone ];
-	} )
-);
-
 /*
- * A link is written as a zone of its own: WordPress's older data can hold the same name as a zone, which `moment.tz`
- * reads before any link.
+ * WordPress formats dates of any year with these zones, so the data keeps every clock change from 1970, as WordPress's
+ * own data does, and runs well past the events tickets are sold for. Fixed years keep a rebuild's output the same.
  */
-latest.links.forEach( ( link ) => {
-	const [ target, alias ] = link.split( '|' );
-
-	zones.set( alias, { ...zones.get( target ), name: alias } );
-} );
+const START_YEAR = 1970;
+const END_YEAR = 2051;
 
 const data = {
 	version: latest.version,
-	zones: [ ...zones.values() ].map( ( zone ) =>
-		moment.tz.pack( moment.tz.filterYears( zone, START_YEAR, END_YEAR ) )
+	zones: latest.zones.map( ( packed ) =>
+		moment.tz.pack( moment.tz.filterYears( moment.tz.unpack( packed ), START_YEAR, END_YEAR ) )
 	),
-	links: [],
+	links: latest.links,
 	countries: [],
 };
 

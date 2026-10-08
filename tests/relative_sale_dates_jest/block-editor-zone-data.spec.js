@@ -47,6 +47,12 @@ describe( 'the Ticket block zone data', () => {
 		expect( resolveCairoStart() ).toBe( '2027-04-29 23:30 +02:00' );
 	} );
 
+	// WordPress's own date formatting reads these zones too, for dates of any year.
+	it( 'should keep the clock changes of earlier years, such as New York summer time in 2020', () => {
+		expect( moment.tz( '2020-07-01T16:00:00Z', 'America/New_York' ).format( 'HH:mm Z' ) ).toBe( '12:00 -04:00' );
+		expect( moment.tz( '1990-07-01T16:00:00Z', 'Europe/London' ).format( 'HH:mm Z' ) ).toBe( '17:00 +01:00' );
+	} );
+
 	it( 'should keep the zones WordPress added, such as its own WP zone', () => {
 		expect( moment.tz.zone( 'WP' ) ).not.toBeNull();
 	} );
