@@ -223,7 +223,7 @@ class Writer_Test extends Controller_Test_Case {
 		$this->assertSame( '', get_post_meta( $order->ID, Writer::VERSION_META_KEY, true ) );
 		$this->assertNotEmpty( get_post_meta( $order->ID, Order::$items_meta_key, true ) );
 		$this->assertSame( tribe( Completed::class )->get_wp_slug(), get_post_status( $order->ID ) );
-		$this->assert_logged( 'debug', 'could not be written' );
+		$this->assert_logged( 'error', 'could not be written' );
 	}
 
 	public function test_it_does_not_commit_a_transaction_open_around_the_order_creation(): void {
