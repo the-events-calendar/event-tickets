@@ -18,7 +18,7 @@ namespace TEC\Tickets\Commerce\Order_Items\Line_Items;
  *
  * @package TEC\Tickets\Commerce\Order_Items\Line_Items
  */
-class Coupon_Line_Item extends Abstract_Line_Item_Type {
+final class Coupon_Line_Item extends Abstract_Line_Item_Type {
 	/**
 	 * Item keys stored in a column, and how their value is stored.
 	 *
