@@ -119,10 +119,13 @@ class Writer extends Controller_Contract {
 			 * truncated by `wp site empty`, and would otherwise be read back as this order's lines.
 			 */
 			$this->repository->delete_by_order( $order_id );
-			// One INSERT is atomic on its own; opening a transaction here would commit a caller's, e.g. Square's duplicate-order check.
+			/*
+			 * One INSERT is atomic on its own; opening a transaction here would commit a caller's,
+			 * e.g. Square's duplicate-order check.
+			 */
 			$this->repository->insert_many( $rows );
 		} catch ( Throwable $e ) {
-			$this->debug(
+			$this->error(
 				'The order items could not be written to the table; the order keeps them in its meta.',
 				[
 					'order_id' => $order_id,
