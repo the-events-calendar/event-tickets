@@ -121,6 +121,25 @@ describe( 'the Relative Sale Dates block editor store', () => {
 		expect( select( STORE_NAME ).getDraftRule( clientId ) ).toStrictEqual( editedRule );
 	} );
 
+	it( 'should keep a confirmed rule as saved and leave the draft alone', () => {
+		const clientId = newClientId();
+		dispatch( STORE_NAME ).setRule( clientId, savedRule );
+		dispatch( STORE_NAME ).setDraftRule( clientId, editedRule );
+
+		dispatch( STORE_NAME ).saveConfirmedRule( clientId, null );
+
+		expect( getSavedRule( clientId ) ).toBeNull();
+		expect( select( STORE_NAME ).getDraftRule( clientId ) ).toStrictEqual( editedRule );
+	} );
+
+	it( 'should leave a ticket it knows nothing of out of the store when its rule is confirmed', () => {
+		const clientId = newClientId();
+
+		dispatch( STORE_NAME ).saveConfirmedRule( clientId, savedRule );
+
+		expect( getStoreState( STORE_NAME )[ clientId ] ).toBeUndefined();
+	} );
+
 	it( 'should restore the saved rule into the draft on cancel', () => {
 		const clientId = newClientId();
 		dispatch( STORE_NAME ).setRule( clientId, savedRule );

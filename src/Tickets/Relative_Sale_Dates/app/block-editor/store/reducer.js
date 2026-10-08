@@ -56,6 +56,12 @@ export default function reducer( state = {}, action ) {
 			}
 
 			return withRules( state, action.clientId, { ...current, saved: current.sent, sent: undefined } );
+		case 'SAVE_CONFIRMED_RULE':
+			if ( ! current ) {
+				return state;
+			}
+
+			return withRules( state, action.clientId, { ...current, saved: action.rule, sent: undefined } );
 		case 'RESET_DRAFT_RULE':
 			if ( ! current ) {
 				return state;

@@ -58,12 +58,12 @@ function toRequestEnd( { mode, value, unit, anchor } ) {
  * @param {SaleWindowRule|null} rule     The ticket's draft rule.
  * @param {string}              clientId The client ID of the ticket block.
  *
- * @return {boolean} Whether the window is invalid; `false` without the event dates to judge it by.
+ * @return {boolean} Whether the window is invalid; without the event dates, whether a relative number is out of range.
  */
 function hasWindowError( rule, clientId ) {
 	const eventDates = readEventDates();
 
-	return Boolean( eventDates ) && null !== getTicketWindowError( rule, eventDates, readTicketFormDates( clientId ) );
+	return null !== getTicketWindowError( rule, eventDates, eventDates ? readTicketFormDates( clientId ) : null );
 }
 
 /**
@@ -89,17 +89,25 @@ export function loadTicketRule( clientId, ticket ) {
 /**
  * Keeps the rule a ticket was just created or updated with as its saved rule.
  *
- * Only the rule the request carried counts: a draft held back from it was never stored, so Cancel still goes back to
- * the rule the ticket has.
+ * The server's answer is what was stored: a later save can have changed what the store last sent before this one's
+ * answer arrives. Without an answer to read, only the rule the request carried counts: a draft held back from it was
+ * never stored, so Cancel still goes back to the rule the ticket has.
  *
  * @since TBD
  *
  * @param {string} clientId The client ID of the ticket block.
+ * @param {number} ticketId The ticket ID.
+ * @param {Object} details  The ticket details.
+ * @param {Object} [ticket] The ticket, as the tickets REST API answered the save.
  *
  * @return {void}
  */
-export function saveTicketRule( clientId ) {
+export function saveTicketRule( clientId, ticketId, details, ticket ) {
 	dispatch( STORE_NAME ).saveSentRule( clientId );
+
+	if ( TICKETS_COMMERCE_PROVIDER === ticket?.provider && undefined !== ticket.relative_sale_dates ) {
+		dispatch( STORE_NAME ).saveConfirmedRule( clientId, ticket.relative_sale_dates );
+	}
 }
 
 /**
