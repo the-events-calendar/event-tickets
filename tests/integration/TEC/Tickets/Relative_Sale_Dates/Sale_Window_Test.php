@@ -46,6 +46,39 @@ class Sale_Window_Test extends WPTestCase {
 	}
 
 	/**
+	 * @return Generator<string,array{0: array{name: string, rule: array{start: array{mode: string, value?: int, unit?: int, anchor?: string}, end: array{mode: string, value?: int, unit?: int, anchor?: string}}, timezone: string, event_start: string, event_end: string}, 1: string}>
+	 */
+	public function relative_boundaries_provider(): Generator {
+		foreach ( $this->fixtures_provider() as $name => [ $case ] ) {
+			foreach ( [ 'start', 'end' ] as $key ) {
+				if ( 'relative' === $case['rule'][ $key ]['mode'] ) {
+					yield "{$name}: {$key}" => [ $case, $key ];
+				}
+			}
+		}
+	}
+
+	/**
+	 * @test
+	 * @dataProvider relative_boundaries_provider
+	 */
+	public function should_resolve_a_relative_boundary_before_its_anchor( array $case, string $key ): void {
+		$timezone = new DateTimeZone( $case['timezone'] );
+		$anchors  = [
+			'start' => new DateTimeImmutable( $case['event_start'], $timezone ),
+			'end'   => new DateTimeImmutable( $case['event_end'], $timezone ),
+		];
+
+		$window   = tribe( Sale_Window::class )->resolve( Rule::from_array( $case['rule'] ), $anchors['start'], $anchors['end'] );
+		$resolved = 'start' === $key ? $window->get_start_utc() : $window->get_end_utc();
+
+		$this->assertLessThan(
+			$anchors[ $case['rule'][ $key ]['anchor'] ]->getTimestamp(),
+			$resolved->getTimestamp()
+		);
+	}
+
+	/**
 	 * @test
 	 */
 	public function should_resolve_in_the_timezone_of_the_event_start(): void {

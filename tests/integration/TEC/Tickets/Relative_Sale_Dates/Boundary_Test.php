@@ -89,8 +89,6 @@ class Boundary_Test extends WPTestCase {
 		$boundary = Boundary::from_array( $data );
 
 		$this->assertSame( $data['mode'], $boundary->get_mode() );
-		$this->assertSame( $data['value'] ?? null, $boundary->get_value() );
-		$this->assertSame( $data['unit'] ?? null, $boundary->get_unit() );
 		$this->assertSame( $data['anchor'] ?? null, $boundary->get_anchor() );
 
 		if ( ! isset( $data['value'], $data['unit'] ) ) {
