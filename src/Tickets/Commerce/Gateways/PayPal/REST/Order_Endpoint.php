@@ -289,6 +289,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * @since 5.1.9
 	 * @since 5.27.6.1 Removed order data from response for failed orders.
 	 * @since 5.29.4 Records what PayPal answered and fails when it did not acknowledge a capture.
+	 * @since TBD Refuses to capture a card payment that failed 3D Secure authentication.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -346,6 +347,23 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			}
 
 			return $this->settled_response( $order, $paypal_order_id, $settled );
+		}
+
+		$paypal_order_response = tribe( Client::class )->get_order( $paypal_order_id );
+
+		/*
+		 * Without the order there is no authentication result to check, and capturing blind is what
+		 * charges a buyer who cancelled their bank's verification. The recheck reads the order again.
+		 */
+		if ( ! $this->is_paypal_payload( $paypal_order_response ) ) {
+			$response['success']  = true;
+			$response['order_id'] = $paypal_order_id;
+
+			return new WP_REST_Response( $response );
+		}
+
+		if ( $this->card_authentication_failed( $paypal_order_response ) ) {
+			return $this->deny_unauthenticated_order( $order, $paypal_order_response );
 		}
 
 		$payer_id = $request->get_param( 'payer_id' );
@@ -432,6 +450,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * @since 5.27.6.1 Removed order data from response for failed orders.
 	 * @since 5.29.4 Captures an approved order nothing captured yet, and stops writing unsettled PayPal
 	 *        states over the order.
+	 * @since TBD Refuses to capture a card payment that failed 3D Secure authentication.
 	 *
 	 * @param string  $order_id The PayPal order ID.
 	 * @param WP_Post $order    The TC Order object.
@@ -461,6 +480,10 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			Status::APPROVED === Arr::get( $paypal_order_response, 'status' )
 			&& null === $this->get_deciding_capture( $paypal_order_response )
 		) {
+			if ( $this->card_authentication_failed( $paypal_order_response ) ) {
+				return $this->deny_unauthenticated_order( $order, $paypal_order_response );
+			}
+
 			$paypal_capture_response = tribe( Client::class )->capture_order( $order_id );
 
 			if ( $this->is_paypal_payload( $paypal_capture_response ) ) {
@@ -890,6 +913,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			'capture-declined'        => __( 'Your payment was declined.', 'event-tickets' ),
 			'unconfirmed-capture'     => __( 'We could not confirm your payment. Check your PayPal account before trying again, so that you are not charged twice.', 'event-tickets' ),
 			'invalid-capture-status'  => __( 'There was a problem with the Order status change, please try again.', 'event-tickets' ),
+			'failed-authentication'   => __( 'Your card could not be verified by your bank, so no payment was taken. Please try again.', 'event-tickets' ),
 		];
 
 		/**
@@ -937,5 +961,59 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$truncated_text .= $ellipsis;
 
 		return $truncated_text;
+	}
+
+	/**
+	 * Whether the card on a PayPal order failed the 3D Secure authentication its bank asked for.
+	 *
+	 * A buyer who cancels the bank's verification still leaves PayPal with an approved order, so the
+	 * order status alone cannot stop the capture. Only a possible liability shift, or a card that
+	 * never entered 3D Secure, may be captured.
+	 *
+	 * @link https://developer.paypal.com/docs/checkout/advanced/customize/3d-secure/response-parameters/
+	 *
+	 * @since TBD
+	 *
+	 * @param array $paypal_order A PayPal order response.
+	 *
+	 * @return bool
+	 */
+	private function card_authentication_failed( array $paypal_order ): bool {
+		$result = Arr::get( $paypal_order, [ 'payment_source', 'card', 'authentication_result' ] );
+
+		if ( ! is_array( $result ) ) {
+			return false;
+		}
+
+		if ( 'POSSIBLE' === Arr::get( $result, 'liability_shift' ) ) {
+			return false;
+		}
+
+		// Not enrolled, issuer unavailable, or bypassed: the bank never asked the buyer to verify.
+		return ! in_array( Arr::get( $result, [ 'three_d_secure', 'enrollment_status' ] ), [ 'N', 'U', 'B' ], true );
+	}
+
+	/**
+	 * Denies an order whose card failed 3D Secure authentication, without capturing it.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $order        The Tickets Commerce order.
+	 * @param array   $paypal_order The PayPal order response.
+	 *
+	 * @return WP_Error
+	 */
+	private function deny_unauthenticated_order( $order, array $paypal_order ): WP_Error {
+		tribe( Order::class )->modify_status(
+			$order->ID,
+			Denied::SLUG,
+			[ 'gateway_payload' => $paypal_order ]
+		);
+
+		return new WP_Error(
+			'tec-tc-gateway-paypal-failed-authentication',
+			$this->get_error_messages()['failed-authentication'],
+			[ 'status' => 402 ]
+		);
 	}
 }
