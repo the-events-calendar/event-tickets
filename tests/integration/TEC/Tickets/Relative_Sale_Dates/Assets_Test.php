@@ -279,8 +279,9 @@ class Assets_Test extends Controller_Test_Case {
 	public function should_not_enqueue_the_block_editor_script_in_the_classic_editor(): void {
 		$this->make_controller()->register();
 		set_current_screen( 'tribe_events' );
+		get_current_screen()->is_block_editor( false );
 
-		do_action( 'admin_enqueue_scripts', 'post.php' );
+		do_action( 'enqueue_block_editor_assets' );
 
 		$this->assertFalse( wp_script_is( Assets::BLOCK_EDITOR_SCRIPT, 'enqueued' ) );
 	}
