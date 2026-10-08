@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.30.0\n"
+"Project-Id-Version: Event Tickets 5.30.0.2\n"
 "Report-Msgid-Bugs-To: https://evnt.is/191x\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-30T17:24:28+00:00\n"
+"POT-Creation-Date: 2026-10-05T19:02:56+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: event-tickets\n"
@@ -513,7 +513,7 @@ msgstr ""
 #: src/admin-views/tpp-metabox-capacity.php:25
 #: src/modules/blocks/rsvp-v2/capacity/template.js:20
 #: src/modules/blocks/rsvp-v2/edit-popovers/limit-popover.js:43
-#: src/Tickets/Blocks/Ticket/app/editor/container-content/capacity/template.js:210
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/capacity/template.js:209
 msgid "Leave blank for unlimited"
 msgstr ""
 
@@ -883,7 +883,7 @@ msgstr ""
 msgid "Current sale or member price. This can be managed via the product editor."
 msgstr ""
 
-#: src/admin-views/editor/fieldset/settings-provider.php:33
+#: src/admin-views/editor/fieldset/settings-provider.php:35
 msgid "Payment provider:"
 msgstr ""
 
@@ -1088,7 +1088,7 @@ msgstr ""
 #: src/modules/blocks/rsvp-v2/edit-popovers/window-popover.js:56
 #: src/modules/blocks/rsvp/action-dashboard/template.js:22
 #: src/Tickets/Blocks/Ticket/app/editor/dashboard/template.js:36
-#: src/Tickets/Commerce/Order_Modifiers/app/blockEditor/fees/select-fee.js:74
+#: src/Tickets/Commerce/Order_Modifiers/app/blockEditor/fees/select-fee.js:77
 #: src/Tickets/Seating/app/blockEditor/settings/layoutSelect.js:214
 #: src/Tickets/Seating/app/blockEditor/settings/removeLayout.js:113
 msgid "Cancel"
@@ -1398,7 +1398,7 @@ msgid "&laquo; Back"
 msgstr ""
 
 #: src/admin-views/move-tickets.php:96
-#: src/modules/elements/move-modal/template.js:94
+#: src/modules/elements/move-modal/template.js:95
 msgid "Finish!"
 msgstr ""
 
@@ -2125,7 +2125,7 @@ msgstr ""
 #: src/admin-views/settings/tickets-commerce/square/connect/error-notices.php:29
 #: src/admin-views/settings/tickets-commerce/square/connected.php:45
 #: src/admin-views/settings/tickets-commerce/square/signup.php:39
-#: src/resources/js/admin/gateway/square/settings.js:40
+#: src/resources/js/admin/gateway/square/settings.js:41
 msgid "There was an error connecting to Square. Please try again."
 msgstr ""
 
@@ -2148,7 +2148,7 @@ msgstr ""
 #: src/admin-views/settings/tickets-commerce/square/connect/missing-scopes.php:39
 #: src/admin-views/settings/tickets-commerce/square/connected.php:44
 #: src/admin-views/settings/tickets-commerce/square/signup.php:38
-#: src/resources/js/admin/gateway/square/settings.js:39
+#: src/resources/js/admin/gateway/square/settings.js:40
 msgid "Reconnect Account"
 msgstr ""
 
@@ -2194,31 +2194,31 @@ msgstr ""
 #: src/admin-views/settings/tickets-commerce/square/connected.php:41
 #: src/admin-views/settings/tickets-commerce/square/signup.php:36
 #: src/admin-views/settings/tickets-commerce/square/signup.php:61
-#: src/resources/js/admin/gateway/square/settings.js:37
+#: src/resources/js/admin/gateway/square/settings.js:38
 msgid "Connect with Square"
 msgstr ""
 
 #: src/admin-views/settings/tickets-commerce/square/connected.php:42
 #: src/admin-views/settings/tickets-commerce/square/signup.php:37
-#: src/resources/js/admin/gateway/square/settings.js:38
+#: src/resources/js/admin/gateway/square/settings.js:39
 msgid "Connecting..."
 msgstr ""
 
 #: src/admin-views/settings/tickets-commerce/square/connected.php:43
 #: src/admin-views/settings/tickets-commerce/square/signup.php:40
-#: src/resources/js/admin/gateway/square/settings.js:43
+#: src/resources/js/admin/gateway/square/settings.js:44
 msgid "Disconnecting..."
 msgstr ""
 
 #: src/admin-views/settings/tickets-commerce/square/connected.php:46
 #: src/admin-views/settings/tickets-commerce/square/signup.php:41
-#: src/resources/js/admin/gateway/square/settings.js:41
+#: src/resources/js/admin/gateway/square/settings.js:42
 msgid "Are you sure you want to disconnect from Square?"
 msgstr ""
 
 #: src/admin-views/settings/tickets-commerce/square/connected.php:47
 #: src/admin-views/settings/tickets-commerce/square/signup.php:42
-#: src/resources/js/admin/gateway/square/settings.js:42
+#: src/resources/js/admin/gateway/square/settings.js:43
 msgid "There was an error disconnecting from Square. Please try again."
 msgstr ""
 
@@ -9597,14 +9597,14 @@ msgstr ""
 #: src/Tribe/Tickets_Handler.php:121
 #: src/views/blocks/tickets/extra-available-unlimited.php:19
 #: src/views/v2/tickets/item/extra/available/unlimited.php:56
-#: src/modules/blocks/rsvp-v2/container-header/template.js:25
+#: src/modules/blocks/rsvp-v2/container-header/template.js:26
 #: src/modules/blocks/rsvp-v2/frontend-mirror/partials/details-availability.js:13
-#: src/modules/blocks/rsvp/container-header/template.js:28
+#: src/modules/blocks/rsvp/container-header/template.js:29
 #: src/modules/data/blocks/ticket/options.js:21
 #: src/Tickets/Blocks/Tickets/app/editor/capacity-table/container.js:38
 #: src/Tickets/Blocks/Tickets/app/editor/capacity-table/template.js:67
-#: src/Tickets/Flexible_Tickets/app/block-editor/hooks/filters.js:327
-#: src/Tickets/Flexible_Tickets/app/block-editor/hooks/filters.js:350
+#: src/Tickets/Flexible_Tickets/app/block-editor/hooks/filters.js:326
+#: src/Tickets/Flexible_Tickets/app/block-editor/hooks/filters.js:349
 msgid "Unlimited"
 msgstr ""
 
@@ -11267,46 +11267,47 @@ msgstr ""
 msgid "Sold out"
 msgstr ""
 
-#: src/Tickets/QR/Connector.php:266
+#: src/Tickets/QR/Connector.php:265
+#: src/Tickets/QR/Connector.php:271
 msgid "Permission Error"
 msgstr ""
 
-#: src/Tickets/QR/Connector.php:271
+#: src/Tickets/QR/Connector.php:276
 msgid "The QR API key could not be deleted, please try again."
 msgstr ""
 
-#: src/Tickets/QR/Connector.php:276
+#: src/Tickets/QR/Connector.php:281
 msgid "The QR API key was not regenerated, please try again."
 msgstr ""
 
-#: src/Tickets/QR/Connector.php:282
+#: src/Tickets/QR/Connector.php:287
 msgid "The QR API key was generated, but generating the connection QR Code image failed."
 msgstr ""
 
-#: src/Tickets/QR/Connector.php:286
+#: src/Tickets/QR/Connector.php:291
 msgid "QR API Key Generated"
 msgstr ""
 
 #. Translators: %s is the ticket ID.
-#: src/Tickets/QR/Observer.php:218
+#: src/Tickets/QR/Observer.php:235
 #, php-format
 msgid "The ticket with ID %s was deleted and cannot be checked-in."
 msgstr ""
 
 #. Translators: %s is the ticket ID.
-#: src/Tickets/QR/Observer.php:228
+#: src/Tickets/QR/Observer.php:245
 #, php-format
 msgid "The security code for ticket with ID %s does not match."
 msgstr ""
 
 #. Translators: %s is the ticket ID.
-#: src/Tickets/QR/Observer.php:239
+#: src/Tickets/QR/Observer.php:256
 #, php-format
 msgid "The ticket with ID %s has already been checked in."
 msgstr ""
 
 #. Translators: %s is the ticket ID.
-#: src/Tickets/QR/Observer.php:250
+#: src/Tickets/QR/Observer.php:266
 #, php-format
 msgid "The ticket with ID %s was checked in."
 msgstr ""
@@ -11679,7 +11680,7 @@ msgstr ""
 #: src/views/v2/commerce/rsvp/my-tickets/ticket-status.php:28
 #: src/views/v2/commerce/rsvp/my-tickets/ticket-status.php:36
 #: src/modules/blocks/rsvp-shared/counters/template.js:29
-#: src/modules/blocks/rsvp-v2/frontend-mirror/partials/details.js:40
+#: src/modules/blocks/rsvp-v2/frontend-mirror/partials/details.js:37
 #: src/modules/blocks/rsvp/counters/template.js:29
 #: src/modules/blocks/rsvp/not-going/template.js:35
 msgid "Not going"
@@ -11691,14 +11692,29 @@ msgstr ""
 msgid "Something happened here."
 msgstr ""
 
-#: src/Tickets/RSVP/V2/REST/Order_Endpoint.php:221
+#: src/Tickets/RSVP/V2/REST/Order_Endpoint.php:222
 msgctxt "error message"
 msgid "Invalid attendee details"
 msgstr ""
 
-#: src/Tickets/RSVP/V2/REST/Order_Endpoint.php:333
+#: src/Tickets/RSVP/V2/REST/Order_Endpoint.php:281
+msgctxt "error message"
+msgid "RSVP orders cannot contain paid tickets."
+msgstr ""
+
+#: src/Tickets/RSVP/V2/REST/Order_Endpoint.php:290
+msgctxt "error message"
+msgid "The RSVP order could not be created."
+msgstr ""
+
+#: src/Tickets/RSVP/V2/REST/Order_Endpoint.php:348
 #: src/Tribe/RSVP.php:579
 msgid "Unable to verify your opt-in request, please try again."
+msgstr ""
+
+#: src/Tickets/RSVP/V2/REST/Order_Endpoint.php:389
+msgctxt "error message"
+msgid "This ticket is not an RSVP."
 msgstr ""
 
 #: src/Tickets/RSVP/V2/REST/Ticket_Endpoint.php:146
@@ -13056,7 +13072,7 @@ msgstr ""
 
 #. Translators: %s - the singular label for a ticket.
 #: src/Tribe/CSV_Importer/Column_Names.php:43
-#: src/Tickets/Blocks/Ticket/app/editor/container-content/capacity/template.js:248
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/capacity/template.js:247
 #, php-format,js-format
 msgid "%s Capacity"
 msgstr ""
@@ -15729,7 +15745,7 @@ msgctxt "RSVP disabled block description during migration"
 msgid "RSVP editing is disabled while a migration is in progress."
 msgstr ""
 
-#: src/modules/blocks/rsvp-disabled/template.js:31
+#: src/modules/blocks/rsvp-disabled/template.js:35
 msgctxt "Link to Event Tickets migrations tab"
 msgid "Check migration status"
 msgstr ""
@@ -15821,14 +15837,15 @@ msgstr ""
 msgid "Limit:"
 msgstr ""
 
-#: src/modules/blocks/rsvp-v2/container-header/template.js:21
-#: src/modules/blocks/rsvp/container-header/template.js:24
+#. translators: %d: number of RSVPs remaining.
+#: src/modules/blocks/rsvp-v2/container-header/template.js:22
+#: src/modules/blocks/rsvp/container-header/template.js:25
 #, js-format
 msgid "%d Remaining"
 msgstr ""
 
-#: src/modules/blocks/rsvp-v2/container-header/template.js:66
-#: src/modules/blocks/rsvp/container-header/template.js:70
+#: src/modules/blocks/rsvp-v2/container-header/template.js:67
+#: src/modules/blocks/rsvp/container-header/template.js:71
 msgid "Edit RSVP"
 msgstr ""
 
@@ -15942,12 +15959,12 @@ msgstr ""
 msgid "Share capacity with other tickets"
 msgstr ""
 
-#: src/modules/data/blocks/ticket/sagas.js:1150
+#: src/modules/data/blocks/ticket/sagas.js:890
 msgid "Are you sure you want to delete this ticket? It cannot be undone."
 msgstr ""
 
 #: src/modules/elements/attendees-registration/element.js:63
-#: src/Tickets/Blocks/Ticket/app/editor/container-header/title/attendee-registration-icons/template.js:33
+#: src/Tickets/Blocks/Ticket/app/editor/container-header/title/attendee-registration-icons/template.js:34
 msgid "Attendee registration"
 msgstr ""
 
@@ -15963,7 +15980,7 @@ msgstr ""
 msgid "You can also enter keywords to help find the target event by title or description"
 msgstr ""
 
-#: src/modules/elements/move-modal/template.js:83
+#: src/modules/elements/move-modal/template.js:84
 msgid "Select the post you wish to move the ticket type to:"
 msgstr ""
 
@@ -15975,40 +15992,40 @@ msgstr ""
 msgid "Ticket Settings"
 msgstr ""
 
-#: src/resources/js/admin/gateway/square/settings.js:44
+#: src/resources/js/admin/gateway/square/settings.js:45
 msgid "Disconnect from Square"
 msgstr ""
 
-#: src/resources/js/admin/gateway/square/webhooks.js:38
+#: src/resources/js/admin/gateway/square/webhooks.js:40
 msgid "Copied!"
 msgstr ""
 
-#: src/resources/js/admin/gateway/square/webhooks.js:39
+#: src/resources/js/admin/gateway/square/webhooks.js:41
 msgid "Failed to register webhook. Please try again."
 msgstr ""
 
-#: src/resources/js/admin/gateway/square/webhooks.js:40
+#: src/resources/js/admin/gateway/square/webhooks.js:42
 msgid "An error occurred. Please try again."
 msgstr ""
 
-#: src/resources/js/admin/gateway/square/webhooks.js:283
+#: src/resources/js/admin/gateway/square/webhooks.js:288
 msgid "Square webhook registered successfully!"
 msgstr ""
 
-#: src/resources/js/admin/order-modifiers/table.js:13
+#: src/resources/js/admin/order-modifiers/table.js:16
 msgid "Are you sure you want to delete this Fee?"
 msgstr ""
 
-#: src/resources/js/admin/order-modifiers/table.js:18
+#: src/resources/js/admin/order-modifiers/table.js:21
 msgid "Are you sure you want to delete this Coupon?"
 msgstr ""
 
-#: src/resources/js/commerce/tickets.js:103
+#: src/resources/js/commerce/tickets.js:105
 msgctxt "Confirmation message for deleting RSVP in admin panel."
 msgid "Are you sure you want to remove this RSVP? This action cannot be undone."
 msgstr ""
 
-#: src/resources/js/commerce/tickets.js:277
+#: src/resources/js/commerce/tickets.js:288
 msgctxt "RSVP deletion error message"
 msgid "Failed to remove RSVP."
 msgstr ""
@@ -16055,18 +16072,18 @@ msgstr ""
 msgid "Save your %s to enable attendee information fields"
 msgstr ""
 
-#: src/Tickets/Blocks/Ticket/app/editor/container-content/capacity/template.js:116
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/capacity/template.js:115
 msgid "Set shared capacity:"
 msgstr ""
 
 #. Translators: %s - the singular, lowercase label for a ticket.
-#: src/Tickets/Blocks/Ticket/app/editor/container-content/capacity/template.js:145
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/capacity/template.js:144
 #, js-format
 msgid "Limit sales of this %s to:"
 msgstr ""
 
 #. Translators: %s - the plural, lowercase label for a ticket.
-#: src/Tickets/Blocks/Ticket/app/editor/container-content/capacity/template.js:151
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/capacity/template.js:150
 #, js-format
 msgid "Number of %s available"
 msgstr ""
@@ -16085,7 +16102,7 @@ msgstr ""
 msgid "%s price"
 msgstr ""
 
-#: src/Tickets/Blocks/Ticket/app/editor/container-content/sale-price/template.js:233
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/sale-price/template.js:232
 msgid "The sale price can be managed via WooCommerce's product editor."
 msgstr ""
 
@@ -16124,7 +16141,7 @@ msgid "%s type"
 msgstr ""
 
 #: src/Tickets/Blocks/Ticket/app/editor/container-header/price/template.js:34
-#: src/Tickets/Blocks/Ticket/app/editor/container-header/quantity/template.js:37
+#: src/Tickets/Blocks/Ticket/app/editor/container-header/quantity/template.js:38
 msgid "unlimited"
 msgstr ""
 
@@ -16132,12 +16149,13 @@ msgstr ""
 msgid "cap"
 msgstr ""
 
-#: src/Tickets/Blocks/Ticket/app/editor/container-header/quantity/template.js:31
+#. translators: %d: number of tickets sold.
+#: src/Tickets/Blocks/Ticket/app/editor/container-header/quantity/template.js:32
 #, js-format
 msgid "%d sold"
 msgstr ""
 
-#: src/Tickets/Blocks/Ticket/app/editor/container-header/quantity/template.js:57
+#: src/Tickets/Blocks/Ticket/app/editor/container-header/quantity/template.js:58
 msgid "This pertains to Orders that have been marked Completed."
 msgstr ""
 
@@ -16149,7 +16167,8 @@ msgstr ""
 msgid "On sale"
 msgstr ""
 
-#: src/Tickets/Blocks/Ticket/app/editor/container-header/title/attendee-registration-icons/template.js:27
+#. translators: 1: sale window start date, 2: sale window end date.
+#: src/Tickets/Blocks/Ticket/app/editor/container-header/title/attendee-registration-icons/template.js:28
 #, js-format
 msgid "%s - %s"
 msgstr ""
@@ -16214,13 +16233,12 @@ msgid "Note: adjusting this setting will only impact new %1$s. Existing %2$s wil
 msgstr ""
 
 #. Translators: %s - Ticket plural label.
-#: src/Tickets/Blocks/Tickets/app/editor/controls/template.js:78
+#: src/Tickets/Blocks/Tickets/app/editor/controls/template.js:80
 #, js-format
 msgid "%s Settings"
 msgstr ""
 
-#. Translators: %s - Ticket plural label.
-#: src/Tickets/Blocks/Tickets/app/editor/controls/template.js:89
+#: src/Tickets/Blocks/Tickets/app/editor/controls/template.js:86
 msgid "Payment provider"
 msgstr ""
 
@@ -16280,55 +16298,56 @@ msgstr ""
 msgid "+ Add fee"
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/app/blockEditor/fees/index.js:148
+#: src/Tickets/Commerce/Order_Modifiers/app/blockEditor/fees/index.js:147
 msgid "This fee is automatically added to the ticket."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/app/blockEditor/fees/index.js:160
+#: src/Tickets/Commerce/Order_Modifiers/app/blockEditor/fees/index.js:159
 msgid "Ticket Fees"
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/app/blockEditor/fees/index.js:199
+#: src/Tickets/Commerce/Order_Modifiers/app/blockEditor/fees/index.js:200
 msgid "No available fees."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/app/blockEditor/fees/select-fee.js:23
+#: src/Tickets/Commerce/Order_Modifiers/app/blockEditor/fees/select-fee.js:26
 msgid "Select a fee"
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/app/blockEditor/fees/select-fee.js:55
+#: src/Tickets/Commerce/Order_Modifiers/app/blockEditor/fees/select-fee.js:58
 msgctxt "aria-label for confirming adding selected fee to ticket"
 msgid "Confirm adding selected fee to the ticket"
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/app/blockEditor/fees/select-fee.js:62
+#: src/Tickets/Commerce/Order_Modifiers/app/blockEditor/fees/select-fee.js:65
 msgid "Add fee"
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/app/blockEditor/fees/select-fee.js:67
+#: src/Tickets/Commerce/Order_Modifiers/app/blockEditor/fees/select-fee.js:70
 msgctxt "aria-label for canceling adding fee to ticket"
 msgid "Cancel adding fee to the ticket"
 msgstr ""
 
-#: src/Tickets/Flexible_Tickets/app/block-editor/components/series-pass-notice/template.js:26
+#. translators: %s: link to the Series admin.
+#: src/Tickets/Flexible_Tickets/app/block-editor/components/series-pass-notice/template.js:27
 #, js-format
 msgid "Create and manage Series Passes from the %s Series admin."
 msgstr ""
 
-#: src/Tickets/Flexible_Tickets/app/block-editor/hooks/filters.js:334
+#: src/Tickets/Flexible_Tickets/app/block-editor/hooks/filters.js:333
 msgid "Series Pass shared capacity"
 msgstr ""
 
-#: src/Tickets/Flexible_Tickets/app/block-editor/hooks/filters.js:341
+#: src/Tickets/Flexible_Tickets/app/block-editor/hooks/filters.js:340
 msgid "Series Pass independent capacity"
 msgstr ""
 
-#: src/Tickets/Flexible_Tickets/app/block-editor/hooks/filters.js:348
+#: src/Tickets/Flexible_Tickets/app/block-editor/hooks/filters.js:347
 msgid "Series Pass unlimited capacity"
 msgstr ""
 
 #. Translators: %s is a link to Series Passes knowledge base that reads "Series Passes".
-#: src/Tickets/Flexible_Tickets/app/block-editor/hooks/filters.js:389
+#: src/Tickets/Flexible_Tickets/app/block-editor/hooks/filters.js:388
 #, js-format
 msgctxt "Block editor not supported notice"
 msgid "Once you save this event, you'll be able to add %s from the Series admin."
@@ -16431,11 +16450,11 @@ msgid "All attendees will lose their seat assignments. All seated tickets will s
 msgstr ""
 
 #: src/Tickets/Seating/app/blockEditor/settings/removeLayout.js:110
-#: src/Tickets/Seating/app/blockEditor/settings/removeLayout.js:123
+#: src/Tickets/Seating/app/blockEditor/settings/removeLayout.js:124
 msgid "Remove Seat Layout"
 msgstr ""
 
-#: src/Tickets/Seating/app/blockEditor/settings/removeLayout.js:128
+#: src/Tickets/Seating/app/blockEditor/settings/removeLayout.js:129
 msgid "Confirm Seat Layout removal"
 msgstr ""
 
