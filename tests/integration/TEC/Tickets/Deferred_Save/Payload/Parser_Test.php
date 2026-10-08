@@ -375,4 +375,26 @@ class Parser_Test extends WPTestCase {
 		$this->assertCount( 1, $this->rejections->all() );
 		$this->assertSame( [ 2 ], $this->rejected_keys( 'update' ) );
 	}
+	public function malformed_competing_entries_provider(): array {
+		$data = [ 'ticket_name' => 'x' ];
+
+		return [
+			'malformed update data and a delete'     => [ [ 'update' => [ 7 => 'bad', 8 => $data ], 'delete' => [ 7 ] ] ],
+			'invalid move destination and a delete'  => [ [ 'move' => [ 7 => 0 ], 'delete' => [ 7, 8 ] ] ],
+			'valid update and invalid move destination' => [ [ 'update' => [ 7 => $data, 8 => $data ], 'move' => [ 7 => 'nope' ] ] ],
+		];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider malformed_competing_entries_provider
+	 */
+	public function it_should_reject_every_entry_of_a_ticket_in_two_parts_even_when_one_entry_is_malformed( array $raw ): void {
+		$payload = $this->parse( $raw );
+
+		$this->assertArrayNotHasKey( 7, $payload->get_update() );
+		$this->assertArrayNotHasKey( 7, $payload->get_move() );
+		$this->assertNotContains( 7, $payload->get_delete() );
+		$this->assertTrue( $payload->has_changes(), 'The entries for ticket 8 survive.' );
+	}
 }
