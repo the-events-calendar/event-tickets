@@ -158,7 +158,7 @@ final class Assets extends Controller_Contract {
 			'enqueue_block_editor_assets',
 			[
 				'group_path'   => Tickets_Plugin::class . '-packages',
-				'conditionals' => fn(): bool => $this->is_event_edit_screen(),
+				'conditionals' => fn(): bool => $this->is_block_event_edit_screen(),
 			]
 		);
 	}
@@ -175,6 +175,18 @@ final class Assets extends Controller_Contract {
 	 */
 	private function is_classic_event_edit_screen(): bool {
 		return $this->is_event_edit_screen() && ! get_current_screen()->is_block_editor() && tec_tickets_commerce_is_enabled();
+	}
+
+	/**
+	 * Returns whether the current admin screen edits an event in the block editor, where the Ticket block shows the sales
+	 * window options: only for Tickets Commerce tickets, so only with Tickets Commerce on.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the current screen is the block editor event edit screen, with Tickets Commerce on.
+	 */
+	private function is_block_event_edit_screen(): bool {
+		return $this->is_event_edit_screen() && get_current_screen()->is_block_editor() && tec_tickets_commerce_is_enabled();
 	}
 
 	/**

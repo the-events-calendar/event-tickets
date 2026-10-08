@@ -38,4 +38,14 @@ const dispatch = ( name ) => {
 	);
 };
 
-module.exports = { createReduxStore, register, select, dispatch };
+/**
+ * Gets the whole state of a registered store, for specs that check what no selector exposes. Not part of
+ * `@wordpress/data`.
+ *
+ * @param {string} name The store name.
+ *
+ * @return {Object} The store state.
+ */
+const getStoreState = ( name ) => registered[ name ].store.getState();
+
+module.exports = { createReduxStore, register, select, dispatch, getStoreState };

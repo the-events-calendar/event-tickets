@@ -237,10 +237,28 @@ class Assets_Test extends Controller_Test_Case {
 	public function should_enqueue_the_block_editor_script_on_the_event_edit_screen(): void {
 		$this->make_controller()->register();
 		set_current_screen( 'tribe_events' );
+		get_current_screen()->is_block_editor( true );
 
 		do_action( 'enqueue_block_editor_assets' );
 
 		$this->assertTrue( wp_script_is( Assets::BLOCK_EDITOR_SCRIPT, 'enqueued' ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_not_enqueue_the_block_editor_script_without_tickets_commerce(): void {
+		// The environment variable wins over the setting and its filter.
+		$this->tickets_commerce_env = getenv( 'TEC_TICKETS_COMMERCE' );
+		putenv( 'TEC_TICKETS_COMMERCE=0' );
+		add_filter( 'tec_tickets_commerce_is_enabled', '__return_false' );
+		$this->make_controller()->register();
+		set_current_screen( 'tribe_events' );
+		get_current_screen()->is_block_editor( true );
+
+		do_action( 'enqueue_block_editor_assets' );
+
+		$this->assertFalse( wp_script_is( Assets::BLOCK_EDITOR_SCRIPT, 'enqueued' ) );
 	}
 
 	/**
