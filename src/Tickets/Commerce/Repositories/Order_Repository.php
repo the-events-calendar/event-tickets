@@ -320,10 +320,9 @@ class Order_Repository extends Tribe__Repository {
 			 *
 			 * @since TBD
 			 *
-			 * @param int   $order_id The order ID.
-			 * @param array $items    The order items, as saved to the order meta.
+			 * @param int $order_id The order ID.
 			 */
-			do_action( 'tec_tickets_commerce_order_created', $created, $postarr['meta_input'][ Order::$items_meta_key ] ?? [] );
+			do_action( 'tec_tickets_commerce_order_created', $created );
 		}
 
 		return $created;

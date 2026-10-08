@@ -50,16 +50,14 @@ class Writer_Test extends Controller_Test_Case {
 		$calls                     = [];
 		add_action(
 			'tec_tickets_commerce_order_created',
-			static function ( $order_id, $items ) use ( &$calls ) {
+			static function ( $order_id ) use ( &$calls ) {
 				$calls[] = [
 					$order_id,
-					$items,
+					get_post_meta( $order_id, Order::$items_meta_key, true ),
 					get_post_meta( $order_id, Order::$events_in_order_meta_key ),
 					get_post_meta( $order_id, Order::$tickets_in_order_meta_key ),
 				];
-			},
-			10,
-			2
+			}
 		);
 
 		$order = $this->create_order( [ $ticket_ids[0] => 1, $ticket_ids[1] => 2 ] );
@@ -102,11 +100,10 @@ class Writer_Test extends Controller_Test_Case {
 		$given_items      = null;
 		add_action(
 			'tec_tickets_commerce_order_created',
-			static function ( $order_id, $items ) use ( &$given_items ) {
-				$given_items = $items;
+			static function ( $order_id ) use ( &$given_items ) {
+				$given_items = get_post_meta( $order_id, Order::$items_meta_key, true );
 			},
-			5,
-			2
+			5
 		);
 		$queries = $this->count_queries_against_the_table();
 
@@ -131,7 +128,9 @@ class Writer_Test extends Controller_Test_Case {
 		DB::query( DB::prepare( 'DELETE FROM %i WHERE ID = %d', DB::prefix( 'posts' ), $gone->ID ) );
 		$items = get_post_meta( $this->create_order( [ $ticket_ids[1] => 2 ] )->ID, Order::$items_meta_key, true );
 
-		do_action( 'tec_tickets_commerce_order_created', $gone->ID, $items );
+		update_post_meta( $gone->ID, Order::$items_meta_key, $items );
+
+		do_action( 'tec_tickets_commerce_order_created', $gone->ID );
 
 		$rows = tribe( Order_Items_Repository::class )->get_by_order( $gone->ID );
 		$this->assertSame( [ $ticket_ids[1] ], array_map( static fn( $row ) => $row->toArray()['ticket_id'], $rows ) );
