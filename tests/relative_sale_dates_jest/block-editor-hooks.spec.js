@@ -184,6 +184,21 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 				expect( body.get( 'ticket[start_date]' ) ).toBe( '2026-10-01' );
 			} );
 
+			// Saving the post updates every created ticket, whatever its Update button says.
+			it( 'should go back to the stored rule on Cancel after a post save that held the draft back', () => {
+				const clientId = newClientId();
+				const invalidDraft = { start: relative( 1, UNIT_HOURS ), end: relative( 2, UNIT_HOURS ) };
+				dispatch( STORE_NAME ).setRule( clientId, storedRule );
+				dispatch( STORE_NAME ).setDraftRule( clientId, invalidDraft );
+				buildBody( clientId );
+				doAction( 'tec.tickets.blocks.ticketUpdated', clientId, 23, {} );
+
+				doAction( 'tec.tickets.blocks.ticketCancelled', clientId );
+
+				expect( getSavedRule( clientId ) ).toStrictEqual( storedRule );
+				expect( select( STORE_NAME ).getDraftRule( clientId ) ).toStrictEqual( storedRule );
+			} );
+
 			it( 'should send a draft that starts before it ends', () => {
 				const clientId = newClientId();
 				const draft = { start: relative( 2, UNIT_WEEKS ), end: relative( 1, UNIT_HOURS ) };
@@ -516,10 +531,11 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 	} );
 
 	describe.each( [ 'tec.tickets.blocks.ticketCreated', 'tec.tickets.blocks.ticketUpdated' ] )( 'on %s', ( hook ) => {
-		it( 'should keep the draft rule as the saved one', () => {
+		it( 'should keep the rule the request carried as the saved one', () => {
 			const clientId = newClientId();
 			dispatch( STORE_NAME ).setRule( clientId, storedRule );
 			dispatch( STORE_NAME ).setDraftRule( clientId, editedRule );
+			buildBody( clientId );
 
 			doAction( hook, clientId, 23, {} );
 
