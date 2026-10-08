@@ -1,5 +1,5 @@
 import { applyFilters, doAction } from '@wordpress/hooks';
-import { dispatch, select } from '@wordpress/data';
+import { dispatch, getStoreState, select } from '@wordpress/data';
 import { STORE_NAME } from '@tec/tickets/relative-sale-dates/block-editor/store/constants';
 import '@tec/tickets/relative-sale-dates/block-editor';
 
@@ -47,24 +47,43 @@ function buildBody( clientId ) {
 	return applyFilters( 'tec.tickets.blocks.setBodyDetails', body, clientId );
 }
 
+
+/**
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {Object|null|undefined} The rule the store keeps as the ticket's saved one, which no selector exposes.
+ */
+function getSavedRule( clientId ) {
+	return getStoreState( STORE_NAME )[ clientId ]?.saved;
+}
+
 describe( 'the Relative Sale Dates block editor hooks', () => {
 	describe( 'on tec.tickets.blocks.fetchTicket', () => {
 		it( 'should load the rule of the fetched ticket', () => {
 			const clientId = newClientId();
 
-			doAction( 'tec.tickets.blocks.fetchTicket', clientId, { id: 23, relative_sale_dates: storedRule }, {} );
+			doAction( 'tec.tickets.blocks.fetchTicket', clientId, { id: 23, provider: 'tc', relative_sale_dates: storedRule }, {} );
 
-			expect( select( STORE_NAME ).getSavedRule( clientId ) ).toStrictEqual( storedRule );
+			expect( getSavedRule( clientId ) ).toStrictEqual( storedRule );
 			expect( select( STORE_NAME ).getDraftRule( clientId ) ).toStrictEqual( storedRule );
 		} );
 
 		it( 'should load a fetched ticket without a rule as having none', () => {
 			const clientId = newClientId();
 
-			doAction( 'tec.tickets.blocks.fetchTicket', clientId, { id: 23, relative_sale_dates: null }, {} );
+			doAction( 'tec.tickets.blocks.fetchTicket', clientId, { id: 23, provider: 'tc', relative_sale_dates: null }, {} );
 
-			expect( select( STORE_NAME ).getSavedRule( clientId ) ).toBeNull();
+			expect( getSavedRule( clientId ) ).toBeNull();
 			expect( select( STORE_NAME ).getDraftRule( clientId ) ).toBeNull();
+		} );
+
+		it( 'should leave a ticket another provider sells out of the store and its requests', () => {
+			const clientId = newClientId();
+
+			doAction( 'tec.tickets.blocks.fetchTicket', clientId, { id: 23, provider: 'woo', relative_sale_dates: null }, {} );
+
+			expect( select( STORE_NAME ).getDraftRule( clientId ) ).toBeUndefined();
+			expect( buildBody( clientId ).has( BODY_FIELD ) ).toBe( false );
 		} );
 	} );
 
@@ -142,7 +161,7 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 
 			doAction( hook, clientId, 23, {} );
 
-			expect( select( STORE_NAME ).getSavedRule( clientId ) ).toStrictEqual( editedRule );
+			expect( getSavedRule( clientId ) ).toStrictEqual( editedRule );
 		} );
 	} );
 } );

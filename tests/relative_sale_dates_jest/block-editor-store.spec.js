@@ -1,4 +1,4 @@
-import { dispatch, select } from '@wordpress/data';
+import { dispatch, getStoreState, select } from '@wordpress/data';
 import { STORE_NAME } from '@tec/tickets/relative-sale-dates/block-editor/store/constants';
 import '@tec/tickets/relative-sale-dates/block-editor/store';
 
@@ -31,12 +31,22 @@ function newClientId() {
 	return `ticket-block-${ clientCount }`;
 }
 
+
+/**
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {Object|null|undefined} The rule the store keeps as the ticket's saved one, which no selector exposes.
+ */
+function getSavedRule( clientId ) {
+	return getStoreState( STORE_NAME )[ clientId ]?.saved;
+}
+
 describe( 'the Relative Sale Dates block editor store', () => {
 	it( 'should know nothing of a ticket it was never given a rule for', () => {
 		const clientId = newClientId();
 
 		expect( select( STORE_NAME ).getDraftRule( clientId ) ).toBeUndefined();
-		expect( select( STORE_NAME ).getSavedRule( clientId ) ).toBeUndefined();
+		expect( getSavedRule( clientId ) ).toBeUndefined();
 	} );
 
 	it( 'should hold the rule a ticket was loaded with as both saved and draft', () => {
@@ -44,7 +54,7 @@ describe( 'the Relative Sale Dates block editor store', () => {
 
 		dispatch( STORE_NAME ).setRule( clientId, savedRule );
 
-		expect( select( STORE_NAME ).getSavedRule( clientId ) ).toStrictEqual( savedRule );
+		expect( getSavedRule( clientId ) ).toStrictEqual( savedRule );
 		expect( select( STORE_NAME ).getDraftRule( clientId ) ).toStrictEqual( savedRule );
 	} );
 
@@ -53,7 +63,7 @@ describe( 'the Relative Sale Dates block editor store', () => {
 
 		dispatch( STORE_NAME ).setRule( clientId, null );
 
-		expect( select( STORE_NAME ).getSavedRule( clientId ) ).toBeNull();
+		expect( getSavedRule( clientId ) ).toBeNull();
 		expect( select( STORE_NAME ).getDraftRule( clientId ) ).toBeNull();
 	} );
 
@@ -64,7 +74,7 @@ describe( 'the Relative Sale Dates block editor store', () => {
 		dispatch( STORE_NAME ).setDraftRule( clientId, editedRule );
 
 		expect( select( STORE_NAME ).getDraftRule( clientId ) ).toStrictEqual( editedRule );
-		expect( select( STORE_NAME ).getSavedRule( clientId ) ).toStrictEqual( savedRule );
+		expect( getSavedRule( clientId ) ).toStrictEqual( savedRule );
 	} );
 
 	it( 'should hold the draft of a new ticket that has no saved rule yet', () => {
@@ -73,7 +83,7 @@ describe( 'the Relative Sale Dates block editor store', () => {
 		dispatch( STORE_NAME ).setDraftRule( clientId, editedRule );
 
 		expect( select( STORE_NAME ).getDraftRule( clientId ) ).toStrictEqual( editedRule );
-		expect( select( STORE_NAME ).getSavedRule( clientId ) ).toBeUndefined();
+		expect( getSavedRule( clientId ) ).toBeUndefined();
 	} );
 
 	it( 'should save the draft as the saved rule', () => {
@@ -83,7 +93,7 @@ describe( 'the Relative Sale Dates block editor store', () => {
 
 		dispatch( STORE_NAME ).saveDraftRule( clientId );
 
-		expect( select( STORE_NAME ).getSavedRule( clientId ) ).toStrictEqual( editedRule );
+		expect( getSavedRule( clientId ) ).toStrictEqual( editedRule );
 		expect( select( STORE_NAME ).getDraftRule( clientId ) ).toStrictEqual( editedRule );
 	} );
 
@@ -94,7 +104,7 @@ describe( 'the Relative Sale Dates block editor store', () => {
 
 		dispatch( STORE_NAME ).saveDraftRule( clientId );
 
-		expect( select( STORE_NAME ).getSavedRule( clientId ) ).toBeNull();
+		expect( getSavedRule( clientId ) ).toBeNull();
 	} );
 
 	it( 'should restore the saved rule into the draft on cancel', () => {
@@ -105,7 +115,7 @@ describe( 'the Relative Sale Dates block editor store', () => {
 		dispatch( STORE_NAME ).resetDraftRule( clientId );
 
 		expect( select( STORE_NAME ).getDraftRule( clientId ) ).toStrictEqual( savedRule );
-		expect( select( STORE_NAME ).getSavedRule( clientId ) ).toStrictEqual( savedRule );
+		expect( getSavedRule( clientId ) ).toStrictEqual( savedRule );
 	} );
 
 	it( 'should keep the rules of each ticket apart', () => {
@@ -120,6 +130,6 @@ describe( 'the Relative Sale Dates block editor store', () => {
 
 		expect( select( STORE_NAME ).getDraftRule( firstClientId ) ).toStrictEqual( editedRule );
 		expect( select( STORE_NAME ).getDraftRule( secondClientId ) ).toStrictEqual( savedRule );
-		expect( select( STORE_NAME ).getSavedRule( secondClientId ) ).toStrictEqual( savedRule );
+		expect( getSavedRule( secondClientId ) ).toStrictEqual( savedRule );
 	} );
 } );

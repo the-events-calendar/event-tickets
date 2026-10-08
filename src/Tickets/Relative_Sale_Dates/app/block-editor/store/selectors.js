@@ -15,18 +15,3 @@
 export function getDraftRule( state, clientId ) {
 	return state[ clientId ]?.draft;
 }
-
-/**
- * Gets the rule the ticket was loaded or last saved with.
- *
- * @since TBD
- *
- * @param {State}  state    The store state.
- * @param {string} clientId The client ID of the ticket block.
- *
- * @return {SaleWindowRule|null|undefined} The rule, `null` when the ticket has none, or `undefined` when it has not
- *                                         been saved with one yet.
- */
-export function getSavedRule( state, clientId ) {
-	return state[ clientId ]?.saved;
-}

@@ -14,6 +14,16 @@ import { STORE_NAME } from './store/constants';
 const MODE_RELATIVE = 'relative';
 
 /**
+ * The provider slug the block editor tickets REST API gives a Tickets Commerce ticket, the only provider the rule applies
+ * to.
+ *
+ * @since TBD
+ *
+ * @type {string}
+ */
+const TICKETS_COMMERCE_PROVIDER = 'tc';
+
+/**
  * Builds the form of one end of the window the server accepts.
  *
  * The server only accepts a relative `value` and `unit` that are integers, and form controls hold strings.
@@ -38,7 +48,9 @@ function toRequestEnd( { mode, value, unit, anchor } ) {
 }
 
 /**
- * Loads the rule of a ticket fetched from the server.
+ * Loads the rule of a Tickets Commerce ticket fetched from the server.
+ *
+ * The store knows nothing of a ticket another provider sells, so its requests carry no rule.
  *
  * @since TBD
  *
@@ -48,7 +60,11 @@ function toRequestEnd( { mode, value, unit, anchor } ) {
  * @return {void}
  */
 export function loadTicketRule( clientId, ticket ) {
-	dispatch( STORE_NAME ).setRule( clientId, ticket?.relative_sale_dates ?? null );
+	if ( TICKETS_COMMERCE_PROVIDER !== ticket?.provider ) {
+		return;
+	}
+
+	dispatch( STORE_NAME ).setRule( clientId, ticket.relative_sale_dates ?? null );
 }
 
 /**
