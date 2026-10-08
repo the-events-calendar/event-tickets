@@ -310,9 +310,13 @@ abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 	 * @param int|string $name  The item key the value belongs to.
 	 * @param mixed      $value The value.
 	 *
-	 * @throws InvalidArgumentException When the value holds an object of any other class.
+	 * @throws InvalidArgumentException When the value holds a resource or an object of any other class.
 	 */
 	private static function assert_serializable( $name, $value ): void {
+		if ( is_resource( $value ) ) {
+			throw new InvalidArgumentException( sprintf( 'Item field "%s" holds a resource, which cannot be stored exactly.', $name ) );
+		}
+
 		if ( is_object( $value ) && ! in_array( get_class( $value ), self::SERIALIZABLE_CLASSES, true ) ) {
 			throw new InvalidArgumentException( sprintf( 'Item field "%s" holds a %s, which cannot be stored exactly.', $name, get_class( $value ) ) );
 		}

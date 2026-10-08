@@ -298,6 +298,19 @@ class Line_Item_Types_Test extends WPTestCase {
 		tribe( Line_Item_Types::class )->get_for_item( $item )::to_row( 0, $item, 1, 'USD' );
 	}
 
+	public function test_a_field_holding_a_resource_is_rejected(): void {
+		$item             = $this->fixture( 'tickets' )[0];
+		$item['resource'] = fopen( 'php://memory', 'r' );
+
+		$this->expectException( InvalidArgumentException::class );
+
+		try {
+			tribe( Line_Item_Types::class )->get_for_item( $item )::to_row( 0, $item, 1, 'USD' );
+		} finally {
+			fclose( $item['resource'] );
+		}
+	}
+
 	public function test_an_object_in_a_column_backed_field_survives_the_round_trip(): void {
 		$fee                 = $this->fixture( 'fee' )[1];
 		$fee['display_name'] = (object) [ 'label' => 'Fee' ];
