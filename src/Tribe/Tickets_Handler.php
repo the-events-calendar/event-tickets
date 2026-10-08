@@ -1602,6 +1602,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Saves the Ticket Editor settings form
 	 *
 	 * @since 4.6.2
+	 * @since 5.30.0.2 No longer clears the event's ticket provider when `default_provider` is not sent.
 	 *
 	 * @param int   $post  Post that will be saved
 	 * @param array $data  Params that will be used to save
@@ -1667,11 +1668,12 @@ class Tribe__Tickets__Tickets_Handler {
 			}
 		}
 
-		// Change the default ticket provider
+		/*
+		 * Only change the provider when one is sent: the control is disabled once the event has tickets,
+		 * and disabled fields are not serialized, so an absent value means "keep the current provider".
+		 */
 		if ( ! empty( $data['default_provider'] ) ) {
 			update_post_meta( $post->ID, $this->key_provider_field, $data['default_provider'] );
-		} else {
-			delete_post_meta( $post->ID, $this->key_provider_field );
 		}
 	}
 
