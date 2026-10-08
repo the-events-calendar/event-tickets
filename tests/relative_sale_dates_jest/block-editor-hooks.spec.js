@@ -437,6 +437,15 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 
 			expect( isConfirmDisabled( clientId, false ) ).toBe( false );
 		} );
+
+		// The server rejects a relative boundary without a whole number before it reads any date.
+		it( 'should disable Create and Update while a relative number is cleared and the event dates cannot be read', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setDraftRule( clientId, { start: relative( '', UNIT_WEEKS ), end: { mode: 'default' } } );
+			delete window.tec.events;
+
+			expect( isConfirmDisabled( clientId, false ) ).toBe( true );
+		} );
 	} );
 
 	describe.each( [ 'tec.tickets.blocks.ticketCreated', 'tec.tickets.blocks.ticketUpdated' ] )( 'on %s', ( hook ) => {

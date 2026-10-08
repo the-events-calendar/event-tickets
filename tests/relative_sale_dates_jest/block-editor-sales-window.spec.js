@@ -472,6 +472,7 @@ describe( 'the Ticket block sales window options', () => {
 
 	describe( 'window check', () => {
 		const ERROR = 'Ticket sales cannot end before they start. Please adjust the sales window.';
+		const OUT_OF_RANGE = 'Enter a number from 1 to 60.';
 
 		/**
 		 * Returns the error message rendered, if any.
@@ -529,6 +530,29 @@ describe( 'the Ticket block sales window options', () => {
 			expect( findError() ).toBeUndefined();
 			expect( findControl( SelectControl, END_LABELS.mode ).props[ 'aria-invalid' ] ).toBeUndefined();
 			expect( findControl( SelectControl, END_LABELS.mode ).props.help ).toBeUndefined();
+		} );
+
+		it( 'should name a cleared start number on the number itself, not as a window that ends before it starts', () => {
+			renderTicket( newClientId() );
+			change( SelectControl, START_LABELS.mode, 'relative' );
+			change( TextControl, START_LABELS.value, '' );
+
+			const startValue = findControl( TextControl, START_LABELS.value );
+
+			expect( startValue.props.help.props.children ).toBe( OUT_OF_RANGE );
+			expect( startValue.props[ 'aria-invalid' ] ).toBe( true );
+			expect( findControl( SelectControl, END_LABELS.mode ).props.help ).toBeUndefined();
+			expect( findControl( SelectControl, END_LABELS.mode ).props[ 'aria-invalid' ] ).toBeUndefined();
+		} );
+
+		// The field keeps a typed number within 1 to 60, so only a cleared one is out of range.
+		it( 'should name a cleared end number on the end number', () => {
+			renderTicket( newClientId() );
+			change( SelectControl, END_LABELS.mode, 'relative' );
+			change( TextControl, END_LABELS.value, '' );
+
+			expect( findControl( TextControl, END_LABELS.value ).props.help.props.children ).toBe( OUT_OF_RANGE );
+			expect( findControl( TextControl, START_LABELS.value ) ).toBeUndefined();
 		} );
 	} );
 

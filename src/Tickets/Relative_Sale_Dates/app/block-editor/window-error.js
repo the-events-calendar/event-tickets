@@ -12,7 +12,7 @@ import { useSyncExternalStore } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { getWindowError } from '../window-check';
+import { RELATIVE_VALUE_OUT_OF_RANGE, getOutOfRangeBoundary, getWindowError } from '../window-check';
 import { readTicketFormDates, subscribeToCommonStore } from './common-store-bridge';
 
 /** @typedef {import( '../sale-window' ).SaleWindowRule} SaleWindowRule */
@@ -30,11 +30,17 @@ import { readTicketFormDates, subscribeToCommonStore } from './common-store-brid
  * @param {EventDates|null}                        eventDates The event dates, or `null` when they cannot be read.
  * @param {{start: string|null, end: string|null}} formDates  The start and end dates the ticket form sends.
  *
- * @return {string|null} The message key of the error, or `null`.
+ * @return {string|null} The message key of the error, or `null`; without the event dates, only a relative number out
+ *                       of range is judged.
  */
 export function getTicketWindowError( rule, eventDates, formDates ) {
-	if ( ! rule || ! eventDates ) {
+	if ( ! rule ) {
 		return null;
+	}
+
+	// The server rejects a relative boundary without a whole number before it reads any date.
+	if ( ! eventDates ) {
+		return getOutOfRangeBoundary( rule ) ? RELATIVE_VALUE_OUT_OF_RANGE : null;
 	}
 
 	return getWindowError( rule, eventDates, formDates );
