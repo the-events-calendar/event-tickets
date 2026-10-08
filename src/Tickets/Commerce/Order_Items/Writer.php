@@ -95,13 +95,14 @@ class Writer extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param int   $order_id The order ID.
-	 * @param array $items    The order items, as saved to the order meta.
+	 * @param int $order_id The order ID.
 	 *
 	 * @return void
 	 */
-	public function write_created_order( int $order_id, array $items ): void {
-		if ( ! $items ) {
+	public function write_created_order( int $order_id ): void {
+		$items = get_post_meta( $order_id, Order::$items_meta_key, true );
+
+		if ( ! is_array( $items ) || ! $items ) {
 			return;
 		}
 
@@ -150,6 +151,6 @@ class Writer extends Controller_Contract {
 	 * @return void
 	 */
 	protected function do_register(): void {
-		add_action( 'tec_tickets_commerce_order_created', [ $this, 'write_created_order' ], 10, 2 );
+		add_action( 'tec_tickets_commerce_order_created', [ $this, 'write_created_order' ] );
 	}
 }
