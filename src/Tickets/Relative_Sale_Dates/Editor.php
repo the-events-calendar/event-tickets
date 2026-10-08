@@ -12,7 +12,6 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Relative_Sale_Dates;
 
 use TEC\Tickets\Commerce\Module;
-use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
 use Tribe__Date_Utils as Dates;
 use Tribe__Template as Template;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;

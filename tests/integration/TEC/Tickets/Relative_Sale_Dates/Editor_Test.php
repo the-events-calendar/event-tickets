@@ -218,6 +218,21 @@ class Editor_Test extends Controller_Test_Case {
 	}
 
 	/**
+	 * Third parties may compare the row markup byte for byte.
+	 *
+	 * @test
+	 */
+	public function should_keep_the_sale_dates_markup_of_a_ticket_without_a_rule(): void {
+		$this->make_controller()->register();
+		$event_id = $this->create_event( '2027-06-24 19:00:00' );
+		$this->create_tc_ticket( $event_id );
+
+		$list = tribe( 'tickets.metabox' )->get_panels( $event_id )['list'];
+
+		$this->assertRegExp( '/<div  class="tribe-tickets__tickets-editor-ticket-available-dates [^"]*" >\n/', $list );
+	}
+
+	/**
 	 * @test
 	 */
 	public function should_keep_what_other_code_renders_around_the_date_fields(): void {
