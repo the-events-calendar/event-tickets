@@ -20,6 +20,15 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
  */
 class Order_Actions extends Controller_Contract {
 	/**
+	 * The items an order held before the write in progress, keyed by order ID.
+	 *
+	 * @since TBD
+	 *
+	 * @var array<int,mixed>
+	 */
+	private array $previous_items = [];
+
+	/**
 	 * Unhooks the controller.
 	 *
 	 * @since TBD
@@ -27,14 +36,37 @@ class Order_Actions extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
+		remove_filter( 'update_post_metadata', [ $this, 'remember_previous_items' ] );
 		remove_action( 'updated_post_meta', [ $this, 'fire_order_updated' ] );
+	}
+
+	/**
+	 * Remembers the items an order held before its items meta is written.
+	 *
+	 * Whether `updated_post_meta` fires for an unchanged value depends on the database reporting changed rows, not
+	 * matched ones, which a connection using `CLIENT_FOUND_ROWS` does not; comparing the items ourselves does not.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed  $check     The short-circuit value, returned as is.
+	 * @param int    $object_id The post ID.
+	 * @param string $meta_key  The meta key.
+	 *
+	 * @return mixed The short-circuit value.
+	 */
+	public function remember_previous_items( $check, $object_id, $meta_key ) {
+		if ( Order::$items_meta_key === $meta_key ) {
+			$this->previous_items[ $object_id ] = get_post_meta( $object_id, $meta_key, true );
+		}
+
+		return $check;
 	}
 
 	/**
 	 * Fires the order updated action when an order's items meta changes.
 	 *
 	 * WordPress fires `updated_post_meta` only when an existing value changes: the first write of the items, on
-	 * order creation, fires `added_post_meta` instead, and saving the same items again fires nothing.
+	 * order creation, fires `added_post_meta` instead. Saving items that serialize the same fires nothing.
 	 *
 	 * @since TBD
 	 *
@@ -50,9 +82,12 @@ class Order_Actions extends Controller_Contract {
 			return;
 		}
 
-		$items = maybe_unserialize( $meta_value );
+		$items    = maybe_unserialize( $meta_value );
+		$previous = $this->previous_items[ $object_id ] ?? null;
 
-		if ( ! is_array( $items ) ) {
+		unset( $this->previous_items[ $object_id ] );
+
+		if ( ! is_array( $items ) || maybe_serialize( $previous ) === maybe_serialize( $items ) ) {
 			return;
 		}
 
@@ -75,6 +110,7 @@ class Order_Actions extends Controller_Contract {
 	 * @return void
 	 */
 	protected function do_register(): void {
+		add_filter( 'update_post_metadata', [ $this, 'remember_previous_items' ], 10, 3 );
 		add_action( 'updated_post_meta', [ $this, 'fire_order_updated' ], 10, 4 );
 	}
 }
