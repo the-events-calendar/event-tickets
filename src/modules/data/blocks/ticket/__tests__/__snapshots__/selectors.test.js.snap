@@ -40,7 +40,6 @@ exports[`Ticket block selectors Block selectors getBlock 1`] = `
   "isSettingsOpen": false,
   "provider": "",
   "sharedCapacity": "",
-  "stagedCreateOrder": [],
   "stagedDeletes": [],
   "stagedMoves": {},
   "tempSharedCapacity": "",

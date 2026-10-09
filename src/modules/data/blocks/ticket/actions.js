@@ -717,13 +717,6 @@ export const stageTicketMove = ( ticketId, destinationId ) => ( {
 	},
 } );
 
-export const setStagedCreateOrder = ( clientIds ) => ( {
-	type: types.SET_STAGED_CREATE_ORDER,
-	payload: {
-		clientIds,
-	},
-} );
-
 export const clearStagedTickets = () => ( {
 	type: types.CLEAR_STAGED_TICKETS,
 } );

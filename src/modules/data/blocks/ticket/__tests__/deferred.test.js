@@ -175,18 +175,15 @@ describe( 'staged state in the store', () => {
 		expect( selectors.getStagedDeletes( wrap( block ) ) ).toEqual( [ 12 ] );
 		expect( selectors.getStagedMoves( wrap( block ) ) ).toEqual( { 13: 99 } );
 
-		block = reducer( block, actions.setStagedCreateOrder( [ 'a' ] ) );
-		expect( selectors.getStagedCreateOrder( wrap( block ) ) ).toEqual( [ 'a' ] );
-
 		block = reducer( block, actions.clearStagedTickets() );
 		expect( selectors.getStagedDeletes( wrap( block ) ) ).toEqual( [] );
 		expect( selectors.getStagedMoves( wrap( block ) ) ).toEqual( {} );
-		expect( selectors.getStagedCreateOrder( wrap( block ) ) ).toEqual( [] );
 	} );
 
 	it( 'keeps the default state unchanged for existing tests', () => {
 		expect( DEFAULT_STATE.stagedDeletes ).toEqual( [] );
 		expect( DEFAULT_STATE.stagedMoves ).toEqual( {} );
-		expect( DEFAULT_STATE.stagedCreateOrder ).toEqual( [] );
+		// The order staged creates were sent in is kept with what each save sent, not in the store.
+		expect( DEFAULT_STATE ).not.toHaveProperty( 'stagedCreateOrder' );
 	} );
 } );

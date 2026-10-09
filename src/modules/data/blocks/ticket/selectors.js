@@ -32,8 +32,6 @@ export const getStagedDeletes = createSelector( [ getBlock ], ( block ) => block
 
 export const getStagedMoves = createSelector( [ getBlock ], ( block ) => block.stagedMoves || {} );
 
-export const getStagedCreateOrder = createSelector( [ getBlock ], ( block ) => block.stagedCreateOrder || [] );
-
 export const getTicketsProvider = createSelector( [ getBlock ], ( block ) => block.provider );
 
 export const getTicketsSharedCapacity = createSelector( [ getBlock ], ( block ) => block.sharedCapacity );

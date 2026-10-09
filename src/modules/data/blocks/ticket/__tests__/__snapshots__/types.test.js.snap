@@ -32,8 +32,6 @@ exports[`Tickets block types REMOVE_TICKET_BLOCKS 1`] = `"@@MT/TICKETS/REMOVE_TI
 
 exports[`Tickets block types RESET_TICKETS_BLOCK 1`] = `"@@MT/TICKETS/RESET_TICKETS_BLOCK"`;
 
-exports[`Tickets block types SET_STAGED_CREATE_ORDER 1`] = `"@@MT/TICKETS/SET_STAGED_CREATE_ORDER"`;
-
 exports[`Tickets block types SET_TICKET_ATTENDEE_INFO_FIELDS 1`] = `"@@MT/TICKETS/SET_TICKET_ATTENDEE_INFO_FIELDS"`;
 
 exports[`Tickets block types SET_TICKET_AVAILABLE 1`] = `"@@MT/TICKETS/SET_TICKET_AVAILABLE"`;
