@@ -50,8 +50,10 @@ class Order_Actions_Test extends Controller_Test_Case {
 		$event_id = static::factory()->post->create( [ 'post_type' => 'page' ] );
 		$order    = $this->create_order( [ $this->create_tc_ticket( $event_id, 10 ) => 1, $this->create_tc_ticket( $event_id, 20 ) => 2 ], [ 'order_status' => Pending::SLUG ] );
 		$items    = get_post_meta( $order->ID, Order::$items_meta_key, true );
+		$this->assertSame( [ [ $order->ID, $items ] ], $this->calls, 'Creating an order adds its items meta.' );
+		$this->calls = [];
 		$this->save_items( $order->ID, $items );
-		$this->assertSame( [], $this->calls, 'Neither creating an order nor saving the same items is an update.' );
+		$this->assertSame( [], $this->calls, 'Saving the same items is not an update.' );
 		unset( $items[ array_key_last( $items ) ] );
 
 		$this->save_items( $order->ID, $items );
@@ -65,6 +67,7 @@ class Order_Actions_Test extends Controller_Test_Case {
 		$this->make_controller()->register();
 		$post_id = static::factory()->post->create( [ 'post_type' => Order::POSTTYPE ] );
 		add_post_meta( $post_id, Order::$items_meta_key, [ [ 'starts' => new DateTimeImmutable( '2030-01-01 10:00:00' ) ] ] );
+		$this->calls = [];
 
 		// A new but equal object is not `===` to the stored one, so WordPress writes and reports it.
 		update_post_meta( $post_id, Order::$items_meta_key, [ [ 'starts' => new DateTimeImmutable( '2030-01-01 10:00:00' ) ] ] );
@@ -79,6 +82,16 @@ class Order_Actions_Test extends Controller_Test_Case {
 		update_post_meta( $post_id, Order::$items_meta_key, [ [ 'starts' => new DateTimeImmutable( '2031-01-01 10:00:00' ) ] ] );
 
 		$this->assertCount( 1, $this->calls );
+	}
+
+	public function test_it_fires_when_the_items_meta_is_added_to_an_order(): void {
+		$this->make_controller()->register();
+		$post_id = static::factory()->post->create( [ 'post_type' => Order::POSTTYPE ] );
+		$items   = [ [ 'ticket_id' => 1 ] ];
+
+		add_post_meta( $post_id, Order::$items_meta_key, $items );
+
+		$this->assertSame( [ [ $post_id, $items ] ], $this->calls );
 	}
 
 	public function test_it_ignores_the_items_meta_key_on_other_post_types(): void {

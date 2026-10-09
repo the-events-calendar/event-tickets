@@ -37,6 +37,7 @@ class Order_Actions extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		remove_filter( 'update_post_metadata', [ $this, 'remember_previous_items' ] );
+		remove_action( 'added_post_meta', [ $this, 'fire_order_updated' ] );
 		remove_action( 'updated_post_meta', [ $this, 'fire_order_updated' ] );
 	}
 
@@ -63,10 +64,11 @@ class Order_Actions extends Controller_Contract {
 	}
 
 	/**
-	 * Fires the order updated action when an order's items meta changes.
+	 * Fires the order updated action when an order's items meta is added or changes.
 	 *
-	 * WordPress fires `updated_post_meta` only when an existing value changes: the first write of the items, on
-	 * order creation, fires `added_post_meta` instead. Saving items that serialize the same fires nothing.
+	 * WordPress fires `updated_post_meta` only when an existing value changes and `added_post_meta` for the first
+	 * write of the items, so both are hooked. This signals the items meta only, not a created order. Saving items
+	 * that serialize the same fires nothing.
 	 *
 	 * @since TBD
 	 *
@@ -92,7 +94,7 @@ class Order_Actions extends Controller_Contract {
 		}
 
 		/**
-		 * Fires after the items of an existing Tickets Commerce order changed.
+		 * Fires after the items meta of a Tickets Commerce order was added or changed.
 		 *
 		 * @since TBD
 		 *
@@ -111,6 +113,7 @@ class Order_Actions extends Controller_Contract {
 	 */
 	protected function do_register(): void {
 		add_filter( 'update_post_metadata', [ $this, 'remember_previous_items' ], 10, 3 );
+		add_action( 'added_post_meta', [ $this, 'fire_order_updated' ], 10, 4 );
 		add_action( 'updated_post_meta', [ $this, 'fire_order_updated' ], 10, 4 );
 	}
 }
