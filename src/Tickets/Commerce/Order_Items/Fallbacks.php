@@ -9,7 +9,7 @@
 
 namespace TEC\Tickets\Commerce\Order_Items;
 
-use TEC\Tickets\Commerce\Order_Items\Repositories\Cached_Order_Items;
+use TEC\Tickets\Commerce\Order_Items\Repositories\Order_Items_Repository;
 use Throwable;
 use WP_Post;
 
@@ -24,22 +24,22 @@ use WP_Post;
  */
 class Fallbacks {
 	/**
-	 * The cached Order Items repository.
+	 * The Order Items repository.
 	 *
 	 * @since TBD
 	 *
-	 * @var Cached_Order_Items
+	 * @var Order_Items_Repository
 	 */
-	private Cached_Order_Items $repository;
+	private Order_Items_Repository $repository;
 
 	/**
 	 * Fallbacks constructor.
 	 *
 	 * @since TBD
 	 *
-	 * @param Cached_Order_Items $repository The cached Order Items repository.
+	 * @param Order_Items_Repository $repository The Order Items repository.
 	 */
-	public function __construct( Cached_Order_Items $repository ) {
+	public function __construct( Order_Items_Repository $repository ) {
 		$this->repository = $repository;
 	}
 
