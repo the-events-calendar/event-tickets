@@ -623,11 +623,17 @@ export function* applyLastSaveResponse() {
  */
 export const createPreSaveChannel = () =>
 	eventChannel( ( emitter ) => {
-		addFilter( 'editor.preSavePost', NAMESPACE, ( edits, options = {} ) =>
-			options.isAutosave || options.isPreview
-				? edits
-				: new Promise( ( resolve ) => emitter( { edits, resolve } ) )
-		);
+		addFilter( 'editor.preSavePost', NAMESPACE, ( edits, options = {} ) => {
+			if ( options.isAutosave || options.isPreview ) {
+				// A draft's preview is a real save whose answer is never applied: what it committed would stay staged.
+				// eslint-disable-next-line camelcase, no-unused-vars
+				const { tec_tickets, ...withoutPayload } = edits;
+
+				return withoutPayload;
+			}
+
+			return new Promise( ( resolve ) => emitter( { edits, resolve } ) );
+		} );
 
 		return () => removeFilter( 'editor.preSavePost', NAMESPACE );
 	}, buffers.expanding() );

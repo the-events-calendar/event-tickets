@@ -605,5 +605,15 @@ describe( 'the cross-review of the stack', () => {
 		expect( mockEditor.editPost.mock.calls.length ).toBe( 3 );
 		mockEditor.editPost.mock.calls.forEach( ( [ , options ] ) => expect( options ).toEqual( { undoIgnore: true } ) );
 	} );
+
+	it( 'sends a preview of a draft without the staged ticket changes, whose answer a preview never applies', () => {
+		addFilter.mockClear();
+		sagas.createPreSaveChannel();
+		const [ , , filter ] = addFilter.mock.calls.find( ( [ hook ] ) => 'editor.preSavePost' === hook );
+		const edits = { title: 'Draft', tec_tickets: { create: [ [ [ 'name', 'A' ] ] ], update: {}, delete: [], move: {} } };
+
+		expect( filter( edits, { isPreview: true } ) ).toEqual( { title: 'Draft' } );
+		expect( filter( edits, { isAutosave: true } ) ).toEqual( { title: 'Draft' } );
+	} );
 } );
 
