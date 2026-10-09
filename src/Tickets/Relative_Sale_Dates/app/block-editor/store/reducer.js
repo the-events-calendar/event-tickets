@@ -6,6 +6,8 @@
  * @property {SaleWindowRule|null|undefined} saved The rule the ticket was loaded or last saved with: `null` when it has
  *                                                 none, `undefined` when the ticket has not been saved with one yet.
  * @property {SaleWindowRule|null|undefined} draft The rule the ticket block is being edited to.
+ * @property {SaleWindowRule|null|undefined} sent  The rule the last create or update request carried: `null` for an
+ *                                                 empty one, `undefined` when it carried none.
  */
 
 /**
@@ -45,12 +47,21 @@ export default function reducer( state = {}, action ) {
 			return withRules( state, action.clientId, { saved: action.rule, draft: action.rule } );
 		case 'SET_DRAFT_RULE':
 			return withRules( state, action.clientId, { ...current, draft: action.rule } );
-		case 'SAVE_DRAFT_RULE':
+		case 'SET_SENT_RULE':
+			return withRules( state, action.clientId, { ...current, sent: action.rule } );
+		case 'SAVE_SENT_RULE':
+			// A request that carried no rule leaves the stored one, so the saved rule stays as it was.
+			if ( undefined === current?.sent ) {
+				return state;
+			}
+
+			return withRules( state, action.clientId, { ...current, saved: current.sent, sent: undefined } );
+		case 'SAVE_CONFIRMED_RULE':
 			if ( ! current ) {
 				return state;
 			}
 
-			return withRules( state, action.clientId, { ...current, saved: current.draft } );
+			return withRules( state, action.clientId, { ...current, saved: action.rule, sent: undefined } );
 		case 'RESET_DRAFT_RULE':
 			if ( ! current ) {
 				return state;

@@ -29,7 +29,22 @@ export function setDraftRule( clientId, rule ) {
 }
 
 /**
- * Keeps the draft as the saved rule, once the ticket it was sent with has been saved.
+ * Records the rule the request that creates or updates a ticket carries.
+ *
+ * @since TBD
+ *
+ * @param {string}                        clientId The client ID of the ticket block.
+ * @param {SaleWindowRule|null|undefined} rule     The rule the request carries: `null` for an empty one, `undefined`
+ *                                                 when it carries none.
+ *
+ * @return {{type: string, clientId: string, rule: SaleWindowRule|null|undefined}} The action.
+ */
+export function setSentRule( clientId, rule ) {
+	return { type: 'SET_SENT_RULE', clientId, rule };
+}
+
+/**
+ * Keeps the rule the last request carried as the saved rule, once the ticket it was sent with has been saved.
  *
  * @since TBD
  *
@@ -37,8 +52,24 @@ export function setDraftRule( clientId, rule ) {
  *
  * @return {{type: string, clientId: string}} The action.
  */
-export function saveDraftRule( clientId ) {
-	return { type: 'SAVE_DRAFT_RULE', clientId };
+export function saveSentRule( clientId ) {
+	return { type: 'SAVE_SENT_RULE', clientId };
+}
+
+/**
+ * Keeps as a ticket's saved rule the one the server answered a save with.
+ *
+ * Saves can overlap, and the rule the latest request carried is not the one an earlier answer confirms.
+ *
+ * @since TBD
+ *
+ * @param {string}              clientId The client ID of the ticket block.
+ * @param {SaleWindowRule|null} rule     The rule the server stored, or `null` for none.
+ *
+ * @return {{type: string, clientId: string, rule: SaleWindowRule|null}} The action.
+ */
+export function saveConfirmedRule( clientId, rule ) {
+	return { type: 'SAVE_CONFIRMED_RULE', clientId, rule };
 }
 
 /**

@@ -719,11 +719,13 @@ export function* createNewTicket( action ) {
 			 *
 			 * @since 5.16.0
 			 * @since 5.20.0 The `ticketId` and `ticketDetails` parameters were added.
+			 * @since TBD The `ticket` parameter was added.
 			 * @param {string} clientId      The ticket's client ID.
 			 * @param {number} ticketId      The ticket's ID.
 			 * @param {Object} ticketDetails The ticket details.
+			 * @param {Object} ticket        The ticket, as the tickets REST API answered the save.
 			 */
-			doAction( 'tec.tickets.blocks.ticketCreated', clientId, ticket.id, ticketDetails );
+			doAction( 'tec.tickets.blocks.ticketCreated', clientId, ticket.id, ticketDetails, ticket );
 
 			yield fork( saveTicketWithPostSave, clientId );
 		}
@@ -816,11 +818,13 @@ export function* updateTicket( action ) {
 			 *
 			 * @since 5.16.0
 			 * @since 5.20.0 The `ticketId and `ticketDetails` parameters were added
+			 * @since TBD The `ticket` parameter was added.
 			 * @param {string} clientId      The ticket's client ID.
 			 * @param {number} ticketId      The ticket's ID.
 			 * @param {Object} ticketDetails The ticket details.
+			 * @param {Object} ticket        The ticket, as the tickets REST API answered the save.
 			 */
-			doAction( 'tec.tickets.blocks.ticketUpdated', clientId, ticketId, ticketDetails );
+			doAction( 'tec.tickets.blocks.ticketUpdated', clientId, ticketId, ticketDetails, ticket );
 		}
 	} catch ( e ) {
 		// eslint-disable-next-line no-console
@@ -1257,13 +1261,28 @@ export function* syncTicketSaleEndWithEventStart( prevStartDate, clientId ) {
 		const isSyncedToEventStart = isFallbackEnd || isSameAsPrevEventStart;
 		const isEvent = yield call( isTribeEventPostType );
 
+		/**
+		 * Filters whether a ticket's sale end may follow the event start when the event start changes. Returning false
+		 * stops the sync; returning true does not force it.
+		 *
+		 * @since TBD
+		 * @param {boolean} followsEventStart Whether the sale end follows the event start.
+		 * @param {string}  clientId          The client ID of the ticket block.
+		 */
+		const followsEventStart = yield call(
+			applyFilters,
+			'tec.tickets.blocks.syncSaleEndWithEventStart',
+			true,
+			clientId
+		);
+
 		// This if statement may be redundant given the try-catch statement above.
 		// Only run this on events post type.
 		if ( ! isNotManuallyEdited ) {
 			fallbackSaleEndClientIds.delete( clientId );
 		}
 
-		if ( isEvent && window.tec.events && isNotManuallyEdited && isSyncedToEventStart ) {
+		if ( isEvent && window.tec.events && isNotManuallyEdited && isSyncedToEventStart && followsEventStart ) {
 			fallbackSaleEndClientIds.delete( clientId );
 			const eventStart = yield select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart );
 			const {

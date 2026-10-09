@@ -86,25 +86,58 @@ describe( 'the Relative Sale Dates block editor store', () => {
 		expect( getSavedRule( clientId ) ).toBeUndefined();
 	} );
 
-	it( 'should save the draft as the saved rule', () => {
+	it( 'should save the rule the request carried as the saved rule', () => {
 		const clientId = newClientId();
 		dispatch( STORE_NAME ).setRule( clientId, savedRule );
 		dispatch( STORE_NAME ).setDraftRule( clientId, editedRule );
+		dispatch( STORE_NAME ).setSentRule( clientId, editedRule );
 
-		dispatch( STORE_NAME ).saveDraftRule( clientId );
+		dispatch( STORE_NAME ).saveSentRule( clientId );
 
 		expect( getSavedRule( clientId ) ).toStrictEqual( editedRule );
 		expect( select( STORE_NAME ).getDraftRule( clientId ) ).toStrictEqual( editedRule );
 	} );
 
-	it( 'should save a draft that removes the rule', () => {
+	it( 'should save an empty rule the request carried, which removes the rule', () => {
 		const clientId = newClientId();
 		dispatch( STORE_NAME ).setRule( clientId, savedRule );
 		dispatch( STORE_NAME ).setDraftRule( clientId, null );
+		dispatch( STORE_NAME ).setSentRule( clientId, null );
 
-		dispatch( STORE_NAME ).saveDraftRule( clientId );
+		dispatch( STORE_NAME ).saveSentRule( clientId );
 
 		expect( getSavedRule( clientId ) ).toBeNull();
+	} );
+
+	it( 'should keep the saved rule when the request carried none', () => {
+		const clientId = newClientId();
+		dispatch( STORE_NAME ).setRule( clientId, savedRule );
+		dispatch( STORE_NAME ).setDraftRule( clientId, editedRule );
+		dispatch( STORE_NAME ).setSentRule( clientId, undefined );
+
+		dispatch( STORE_NAME ).saveSentRule( clientId );
+
+		expect( getSavedRule( clientId ) ).toStrictEqual( savedRule );
+		expect( select( STORE_NAME ).getDraftRule( clientId ) ).toStrictEqual( editedRule );
+	} );
+
+	it( 'should keep a confirmed rule as saved and leave the draft alone', () => {
+		const clientId = newClientId();
+		dispatch( STORE_NAME ).setRule( clientId, savedRule );
+		dispatch( STORE_NAME ).setDraftRule( clientId, editedRule );
+
+		dispatch( STORE_NAME ).saveConfirmedRule( clientId, null );
+
+		expect( getSavedRule( clientId ) ).toBeNull();
+		expect( select( STORE_NAME ).getDraftRule( clientId ) ).toStrictEqual( editedRule );
+	} );
+
+	it( 'should leave a ticket it knows nothing of out of the store when its rule is confirmed', () => {
+		const clientId = newClientId();
+
+		dispatch( STORE_NAME ).saveConfirmedRule( clientId, savedRule );
+
+		expect( getStoreState( STORE_NAME )[ clientId ] ).toBeUndefined();
 	} );
 
 	it( 'should restore the saved rule into the draft on cancel', () => {
@@ -125,7 +158,7 @@ describe( 'the Relative Sale Dates block editor store', () => {
 		dispatch( STORE_NAME ).setRule( secondClientId, savedRule );
 
 		dispatch( STORE_NAME ).setDraftRule( firstClientId, editedRule );
-		dispatch( STORE_NAME ).saveDraftRule( secondClientId );
+		dispatch( STORE_NAME ).saveSentRule( secondClientId );
 		dispatch( STORE_NAME ).resetDraftRule( secondClientId );
 
 		expect( select( STORE_NAME ).getDraftRule( firstClientId ) ).toStrictEqual( editedRule );
