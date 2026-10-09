@@ -61,6 +61,14 @@ let sent = null;
  */
 let lastApplied = null;
 
+/**
+ * The payload edits are bookkeeping, not changes the admin made: undoing one would leave the post clean while
+ * its tickets still say they are not saved.
+ *
+ * @type {Object}
+ */
+const UNDO_IGNORE = { undoIgnore: true };
+
 const hasOwn = ( target, key ) => Object.prototype.hasOwnProperty.call( target, key );
 
 const blockEditor = () => wpSelect( 'core/block-editor' );
@@ -218,11 +226,11 @@ export const editPostPayload = ( payload ) => {
 	if ( isEmptyPayload( payload ) ) {
 		// Nothing staged: make the edit equal the saved record's field so core drops it and the post is clean.
 		const post = wpSelect( 'core/editor' ).getCurrentPost();
-		wpDispatch( 'core/editor' ).editPost( { tec_tickets: post ? post.tec_tickets : undefined } );
+		wpDispatch( 'core/editor' ).editPost( { tec_tickets: post ? post.tec_tickets : undefined }, UNDO_IGNORE );
 		return;
 	}
 
-	wpDispatch( 'core/editor' ).editPost( { tec_tickets: payload } );
+	wpDispatch( 'core/editor' ).editPost( { tec_tickets: payload }, UNDO_IGNORE );
 };
 
 /**
@@ -233,7 +241,7 @@ export const editPostPayload = ( payload ) => {
  * @param {Object} response The `tec_tickets` field of the saved record.
  */
 export const settlePayloadEdit = ( response ) => {
-	wpDispatch( 'core/editor' ).editPost( { tec_tickets: response } );
+	wpDispatch( 'core/editor' ).editPost( { tec_tickets: response }, UNDO_IGNORE );
 };
 
 /**

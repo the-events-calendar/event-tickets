@@ -52,7 +52,7 @@ jest.mock( '@wordpress/hooks', () => ( {
 	applyFilters: ( name, value ) => value,
 } ) );
 
-const { doAction } = require( '@wordpress/hooks' );
+const { doAction, addFilter } = require( '@wordpress/hooks' );
 
 /**
  * Builds the tickets block state from ticket fields keyed by client ID.
@@ -145,7 +145,7 @@ describe( 'refreshPayload', () => {
 				delete: [],
 				move: {},
 			},
-		} );
+		}, { undoIgnore: true } );
 	} );
 } );
 
@@ -334,7 +334,7 @@ describe( 'applying the answer of a save', () => {
 		const dispatched = run( stateWith( {} ), sagas.applyLastSaveResponse );
 
 		expect( ofType( dispatched, actions.setTicketSaveError( 'a', '' ).type ) ).toEqual( [] );
-		expect( mockEditor.editPost ).toHaveBeenCalledWith( { tec_tickets: undefined } );
+		expect( mockEditor.editPost ).toHaveBeenCalledWith( { tec_tickets: undefined }, { undoIgnore: true } );
 	} );
 } );
 
@@ -585,3 +585,25 @@ describe( 'the review of the stacked PRs, third round', () => {
 		expect( edits.tec_tickets.update[ 101 ][ 'tribe-ticket' ].capacity ).toBe( '5' );
 	} );
 } );
+
+describe( 'the cross-review of the stack', () => {
+	const save = ( state, response ) => {
+		prepare( state );
+		mockEditor.record = { id: 10, tec_tickets: response };
+
+		return run( state, sagas.applyLastSaveResponse );
+	};
+
+	it( 'keeps the payload edits out of the undo stack', () => {
+		mockEditor.order = [ 'a' ];
+		sagas.rememberBody( 'a', [ [ 'name', 'A' ] ] );
+
+		run( stateWith( { a: { isStaged: true } } ), sagas.refreshPayload );
+		run( stateWith( {} ), sagas.refreshPayload );
+		sagas.settlePayloadEdit( { id: 's1', created: {}, errors: [] } );
+
+		expect( mockEditor.editPost.mock.calls.length ).toBe( 3 );
+		mockEditor.editPost.mock.calls.forEach( ( [ , options ] ) => expect( options ).toEqual( { undoIgnore: true } ) );
+	} );
+} );
+
