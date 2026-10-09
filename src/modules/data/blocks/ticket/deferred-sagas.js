@@ -614,6 +614,7 @@ export function* applySaveResponse( response, sentNow ) {
 
 	outcome.deleted.forEach( ( ticketId ) => {
 		const deletedBlocksSent = sentNow.deletedBlocks || {};
+		const clientId = hasOwn( deletedBlocksSent, ticketId ) ? deletedBlocksSent[ ticketId ] : null;
 
 		/**
 		 * Fires once a staged delete was committed with the post save, not when the block is removed.
@@ -624,7 +625,7 @@ export function* applySaveResponse( response, sentNow ) {
 		 * @param {string|null} clientId The removed ticket block's client ID; `null` when it is not known.
 		 * @param {number}      ticketId The ticket's ID.
 		 */
-		runHook( 'tec.tickets.blocks.ticketDeleted', hasOwn( deletedBlocksSent, ticketId ) ? deletedBlocksSent[ ticketId ] : null, ticketId );
+		runHook( 'tec.tickets.blocks.ticketDeleted', clientId, ticketId );
 		delete deletedBlocks[ ticketId ];
 	} );
 	outcome.notices.forEach( showNotice );
