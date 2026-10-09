@@ -369,7 +369,6 @@ New ticket</button><button
 					<p class="description ticket_form_right">
 				Leave blank for free Ticket			</p>
 			<div class="ticket_sale_price_wrapper ticket_form_right">
-	<!--Checkbox to toggle sale price fields-->
 	<div>
 		<input
 			type="checkbox"
@@ -398,35 +397,121 @@ New ticket</button><button
 				value=""
 				data-validation-is-less-than="#ticket_price" data-validation-error="{&quot;is-greater-than&quot;:&quot;Sale price must be greater than 0&quot;,&quot;is-less-than&quot;:&quot;Sale price must be less than the regular price&quot;}"			/>
 		</div>
-		<div class="ticket_sale_price-field">
-			<label class="ticket_form_label" for="ticket_start_date">
-				On sale from:			</label>
-			<input
-				autocomplete="off"
-				type="text"
-				class="tribe-datepicker tribe-field-ticket_sale_start_date ticket_field"
-				name="ticket_sale_start_date"
-				id="ticket_sale_start_date"
-				size="10"
-				value=""
-				data-validation-type="datepicker"
-				data-validation-is-less-or-equal-to="#ticket_sale_end_date"
-				data-validation-error="{&quot;is-less-or-equal-to&quot;:&quot;Sale from date cannot be greater than Sale to date&quot;}"
-			/>
-			<span> to </span>
-			<input
-				autocomplete="off"
-				type="text"
-				class="tribe-datepicker tribe-field-ticket_sale_end_date ticket_field"
-				name="ticket_sale_end_date"
-				id="ticket_sale_end_date"
-				size="10"
-				value=""
-				data-validation-type="datepicker"
-				data-validation-is-greater-or-equal-to="#ticket_sale_start_date"
-				data-validation-error="{&quot;is-greater-or-equal-to&quot;:&quot;Sale to date cannot be less than Sale from date&quot;}"
-			/>
+							<div class="ticket_sale_price-field tec-tickets-relative-sale-dates">
+			<label class="ticket_form_label" for="ticket_sale_start_mode">
+				Sale Starts:			</label>
+			<select
+				class="tribe-dependency"
+				id="ticket_sale_start_mode"
+			>
+									<option value="now"  selected='selected'>Now</option>
+									<option value="relative" >On a relative date</option>
+									<option value="specific" >On a specific date</option>
+							</select>
+			<div
+				class="tribe-dependent tec-tickets-relative-sale-dates__relative"
+				data-depends="#ticket_sale_start_mode"
+				data-condition="relative"
+			>
+				<input
+					type="number"
+					min="1"
+					max="30"
+					step="1"
+					id="ticket_sale_start_value"
+					value="2"
+					aria-label="Number of units before the event that the sale price starts"
+				/>
+				<select
+					id="ticket_sale_start_unit"
+					aria-label="Unit of the sale price start"
+				>
+											<option value="86400" >days</option>
+											<option value="604800"  selected='selected'>weeks</option>
+									</select>
+				<span>before the event starts</span>
+			</div>
+			<div
+				class="tribe-dependent tec-tickets-relative-sale-dates__specific"
+				data-depends="#ticket_sale_start_mode"
+				data-condition="specific"
+			>
+				<label class="screen-reader-text" for="ticket_sale_start_date">
+					Sale price start date				</label>
+								<input
+					autocomplete="off"
+					type="text"
+					class="tribe-datepicker tribe-field-ticket_sale_start_date ticket_field"
+					name="ticket_sale_start_date"
+					id="ticket_sale_start_date"
+					size="10"
+					value=""
+					data-validation-type="datepicker"
+					data-validation-is-less-or-equal-to="#ticket_sale_end_date"
+					data-validation-error="{&quot;is-less-or-equal-to&quot;:&quot;Sale from date cannot be greater than Sale to date&quot;}"
+				/>
+							</div>
 		</div>
+							<div class="ticket_sale_price-field tec-tickets-relative-sale-dates">
+			<label class="ticket_form_label" for="ticket_sale_end_mode">
+				Sale Ends:			</label>
+			<select
+				class="tribe-dependency"
+				id="ticket_sale_end_mode"
+			>
+									<option value="relative"  selected='selected'>On a relative date</option>
+									<option value="specific" >On a specific date</option>
+							</select>
+			<div
+				class="tribe-dependent tec-tickets-relative-sale-dates__relative"
+				data-depends="#ticket_sale_end_mode"
+				data-condition="relative"
+			>
+				<input
+					type="number"
+					min="1"
+					max="30"
+					step="1"
+					id="ticket_sale_end_value"
+					value="1"
+					aria-label="Number of units before the event that the sale price ends"
+				/>
+				<select
+					id="ticket_sale_end_unit"
+					aria-label="Unit of the sale price end"
+				>
+											<option value="86400" >day</option>
+											<option value="604800"  selected='selected'>week</option>
+									</select>
+				<span>before the event starts</span>
+			</div>
+			<div
+				class="tribe-dependent tec-tickets-relative-sale-dates__specific"
+				data-depends="#ticket_sale_end_mode"
+				data-condition="specific"
+			>
+				<label class="screen-reader-text" for="ticket_sale_end_date">
+					Sale price end date				</label>
+								<input
+					autocomplete="off"
+					type="text"
+					class="tribe-datepicker tribe-field-ticket_sale_end_date ticket_field"
+					name="ticket_sale_end_date"
+					id="ticket_sale_end_date"
+					size="10"
+					value=""
+					data-validation-type="datepicker"
+					data-validation-is-greater-or-equal-to="#ticket_sale_start_date"
+					data-validation-error="{&quot;is-greater-or-equal-to&quot;:&quot;Sale to date cannot be less than Sale from date&quot;}"
+				/>
+							</div>
+		</div>
+				<input
+			type="hidden"
+			name="ticket_sale_price_relative"
+			id="ticket_sale_price_relative"
+			value=""
+		/>
 	</div>
 </div>
 	</div>

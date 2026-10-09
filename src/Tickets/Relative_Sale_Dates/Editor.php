@@ -1,6 +1,6 @@
 <?php
 /**
- * Offers the sales window options in the classic ticket editor.
+ * Offers the sales window and sale price window options in the classic ticket editor.
  *
  * @since TBD
  *
@@ -17,7 +17,7 @@ use Tribe__Template as Template;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
- * Replaces the sale dates fields of the classic ticket form with the sales window options.
+ * Replaces the sale dates and sale price fields of the classic ticket form with the options of each window kind.
  *
  * @since TBD
  *
@@ -54,6 +54,32 @@ final class Editor {
 		'value'  => 1,
 		'unit'   => HOUR_IN_SECONDS,
 		'anchor' => Rule::ANCHOR_START,
+	];
+
+	/**
+	 * The relative start the sale price form offers when the ticket has none: 2 weeks before the event starts.
+	 *
+	 * @since TBD
+	 *
+	 * @var array{mode: string, value: int, unit: int}
+	 */
+	public const SALE_PRICE_DEFAULT_RELATIVE_START = [
+		'mode'  => Rule::MODE_RELATIVE,
+		'value' => 2,
+		'unit'  => WEEK_IN_SECONDS,
+	];
+
+	/**
+	 * The relative end the sale price form offers when the ticket has none: 1 week before the event starts.
+	 *
+	 * @since TBD
+	 *
+	 * @var array{mode: string, value: int, unit: int}
+	 */
+	public const SALE_PRICE_DEFAULT_RELATIVE_END = [
+		'mode'  => Rule::MODE_RELATIVE,
+		'value' => 1,
+		'unit'  => WEEK_IN_SECONDS,
 	];
 
 	/**
@@ -124,27 +150,13 @@ final class Editor {
 	 * @return string|mixed The sales window options, or the HTML passed in when they do not apply.
 	 */
 	public function render_sales_window_fields( $html, string $file, array $name, Template $template ) {
-		$context = $template->get_values();
-
-		if ( ! $this->applies_to( $context ) ) {
-			return $html;
-		}
-
-		$stored = $context[ Window_Kind::sales()->get_rule_keys()['data'] ] ?? null;
-		$rule   = is_array( $stored ) ? Rule::from_stored( $stored, Window_Kind::sales() ) : null;
-		$ticket = $context['ticket'] ?? null;
-
-		$context['sales_window'] = [
-			'start' => $this->get_boundary_fields( $rule ? $rule->get_start() : null, $this->has_own_date( $ticket, 'start_date' ), self::DEFAULT_RELATIVE_START ),
-			'end'   => $this->get_boundary_fields( $rule ? $rule->get_end() : null, $this->has_own_date( $ticket, 'end_date' ), self::DEFAULT_RELATIVE_END ),
-		];
-		$context['rule_json']    = $rule ? $rule->to_json() : '';
-
-		return $template->template( 'relative-sale-dates/sales-window', $context, false );
+		return $this->render_fields( $html, $template, Window_Kind::sales() );
 	}
 
 	/**
-	 * Returns whether the sales window options apply to the ticket the panel is for.
+	 * Renders the sale price window options in place of the sale price fields of a Tickets Commerce ticket on an event.
+	 *
+	 * Only the fields template's own output is replaced, so what other code renders before and after it stays.
 	 *
 	 * A front-end form, such as Community Events', loads its panels through admin-ajax, where `is_admin()` is true, so it
 	 * says it is not in wp-admin with an `is_admin` request var, which the ticket controls read the same way
@@ -152,15 +164,38 @@ final class Editor {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string,mixed> $context The ticket panel data.
+	 * @param mixed    $html     The HTML of the sale price fields, as an earlier callback may have filtered it.
+	 * @param string   $file     The path of the sale price fields template.
+	 * @param string[] $name     The template name.
+	 * @param Template $template The admin views template, holding the ticket panel data.
 	 *
-	 * @return bool Whether the panel is the wp-admin one for a Tickets Commerce ticket, not an RSVP or a Series Pass, on an
-	 *              event.
+	 * @return mixed The sale price window options, or the HTML passed in when they do not apply.
+	 */
+	public function render_sale_price_fields( $html, string $file, array $name, Template $template ) {
+		return $this->render_fields( $html, $template, Window_Kind::sale_price() );
+	}
+
+	/**
+	 * Returns whether the relative options apply to the fields a template renders.
+	 *
+	 * The template's `provider` is the one whose fields it renders: the ticket's for the panel's own fields, and the
+	 * event's for the price fields, which Tickets Commerce renders in the panel of a ticket of any provider.
+	 *
+	 * A front-end form, such as Community Events', loads its panels through admin-ajax, where `is_admin()` is true, so it
+	 * says it is not in wp-admin with an `is_admin` request var, which the ticket controls read the same way
+	 * (`Tribe__Tickets__Metabox::get_ticket_controls()`).
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $context The ticket panel data, as the template holds it.
+	 *
+	 * @return bool Whether the fields are the wp-admin ones of Tickets Commerce, for a ticket that is not an RSVP or a
+	 *              Series Pass, on an event.
 	 */
 	private function applies_to( array $context ): bool {
 		// An event defaults to the Tickets Commerce provider even when Tickets Commerce is not active.
 		return 'tribe_events' === get_post_type( $context['post_id'] ?? 0 )
-			&& Module::class === ( $context['provider_class'] ?? '' )
+			&& ( $context['provider'] ?? null ) instanceof Module
 			&& isset( $context['modules'][ Module::class ] )
 			&& ! in_array( $context['ticket_type'] ?? 'default', array_merge( [ 'rsvp' ], Ticket_Save::EXCLUDED_TICKET_TYPES ), true )
 			// A front-end form, such as Community Events', does not load the script that writes the rule.
@@ -168,20 +203,21 @@ final class Editor {
 	}
 
 	/**
-	 * Returns whether a saved ticket has a date of its own for one boundary of the sales window.
+	 * Returns whether a saved ticket has a date of its own for one boundary of a window.
 	 *
 	 * A ticket created on a page and moved to an event, or created by code, can have no end date. Saving it without one
 	 * gave it the event start, which is what the default end resolves to.
 	 *
 	 * @since TBD
 	 *
-	 * @param Ticket_Object|null $ticket   The ticket the panel is for, or `null` for a new ticket.
-	 * @param string             $property The ticket property that holds the boundary date, `start_date` or `end_date`.
+	 * @param int         $ticket_id The ticket post ID.
+	 * @param Window_Kind $kind      The kind of the window.
+	 * @param string      $end       The end of the window, `start` or `end`.
 	 *
-	 * @return bool Whether the ticket is saved and has a date for the boundary.
+	 * @return bool Whether the ticket has a date stored for the boundary.
 	 */
-	private function has_own_date( $ticket, string $property ): bool {
-		return $ticket instanceof Ticket_Object && $ticket->{$property};
+	private function has_own_date( int $ticket_id, Window_Kind $kind, string $end ): bool {
+		return '' !== get_post_meta( $ticket_id, $kind->get_date_metas()[ $end ]['date'], true );
 	}
 
 	/**
@@ -198,27 +234,108 @@ final class Editor {
 	}
 
 	/**
-	 * Gets the values the form shows for one boundary of the sales window.
+	 * Gets the values the form shows for one boundary of a window.
 	 *
-	 * A ticket saved without a rule has dates of its own, so it opens on them rather than on the defaults of a new ticket.
+	 * A ticket saved with the window but without a rule has dates of its own, so it opens on them rather than on the
+	 * defaults.
 	 *
 	 * @since TBD
 	 *
-	 * @param Boundary|null                                              $boundary         The boundary in the stored rule, or `null` when there is none.
-	 * @param bool                                                       $has_own_date     Whether the ticket has a date of its own for the boundary.
-	 * @param array{mode: string, value: int, unit: int, anchor: string} $default_relative The relative boundary offered when the rule has none.
+	 * @param Boundary|null $boundary     The boundary in the stored rule, or `null` when there is none.
+	 * @param bool          $has_own_date Whether the ticket has a date of its own for the boundary.
+	 * @param Window_Kind   $kind         The kind of the window.
+	 * @param string        $end          The end of the window, `start` or `end`.
 	 *
-	 * @return array{mode: string, value: int, unit: int, anchor: string} The mode, and the relative values the form offers.
+	 * @return array{mode: string, value: int, unit: int, anchor?: string} The mode, and the relative values the form
+	 *                                                                      offers.
 	 */
-	private function get_boundary_fields( ?Boundary $boundary, bool $has_own_date, array $default_relative ): array {
+	private function get_boundary_fields( ?Boundary $boundary, bool $has_own_date, Window_Kind $kind, string $end ): array {
+		$defaults = $this->get_form_defaults( $kind )[ $end ];
+
 		if ( ! $boundary ) {
-			return array_merge( $default_relative, [ 'mode' => $has_own_date ? Rule::MODE_SPECIFIC : Rule::MODE_DEFAULT ] );
+			return $has_own_date ? array_merge( $defaults, [ 'mode' => Rule::MODE_SPECIFIC ] ) : $defaults;
 		}
 
 		if ( Rule::MODE_RELATIVE === $boundary->get_mode() ) {
 			return $boundary->to_array();
 		}
 
-		return array_merge( $default_relative, [ 'mode' => $boundary->get_mode() ] );
+		return array_merge( $defaults, [ 'mode' => $boundary->get_mode() ] );
+	}
+
+	/**
+	 * Renders a window's options in place of the fields a template rendered for it.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed       $html     The HTML of the fields, as an earlier callback may have filtered it.
+	 * @param Template    $template The admin views template, holding the ticket panel data.
+	 * @param Window_Kind $kind     The kind of the window.
+	 *
+	 * @return mixed The window options, or the HTML passed in when they do not apply.
+	 */
+	private function render_fields( $html, Template $template, Window_Kind $kind ) {
+		$context = $template->get_values();
+
+		if ( ! $this->applies_to( $context ) ) {
+			return $html;
+		}
+
+		$rule   = Rule::from_raw( $context[ $kind->get_rule_keys()['data'] ] ?? null, $kind );
+		$ticket = $context['ticket'] ?? null;
+		// A saved ticket without the window, such as one without a sale price, has no dates of its own for it.
+		$keeps_dates = $ticket instanceof Ticket_Object && $kind->is_enabled_for_ticket( $ticket->ID );
+		// Only a missing ticket sales date was saved as the event start; a sale price keeps opening on its own dates.
+		$has_date = fn( string $end ): bool => $keeps_dates
+			&& ( ! $kind->owns_ticket_sales_dates() || $this->has_own_date( absint( $ticket->ID ), $kind, $end ) );
+
+		$context['window_kind']   = $kind;
+		$context['window_fields'] = [
+			'start' => $this->get_boundary_fields( $rule ? $rule->get_start() : null, $has_date( 'start' ), $kind, 'start' ),
+			'end'   => $this->get_boundary_fields( $rule ? $rule->get_end() : null, $has_date( 'end' ), $kind, 'end' ),
+		];
+		$context['rule_json']     = $rule ? $rule->to_json() : '';
+
+		return $template->template( $this->get_template( $kind ), $context, false );
+	}
+
+	/**
+	 * Gets the boundaries the classic form opens a ticket without a rule on: the mode, and the relative values each end
+	 * offers next to a boundary shown in another mode.
+	 *
+	 * @since TBD
+	 *
+	 * @param Window_Kind $kind The kind of the window.
+	 *
+	 * @return array{start: array{mode: string, value: int, unit: int, anchor?: string}, end: array{mode: string, value: int, unit: int, anchor?: string}} The
+	 *         mode and relative values of each end; the anchor only for a kind that takes one.
+	 */
+	private function get_form_defaults( Window_Kind $kind ): array {
+		// A new ticket's sale price starts now and ends a week before the event starts.
+		if ( Window_Kind::SALE_PRICE === $kind->get_id() ) {
+			return [
+				'start' => [ 'mode' => Rule::MODE_NOW ] + self::SALE_PRICE_DEFAULT_RELATIVE_START,
+				'end'   => self::SALE_PRICE_DEFAULT_RELATIVE_END,
+			];
+		}
+
+		// A new ticket opens on the default modes; the relative values are the ones the Ticket block offers too.
+		return [
+			'start' => [ 'mode' => Rule::MODE_DEFAULT ] + self::DEFAULT_RELATIVE_START,
+			'end'   => [ 'mode' => Rule::MODE_DEFAULT ] + self::DEFAULT_RELATIVE_END,
+		];
+	}
+
+	/**
+	 * Gets the admin view that renders a window's options in the classic ticket form.
+	 *
+	 * @since TBD
+	 *
+	 * @param Window_Kind $kind The kind of the window.
+	 *
+	 * @return string The template name, relative to the admin views folder.
+	 */
+	private function get_template( Window_Kind $kind ): string {
+		return Window_Kind::SALE_PRICE === $kind->get_id() ? 'relative-sale-dates/sale-price' : 'relative-sale-dates/sales-window';
 	}
 }

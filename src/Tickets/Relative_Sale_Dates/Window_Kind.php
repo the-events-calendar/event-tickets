@@ -186,15 +186,6 @@ final class Window_Kind {
 	private bool $owns_ticket_sales_dates;
 
 	/**
-	 * Whether a front-end ticket form that sends no rule removes the stored one.
-	 *
-	 * @since TBD
-	 *
-	 * @var bool
-	 */
-	private bool $is_removed_by_front_end_form;
-
-	/**
 	 * The ticket data fields each end of the window is submitted in: its date and, for a kind that stores times, its time.
 	 *
 	 * @since TBD
@@ -241,8 +232,8 @@ final class Window_Kind {
 		$modes = [ Rule::MODE_DEFAULT, Rule::MODE_RELATIVE, Rule::MODE_SPECIFIC ];
 		$kind  = new self();
 
-		$kind->id                           = self::SALES;
-		$kind->modes                        = [
+		$kind->id                      = self::SALES;
+		$kind->modes                   = [
 			'start' => $modes,
 			'end'   => $modes,
 		];
@@ -258,7 +249,7 @@ final class Window_Kind {
 			'block_editor_request'  => [ 'relative_sale_dates' ],
 			'block_editor_response' => [ 'relative_sale_dates' ],
 		];
-		$kind->date_metas                   = [
+		$kind->date_metas              = [
 			'start' => [
 				'date' => Ticket::START_DATE_META_KEY,
 				'time' => Ticket::START_TIME_META_KEY,
@@ -268,11 +259,10 @@ final class Window_Kind {
 				'time' => Ticket::END_TIME_META_KEY,
 			],
 		];
-		$kind->open_start_value             = null;
-		$kind->sale_keys                    = null;
-		$kind->owns_ticket_sales_dates      = true;
-		$kind->is_removed_by_front_end_form = true;
-		$kind->submitted_fields             = [
+		$kind->open_start_value        = null;
+		$kind->sale_keys               = null;
+		$kind->owns_ticket_sales_dates = true;
+		$kind->submitted_fields        = [
 			'start' => [
 				'date' => 'ticket_start_date',
 				'time' => 'ticket_start_time',
@@ -325,8 +315,8 @@ final class Window_Kind {
 
 		$kind = new self();
 
-		$kind->id                           = self::SALE_PRICE;
-		$kind->modes                        = [
+		$kind->id                      = self::SALE_PRICE;
+		$kind->modes                   = [
 			'start' => [ Rule::MODE_NOW, Rule::MODE_RELATIVE, Rule::MODE_SPECIFIC ],
 			'end'   => [ Rule::MODE_RELATIVE, Rule::MODE_SPECIFIC ],
 		];
@@ -342,7 +332,7 @@ final class Window_Kind {
 			'block_editor_request'  => [ 'sale_price', 'relative' ],
 			'block_editor_response' => [ 'sale_price_data', 'relative' ],
 		];
-		$kind->date_metas                   = [
+		$kind->date_metas              = [
 			'start' => [
 				'date' => Ticket::$sale_price_start_date_key,
 				'time' => null,
@@ -355,7 +345,6 @@ final class Window_Kind {
 		$kind->open_start_value             = '';
 		$kind->sale_keys                    = [ 'enabled_meta' => Ticket::$sale_price_checked_key ];
 		$kind->owns_ticket_sales_dates      = false;
-		$kind->is_removed_by_front_end_form = false;
 		$kind->submitted_fields             = [
 			'start' => [
 				'date' => 'ticket_sale_start_date',
@@ -585,19 +574,6 @@ final class Window_Kind {
 	 */
 	public function is_enabled_for_ticket( int $ticket_id ): bool {
 		return null === $this->sale_keys || tribe_is_truthy( get_post_meta( $ticket_id, $this->sale_keys['enabled_meta'], true ) );
-	}
-
-	/**
-	 * Returns whether a front-end ticket form, such as Community Events', removes the stored rule by sending none.
-	 *
-	 * Such a form offers no options for the window, so the dates it sends are the ones the person set.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool Whether a front-end save without the rule removes it.
-	 */
-	public function is_removed_by_front_end_form(): bool {
-		return $this->is_removed_by_front_end_form;
 	}
 
 	/**

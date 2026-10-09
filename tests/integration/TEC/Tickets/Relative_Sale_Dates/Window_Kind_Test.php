@@ -53,7 +53,6 @@ class Window_Kind_Test extends WPTestCase {
 			$kind->get_date_metas()
 		);
 		$this->assertNull( $kind->get_open_start_value() );
-		$this->assertTrue( $kind->is_removed_by_front_end_form() );
 		$this->assertSame(
 			[
 				'start' => [
@@ -111,7 +110,6 @@ class Window_Kind_Test extends WPTestCase {
 			$kind->get_date_metas()
 		);
 		$this->assertSame( '', $kind->get_open_start_value() );
-		$this->assertFalse( $kind->is_removed_by_front_end_form() );
 		$this->assertSame(
 			[
 				'start' => [

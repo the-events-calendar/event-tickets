@@ -61,6 +61,7 @@ final class Controller extends Controller_Contract {
 		remove_filter( 'tec_tickets_rest_ticket_data_params', $this->container->callback( Rest::class, 'add_rule_to_ticket_data_params' ) );
 		remove_filter( 'tec_tickets_ticket_panel_data', $this->container->callback( Classic_Panel_Data::class, 'add_rule_to_panel_data' ) );
 		remove_filter( 'tribe_template_include_html:tickets/admin-views/editor/panel/fields/dates', $this->container->callback( Editor::class, 'render_sales_window_fields' ) );
+		remove_filter( 'tribe_template_include_html:tickets/admin-views/commerce/metabox/sale-price', $this->container->callback( Editor::class, 'render_sale_price_fields' ) );
 		remove_filter( 'tribe_template_context:tickets/admin-views/editor/list-row/available-dates', $this->container->callback( Editor::class, 'filter_available_dates_context' ) );
 		$this->container->get( Assets::class )->unregister();
 	}
@@ -160,6 +161,7 @@ final class Controller extends Controller_Contract {
 		$this->container->singleton( Editor::class );
 
 		add_filter( 'tribe_template_include_html:tickets/admin-views/editor/panel/fields/dates', $this->container->callback( Editor::class, 'render_sales_window_fields' ), 10, 4 );
+		add_filter( 'tribe_template_include_html:tickets/admin-views/commerce/metabox/sale-price', $this->container->callback( Editor::class, 'render_sale_price_fields' ), 10, 4 );
 		add_filter( 'tribe_template_context:tickets/admin-views/editor/list-row/available-dates', $this->container->callback( Editor::class, 'filter_available_dates_context' ) );
 		$this->container->register( Assets::class );
 	}
