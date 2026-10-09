@@ -77,6 +77,8 @@ class Fallbacks_Test extends Controller_Test_Case {
 		];
 		$this->register_controller();
 		$order = tec_tc_get_order( $this->create_order( [ $ticket_ids[0] => 1, $ticket_ids[1] => 2 ] )->ID );
+		// Creating the order already read its rows through the cache.
+		wp_cache_flush();
 		$count = $this->count_queries_against_the_table();
 		$names = [];
 

@@ -14,7 +14,7 @@ class Cached_Order_Items_Test extends WPTestCase {
 	}
 
 	public function test_it_reads_the_table_once_until_the_repository_writes(): void {
-		$cached   = tribe( Cached_Order_Items::class );
+		$cached   = tribe( Order_Items_Repository::class );
 		$order_id = static::factory()->post->create();
 		$count    = $this->count_queries_against_the_table();
 
@@ -23,11 +23,11 @@ class Cached_Order_Items_Test extends WPTestCase {
 
 		$this->assertSame( 1, $count(), 'The second read comes from the cache.' );
 
-		tribe( Order_Items::class )->delete_by_order( $order_id );
+		$cached->delete_by_order( $order_id );
 		$before = $count();
 		$cached->get_by_order( $order_id );
 
-		$this->assertSame( $before + 1, $count(), 'A write through the repository invalidates the cache.' );
+		$this->assertSame( $before + 1, $count(), 'A write through the decorator invalidates the cache.' );
 	}
 
 	private function count_queries_against_the_table(): callable {
