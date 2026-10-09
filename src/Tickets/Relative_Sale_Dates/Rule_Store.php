@@ -78,9 +78,14 @@ final class Rule_Store {
 	 *
 	 * @param int $event_id The event post ID.
 	 *
-	 * @return int[] The ticket post IDs.
+	 * @return int[] The ticket post IDs, none while Tickets Commerce is off.
 	 */
 	public function get_ticket_ids_for_event( int $event_id ): array {
+		// Tickets Commerce loads its ticket functions only while it is on, and events are saved whether it is or not.
+		if ( ! tec_tickets_commerce_is_enabled() || ! function_exists( 'tec_tc_tickets' ) ) {
+			return [];
+		}
+
 		return array_map(
 			'absint',
 			tec_tc_tickets()
