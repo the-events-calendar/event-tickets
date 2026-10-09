@@ -356,7 +356,6 @@ final class Commit {
 			return $result->with_error( $part, $key, $this->invalid_price_message() );
 		}
 
-		$data                = $this->sanitize( $data );
 		$data['ticket_id']   = $ticket_id;
 		$data['ticket_type'] = $this->ticket_type( $data, get_post_meta( $ticket_id, '_type', true ) ?: 'default' );
 
@@ -439,7 +438,6 @@ final class Commit {
 			return $this->update_created( $result, $post_id, $position, $created, $data );
 		}
 
-		$data = $this->sanitize( $data );
 		unset( $data['ticket_id'] );
 		$data['ticket_type'] = $this->ticket_type( $data, 'default' );
 		// What is on the post already, to tell the ticket this save adds if something throws once it is there.
@@ -772,25 +770,6 @@ final class Commit {
 		}
 
 		return $entries;
-	}
-
-	/**
-	 * Sanitizes an entry's data the way the request reaches the AJAX save today.
-	 *
-	 * The AJAX handler reads `data` through `tribe_get_request_var()`, which runs `tribe_sanitize_deep()`
-	 * over the whole array before `ticket_add()` sees it. The providers rely on that, so the deferred path
-	 * runs the same sanitizer over the same array: what a ticket stores does not depend on the path it took.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string,mixed> $data The ticket data, as the editor sent it.
-	 *
-	 * @return array<string,mixed> The sanitized data.
-	 */
-	private function sanitize( array $data ): array {
-		tribe_sanitize_deep( $data );
-
-		return is_array( $data ) ? $data : [];
 	}
 
 	/**

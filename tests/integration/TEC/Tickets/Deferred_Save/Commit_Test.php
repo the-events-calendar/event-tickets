@@ -130,7 +130,7 @@ class Commit_Test extends WPTestCase {
 		$this->record_ticket_actions();
 		$_POST = [
 			'post_id'     => $post_id,
-			'data'        => $this->ticket_data( 'AJAX ticket' ),
+			'data'        => http_build_query( $this->ticket_data( 'AJAX ticket' ) ),
 			'ticket_type' => 'default',
 			'nonce'       => wp_create_nonce( 'add_ticket_nonce' ),
 		];
@@ -140,7 +140,7 @@ class Commit_Test extends WPTestCase {
 		$ajax_ticket_id  = (int) end( $ajax_ticket_ids );
 		$_POST = [
 			'post_id'     => $post_id,
-			'data'        => $this->ticket_data( 'AJAX ticket renamed', [ 'ticket_id' => $ajax_ticket_id ] ),
+			'data'        => http_build_query( $this->ticket_data( 'AJAX ticket renamed', [ 'ticket_id' => $ajax_ticket_id ] ) ),
 			'ticket_type' => 'default',
 			'nonce'       => wp_create_nonce( 'add_ticket_nonce' ),
 		];
@@ -745,26 +745,35 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_should_sanitize_data_as_the_request_helper_does_for_the_ajax_save(): void {
+	public function it_should_save_text_and_markup_as_the_classic_ajax_save_does(): void {
 		$this->log_in_as_admin();
 		$post_id = static::factory()->post->create();
 		$data    = $this->ticket_data(
-			'<b>Bold</b> <script>alert(1)</script> name',
+			'<b>Bold</b> 2 < 3 name',
 			[
-				'ticket_description' => '<p>Kept</p><script>alert(2)</script>',
-				'ticket_sku'         => 'SKU <i>x</i>',
+				'ticket_description' => '<p>Kept</p>',
+				'ticket_sku'         => 'SKU-1',
 			]
 		);
-		$expected = $data;
-		tribe_sanitize_deep( $expected );
 
-		$result = $this->commit()->run( [ 'create' => [ $data ] ], $post_id );
+		// Today's path: tickets.js posts the edit form serialized, so `data` reaches the request helper as a string.
+		$_POST = [
+			'post_id'     => $post_id,
+			'data'        => http_build_query( $data ),
+			'ticket_type' => 'default',
+			'nonce'       => wp_create_nonce( 'add_ticket_nonce' ),
+		];
+		$this->assertIsArray( tribe( 'tickets.metabox' )->ajax_ticket_add( true ) );
+		$_POST          = [];
+		$ajax_ticket_id = (int) tribe_tickets()->where( 'event', $post_id )->first()->ID;
 
+		$result    = $this->commit()->run( [ 'create' => [ $data ] ], $post_id );
 		$ticket_id = $result->get_created()[0];
-		$this->assertSame( $expected['ticket_name'], get_post_field( 'post_title', $ticket_id, 'raw' ) );
-		$this->assertSame( $expected['ticket_description'], get_post_field( 'post_excerpt', $ticket_id, 'raw' ) );
-		$this->assertSame( $expected['ticket_sku'], get_post_meta( $ticket_id, '_sku', true ) );
-		$this->assertStringNotContainsString( '<', get_post_field( 'post_title', $ticket_id, 'raw' ) );
+
+		$this->assertStringContainsString( '<p>Kept</p>', get_post_field( 'post_excerpt', $ticket_id, 'raw' ) );
+		$this->assertSame( get_post_field( 'post_title', $ajax_ticket_id, 'raw' ), get_post_field( 'post_title', $ticket_id, 'raw' ) );
+		$this->assertSame( get_post_field( 'post_excerpt', $ajax_ticket_id, 'raw' ), get_post_field( 'post_excerpt', $ticket_id, 'raw' ) );
+		$this->assertSame( get_post_meta( $ajax_ticket_id, '_sku', true ), get_post_meta( $ticket_id, '_sku', true ) );
 	}
 
 	/**
