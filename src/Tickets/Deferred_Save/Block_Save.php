@@ -50,11 +50,12 @@ final class Block_Save {
 	private Commit $commit;
 
 	/**
-	 * The results committed during this request, by post ID, waiting to be added to the response.
+	 * The results committed during this request, by post ID, each with the REST request that committed it,
+	 * waiting to be added to that request's response. A batch saves several requests in one PHP request.
 	 *
 	 * @since TBD
 	 *
-	 * @var array<int,Result>
+	 * @var array<int,array{0:WP_REST_Request,1:Result}>
 	 */
 	private array $results = [];
 
@@ -90,7 +91,7 @@ final class Block_Save {
 		}
 
 		$result                     = $this->commit->run( $raw, $post->ID );
-		$this->results[ $post->ID ] = $result;
+		$this->results[ $post->ID ] = [ $request, $result ];
 
 		return $result;
 	}
@@ -110,14 +111,20 @@ final class Block_Save {
 	 * @return WP_REST_Response|mixed The response, with `tec_tickets` when this request committed a payload for the post.
 	 */
 	public function add_result_to_response( $response, $post, $request ) {
-		unset( $request );
-
 		if ( ! $response instanceof WP_REST_Response || ! $post instanceof WP_Post || ! isset( $this->results[ $post->ID ] ) ) {
 			return $response;
 		}
 
+		[ $committed_by, $result ] = $this->results[ $post->ID ];
+
+		if ( $committed_by !== $request ) {
+			return $response;
+		}
+
+		unset( $this->results[ $post->ID ] );
+
 		$data                = $response->get_data();
-		$data['tec_tickets'] = $this->results[ $post->ID ]->to_array();
+		$data['tec_tickets'] = $result->to_array();
 		$response->set_data( $data );
 
 		return $response;

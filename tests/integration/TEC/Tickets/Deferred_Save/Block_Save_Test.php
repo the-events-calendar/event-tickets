@@ -174,6 +174,21 @@ class Block_Save_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_answer_only_the_request_that_committed_the_payload(): void {
+		$this->log_in_as_admin();
+		$post_id = $this->create_deferred_post();
+
+		$this->save_through_rest( "/wp/v2/pages/{$post_id}", [ 'tec_tickets' => [ 'create' => [ $this->ticket_data( 'Once' ) ] ] ] );
+		$second_save = $this->save_through_rest( "/wp/v2/pages/{$post_id}", [ 'title' => 'Saved again' ] );
+		$read        = rest_do_request( new WP_REST_Request( 'GET', "/wp/v2/pages/{$post_id}" ) );
+
+		$this->assertArrayNotHasKey( 'tec_tickets', $second_save->get_data() );
+		$this->assertArrayNotHasKey( 'tec_tickets', $read->get_data() );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_pass_on_a_prepared_answer_that_is_not_a_response(): void {
 		// The filter runs on every read of every ticketable type; an earlier callback may hand on anything.
 		$post_id = $this->create_deferred_post();
