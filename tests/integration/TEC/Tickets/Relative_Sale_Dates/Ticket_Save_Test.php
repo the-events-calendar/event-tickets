@@ -1249,6 +1249,21 @@ class Ticket_Save_Test extends Controller_Test_Case {
 			],
 			self::SALE_PRICE_OUTSIDE_SALES_WINDOW_MESSAGE,
 		];
+		// The legacy store keeps empty sale price dates, so a specific boundary sent without its date is saved as is.
+		yield 'a specific start sent without a date' => [
+			[
+				self::SALE_PRICE_DATA_KEY => $rule( $specific, $relative( 3 ) ),
+				'ticket_sale_start_date'  => '',
+			],
+			true,
+		];
+		yield 'a specific end sent without a date' => [
+			[
+				self::SALE_PRICE_DATA_KEY => $rule( $relative( 7 ), $specific ),
+				'ticket_sale_end_date'    => '',
+			],
+			true,
+		];
 		yield 'a specific start before the submitted sales start' => [
 			[
 				self::SALE_PRICE_DATA_KEY => $rule( $specific, $relative( 3 ) ),
