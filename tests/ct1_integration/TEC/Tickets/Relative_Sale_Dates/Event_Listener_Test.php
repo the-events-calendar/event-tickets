@@ -196,6 +196,32 @@ class Event_Listener_Test extends WPTestCase {
 	}
 
 	/**
+	 * A rule counted from the event start resolves to the same dates when only the event end moves, but The Events
+	 * Calendar still saves the occurrences.
+	 *
+	 * @test
+	 */
+	public function should_not_reschedule_the_tickets_when_an_event_move_leaves_their_dates_as_they_are(): void {
+		$event_start = $this->get_future_event_start();
+		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
+		$this->create_ruled_ticket( $event_id );
+		$this->send_classic_event_save( $event_id, $event_start );
+		$occurrences_saved = did_action( 'tec_events_custom_tables_v1_after_save_occurrences' );
+		$resynced          = [];
+		add_action(
+			'tec_tickets_ticket_dates_updated',
+			static function ( int $id ) use ( &$resynced ): void {
+				$resynced[] = $id;
+			}
+		);
+
+		$this->send_classic_event_save( $event_id, $event_start, '+5 hours' );
+
+		$this->assertGreaterThan( $occurrences_saved, did_action( 'tec_events_custom_tables_v1_after_save_occurrences' ) );
+		$this->assertSame( [], $resynced );
+	}
+
+	/**
 	 * @test
 	 */
 	public function should_leave_no_sales_action_scheduled_when_the_move_inverts_the_window(): void {
@@ -239,15 +265,16 @@ class Event_Listener_Test extends WPTestCase {
 	}
 
 	/**
-	 * Saves the event from the classic editor, moving it to a new start and timezone for three hours.
+	 * Saves the event from the classic editor, moving it to a new start and timezone.
 	 *
 	 * @param int               $event_id The event post ID.
 	 * @param DateTimeImmutable $start    The new event start, in the new event timezone.
+	 * @param string            $length   How long the event lasts, as a `modify()` string.
 	 *
 	 * @return void
 	 */
-	private function send_classic_event_save( int $event_id, DateTimeImmutable $start ): void {
-		$end = $start->modify( '+3 hours' );
+	private function send_classic_event_save( int $event_id, DateTimeImmutable $start, string $length = '+3 hours' ): void {
+		$end = $start->modify( $length );
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 		$_POST = [
 			'ecp_nonce'      => wp_create_nonce( 'tribe_events' ),

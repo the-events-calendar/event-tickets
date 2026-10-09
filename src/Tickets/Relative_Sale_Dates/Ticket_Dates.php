@@ -53,25 +53,37 @@ final class Ticket_Dates {
 	 * @param int  $post_id   The event post ID.
 	 * @param Rule $rule      The ticket's sales window rule.
 	 *
-	 * @return void
+	 * @return bool Whether any of the ticket's sale dates changed.
 	 */
-	public function write( int $ticket_id, int $post_id, Rule $rule ): void {
+	public function write( int $ticket_id, int $post_id, Rule $rule ): bool {
 		$window = $this->sale_window->resolve_for_event( $rule, $post_id );
 
 		if ( ! $window ) {
-			return;
+			return false;
 		}
 
-		$start = $window->get_start();
+		$values = [];
+		$start  = $window->get_start();
 		if ( $start ) {
-			update_post_meta( $ticket_id, Ticket::START_DATE_META_KEY, $start->format( Dates::DBDATEFORMAT ) );
-			update_post_meta( $ticket_id, Ticket::START_TIME_META_KEY, $start->format( Dates::DBTIMEFORMAT ) );
+			$values[ Ticket::START_DATE_META_KEY ] = $start->format( Dates::DBDATEFORMAT );
+			$values[ Ticket::START_TIME_META_KEY ] = $start->format( Dates::DBTIMEFORMAT );
 		}
 
 		$end = $window->get_end();
 		if ( $end ) {
-			update_post_meta( $ticket_id, Ticket::END_DATE_META_KEY, $end->format( Dates::DBDATEFORMAT ) );
-			update_post_meta( $ticket_id, Ticket::END_TIME_META_KEY, $end->format( Dates::DBTIMEFORMAT ) );
+			$values[ Ticket::END_DATE_META_KEY ] = $end->format( Dates::DBDATEFORMAT );
+			$values[ Ticket::END_TIME_META_KEY ] = $end->format( Dates::DBTIMEFORMAT );
 		}
+
+		$changed = false;
+		foreach ( $values as $meta_key => $value ) {
+			// `update_post_meta()` returns `false` both for an unchanged value and for a failed write.
+			if ( get_post_meta( $ticket_id, $meta_key, true ) !== $value ) {
+				update_post_meta( $ticket_id, $meta_key, $value );
+				$changed = true;
+			}
+		}
+
+		return $changed;
 	}
 }
