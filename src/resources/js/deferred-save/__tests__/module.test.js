@@ -32,8 +32,8 @@ const markerTemplate = `
 	<span hidden data-tec-marker-text="move">Moves on save</span>
 </template>`;
 
-const savedRow = ( ticketId ) => `
-	<table><tbody><tr data-ticket-type-id="${ ticketId }">
+const savedRow = ( ticketId, ticketType = 'default' ) => `
+	<table><tbody class="tribe-tickets-editor-table-tickets-body" data-ticket-type="${ ticketType }"><tr data-ticket-type-id="${ ticketId }">
 		<td><div class="tribe-tickets__tickets-editor-ticket-name-title">Saved</div></td>
 		<td>
 			<button type="button" class="ticket_edit_button">Edit</button>
@@ -44,14 +44,18 @@ const savedRow = ( ticketId ) => `
 
 let loadedHooks = null;
 
-const load = ( { strings = {}, editPanel = '<input name="ticket_name" value="Draft">' } = {} ) => {
+const load = ( {
+	strings = {},
+	editPanel = '<input name="ticket_name" value="Draft">',
+	savedTables = savedRow( 12, 'rsvp' ),
+} = {} ) => {
 	document.body.innerHTML = `
 		<form id="post">
 			<input id="wp-preview" value="">
 			<input name="post_title" value="Post">
 			<div id="event_tickets">
 				<div id="tribe_panel_base">
-					<div class="tribe_sectionheader ticket_list_container"><div class="ticket_table_intro"></div>${ savedRow( 12 ) }</div>
+					<div class="tribe_sectionheader ticket_list_container"><div class="ticket_table_intro"></div>${ savedTables }</div>
 					<div class="tribe-ticket-control-wrap"></div>
 				</div>
 				<div id="tribe_panel_edit">${ editPanel }</div>
@@ -113,6 +117,17 @@ describe( 'deferred-save module', () => {
 		module.state.dropCreate( 0 );
 		module.render();
 		expect( document.querySelector( '.ticket_list_wrapper' ) ).toBeNull();
+	} );
+
+	it( 'puts a staged ticket into the table of its own ticket type, not the first table', () => {
+		const module = load( { savedTables: savedRow( 12, 'rsvp' ) + savedRow( 13, 'default' ) } );
+		module.state.stageCreate( [ [ 'ticket_name', 'General' ], [ 'ticket_type', 'default' ] ] );
+		module.render();
+
+		const $row = $( '.tec-tickets-deferred-save-row' );
+		expect( $row.closest( 'tbody' ).attr( 'data-ticket-type' ) ).toBe( 'default' );
+		expect( $row.closest( 'tbody' ).find( 'tr[data-ticket-type-id="13"]' ).length ).toBe( 1 );
+		expect( document.querySelector( '.tec-tickets-deferred-save-table' ) ).toBeNull();
 	} );
 
 	it( 'drops the leave warning when the post form submits for real', () => {
