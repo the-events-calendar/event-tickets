@@ -171,7 +171,7 @@ final class Writer {
 
 				// serialize() is strict on key order and scalar types, and compares objects by class and state.
 				if ( $current['position'] !== $row['position'] || $current['currency'] !== $row['currency'] || serialize( $this->types->get( $current['type'] )::from_row( $current ) ) !== serialize( [ (string) $key, $items[ $key ] ] ) ) { // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
-					$updates[] = [ 'id' => $current['id'] ] + $row;
+					$updates[] = [ 'id' => $current['id'] ] + $this->keep_purchase_details( $row, $current, $items[ $key ] );
 				}
 			}
 
@@ -220,6 +220,35 @@ final class Writer {
 		}
 
 		return $rows;
+	}
+
+	/**
+	 * Carries the purchase-time details of a stored line over to its updated row.
+	 *
+	 * The details are read from the live ticket and event when a row is built; a line that is kept must not
+	 * take the ticket's or event's current values in place of the ones it was bought with.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $row     The updated row.
+	 * @param array<string,mixed> $current The stored row.
+	 * @param array               $item    The line's new item.
+	 *
+	 * @return array<string,mixed> The updated row, holding the stored details.
+	 */
+	private function keep_purchase_details( array $row, array $current, array $item ): array {
+		$kept = [ 'sku', 'ticket_type' ];
+
+		// A name set on the item itself is the item's to change.
+		if ( ! isset( $item['display_name'] ) ) {
+			$kept[] = 'name';
+		}
+
+		if ( $current['event_id'] === $row['event_id'] ) {
+			array_push( $kept, 'event_title', 'event_start_date', 'event_start_date_utc' );
+		}
+
+		return array_merge( $row, array_intersect_key( $current, array_flip( $kept ) ) );
 	}
 
 	/**

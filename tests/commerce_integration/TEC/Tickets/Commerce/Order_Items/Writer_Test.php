@@ -366,6 +366,28 @@ class Writer_Test extends Controller_Test_Case {
 		$this->assertSame( '2', get_post_meta( $order_id, Writer::VERSION_META_KEY, true ) );
 	}
 
+	public function test_an_updated_line_keeps_the_ticket_and_event_details_it_was_bought_with(): void {
+		$this->register_controller( true );
+		[ $event_id, [ $vip ] ] = $this->make_tickets();
+		$order                  = $this->create_order( [ $vip => 1 ], [ 'order_status' => Pending::SLUG ] );
+		$before                 = $this->get_rows( $order->ID )["{$vip}:0:0"];
+		$items                  = get_post_meta( $order->ID, Order::$items_meta_key, true );
+		wp_update_post( [ 'ID' => $vip, 'post_title' => 'Renamed ticket' ] );
+		update_post_meta( $vip, '_sku', 'RENAMED-SKU' );
+		wp_update_post( [ 'ID' => $event_id, 'post_title' => 'Renamed event' ] );
+		update_post_meta( $event_id, '_EventStartDate', '2031-05-05 10:00:00' );
+		$key           = array_key_first( $items );
+		$items[ $key ] = array_merge( $items[ $key ], [ 'quantity' => 4, 'sub_total' => 40.0, 'regular_sub_total' => 40.0 ] );
+
+		$this->save_items( $order->ID, $items );
+
+		$after = $this->get_rows( $order->ID )["{$vip}:0:0"];
+		$this->assertSame( 4, $after['quantity'] );
+		foreach ( [ 'name', 'sku', 'ticket_type', 'event_title', 'event_start_date', 'event_start_date_utc' ] as $column ) {
+			$this->assertSame( $before[ $column ], $after[ $column ], $column );
+		}
+	}
+
 	public function test_a_line_added_in_the_middle_is_inserted_there_and_moves_the_lines_after_it(): void {
 		$this->register_controller( true );
 		[ , [ $vip, $ga ] ] = $this->make_tickets();
