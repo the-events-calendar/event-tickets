@@ -1,0 +1,5 @@
+significance: patch
+type: security
+entry: Hardened the attendees REST endpoint to reject an invalid API key with a
+  401 response instead of returning an empty result.
+timestamp: 2026-10-05T16:54:55.419Z
