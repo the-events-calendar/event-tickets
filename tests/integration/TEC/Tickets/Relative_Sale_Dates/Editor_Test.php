@@ -188,6 +188,18 @@ class Editor_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
+	public function should_hold_an_alert_for_an_invalid_sales_window(): void {
+		$this->make_controller()->register();
+
+		$error = $this->get_element( $this->render_ticket_form( $this->create_event( '2027-06-24 19:00:00' ) ), 'ticket_sales_window_error' );
+
+		$this->assertSame( 'alert', $error->getAttribute( 'role' ) );
+		$this->assertSame( '', trim( $error->textContent ) );
+	}
+
+	/**
+	 * @test
+	 */
 	public function should_keep_what_other_code_renders_around_the_date_fields(): void {
 		$this->make_controller()->register();
 		$event_id = $this->create_event( '2027-06-24 19:00:00' );

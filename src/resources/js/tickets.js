@@ -473,6 +473,12 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 						$ticket_sale_start_date.datepicker( 'option', 'maxDate', the_date );
 						break;
 				}
+
+				/*
+				 * jQuery UI fires no `change` after a pick when there is an `onSelect`. The namespaced event tells the
+				 * Relative Sale Dates script without firing `change` for every other script that listens for it.
+				 */
+				$( this ).trigger( 'change.tecRelativeSaleDates' );
 			},
 		};
 
@@ -770,6 +776,15 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 			params,
 			function ( response ) {
 				if ( ! response.success ) {
+					/**
+					 * Fires when the server rejects a ticket save from the classic editor.
+					 *
+					 * @since TBD
+					 *
+					 * @param {Object} response The response, with the reason in `data.message` when the server gave one.
+					 */
+					doAction( 'tec.tickets.admin.ticketSaveFailed', response );
+
 					return;
 				}
 
