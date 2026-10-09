@@ -277,6 +277,10 @@ final class Ticket_Save {
 	/**
 	 * Returns whether the ticket data asks to remove the rule, sending it as `null` or `''`.
 	 *
+	 * A front-end ticket form, such as Community Events', offers no sales window options, so the dates it sends are the
+	 * ones the person set: a save from it that does not send a rule removes the stored one. `tickets.js` tells such a
+	 * form apart by sending `is_admin` as false; a REST request sends no `is_admin`, and leaving the rule out keeps it.
+	 *
 	 * @since TBD
 	 *
 	 * @param array<string,mixed> $data The ticket data.
@@ -284,7 +288,13 @@ final class Ticket_Save {
 	 * @return bool Whether the rule is to be removed.
 	 */
 	private function removes_rule( array $data ): bool {
-		return array_key_exists( self::DATA_KEY, $data ) && in_array( $data[ self::DATA_KEY ], [ null, '' ], true );
+		if ( array_key_exists( self::DATA_KEY, $data ) ) {
+			return in_array( $data[ self::DATA_KEY ], [ null, '' ], true );
+		}
+
+		$is_admin = tec_get_request_var( 'is_admin' );
+
+		return null !== $is_admin && ! tribe_is_truthy( $is_admin );
 	}
 
 	/**

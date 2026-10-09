@@ -5,7 +5,6 @@ namespace TEC\Tickets\Relative_Sale_Dates;
 use DateTimeImmutable;
 use DateTimeZone;
 use Generator;
-use RuntimeException;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
@@ -718,44 +717,23 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	private function send_classic_ticket_add( int $event_id, array $data ): array {
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 
-		// The classic editor posts its form as one URL-encoded string, which WordPress then slashes.
-		$_POST = wp_slash(
-			[
-				'post_id' => $event_id,
-				'nonce'   => wp_create_nonce( 'add_ticket_nonce' ),
-				'data'    => http_build_query(
-					array_merge(
-						[
-							'ticket_name'     => 'Classic editor ticket',
-							'ticket_price'    => '10',
-							'ticket_provider' => Module::class,
-							'tribe-ticket'    => [
-								'mode'     => 'own',
-								'capacity' => '50',
-							],
+		return $this->send_classic_ticket_form(
+			$event_id,
+			http_build_query(
+				array_merge(
+					[
+						'ticket_name'     => 'Classic editor ticket',
+						'ticket_price'    => '10',
+						'ticket_provider' => Module::class,
+						'tribe-ticket'    => [
+							'mode'     => 'own',
+							'capacity' => '50',
 						],
-						$data
-					)
-				),
-			]
+					],
+					$data
+				)
+			)
 		);
-
-		add_filter( 'wp_doing_ajax', '__return_true' );
-		add_filter(
-			'wp_die_ajax_handler',
-			static fn() => static function () {
-				throw new RuntimeException( 'The AJAX response was sent.' );
-			}
-		);
-
-		ob_start();
-		try {
-			tribe( 'tickets.metabox' )->ajax_ticket_add();
-		} catch ( RuntimeException $e ) {
-			// wp_send_json_*() ends the request through the die handler.
-		}
-
-		return json_decode( ob_get_clean(), true );
 	}
 
 	/**

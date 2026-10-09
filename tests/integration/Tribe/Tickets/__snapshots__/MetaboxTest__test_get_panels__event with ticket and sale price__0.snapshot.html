@@ -281,65 +281,167 @@ New ticket</button><button
 	<span class="tribe_soft_note ticket_form_right tribe-active">
 		A standard ticket is specific to this event.	</span>
 </div>
-<div class="input_block">
-	<label class="ticket_form_label ticket_form_left" for="ticket_start_date">
+	<div class="input_block tec-tickets-relative-sale-dates">
+	<label class="ticket_form_label ticket_form_left" for="ticket_sales_start_mode">
 		Start sale:	</label>
 	<div class="ticket_form_right">
-		<input
-			autocomplete="off"
-			type="text"
-			class="tribe-datepicker tribe-field-start_date ticket_field"
-			name="ticket_start_date"
-			id="ticket_start_date"
-			value="1/2/2020"
-			data-validation-type="datepicker"
-			data-validation-is-less-or-equal-to="#ticket_end_date"
-			data-validation-error="{&quot;is-required&quot;:&quot;Start sale date cannot be empty.&quot;,&quot;is-less-or-equal-to&quot;:&quot;Start sale date cannot be greater than End Sale date&quot;}"
-		/>
-		<span class="helper-text hide-if-js">YYYY-MM-DD</span>
-		<span class="datetime_seperator"> at </span>
-		<input
-			autocomplete="off"
-			type="text"
-			class="tribe-timepicker tribe-field-start_time ticket_field"
-			name="ticket_start_time"
-			id="ticket_start_time"
-						data-step="30"
-			data-round="00:00:00"
-			value="08:00:00"
-			aria-label="Ticket start date"
-		/>
-		<span class="helper-text hide-if-js">HH:MM</span>
+		<select
+			class="tribe-dependency"
+			id="ticket_sales_start_mode"
+		>
+							<option value="default" >Now</option>
+							<option value="relative" >On a relative date</option>
+							<option value="specific"  selected='selected'>On a specific date</option>
+					</select>
+		<div
+			class="tribe-dependent tec-tickets-relative-sale-dates__relative"
+			data-depends="#ticket_sales_start_mode"
+			data-condition="relative"
+		>
+			<span>Starts</span>
+			<input
+				type="number"
+				min="1"
+				max="60"
+				step="1"
+				id="ticket_sales_start_value"
+				value="2"
+				aria-label="Number of units before the event that sales start"
+			/>
+			<select
+				id="ticket_sales_start_unit"
+				aria-label="Unit of the sales start"
+			>
+									<option value="60" >minutes</option>
+									<option value="3600" >hours</option>
+									<option value="86400" >days</option>
+									<option value="604800"  selected='selected'>weeks</option>
+							</select>
+			<select
+				id="ticket_sales_start_anchor"
+				aria-label="What the sales start is measured from"
+			>
+									<option value="start"  selected='selected'>before the event starts</option>
+									<option value="end" >before the event ends</option>
+							</select>
+		</div>
+		<div
+			class="tribe-dependent tec-tickets-relative-sale-dates__specific"
+			data-depends="#ticket_sales_start_mode"
+			data-condition="specific"
+		>
+			<label class="screen-reader-text" for="ticket_start_date">
+				Ticket start date			</label>
+						<input
+				autocomplete="off"
+				type="text"
+				class="tribe-datepicker tribe-field-start_date ticket_field"
+				name="ticket_start_date"
+				id="ticket_start_date"
+				value="1/2/2020"
+				data-validation-type="datepicker"
+				data-validation-is-less-or-equal-to="#ticket_end_date"
+				data-validation-error="{&quot;is-required&quot;:&quot;Start sale date cannot be empty.&quot;,&quot;is-less-or-equal-to&quot;:&quot;Start sale date cannot be greater than End Sale date&quot;}"
+			/>
+			<span class="helper-text hide-if-js">YYYY-MM-DD</span>
+			<span class="datetime_seperator"> at </span>
+			<input
+				autocomplete="off"
+				type="text"
+				class="tribe-timepicker tribe-field-start_time ticket_field"
+				name="ticket_start_time"
+				id="ticket_start_time"
+								data-step="30"
+				data-round="00:00:00"
+				value="08:00:00"
+				aria-label="Ticket start date"
+			/>
+			<span class="helper-text hide-if-js">HH:MM</span>
+					</div>
 	</div>
 </div>
-<div class="input_block">
-	<label class="ticket_form_label ticket_form_left" for="ticket_end_date">
+	<div class="input_block tec-tickets-relative-sale-dates">
+	<label class="ticket_form_label ticket_form_left" for="ticket_sales_end_mode">
 		End sale:	</label>
 	<div class="ticket_form_right">
-		<input
-			autocomplete="off"
-			type="text"
-			class="tribe-datepicker tribe-field-end_date ticket_field"
-			name="ticket_end_date"
-			id="ticket_end_date"
-			value="3/1/2050"
-		/>
-		<span class="helper-text hide-if-js">YYYY-MM-DD</span>
-		<span class="datetime_seperator"> at </span>
-		<input
-			autocomplete="off"
-			type="text"
-			class="tribe-timepicker tribe-field-end_time ticket_field"
-			name="ticket_end_time"
-			id="ticket_end_time"
-						data-step="30"
-			data-round="00:00:00"
-			value="20:00:00"
-			aria-label="Ticket end date"
-		/>
-		<span class="helper-text hide-if-js">HH:MM</span>
+		<select
+			class="tribe-dependency"
+			id="ticket_sales_end_mode"
+		>
+							<option value="default" >When the event starts</option>
+							<option value="relative" >On a relative date</option>
+							<option value="specific"  selected='selected'>On a specific date</option>
+					</select>
+		<div
+			class="tribe-dependent tec-tickets-relative-sale-dates__relative"
+			data-depends="#ticket_sales_end_mode"
+			data-condition="relative"
+		>
+			<span>Ends</span>
+			<input
+				type="number"
+				min="1"
+				max="60"
+				step="1"
+				id="ticket_sales_end_value"
+				value="1"
+				aria-label="Number of units before the event that sales end"
+			/>
+			<select
+				id="ticket_sales_end_unit"
+				aria-label="Unit of the sales end"
+			>
+									<option value="60" >minutes</option>
+									<option value="3600"  selected='selected'>hours</option>
+									<option value="86400" >days</option>
+									<option value="604800" >weeks</option>
+							</select>
+			<select
+				id="ticket_sales_end_anchor"
+				aria-label="What the sales end is measured from"
+			>
+									<option value="start"  selected='selected'>before the event starts</option>
+									<option value="end" >before the event ends</option>
+							</select>
+		</div>
+		<div
+			class="tribe-dependent tec-tickets-relative-sale-dates__specific"
+			data-depends="#ticket_sales_end_mode"
+			data-condition="specific"
+		>
+			<label class="screen-reader-text" for="ticket_end_date">
+				Ticket end date			</label>
+						<input
+				autocomplete="off"
+				type="text"
+				class="tribe-datepicker tribe-field-end_date ticket_field"
+				name="ticket_end_date"
+				id="ticket_end_date"
+				value="3/1/2050"
+			/>
+			<span class="helper-text hide-if-js">YYYY-MM-DD</span>
+			<span class="datetime_seperator"> at </span>
+			<input
+				autocomplete="off"
+				type="text"
+				class="tribe-timepicker tribe-field-end_time ticket_field"
+				name="ticket_end_time"
+				id="ticket_end_time"
+								data-step="30"
+				data-round="00:00:00"
+				value="20:00:00"
+				aria-label="Ticket end date"
+			/>
+			<span class="helper-text hide-if-js">HH:MM</span>
+					</div>
 	</div>
 </div>
+<input
+	type="hidden"
+	name="relative_sale_dates"
+	id="ticket_relative_sale_dates"
+	value=""
+/>
 
 				<input type="hidden" id="tec_tickets_ticket_provider" name="ticket_provider" value="TEC\Tickets\Commerce\Module" />
 
