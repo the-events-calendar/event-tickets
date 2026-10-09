@@ -55,6 +55,9 @@ class Window_Kind_Test extends WPTestCase {
 		);
 		$this->assertTrue( $kind->specific_needs_date() );
 		$this->assertFalse( $kind->compares_days() );
+		$this->assertSame( [ 'relative_sale_dates' ], $kind->get_block_editor_request_path() );
+		$this->assertSame( [ 'relative_sale_dates' ], $kind->get_block_editor_response_path() );
+		$this->assertSame( 'relative_sale_dates', $kind->get_tec_rest_field() );
 	}
 
 	/**
@@ -105,6 +108,9 @@ class Window_Kind_Test extends WPTestCase {
 		);
 		$this->assertFalse( $kind->specific_needs_date() );
 		$this->assertTrue( $kind->compares_days() );
+		$this->assertSame( [ 'sale_price', 'relative' ], $kind->get_block_editor_request_path() );
+		$this->assertSame( [ 'sale_price_data', 'relative' ], $kind->get_block_editor_response_path() );
+		$this->assertSame( 'sale_price_relative', $kind->get_tec_rest_field() );
 	}
 
 	/**

@@ -214,6 +214,33 @@ final class Window_Kind {
 	private array $errors;
 
 	/**
+	 * The keys that carry the rule in the `ticket` param of a block editor ticket save.
+	 *
+	 * @since TBD
+	 *
+	 * @var string[]
+	 */
+	private array $block_editor_request_path;
+
+	/**
+	 * The keys that carry the stored rule in the ticket data the block editor reads.
+	 *
+	 * @since TBD
+	 *
+	 * @var string[]
+	 */
+	private array $block_editor_response_path;
+
+	/**
+	 * The TEC REST API ticket field that carries the rule.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private string $tec_rest_field;
+
+	/**
 	 * Gets the sales window kind.
 	 *
 	 * @since TBD
@@ -271,6 +298,9 @@ final class Window_Kind {
 				'message' => static fn(): string => __( 'Ticket sales cannot end before they start. Please adjust the sales window.', 'event-tickets' ),
 			],
 		];
+		$kind->block_editor_request_path    = [ 'relative_sale_dates' ];
+		$kind->block_editor_response_path   = [ 'relative_sale_dates' ];
+		$kind->tec_rest_field               = 'relative_sale_dates';
 
 		self::$instances[ self::SALES ] = $kind;
 
@@ -346,6 +376,9 @@ final class Window_Kind {
 				'message' => static fn(): string => __( 'The sale price window falls outside the ticket sales window. Please adjust the dates.', 'event-tickets' ),
 			],
 		];
+		$kind->block_editor_request_path    = [ 'sale_price', 'relative' ];
+		$kind->block_editor_response_path   = [ 'sale_price_data', 'relative' ];
+		$kind->tec_rest_field               = 'sale_price_relative';
 
 		self::$instances[ self::SALE_PRICE ] = $kind;
 
@@ -626,6 +659,45 @@ final class Window_Kind {
 		}
 
 		return new WP_Error( $this->errors[ $key ]['code'], $this->errors[ $key ]['message'](), [ 'status' => 400 ] );
+	}
+
+	/**
+	 * Gets the keys that carry the rule in the `ticket` param of a block editor ticket save.
+	 *
+	 * @since TBD
+	 *
+	 * @return string[] The keys, outermost first: `ticket[relative_sale_dates]` for the sales window and
+	 *                  `ticket[sale_price][relative]` for the sale price. The rule is sent as JSON, or `''` to remove it.
+	 */
+	public function get_block_editor_request_path(): array {
+		return $this->block_editor_request_path;
+	}
+
+	/**
+	 * Gets the keys that carry the stored rule in the ticket data the block editor reads.
+	 *
+	 * A path of more than one key nests the rule in the provider's own data, such as the sale price data of a Tickets
+	 * Commerce ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @return string[] The keys, outermost first: `relative_sale_dates` for the sales window and
+	 *                  `sale_price_data.relative` for the sale price. The rule is returned as an array, or `null`.
+	 */
+	public function get_block_editor_response_path(): array {
+		return $this->block_editor_response_path;
+	}
+
+	/**
+	 * Gets the TEC REST API ticket field that carries the rule.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The field, `relative_sale_dates` or `sale_price_relative`; its value is the rule as an object, or
+	 *                `null` to remove it.
+	 */
+	public function get_tec_rest_field(): string {
+		return $this->tec_rest_field;
 	}
 
 	/**
