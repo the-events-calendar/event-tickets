@@ -123,8 +123,9 @@ final class Block_Save {
 
 		unset( $this->results[ $post->ID ] );
 
-		$data                = $response->get_data();
-		$data['tec_tickets'] = $result->to_array();
+		$data = $response->get_data();
+		// The id tells two equal answers apart: the editor's store keeps the old object when a new one is deep-equal.
+		$data['tec_tickets'] = $result->to_array() + [ 'id' => wp_generate_uuid4() ];
 		$response->set_data( $data );
 
 		return $response;

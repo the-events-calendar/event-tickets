@@ -189,6 +189,21 @@ class Block_Save_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_tell_two_equal_answers_apart(): void {
+		$this->log_in_as_admin();
+		$post_id = $this->create_deferred_post();
+
+		$first  = $this->save_through_rest( "/wp/v2/pages/{$post_id}", [ 'tec_tickets' => [] ] )->get_data()['tec_tickets'];
+		$second = $this->save_through_rest( "/wp/v2/pages/{$post_id}", [ 'tec_tickets' => [] ] )->get_data()['tec_tickets'];
+
+		$this->assertSame( [ 'created' => [], 'errors' => [] ], array_diff_key( $first, [ 'id' => true ] ) );
+		$this->assertNotEmpty( $first['id'] );
+		$this->assertNotSame( $first['id'], $second['id'] );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_pass_on_a_prepared_answer_that_is_not_a_response(): void {
 		// The filter runs on every read of every ticketable type; an earlier callback may hand on anything.
 		$post_id = $this->create_deferred_post();
