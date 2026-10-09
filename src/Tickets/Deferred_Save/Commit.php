@@ -494,6 +494,18 @@ final class Commit {
 	 * @throws \Throwable When the move throws before the ticket is on the destination; `guarded()` reports it.
 	 */
 	private function move( Result $result, int $ticket_id, int $destination_id ): Result {
+		if ( ! $this->can_hold_tickets( $destination_id ) ) {
+			return $result->with_error(
+				Parser::MOVE,
+				$ticket_id,
+				sprintf(
+					/* translators: %d: the destination post ID. */
+					__( 'Post %d cannot have tickets, so the ticket was not moved there.', 'event-tickets' ),
+					$destination_id
+				)
+			);
+		}
+
 		try {
 			$moved = Tickets_Main::instance()->move_ticket_types()->move_ticket_type( $ticket_id, $destination_id );
 		} catch ( \Throwable $e ) {
@@ -527,6 +539,25 @@ final class Commit {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Whether a post is one the editors can show tickets on: a ticketable post type that is not trashed or a draft placeholder.
+	 *
+	 * `move_ticket_type()` only rewrites the ticket's event meta, so a ticket moved anywhere else is out of every editor's reach.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The destination post ID, normalized.
+	 *
+	 * @return bool Whether the post can hold tickets.
+	 */
+	private function can_hold_tickets( int $post_id ): bool {
+		$post = get_post( $post_id );
+
+		return $post instanceof \WP_Post
+			&& in_array( $post->post_type, (array) Tickets_Main::instance()->post_types(), true )
+			&& ! in_array( $post->post_status, [ 'trash', 'inherit', 'auto-draft' ], true );
 	}
 
 	/**

@@ -638,6 +638,39 @@ class Commit_Test extends WPTestCase {
 	}
 
 	/**
+	 * @return \Generator<string,array{0:callable}>
+	 */
+	public function destinations_that_cannot_hold_tickets_provider(): \Generator {
+		yield 'attachment' => [ static fn() => static::factory()->attachment->create() ];
+		yield 'post type that is not ticketable' => [
+			static function () {
+				register_post_type( 'not_ticketable' );
+
+				return static::factory()->post->create( [ 'post_type' => 'not_ticketable' ] );
+			},
+		];
+		yield 'ticket' => [ fn() => $this->create_tc_ticket( static::factory()->post->create(), 5 ) ];
+		yield 'trashed post' => [ static fn() => static::factory()->post->create( [ 'post_status' => 'trash' ] ) ];
+		yield 'auto-draft' => [ static fn() => static::factory()->post->create( [ 'post_status' => 'auto-draft' ] ) ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider destinations_that_cannot_hold_tickets_provider
+	 */
+	public function it_should_refuse_to_move_a_ticket_where_no_editor_can_reach_it( callable $make_destination ): void {
+		$this->log_in_as_admin();
+		$post_id        = static::factory()->post->create();
+		$ticket_id      = $this->create_tc_ticket( $post_id, 10 );
+		$destination_id = $make_destination();
+
+		$result = $this->commit()->run( [ 'move' => [ $ticket_id => $destination_id ] ], $post_id );
+
+		$this->assertSame( [ $ticket_id ], $this->error_keys( $result, 'move' ) );
+		$this->assertSame( [ $ticket_id ], tribe_tickets()->where( 'event', $post_id )->get_ids() );
+	}
+
+	/**
 	 * @test
 	 */
 	public function it_should_refuse_updating_and_moving_the_same_ticket(): void {
