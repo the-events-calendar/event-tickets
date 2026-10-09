@@ -673,6 +673,29 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_say_which_step_failed_when_a_move_or_delete_throws(): void {
+		$this->log_in_as_admin();
+		$post_id        = static::factory()->post->create();
+		$destination_id = static::factory()->post->create();
+		$moved_id       = $this->create_tc_ticket( $post_id, 10 );
+		$deleted_id     = $this->create_tc_ticket( $post_id, 20 );
+		$explode        = static function () {
+			throw new \RuntimeException( 'listener failed' );
+		};
+		add_action( 'tribe_tickets_ticket_type_before_move', $explode );
+		add_filter( 'pre_delete_post', $explode );
+		add_filter( 'pre_trash_post', $explode );
+
+		$result = $this->commit()->run( [ 'move' => [ $moved_id => $destination_id ], 'delete' => [ $deleted_id ] ], $post_id );
+
+		$messages = array_column( $result->get_errors(), 'message', 'part' );
+		$this->assertSame( 'The ticket could not be moved.', $messages['move'] );
+		$this->assertSame( 'The ticket could not be deleted.', $messages['delete'] );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_refuse_updating_and_moving_the_same_ticket(): void {
 		$this->log_in_as_admin();
 		$post_id        = static::factory()->post->create();

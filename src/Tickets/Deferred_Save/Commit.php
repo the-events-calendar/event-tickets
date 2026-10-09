@@ -321,7 +321,7 @@ final class Commit {
 				] 
 			);
 
-			return $result->with_error( $part, $key, $this->not_saved_message() );
+			return $result->with_error( $part, $key, $this->failed_message( $part ) );
 		}
 	}
 
@@ -859,6 +859,26 @@ final class Commit {
 	 */
 	private function invalid_price_message(): string {
 		return __( 'Invalid price', 'event-tickets' );
+	}
+
+	/**
+	 * The message for an entry whose step threw before it finished, by what the step was doing.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $part The part the entry belongs to.
+	 *
+	 * @return string The message.
+	 */
+	private function failed_message( string $part ): string {
+		switch ( $part ) {
+			case Parser::MOVE:
+				return __( 'The ticket could not be moved.', 'event-tickets' );
+			case Parser::DELETE:
+				return __( 'The ticket could not be deleted.', 'event-tickets' );
+			default:
+				return $this->not_saved_message();
+		}
 	}
 
 	/**
