@@ -84,6 +84,12 @@ class Provider extends Service_Provider {
 
 		$this->container->singleton( Pending_Order::class );
 
+		// The Order Items repository is read through the object cache, whether or not the controller is active.
+		$this->container->singleton(
+			Order_Items\Repositories\Order_Items_Repository::class,
+			fn() => new Order_Items\Repositories\Cached_Order_Items( $this->container->get( Order_Items\Repositories\Order_Items::class ) )
+		);
+
 		// Old orders need the fallback names whether or not the Order Items controller is active.
 		$this->container->singleton( Order_Items\Fallbacks::class );
 

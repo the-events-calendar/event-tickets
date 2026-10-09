@@ -96,12 +96,14 @@ class Order_Items_Metabox_Test extends Controller_Test_Case {
 				return $items;
 			}
 		);
+		// Creating the order already read its rows through the cache.
+		wp_cache_flush();
 		$count = $this->count_queries_against_the_table();
 
 		$this->render( $order );
 
 		$this->assertGreaterThan( 0, $loads );
-		$this->assertSame( $loads, $count() );
+		$this->assertLessThanOrEqual( $loads, $count() );
 	}
 
 	private function render( WP_Post $order ): string {
