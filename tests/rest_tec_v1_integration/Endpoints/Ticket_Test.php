@@ -154,6 +154,86 @@ class Ticket_Test extends Post_Entity_REST_Test_Case {
 		$this->assertEquals( Model::class, $model_class );
 	}
 
+	/**
+	 * A user who can edit the ticket but not its event must not be able to change the event's
+	 * stock/capacity through an update. SVUL-133.
+	 */
+	public function test_update_denied_when_user_cannot_edit_event(): void {
+		if ( ! $this->is_updatable() ) {
+			return;
+		}
+
+		// Event owned by the admin; ticket owned by an author who cannot edit that event.
+		$event  = self::factory()->post->create(
+			[
+				'post_type'   => 'post',
+				'post_status' => 'publish',
+				'post_author' => 1,
+			]
+		);
+		$author = $this->factory()->user->create( [ 'role' => 'author' ] );
+
+		wp_set_current_user( 1 );
+		$ticket_id = $this->create_tc_ticket( $event, '10.00' );
+		wp_update_post(
+			[
+				'ID'          => $ticket_id,
+				'post_author' => $author,
+			]
+		);
+
+		wp_set_current_user( $author );
+
+		// The author can edit their own ticket, so this isolates the event-permission check.
+		$this->assertTrue( current_user_can( 'edit_post', $ticket_id ), 'The author should be able to edit the ticket itself.' );
+
+		$this->assert_endpoint(
+			sprintf( $this->endpoint->get_base_path(), $ticket_id ),
+			'PUT',
+			403,
+			[ 'title' => 'Changed title', 'event_capacity' => 999 ]
+		);
+
+		$this->assertEmpty( get_post_meta( $event, '_tribe_ticket_global_stock_level', true ), 'The event stock must not be changed.' );
+	}
+
+	/**
+	 * Lets the current user pass the `edit_post` meta capability on any post, without granting
+	 * `edit_others_posts`.
+	 *
+	 * The shared scale-back and create-response cases attach a ticket to an event the acting role
+	 * does not own. SVUL-133 now requires `edit_post` on that event, which those inherited cases
+	 * were never written to satisfy. This isolates them from the new gate - the same way the
+	 * WooCommerce suite isolates itself from the product capability map - while leaving
+	 * `edit_others_posts` untouched so the author scale-back assertions still hold. The gate
+	 * itself is covered by the dedicated SVUL-133 tests.
+	 *
+	 * @return void
+	 */
+	protected function grant_event_edit_for_current_user(): void {
+		add_filter(
+			'map_meta_cap',
+			static function ( array $caps, string $cap ): array {
+				if ( in_array( $cap, [ 'edit_post', 'edit_page' ], true ) ) {
+					return [ 'edit_posts' ];
+				}
+
+				return $caps;
+			},
+			10,
+			2
+		);
+	}
+
+	/**
+	 * @dataProvider status_scale_back_provider
+	 */
+	public function test_update_scales_back_status_to_user_capabilities( string $role, ?string $status, string $expected_status ) {
+		$this->grant_event_edit_for_current_user();
+
+		parent::test_update_scales_back_status_to_user_capabilities( $role, $status, $expected_status );
+	}
+
 	protected function get_example_create_data(): array {
 		$example = parent::get_example_create_data();
 

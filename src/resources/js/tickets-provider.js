@@ -1,4 +1,4 @@
-/* global tribe, jQuery, tecTicketsSettings, console */
+/* global tecTicketsSettings */
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *

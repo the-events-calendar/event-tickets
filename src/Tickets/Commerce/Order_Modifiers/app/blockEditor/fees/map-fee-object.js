@@ -1,17 +1,15 @@
 /**
  * External dependencies.
  */
-import { Checkbox } from '@moderntribe/common/elements';
-import classNames from 'classnames';
 
 /**
  * @typedef {Object} Fee
- * @property {int}    id
- * @property {string} display_name
- * @property {string} raw_amount
- * @property {string} status
- * @property {string} sub_type
- * @property {string} meta_value
+ * @property {number} id           The fee ID.
+ * @property {string} display_name The fee display name.
+ * @property {string} raw_amount   The raw fee amount.
+ * @property {string} status       The fee status.
+ * @property {string} sub_type     The fee sub type.
+ * @property {string} meta_value   The fee meta value.
  */
 
 /**
@@ -39,8 +37,8 @@ const getFeeLabel = ( fee ) => {
  *
  * @since 5.18.0
  *
- * @param {Fee} fee
- * @return {{label: string, value}}
+ * @param {Fee} fee The fee to convert.
+ * @return {{label: string, value}} The select option.
  */
 const mapFeeToOption = ( fee ) => {
 	return {

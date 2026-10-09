@@ -1344,10 +1344,33 @@ class Ajax_Test extends Controller_Test_Case {
 	 * Posts one reservation for the ticket and returns the session store, so the lookup tests share a shape.
 	 */
 	private function post_one_reservation( int $post_id, int $ticket_id, string $seat_type_id, string $seat_label ): Sessions {
+		return $this->post_reservations(
+			$post_id,
+			[
+				$ticket_id => [
+					[
+						'reservationId' => 'reservation-id-1',
+						'seatTypeId'    => $seat_type_id,
+						'seatLabel'     => $seat_label,
+					],
+				],
+			]
+		);
+	}
+
+	/**
+	 * Posts the reservations for the post's tickets and returns the session store.
+	 *
+	 * @param int                                                                         $post_id      The post the reservations are for.
+	 * @param array<int,array<array{reservationId: string, seatTypeId: string, seatLabel: string}>> $reservations The request reservations, keyed by ticket ID.
+	 */
+	private function post_reservations( int $post_id, array $reservations ): Sessions {
 		$this->set_up_ajax_request_context( 0 );
 		$request_body = null;
 		$this->given_the_request_body_is_read_from( $request_body );
-		update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'general-admission' );
+		foreach ( array_keys( $reservations ) as $ticket_id ) {
+			update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'general-admission' );
+		}
 		$this->given_a_started_session( 'some-token', $post_id );
 
 		$controller = $this->make_controller();
@@ -1357,15 +1380,7 @@ class Ajax_Test extends Controller_Test_Case {
 		$request_body       = wp_json_encode(
 			[
 				'token'        => 'some-token',
-				'reservations' => [
-					$ticket_id => [
-						[
-							'reservationId' => 'reservation-id-1',
-							'seatTypeId'    => $seat_type_id,
-							'seatLabel'     => $seat_label,
-						],
-					],
-				],
+				'reservations' => $reservations,
 			]
 		);
 
@@ -1460,6 +1475,88 @@ class Ajax_Test extends Controller_Test_Case {
 		$wp_send_json_error = $this->mock_wp_send_json_error();
 
 		$sessions = $this->post_one_reservation( $post_id, $ticket_id, 'general-admission', 'A-1' );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1, [ 'error' => 'Invalid reservation data' ], 403 ),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->assertEmpty( $sessions->get_reservations_for_token( 'some-token' ) );
+	}
+
+	/**
+	 * The cart caps a ticket at the number of stored reservations, so one held seat posted
+	 * several times would buy that many tickets for the same seat.
+	 *
+	 * @test
+	 * @covers Ajax::update_reservations
+	 */
+	public function test_update_reservations_refuses_a_reservation_posted_twice_for_one_ticket(): void {
+		$post_id     = self::factory()->post->create();
+		$ticket_id   = $this->create_tc_ticket( $post_id, 23 );
+		$reservation = [
+			'reservationId' => 'reservation-id-1',
+			'seatTypeId'    => 'general-admission',
+			'seatLabel'     => 'A-1',
+		];
+		$this->given_the_service_describes(
+			$post_id,
+			[
+				[
+					'id'         => 'reservation-id-1',
+					'ticketId'   => $ticket_id,
+					'seatTypeId' => 'general-admission',
+					'seatLabel'  => 'A-1',
+					'status'     => 'pending',
+				],
+			],
+			[ 'reservation-id-1', 'reservation-id-1' ]
+		);
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		$sessions = $this->post_reservations( $post_id, [ $ticket_id => [ $reservation, $reservation ] ] );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1, [ 'error' => 'Invalid reservation data' ], 403 ),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->assertEmpty( $sessions->get_reservations_for_token( 'some-token' ) );
+	}
+
+	/**
+	 * @test
+	 * @covers Ajax::update_reservations
+	 */
+	public function test_update_reservations_refuses_a_reservation_posted_under_two_tickets(): void {
+		$post_id       = self::factory()->post->create();
+		$ticket_id     = $this->create_tc_ticket( $post_id, 23 );
+		$other_ticket = $this->create_tc_ticket( $post_id, 23 );
+		$reservation  = [
+			'reservationId' => 'reservation-id-1',
+			'seatTypeId'    => 'general-admission',
+			'seatLabel'     => 'A-1',
+		];
+		$this->given_the_service_describes(
+			$post_id,
+			[
+				[
+					'id'         => 'reservation-id-1',
+					'ticketId'   => $ticket_id,
+					'seatTypeId' => 'general-admission',
+					'seatLabel'  => 'A-1',
+					'status'     => 'pending',
+				],
+			],
+			[ 'reservation-id-1', 'reservation-id-1' ]
+		);
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		$sessions = $this->post_reservations(
+			$post_id,
+			[
+				$ticket_id    => [ $reservation ],
+				$other_ticket => [ $reservation ],
+			]
+		);
 
 		$this->assertTrue(
 			$wp_send_json_error->was_called_times_with( 1, [ 'error' => 'Invalid reservation data' ], 403 ),
@@ -3410,16 +3507,18 @@ class Ajax_Test extends Controller_Test_Case {
 		$ticket_1 = tribe( Module::class )->get_ticket( $post_id, $ticket_id_1 );
 		$ticket_2 = tribe( Module::class )->get_ticket( $post_id, $ticket_id_2 );
 
-		// Confirm the tickets have no layout set.
+		// Confirm the tickets have no layout set: capacity and raw stock are reset to 1 by the handler.
 		$this->assertEquals( 1, $ticket_1->capacity() );
 		$this->assertEquals( 1, $ticket_1->stock() );
-		$this->assertEquals( 1, $ticket_1->available() );
-		$this->assertEquals( 1, $ticket_1->inventory() );
+		// Removing the layout resets capacity to 1 but leaves the 5 existing attendees in place, so the
+		// ticket is oversold: inventory()/available() (which count attendees) correctly report 0, not 1.
+		$this->assertEquals( 0, $ticket_1->available() );
+		$this->assertEquals( 0, $ticket_1->inventory() );
 
 		$this->assertEquals( 1, $ticket_2->capacity() );
 		$this->assertEquals( 1, $ticket_2->stock() );
-		$this->assertEquals( 1, $ticket_2->available() );
-		$this->assertEquals( 1, $ticket_2->inventory() );
+		$this->assertEquals( 0, $ticket_2->available() );
+		$this->assertEquals( 0, $ticket_2->inventory() );
 
 		// Confirm the global stock is removed.
 		$this->assertFalse( $global_stock->is_enabled() );

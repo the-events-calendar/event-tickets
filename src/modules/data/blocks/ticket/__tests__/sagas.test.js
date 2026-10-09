@@ -1,6 +1,7 @@
 /**
  * External dependencies
  */
+import moment from 'moment';
 import { takeEvery, put, all, select, call, take, fork } from 'redux-saga/effects';
 import { cloneableGenerator } from 'redux-saga/utils';
 
@@ -21,18 +22,21 @@ import * as selectors from '../selectors';
 import {
 	DEFAULT_STATE as TICKET_HEADER_IMAGE_DEFAULT_STATE,
 } from '../reducers/header-image';
-import * as rsvpActions from '@moderntribe/tickets/data/blocks/rsvp/actions';
+import * as rsvpActions from '@moderntribe/tickets/data/blocks/rsvp-shared/actions';
 import {
 	DEFAULT_STATE as RSVP_HEADER_IMAGE_DEFAULT_STATE,
 } from '@moderntribe/tickets/data/blocks/rsvp/reducers/header-image';
 import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
 import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
 import * as utils from '@moderntribe/tickets/data/utils';
-import { wpREST } from '@moderntribe/common/utils/api';
 import {
+	api,
 	moment as momentUtil,
 	time as timeUtil,
+	globals,
 } from '@moderntribe/common/utils';
+const { wpREST } = api;
+const datePickerFormat = globals.tecDateSettings().datepickerFormat;
 import { plugins } from '@moderntribe/common/data';
 import {
 	isTribeEventPostType,
@@ -635,7 +639,7 @@ describe( 'Ticket Block sagas', () => {
 				call( momentUtil.toDatabaseDate, startMoment ),
 			);
 			expect( gen.next( startDate ).value ).toEqual(
-				call( momentUtil.toDate, startMoment ),
+				call( momentUtil.toDate, startMoment, datePickerFormat ),
 			);
 			expect( gen.next( startDateInput ).value ).toEqual(
 				call( momentUtil.toDatabaseTime, startMoment ),
@@ -661,8 +665,10 @@ describe( 'Ticket Block sagas', () => {
 			expect( gen.next().value ).toEqual(
 				call( isTribeEventPostType ),
 			);
-			// Existing tickets do not default their end date to the event start;
-			// the saved end date is loaded via fetchTicket below.
+			/*
+			 * Existing tickets skip the end date default; fetchTicket loads
+			 * their saved end date.
+			 */
 			expect( gen.next( true ).value ).toEqual(
 				select( plugins.selectors.hasPlugin, plugins.constants.TICKETS_PLUS ),
 			);
@@ -711,6 +717,35 @@ describe( 'Ticket Block sagas', () => {
 			expect( clone2.next().done ).toEqual( true );
 		} );
 
+		it( 'should end the sale a day after it starts when the event start is unset', () => {
+			const CLIENT_ID = 'unset-event-start';
+			const action = {
+				payload: {
+					get: ( key ) => ( key === 'ticketId' ? 0 : undefined ),
+					clientId: CLIENT_ID,
+				},
+			};
+			const saleStartMoment = moment( publishDate );
+			const fallbackMoment = saleStartMoment.clone().add( 1, 'day' );
+
+			const gen = sagas.setTicketInitialState( action );
+			gen.next();
+			gen.next( publishDate );
+			gen.next( saleStartMoment );
+			gen.next( startDate );
+			gen.next( startDateInput );
+			gen.next( startTime );
+			gen.next( startTime );
+			gen.next();
+			gen.next( true );
+			expect( gen.next( '' ).value ).toEqual(
+				call( momentUtil.toMoment, '' ),
+			);
+			expect( gen.next( moment.invalid() ).value ).toEqual(
+				call( momentUtil.toDatabaseDate, fallbackMoment ),
+			);
+		} );
+
 		it( 'should set tickets initial state for new ticket', () => {
 			const TICKET_ID = 0;
 			const CLIENT_ID = 'modern-tribe';
@@ -738,7 +773,7 @@ describe( 'Ticket Block sagas', () => {
 				call( momentUtil.toDatabaseDate, startMoment ),
 			);
 			expect( gen.next( startDate ).value ).toEqual(
-				call( momentUtil.toDate, startMoment ),
+				call( momentUtil.toDate, startMoment, datePickerFormat ),
 			);
 			expect( gen.next( startDateInput ).value ).toEqual(
 				call( momentUtil.toDatabaseTime, startMoment ),
@@ -774,7 +809,7 @@ describe( 'Ticket Block sagas', () => {
 				call( momentUtil.toDatabaseDate, endMoment ),
 			);
 			expect( gen.next( endDate ).value ).toEqual(
-				call( momentUtil.toDate, endMoment ),
+				call( momentUtil.toDate, endMoment, datePickerFormat ),
 			);
 			expect( gen.next( endDateInput ).value ).toEqual(
 				call( momentUtil.toDatabaseTime, endMoment ),
@@ -859,7 +894,7 @@ describe( 'Ticket Block sagas', () => {
 				call( momentUtil.toDatabaseDate, startMoment ),
 			);
 			expect( gen.next( startDate ).value ).toEqual(
-				call( momentUtil.toDate, startMoment ),
+				call( momentUtil.toDate, startMoment, datePickerFormat ),
 			);
 			expect( gen.next( startDateInput ).value ).toEqual(
 				call( momentUtil.toDatabaseTime, startMoment ),
@@ -895,7 +930,7 @@ describe( 'Ticket Block sagas', () => {
 				call( momentUtil.toDatabaseDate, endMoment ),
 			);
 			expect( gen.next( endDate ).value ).toEqual(
-				call( momentUtil.toDate, endMoment ),
+				call( momentUtil.toDate, endMoment, datePickerFormat ),
 			);
 			expect( gen.next( endDateInput ).value ).toEqual(
 				call( momentUtil.toDatabaseTime, endMoment ),
@@ -1006,6 +1041,51 @@ describe( 'Ticket Block sagas', () => {
 			);
 			expect( gen.next( false ).value ).toEqual( call( isTribeEventPostType ) );
 			expect( gen.next( true ).done ).toEqual( true );
+		} );
+
+		it( 'should sync a fallback sale end date with the event start', () => {
+			const CLIENT_ID = 'fallback-sale-end';
+			const prevStartDate = '';
+			const eventStart = 'November 25, 2018 12:30:00';
+			const tempEndMoment = { local: jest.fn(), isSame: jest.fn() };
+			const endMoment = { local: jest.fn() };
+			const prevEventStartMoment = { local: jest.fn() };
+			const publishDate = 'November 10, 2018 12:30:00';
+			const startDate = '2018-11-10';
+			const startDateInput = 'November 10, 2018';
+			const startTime = '12:30:00';
+
+			const init = sagas.setTicketInitialState( {
+				payload: {
+					get: ( key ) => ( key === 'ticketId' ? 0 : undefined ),
+					clientId: CLIENT_ID,
+				},
+			} );
+			init.next();
+			init.next( publishDate );
+			init.next( moment( publishDate ) );
+			init.next( startDate );
+			init.next( startDateInput );
+			init.next( startTime );
+			init.next( startTime );
+			init.next();
+			init.next( true );
+			init.next( '' );
+			init.next( moment.invalid() );
+
+			const gen = sagas.syncTicketSaleEndWithEventStart( prevStartDate, CLIENT_ID );
+			gen.next();
+			gen.next( tempEndMoment );
+			gen.next( endMoment );
+			gen.next( { moment: prevEventStartMoment } );
+			gen.next();
+			gen.next( true );
+			// The fallback never matched the invalid previous start, yet it still syncs.
+			expect( gen.next( false ).value ).toEqual( call( isTribeEventPostType ) );
+			expect( gen.next( true ).value ).toEqual(
+				select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart ),
+			);
+			expect( gen.next( eventStart ).value ).toEqual( call( createDates, eventStart ) );
 		} );
 
 		it( 'should sync the sale end date with the event start when it follows the event', () => {
@@ -1234,7 +1314,7 @@ describe( 'Ticket Block sagas', () => {
 			const startDate = momentUtil.toDatabaseDate( startMoment );
 
 			expect( gen.next( startDate ).value ).toEqual(
-				call( momentUtil.toDate, startMoment )
+				call( momentUtil.toDate, startMoment, datePickerFormat )
 			);
 
 			const startDateInput = momentUtil.toDate( startMoment );
@@ -1264,7 +1344,7 @@ describe( 'Ticket Block sagas', () => {
 			const endDate = momentUtil.toDatabaseDate( endMoment );
 
 			expect( gen.next( endDate ).value ).toEqual(
-				call( momentUtil.toDate, endMoment )
+				call( momentUtil.toDate, endMoment, datePickerFormat )
 			);
 
 			const endDateInput = momentUtil.toDate( endMoment );
@@ -1295,7 +1375,7 @@ describe( 'Ticket Block sagas', () => {
 			const endDate2 = momentUtil.toDatabaseDate( endMoment2 );
 
 			expect( gen.next( endDate2 ).value ).toEqual(
-				call( momentUtil.toDate, endMoment2 )
+				call( momentUtil.toDate, endMoment2, datePickerFormat )
 			);
 
 			const endDateInput2 = momentUtil.toDate( endMoment2 );
@@ -2057,5 +2137,4 @@ describe( 'Ticket Block sagas', () => {
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
-	} );
-} );
+	} );} );

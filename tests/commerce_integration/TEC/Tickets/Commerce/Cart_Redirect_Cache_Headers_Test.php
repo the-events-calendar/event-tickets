@@ -21,7 +21,7 @@ class Cart_Redirect_Cache_Headers_Test extends WPTestCase {
 	 * The cart-to-checkout redirect must send no-cache headers before redirecting so edge caches keep
 	 * the cart-hash Set-Cookie header intact.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	public function test_cart_to_checkout_redirect_sends_nocache_headers_before_redirecting(): void {
 		$state = $this->run_redirect_capturing_cache_state();
@@ -45,7 +45,7 @@ class Cart_Redirect_Cache_Headers_Test extends WPTestCase {
 	 * Drives the real Cart::parse_request() redirect branch, capturing whether the no-cache headers
 	 * were emitted and whether that happened before the redirect fired.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return array{nocache_before_redirect: bool, redirected: bool, url: string|null}
 	 */

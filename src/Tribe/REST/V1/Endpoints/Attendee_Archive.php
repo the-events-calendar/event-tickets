@@ -86,10 +86,22 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 	 * @since 4.12.0 Returns 401 Unauthorized if Event Tickets Plus is not loaded.
 	 * @since TBD Gate an Occurrence request by its Event's status instead of the related post status filter.
 	 * @since 5.29.5 Reindexes the attendees so the response always encodes them as a JSON array.
+	 * @since TBD Rejects a provided-but-invalid api_key with a 401 instead of returning public results.
 	 *
 	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
 	 */
 	public function get( WP_REST_Request $request ) {
+		$has_manage_access = tribe( 'tickets.rest-v1.main' )->request_has_manage_access();
+
+		// Fail closed: a provided-but-invalid api_key is a failed authentication, not an anonymous public read.
+		if ( ! $has_manage_access && ! empty( tribe_get_request_var( 'api_key' ) ) ) {
+			return new WP_Error(
+				'tec_tickets_rest_invalid_api_key',
+				__( 'The provided API key is not valid.', 'event-tickets' ),
+				[ 'status' => 401 ]
+			);
+		}
+
 		$query_args = $request->get_query_params();
 		$page       = $request['page'];
 		$per_page   = $request['per_page'];
@@ -126,7 +138,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 			}
 		}
 
-		if ( tribe( 'tickets.rest-v1.main' )->request_has_manage_access() ) {
+		if ( $has_manage_access ) {
 			/*
 			 * A request with manage access is narrowed by the status of the post the Attendee belongs to,
 			 * same as any other request, EXCEPT when it is about a Series Pass Occurrence: the filter

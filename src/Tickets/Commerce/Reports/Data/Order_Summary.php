@@ -334,6 +334,7 @@ class Order_Summary {
 	 * Process the fee item data.
 	 *
 	 * @since 5.21.0
+	 * @since TBD Seed the status row, which previously only ticket items did.
 	 *
 	 * @param string $status_slug The status slug.
 	 * @param array  $item        The item.
@@ -341,6 +342,8 @@ class Order_Summary {
 	 * @return void
 	 */
 	protected function process_fee_item_data( string $status_slug, array $item ) {
+		$this->maybe_initialize_status( $status_slug );
+
 		$amount = Currency_Value::create_from_float( $item['sub_total'] );
 
 		// Add the fee amount to the total fees for the status.
@@ -361,6 +364,7 @@ class Order_Summary {
 	 * Process the coupon item data.
 	 *
 	 * @since 5.21.0
+	 * @since TBD Seed the status row, which previously only ticket items did.
 	 *
 	 * @param string $status_slug The status slug.
 	 * @param array  $item        The item.
@@ -368,6 +372,8 @@ class Order_Summary {
 	 * @return void
 	 */
 	protected function process_coupon_item_data( string $status_slug, array $item ) {
+		$this->maybe_initialize_status( $status_slug );
+
 		$amount = Legacy_Value_Factory::to_currency_value( $item['sub_total'] );
 
 		// Add the discount amount to the total discounts for the status.

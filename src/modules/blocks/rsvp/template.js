@@ -8,73 +8,39 @@ import classNames from 'classnames';
 /**
  * WordPress dependencies
  */
-import { Spinner, Button } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
-import { InspectorControls } from '@wordpress/editor';
+import { Spinner } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
  */
 import RSVPContainer from './container/container';
-import RSVPActionDashboard from './action-dashboard/container';
-import RSVPSettingsDashboard from './settings-dashboard/container';
 import RSVPInactiveBlock from './inactive-block/container';
 import MoveModal from '../../elements/move-modal';
 import { Card } from '../../elements';
-import './style.pcss';
-
-/**
- * Get the block controls for the RSVP block.
- *
- * @since 5.20.0
- * @return {Array} The block controls.
- */
-function getRSVPBlockControls() {
-	const controls = [];
-
-	/**
-	 * Filters the RSVP block controls.
-	 *
-	 * @since 5.20.0
-	 * @param {Array} controls The existing controls.
-	 */
-	return applyFilters( 'tec.tickets.blocks.RSVP.Controls', controls );
-}
-
-/**
- * The RSVP block controls.
- *
- * @since 5.20.0
- * @return {Node} The RSVP block controls.
- */
-const RSVPControls = () => {
-	const controls = getRSVPBlockControls();
-
-	if ( ! controls.length ) {
-		return null;
-	}
-
-	return <InspectorControls key="inspector">{ controls }</InspectorControls>;
-};
+import { RSVPControls } from '../rsvp-shared/utils/block-controls';
+import { renderBlockNotSupported } from '../rsvp-shared/utils/not-supported';
+import { useCloseOverlaysOnDeselect, isRsvpOverlayClick } from '../rsvp-shared/utils/close-overlays';
+import '../rsvp-shared/style.pcss';
 
 /**
  * The RSVP block.
  *
- * @param {Object}   props                    The component properties.
- * @param {string}   props.clientId           The client ID of the block.
- * @param {boolean}  props.created            Whether the RSVP was created or not.
- * @param {boolean}  props.hasRecurrenceRules Whether the event has recurrence rules.
- * @param {Function} props.initializeRSVP     The function to initialize the RSVP.
- * @param {boolean}  props.isAddEditOpen      Whether the add/edit dashboard is open.
- * @param {boolean}  props.isInactive         Whether the RSVP is inactive.
- * @param {boolean}  props.isLoading          Whether the RSVP is loading.
- * @param {boolean}  props.isModalShowing     Whether the move modal is showing.
- * @param {boolean}  props.isSelected         Whether the RSVP is selected.
- * @param {boolean}  props.isSettingsOpen     Whether the settings dashboard is open.
- * @param {boolean}  props.noRsvpsOnRecurring Whether there are no RSVPs on recurring events.
- * @param {number}   props.rsvpId             The RSVP ID.
- * @param {Function} props.setAddEditClosed   The function to set the add/edit dashboard closed.
+ * @param {Object}   props                              The component properties.
+ * @param {string}   props.clientId                     The client ID of the block.
+ * @param {boolean}  props.created                      Whether the RSVP was created or not.
+ * @param {boolean}  props.hasRecurrenceRules           Whether the event has recurrence rules.
+ * @param {Function} props.initializeRSVP               The function to initialize the RSVP.
+ * @param {boolean}  props.isAddEditOpen                Whether the add/edit dashboard is open.
+ * @param {boolean}  props.isInactive                   Whether the RSVP is inactive.
+ * @param {boolean}  props.isLoading                    Whether the RSVP is loading.
+ * @param {boolean}  props.isModalShowing               Whether the move modal is showing.
+ * @param {boolean}  props.isSelected                   Whether the RSVP is selected.
+ * @param {boolean}  props.isSettingsOpen               Whether the settings dashboard is open.
+ * @param {boolean}  props.noRsvpsOnRecurring           Whether there are no RSVPs on recurring events.
+ * @param {number}   props.rsvpId                       The RSVP ID.
+ * @param {Function} props.closeBlockOverlays           Closes every open RSVP overlay.
+ * @param {Function} props.closeBlockOverlaysOnDeselect Closes popovers when the block is deselected.
  * @return {Node} The RSVP block.
  */
 const RSVP = ( {
@@ -90,12 +56,17 @@ const RSVP = ( {
 	isSettingsOpen,
 	noRsvpsOnRecurring,
 	rsvpId,
-	setAddEditClosed,
+	closeBlockOverlays,
+	closeBlockOverlaysOnDeselect,
 } ) => {
 	const rsvpBlockRef = useRef( null );
 
-	const handleAddEditClose = useCallback(
+	const handleOutsideBlockClick = useCallback(
 		( event ) => {
+			if ( isRsvpOverlayClick( event.target ) ) {
+				return;
+			}
+
 			const rsvpButtons = [ 'add-rsvp', 'edit-rsvp', 'attendees-rsvp', 'settings-rsvp' ];
 
 			if (
@@ -103,18 +74,22 @@ const RSVP = ( {
 				! rsvpBlockRef.current.contains( event.target ) &&
 				! rsvpButtons.includes( event.target.id )
 			) {
-				setAddEditClosed();
+				closeBlockOverlays();
 			}
 		},
-		[ setAddEditClosed ]
+		[ closeBlockOverlays ]
 	);
 
-	useEffect( () => {
-		! rsvpId && initializeRSVP();
-		document.addEventListener( 'click', handleAddEditClose );
+	useCloseOverlaysOnDeselect( isSelected, closeBlockOverlaysOnDeselect );
 
-		return () => document.removeEventListener( 'click', handleAddEditClose );
-	}, [ handleAddEditClose, initializeRSVP, rsvpId ] );
+	useEffect( () => {
+		if ( ! rsvpId ) {
+			initializeRSVP();
+		}
+		document.addEventListener( 'click', handleOutsideBlockClick );
+
+		return () => document.removeEventListener( 'click', handleOutsideBlockClick );
+	}, [ handleOutsideBlockClick, initializeRSVP, rsvpId ] );
 
 	const renderBlock = () => {
 		const displayInactive = ! isAddEditOpen && ( ( created && isInactive ) || ! created );
@@ -130,6 +105,17 @@ const RSVP = ( {
 			[]
 		);
 
+		const cardChildren = applyFilters( 'tec.tickets.blocks.RSVP.CardChildren', [], {
+			isAddEditOpen,
+			clientId,
+			isLoading,
+		} );
+
+		const blockPanels = applyFilters( 'tec.tickets.blocks.RSVP.BlockPanels', [], {
+			isSettingsOpen,
+			clientId,
+		} );
+
 		return (
 			<div ref={ rsvpBlockRef }>
 				{ injectedComponentsTicketsBeforeHeader }
@@ -140,46 +126,21 @@ const RSVP = ( {
 						<Card
 							className={ classNames(
 								'tribe-editor__rsvp',
+								'tribe-editor__rsvp-v1',
 								{ 'tribe-editor__rsvp--add-edit-open': isAddEditOpen },
 								{ 'tribe-editor__rsvp--selected': isSelected },
 								{ 'tribe-editor__rsvp--loading': isLoading }
 							) }
 						>
 							<RSVPContainer isSelected={ isSelected } clientId={ clientId } />
-							{ isAddEditOpen && <RSVPActionDashboard clientId={ clientId } /> }
+							{ cardChildren }
 							{ isLoading && <Spinner /> }
 						</Card>
 					)
 				) }
-				{ isSettingsOpen && <RSVPSettingsDashboard /> }
+				{ blockPanels }
 				{ isModalShowing && <MoveModal /> }
 				<RSVPControls />
-			</div>
-		);
-	};
-
-	const renderBlockNotSupported = () => {
-		return (
-			<div className="tribe-editor__not-supported-message">
-				<p className="tribe-editor__not-supported-message-text">
-					{ __( 'RSVPs are not yet supported on recurring events.', 'event-tickets' ) }
-					<br />
-					<a
-						className="tribe-editor__not-supported-message-link"
-						href="https://evnt.is/1b7a"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						{ __( 'Read about our plans for future features.', 'event-tickets' ) }
-					</a>
-					<br />
-					<Button
-						variant="secondary"
-						onClick={ () => wp.data.dispatch( 'core/block-editor' ).removeBlock( clientId ) }
-					>
-						{ __( 'Remove block', 'event-tickets' ) }
-					</Button>
-				</p>
 			</div>
 		);
 	};
@@ -204,7 +165,8 @@ RSVP.propTypes = {
 	isSettingsOpen: PropTypes.bool.isRequired,
 	noRsvpsOnRecurring: PropTypes.bool.isRequired,
 	rsvpId: PropTypes.number.isRequired,
-	setAddEditClosed: PropTypes.func.isRequired,
+	closeBlockOverlays: PropTypes.func.isRequired,
+	closeBlockOverlaysOnDeselect: PropTypes.func.isRequired,
 };
 
 export default RSVP;
