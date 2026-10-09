@@ -290,6 +290,25 @@ describe( 'reconcileSaveResponse', () => {
 		expect( outcome.restore ).toEqual( [ 40, 50 ] );
 	} );
 
+	it( 'does not name the ticket twice when the server\'s reason already names it', () => {
+		const outcome = reconcileSaveResponse( {
+			response: {
+				created: { 0: 101, 1: 102 },
+				errors: [
+					{ part: 'delete', key: 40, message: 'Ticket 40 does not belong to this post.' },
+					{ part: 'move', key: 50, message: 'Ticket 50 could not be moved to post 9.' },
+				],
+			},
+			sent,
+			live,
+		} );
+
+		expect( outcome.notices ).toEqual( [
+			'Ticket 40 does not belong to this post.',
+			'Ticket 50 could not be moved to post 9.',
+		] );
+	} );
+
 	it( 'says a delete or move happened when only what runs after it failed, and brings back no block', () => {
 		const outcome = reconcileSaveResponse( {
 			response: {

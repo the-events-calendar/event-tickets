@@ -322,8 +322,17 @@ export const reconcileSaveResponse = ( { response, sent, live } ) => {
 	const refused = ( part, ticketId ) => {
 		const error = errorFor( part, ticketId );
 
+		if ( ! error ) {
+			return '';
+		}
+
+		// Most of the server's reasons already name the ticket, in whatever language they are in.
+		if ( new RegExp( `(^|\\D)${ ticketId }(\\D|$)` ).test( error ) ) {
+			return error;
+		}
+
 		/* translators: %1$d: the ticket ID, %2$s: the reason it was not saved. */
-		return error ? sprintf( __( 'Ticket %1$d: %2$s', 'event-tickets' ), ticketId, error ) : '';
+		return sprintf( __( 'Ticket %1$d: %2$s', 'event-tickets' ), ticketId, error );
 	};
 	const notices = [
 		...sentDeletes.map( ( id ) => refused( 'delete', id ) ),
