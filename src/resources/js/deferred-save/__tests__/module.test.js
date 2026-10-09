@@ -144,6 +144,30 @@ describe( 'deferred-save module', () => {
 		expect( module.state.toPayload().create ).toHaveLength( 1 );
 	} );
 
+	it( 'checks a lower capacity against the tickets the row says it sold, not against a shared pool', () => {
+		// Shared capacity: 100 for this ticket, 40 left in the pool other tickets sold from, none of this one sold.
+		const row = `<table><tbody class="tribe-tickets-editor-table-tickets-body" data-ticket-type="default">
+			<tr data-ticket-type-id="12" data-ticket-sold="0">
+				<td><div class="tribe-tickets__tickets-editor-ticket-name-title">Capped</div></td>
+				<td class="ticket_capacity">100</td><td class="ticket_available">40</td>
+			</tr></tbody></table>`;
+		const module = load( { savedTables: row } );
+		module.state.stageUpdate( 12, [ [ 'ticket_name', 'Capped' ], [ 'tribe-ticket[capacity]', '50' ] ] );
+		module.render();
+
+		const event = new window.Event( 'submit', { cancelable: true } );
+		document.getElementById( 'post' ).dispatchEvent( event );
+
+		expect( event.defaultPrevented ).toBe( false );
+
+		// Below what this ticket itself sold is still refused.
+		$( 'tr[data-ticket-type-id="12"]' ).attr( 'data-ticket-sold', '60' );
+		const refused = new window.Event( 'submit', { cancelable: true } );
+		document.getElementById( 'post' ).dispatchEvent( refused );
+
+		expect( refused.defaultPrevented ).toBe( true );
+	} );
+
 	it( 'drops the leave warning when the post form submits for real', () => {
 		const module = load();
 		module.state.stageCreate( [ [ 'ticket_name', 'General' ] ] );

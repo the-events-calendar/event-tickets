@@ -468,18 +468,19 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 	} );
 
 	/**
-	 * How many tickets a saved row says are sold, when its capacity and availability are numbers.
+	 * How many of a saved ticket the row says are sold.
+	 *
+	 * Read from the count the row prints, not worked out from its capacity and availability: with shared
+	 * capacity, availability is the whole pool's, so other tickets' sales would count against this one.
 	 *
 	 * @param {number} ticketId The ticket ID.
 	 *
 	 * @return {number|undefined} The sold count, or `undefined` when the row does not say.
 	 */
 	const soldFromRow = ( ticketId ) => {
-		const $row = $panelBase().find( `tr[data-ticket-type-id="${ ticketId }"]` );
-		const capacity = parseInt( $row.find( '.ticket_capacity' ).text().replace( /[^\d]/g, '' ), 10 );
-		const available = parseInt( $row.find( '.ticket_available' ).text().replace( /[^\d]/g, '' ), 10 );
+		const sold = parseInt( $panelBase().find( `tr[data-ticket-type-id="${ ticketId }"]` ).attr( 'data-ticket-sold' ), 10 );
 
-		return Number.isNaN( capacity ) || Number.isNaN( available ) ? undefined : Math.max( 0, capacity - available );
+		return Number.isNaN( sold ) ? undefined : sold;
 	};
 
 	const showValidationNotice = ( problems ) => {
