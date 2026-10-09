@@ -148,7 +148,7 @@ class Editor_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
-	public function should_show_the_date_inputs_only_for_a_specific_date(): void {
+	public function should_show_the_date_inputs_only_for_a_specific_date_and_the_helper_text_only_for_a_relative_one(): void {
 		$this->make_controller()->register();
 		$event_id = $this->create_event( '2027-06-24 19:00:00' );
 
@@ -165,6 +165,23 @@ class Editor_Test extends Controller_Test_Case {
 			$relative = $this->get_dependent( $this->get_element( $form, "ticket_sales_{$end}_value" ) );
 			$this->assertSame( "#ticket_sales_{$end}_mode", $relative->getAttribute( 'data-depends' ) );
 			$this->assertSame( 'relative', $relative->getAttribute( 'data-condition' ) );
+			$this->assertSame( $relative, $this->get_dependent( $this->get_element( $form, "ticket_sales_{$end}_helper" ) ) );
+		}
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_describe_each_relative_field_with_its_helper_text(): void {
+		$this->make_controller()->register();
+		$event_id = $this->create_event( '2027-06-24 19:00:00' );
+
+		$form = $this->render_ticket_form( $event_id );
+
+		foreach ( [ 'start', 'end' ] as $end ) {
+			foreach ( [ 'value', 'unit', 'anchor' ] as $field ) {
+				$this->assertSame( "ticket_sales_{$end}_helper", $this->get_element( $form, "ticket_sales_{$end}_{$field}" )->getAttribute( 'aria-describedby' ) );
+			}
 		}
 	}
 

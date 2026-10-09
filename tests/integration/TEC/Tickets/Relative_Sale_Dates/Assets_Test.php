@@ -2,7 +2,10 @@
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
+use Generator;
+use TEC\Common\StellarWP\Assets\Assets as Asset_Registry;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
+use Tribe__Timezones as Timezones;
 
 class Assets_Test extends Controller_Test_Case {
 	protected $controller_class = Assets::class;
@@ -85,6 +88,101 @@ class Assets_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
+	public function should_localize_the_zone_the_server_resolves_each_manual_offset_to(): void {
+		$data = $this->get_localized_data();
+
+		preg_match_all( '/value="(UTC[+-][^"]*)"/', wp_timezone_choice( '' ), $matches );
+		$this->assertNotEmpty( $matches[1] );
+		$this->assertSame( $matches[1], array_keys( $data['timezones'] ) );
+		foreach ( $data['timezones'] as $offset => $zone ) {
+			$this->assertSame( Timezones::build_timezone_object( $offset )->getName(), $zone, $offset );
+		}
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_localize_the_all_day_times_of_the_default_cutoff(): void {
+		$data = $this->get_localized_data();
+
+		$this->assertSame(
+			[
+				'start'   => '00:00:00',
+				'end'     => '23:59:59',
+				'endDays' => 0,
+			],
+			$data['allDay']
+		);
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_localize_the_all_day_times_of_a_cutoff_that_ends_the_day_on_the_next_one(): void {
+		tribe_update_option( 'multiDayCutoff', '06:00' );
+
+		$data = $this->get_localized_data();
+
+		$this->assertSame(
+			[
+				'start'   => '06:00:00',
+				'end'     => '05:59:59',
+				'endDays' => 1,
+			],
+			$data['allDay']
+		);
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_localize_the_time_format_and_the_helper_texts(): void {
+		update_option( 'time_format', 'H:i' );
+		// `tribe_get_time_format()` keeps the first option value it reads for the rest of the request.
+		tribe_unset_var( 'tribe_get_time_format' );
+
+		$data = $this->get_localized_data();
+
+		$this->assertSame( 'H:i', $data['timeFormat'] );
+		$this->assertSame( 'Sales start %1$s at %2$s', $data['text']['start'] );
+		$this->assertSame( 'Sales end %1$s at %2$s', $data['text']['end'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_localize_the_time_format_through_the_tec_time_format_filter(): void {
+		add_filter( 'tribe_time_format', static fn(): string => 'G\\hi' );
+
+		$this->assertSame( 'G\\hi', $this->get_localized_data()['timeFormat'] );
+	}
+
+	/**
+	 * @return Generator<string,array{0: string, 1: string, 2: string, 3: string}>
+	 */
+	public function tec_date_formats_provider(): Generator {
+		yield 'set' => [ 'j/n/Y', 'j/n', 'j/n/Y', 'j/n' ];
+		// The block editor falls back to the same formats, so both editors show the same text.
+		yield 'blank' => [ '', '', 'F j, Y', 'F j' ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider tec_date_formats_provider
+	 */
+	public function should_localize_the_tec_date_formats( string $with_year, string $no_year, string $expected_with_year, string $expected_no_year ): void {
+		tribe_update_option( 'dateWithYearFormat', $with_year );
+		tribe_update_option( 'dateWithoutYearFormat', $no_year );
+
+		$data = $this->get_localized_data();
+
+		$this->assertSame( $expected_with_year, $data['dateWithYear'] );
+		$this->assertSame( $expected_no_year, $data['dateNoYear'] );
+	}
+
+	/**
+	 * @test
+	 */
 	public function should_not_enqueue_the_classic_script_on_the_page_edit_screen(): void {
 		$this->make_controller()->register();
 		set_current_screen( 'page' );
@@ -104,5 +202,24 @@ class Assets_Test extends Controller_Test_Case {
 		do_action( 'admin_enqueue_scripts', 'edit.php' );
 
 		$this->assertFalse( wp_script_is( Assets::CLASSIC_SCRIPT, 'enqueued' ) );
+	}
+
+	/**
+	 * Builds the data the classic script is localized with, as the browser receives it.
+	 *
+	 * The data is read from the registered asset: the library prints each localized object once per request, so
+	 * printing the script would only show it to the first test.
+	 *
+	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string}} The localized data.
+	 */
+	private function get_localized_data(): array {
+		$this->make_controller()->register();
+
+		$asset    = Asset_Registry::init()->get( Assets::CLASSIC_SCRIPT );
+		$localized = array_column( $asset->get_custom_localize_scripts(), 1, 0 );
+		$localize  = $localized['tec.tickets.relativeSaleDates.classicData'] ?? null;
+		$this->assertIsCallable( $localize );
+
+		return json_decode( wp_json_encode( $localize( $asset ) ), true );
 	}
 }

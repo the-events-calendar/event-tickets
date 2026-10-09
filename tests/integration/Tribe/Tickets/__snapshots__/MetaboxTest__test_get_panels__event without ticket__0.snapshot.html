@@ -196,10 +196,12 @@ New ticket</button><button
 				id="ticket_sales_start_value"
 				value="2"
 				aria-label="Number of units before the event that sales start"
+				aria-describedby="ticket_sales_start_helper"
 			/>
 			<select
 				id="ticket_sales_start_unit"
 				aria-label="Unit of the sales start"
+				aria-describedby="ticket_sales_start_helper"
 			>
 									<option value="60" >minutes</option>
 									<option value="3600" >hours</option>
@@ -209,10 +211,16 @@ New ticket</button><button
 			<select
 				id="ticket_sales_start_anchor"
 				aria-label="What the sales start is measured from"
+				aria-describedby="ticket_sales_start_helper"
 			>
 									<option value="start"  selected='selected'>before the event starts</option>
 									<option value="end" >before the event ends</option>
 							</select>
+			<span
+				class="tec-tickets-relative-sale-dates__helper"
+				id="ticket_sales_start_helper"
+				aria-live="polite"
+			></span>
 		</div>
 		<div
 			class="tribe-dependent tec-tickets-relative-sale-dates__specific"
@@ -275,10 +283,12 @@ New ticket</button><button
 				id="ticket_sales_end_value"
 				value="1"
 				aria-label="Number of units before the event that sales end"
+				aria-describedby="ticket_sales_end_helper"
 			/>
 			<select
 				id="ticket_sales_end_unit"
 				aria-label="Unit of the sales end"
+				aria-describedby="ticket_sales_end_helper"
 			>
 									<option value="60" >minutes</option>
 									<option value="3600"  selected='selected'>hours</option>
@@ -288,10 +298,16 @@ New ticket</button><button
 			<select
 				id="ticket_sales_end_anchor"
 				aria-label="What the sales end is measured from"
+				aria-describedby="ticket_sales_end_helper"
 			>
 									<option value="start"  selected='selected'>before the event starts</option>
 									<option value="end" >before the event ends</option>
 							</select>
+			<span
+				class="tec-tickets-relative-sale-dates__helper"
+				id="ticket_sales_end_helper"
+				aria-live="polite"
+			></span>
 		</div>
 		<div
 			class="tribe-dependent tec-tickets-relative-sale-dates__specific"
