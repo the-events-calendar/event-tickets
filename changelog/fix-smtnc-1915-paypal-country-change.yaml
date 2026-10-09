@@ -1,0 +1,5 @@
+significance: patch
+type: fix
+entry: Resolved an issue where the country selector on the Tickets Commerce
+  PayPal connection screen did not update the Connect button.
+timestamp: 2026-08-26T21:36:27.693Z
