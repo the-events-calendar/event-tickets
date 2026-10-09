@@ -130,6 +130,20 @@ describe( 'deferred-save module', () => {
 		expect( document.querySelector( '.tec-tickets-deferred-save-table' ) ).toBeNull();
 	} );
 
+	it( 'writes a staged ticket into the form at once and stages it only once when the panel refresh fails', () => {
+		const module = load();
+		// The refresh request fails: the panel stays open and `tec.tickets.admin.panels.refreshed` never fires.
+		window.tribe.tickets.editor = { fetchPanels: jest.fn() };
+		const save = () => loadedHooks.applyFilters( 'tec.tickets.admin.ticket.intercepted', false, 'save', {} );
+
+		expect( save() ).toBe( true );
+		expect( $( '#tec-tickets-deferred-save input[type="hidden"]' ).length ).toBeGreaterThan( 0 );
+
+		save();
+
+		expect( module.state.toPayload().create ).toHaveLength( 1 );
+	} );
+
 	it( 'drops the leave warning when the post form submits for real', () => {
 		const module = load();
 		module.state.stageCreate( [ [ 'ticket_name', 'General' ] ] );

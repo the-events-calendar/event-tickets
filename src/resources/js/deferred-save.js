@@ -368,10 +368,12 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 		} else if ( editing ) {
 			state.restageCreate( editing.position, fields );
 		} else {
-			state.stageCreate( fields );
+			// Kept until the refresh to the list lands: if it fails the panel stays open, and saving again restages this one.
+			editing = { position: state.stageCreate( fields ) };
 		}
 
-		editing = null;
+		// The form carries the change now, whether or not the refresh below succeeds.
+		render();
 		$tickets().trigger( 'tec-deferred-save-staged.tribe', [ state.toPayload() ] );
 		editor().fetchPanels( null, 'list' );
 	};
