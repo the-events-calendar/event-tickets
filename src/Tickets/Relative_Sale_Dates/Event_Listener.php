@@ -68,8 +68,8 @@ final class Event_Listener {
 	}
 
 	/**
-	 * Rewrites the resolved dates of an event's ruled tickets and reschedules their sales actions, once the event's
-	 * occurrences are saved.
+	 * Rewrites the resolved dates of an event's ruled tickets and reschedules the sales actions of those whose dates
+	 * changed, once the event's occurrences are saved.
 	 *
 	 * A window the move inverts keeps no sales action: the ticket is off sale until its dates are fixed.
 	 *
@@ -91,7 +91,10 @@ final class Event_Listener {
 				continue;
 			}
 
-			$this->ticket_dates->write( $ticket_id, $post_id, $rule );
+			// Rescheduling fires the sales actions other plugins listen to, so a ticket whose dates stay put keeps its own.
+			if ( ! $this->ticket_dates->write( $ticket_id, $post_id, $rule ) ) {
+				continue;
+			}
 
 			/*
 			 * A move can push a relative boundary past a specific one. The inverted window is kept, so the ticket is

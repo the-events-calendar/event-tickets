@@ -40,9 +40,25 @@ class Ticket_Dates_Test extends WPTestCase {
 		$ticket_end   = $this->get_ticket_end( $ticket_id );
 		$rule         = Rule::from_array( [ 'start' => $this->relative( 3, DAY_IN_SECONDS ), 'end' => $this->relative( 1, DAY_IN_SECONDS ) ] );
 
-		tribe( Ticket_Dates::class )->write( $ticket_id, $post_id, $rule );
+		$changed = tribe( Ticket_Dates::class )->write( $ticket_id, $post_id, $rule );
 
+		$this->assertFalse( $changed );
 		$this->assertSame( $ticket_start, $this->get_ticket_start( $ticket_id ) );
 		$this->assertSame( $ticket_end, $this->get_ticket_end( $ticket_id ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_report_whether_the_write_changed_a_date(): void {
+		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
+		$ticket_id = $this->create_tc_ticket( $event_id );
+		$rule      = Rule::from_array( [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => $this->relative( 1, DAY_IN_SECONDS ) ] );
+
+		$first  = tribe( Ticket_Dates::class )->write( $ticket_id, $event_id, $rule );
+		$second = tribe( Ticket_Dates::class )->write( $ticket_id, $event_id, $rule );
+
+		$this->assertTrue( $first );
+		$this->assertFalse( $second );
 	}
 }
