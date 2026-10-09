@@ -200,6 +200,41 @@ class Editor_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
+	public function should_hand_the_rule_and_the_stored_dates_to_the_tickets_list(): void {
+		$this->make_controller()->register();
+		$event_id = $this->create_event( '2027-06-24 19:00:00' );
+		$rule     = [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => [ 'mode' => 'default' ] ];
+		$ruled    = $this->create_tc_ticket( $event_id, 1, [ 'relative_sale_dates' => wp_json_encode( $rule ) ] );
+		$plain    = $this->create_tc_ticket( $event_id );
+
+		$list = $this->render_tickets_list( $event_id );
+
+		$dates = $this->get_available_dates( $list, $ruled );
+		$this->assertSame( $rule, json_decode( $dates->getAttribute( 'data-relative-sale-dates' ), true ) );
+		$this->assertSame( $this->get_ticket_start( $ruled )[0], $dates->getAttribute( 'data-sale-start' ) );
+		$this->assertSame( $this->get_ticket_end( $ruled )[0], $dates->getAttribute( 'data-sale-end' ) );
+		// Each row's template context is merged into the next one, so the rule must not carry over.
+		$this->assertFalse( $this->get_available_dates( $list, $plain )->hasAttribute( 'data-relative-sale-dates' ) );
+	}
+
+	/**
+	 * Third parties may compare the row markup byte for byte.
+	 *
+	 * @test
+	 */
+	public function should_keep_the_sale_dates_markup_of_a_ticket_without_a_rule(): void {
+		$this->make_controller()->register();
+		$event_id = $this->create_event( '2027-06-24 19:00:00' );
+		$this->create_tc_ticket( $event_id );
+
+		$list = tribe( 'tickets.metabox' )->get_panels( $event_id )['list'];
+
+		$this->assertRegExp( '/<div  class="tribe-tickets__tickets-editor-ticket-available-dates [^"]*" >\n/', $list );
+	}
+
+	/**
+	 * @test
+	 */
 	public function should_keep_what_other_code_renders_around_the_date_fields(): void {
 		$this->make_controller()->register();
 		$event_id = $this->create_event( '2027-06-24 19:00:00' );
@@ -407,6 +442,34 @@ class Editor_Test extends Controller_Test_Case {
 		libxml_clear_errors();
 
 		return new DOMXPath( $document );
+	}
+
+	/**
+	 * @param int $post_id The ticketed post ID.
+	 *
+	 * @return DOMXPath The classic tickets list, ready to query.
+	 */
+	private function render_tickets_list( int $post_id ): DOMXPath {
+		$document = new DOMDocument();
+		// The list is an HTML fragment, which libxml warns about.
+		libxml_use_internal_errors( true );
+		$document->loadHTML( '<?xml encoding="UTF-8">' . tribe( 'tickets.metabox' )->get_panels( $post_id )['list'] );
+		libxml_clear_errors();
+
+		return new DOMXPath( $document );
+	}
+
+	/**
+	 * @param DOMXPath $list      The tickets list.
+	 * @param int      $ticket_id The ticket post ID.
+	 *
+	 * @return DOMElement The element that shows the ticket's sale dates.
+	 */
+	private function get_available_dates( DOMXPath $list, int $ticket_id ): DOMElement {
+		$dates = $list->query( "//*[@data-ticket-type-id='{$ticket_id}']//*[contains(@class, 'tribe-tickets__tickets-editor-ticket-available-dates')]" )->item( 0 );
+		$this->assertInstanceOf( DOMElement::class, $dates, "No sale dates for the ticket {$ticket_id}." );
+
+		return $dates;
 	}
 
 	/**

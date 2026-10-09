@@ -12,7 +12,9 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Relative_Sale_Dates;
 
 use TEC\Tickets\Commerce\Module;
+use Tribe__Date_Utils as Dates;
 use Tribe__Template as Template;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
  * Replaces the sale dates fields of the classic ticket form with the sales window options.
@@ -49,6 +51,53 @@ final class Editor {
 		'unit'   => HOUR_IN_SECONDS,
 		'anchor' => Rule::ANCHOR_START,
 	];
+
+	/**
+	 * The store of the ticket rules.
+	 *
+	 * @since TBD
+	 *
+	 * @var Rule_Store
+	 */
+	private Rule_Store $rule_store;
+
+	/**
+	 * Editor constructor.
+	 *
+	 * @since TBD
+	 *
+	 * @param Rule_Store $rule_store The store of the ticket rules.
+	 */
+	public function __construct( Rule_Store $rule_store ) {
+		$this->rule_store = $rule_store;
+	}
+
+	/**
+	 * Adds to a ticket row of the tickets list the attributes the classic script rewrites its sale dates from.
+	 *
+	 * The attributes are set on every row, empty for a ticket without a rule: the template merges each row's context
+	 * into the values the next row inherits.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $context The context of the ticket row's sale dates template.
+	 *
+	 * @return array<string,mixed> The context, with `relative_sale_dates_attributes`.
+	 */
+	public function filter_available_dates_context( array $context ): array {
+		$ticket = $context['ticket'] ?? null;
+		$rule   = $ticket instanceof Ticket_Object ? Rule::from_stored( $this->rule_store->get( $ticket->ID ) ) : null;
+
+		$context['relative_sale_dates_attributes'] = $rule
+			? [
+				'data-relative-sale-dates' => $rule->to_json(),
+				'data-sale-start'          => $this->get_sale_date( $ticket->start_date ),
+				'data-sale-end'            => $this->get_sale_date( $ticket->end_date ),
+			]
+			: [];
+
+		return $context;
+	}
 
 	/**
 	 * Renders the sales window options in place of the sale dates fields of a Tickets Commerce ticket on an event.
@@ -102,6 +151,19 @@ final class Editor {
 			&& ! in_array( $context['ticket_type'] ?? 'default', array_merge( [ 'rsvp' ], Ticket_Save::EXCLUDED_TICKET_TYPES ), true )
 			// A front-end form, such as Community Events', does not load the script that writes the rule.
 			&& tribe_is_truthy( tec_get_request_var( 'is_admin', is_admin() ) );
+	}
+
+	/**
+	 * Gets a ticket sale date as the classic script reads it.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|null $date The ticket sale date.
+	 *
+	 * @return string The date, `Y-m-d`, or an empty string when the ticket has none.
+	 */
+	private function get_sale_date( ?string $date ): string {
+		return $date ? Dates::date_only( $date, false, Dates::DBDATEFORMAT ) : '';
 	}
 
 	/**

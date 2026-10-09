@@ -4,9 +4,14 @@
  *
  * Displays the available dates of tickets below the ticket title.
  *
- * @var \Tribe__Template              $this   [Global] Template object.
- * @var Tribe__Tickets__Ticket_Object $ticket [Global] The tickets provider instance.
+ * @since TBD Prints the attributes the Relative Sale Dates classic script reads.
+ *
+ * @var \Tribe__Template              $this                           [Global] Template object.
+ * @var Tribe__Tickets__Ticket_Object $ticket                         [Global] The tickets provider instance.
+ * @var array<string,string>          $relative_sale_dates_attributes The attributes of a ticket with a relative sales window.
  */
+
+defined( 'ABSPATH' ) || die();
 
 if ( empty( $ticket->start_date ) ) {
 	return;
@@ -35,6 +40,6 @@ if ( ! empty( $ticket->end_date ) ) {
 }
 
 ?>
-<div <?php tribe_classes( $classes ); ?>>
+<div <?php tec_classes( $classes ); ?><?php tribe_attributes( $relative_sale_dates_attributes ?? [] ); ?>>
 	<?php echo $date_string; ?>
 </div>
