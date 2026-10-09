@@ -212,7 +212,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 	 * @since 4.12.3 Update detecting ticket provider to account for possibly inactive provider.
 	 * @since 5.6.5  Validates if price is greater than 0 when provider is PayPal or Tickets Commerce
 	 * @since 5.9.0    Added support for sale price for Tickets Commerce.
-	 * @since TBD      Rejects ticket data that fails the `tec_tickets_ticket_data_validation` filter.
+	 * @since TBD      Rejects ticket data that `validate_ticket_data()` rejects.
 	 *
 	 * @param WP_REST_Request $request      The request object.
 	 * @param string          $nonce_action The nonce action.
@@ -314,8 +314,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 			}
 		}
 
-		/** This filter is documented in src/Tribe/Metabox.php */
-		$valid = apply_filters( 'tec_tickets_ticket_data_validation', true, absint( $post_id ), array_merge( $ticket_data, [ 'ticket_provider' => $provider->class_name ] ) );
+		$valid = $provider->validate_ticket_data( $post_id, $ticket_data );
 
 		if ( is_wp_error( $valid ) ) {
 			return new WP_Error( $valid->get_error_code(), $valid->get_error_message(), [ 'status' => 400 ] );

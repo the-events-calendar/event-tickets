@@ -283,7 +283,7 @@ class Tribe__Tickets__Metabox {
 	 * @since 4.6.2
 	 * @since 4.10.9 Use customizable ticket name functions.
 	 * @since 5.5.7 Added optional parameter to return values instead of echoing directly.
-	 * @since TBD Rejects ticket data that fails the `tec_tickets_ticket_data_validation` filter.
+	 * @since TBD Rejects ticket data that `validate_ticket_data()` rejects.
 	 *
 	 * @param bool $return_value Optional, flags whether to JSON output directly or return results.
 	 *
@@ -363,18 +363,7 @@ class Tribe__Tickets__Metabox {
 		// If we have a ticket type, set it.
 		$data['ticket_type'] = $ticket_type;
 
-		/**
-		 * Filters whether ticket data can be saved, before an editor or REST request saves it.
-		 *
-		 * Return a `WP_Error` to reject the save: its message is shown to the user, and nothing is saved.
-		 *
-		 * @since TBD
-		 *
-		 * @param true|WP_Error       $valid   `true`, or the error an earlier callback rejected the data with.
-		 * @param int                 $post_id The ticket parent post ID.
-		 * @param array<string,mixed> $data    The ticket data about to be saved, with the class name of its provider in `ticket_provider`.
-		 */
-		$valid = apply_filters( 'tec_tickets_ticket_data_validation', true, $post_id, $data );
+		$valid = $module->validate_ticket_data( $post_id, $data );
 
 		if ( is_wp_error( $valid ) ) {
 			$failed_ticket_output = esc_html( $valid->get_error_message() );
