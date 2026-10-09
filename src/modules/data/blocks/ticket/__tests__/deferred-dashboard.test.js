@@ -70,6 +70,12 @@ describe( 'the deferred Ticket block dashboard', () => {
 		jest.restoreAllMocks();
 	} );
 
+	it( 'lets a valid change be confirmed while a post save is in flight, which keeps track of what it sent', () => {
+		mockEditor.saving = true;
+
+		expect( getIsConfirmDisabled( stateWith(), ownProps ) ).toBe( false );
+	} );
+
 	it( 'keeps a staged ticket on Cancel and drops only the unconfirmed changes', () => {
 		const dispatched = [];
 
