@@ -101,7 +101,7 @@ final class Editor {
 			&& isset( $context['modules'][ Module::class ] )
 			&& ! in_array( $context['ticket_type'] ?? 'default', array_merge( [ 'rsvp' ], Ticket_Save::EXCLUDED_TICKET_TYPES ), true )
 			// A front-end form, such as Community Events', does not load the script that writes the rule.
-			&& tribe_is_truthy( tribe_get_request_var( 'is_admin', is_admin() ) );
+			&& tribe_is_truthy( tec_get_request_var( 'is_admin', is_admin() ) );
 	}
 
 	/**
