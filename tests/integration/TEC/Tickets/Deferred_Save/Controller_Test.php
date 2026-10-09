@@ -54,6 +54,8 @@ class Controller_Test extends Controller_Test_Case {
 	 */
 	public function it_should_be_switched_off_by_the_constant(): void {
 		$this->set_const_value( 'TEC_TICKETS_DEFERRED_SAVE_DISABLED', true );
+		// The filter must not switch the feature back on.
+		add_filter( 'tec_tickets_deferred_save_active', '__return_true', 1000 );
 
 		$this->assertFalse( $this->make_controller()->is_active() );
 	}
@@ -63,6 +65,8 @@ class Controller_Test extends Controller_Test_Case {
 	 */
 	public function it_should_be_switched_off_by_the_environment_variable(): void {
 		putenv( 'TEC_TICKETS_DEFERRED_SAVE_DISABLED=1' );
+		// The filter must not switch the feature back on.
+		add_filter( 'tec_tickets_deferred_save_active', '__return_true', 1000 );
 
 		$this->assertFalse( $this->make_controller()->is_active() );
 	}
@@ -208,5 +212,21 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertFalse( has_action( 'rest_after_insert_late_ticketable', $on_insert ) );
 		$this->assertFalse( has_filter( 'rest_prepare_late_ticketable', $on_prepare ) );
 		$this->assertFalse( has_action( 'rest_api_init', [ $controller, 'hook_rest_saves' ] ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_bind_the_classic_editor_services_once_however_often_rest_starts(): void {
+		$controller = $this->make_controller();
+		$controller->register();
+		$editor  = $this->test_services->get( Classic\Editor::class );
+		$notices = $this->test_services->get( Classic\Notices::class );
+
+		$controller->hook_rest_saves();
+		$controller->hook_rest_saves();
+
+		$this->assertSame( $editor, $this->test_services->get( Classic\Editor::class ) );
+		$this->assertSame( $notices, $this->test_services->get( Classic\Notices::class ) );
 	}
 }

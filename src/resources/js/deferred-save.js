@@ -36,6 +36,8 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 	const $tickets = () => $( '#event_tickets' );
 
 	obj.isEnabled = () => true;
+	// Asked by the panel script before a delete, instead of its "cannot be undone" question.
+	obj.deleteConfirm = strings.deleteConfirm || '';
 	obj.state = state;
 	obj.strings = strings;
 
@@ -132,15 +134,27 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 	};
 
 	/**
-	 * Finds, or creates from the template, the table body staged rows go into.
+	 * Finds the saved table of the ticket's type, or finds or creates from the template the table staged rows go into.
 	 *
-	 * The template is the real list table; it goes where the saved lists are printed, inside the
-	 * list container, and is marked so it can be removed once nothing is staged.
+	 * Each saved list table holds one ticket type, RSVPs in their own. The template is the real list table; it goes
+	 * where the saved lists are printed, inside the list container, and is marked so it can be removed once nothing
+	 * is staged.
+	 *
+	 * @param {string} type The staged ticket's type.
 	 *
 	 * @return {jQuery} The table body.
 	 */
-	const stagedTbody = () => {
-		let $tbody = $panelBase().find( '.tribe-tickets-editor-table-tickets-body' ).first();
+	const stagedTbody = ( type ) => {
+		const $ofType = $panelBase()
+			.find( '.tribe-tickets-editor-table-tickets-body' )
+			.filter( ( _, tbody ) => tbody.getAttribute( 'data-ticket-type' ) === type )
+			.first();
+
+		if ( $ofType.length ) {
+			return $ofType;
+		}
+
+		let $tbody = $panelBase().find( '.tec-tickets-deferred-save-table .tribe-tickets-editor-table-tickets-body' );
 
 		if ( $tbody.length ) {
 			return $tbody;
@@ -179,8 +193,6 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 			return;
 		}
 
-		const $tbody = stagedTbody();
-
 		create.forEach( ( { summary }, position ) => {
 			const row = templateContent( 'tec-tickets-deferred-save-row' );
 			if ( ! row ) {
@@ -192,7 +204,7 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 			fillSlot( tr, 'name', summary.name );
 			fillSlot( tr, 'price', priceLabel( summary.price ) );
 			fillSlot( tr, 'capacity', capacityLabel( summary.capacity ) );
-			$tbody.append( tr );
+			stagedTbody( summary.type || 'default' ).append( tr );
 		} );
 	};
 
@@ -362,10 +374,12 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 		} else if ( editing ) {
 			state.restageCreate( editing.position, fields );
 		} else {
-			state.stageCreate( fields );
+			// Kept until the refresh to the list lands: if it fails the panel stays open, and saving again restages this one.
+			editing = { position: state.stageCreate( fields ) };
 		}
 
-		editing = null;
+		// The form carries the change now, whether or not the refresh below succeeds.
+		render();
 		$tickets().trigger( 'tec-deferred-save-staged.tribe', [ state.toPayload() ] );
 		editor().fetchPanels( null, 'list' );
 	};

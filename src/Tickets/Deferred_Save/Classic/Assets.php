@@ -98,6 +98,7 @@ final class Assets {
 			'inputLimit'      => __( 'There are too many ticket changes to save with the post at once. Save the post with fewer of them staged, then stage the rest.', 'event-tickets' ),
 			'moveBlocked'     => __( 'This ticket has changes waiting for the post save. Save the post before moving it.', 'event-tickets' ),
 			'editBlocked'     => __( 'This ticket moves when the post is saved. Undo the move to edit it.', 'event-tickets' ),
+			'deleteConfirm'   => __( 'Delete this ticket when the post is saved? You can undo this until then.', 'event-tickets' ),
 			'dateFormat'      => (int) \Tribe__Date_Utils::get_datepicker_format_index(),
 			'duplicateFailed' => __( 'The ticket could not be copied. Reload the page and try again.', 'event-tickets' ),
 			'invalidHeading'  => __( 'Some staged tickets are not valid. Fix them before saving the post.', 'event-tickets' ),
