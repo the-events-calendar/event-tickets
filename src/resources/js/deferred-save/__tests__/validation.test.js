@@ -42,7 +42,9 @@ describe( 'validateFields', () => {
 		expect( validateFields( sale( '10.000', '9.750' ), { decimal: '.' } ) ).toEqual( [] );
 		expect( validateFields( sale( '10,000', '9,750' ), { decimal: ',' } ) ).toEqual( [] );
 		expect( validateFields( sale( '10,000', '10,500' ), { decimal: ',' } ) ).toEqual( [ 'sale_price' ] );
-		// The panel takes no thousands separator; one more decimal separator is not a price.
+		// A thousands separator is the other mark; one more decimal separator is not a price.
+		expect( validateFields( fields( { ticket_price: '1,234.50' } ), { decimal: '.' } ) ).toEqual( [] );
+		expect( validateFields( fields( { ticket_price: '1.234,50' } ), { decimal: ',' } ) ).toEqual( [] );
 		expect( validateFields( fields( { ticket_price: '1.000.5' } ), { decimal: '.' } ) ).toEqual( [ 'price' ] );
 	} );
 
