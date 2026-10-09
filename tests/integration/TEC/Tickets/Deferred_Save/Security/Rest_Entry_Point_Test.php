@@ -158,7 +158,7 @@ class Rest_Entry_Point_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_should_sanitize_data_exactly_as_the_ajax_save_does(): void {
+	public function it_should_store_data_exactly_as_the_ajax_save_does(): void {
 		$this->given_two_posts_with_tickets();
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 		$data = $this->ticket_data(
@@ -172,7 +172,8 @@ class Rest_Entry_Point_Test extends WPTestCase {
 		$post_c = static::factory()->post->create();
 		$_POST  = [
 			'post_id'     => $post_c,
-			'data'        => $data,
+			// tickets.js posts the edit form serialized: the request helper sanitizes that string, not the fields in it.
+			'data'        => http_build_query( $data ),
 			'ticket_type' => 'default',
 			'nonce'       => wp_create_nonce( 'add_ticket_nonce' ),
 		];
@@ -193,5 +194,7 @@ class Rest_Entry_Point_Test extends WPTestCase {
 			'price'   => get_post_meta( $id, '_price', true ),
 		];
 		$this->assertSame( $stored( $ajax_id ), $stored( $deferred_id ) );
+		// What reaches a ticket is what the provider and WordPress keep for this user, as on the AJAX path.
+		$this->assertStringContainsString( '<p>Kept</p>', $stored( $deferred_id )['excerpt'] );
 	}
 }
