@@ -83,10 +83,22 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 	 *
 	 * @since 4.12.0 Returns 401 Unauthorized if Event Tickets Plus is not loaded.
 	 * @since 5.29.5 Reindexes the attendees so the response always encodes them as a JSON array.
+	 * @since TBD Rejects a provided-but-invalid api_key with a 401 instead of returning public results.
 	 *
 	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
 	 */
 	public function get( WP_REST_Request $request ) {
+		$has_manage_access = tribe( 'tickets.rest-v1.main' )->request_has_manage_access();
+
+		// Fail closed: a provided-but-invalid api_key is a failed authentication, not an anonymous public read.
+		if ( ! $has_manage_access && ! empty( tribe_get_request_var( 'api_key' ) ) ) {
+			return new WP_Error(
+				'tec_tickets_rest_invalid_api_key',
+				__( 'The provided API key is not valid.', 'event-tickets' ),
+				[ 'status' => 401 ]
+			);
+		}
+
 		$query_args = $request->get_query_params();
 		$page       = $request['page'];
 		$per_page   = $request['per_page'];
@@ -123,7 +135,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 			}
 		}
 
-		if ( tribe( 'tickets.rest-v1.main' )->request_has_manage_access() ) {
+		if ( $has_manage_access ) {
 			$permission                 = Tribe__Tickets__REST__V1__Attendee_Repository::PERMISSION_EDITABLE;
 			$fetch_args['post_status']  = Tribe__Utils__Array::get( $fetch_args, 'post_status', 'any' );
 			$fetch_args['event_status'] = Tribe__Utils__Array::get( $fetch_args, 'event_status', 'any' );
