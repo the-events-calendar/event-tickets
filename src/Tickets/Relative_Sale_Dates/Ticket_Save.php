@@ -292,7 +292,7 @@ final class Ticket_Save {
 			return in_array( $data[ self::DATA_KEY ], [ null, '' ], true );
 		}
 
-		$is_admin = tribe_get_request_var( 'is_admin' );
+		$is_admin = tec_get_request_var( 'is_admin' );
 
 		return null !== $is_admin && ! tribe_is_truthy( $is_admin );
 	}
