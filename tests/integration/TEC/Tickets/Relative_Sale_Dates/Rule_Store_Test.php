@@ -203,4 +203,20 @@ class Rule_Store_Test extends WPTestCase {
 		sort( $ticket_ids );
 		$this->assertSame( [ $ruled_ticket_id, $draft_ticket_id ], $ticket_ids );
 	}
+
+	/**
+	 * Without Tickets Commerce its ticket functions are never loaded, yet The Events Calendar still saves occurrences.
+	 *
+	 * @test
+	 */
+	public function should_find_no_tickets_while_tickets_commerce_is_off(): void {
+		$event_id  = static::factory()->post->create();
+		$ticket_id = static::factory()->post->create( [ 'post_type' => Ticket::POSTTYPE ] );
+		update_post_meta( $ticket_id, Ticket::$event_relation_meta_key, $event_id );
+		tribe( Rule_Store::class )->save( $ticket_id, [ 'start' => [ 'mode' => 'default' ] ] );
+		// After the suite's own filter, which turns Tickets Commerce on for every test.
+		add_filter( 'tec_tickets_commerce_is_enabled', '__return_false', PHP_INT_MAX );
+
+		$this->assertSame( [], tribe( Rule_Store::class )->get_ticket_ids_for_event( $event_id ) );
+	}
 }
