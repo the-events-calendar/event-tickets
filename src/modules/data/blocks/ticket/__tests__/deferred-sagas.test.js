@@ -53,6 +53,7 @@ jest.mock( '@wordpress/hooks', () => ( {
 } ) );
 
 const { doAction, addFilter } = require( '@wordpress/hooks' );
+const { isEqual } = require( 'lodash' );
 
 /**
  * Builds the tickets block state from ticket fields keyed by client ID.
@@ -601,6 +602,24 @@ describe( 'the cross-review of the stack', () => {
 		save( state, { id: 's1', created: {}, errors: [] } );
 
 		expect( doAction ).toHaveBeenCalledWith( 'tec.tickets.blocks.ticketDeleted', 'd', 40 );
+	} );
+
+	it( 'applies the second of two equal error-free answers, which core keeps as the same object only when they are equal', () => {
+		mockEditor.order = [ 'u' ];
+		const state = stateWith( { u: { isStaged: true, hasBeenCreated: true, ticketId: 30 } } );
+		// core-data keeps the previous object when the new value is deep-equal; the server's per-save id tells them apart.
+		const kept = ( previous, next ) => ( isEqual( previous, next ) ? previous : next );
+
+		sagas.rememberBody( 'u', [ [ 'name', 'U' ] ] );
+		const first = { id: 's1', created: {}, errors: [] };
+		save( state, first );
+		sagas.rememberBody( 'u', [ [ 'name', 'U' ] ] );
+		const second = save( state, kept( first, { id: 's2', created: {}, errors: [] } ) );
+
+		expect( second ).toContainEqual( actions.setTicketIsStaged( 'u', false ) );
+		expect( second ).not.toContainEqual(
+			actions.setTicketSaveError( 'u', 'The ticket changes were not saved with the post.' )
+		);
 	} );
 
 	it( 'keeps the payload edits out of the undo stack', () => {
