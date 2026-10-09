@@ -424,6 +424,166 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_check_a_different_payload_routed_under_the_saved_posts_own_id(): void {
+		$this->log_in_as_admin();
+		$post_id           = static::factory()->post->create();
+		$other_post_id     = static::factory()->post->create();
+		$ticket_id         = $this->create_tc_ticket( $post_id, 10 );
+		$foreign_ticket_id = $this->create_tc_ticket( $other_post_id, 10 );
+		add_filter(
+			'tec_tickets_deferred_save_routes',
+			static function ( array $routes, int $routed_post_id ) use ( $foreign_ticket_id ): array {
+				return [ $routed_post_id => new Payload( [ $foreign_ticket_id => [ 'ticket_name' => 'Hijacked' ] ] ) ];
+			},
+			10,
+			2
+		);
+
+		$result = $this->commit()->run( [ 'update' => [ $ticket_id => [ 'ticket_name' => 'Renamed' ] ] ], $post_id );
+
+		$this->assertContains( $foreign_ticket_id, $this->error_keys( $result, 'update' ) );
+		$this->assertNotSame( 'Hijacked', get_the_title( $foreign_ticket_id ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_write_a_route_to_an_occurrence_id_against_the_post_it_was_checked_against(): void {
+		$this->log_in_as_admin();
+		$post_id       = static::factory()->post->create();
+		$other_post_id = static::factory()->post->create();
+		$occurrence_id = $other_post_id + 100000;
+		add_filter(
+			'tec_tickets_filter_event_id',
+			static fn( $id ) => (int) $id === $occurrence_id ? $other_post_id : $id
+		);
+		add_filter(
+			'tec_tickets_deferred_save_routes',
+			static fn( array $routes, int $routed_post_id, Payload $payload ): array => [ $occurrence_id => $payload ],
+			10,
+			3
+		);
+
+		$result = $this->commit()->run( [ 'create' => [ $this->ticket_data( 'On the occurrence' ) ] ], $post_id );
+
+		$this->assertSame( [], $result->get_errors() );
+		$this->assertSame( array_values( $result->get_created() ), tribe_tickets()->where( 'event', $other_post_id )->get_ids() );
+	}
+
+	/**
+	 * @return \Generator<string,array{0:callable}>
+	 */
+	public function routes_that_drop_entries_provider(): \Generator {
+		yield 'no routes' => [ static fn() => [] ];
+		yield 'null' => [ static fn() => null ];
+		yield 'not a payload' => [ static fn( array $routes, int $post_id ) => [ $post_id => 'nope' ] ];
+		yield 'key that is not an int' => [ static fn( array $routes, int $post_id, Payload $payload ) => [ " $post_id" => $payload ] ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider routes_that_drop_entries_provider
+	 */
+	public function it_should_report_every_checked_entry_no_route_replayed( callable $routes ): void {
+		$this->log_in_as_admin();
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+		add_filter( 'tec_tickets_deferred_save_routes', $routes, 10, 3 );
+
+		$result = $this->commit()->run(
+			[
+				'update' => [ $ticket_id => [ 'ticket_name' => 'Renamed' ] ],
+				'create' => [ 3 => $this->ticket_data( 'New' ) ],
+			],
+			$post_id
+		);
+
+		$this->assertSame( [], $result->get_created() );
+		$this->assertSame( [ $ticket_id ], $this->error_keys( $result, 'update' ) );
+		$this->assertSame( [ 3 ], $this->error_keys( $result, 'create' ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_skip_a_routed_payload_whose_keys_are_not_ints_instead_of_failing(): void {
+		$this->log_in_as_admin();
+		$post_id       = static::factory()->post->create();
+		$other_post_id = static::factory()->post->create();
+		add_filter(
+			'tec_tickets_deferred_save_routes',
+			static fn( array $routes, int $routed_post_id, Payload $payload ): array => [
+				$routed_post_id => $payload,
+				$other_post_id  => new Payload( [ 'abc' => [ 'ticket_name' => 'x' ] ], [ 'k' => [ 'ticket_name' => 'y' ] ] ),
+			],
+			10,
+			3
+		);
+
+		$result = $this->commit()->run( [ 'create' => [ $this->ticket_data( 'Kept' ) ] ], $post_id );
+
+		$this->assertSame( [ 0 ], array_keys( $result->get_created() ) );
+		$this->assertSame( [], $result->get_errors(), 'The skipped route carried nothing the checks passed.' );
+		$this->assertSame( [], tribe_tickets()->where( 'event', $other_post_id )->get_ids() );
+	}
+
+	/**
+	 * @return \Generator<string,array{0:mixed}>
+	 */
+	public function invalid_price_provider(): \Generator {
+		yield 'negative' => [ '-25' ];
+		yield 'not a number' => [ 'abc' ];
+		yield 'not a scalar' => [ [ '10' ] ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider invalid_price_provider
+	 */
+	public function it_should_reject_an_invalid_tickets_commerce_price_as_the_block_editor_endpoint_does( $price ): void {
+		$this->log_in_as_admin();
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+
+		$result = $this->commit()->run(
+			[
+				'update' => [ $ticket_id => $this->ticket_data( 'Updated', [ 'ticket_price' => $price ] ) ],
+				'create' => [ $this->ticket_data( 'Created', [ 'ticket_price' => $price ] ) ],
+			],
+			$post_id
+		);
+
+		$this->assertSame( [], $result->get_created() );
+		$this->assertSame( [ $ticket_id ], $this->error_keys( $result, 'update' ) );
+		$this->assertSame( [ 0 ], $this->error_keys( $result, 'create' ) );
+		$this->assertSame( '10', (string) get_post_meta( $ticket_id, '_price', true ) );
+		$this->assertSame( [ $ticket_id ], tribe_tickets()->where( 'event', $post_id )->get_ids() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_save_a_blank_tickets_commerce_price_as_free_and_leave_rsvp_prices_alone(): void {
+		$this->log_in_as_admin();
+		$post_id = static::factory()->post->create();
+
+		$result = $this->commit()->run(
+			[
+				'create' => [
+					$this->ticket_data( 'Free', [ 'ticket_price' => ' ' ] ),
+					$this->ticket_data( 'RSVP', [ 'ticket_price' => 'abc', 'ticket_provider' => RSVP::class ] ),
+				],
+			],
+			$post_id
+		);
+
+		$this->assertSame( [], $result->get_errors() );
+		$this->assertSame( [ 0, 1 ], array_keys( $result->get_created() ) );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_reject_a_payload_with_too_many_entries_as_a_whole(): void {
 		$this->log_in_as_admin();
 		$post_id = static::factory()->post->create();
