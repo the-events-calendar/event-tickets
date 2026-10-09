@@ -696,6 +696,30 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_read_the_tickets_already_on_the_post_once_per_save_not_once_per_create(): void {
+		$this->log_in_as_admin();
+		$post_id = static::factory()->post->create();
+		$lookups = 0;
+		$counter = static function ( \WP_Query $query ) use ( &$lookups ) {
+			// The lookup of every ticket a provider has on the post: its ticket type, IDs only, every status.
+			if ( \TEC\Tickets\Commerce\Ticket::POSTTYPE === $query->get( 'post_type' ) && 'ids' === $query->get( 'fields' ) && 'any' === $query->get( 'post_status' ) ) {
+				++$lookups;
+			}
+		};
+		add_action( 'pre_get_posts', $counter );
+
+		$result = $this->commit()->run(
+			[ 'create' => [ $this->ticket_data( 'One' ), $this->ticket_data( 'Two' ), $this->ticket_data( 'Three' ) ] ],
+			$post_id
+		);
+
+		$this->assertSame( [ 0, 1, 2 ], array_keys( $result->get_created() ) );
+		$this->assertSame( 1, $lookups );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_refuse_updating_and_moving_the_same_ticket(): void {
 		$this->log_in_as_admin();
 		$post_id        = static::factory()->post->create();

@@ -280,8 +280,18 @@ final class Commit {
 			$result = $this->guarded( $result, Parser::MOVE, $ticket_id, fn( Result $r ) => $this->move( $r, $ticket_id, $destination_id ) );
 		}
 
+		// The tickets each provider has on the post, read at the first create and kept in step, not read again for each one.
+		$attached = [];
+
 		foreach ( $payload->get_create() as $position => $data ) {
-			$result = $this->guarded( $result, Parser::CREATE, $position, fn( Result $r ) => $this->create( $r, $post_id, $position, $data ) );
+			$result = $this->guarded(
+				$result,
+				Parser::CREATE,
+				$position,
+				function ( Result $r ) use ( $post_id, $position, $data, &$attached ) {
+					return $this->create( $r, $post_id, $position, $data, $attached );
+				}
+			);
 		}
 
 		foreach ( $payload->get_delete() as $ticket_id ) {
@@ -411,12 +421,14 @@ final class Commit {
 	 * @param int                 $post_id  The post being saved.
 	 * @param int                 $position The position of the entry in the `create` part.
 	 * @param array<string,mixed> $data     The ticket data, as the editor sent it.
+	 * @param array<string,int[]> $attached The tickets each provider has on the post, by provider class, read
+	 *                                      once per save and updated with every ticket this save creates.
 	 *
 	 * @return Result The result with this entry folded in.
 	 *
 	 * @throws \Throwable When the provider throws before the ticket is on the post; `guarded()` reports it.
 	 */
-	private function create( Result $result, int $post_id, int $position, array $data ): Result {
+	private function create( Result $result, int $post_id, int $position, array $data, array &$attached ): Result {
 		$provider = empty( $data['ticket_provider'] ) || ! is_string( $data['ticket_provider'] )
 			? false
 			: Tickets::get_ticket_provider_instance( $data['ticket_provider'] );
@@ -441,7 +453,9 @@ final class Commit {
 		unset( $data['ticket_id'] );
 		$data['ticket_type'] = $this->ticket_type( $data, 'default' );
 		// What is on the post already, to tell the ticket this save adds if something throws once it is there.
-		$before = $this->attached_ids( $provider, $post_id );
+		$provider_class              = get_class( $provider );
+		$attached[ $provider_class ] ??= $this->attached_ids( $provider, $post_id );
+		$before                      = $attached[ $provider_class ];
 
 		try {
 			$ticket_id = $provider->ticket_add( $post_id, $data );
@@ -458,6 +472,7 @@ final class Commit {
 			tribe( 'tickets.handler' )->toggle_manual_update_flag( false );
 			$this->log_failure( 'Deferred ticket save: a ticket was created, then its save failed before it finished.', $e, [ 'ticket_id' => $added[0] ] );
 			$this->remember_key( $added[0], $key );
+			$attached[ $provider_class ][] = $added[0];
 
 			return $result
 				->with_created( $position, $added[0] )
@@ -470,6 +485,7 @@ final class Commit {
 
 		$ticket_id = (int) $ticket_id;
 		$this->remember_key( $ticket_id, $key );
+		$attached[ $provider_class ][] = $ticket_id;
 		$result = $result->with_created( $position, $ticket_id );
 
 		return $this->fire_added( $post_id, $ticket_id, $data )
