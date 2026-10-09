@@ -62,6 +62,13 @@ let sent = null;
 let lastApplied = null;
 
 /**
+ * The ticket block each staged delete removed, by ticket ID: `ticketDeleted` names the block, as the REST save did.
+ *
+ * @type {Object<number, string>}
+ */
+const deletedBlocks = {};
+
+/**
  * The payload edits are bookkeeping, not changes the admin made: undoing one would leave the post clean while
  * its tickets still say they are not saved.
  *
@@ -322,6 +329,7 @@ export function* stageTicket( clientId, entries ) {
  */
 export function* stageDelete( clientId, ticketId ) {
 	forgetBody( clientId );
+	deletedBlocks[ ticketId ] = clientId;
 	yield put( actions.stageTicketDelete( ticketId ) );
 	yield call( refreshPayload );
 }
@@ -454,6 +462,7 @@ export function* prepareSave( edits, resolve ) {
 				updates,
 				bodies: { ...bodies },
 				deletes: [ ...payload.delete ],
+				deletedBlocks: { ...deletedBlocks },
 				moves: { ...payload.move },
 				positions: sentPositions,
 				details: sentDetails,
@@ -568,7 +577,21 @@ export function* applySaveResponse( response, sentNow ) {
 		}
 	}
 
-	outcome.deleted.forEach( ( ticketId ) => runHook( 'tec.tickets.blocks.ticketDeleted', null, ticketId ) );
+	outcome.deleted.forEach( ( ticketId ) => {
+		const deletedBlocksSent = sentNow.deletedBlocks || {};
+
+		/**
+		 * Fires once a staged delete was committed with the post save, not when the block is removed.
+		 *
+		 * @since 5.20.0
+		 * @since TBD On a post that defers ticket saves, fires after the post save that deleted the ticket.
+		 *
+		 * @param {string|null} clientId The removed ticket block's client ID; `null` when it is not known.
+		 * @param {number}      ticketId The ticket's ID.
+		 */
+		runHook( 'tec.tickets.blocks.ticketDeleted', hasOwn( deletedBlocksSent, ticketId ) ? deletedBlocksSent[ ticketId ] : null, ticketId );
+		delete deletedBlocks[ ticketId ];
+	} );
 	outcome.notices.forEach( showNotice );
 	outcome.restore.forEach( restoreTicketBlock );
 }

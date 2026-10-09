@@ -594,6 +594,15 @@ describe( 'the cross-review of the stack', () => {
 		return run( state, sagas.applyLastSaveResponse );
 	};
 
+	it( 'tells ticketDeleted which block the deleted ticket was in', () => {
+		const state = stateWith( {}, { deletes: [ 40 ] } );
+		run( state, sagas.stageDelete, 'd', 40 );
+
+		save( state, { id: 's1', created: {}, errors: [] } );
+
+		expect( doAction ).toHaveBeenCalledWith( 'tec.tickets.blocks.ticketDeleted', 'd', 40 );
+	} );
+
 	it( 'keeps the payload edits out of the undo stack', () => {
 		mockEditor.order = [ 'a' ];
 		sagas.rememberBody( 'a', [ [ 'name', 'A' ] ] );
