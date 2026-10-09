@@ -36,6 +36,8 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 	const $tickets = () => $( '#event_tickets' );
 
 	obj.isEnabled = () => true;
+	// Asked by the panel script before a delete, instead of its "cannot be undone" question.
+	obj.deleteConfirm = strings.deleteConfirm || '';
 	obj.state = state;
 
 	/**

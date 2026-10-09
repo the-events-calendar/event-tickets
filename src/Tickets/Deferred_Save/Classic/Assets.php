@@ -90,14 +90,15 @@ final class Assets {
 	 */
 	public function localized_data(): array {
 		return [
-			'free'         => __( 'Free', 'event-tickets' ),
-			'unlimited'    => __( 'Unlimited', 'event-tickets' ),
-			'leaveMessage' => __( 'You have ticket changes that are not saved yet. Leave without saving them?', 'event-tickets' ),
+			'free'          => __( 'Free', 'event-tickets' ),
+			'unlimited'     => __( 'Unlimited', 'event-tickets' ),
+			'leaveMessage'  => __( 'You have ticket changes that are not saved yet. Leave without saving them?', 'event-tickets' ),
 			// PHP drops the fields past this count without a word; the module refuses a submit that would pass it.
-			'maxInputVars' => (int) ini_get( 'max_input_vars' ),
-			'inputLimit'   => __( 'There are too many ticket changes to save with the post at once. Save the post with fewer of them staged, then stage the rest.', 'event-tickets' ),
-			'moveBlocked'  => __( 'This ticket has changes waiting for the post save. Save the post before moving it.', 'event-tickets' ),
-			'editBlocked'  => __( 'This ticket moves when the post is saved. Undo the move to edit it.', 'event-tickets' ),
+			'maxInputVars'  => (int) ini_get( 'max_input_vars' ),
+			'inputLimit'    => __( 'There are too many ticket changes to save with the post at once. Save the post with fewer of them staged, then stage the rest.', 'event-tickets' ),
+			'moveBlocked'   => __( 'This ticket has changes waiting for the post save. Save the post before moving it.', 'event-tickets' ),
+			'editBlocked'   => __( 'This ticket moves when the post is saved. Undo the move to edit it.', 'event-tickets' ),
+			'deleteConfirm' => __( 'Delete this ticket when the post is saved? You can undo this until then.', 'event-tickets' ),
 		];
 	}
 

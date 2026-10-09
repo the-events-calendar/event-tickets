@@ -38,7 +38,7 @@ class Assets_Test extends WPTestCase {
 		$data = tribe( Assets::class )->localized_data();
 
 		$this->assertSame( (int) ini_get( 'max_input_vars' ), $data['maxInputVars'] );
-		foreach ( [ 'inputLimit', 'moveBlocked', 'editBlocked' ] as $key ) {
+		foreach ( [ 'inputLimit', 'moveBlocked', 'editBlocked', 'deleteConfirm' ] as $key ) {
 			$this->assertIsString( $data[ $key ] );
 			$this->assertNotSame( '', $data[ $key ], $key );
 		}

@@ -26,7 +26,7 @@ const load = () => {
 	window.ajaxurl = window.TribeTickets.ajaxurl;
 	window.tribe_ticket_notices = { confirm_alert: 'Delete?' };
 	window.tribe = { tickets: {}, validation: { hasErrors: () => false } };
-	window.confirm = () => true;
+	window.confirm = jest.fn( () => true );
 	$.post = jest.fn();
 	jest.isolateModules( () => {
 		hooks = require( '@wordpress/hooks' );
@@ -69,5 +69,22 @@ describe( 'tec.tickets.admin.ticket.intercepted', () => {
 		if ( 'save' !== action ) {
 			expect( String( seen[ 0 ][ 1 ] ) ).toBe( '12' );
 		}
+	} );
+
+	it( 'asks about a staged delete, which can be undone, on a deferred post', () => {
+		load();
+		window.tribe.tickets.deferredSave = { deleteConfirm: 'Delete this ticket when the post is saved?' };
+
+		$( '.ticket_delete' ).trigger( 'click' );
+
+		expect( window.confirm ).toHaveBeenCalledWith( 'Delete this ticket when the post is saved?' );
+	} );
+
+	it( 'asks the usual question when the post does not stage ticket changes', () => {
+		load();
+
+		$( '.ticket_delete' ).trigger( 'click' );
+
+		expect( window.confirm ).toHaveBeenCalledWith( 'Delete?' );
 	} );
 } );
