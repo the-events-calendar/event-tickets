@@ -84,6 +84,43 @@ class Editor_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
+	public function should_name_each_unit_in_the_plural_form_of_the_number(): void {
+		$this->make_controller()->register();
+		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
+		$ticket_id = $this->create_tc_ticket( $event_id );
+		tribe( Rule_Store::class )->save( $ticket_id, [ 'start' => $this->relative( 1, DAY_IN_SECONDS ), 'end' => $this->relative( 3, HOUR_IN_SECONDS ) ] );
+
+		$form = $this->render_ticket_form( $event_id, $ticket_id );
+
+		$this->assertSame( [ 'minute', 'hour', 'day', 'week' ], $this->get_option_labels( $form, 'ticket_sales_start_unit' ) );
+		$this->assertSame( [ 'minutes', 'hours', 'days', 'weeks' ], $this->get_option_labels( $form, 'ticket_sales_end_unit' ) );
+	}
+
+	/**
+	 * The script names the units again as the number changes, with this msgid and context.
+	 *
+	 * @test
+	 */
+	public function should_name_each_unit_with_the_translation_the_script_uses(): void {
+		$this->make_controller()->register();
+		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
+		$ticket_id = $this->create_tc_ticket( $event_id );
+		tribe( Rule_Store::class )->save( $ticket_id, [ 'start' => $this->relative( 1, WEEK_IN_SECONDS ), 'end' => [ 'mode' => 'default' ] ] );
+		add_filter(
+			'ngettext_with_context_event-tickets',
+			static fn( $translation, $single, $plural, $number, $context ) => 'week' === $single && 'Unit of a relative ticket sale date.' === $context ? 'semana' : $translation,
+			10,
+			5
+		);
+
+		$form = $this->render_ticket_form( $event_id, $ticket_id );
+
+		$this->assertContains( 'semana', $this->get_option_labels( $form, 'ticket_sales_start_unit' ) );
+	}
+
+	/**
+	 * @test
+	 */
 	public function should_leave_the_sales_window_options_out_of_the_submitted_fields(): void {
 		$this->make_controller()->register();
 		$event_id = $this->create_event( '2027-06-24 19:00:00' );
@@ -496,6 +533,22 @@ class Editor_Test extends Controller_Test_Case {
 		$this->assertInstanceOf( DOMElement::class, $option, "No option selected in {$id}." );
 
 		return $option->getAttribute( 'value' );
+	}
+
+	/**
+	 * @param DOMXPath $form The ticket form.
+	 * @param string   $id   The select id.
+	 *
+	 * @return string[] The labels of the select's options.
+	 */
+	private function get_option_labels( DOMXPath $form, string $id ): array {
+		$labels = [];
+
+		foreach ( $form->query( "//select[@id='{$id}']/option" ) as $option ) {
+			$labels[] = trim( $option->textContent );
+		}
+
+		return $labels;
 	}
 
 	/**

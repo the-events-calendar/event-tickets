@@ -1,5 +1,8 @@
 global.DateFormatter = require( 'php-date-formatter' );
 
+// The real package, not the shared mock, so a test can hand it the translations the template uses.
+jest.unmock( '@wordpress/i18n' );
+
 const UNIT_DAYS = 86400;
 const UNIT_WEEKS = 604800;
 
@@ -26,12 +29,17 @@ function renderMetabox() {
 /**
  * Loads the classic editor script and waits for its DOM-ready callbacks to run.
  *
+ * @param {Object|null} localeData The `event-tickets` translations to load the script with, or `null` for none.
+ *
  * @return {Promise<Object>} Resolves, once the script is set up, to the hooks module the script was loaded with.
  */
-async function loadScript() {
+async function loadScript( localeData = null ) {
 	let hooks;
 
 	jest.isolateModules( () => {
+		if ( localeData ) {
+			require( '@wordpress/i18n' ).setLocaleData( localeData, 'event-tickets' );
+		}
 		require( '@tec/tickets/relative-sale-dates/classic/index' );
 		hooks = require( '@wordpress/hooks' );
 	} );
@@ -119,6 +127,17 @@ function isEndMarkedInvalid() {
 	const endMode = document.getElementById( 'ticket_sales_end_mode' );
 
 	return 'true' === endMode.getAttribute( 'aria-invalid' ) && 'ticket_sales_window_error' === endMode.getAttribute( 'aria-describedby' );
+}
+
+/**
+ * @param {string} end The end of the window, `start` or `end`.
+ *
+ * @return {string} The name of the unit selected for that end.
+ */
+function getUnitLabel( end ) {
+	const unit = document.getElementById( `ticket_sales_${ end }_unit` );
+
+	return unit.options[ unit.selectedIndex ].textContent;
 }
 
 /**
@@ -224,6 +243,37 @@ describe( 'classic editor script', () => {
 		await loadScript();
 
 		expect( getHelperText( 'start' ) ).toBe( '' );
+	} );
+
+	it( 'should name the unit in the plural form of the number', async () => {
+		renderEventForm();
+		await loadScript();
+
+		expect( getUnitLabel( 'start' ) ).toBe( 'weeks' );
+		expect( getUnitLabel( 'end' ) ).toBe( 'hour' );
+	} );
+
+	it( 'should change the unit name when the number changes', async () => {
+		renderEventForm();
+		await loadScript();
+
+		jQuery( '#ticket_sales_start_value' ).val( '1' ).trigger( 'input' );
+		jQuery( '#ticket_sales_end_value' ).val( '3' ).trigger( 'input' );
+
+		expect( getUnitLabel( 'start' ) ).toBe( 'week' );
+		expect( getUnitLabel( 'end' ) ).toBe( 'hours' );
+	} );
+
+	it( 'should name the unit with the translation the template uses', async () => {
+		renderEventForm();
+		await loadScript( {
+			'': { domain: 'event-tickets', plural_forms: 'nplurals=2; plural=(n != 1);' },
+			'Unit of a relative ticket sale date.\u0004week': [ 'semana', 'semanas' ],
+		} );
+
+		jQuery( '#ticket_sales_start_value' ).val( '1' ).trigger( 'input' );
+
+		expect( getUnitLabel( 'start' ) ).toBe( 'semana' );
 	} );
 
 	it( 'should write the sale dates of a listed ticket from the event dates in the form', async () => {
