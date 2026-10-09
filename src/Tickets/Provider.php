@@ -113,6 +113,9 @@ class Provider extends Service_Provider {
 		// Migrations.
 		$this->container->register( Migrations_Controller::class );
 
+		// Deferred Ticket Save.
+		$this->container->register( Deferred_Save\Controller::class );
+
 		$this->has_registered = true;
 
 		return true;
