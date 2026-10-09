@@ -143,6 +143,49 @@ final class Rule_Store {
 	}
 
 	/**
+	 * Saves a rule of any kind under the keys its kind stores it in, leaving the rules of the other kinds as they are.
+	 *
+	 * @since TBD
+	 *
+	 * @param int  $ticket_id The ticket post ID.
+	 * @param Rule $rule      The rule.
+	 *
+	 * @return void
+	 */
+	public function save_rule( int $ticket_id, Rule $rule ): void {
+		$key = $rule->get_kind()->get_store_key();
+
+		if ( null === $key ) {
+			$this->save_sales_window( $ticket_id, $rule );
+
+			return;
+		}
+
+		$this->save( $ticket_id, [ $key => $rule->to_array() ] );
+	}
+
+	/**
+	 * Removes the rule of a kind, leaving the rules of the other kinds as they are.
+	 *
+	 * @since TBD
+	 *
+	 * @param int         $ticket_id The ticket post ID.
+	 * @param Window_Kind $kind      The kind of the rule to remove.
+	 * @param bool        $keeps_end Whether the save that removes a sales window rule sends an end date of its own.
+	 *
+	 * @return bool Whether a rule of the kind was stored.
+	 */
+	public function remove_rule( int $ticket_id, Window_Kind $kind, bool $keeps_end = false ): bool {
+		$key = $kind->get_store_key();
+
+		if ( null === $key ) {
+			return $this->remove_sales_window( $ticket_id, $keeps_end );
+		}
+
+		return $this->remove( $ticket_id, [ $key ] );
+	}
+
+	/**
 	 * Saves the sales window rule, and keeps an end the rule now leaves to the ticket where it is.
 	 *
 	 * A relative or default end had its date written by the rule, so it carries no manual-update flag, and switching it
@@ -156,7 +199,7 @@ final class Rule_Store {
 	 *
 	 * @return void
 	 */
-	public function save_sales_window( int $ticket_id, Rule $rule ): void {
+	private function save_sales_window( int $ticket_id, Rule $rule ): void {
 		$previous = Rule::from_stored( $this->get( $ticket_id ) );
 
 		$this->save(
@@ -190,14 +233,18 @@ final class Rule_Store {
 	 * @param int  $ticket_id The ticket post ID.
 	 * @param bool $keeps_end Whether the save that removes the rule sends an end date of its own.
 	 *
-	 * @return void
+	 * @return bool Whether a sales window rule was stored.
 	 */
-	public function remove_sales_window( int $ticket_id, bool $keeps_end ): void {
-		if ( ! $this->remove( $ticket_id, [ 'start', 'end' ] ) || $keeps_end ) {
-			return;
+	private function remove_sales_window( int $ticket_id, bool $keeps_end ): bool {
+		if ( ! $this->remove( $ticket_id, [ 'start', 'end' ] ) ) {
+			return false;
 		}
 
-		delete_post_meta( $ticket_id, $this->tickets_handler->key_manual_updated, $this->tickets_handler->key_end_date );
+		if ( ! $keeps_end ) {
+			delete_post_meta( $ticket_id, $this->tickets_handler->key_manual_updated, $this->tickets_handler->key_end_date );
+		}
+
+		return true;
 	}
 
 	/**

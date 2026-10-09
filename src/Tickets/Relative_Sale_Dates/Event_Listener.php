@@ -35,7 +35,7 @@ final class Event_Listener {
 	private Rule_Store $rule_store;
 
 	/**
-	 * The resolver and writer of the ticket dates.
+	 * The writer of the dates of every kind of window.
 	 *
 	 * @since TBD
 	 *
@@ -58,7 +58,7 @@ final class Event_Listener {
 	 * @since TBD
 	 *
 	 * @param Rule_Store     $rule_store     The store of the ticket rules.
-	 * @param Ticket_Dates   $ticket_dates   The resolver and writer of the ticket dates.
+	 * @param Ticket_Dates   $ticket_dates   The writer of the dates of every kind of window.
 	 * @param Ticket_Actions $ticket_actions The scheduler of the sales actions.
 	 */
 	public function __construct( Rule_Store $rule_store, Ticket_Dates $ticket_dates, Ticket_Actions $ticket_actions ) {
@@ -68,8 +68,8 @@ final class Event_Listener {
 	}
 
 	/**
-	 * Rewrites the resolved dates of an event's ruled tickets and reschedules the sales actions of those whose dates
-	 * changed, once the event's occurrences are saved.
+	 * Rewrites the resolved dates of every rule of an event's ruled tickets and reschedules the sales actions of those
+	 * whose sales window dates changed, once the event's occurrences are saved.
 	 *
 	 * A window the move inverts keeps no sales action: the ticket is off sale until its dates are fixed.
 	 *
@@ -85,14 +85,19 @@ final class Event_Listener {
 		update_meta_cache( 'post', $ticket_ids );
 
 		foreach ( $ticket_ids as $ticket_id ) {
-			$rule = Rule::from_stored( $this->rule_store->get( $ticket_id ) );
+			$stored     = $this->rule_store->get( $ticket_id );
+			$reschedule = false;
 
-			if ( ! $rule ) {
-				continue;
+			foreach ( Window_Kind::all() as $kind ) {
+				$rule = Rule::from_stored( $stored, $kind );
+
+				if ( $rule && $this->ticket_dates->write( $ticket_id, $post_id, $rule ) && $kind->has_sales_actions() ) {
+					$reschedule = true;
+				}
 			}
 
-			// Rescheduling fires the sales actions other plugins listen to, so a ticket whose dates stay put keeps its own.
-			if ( ! $this->ticket_dates->write( $ticket_id, $post_id, $rule ) ) {
+			// Rescheduling fires the sales actions other plugins listen to, so a ticket whose sales dates stay put keeps its own.
+			if ( ! $reschedule ) {
 				continue;
 			}
 

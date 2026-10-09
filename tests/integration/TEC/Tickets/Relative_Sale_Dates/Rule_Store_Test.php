@@ -91,7 +91,7 @@ class Rule_Store_Test extends WPTestCase {
 		tribe( Rule_Store::class )->save( $ticket_id, [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ] );
 		add_post_meta( $ticket_id, $tickets_handler->key_manual_updated, $tickets_handler->key_end_date );
 
-		tribe( Rule_Store::class )->remove_sales_window( $ticket_id, false );
+		tribe( Rule_Store::class )->remove_rule( $ticket_id, Window_Kind::sales(), false );
 
 		$this->assertSame( [], tribe( Rule_Store::class )->get( $ticket_id ) );
 		$this->assertFalse( $tickets_handler->has_manual_update( $ticket_id, $tickets_handler->key_end_date ) );
@@ -106,7 +106,7 @@ class Rule_Store_Test extends WPTestCase {
 		tribe( Rule_Store::class )->save( $ticket_id, [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ] );
 		add_post_meta( $ticket_id, $tickets_handler->key_manual_updated, $tickets_handler->key_end_date );
 
-		tribe( Rule_Store::class )->remove_sales_window( $ticket_id, true );
+		tribe( Rule_Store::class )->remove_rule( $ticket_id, Window_Kind::sales(), true );
 
 		$this->assertSame( [], tribe( Rule_Store::class )->get( $ticket_id ) );
 		$this->assertTrue( $tickets_handler->has_manual_update( $ticket_id, $tickets_handler->key_end_date ) );
@@ -120,7 +120,7 @@ class Rule_Store_Test extends WPTestCase {
 		$tickets_handler = tribe( 'tickets.handler' );
 		add_post_meta( $ticket_id, $tickets_handler->key_manual_updated, $tickets_handler->key_end_date );
 
-		tribe( Rule_Store::class )->remove_sales_window( $ticket_id, false );
+		tribe( Rule_Store::class )->remove_rule( $ticket_id, Window_Kind::sales(), false );
 
 		$this->assertTrue( $tickets_handler->has_manual_update( $ticket_id, $tickets_handler->key_end_date ) );
 	}
@@ -156,7 +156,7 @@ class Rule_Store_Test extends WPTestCase {
 			tribe( Rule_Store::class )->save( $ticket_id, [ 'start' => $start, 'end' => $previous_end ] );
 		}
 
-		tribe( Rule_Store::class )->save_sales_window( $ticket_id, Rule::from_array( [ 'start' => $start, 'end' => $end ] ) );
+		tribe( Rule_Store::class )->save_rule( $ticket_id, Rule::from_array( [ 'start' => $start, 'end' => $end ] ) );
 
 		$this->assertSame( [ 'start' => $start, 'end' => $end ], tribe( Rule_Store::class )->get( $ticket_id ) );
 		$this->assertSame( $flagged, $tickets_handler->has_manual_update( $ticket_id, $tickets_handler->key_end_date ) );
@@ -171,9 +171,59 @@ class Rule_Store_Test extends WPTestCase {
 		tribe( Rule_Store::class )->save( $ticket_id, [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ] );
 		add_post_meta( $ticket_id, $tickets_handler->key_manual_updated, $tickets_handler->key_end_date );
 
-		tribe( Rule_Store::class )->save_sales_window( $ticket_id, Rule::from_array( [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'specific' ] ] ) );
+		tribe( Rule_Store::class )->save_rule( $ticket_id, Rule::from_array( [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'specific' ] ] ) );
 
 		$this->assertSame( [ $tickets_handler->key_end_date ], get_post_meta( $ticket_id, $tickets_handler->key_manual_updated ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_save_the_sale_price_rule_under_its_key_next_to_the_sales_window(): void {
+		$ticket_id    = static::factory()->post->create();
+		$sales_window = [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ];
+		$sale_price   = [ 'start' => [ 'mode' => 'now' ], 'end' => [ 'mode' => 'specific' ] ];
+		tribe( Rule_Store::class )->save( $ticket_id, $sales_window );
+
+		tribe( Rule_Store::class )->save_rule( $ticket_id, Rule::from_array( $sale_price, Window_Kind::sale_price() ) );
+
+		$this->assertSame( array_merge( $sales_window, [ 'sale_price' => $sale_price ] ), tribe( Rule_Store::class )->get( $ticket_id ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_remove_only_the_sale_price_rule_and_leave_the_end_marker(): void {
+		$ticket_id       = static::factory()->post->create();
+		$tickets_handler = tribe( 'tickets.handler' );
+		$sales_window    = [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ];
+		tribe( Rule_Store::class )->save( $ticket_id, array_merge( $sales_window, [ 'sale_price' => [ 'start' => [ 'mode' => 'now' ] ] ] ) );
+		add_post_meta( $ticket_id, $tickets_handler->key_manual_updated, $tickets_handler->key_end_date );
+
+		$removed = tribe( Rule_Store::class )->remove_rule( $ticket_id, Window_Kind::sale_price() );
+
+		$this->assertTrue( $removed );
+		$this->assertSame( $sales_window, tribe( Rule_Store::class )->get( $ticket_id ) );
+		$this->assertTrue( $tickets_handler->has_manual_update( $ticket_id, $tickets_handler->key_end_date ) );
+	}
+
+	/**
+	 * @return Generator<string,array{0: Window_Kind}>
+	 */
+	public function kinds_provider(): Generator {
+		foreach ( Window_Kind::all() as $kind ) {
+			yield $kind->get_id() => [ $kind ];
+		}
+	}
+
+	/**
+	 * @test
+	 * @dataProvider kinds_provider
+	 */
+	public function should_report_no_removal_without_a_stored_rule_of_the_kind( Window_Kind $kind ): void {
+		$ticket_id = static::factory()->post->create();
+
+		$this->assertFalse( tribe( Rule_Store::class )->remove_rule( $ticket_id, $kind ) );
 	}
 
 	/**

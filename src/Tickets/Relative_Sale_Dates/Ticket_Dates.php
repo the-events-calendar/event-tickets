@@ -11,11 +11,11 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
-use TEC\Tickets\Commerce\Ticket;
+use DateTimeImmutable;
 use Tribe__Date_Utils as Dates;
 
 /**
- * Writes the dates a rule resolves to against its event into the ticket's date metas.
+ * Writes the dates a rule of any kind resolves to against its event into the date metas the kind names.
  *
  * @since TBD
  *
@@ -23,9 +23,10 @@ use Tribe__Date_Utils as Dates;
  */
 final class Ticket_Dates {
 	/**
-	 * The meta key of the event timezone the ticket's dates were last written in.
+	 * The meta key of the event timezone the ticket's sales window dates were last written in.
 	 *
-	 * The dates are stored as wall-clock times, so the same times in another timezone fall at other instants.
+	 * The dates are stored as wall-clock times, so the same times in another timezone fall at other instants, and the
+	 * sales actions that announce them must move.
 	 *
 	 * @since TBD
 	 *
@@ -54,20 +55,28 @@ final class Ticket_Dates {
 	}
 
 	/**
-	 * Writes the dates a rule resolves to into the ticket's sale date fields.
+	 * Writes the dates a rule resolves to into the date metas of the rule's kind.
 	 *
-	 * A boundary the rule does not resolve, `specific` or a `default` start, keeps the date the ticket has. A new event
-	 * timezone counts as a change even when the dates stay the same: they now fall at other instants.
+	 * A boundary the rule does not resolve, `specific` or an open start, keeps the date the ticket has, unless the kind
+	 * writes an open start as a value of its own. A new event timezone counts as a change of the sales window even when
+	 * its dates stay the same: they now fall at other instants, and the sales actions announce them.
 	 *
 	 * @since TBD
 	 *
 	 * @param int  $ticket_id The ticket post ID.
 	 * @param int  $post_id   The event post ID.
-	 * @param Rule $rule      The ticket's sales window rule.
+	 * @param Rule $rule      The ticket's rule, of any kind.
 	 *
-	 * @return bool Whether any of the ticket's sale dates, or the timezone they are in, changed.
+	 * @return bool Whether any of the dates, or the timezone the sales window is in, changed; `false` when the ticket
+	 *              does not have the window or the event has no valid dates.
 	 */
 	public function write( int $ticket_id, int $post_id, Rule $rule ): bool {
+		$kind = $rule->get_kind();
+
+		if ( ! $kind->is_enabled_for_ticket( $ticket_id ) ) {
+			return false;
+		}
+
 		$window      = $this->sale_window->resolve_for_event( $rule, $post_id );
 		$event_dates = $this->sale_window->get_event_dates( $post_id );
 
@@ -75,17 +84,19 @@ final class Ticket_Dates {
 			return false;
 		}
 
-		$values = [ self::TIMEZONE_META_KEY => $event_dates[0]->getTimezone()->getName() ];
+		$metas  = $kind->get_date_metas();
+		$values = $kind->has_sales_actions() ? [ self::TIMEZONE_META_KEY => $event_dates[0]->getTimezone()->getName() ] : [];
 		$start  = $window->get_start();
+
 		if ( $start ) {
-			$values[ Ticket::START_DATE_META_KEY ] = $start->format( Dates::DBDATEFORMAT );
-			$values[ Ticket::START_TIME_META_KEY ] = $start->format( Dates::DBTIMEFORMAT );
+			$values += $this->get_date_values( $metas['start'], $start );
+		} elseif ( $rule->opens_at_once() && null !== $kind->get_open_start_value() ) {
+			$values[ $metas['start']['date'] ] = $kind->get_open_start_value();
 		}
 
 		$end = $window->get_end();
 		if ( $end ) {
-			$values[ Ticket::END_DATE_META_KEY ] = $end->format( Dates::DBDATEFORMAT );
-			$values[ Ticket::END_TIME_META_KEY ] = $end->format( Dates::DBTIMEFORMAT );
+			$values += $this->get_date_values( $metas['end'], $end );
 		}
 
 		$changed = false;
@@ -98,5 +109,26 @@ final class Ticket_Dates {
 		}
 
 		return $changed;
+	}
+
+	/**
+	 * Gets the values one end of the window is written as.
+	 *
+	 * @since TBD
+	 *
+	 * @param array{date: string, time: ?string} $metas The date and time meta keys of the end; a `null` time stores the
+	 *                                                  date alone.
+	 * @param DateTimeImmutable                  $date  The resolved date, in the event timezone.
+	 *
+	 * @return array<string,string> The values, keyed by their meta key.
+	 */
+	private function get_date_values( array $metas, DateTimeImmutable $date ): array {
+		$values = [ $metas['date'] => $date->format( Dates::DBDATEFORMAT ) ];
+
+		if ( null !== $metas['time'] ) {
+			$values[ $metas['time'] ] = $date->format( Dates::DBTIMEFORMAT );
+		}
+
+		return $values;
 	}
 }
