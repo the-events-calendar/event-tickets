@@ -63,28 +63,33 @@ final class Controller extends Controller_Contract {
 	}
 
 	/**
-	 * Registers the feature.
+	 * Hooks the save entry points.
 	 *
-	 * Nothing hooks into a request yet: the payload is read and committed by the
-	 * save entry points, which are added by SOFT-4824. The container already
-	 * holds this controller as a singleton once it is registered.
+	 * The classic save hooks the generic `save_post`, with the post type checked when it fires, so a
+	 * post type made ticketable after this registered is still covered. It is bound as a singleton so
+	 * the container returns the same callback to `unregister()`.
 	 *
 	 * @since TBD
 	 *
 	 * @return void
 	 */
 	protected function do_register(): void {
-		// Nothing to hook yet.
+		$this->container->singleton( Classic_Save::class );
+
+		add_action( 'save_post', $this->container->callback( Classic_Save::class, 'on_save_post' ), Classic_Save::PRIORITY, 2 );
+		// After core's `wp_refresh_post_nonces()` at 10, which decides whether the post's nonces are refreshed.
+		add_filter( 'wp_refresh_nonces', $this->container->callback( Classic_Save::class, 'refresh_nonce' ), 11 );
 	}
 
 	/**
-	 * Unregisters the feature.
+	 * Unhooks the save entry points.
 	 *
 	 * @since TBD
 	 *
 	 * @return void
 	 */
 	public function unregister(): void {
-		// Nothing to unhook yet.
+		remove_action( 'save_post', $this->container->callback( Classic_Save::class, 'on_save_post' ), Classic_Save::PRIORITY );
+		remove_filter( 'wp_refresh_nonces', $this->container->callback( Classic_Save::class, 'refresh_nonce' ), 11 );
 	}
 }
