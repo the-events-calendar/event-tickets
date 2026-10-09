@@ -65,37 +65,37 @@ $labels = [
 ];
 
 $render_date_inputs = static function ( string $sale_end ) use ( $sale_start_date, $sale_end_date, $start_date_errors, $end_date_errors ): void {
-	if ( 'start' === $sale_end ) :
+	if ( 'start' === $sale_end ) {
 		?>
-			<input
-				autocomplete="off"
-				type="text"
-				class="tribe-datepicker tribe-field-ticket_sale_start_date ticket_field"
-				name="ticket_sale_start_date"
-				id="ticket_sale_start_date"
-				size="10"
-				value="<?php echo esc_attr( $sale_start_date ); ?>"
-				data-validation-type="datepicker"
-				data-validation-is-less-or-equal-to="#ticket_sale_end_date"
-				data-validation-error="<?php echo esc_attr( wp_json_encode( $start_date_errors ) ); ?>"
-			/>
-			<?php
-			return;
-	endif;
-	?>
-			<input
-				autocomplete="off"
-				type="text"
-				class="tribe-datepicker tribe-field-ticket_sale_end_date ticket_field"
-				name="ticket_sale_end_date"
-				id="ticket_sale_end_date"
-				size="10"
-				value="<?php echo esc_attr( $sale_end_date ); ?>"
-				data-validation-type="datepicker"
-				data-validation-is-greater-or-equal-to="#ticket_sale_start_date"
-				data-validation-error="<?php echo esc_attr( wp_json_encode( $end_date_errors ) ); ?>"
-			/>
-			<?php
+		<input
+			autocomplete="off"
+			type="text"
+			class="tribe-datepicker tribe-field-ticket_sale_start_date ticket_field"
+			name="ticket_sale_start_date"
+			id="ticket_sale_start_date"
+			size="10"
+			value="<?php echo esc_attr( $sale_start_date ); ?>"
+			data-validation-type="datepicker"
+			data-validation-is-less-or-equal-to="#ticket_sale_end_date"
+			data-validation-error="<?php echo esc_attr( wp_json_encode( $start_date_errors ) ); ?>"
+		/>
+		<?php
+	} else {
+		?>
+		<input
+			autocomplete="off"
+			type="text"
+			class="tribe-datepicker tribe-field-ticket_sale_end_date ticket_field"
+			name="ticket_sale_end_date"
+			id="ticket_sale_end_date"
+			size="10"
+			value="<?php echo esc_attr( $sale_end_date ); ?>"
+			data-validation-type="datepicker"
+			data-validation-is-greater-or-equal-to="#ticket_sale_start_date"
+			data-validation-error="<?php echo esc_attr( wp_json_encode( $end_date_errors ) ); ?>"
+		/>
+		<?php
+	}
 };
 
 ?>
@@ -135,6 +135,7 @@ $render_date_inputs = static function ( string $sale_end ) use ( $sale_start_dat
 		<?php foreach ( [ 'start', 'end' ] as $sale_end ) : ?>
 			<?php
 			$boundary_args = [
+				'window_kind'        => $window_kind,
 				'boundary_end'       => $sale_end,
 				'boundary_fields'    => $window_fields[ $sale_end ],
 				'field_prefix'       => 'ticket_sale',
@@ -150,6 +151,13 @@ $render_date_inputs = static function ( string $sale_end ) use ( $sale_start_dat
 				<?php echo esc_html( $labels[ $sale_end ]['mode'] ); ?>
 			</label>
 			<?php $this->template( 'relative-sale-dates/window-boundary', $boundary_args ); ?>
+			<?php if ( 'end' === $sale_end ) : ?>
+				<span
+					class="tec-tickets-relative-sale-dates__helper"
+					id="ticket_sale_price_length"
+					aria-live="polite"
+				></span>
+			<?php endif; ?>
 		</div>
 		<?php endforeach; ?>
 		<input

@@ -45,6 +45,34 @@ final class Window_Kind {
 	public const SALE_PRICE = 'sale_price';
 
 	/**
+	 * The relative start the sales window offers when the ticket has none: 2 weeks before the event starts.
+	 *
+	 * @since TBD
+	 *
+	 * @var array{mode: string, value: int, unit: int, anchor: string}
+	 */
+	public const SALES_DEFAULT_RELATIVE_START = [
+		'mode'   => Rule::MODE_RELATIVE,
+		'value'  => 2,
+		'unit'   => WEEK_IN_SECONDS,
+		'anchor' => Rule::ANCHOR_START,
+	];
+
+	/**
+	 * The relative end the sales window offers when the ticket has none: 1 hour before the event starts.
+	 *
+	 * @since TBD
+	 *
+	 * @var array{mode: string, value: int, unit: int, anchor: string}
+	 */
+	public const SALES_DEFAULT_RELATIVE_END = [
+		'mode'   => Rule::MODE_RELATIVE,
+		'value'  => 1,
+		'unit'   => HOUR_IN_SECONDS,
+		'anchor' => Rule::ANCHOR_START,
+	];
+
+	/**
 	 * The kinds built so far, keyed by their ID, so each kind has a single instance.
 	 *
 	 * @since TBD
@@ -310,8 +338,8 @@ final class Window_Kind {
 		$kind->returns_block_editor_rule_for_every_provider = true;
 		// A new ticket opens on the default modes; the relative values are the ones the Ticket block offers too.
 		$kind->form_defaults    = [
-			'start' => [ 'mode' => Rule::MODE_DEFAULT ] + Editor::DEFAULT_RELATIVE_START,
-			'end'   => [ 'mode' => Rule::MODE_DEFAULT ] + Editor::DEFAULT_RELATIVE_END,
+			'start' => [ 'mode' => Rule::MODE_DEFAULT ] + self::SALES_DEFAULT_RELATIVE_START,
+			'end'   => [ 'mode' => Rule::MODE_DEFAULT ] + self::SALES_DEFAULT_RELATIVE_END,
 		];
 		$kind->classic_template = 'relative-sale-dates/sales-window';
 

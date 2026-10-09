@@ -8,7 +8,6 @@ use Generator;
 use TEC\Common\REST\TEC\V1\Exceptions\InvalidRestArgumentException;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Module;
-use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
 use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 use TEC\Tickets\REST\TEC\V1\Endpoints\Ticket as Ticket_Endpoint;
@@ -1485,18 +1484,6 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	}
 
 	/**
-	 * Creates a Tickets Commerce ticket priced 20 with a sale price of 10.
-	 *
-	 * @param int                                                                                                                                              $post_id   The ticketed post ID.
-	 * @param array<string,string|int|bool|null|array{start: array{mode: string, value?: int, unit?: int}, end: array{mode: string, value?: int, unit?: int}}> $overrides The ticket data to override.
-	 *
-	 * @return int The ticket post ID.
-	 */
-	private function create_sale_price_ticket( int $post_id, array $overrides ): int {
-		return $this->create_tc_ticket( $post_id, 20, array_merge( $this->get_sale_price_data(), $overrides ) );
-	}
-
-	/**
 	 * Saves the ticket again with a sale price of 10, the way an editor sends all of its fields.
 	 *
 	 * @param int                                                                                                                                              $ticket_id The ticket post ID.
@@ -1506,18 +1493,6 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	 */
 	private function update_sale_price_ticket( int $ticket_id, array $overrides ): void {
 		$this->update_ticket( $ticket_id, array_merge( [ 'ticket_price' => 20 ], $this->get_sale_price_data(), $overrides ) );
-	}
-
-	/**
-	 * @return array{ticket_add_sale_price: string, ticket_sale_price: int, ticket_sale_start_date: string, ticket_sale_end_date: string} The sale price fields of a ticket form with a sale price of 10.
-	 */
-	private function get_sale_price_data(): array {
-		return [
-			'ticket_add_sale_price'  => 'on',
-			'ticket_sale_price'      => 10,
-			'ticket_sale_start_date' => '',
-			'ticket_sale_end_date'   => '',
-		];
 	}
 
 	/**
@@ -1555,20 +1530,6 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	}
 
 	/**
-	 * @param int $value The number of units before the event start.
-	 * @param int $unit  `DAY_IN_SECONDS` or `WEEK_IN_SECONDS`.
-	 *
-	 * @return array{mode: string, value: int, unit: int} A relative boundary of the sale price window.
-	 */
-	private function sale_price_relative( int $value, int $unit ): array {
-		return [
-			'mode'  => Rule::MODE_RELATIVE,
-			'value' => $value,
-			'unit'  => $unit,
-		];
-	}
-
-	/**
 	 * @param array{mode: string, value?: int, unit?: int} $start The sale price start.
 	 * @param array{mode: string, value?: int, unit?: int} $end   The sale price end.
 	 *
@@ -1588,18 +1549,6 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	 */
 	private function get_stored( int $ticket_id ): array {
 		return tribe( Rule_Store::class )->get( $ticket_id );
-	}
-
-	/**
-	 * @param int $ticket_id The ticket post ID.
-	 *
-	 * @return array{0: string, 1: string} The stored sale price start and end dates.
-	 */
-	private function get_sale_price_dates( int $ticket_id ): array {
-		return [
-			get_post_meta( $ticket_id, Ticket::$sale_price_start_date_key, true ),
-			get_post_meta( $ticket_id, Ticket::$sale_price_end_date_key, true ),
-		];
 	}
 
 	/**

@@ -33,12 +33,7 @@ final class Editor {
 	 *
 	 * @var array{mode: string, value: int, unit: int, anchor: string}
 	 */
-	public const DEFAULT_RELATIVE_START = [
-		'mode'   => Rule::MODE_RELATIVE,
-		'value'  => 2,
-		'unit'   => WEEK_IN_SECONDS,
-		'anchor' => Rule::ANCHOR_START,
-	];
+	public const DEFAULT_RELATIVE_START = Window_Kind::SALES_DEFAULT_RELATIVE_START;
 
 	/**
 	 * The relative end the form offers when the ticket has none: 1 hour before the event starts.
@@ -49,12 +44,7 @@ final class Editor {
 	 *
 	 * @var array{mode: string, value: int, unit: int, anchor: string}
 	 */
-	public const DEFAULT_RELATIVE_END = [
-		'mode'   => Rule::MODE_RELATIVE,
-		'value'  => 1,
-		'unit'   => HOUR_IN_SECONDS,
-		'anchor' => Rule::ANCHOR_START,
-	];
+	public const DEFAULT_RELATIVE_END = Window_Kind::SALES_DEFAULT_RELATIVE_END;
 
 	/**
 	 * The store of the ticket rules.
