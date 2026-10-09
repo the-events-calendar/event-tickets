@@ -275,12 +275,20 @@ export function* buildLivePayload( excluded = [] ) {
 		}
 	} );
 
+	// Undo brings back a removed block, not its staged delete or move: a ticket a block holds is neither.
+	const held = clientIds
+		.map( ( clientId ) => byClientId[ clientId ] )
+		.filter( ( ticket ) => ticket && ticket.hasBeenCreated && ticket.ticketId )
+		.map( ( ticket ) => Number( ticket.ticketId ) );
+
 	const { payload, createOrder } = buildPayload( {
 		clientIds: clientIds.filter( ( clientId ) => ! excluded.includes( clientId ) ),
 		byClientId,
 		bodies: positioned,
-		stagedDeletes,
-		stagedMoves,
+		stagedDeletes: stagedDeletes.filter( ( ticketId ) => ! held.includes( Number( ticketId ) ) ),
+		stagedMoves: Object.fromEntries(
+			Object.entries( stagedMoves ).filter( ( [ ticketId ] ) => ! held.includes( Number( ticketId ) ) )
+		),
 	} );
 
 	return { payload, createOrder, clientIds, byClientId };

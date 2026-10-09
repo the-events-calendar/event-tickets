@@ -655,6 +655,21 @@ describe( 'the cross-review of the stack', () => {
 		mockEditor.editPost.mock.calls.forEach( ( [ , options ] ) => expect( options ).toEqual( { undoIgnore: true } ) );
 	} );
 
+	it( 'does not delete or move a ticket whose block Undo brought back', () => {
+		// Both blocks were removed, staging a delete and a move, then restored with Ctrl+Z.
+		mockEditor.order = [ 'u', 'v' ];
+		const state = stateWith(
+			{ u: { hasBeenCreated: true, ticketId: 30 }, v: { hasBeenCreated: true, ticketId: 31 } },
+			{ deletes: [ 30, 40 ], moves: { 31: 9, 41: 9 } }
+		);
+
+		run( state, sagas.refreshPayload );
+
+		const [ [ { tec_tickets: payload } ] ] = mockEditor.editPost.mock.calls.slice( -1 );
+		expect( payload.delete ).toEqual( [ 40 ] );
+		expect( payload.move ).toEqual( { 41: 9 } );
+	} );
+
 	it( 'sends a preview of a draft without the staged ticket changes, whose answer a preview never applies', () => {
 		addFilter.mockClear();
 		sagas.createPreSaveChannel();
