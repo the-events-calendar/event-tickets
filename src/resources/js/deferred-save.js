@@ -74,6 +74,8 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 
 	// The site's datepicker format index: staged dates are typed in it.
 	const dateFormat = parseInt( strings.dateFormat, 10 ) || 0;
+	// The suffix the server's own duplicate gives a copy's name, translated.
+	const copySuffix = strings.copySuffix || '(copy)';
 	// The decimal separator the panel script's price fields accept, localized for it as `price_format`.
 	const decimal = ( window.price_format && window.price_format.decimal ) || '';
 
@@ -401,7 +403,7 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 		const staged = state.getUpdate( ticketId );
 
 		if ( staged ) {
-			state.stageCreate( copyOfSaved( staged.fields, ticketId ) );
+			state.stageCreate( copyOfSaved( staged.fields, ticketId, copySuffix ) );
 			render();
 			return;
 		}
@@ -427,7 +429,7 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 				const fields = $( doc.querySelectorAll( 'input,textarea,select' ) )
 					.serializeArray()
 					.map( ( { name, value } ) => [ name, value ] );
-				state.stageCreate( copyOfSaved( fields, ticketId ) );
+				state.stageCreate( copyOfSaved( fields, ticketId, copySuffix ) );
 				render();
 			},
 			'json'
@@ -464,7 +466,7 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 		const position = parseInt( $( this ).closest( 'tr' ).attr( 'data-tec-deferred-save-position' ), 10 );
 		const staged = state.getCreate( position );
 		if ( staged ) {
-			state.stageCreate( duplicateFields( staged.fields ) );
+			state.stageCreate( duplicateFields( staged.fields, copySuffix ) );
 			render();
 		}
 	} );
@@ -480,7 +482,10 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 	 * @return {number|undefined} The sold count, or `undefined` when the row does not say.
 	 */
 	const soldFromRow = ( ticketId ) => {
-		const sold = parseInt( $panelBase().find( `tr[data-ticket-type-id="${ ticketId }"]` ).attr( 'data-ticket-sold' ), 10 );
+		const sold = parseInt(
+			$panelBase().find( `tr[data-ticket-type-id="${ ticketId }"]` ).attr( 'data-ticket-sold' ),
+			10
+		);
 
 		return Number.isNaN( sold ) ? undefined : sold;
 	};

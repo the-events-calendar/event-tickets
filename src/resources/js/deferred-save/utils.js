@@ -429,7 +429,7 @@ const isOn = ( value ) =>
  *
  * @since TBD
  *
- * @param {Array<Array<string>>}                 fields  The field set.
+ * @param {Array<Array<string>>}                                   fields  The field set.
  * @param {{sold?: number, dateFormat?: number, decimal?: string}} context What the page knows: the tickets sold, the datepicker format index and the price decimal separator.
  *
  * @return {Array<string>} The failing rules: `name`, `price`, `sale_price`, `sale_window`, `capacity`.
@@ -485,15 +485,6 @@ export const validateFields = ( fields, context = {} ) => {
 };
 
 /**
- * Copies a field set for a duplicate: the name gets " (copy)", the ID and SKU are dropped.
- *
- * @since TBD
- *
- * @param {Array<Array<string>>} fields The field set to copy.
- *
- * @return {Array<Array<string>>} The copy.
- */
-/**
  * The field of a staged copy that names the saved ticket it copies; the server copies that ticket's meta.
  *
  * @since TBD
@@ -509,15 +500,28 @@ export const DUPLICATE_OF = 'tec_tickets_duplicate_of';
  *
  * @param {Array<Array<string>>} fields   The saved ticket's field set.
  * @param {number}               ticketId The saved ticket.
+ * @param {string}               suffix   What the copy's name ends with, translated.
  *
  * @return {Array<Array<string>>} The copy's field set.
  */
-export const copyOfSaved = ( fields, ticketId ) => [
-	...duplicateFields( fields ).filter( ( [ name ] ) => DUPLICATE_OF !== name ),
+export const copyOfSaved = ( fields, ticketId, suffix = '(copy)' ) => [
+	...duplicateFields( fields, suffix ).filter( ( [ name ] ) => DUPLICATE_OF !== name ),
 	[ DUPLICATE_OF, String( ticketId ) ],
 ];
 
-export const duplicateFields = ( fields ) =>
+/**
+ * Copies a field set for a duplicate: the name gets the copy suffix, the ID and SKU are dropped.
+ *
+ * @since TBD
+ *
+ * @param {Array<Array<string>>} fields The field set to copy.
+ * @param {string}               suffix What the copy's name ends with, translated.
+ *
+ * @return {Array<Array<string>>} The copy.
+ */
+export const duplicateFields = ( fields, suffix = '(copy)' ) =>
 	fields
 		.filter( ( [ name ] ) => ! [ 'ticket_id', 'ticket_sku' ].includes( name ) )
-		.map( ( [ name, value ] ) => ( 'ticket_name' === name ? [ name, `${ value } (copy)` ] : [ name, value ] ) );
+		.map( ( [ name, value ] ) =>
+			'ticket_name' === name ? [ name, `${ value } ${ suffix }` ] : [ name, value ]
+		);

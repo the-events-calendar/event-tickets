@@ -100,6 +100,13 @@ describe( 'duplicateFields', () => {
 	} );
 } );
 
+describe( 'duplicateFields with a translated suffix', () => {
+	it( 'names the copy with the suffix the site translates', () => {
+		expect( duplicateFields( [ [ 'ticket_name', 'VIP' ] ], '(copie)' ) ).toEqual( [ [ 'ticket_name', 'VIP (copie)' ] ] );
+		expect( copyOfSaved( [ [ 'ticket_name', 'VIP' ] ], 9, '(copie)' )[ 0 ] ).toEqual( [ 'ticket_name', 'VIP (copie)' ] );
+	} );
+} );
+
 describe( 'copyOfSaved', () => {
 	it( 'names the saved ticket it copies, so the server copies what the form does not carry', () => {
 		const copy = copyOfSaved( [ [ 'ticket_id', '9' ], [ 'ticket_name', 'VIP' ] ], 9 );
