@@ -260,8 +260,10 @@ final class Commit {
 	/**
 	 * Saves an existing ticket through its own provider.
 	 *
-	 * Values the entry does not mention keep what the ticket has: `ticket_add()` would otherwise reset
-	 * the type to `default` and, for Tickets Commerce, the menu order to 0.
+	 * An update replaces the ticket, so the entry must carry the whole ticket, as the editors send it: a price,
+	 * capacity, description or date it leaves out is saved empty. Only the type and the menu order keep what the
+	 * ticket has when the entry does not mention them, since `ticket_add()` would otherwise reset the type to
+	 * `default` and, for Tickets Commerce, the menu order to 0.
 	 *
 	 * @since TBD
 	 *
