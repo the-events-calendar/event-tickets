@@ -35,6 +35,17 @@ describe( 'validateFields', () => {
 		expect( validateFields( fields( { ticket_add_sale_price: '', ticket_sale_price: '12' } ) ) ).toEqual( [] );
 	} );
 
+	it( 'reads prices with the site\'s decimal separator, whatever the number of decimals', () => {
+		const sale = ( price, salePrice ) => fields( { ticket_price: price, ticket_add_sale_price: '1', ticket_sale_price: salePrice } );
+
+		// A three-decimal currency: 9.750 is below 10.000, not 9750.
+		expect( validateFields( sale( '10.000', '9.750' ), { decimal: '.' } ) ).toEqual( [] );
+		expect( validateFields( sale( '10,000', '9,750' ), { decimal: ',' } ) ).toEqual( [] );
+		expect( validateFields( sale( '10,000', '10,500' ), { decimal: ',' } ) ).toEqual( [ 'sale_price' ] );
+		// The panel takes no thousands separator; one more decimal separator is not a price.
+		expect( validateFields( fields( { ticket_price: '1.000.5' } ), { decimal: '.' } ) ).toEqual( [ 'price' ] );
+	} );
+
 	it( 'requires the sale window start not to be after its end', () => {
 		expect(
 			validateFields( fields( { ticket_add_sale_price: '1', ticket_sale_price: '5', ticket_sale_start_date: '2026-10-02', ticket_sale_end_date: '2026-10-01' } ) )

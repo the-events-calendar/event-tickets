@@ -74,6 +74,8 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 
 	// The site's datepicker format index: staged dates are typed in it.
 	const dateFormat = parseInt( strings.dateFormat, 10 ) || 0;
+	// The decimal separator the panel script's price fields accept, localized for it as `price_format`.
+	const decimal = ( window.price_format && window.price_format.decimal ) || '';
 
 	/**
 	 * How many fields the post form submits, without the edit panel's, which are disabled on submit.
@@ -509,7 +511,7 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 		const problems = [];
 
 		create.forEach( ( { fields, summary }, position ) => {
-			const rules = validateFields( fields, { dateFormat } );
+			const rules = validateFields( fields, { dateFormat, decimal } );
 			if ( rules.length ) {
 				problems.push( { name: summary.name || `#${ position + 1 }`, rules } );
 				$panelBase()
@@ -519,7 +521,7 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 		} );
 
 		Object.entries( update ).forEach( ( [ ticketId, { fields, summary } ] ) => {
-			const rules = validateFields( fields, { sold: soldFromRow( ticketId ), dateFormat } );
+			const rules = validateFields( fields, { sold: soldFromRow( ticketId ), dateFormat, decimal } );
 			if ( rules.length ) {
 				problems.push( { name: summary.name || `#${ ticketId }`, rules } );
 				$panelBase()
