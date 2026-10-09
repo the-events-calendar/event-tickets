@@ -225,9 +225,11 @@ final class Assets extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, invalidWindow: string, relativeValueOutOfRange: string}, errorCodes: array{invalidWindow: string}} The script data.
+	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, invalidWindow: string, relativeValueOutOfRange: string, salePriceEndsBeforeStart: string, salePriceOutsideWindow: string, salePriceValueOutOfRange: string}, errorCodes: array{invalidWindow: string, salePriceEndsBeforeStart: string, salePriceOutsideWindow: string}} The script data.
 	 */
 	private function get_classic_script_data(): array {
+		$sale_price = Window_Kind::sale_price();
+
 		return [
 			'timeFormat'   => $this->get_time_format(),
 			'dateWithYear' => $this->get_date_format( true ),
@@ -236,15 +238,23 @@ final class Assets extends Controller_Contract {
 			'allDay'       => $this->get_all_day_times(),
 			'text'         => [
 				// Translators: %1$s is the date sales start on, %2$s the time.
-				'start'                   => __( 'Sales start %1$s at %2$s', 'event-tickets' ),
+				'start'                    => __( 'Sales start %1$s at %2$s', 'event-tickets' ),
 				// Translators: %1$s is the date sales end on, %2$s the time.
-				'end'                     => __( 'Sales end %1$s at %2$s', 'event-tickets' ),
-				'invalidWindow'           => __( 'Ticket sales cannot end before they start. Please adjust the sales window.', 'event-tickets' ),
+				'end'                      => __( 'Sales end %1$s at %2$s', 'event-tickets' ),
+				'invalidWindow'            => __( 'Ticket sales cannot end before they start. Please adjust the sales window.', 'event-tickets' ),
 				// Translators: %1$d is the smallest number a relative sale date takes, %2$d the largest.
-				'relativeValueOutOfRange' => sprintf( __( 'Enter a number from %1$d to %2$d.', 'event-tickets' ), Boundary::MIN_VALUE, Boundary::MAX_VALUE ),
+				'relativeValueOutOfRange'  => sprintf( __( 'Enter a number from %1$d to %2$d.', 'event-tickets' ), Boundary::MIN_VALUE, Boundary::MAX_VALUE ),
+				// The sale price's own errors, worded as the server rejects a save with them.
+				'salePriceEndsBeforeStart' => $sale_price->get_error( 'endsBeforeStart' )->get_error_message(),
+				'salePriceOutsideWindow'   => $sale_price->get_error( 'outsideParent' )->get_error_message(),
+				// Translators: %1$d is the smallest number a relative sale date takes, %2$d the largest.
+				'salePriceValueOutOfRange' => sprintf( __( 'Enter a number from %1$d to %2$d.', 'event-tickets' ), Boundary::MIN_VALUE, $sale_price->get_max_value() ),
 			],
-			'errorCodes'   => [
-				'invalidWindow' => Window_Kind::sales()->get_error_code( 'endsBeforeStart' ),
+			// The codes the server rejects a save with, keyed as the texts of the same errors.
+			'errorCodes'     => [
+				'invalidWindow'            => Window_Kind::sales()->get_error_code( 'endsBeforeStart' ),
+				'salePriceEndsBeforeStart' => $sale_price->get_error_code( 'endsBeforeStart' ),
+				'salePriceOutsideWindow'   => $sale_price->get_error_code( 'outsideParent' ),
 			],
 		];
 	}

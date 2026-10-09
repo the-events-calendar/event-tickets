@@ -74,8 +74,17 @@ const RELATIVE_VALUE_FIELDS = WINDOW_KINDS.flatMap( ( kind ) =>
 const LENGTH_KINDS = WINDOW_KINDS.filter( ( kind ) => kind.lengthId );
 
 /**
- * Gets the selector of every field a window of a kind is read from: the mode and relative fields of each boundary, and
- * the fields of its specific date.
+ * The kinds whose window is judged on save only, so a change clears its error rather than checking it again.
+ *
+ * @since TBD
+ *
+ * @type {import( '../window-kinds' ).WindowKind[]}
+ */
+const JUDGED_KINDS = WINDOW_KINDS.filter( ( kind ) => SALES_WINDOW !== kind );
+
+/**
+ * Gets the selector of every field a window of a kind is read from: the mode and relative fields of each boundary, the
+ * fields of its specific date, and the field that adds the window to the ticket.
  *
  * @since TBD
  *
@@ -92,6 +101,7 @@ function getFieldSelector( kind ) {
 			kind.dateFields[ key ].date,
 			kind.dateFields[ key ].time,
 		] )
+		.concat( kind.enabledFieldId )
 		.filter( Boolean )
 		.map( ( id ) => `#${ id }` )
 		.join( ', ' );
@@ -100,15 +110,17 @@ function getFieldSelector( kind ) {
 /**
  * Reads the dates the form sends for the specific boundaries of a window of a kind.
  *
- * A disabled field, like the date a Now start hides, is not sent, so the server does not judge it either.
+ * A disabled field, like the date a Now start hides, is not sent, so the server does not judge it either. A date sent
+ * that cannot be read is told apart from one not sent: the server rejects it rather than leave the boundary without a
+ * date.
  *
  * @since TBD
  *
  * @param {import( '../window-kinds' ).WindowKind} kind    The kind of the window.
  * @param {Object}                                 dynamic The date formats TEC localizes for its own helper text.
  *
- * @return {{start: string|null, end: string|null}} Each date, `YYYY-MM-DD HH:mm:ss`, or `null` when it is not sent or
- *                                                   cannot be read.
+ * @return {{start: string|null|false, end: string|null|false}} Each date, `YYYY-MM-DD HH:mm:ss`, `null` when it is not
+ *                                                               sent, or `false` when it cannot be read.
  */
 function readFormDates( kind, dynamic ) {
 	const field = ( id ) => {
@@ -116,12 +128,15 @@ function readFormDates( kind, dynamic ) {
 
 		return input && ! input.disabled ? input.value : undefined;
 	};
-	const read = ( key ) =>
-		readDateTime(
-			field( kind.dateFields[ key ].date ),
-			field( kind.dateFields[ key ].time ),
-			dynamic.datepicker_format
-		);
+	const read = ( key ) => {
+		const date = field( kind.dateFields[ key ].date );
+
+		if ( '' === ( date || '' ).trim() ) {
+			return null;
+		}
+
+		return readDateTime( date, field( kind.dateFields[ key ].time ), dynamic.datepicker_format ) ?? false;
+	};
 
 	return { start: read( 'start' ), end: read( 'end' ) };
 }
@@ -393,21 +408,22 @@ function addDescription( field, id ) {
 }
 
 /**
- * Shows an error under the sales window, marking the field it is about invalid, or clears both.
+ * Shows an error under a window of a kind, marking the field it is about invalid, or clears both.
  *
  * The field is marked with `aria-invalid` rather than common's `tribe-validation-error` class: common validates the
  * form again after the save click and strips that class from every field it does not flag itself.
  *
  * @since TBD
  *
- * @param {string}      message                           The error, or an empty string to clear it.
- * @param {string|null} [fieldId='ticket_sales_end_mode'] The id of the field the error is about, or `null` for an
- *                                                        error that is not about a field.
+ * @param {import( '../window-kinds' ).WindowKind} kind           The kind of the window.
+ * @param {string}                                 message        The error, or an empty string to clear it.
+ * @param {string|null}                            [fieldId=null] The id of the field the error is about, or `null`
+ *                                                                for an error that is not about a field.
  *
  * @return {HTMLElement|null} The field marked invalid, or `null` when none is.
  */
-function showWindowError( message, fieldId = 'ticket_sales_end_mode' ) {
-	const error = document.getElementById( 'ticket_sales_window_error' );
+function showError( kind, message, fieldId = null ) {
+	const error = document.getElementById( kind.errorId );
 
 	if ( ! error ) {
 		return null;
@@ -432,18 +448,59 @@ function showWindowError( message, fieldId = 'ticket_sales_end_mode' ) {
 }
 
 /**
- * Reads why the sales window in the form cannot be saved.
+ * Clears the error of a window of a kind, and of every window judged against it.
  *
  * @since TBD
  *
- * @return {{message: string, fieldId: string}|null} The error and the id of the field it is about, or `null` for a
- *                                                   window that can be saved or cannot be judged here.
+ * @param {import( '../window-kinds' ).WindowKind} kind The kind of the window.
+ *
+ * @return {void}
  */
-function readSaleWindowError() {
+function clearErrors( kind ) {
+	WINDOW_KINDS.filter( ( other ) => other === kind || other.parent === kind ).forEach( ( other ) =>
+		showError( other, '' )
+	);
+}
+
+/**
+ * Gets the parent window of a window of a kind as the form gives it.
+ *
+ * @since TBD
+ *
+ * @param {import( '../window-kinds' ).WindowKind} kind       The kind of the window.
+ * @param {import( './event-dates' ).EventDates}   eventDates The event dates.
+ * @param {Object}                                 dynamic    The date formats TEC localizes for its own helper text.
+ *
+ * @return {import( '../window-check' ).FormWindow|null} The parent window, or `null` for a kind without one or a form
+ *                                                       without its fields.
+ */
+function getParentWindow( kind, eventDates, dynamic ) {
+	const { parent } = kind;
+
+	if ( ! parent || ! document.getElementById( `${ parent.fieldPrefix }_start_mode` ) ) {
+		return null;
+	}
+
+	return getFormWindow( readRule( document, parent ), eventDates, readFormDates( parent, dynamic ), parent );
+}
+
+/**
+ * Reads why a window of a kind in the form cannot be saved: its relative number is out of range, it does not end after
+ * it starts, or it starts outside its parent window.
+ *
+ * @since TBD
+ *
+ * @param {import( '../window-kinds' ).WindowKind} kind The kind of the window.
+ *
+ * @return {{message: string, fieldId: string}|null} The error and the id of the field it is about, or `null` for a
+ *                                                   window that can be saved, is not kept by the save, or cannot be
+ *                                                   judged here.
+ */
+function readWindowError( kind ) {
 	const settings = window.tec?.tickets?.relativeSaleDates?.classicData;
 	const dynamic = window.tribe_dynamic_help_text;
 
-	if ( ! settings || ! dynamic || ! document.getElementById( 'ticket_sales_window_error' ) ) {
+	if ( ! settings || ! dynamic || ! document.getElementById( kind.errorId ) || ! kind.isEnabled( document ) ) {
 		return null;
 	}
 
@@ -454,48 +511,122 @@ function readSaleWindowError() {
 		return null;
 	}
 
-	const error = getWindowError( readRule( document ), eventDates, readFormDates( SALES_WINDOW, dynamic ) );
+	const rule = readRule( document, kind );
+	const error = getWindowError(
+		rule,
+		eventDates,
+		readFormDates( kind, dynamic ),
+		kind,
+		getParentWindow( kind, eventDates, dynamic )
+	);
 
 	if ( ! error ) {
 		return null;
 	}
 
-	const outOfRange = RELATIVE_VALUE_OUT_OF_RANGE === error ? getOutOfRangeBoundary( readRule( document ) ) : null;
-
-	return outOfRange
-		? { message: settings.text.relativeValueOutOfRange, fieldId: `ticket_sales_${ outOfRange }_value` }
-		: { message: settings.text.invalidWindow, fieldId: 'ticket_sales_end_mode' };
+	return {
+		message: settings.text[ kind.messages[ error ] ],
+		fieldId:
+			RELATIVE_VALUE_OUT_OF_RANGE === error
+				? `${ kind.fieldPrefix }_${ getOutOfRangeBoundary( rule, kind ) }_value`
+				: `${ kind.fieldPrefix }_end_mode`,
+	};
 }
 
 /**
- * Blocks the ticket save when the sales window does not start before it ends.
+ * Blocks the ticket save when a window of a kind is one the server rejects.
  *
  * `tickets.js` keeps only the last answer of the `additionalValidation.tribe` handlers, and Event Tickets Plus answers
  * with the value it was passed. So an invalid window stops the handlers after this one, and a valid one keeps the
- * answer of a handler before it.
+ * answer of a handler before it. The handlers are bound in the order the server judges the kinds, so a window judged
+ * against its parent is not judged once the parent is invalid. A window the save does not keep is not judged, and its
+ * error is cleared.
  *
  * @since TBD
  *
- * @param {jQuery.Event} event The validation event.
- * @param {boolean}      valid Whether the ticket is valid so far.
+ * @param {import( '../window-kinds' ).WindowKind} kind  The kind of the window.
+ * @param {jQuery.Event}                           event The validation event.
+ * @param {boolean}                                valid Whether the ticket is valid so far.
  *
  * @return {boolean} Whether the ticket can be saved.
  */
-function validateSaleWindow( event, valid ) {
+function validateWindow( kind, event, valid ) {
 	const answer = undefined === event.result ? valid : event.result;
-	const error = readSaleWindowError();
+	const error = readWindowError( kind );
 
 	if ( ! error ) {
-		showWindowError( '' );
+		showError( kind, '' );
 
 		return answer;
 	}
 
 	// The save button keeps the focus otherwise, away from the field that blocks the save.
-	showWindowError( error.message, error.fieldId )?.focus();
+	showError( kind, error.message, error.fieldId )?.focus();
 	event.stopImmediatePropagation();
 
 	return false;
+}
+
+/**
+ * Whether the admin is typing in a sales window field, checking the window again once they stop.
+ *
+ * @since TBD
+ *
+ * @type {{type: function(): void, settle: function(): void, isTyping: function(): boolean}}
+ */
+const typing = createTypingTracker( () => checkWindow( SALES_WINDOW ) );
+
+/**
+ * Whether a change of a window field ends the admin's edit: an option picked, or a date or time picked, which the
+ * pickers fire themselves.
+ *
+ * A typed field fires its own change once it loses the focus, which does not: a new error shown then moves the form
+ * under the click that took the focus away, and the click misses.
+ *
+ * @since TBD
+ *
+ * @param {jQuery.Event} event The change event.
+ *
+ * @return {boolean} Whether the change ends the edit.
+ */
+function endsEdit( event ) {
+	return ! event.originalEvent || ! [ 'text', 'number' ].includes( event.target.type );
+}
+
+/**
+ * Checks a window of a kind again, showing why it cannot be saved or clearing its error, so the error shows as the
+ * admin makes it rather than on the save click.
+ *
+ * The focus stays where the admin is typing; only the save click moves it to the field that blocks the save.
+ *
+ * @since TBD
+ *
+ * @param {import( '../window-kinds' ).WindowKind} kind The kind of the window.
+ *
+ * @return {void}
+ */
+function checkWindow( kind ) {
+	const error = getShownError(
+		document.getElementById( kind.errorId )?.textContent,
+		readWindowError( kind ),
+		typing.isTyping()
+	);
+
+	showError( kind, error ? error.message : '', error?.fieldId );
+}
+
+/**
+ * Checks the sales window again once one of its fields changes, clearing the errors of the windows judged against it,
+ * and updates its helper text.
+ *
+ * @since TBD
+ *
+ * @return {void}
+ */
+function onSalesWindowChange() {
+	WINDOW_KINDS.filter( ( kind ) => SALES_WINDOW === kind.parent ).forEach( ( kind ) => showError( kind, '' ) );
+	checkWindow( SALES_WINDOW );
+	updateHelperText();
 }
 
 /**
@@ -516,59 +647,22 @@ function showServerError( response ) {
 
 	// The server escapes the message for HTML; the error element takes text.
 	const text = new window.DOMParser().parseFromString( message, 'text/html' ).documentElement.textContent;
-	const settings = window.tec?.tickets?.relativeSaleDates?.classicData;
-
-	// Only the sales window error is about the window; another reason is shown without marking the window invalid.
-	const isWindowError = Boolean( response?.data?.code ) && response.data.code === settings?.errorCodes?.invalidWindow;
-
-	showWindowError( text, isWindowError ? 'ticket_sales_end_mode' : null );
-}
-
-/**
- * Whether the admin is typing in a sales window field, checking the window again once they stop.
- *
- * @since TBD
- *
- * @type {{type: function(): void, settle: function(): void, isTyping: function(): boolean}}
- */
-const typing = createTypingTracker( onWindowChange );
-
-/**
- * Whether a change of a window field ends the admin's edit: an option picked, or a time picked, which the picker fires
- * itself.
- *
- * A typed field fires its own change once it loses the focus, which does not: a new error shown then moves the form
- * under the click that took the focus away, and the click misses.
- *
- * @since TBD
- *
- * @param {jQuery.Event} event The change event.
- *
- * @return {boolean} Whether the change ends the edit.
- */
-function endsEdit( event ) {
-	return ! event.originalEvent || ! [ 'text', 'number' ].includes( event.target.type );
-}
-
-/**
- * Updates the helper text and checks the sales window again once a field the window depends on changes, so an error
- * shows as the admin makes it rather than on the save click.
- *
- * The focus stays where the admin is typing; only the save click moves it to the field that blocks the save.
- *
- * @since TBD
- *
- * @return {void}
- */
-function onWindowChange() {
-	const shown = getShownError(
-		document.getElementById( 'ticket_sales_window_error' )?.textContent,
-		readSaleWindowError(),
-		typing.isTyping()
+	const codes = window.tec?.tickets?.relativeSaleDates?.classicData?.errorCodes ?? {};
+	const code = response?.data?.code;
+	// The code the server rejects the save with tells the window the error is about.
+	const kind = WINDOW_KINDS.find(
+		( candidate ) =>
+			Boolean( code ) && Object.values( candidate.messages ).some( ( key ) => key && codes[ key ] === code )
 	);
 
-	showWindowError( shown ? shown.message : '', shown?.fieldId );
-	updateHelperText();
+	if ( kind ) {
+		showError( kind, text, `${ kind.fieldPrefix }_end_mode` );
+
+		return;
+	}
+
+	// Another reason is shown under the sales window, the ticket's own, without marking a field invalid.
+	showError( SALES_WINDOW, text );
 }
 
 /**
@@ -579,7 +673,9 @@ function onWindowChange() {
  * @return {void}
  */
 function onEventChange() {
-	onWindowChange();
+	WINDOW_KINDS.forEach( clearErrors );
+	checkWindow( SALES_WINDOW );
+	updateHelperText();
 	updateWindowLengths();
 	updateTicketsList();
 }
@@ -604,24 +700,30 @@ function onPanelsRefreshed() {
  * stops the save event from bubbling, and the element itself is not replaced when the panels are.
  */
 jQuery( () => {
-	jQuery( '#tribetickets' )
-		.on( 'pre-save-ticket.tribe', () => WINDOW_KINDS.forEach( ( kind ) => writeRule( document, kind ) ) )
-		.on( 'additionalValidation.tribe', validateSaleWindow )
-		.on( 'change.tribe', 'select', ( event ) => updateDateLimit( document, event.target.id ) );
+	const tickets = jQuery( '#tribetickets' );
+
+	tickets.on( 'pre-save-ticket.tribe', () => WINDOW_KINDS.forEach( ( kind ) => writeRule( document, kind ) ) );
+	WINDOW_KINDS.forEach( ( kind ) =>
+		tickets.on( 'additionalValidation.tribe', ( event, valid ) => validateWindow( kind, event, valid ) )
+	);
+	tickets.on( 'change.tribe', 'select', ( event ) => updateDateLimit( document, event.target.id ) );
 	onPanelsRefreshed();
 } );
 
 jQuery( document ).on( 'change', EVENT_FIELDS, onEventChange );
+JUDGED_KINDS.forEach( ( kind ) =>
+	jQuery( document ).on( 'change input', getFieldSelector( kind ), () => clearErrors( kind ) )
+);
 jQuery( document ).on( 'input', getFieldSelector( SALES_WINDOW ), () => {
 	typing.type();
-	onWindowChange();
+	onSalesWindowChange();
 } );
 jQuery( document ).on( 'change', getFieldSelector( SALES_WINDOW ), ( event ) => {
 	if ( endsEdit( event ) ) {
 		typing.settle();
 	}
 
-	onWindowChange();
+	onSalesWindowChange();
 } );
 LENGTH_KINDS.forEach( ( kind ) =>
 	jQuery( document ).on( 'change input', getFieldSelector( kind ), () => updateWindowLength( kind ) )
@@ -634,8 +736,9 @@ addAction( 'tec.tickets.admin.ticketSaveFailed', 'tec.tickets.relativeSaleDates'
 addAction( 'tec.tickets.admin.ticketDatePicked', 'tec.tickets.relativeSaleDates', ( input ) => {
 	if ( input?.matches?.( getFieldSelector( SALES_WINDOW ) ) ) {
 		typing.settle();
-		onWindowChange();
+		onSalesWindowChange();
 	}
 
+	JUDGED_KINDS.filter( ( kind ) => input?.matches?.( getFieldSelector( kind ) ) ).forEach( clearErrors );
 	LENGTH_KINDS.filter( ( kind ) => input?.matches?.( getFieldSelector( kind ) ) ).forEach( updateWindowLength );
 } );
