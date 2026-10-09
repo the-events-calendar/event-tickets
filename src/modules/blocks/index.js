@@ -15,6 +15,7 @@ import rsvpDisabled from './rsvp-disabled';
 import attendees from './attendees';
 import { isV2Enabled } from '../data/blocks/rsvp-v2/config';
 import { initTicketsBlockFilters } from '../data/blocks/rsvp-v2/tickets-block-filters';
+import withBlockWrapper from './with-block-wrapper';
 
 /**
  * Check if RSVP is disabled via editor config.
@@ -37,7 +38,7 @@ const isRsvpDisabled = () => Boolean( window.tribe_editor_config?.tickets?.rsvpD
  */
 const maybeSwapRsvpBlock = ( blocks ) => {
 	if ( isRsvpDisabled() ) {
-		return blocks.map( ( block ) => ( block.id === 'rsvp' ? rsvpDisabled : block ) );
+		return blocks.map( ( block ) => ( block.id === 'rsvp' ? withBlockWrapper( rsvpDisabled ) : block ) );
 	}
 
 	if ( ! isV2Enabled() ) {
@@ -45,7 +46,7 @@ const maybeSwapRsvpBlock = ( blocks ) => {
 	}
 
 	// Replace V1 RSVP block with V2.
-	return blocks.map( ( block ) => ( block.id === 'rsvp' ? rsvpV2 : block ) );
+	return blocks.map( ( block ) => ( block.id === 'rsvp' ? withBlockWrapper( rsvpV2 ) : block ) );
 };
 
 // Register the filter to swap RSVP blocks.
@@ -54,7 +55,12 @@ addFilter( 'tec.tickets.blocks.beforeRegistration', 'tec.tickets.rsvp-v2', maybe
 // Initialize filters to exclude RSVP V2 tickets from the Tickets block.
 initTicketsBlockFilters();
 
-let blocks = [ rsvp, attendees ];
+/*
+ * Only this plugin's blocks are wrapped: they are dynamic, so their saved markup is the same at
+ * every Block API version. A static block added through the filter below would lose the classes
+ * WordPress adds to saved markup at version 1, so upgrading it is left to whoever registers it.
+ */
+let blocks = [ rsvp, attendees ].map( withBlockWrapper );
 
 /**
  * Allows filtering the list of blocks registered by Event Tickets.
