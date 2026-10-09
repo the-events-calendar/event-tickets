@@ -168,6 +168,19 @@ describe( 'deferred-save module', () => {
 		expect( refused.defaultPrevented ).toBe( true );
 	} );
 
+	it( 'lets a preview through with invalid staged tickets, which a preview does not save', () => {
+		const module = load();
+		module.state.stageCreate( [ [ 'ticket_name', '' ] ] );
+		module.render();
+		document.getElementById( 'wp-preview' ).value = 'dopreview';
+
+		const event = new window.Event( 'submit', { cancelable: true } );
+		document.getElementById( 'post' ).dispatchEvent( event );
+
+		expect( event.defaultPrevented ).toBe( false );
+		expect( $( '.tec-tickets-deferred-save-validation' ).length ).toBe( 0 );
+	} );
+
 	it( 'drops the leave warning when the post form submits for real', () => {
 		const module = load();
 		module.state.stageCreate( [ [ 'ticket_name', 'General' ] ] );

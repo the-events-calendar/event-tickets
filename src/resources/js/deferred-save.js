@@ -506,6 +506,11 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 	 * @return {boolean} Whether the submit may continue.
 	 */
 	const validateBeforeSubmit = ( event ) => {
+		// The server ignores staged changes on a preview, so nothing invalid can be saved by one.
+		if ( 'dopreview' === $( '#wp-preview' ).val() ) {
+			return true;
+		}
+
 		$( '.tec-tickets-deferred-save-row--invalid' ).removeClass( 'tec-tickets-deferred-save-row--invalid' );
 		const { create, update } = state.toPayload();
 		const problems = [];
