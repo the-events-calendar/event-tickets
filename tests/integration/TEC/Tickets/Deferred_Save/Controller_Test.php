@@ -54,6 +54,8 @@ class Controller_Test extends Controller_Test_Case {
 	 */
 	public function it_should_be_switched_off_by_the_constant(): void {
 		$this->set_const_value( 'TEC_TICKETS_DEFERRED_SAVE_DISABLED', true );
+		// The filter must not switch the feature back on.
+		add_filter( 'tec_tickets_deferred_save_active', '__return_true', 1000 );
 
 		$this->assertFalse( $this->make_controller()->is_active() );
 	}
@@ -63,6 +65,8 @@ class Controller_Test extends Controller_Test_Case {
 	 */
 	public function it_should_be_switched_off_by_the_environment_variable(): void {
 		putenv( 'TEC_TICKETS_DEFERRED_SAVE_DISABLED=1' );
+		// The filter must not switch the feature back on.
+		add_filter( 'tec_tickets_deferred_save_active', '__return_true', 1000 );
 
 		$this->assertFalse( $this->make_controller()->is_active() );
 	}
