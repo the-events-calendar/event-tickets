@@ -22,7 +22,8 @@ use WP_REST_Request;
 /**
  * Carries the rule of each window kind between the REST requests and responses and the ticket save.
  *
- * Each kind names the keys that carry its rule in each API; the mapping is the same for every kind.
+ * Each kind names the keys that carry its rule in each API, and which tickets the block editor gets its rule for; the
+ * code that reads and writes them is the same for every kind.
  *
  * @since TBD
  *
@@ -87,8 +88,8 @@ final class Rest {
 	 * Adds the ticket's stored rules, or `null`, to the ticket data the block editor reads.
 	 *
 	 * The ticket ID comes from the data: the filter also passes the caller's argument, which can be a post or a ticket
-	 * object. A rule nested in the provider's own data, such as `sale_price_data`, is only added to a Tickets Commerce
-	 * ticket's, and only when that data is an array.
+	 * object. A kind's rule is added to the tickets of every provider, or only to Tickets Commerce tickets, as the kind
+	 * says, and only where the data its response path goes through is an array.
 	 *
 	 * @since TBD
 	 *
@@ -105,7 +106,7 @@ final class Rest {
 			$path = $kind->get_block_editor_response_path();
 			$key  = array_pop( $path );
 
-			if ( $path && ! $is_commerce_ticket ) {
+			if ( ! $is_commerce_ticket && ! $kind->returns_block_editor_rule_for_every_provider() ) {
 				continue;
 			}
 

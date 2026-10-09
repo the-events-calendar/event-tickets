@@ -241,6 +241,15 @@ final class Window_Kind {
 	private string $tec_rest_field;
 
 	/**
+	 * Whether the block editor ticket data of every provider carries the rule, or only that of Tickets Commerce tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
+	 */
+	private bool $returns_block_editor_rule_for_every_provider;
+
+	/**
 	 * Gets the sales window kind.
 	 *
 	 * @since TBD
@@ -301,6 +310,8 @@ final class Window_Kind {
 		$kind->block_editor_request_path    = [ 'relative_sale_dates' ];
 		$kind->block_editor_response_path   = [ 'relative_sale_dates' ];
 		$kind->tec_rest_field               = 'relative_sale_dates';
+		// The block editor reads `relative_sale_dates` on every ticket, as `null` on one the rule does not apply to.
+		$kind->returns_block_editor_rule_for_every_provider = true;
 
 		self::$instances[ self::SALES ] = $kind;
 
@@ -379,6 +390,8 @@ final class Window_Kind {
 		$kind->block_editor_request_path    = [ 'sale_price', 'relative' ];
 		$kind->block_editor_response_path   = [ 'sale_price_data', 'relative' ];
 		$kind->tec_rest_field               = 'sale_price_relative';
+		// Every provider answers with `sale_price_data`, an empty array for an RSVP; only Tickets Commerce's has the rule.
+		$kind->returns_block_editor_rule_for_every_provider = false;
 
 		self::$instances[ self::SALE_PRICE ] = $kind;
 
@@ -676,9 +689,6 @@ final class Window_Kind {
 	/**
 	 * Gets the keys that carry the stored rule in the ticket data the block editor reads.
 	 *
-	 * A path of more than one key nests the rule in the provider's own data, such as the sale price data of a Tickets
-	 * Commerce ticket.
-	 *
 	 * @since TBD
 	 *
 	 * @return string[] The keys, outermost first: `relative_sale_dates` for the sales window and
@@ -686,6 +696,20 @@ final class Window_Kind {
 	 */
 	public function get_block_editor_response_path(): array {
 		return $this->block_editor_response_path;
+	}
+
+	/**
+	 * Returns whether the block editor ticket data of every provider carries the rule, or only that of Tickets Commerce
+	 * tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the rule, or `null`, is returned for a ticket of any provider: true for the sales window, whose
+	 *              `relative_sale_dates` every ticket answers with, and false for the sale price, which only a Tickets
+	 *              Commerce ticket's `sale_price_data` carries.
+	 */
+	public function returns_block_editor_rule_for_every_provider(): bool {
+		return $this->returns_block_editor_rule_for_every_provider;
 	}
 
 	/**

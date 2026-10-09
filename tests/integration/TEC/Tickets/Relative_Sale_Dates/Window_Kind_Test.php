@@ -58,6 +58,7 @@ class Window_Kind_Test extends WPTestCase {
 		$this->assertSame( [ 'relative_sale_dates' ], $kind->get_block_editor_request_path() );
 		$this->assertSame( [ 'relative_sale_dates' ], $kind->get_block_editor_response_path() );
 		$this->assertSame( 'relative_sale_dates', $kind->get_tec_rest_field() );
+		$this->assertTrue( $kind->returns_block_editor_rule_for_every_provider() );
 	}
 
 	/**
@@ -111,6 +112,7 @@ class Window_Kind_Test extends WPTestCase {
 		$this->assertSame( [ 'sale_price', 'relative' ], $kind->get_block_editor_request_path() );
 		$this->assertSame( [ 'sale_price_data', 'relative' ], $kind->get_block_editor_response_path() );
 		$this->assertSame( 'sale_price_relative', $kind->get_tec_rest_field() );
+		$this->assertFalse( $kind->returns_block_editor_rule_for_every_provider() );
 	}
 
 	/**
