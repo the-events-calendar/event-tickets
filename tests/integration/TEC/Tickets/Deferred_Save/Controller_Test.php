@@ -200,4 +200,20 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertFalse( has_filter( 'rest_prepare_late_ticketable', $on_prepare ) );
 		$this->assertFalse( has_action( 'rest_api_init', [ $controller, 'hook_rest_saves' ] ) );
 	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_bind_the_classic_editor_services_once_however_often_rest_starts(): void {
+		$controller = $this->make_controller();
+		$controller->register();
+		$editor  = $this->test_services->get( Classic\Editor::class );
+		$notices = $this->test_services->get( Classic\Notices::class );
+
+		$controller->hook_rest_saves();
+		$controller->hook_rest_saves();
+
+		$this->assertSame( $editor, $this->test_services->get( Classic\Editor::class ) );
+		$this->assertSame( $notices, $this->test_services->get( Classic\Notices::class ) );
+	}
 }
