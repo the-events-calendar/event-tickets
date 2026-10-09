@@ -43,7 +43,7 @@ const isPostSaving = () => {
 	);
 };
 
-const getIsConfirmDisabled = ( state, ownProps ) => {
+export const getIsConfirmDisabled = ( state, ownProps ) => {
 	const shouldConfirmBeDisabled =
 		selectors.isTicketDisabled( state, ownProps ) ||
 		selectors.getTicketHasDurationError( state, ownProps ) ||
@@ -65,7 +65,7 @@ const getIsConfirmDisabled = ( state, ownProps ) => {
 	return applyFilters( 'tec.tickets.blocks.confirmButton.isDisabled', shouldConfirmBeDisabled, state, ownProps );
 };
 
-const onCancelClick = ( state, dispatch, ownProps ) => () => {
+export const onCancelClick = ( state, dispatch, ownProps ) => () => {
 	// A staged ticket is kept like a saved one: Cancel drops the unconfirmed changes, not the ticket.
 	if ( selectors.getTicketHasBeenCreated( state, ownProps ) || selectors.getTicketIsStaged( state, ownProps ) ) {
 		dispatch(
