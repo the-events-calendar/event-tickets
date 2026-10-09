@@ -30,6 +30,10 @@ const DEFAULT_DATA = {
 		start: { mode: 'relative', value: 2, unit: UNIT_WEEKS, anchor: 'start' },
 		end: { mode: 'relative', value: 1, unit: UNIT_HOURS, anchor: 'start' },
 	},
+	salePriceDefaults: {
+		start: { mode: 'now', value: 2, unit: UNIT_WEEKS },
+		end: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+	},
 	timezones: {},
 	allDay: { start: '00:00:00', end: '23:59:59', endDays: 0 },
 	formats: { dateWithYear: 'F j, Y', dateNoYear: 'F j', time: 'g:i a' },

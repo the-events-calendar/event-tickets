@@ -27,6 +27,8 @@ import {
 	UNIT_WEEKS,
 } from './rule-constants';
 
+/** @typedef {function( Object ): (Object|null|undefined)} StoredRuleReader */
+
 /**
  * @typedef {Object} LengthText
  *
@@ -37,26 +39,39 @@ import {
 /**
  * @typedef {Object} WindowKind
  *
- * @property {string}                           id                The kind's ID, as the server names it.
- * @property {string}                           openStartMode     The start mode that opens the window at once.
- * @property {string|null}                      openStartValue    What the server stores an open start as, or `null`
- *                                                                when it leaves the ticket's own start, the date
- *                                                                the form sends.
- * @property {number}                           maxValue          The highest number a relative boundary accepts.
- * @property {number[]}                         units             The units a relative boundary accepts, in seconds.
- * @property {string[]}                         anchors           The event dates a relative boundary may be counted
- *                                                                from, the one a kind that takes no anchor implies
- *                                                                first.
- * @property {boolean}                          takesAnchor       Whether a relative boundary names the event date
- *                                                                it is counted from.
- * @property {string|null}                      precision         `day` for a kind the server keeps as whole days,
- *                                                                or `null` for one it keeps as instants.
- * @property {LengthText|null}                  lengthText        The text that says how long the window lasts, or
- *                                                                `null` for a kind that shows none.
- * @property {{start: string[], end: string[]}} modes             The modes each boundary accepts.
- * @property {boolean}                          specificNeedsDate Whether a specific boundary sent without a date is
- *                                                                rejected, rather than left without one.
- * @property {WindowKind|null}                  parent            The window this one must start inside, or `null`.
+ * @property {string}                            id                The kind's ID, as the server names it.
+ * @property {string}                            openStartMode     The start mode that opens the window at once.
+ * @property {string|null}                       openStartValue    What the server stores an open start as, or `null`
+ *                                                                 when it leaves the ticket's own start, the date
+ *                                                                 the form sends.
+ * @property {number}                            maxValue          The highest number a relative boundary accepts.
+ * @property {number[]}                          units             The units a relative boundary accepts, in seconds.
+ * @property {string[]}                          anchors           The event dates a relative boundary may be counted
+ *                                                                 from, the one a kind that takes no anchor implies
+ *                                                                 first.
+ * @property {boolean}                           takesAnchor       Whether a relative boundary names the event date
+ *                                                                 it is counted from.
+ * @property {string|null}                       precision         `day` for a kind the server keeps as whole days,
+ *                                                                 or `null` for one it keeps as instants.
+ * @property {LengthText|null}                   lengthText        The text that says how long the window lasts, or
+ *                                                                 `null` for a kind that shows none.
+ * @property {{start: string[], end: string[]}}  modes             The modes each boundary accepts.
+ * @property {boolean}                           specificNeedsDate Whether a specific boundary sent without a date is
+ *                                                                 rejected, rather than left without one.
+ * @property {WindowKind|null}                   parent            The window this one must start inside, or `null`.
+ * @property {string}                            defaultsKey       The key of the boundaries the Ticket block script
+ *                                                                 is localized with for a ticket without a rule.
+ * @property {{start: string, end: string}|null} newModes          The modes a new rule opens on in the Ticket block,
+ *                                                                 or `null` to keep the localized defaults' own.
+ * @property {string}                            requestKey        The field of the Ticket block request that carries
+ *                                                                 the rule, as JSON.
+ * @property {string|undefined}                  emptyValue        What the Ticket block request carries for a draft
+ *                                                                 without a rule, or `undefined` to carry nothing.
+ * @property {StoredRuleReader}                  readStored        The rule a ticket from the block editor tickets
+ *                                                                 REST API was stored with: `null` for none, and
+ *                                                                 `undefined` for a window the ticket does not have.
+ * @property {function( Object ): boolean}       isAnswered        Whether a ticket from that REST API says what was
+ *                                                                 stored for the window.
  */
 
 /**
@@ -82,6 +97,14 @@ export const SALES_WINDOW = Object.freeze( {
 	} ),
 	specificNeedsDate: true,
 	parent: null,
+	defaultsKey: 'defaults',
+	// A new ticket's sales open now and close when the event starts; the defaults hold only the relative values offered.
+	newModes: Object.freeze( { start: MODE_DEFAULT, end: MODE_DEFAULT } ),
+	requestKey: 'ticket[relative_sale_dates]',
+	// An empty rule removes the stored one.
+	emptyValue: '',
+	readStored: ( ticket ) => ticket.relative_sale_dates ?? null,
+	isAnswered: ( ticket ) => undefined !== ticket.relative_sale_dates,
 } );
 
 /**
@@ -123,6 +146,13 @@ export const SALE_PRICE_WINDOW = Object.freeze( {
 	} ),
 	specificNeedsDate: false,
 	parent: SALES_WINDOW,
+	defaultsKey: 'salePriceDefaults',
+	newModes: null,
+	requestKey: 'ticket[sale_price][relative]',
+	// The server keeps the stored rule, or the dates of a sale price stored without one.
+	emptyValue: undefined,
+	readStored: ( ticket ) => ( ticket.sale_price_data?.enabled ? ticket.sale_price_data.relative ?? null : undefined ),
+	isAnswered: ( ticket ) => undefined !== ticket.sale_price_data,
 } );
 
 /**
