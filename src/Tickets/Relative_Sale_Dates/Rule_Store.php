@@ -31,6 +31,15 @@ final class Rule_Store {
 	public const META_KEY = '_tec_tickets_relative_sale_dates';
 
 	/**
+	 * The most ruled tickets the query for one event returns, so an event with thousands of tickets cannot run it unbounded.
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	public const TICKETS_QUERY_LIMIT = 300;
+
+	/**
 	 * The tickets handler, which owns the flag that keeps a ticket end from following the event start.
 	 *
 	 * @since TBD
@@ -72,6 +81,32 @@ final class Rule_Store {
 	}
 
 	/**
+	 * Gets the Tickets Commerce tickets of an event that have stored rules, at most `TICKETS_QUERY_LIMIT` of them.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id The event post ID.
+	 *
+	 * @return int[] The ticket post IDs, none while Tickets Commerce is off.
+	 */
+	public function get_ticket_ids_for_event( int $event_id ): array {
+		// Tickets Commerce loads its ticket functions only while it is on, and events are saved whether it is or not.
+		if ( ! tec_tickets_commerce_is_enabled() || ! function_exists( 'tec_tc_tickets' ) ) {
+			return [];
+		}
+
+		return array_map(
+			'absint',
+			tec_tc_tickets()
+				->where( 'event', $event_id )
+				->where( 'meta_exists', self::META_KEY )
+				->where( 'post_status', 'any' )
+				->per_page( self::TICKETS_QUERY_LIMIT )
+				->get_ids()
+		);
+	}
+
+	/**
 	 * Writes the given top-level keys, leaving the other stored keys as they are.
 	 *
 	 * @since TBD
@@ -105,6 +140,43 @@ final class Rule_Store {
 		$this->write( $ticket_id, array_diff_key( $stored, array_flip( $keys ) ) );
 
 		return true;
+	}
+
+	/**
+	 * Saves the sales window rule, and keeps an end the rule now leaves to the ticket where it is.
+	 *
+	 * A relative or default end had its date written by the rule, so it carries no manual-update flag, and switching it
+	 * to a specific end on the same date writes no new end date that would add one. Without the flag, the next event
+	 * move would give that end the event start.
+	 *
+	 * @since TBD
+	 *
+	 * @param int  $ticket_id The ticket post ID.
+	 * @param Rule $rule      The sales window rule.
+	 *
+	 * @return void
+	 */
+	public function save_sales_window( int $ticket_id, Rule $rule ): void {
+		$previous = Rule::from_stored( $this->get( $ticket_id ) );
+
+		$this->save(
+			$ticket_id,
+			[
+				'start' => $rule->get_start(),
+				'end'   => $rule->get_end(),
+			]
+		);
+
+		if (
+			! $previous
+			|| Rule::MODE_SPECIFIC === $previous->get_end()->get_mode()
+			|| Rule::MODE_SPECIFIC !== $rule->get_end()->get_mode()
+			|| $this->tickets_handler->has_manual_update( $ticket_id, $this->tickets_handler->key_end_date )
+		) {
+			return;
+		}
+
+		add_post_meta( $ticket_id, $this->tickets_handler->key_manual_updated, $this->tickets_handler->key_end_date );
 	}
 
 	/**
