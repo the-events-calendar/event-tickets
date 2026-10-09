@@ -8,20 +8,10 @@
  * Internal dependencies
  */
 import { MAX_VALUE, MIN_VALUE, MODE_DEFAULT, MODE_SPECIFIC } from '../rule-constants';
+import { getLocalizedData } from './localized-data';
 
 /** @typedef {import( '../sale-window' ).SaleWindowEnd} SaleWindowEnd */
 /** @typedef {import( '../sale-window' ).SaleWindowRule} SaleWindowRule */
-
-/**
- * Gets the relative end each end of the window offers when the rule has none, as the server localizes it.
- *
- * @since TBD
- *
- * @return {{start: SaleWindowEnd, end: SaleWindowEnd}} The relative start and end.
- */
-function getDefaultRelative() {
-	return window.tec.tickets.relativeSaleDates.blockEditorData.defaults;
-}
 
 /**
  * Builds the rule the options show for a ticket, with relative values on every end so a switch to a relative mode
@@ -35,7 +25,7 @@ function getDefaultRelative() {
  * @return {SaleWindowRule} The rule the options show.
  */
 export function getFormRule( rule ) {
-	const defaults = getDefaultRelative();
+	const { defaults } = getLocalizedData();
 	const withMode = ( key, mode ) => ( { ...defaults[ key ], mode } );
 
 	/*

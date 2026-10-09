@@ -77,11 +77,22 @@ function getUnitOptions( value ) {
  * @param {{label: string, value: string}[]} props.modeOptions   The mode options.
  * @param {{label: string, value: string}[]} props.anchorOptions The anchor options.
  * @param {Object}                           props.picker        The date and time range picker element.
+ * @param {string}                           props.helperText    The date a relative end works out to, or an empty
+ *                                                               string.
  * @param {Function}                         props.onChange      Called with the changed values of the end.
  *
  * @return {Object} The end's options.
  */
-export default function SalesWindowEnd( { name, end, labels, modeOptions, anchorOptions, picker, onChange } ) {
+export default function SalesWindowEnd( {
+	name,
+	end,
+	labels,
+	modeOptions,
+	anchorOptions,
+	picker,
+	helperText,
+	onChange,
+} ) {
 	return (
 		<div className={ `tec-tickets-relative-sale-dates__end tec-tickets-relative-sale-dates__end--${ name }` }>
 			<SelectControl
@@ -124,6 +135,9 @@ export default function SalesWindowEnd( { name, end, labels, modeOptions, anchor
 						options={ anchorOptions }
 						onChange={ ( anchor ) => onChange( { anchor } ) }
 					/>
+					<p className="tec-tickets-relative-sale-dates__helper" aria-live="polite">
+						{ helperText }
+					</p>
 				</div>
 			) }
 			{ MODE_SPECIFIC === end.mode &&

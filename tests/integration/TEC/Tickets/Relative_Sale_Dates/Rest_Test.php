@@ -66,6 +66,24 @@ class Rest_Test extends Controller_Test_Case {
 	}
 
 	/**
+	 * The Ticket block keeps the dates the save answers with, so a relative rule must answer with what it resolves to.
+	 *
+	 * @test
+	 */
+	public function should_answer_a_block_editor_save_with_the_dates_the_rule_resolves_to(): void {
+		$event_start = new DateTimeImmutable( '2027-06-24 19:00:00' );
+		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
+		$ticket_id   = $this->create_tc_ticket( $event_id );
+		$rule        = [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => $this->relative( 1, DAY_IN_SECONDS ) ];
+
+		$response = $this->send_block_editor_ticket_save( 'PUT', "/tickets/{$ticket_id}", $event_id, 'edit_ticket_nonce', [ 'ticket' => [ 'relative_sale_dates' => wp_json_encode( $rule ) ] ] );
+
+		$data = $response->get_data();
+		$this->assertSame( $event_start->modify( '-2 weeks' )->format( 'Y-m-d H:i:s' ), $data['available_from'] );
+		$this->assertSame( $event_start->modify( '-1 day' )->format( 'Y-m-d H:i:s' ), $data['available_until'] );
+	}
+
+	/**
 	 * @test
 	 */
 	public function should_reject_a_window_the_block_editor_sends_that_ends_before_it_starts(): void {

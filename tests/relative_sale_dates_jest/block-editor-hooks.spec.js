@@ -4,6 +4,7 @@ import { dispatch, getStoreState, select } from '@wordpress/data';
 import { STORE_NAME } from '@tec/tickets/relative-sale-dates/block-editor/store/constants';
 import SalesWindow from '@tec/tickets/relative-sale-dates/block-editor/sales-window';
 import * as legacySelectors from '@moderntribe/tickets/data/blocks/ticket/selectors';
+import { DEFAULT_EVENT, clearBlockEditorGlobals, setBlockEditorData, setEventState } from './block-editor-event-state';
 import '@tec/tickets/relative-sale-dates/block-editor';
 
 jest.mock( '@wordpress/data', () => require( './wordpress-data-registry' ) );
@@ -216,6 +217,60 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 			const rendered = filterDuration( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main', newClientId(), 'tc' );
 
 			expect( rendered.type ).toBe( SalesWindow );
+		} );
+	} );
+
+	describe( 'on tec.tickets.blocks.Ticket.SaleWindow.dates', () => {
+		const ticketDates = { fromDate: 'September 1, 2040', toDate: 'December 31, 2040' };
+
+		/**
+		 * Filters the sale dates the ticket header shows for a ticket block.
+		 *
+		 * @param {string} clientId The client ID of the ticket block.
+		 *
+		 * @return {{fromDate: string, toDate: string}} The dates the header shows.
+		 */
+		function filterDates( clientId ) {
+			return applyFilters( 'tec.tickets.blocks.Ticket.SaleWindow.dates', ticketDates, clientId );
+		}
+
+		beforeEach( () => {
+			setBlockEditorData();
+			setEventState( DEFAULT_EVENT );
+		} );
+
+		afterEach( () => {
+			clearBlockEditorGlobals();
+		} );
+
+		it( 'should show the dates the rule of a ticket works out to', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setDraftRule( clientId, { start: storedRule.start, end: { mode: 'default' } } );
+
+			expect( filterDates( clientId ) ).toStrictEqual( { fromDate: 'October 6, 2040', toDate: 'October 20, 2040' } );
+		} );
+
+		it( 'should keep the ticket\'s own start when sales start now', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setDraftRule( clientId, { start: { mode: 'default' }, end: storedRule.end } );
+
+			expect( filterDates( clientId ) ).toStrictEqual( { fromDate: ticketDates.fromDate, toDate: 'October 20, 2040' } );
+		} );
+
+		it( 'should leave the dates of a ticket without a rule alone', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setRule( clientId, null );
+
+			expect( filterDates( clientId ) ).toStrictEqual( ticketDates );
+			expect( filterDates( newClientId() ) ).toStrictEqual( ticketDates );
+		} );
+
+		it( 'should leave the dates alone while the event dates cannot be read', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setDraftRule( clientId, storedRule );
+			delete window.tec.events;
+
+			expect( filterDates( clientId ) ).toStrictEqual( ticketDates );
 		} );
 	} );
 

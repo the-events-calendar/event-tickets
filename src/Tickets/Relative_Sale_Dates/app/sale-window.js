@@ -7,7 +7,12 @@
 /**
  * External dependencies
  */
-import moment from 'moment-timezone';
+/*
+ * `moment` carries no zone data of its own: the classic editor script loads `moment-timezone` with its full data, and
+ * the block editor has the copy WordPress's `wp-date` loads, onto which the Ticket block script loads current zone data
+ * (`block-editor/zone-data`), so both resolve dates as the server does.
+ */
+import moment from 'moment';
 
 /**
  * Internal dependencies
