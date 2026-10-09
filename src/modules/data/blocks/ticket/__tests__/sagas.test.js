@@ -2157,7 +2157,23 @@ describe( 'Ticket Block sagas', () => {
 			expect( gen.next( fakeBody() ).value ).toEqual(
 				call( deferredSagas.stageTicket, 'a', [ [ 'name', 'Staged' ], [ 'provider', 'rsvp' ] ] )
 			);
+			// As the REST create did: a first shared capacity set in the ticket form becomes the block's.
+			expect( gen.next().value ).toEqual( call( sagas.syncTempSharedCapacity ) );
 			expect( gen.next().done ).toBe( true );
+		} );
+
+		it( 'syncTempSharedCapacity makes the capacity typed in the ticket form the block\'s when it has none', () => {
+			const gen = sagas.syncTempSharedCapacity();
+
+			expect( gen.next().value ).toEqual( select( selectors.getTicketsSharedCapacity ) );
+			expect( gen.next( '' ).value ).toEqual( select( selectors.getTicketsTempSharedCapacity ) );
+			expect( gen.next( '50' ).value ).toEqual( put( actions.setTicketsSharedCapacity( '50' ) ) );
+			expect( gen.next().done ).toBe( true );
+
+			const kept = sagas.syncTempSharedCapacity();
+			kept.next();
+			kept.next( '20' );
+			expect( kept.next( '50' ).done ).toBe( true );
 		} );
 
 		it( 'updateTicket stages instead of putting on a deferred post', () => {
