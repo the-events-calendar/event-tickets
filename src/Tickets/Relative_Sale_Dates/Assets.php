@@ -286,21 +286,24 @@ final class Assets extends Controller_Contract {
 	}
 
 	/**
-	 * Gets the data the Ticket block script reads its defaults, the event date settings and the helper text formats from.
+	 * Gets the data the Ticket block script reads its sales window and sale price defaults, the event date settings and the
+	 * helper text formats from.
 	 *
 	 * @since TBD
 	 *
-	 * @return array{defaults: array{start: array{mode: string, value: int, unit: int, anchor: string}, end: array{mode: string, value: int, unit: int, anchor: string}}, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, dateNoYear: string, time: string}} The script data.
+	 * @return array{defaults: array{start: array{mode: string, value: int, unit: int, anchor: string}, end: array{mode: string, value: int, unit: int, anchor: string}}, salePriceDefaults: array{start: array{mode: string, value: int, unit: int}, end: array{mode: string, value: int, unit: int}}, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, dateNoYear: string, time: string}} The script data.
 	 */
 	private function get_block_editor_script_data(): array {
 		return [
-			'defaults'  => [
+			'defaults'          => [
 				'start' => Editor::DEFAULT_RELATIVE_START,
 				'end'   => Editor::DEFAULT_RELATIVE_END,
 			],
-			'timezones' => $this->get_manual_offset_zones(),
-			'allDay'    => $this->get_all_day_times(),
-			'formats'   => [
+			// The classic form's, so both editors open a new sale price on the same window.
+			'salePriceDefaults' => Window_Kind::sale_price()->get_form_defaults(),
+			'timezones'         => $this->get_manual_offset_zones(),
+			'allDay'            => $this->get_all_day_times(),
+			'formats'           => [
 				'dateWithYear' => $this->get_date_format( true ),
 				'dateNoYear'   => $this->get_date_format( false ),
 				'time'         => $this->get_time_format(),

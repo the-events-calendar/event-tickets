@@ -3,6 +3,8 @@ import { addFilter, applyFilters, doAction, filters, removeFilter } from '@wordp
 import { dispatch, getStoreState, select } from '@wordpress/data';
 import { STORE_NAME } from '@tec/tickets/relative-sale-dates/block-editor/store/constants';
 import SalesWindow from '@tec/tickets/relative-sale-dates/block-editor/sales-window';
+import SalePriceWindow from '@tec/tickets/relative-sale-dates/block-editor/sale-price-window';
+import { SALES_WINDOW, SALE_PRICE_WINDOW } from '@tec/tickets/relative-sale-dates/window-kinds';
 import * as legacySelectors from '@moderntribe/tickets/data/blocks/ticket/selectors';
 import * as legacyActions from '@moderntribe/tickets/data/blocks/ticket/actions';
 import {
@@ -25,6 +27,7 @@ jest.mock( '@wordpress/components', () => ( {} ) );
 const TICKETS_COMMERCE = 'TEC\\Tickets\\Commerce\\Module';
 
 const BODY_FIELD = 'ticket[relative_sale_dates]';
+const SALE_PRICE_BODY_FIELD = 'ticket[sale_price][relative]';
 const UNIT_HOURS = 3600;
 const UNIT_DAYS = 86400;
 const UNIT_WEEKS = 604800;
@@ -40,6 +43,11 @@ const editedRule = {
 };
 
 const relative = ( value, unit ) => ( { mode: 'relative', value, unit, anchor: 'start' } );
+
+const storedSalePrice = {
+	start: { mode: 'now' },
+	end: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+};
 
 let clientCount = 0;
 
@@ -68,97 +76,223 @@ function buildBody( clientId ) {
 	return applyFilters( 'tec.tickets.blocks.setBodyDetails', body, clientId );
 }
 
-
 /**
  * @param {string} clientId The client ID of the ticket block.
+ * @param {Object} kind     The window kind.
  *
  * @return {Object|null|undefined} The rule the store keeps as the ticket's saved one, which no selector exposes.
  */
-function getSavedRule( clientId ) {
-	return getStoreState( STORE_NAME )[ clientId ]?.saved;
+function getSavedRule( clientId, kind = SALES_WINDOW ) {
+	return getStoreState( STORE_NAME )[ clientId ]?.[ kind.id ]?.saved;
 }
 
+/**
+ * Checks or unchecks the sale price of a ticket block in the legacy store, with the event dates in the editor.
+ *
+ * @param {string}  clientId The client ID of the ticket block.
+ * @param {boolean} checked  Whether the sale price is checked.
+ *
+ * @return {void}
+ */
+function setSalePriceChecked( clientId, checked ) {
+	window.tribe = { tickets: { data: { blocks: { selectors: legacySelectors } } } };
+	setBlockEditorData();
+	setEventState( DEFAULT_EVENT );
+
+	window.__tribe_common_store__.dispatch( legacyActions.registerTicketBlock( clientId ) );
+	window.__tribe_common_store__.dispatch( legacyActions.setTempSalePriceChecked( clientId, checked ) );
+}
+
+/**
+ * How each window's rule travels in the requests of a ticket block.
+ *
+ * @type {Object[]}
+ */
+const REQUEST_CASES = [
+	{
+		title: 'the sales window',
+		kind: SALES_WINDOW,
+		field: BODY_FIELD,
+		newTicket: newClientId,
+		fetched: ( rule ) => ( { id: 23, provider: 'tc', relative_sale_dates: rule } ),
+		stored: storedRule,
+		edited: editedRule,
+		later: { start: relative( 4, UNIT_DAYS ), end: { mode: 'default' } },
+		typed: {
+			start: { mode: 'relative', value: '3', unit: String( UNIT_DAYS ), anchor: 'start' },
+			end: { mode: 'relative', value: '1', unit: String( UNIT_HOURS ), anchor: 'end' },
+		},
+		sentTyped: {
+			start: { mode: 'relative', value: 3, unit: UNIT_DAYS, anchor: 'start' },
+			end: { mode: 'relative', value: 1, unit: UNIT_HOURS, anchor: 'end' },
+		},
+		notRelative: {
+			start: { mode: 'default', value: 2, unit: UNIT_WEEKS, anchor: 'start' },
+			end: { mode: 'specific', value: 1, unit: UNIT_HOURS, anchor: 'start' },
+		},
+		// An empty rule removes the stored one.
+		sentWithoutRule: '',
+	},
+	{
+		title: 'the sale price window',
+		kind: SALE_PRICE_WINDOW,
+		field: SALE_PRICE_BODY_FIELD,
+		newTicket: () => {
+			const clientId = newClientId();
+			setSalePriceChecked( clientId, true );
+
+			return clientId;
+		},
+		fetched: ( rule ) => ( { id: 23, provider: 'tc', sale_price_data: { enabled: true, relative: rule } } ),
+		stored: storedSalePrice,
+		edited: { start: { mode: 'relative', value: 3, unit: UNIT_WEEKS }, end: { mode: 'specific' } },
+		later: { start: { mode: 'relative', value: 4, unit: UNIT_DAYS }, end: { mode: 'specific' } },
+		typed: {
+			start: { mode: 'relative', value: '3', unit: String( UNIT_WEEKS ) },
+			end: { mode: 'relative', value: '10', unit: String( UNIT_DAYS ) },
+		},
+		sentTyped: {
+			start: { mode: 'relative', value: 3, unit: UNIT_WEEKS },
+			end: { mode: 'relative', value: 10, unit: UNIT_DAYS },
+		},
+		notRelative: {
+			start: { mode: 'now', value: 2, unit: UNIT_WEEKS },
+			end: { mode: 'specific', value: 1, unit: UNIT_WEEKS },
+		},
+		// The server keeps the stored sale price rule, or the dates of a sale price saved without one.
+		sentWithoutRule: null,
+	},
+];
+
 describe( 'the Relative Sale Dates block editor hooks', () => {
-	describe( 'on tec.tickets.blocks.fetchTicket', () => {
+	describe.each( REQUEST_CASES )( 'on tec.tickets.blocks.fetchTicket, for $title', ( kindCase ) => {
+		const { kind, field, fetched, stored } = kindCase;
+
+		afterEach( () => {
+			delete window.tribe;
+			clearBlockEditorGlobals();
+		} );
+
 		it( 'should load the rule of the fetched ticket', () => {
 			const clientId = newClientId();
 
-			doAction( 'tec.tickets.blocks.fetchTicket', clientId, { id: 23, provider: 'tc', relative_sale_dates: storedRule }, {} );
+			doAction( 'tec.tickets.blocks.fetchTicket', clientId, fetched( stored ), {} );
 
-			expect( getSavedRule( clientId ) ).toStrictEqual( storedRule );
-			expect( select( STORE_NAME ).getDraftRule( clientId ) ).toStrictEqual( storedRule );
+			expect( getSavedRule( clientId, kind ) ).toStrictEqual( stored );
+			expect( select( STORE_NAME ).getDraftRule( clientId, kind ) ).toStrictEqual( stored );
 		} );
 
 		it( 'should load a fetched ticket without a rule as having none', () => {
 			const clientId = newClientId();
 
-			doAction( 'tec.tickets.blocks.fetchTicket', clientId, { id: 23, provider: 'tc', relative_sale_dates: null }, {} );
+			doAction( 'tec.tickets.blocks.fetchTicket', clientId, fetched( null ), {} );
 
-			expect( getSavedRule( clientId ) ).toBeNull();
-			expect( select( STORE_NAME ).getDraftRule( clientId ) ).toBeNull();
+			expect( getSavedRule( clientId, kind ) ).toBeNull();
+			expect( select( STORE_NAME ).getDraftRule( clientId, kind ) ).toBeNull();
 		} );
 
 		it( 'should leave a ticket another provider sells out of the store and its requests', () => {
 			const clientId = newClientId();
+			setSalePriceChecked( clientId, true );
 
-			doAction( 'tec.tickets.blocks.fetchTicket', clientId, { id: 23, provider: 'woo', relative_sale_dates: null }, {} );
+			doAction( 'tec.tickets.blocks.fetchTicket', clientId, { ...fetched( stored ), provider: 'woo' }, {} );
 
-			expect( select( STORE_NAME ).getDraftRule( clientId ) ).toBeUndefined();
-			expect( buildBody( clientId ).has( BODY_FIELD ) ).toBe( false );
+			expect( select( STORE_NAME ).getDraftRule( clientId, kind ) ).toBeUndefined();
+			expect( buildBody( clientId ).has( field ) ).toBe( false );
+		} );
+	} );
+
+	describe( 'on tec.tickets.blocks.fetchTicket', () => {
+		it( 'should know no sale price rule for a fetched ticket without a sale price', () => {
+			const clientId = newClientId();
+			const ticket = { id: 23, provider: 'tc', sale_price_data: { enabled: false, relative: null } };
+
+			doAction( 'tec.tickets.blocks.fetchTicket', clientId, ticket, {} );
+
+			expect( getSavedRule( clientId, SALE_PRICE_WINDOW ) ).toBeUndefined();
+			expect( select( STORE_NAME ).getDraftRule( clientId, SALE_PRICE_WINDOW ) ).toBeUndefined();
+		} );
+	} );
+
+	describe.each( REQUEST_CASES )( 'on tec.tickets.blocks.setBodyDetails, for $title', ( kindCase ) => {
+		const { kind, field, newTicket } = kindCase;
+
+		afterEach( () => {
+			delete window.tribe;
+			clearBlockEditorGlobals();
+		} );
+
+		it( 'should send the draft rule as JSON', () => {
+			const clientId = newTicket();
+			dispatch( STORE_NAME ).setRule( clientId, kindCase.stored, kind );
+			dispatch( STORE_NAME ).setDraftRule( clientId, kindCase.edited, kind );
+
+			const body = buildBody( clientId );
+
+			expect( JSON.parse( body.get( field ) ) ).toStrictEqual( kindCase.edited );
+			expect( body.get( 'ticket[start_date]' ) ).toBe( '2026-10-01' );
+		} );
+
+		it( 'should send the value and unit of a relative boundary as integers', () => {
+			const clientId = newTicket();
+			dispatch( STORE_NAME ).setDraftRule( clientId, kindCase.typed, kind );
+
+			const sent = JSON.parse( buildBody( clientId ).get( field ) );
+
+			expect( sent ).toStrictEqual( kindCase.sentTyped );
+		} );
+
+		it( 'should send only the mode of a boundary that is not relative', () => {
+			const clientId = newTicket();
+			const { start, end } = kindCase.notRelative;
+			dispatch( STORE_NAME ).setDraftRule( clientId, kindCase.notRelative, kind );
+
+			const sent = JSON.parse( buildBody( clientId ).get( field ) );
+
+			expect( sent ).toStrictEqual( { start: { mode: start.mode }, end: { mode: end.mode } } );
+		} );
+
+		it( 'should send what the window takes for no rule when the draft has none', () => {
+			const clientId = newTicket();
+			dispatch( STORE_NAME ).setRule( clientId, kindCase.stored, kind );
+			dispatch( STORE_NAME ).setDraftRule( clientId, null, kind );
+
+			expect( buildBody( clientId ).get( field ) ).toBe( kindCase.sentWithoutRule );
+		} );
+
+		it( 'should send no rule for a ticket the store knows nothing of', () => {
+			const body = buildBody( newTicket() );
+
+			expect( body.has( field ) ).toBe( false );
 		} );
 	} );
 
 	describe( 'on tec.tickets.blocks.setBodyDetails', () => {
-		it( 'should send the draft rule as JSON', () => {
-			const clientId = newClientId();
-			dispatch( STORE_NAME ).setRule( clientId, storedRule );
-			dispatch( STORE_NAME ).setDraftRule( clientId, editedRule );
-
-			const body = buildBody( clientId );
-
-			expect( JSON.parse( body.get( BODY_FIELD ) ) ).toStrictEqual( editedRule );
-			expect( body.get( 'ticket[start_date]' ) ).toBe( '2026-10-01' );
-		} );
-
-		it( 'should send the value and unit of a relative end as integers', () => {
-			const clientId = newClientId();
-			dispatch( STORE_NAME ).setDraftRule( clientId, {
-				start: { mode: 'relative', value: '3', unit: String( UNIT_DAYS ), anchor: 'start' },
-				end: { mode: 'relative', value: '1', unit: String( UNIT_HOURS ), anchor: 'end' },
+		describe( 'with a sale price', () => {
+			afterEach( () => {
+				delete window.tribe;
+				clearBlockEditorGlobals();
 			} );
 
-			const sent = JSON.parse( buildBody( clientId ).get( BODY_FIELD ) );
+			it( 'should send the sales window and sale price rules side by side', () => {
+				const clientId = newClientId();
+				setSalePriceChecked( clientId, true );
+				dispatch( STORE_NAME ).setDraftRule( clientId, editedRule );
+				dispatch( STORE_NAME ).setDraftRule( clientId, storedSalePrice, SALE_PRICE_WINDOW );
 
-			expect( sent ).toStrictEqual( {
-				start: { mode: 'relative', value: 3, unit: UNIT_DAYS, anchor: 'start' },
-				end: { mode: 'relative', value: 1, unit: UNIT_HOURS, anchor: 'end' },
-			} );
-		} );
+				const body = buildBody( clientId );
 
-		it( 'should send only the mode of an end that is not relative', () => {
-			const clientId = newClientId();
-			dispatch( STORE_NAME ).setDraftRule( clientId, {
-				start: { mode: 'default', value: 2, unit: UNIT_WEEKS, anchor: 'start' },
-				end: { mode: 'specific', value: 1, unit: UNIT_HOURS, anchor: 'start' },
+				expect( JSON.parse( body.get( BODY_FIELD ) ) ).toStrictEqual( editedRule );
+				expect( JSON.parse( body.get( SALE_PRICE_BODY_FIELD ) ) ).toStrictEqual( storedSalePrice );
 			} );
 
-			const sent = JSON.parse( buildBody( clientId ).get( BODY_FIELD ) );
+			it( 'should send no sale price rule while the sale price is unchecked', () => {
+				const clientId = newClientId();
+				setSalePriceChecked( clientId, false );
+				dispatch( STORE_NAME ).setDraftRule( clientId, storedSalePrice, SALE_PRICE_WINDOW );
 
-			expect( sent ).toStrictEqual( { start: { mode: 'default' }, end: { mode: 'specific' } } );
-		} );
-
-		it( 'should send an empty rule, which removes the stored one, when the draft has none', () => {
-			const clientId = newClientId();
-			dispatch( STORE_NAME ).setRule( clientId, storedRule );
-			dispatch( STORE_NAME ).setDraftRule( clientId, null );
-
-			expect( buildBody( clientId ).get( BODY_FIELD ) ).toBe( '' );
-		} );
-
-		it( 'should send no rule for a ticket the store knows nothing of', () => {
-			const body = buildBody( newClientId() );
-
-			expect( body.has( BODY_FIELD ) ).toBe( false );
+				expect( buildBody( clientId ).has( SALE_PRICE_BODY_FIELD ) ).toBe( false );
+			} );
 		} );
 
 		describe( 'with the event dates in the editor', () => {
@@ -233,15 +367,22 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 		} );
 	} );
 
-	describe( 'on tec.tickets.blocks.ticketCancelled', () => {
+	describe.each( REQUEST_CASES )( 'on tec.tickets.blocks.ticketCancelled, for $title', ( kindCase ) => {
+		const { kind, newTicket, stored, edited } = kindCase;
+
+		afterEach( () => {
+			delete window.tribe;
+			clearBlockEditorGlobals();
+		} );
+
 		it( 'should restore the saved rule into the draft', () => {
-			const clientId = newClientId();
-			dispatch( STORE_NAME ).setRule( clientId, storedRule );
-			dispatch( STORE_NAME ).setDraftRule( clientId, editedRule );
+			const clientId = newTicket();
+			dispatch( STORE_NAME ).setRule( clientId, stored, kind );
+			dispatch( STORE_NAME ).setDraftRule( clientId, edited, kind );
 
 			doAction( 'tec.tickets.blocks.ticketCancelled', clientId );
 
-			expect( select( STORE_NAME ).getDraftRule( clientId ) ).toStrictEqual( storedRule );
+			expect( select( STORE_NAME ).getDraftRule( clientId, kind ) ).toStrictEqual( stored );
 		} );
 	} );
 
@@ -297,6 +438,62 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 			const rendered = filterDuration( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main', newClientId(), 'tc' );
 
 			expect( rendered.type ).toBe( SalesWindow );
+		} );
+	} );
+
+	describe( 'on tec.tickets.blocks.Ticket.SalePrice.renderPickers', () => {
+		const Row = () => null;
+		const StartPicker = () => null;
+		const EndPicker = () => null;
+
+		/**
+		 * Filters the sale price dates row of a ticket block for the given providers.
+		 *
+		 * @param {string} provider       The ticket provider the tickets block uses.
+		 * @param {string} clientId       The client ID of the ticket block.
+		 * @param {string} ticketProvider The provider slug the ticket keeps once fetched, or an empty string for a new one.
+		 *
+		 * @return {Object} What the sale price section renders in place of its dates row.
+		 */
+		function filterSalePrice( provider, clientId, ticketProvider = '' ) {
+			const tickets = { allClientIds: [ clientId ], byClientId: { [ clientId ]: { provider: ticketProvider } } };
+			window.tribe = { tickets: { data: { blocks: { selectors: legacySelectors } } } };
+			window.__tribe_common_store__ = {
+				getState: () => ( { tickets: { blocks: { ticket: { provider, tickets } } } } ),
+			};
+
+			return applyFilters( 'tec.tickets.blocks.Ticket.SalePrice.renderPickers', <Row />, clientId, {
+				start: <StartPicker />,
+				end: <EndPicker />,
+			} );
+		}
+
+		afterEach( () => {
+			delete window.tribe;
+			delete window.__tribe_common_store__;
+		} );
+
+		it( 'should render the sale price window options of a Tickets Commerce ticket with its pickers', () => {
+			const clientId = newClientId();
+
+			const rendered = filterSalePrice( TICKETS_COMMERCE, clientId );
+
+			expect( rendered.type ).toBe( SalePriceWindow );
+			expect( rendered.props.clientId ).toBe( clientId );
+			expect( rendered.props.pickers.start.type ).toBe( StartPicker );
+			expect( rendered.props.pickers.end.type ).toBe( EndPicker );
+		} );
+
+		it( 'should leave the dates row alone for a ticket another provider sells', () => {
+			const rendered = filterSalePrice( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main', newClientId() );
+
+			expect( rendered.type ).toBe( Row );
+		} );
+
+		it( 'should leave the dates row alone for an older ticket another provider sells under a Tickets Commerce block', () => {
+			const rendered = filterSalePrice( TICKETS_COMMERCE, newClientId(), 'woo' );
+
+			expect( rendered.type ).toBe( Row );
 		} );
 	} );
 
@@ -555,41 +752,63 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 	} );
 
 	describe.each( [ 'tec.tickets.blocks.ticketCreated', 'tec.tickets.blocks.ticketUpdated' ] )( 'on %s', ( hook ) => {
-		it( 'should keep the rule the request carried as the saved one', () => {
-			const clientId = newClientId();
-			dispatch( STORE_NAME ).setRule( clientId, storedRule );
-			dispatch( STORE_NAME ).setDraftRule( clientId, editedRule );
-			buildBody( clientId );
-
-			doAction( hook, clientId, 23, {} );
-
-			expect( getSavedRule( clientId ) ).toStrictEqual( editedRule );
+		afterEach( () => {
+			delete window.tribe;
+			clearBlockEditorGlobals();
 		} );
 
-		it( 'should keep as saved the rule the server answered with, not the one a later request carried', () => {
-			const clientId = newClientId();
-			const laterRule = { start: relative( 4, UNIT_DAYS ), end: { mode: 'default' } };
-			dispatch( STORE_NAME ).setRule( clientId, storedRule );
-			dispatch( STORE_NAME ).setDraftRule( clientId, editedRule );
-			buildBody( clientId );
-			dispatch( STORE_NAME ).setDraftRule( clientId, laterRule );
-			buildBody( clientId );
+		describe.each( REQUEST_CASES )( 'for $title', ( kindCase ) => {
+			const { kind, newTicket, stored, edited, later } = kindCase;
 
-			doAction( hook, clientId, 23, {}, { id: 23, provider: 'tc', relative_sale_dates: editedRule } );
+			it( 'should keep the rule the request carried as the saved one', () => {
+				const clientId = newTicket();
+				dispatch( STORE_NAME ).setRule( clientId, stored, kind );
+				dispatch( STORE_NAME ).setDraftRule( clientId, edited, kind );
+				buildBody( clientId );
 
-			expect( getSavedRule( clientId ) ).toStrictEqual( editedRule );
-			expect( select( STORE_NAME ).getDraftRule( clientId ) ).toStrictEqual( laterRule );
+				doAction( hook, clientId, 23, {} );
+
+				expect( getSavedRule( clientId, kind ) ).toStrictEqual( edited );
+			} );
+
+			it( 'should keep as saved the rule the server answered with, not the one a later request carried', () => {
+				const clientId = newTicket();
+				dispatch( STORE_NAME ).setRule( clientId, stored, kind );
+				dispatch( STORE_NAME ).setDraftRule( clientId, edited, kind );
+				buildBody( clientId );
+				dispatch( STORE_NAME ).setDraftRule( clientId, later, kind );
+				buildBody( clientId );
+
+				doAction( hook, clientId, 23, {}, kindCase.fetched( edited ) );
+
+				expect( getSavedRule( clientId, kind ) ).toStrictEqual( edited );
+				expect( select( STORE_NAME ).getDraftRule( clientId, kind ) ).toStrictEqual( later );
+			} );
+
+			it( 'should keep the sent rule as saved for an answer without the rule', () => {
+				const clientId = newTicket();
+				dispatch( STORE_NAME ).setRule( clientId, stored, kind );
+				dispatch( STORE_NAME ).setDraftRule( clientId, edited, kind );
+				buildBody( clientId );
+
+				doAction( hook, clientId, 23, {}, { id: 23, provider: 'tc' } );
+
+				expect( getSavedRule( clientId, kind ) ).toStrictEqual( edited );
+			} );
 		} );
 
-		it( 'should keep the sent rule as saved for an answer without the rule', () => {
+		// As a reload does: the server drops the rule along with an unchecked sale price.
+		it( 'should forget the sale price rule of a ticket the server answered without a sale price', () => {
 			const clientId = newClientId();
-			dispatch( STORE_NAME ).setRule( clientId, storedRule );
-			dispatch( STORE_NAME ).setDraftRule( clientId, editedRule );
+			setSalePriceChecked( clientId, false );
+			dispatch( STORE_NAME ).setRule( clientId, storedSalePrice, SALE_PRICE_WINDOW );
 			buildBody( clientId );
 
-			doAction( hook, clientId, 23, {}, { id: 23, provider: 'tc' } );
+			const answer = { id: 23, provider: 'tc', sale_price_data: { enabled: false, relative: null } };
 
-			expect( getSavedRule( clientId ) ).toStrictEqual( editedRule );
+			doAction( hook, clientId, 23, {}, answer );
+
+			expect( getSavedRule( clientId, SALE_PRICE_WINDOW ) ).toBeUndefined();
 		} );
 	} );
 } );

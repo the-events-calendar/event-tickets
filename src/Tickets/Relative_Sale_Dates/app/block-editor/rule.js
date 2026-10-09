@@ -1,5 +1,5 @@
 /**
- * The rule the Ticket block's sales window options show, and the relative number they keep.
+ * The rule the Ticket block's window options show, the relative number they keep and the rule its requests carry.
  *
  * @since TBD
  */
@@ -7,11 +7,13 @@
 /**
  * Internal dependencies
  */
-import { MAX_VALUE, MIN_VALUE, MODE_DEFAULT, MODE_SPECIFIC } from '../rule-constants';
+import { MIN_VALUE, MODE_RELATIVE, MODE_SPECIFIC } from '../rule-constants';
+import { SALES_WINDOW } from '../window-kinds';
 import { getLocalizedData } from './localized-data';
 
 /** @typedef {import( '../sale-window' ).SaleWindowEnd} SaleWindowEnd */
 /** @typedef {import( '../sale-window' ).SaleWindowRule} SaleWindowRule */
+/** @typedef {import( '../window-kinds' ).WindowKind} WindowKind */
 
 /**
  * Builds the rule the options show for a ticket, with relative values on every end so a switch to a relative mode
@@ -19,21 +21,24 @@ import { getLocalizedData } from './localized-data';
  *
  * @since TBD
  *
- * @param {SaleWindowRule|null|undefined} rule The ticket's draft rule: `undefined` for a new ticket, `null` for one
- *                                             saved without a rule.
+ * @param {SaleWindowRule|null|undefined} rule The ticket's draft rule: `undefined` for a new ticket or a window it does
+ *                                             not have yet, `null` for one saved without a rule.
+ * @param {WindowKind}                    kind The window kind.
  *
  * @return {SaleWindowRule} The rule the options show.
  */
-export function getFormRule( rule ) {
-	const { defaults } = getLocalizedData();
+export function getFormRule( rule, kind = SALES_WINDOW ) {
+	const defaults = getLocalizedData()[ kind.defaultsKey ];
 	const withMode = ( key, mode ) => ( { ...defaults[ key ], mode } );
 
 	/*
-	 * A new ticket opens now and closes when the event starts; a ticket saved without a rule keeps the dates it was
-	 * saved with, as a specific window.
+	 * A new rule opens on the kind's modes, or on the defaults' own; a window saved without a rule keeps the dates it
+	 * was saved with, as a specific window.
 	 */
 	if ( undefined === rule ) {
-		return { start: withMode( 'start', MODE_DEFAULT ), end: withMode( 'end', MODE_DEFAULT ) };
+		const newMode = ( key ) => ( kind.newModes ? kind.newModes[ key ] : defaults[ key ].mode );
+
+		return { start: withMode( 'start', newMode( 'start' ) ), end: withMode( 'end', newMode( 'end' ) ) };
 	}
 
 	if ( null === rule ) {
@@ -61,22 +66,63 @@ export function isSpecificWindow( rule ) {
 }
 
 /**
- * Reads the relative number the admin typed as an integer from 1 to 60.
+ * Reads the relative number the admin typed as an integer from `MIN_VALUE` to the largest the window accepts.
  *
  * A cleared field stays empty, so the admin can type a new number; the server rejects a rule saved with it.
  *
  * @since TBD
  *
- * @param {string} typed The number as the field reports it.
+ * @param {string}     typed The number as the field reports it.
+ * @param {WindowKind} kind  The window kind.
  *
- * @return {number|string} The number, within 1 to 60, or an empty string for a cleared field.
+ * @return {number|string} The number, from `MIN_VALUE` to the kind's `maxValue`, or an empty string for a cleared
+ *                         field.
  */
-export function toRelativeValue( typed ) {
+export function toRelativeValue( typed, kind = SALES_WINDOW ) {
 	const value = parseInt( typed, 10 );
 
 	if ( Number.isNaN( value ) ) {
 		return '';
 	}
 
-	return Math.min( MAX_VALUE, Math.max( MIN_VALUE, value ) );
+	return Math.min( kind.maxValue, Math.max( MIN_VALUE, value ) );
+}
+
+/**
+ * Builds the form of one end of the window the server accepts.
+ *
+ * The server only accepts a relative `value` and `unit` that are integers, and form controls hold strings.
+ *
+ * @since TBD
+ *
+ * @param {SaleWindowEnd} end  The end of the window.
+ * @param {WindowKind}    kind The window kind.
+ *
+ * @return {SaleWindowEnd} The end of the window, with only the keys its mode uses.
+ */
+function toRequestEnd( { mode, value, unit, anchor }, kind ) {
+	if ( MODE_RELATIVE !== mode ) {
+		return { mode };
+	}
+
+	return {
+		mode,
+		value: parseInt( value, 10 ),
+		unit: parseInt( unit, 10 ),
+		...( kind.takesAnchor && { anchor } ),
+	};
+}
+
+/**
+ * Builds the rule a ticket request carries, as the server accepts it.
+ *
+ * @since TBD
+ *
+ * @param {SaleWindowRule} rule The ticket's draft rule.
+ * @param {WindowKind}     kind The window kind.
+ *
+ * @return {SaleWindowRule} The rule, with only the keys each end's mode uses.
+ */
+export function toRequestRule( rule, kind = SALES_WINDOW ) {
+	return { start: toRequestEnd( rule.start, kind ), end: toRequestEnd( rule.end, kind ) };
 }

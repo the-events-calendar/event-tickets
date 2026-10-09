@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { NumericFormat } from 'react-number-format';
 import { __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 import { formatDate, parse as parseDate } from 'date-fns';
 
 /**
@@ -43,6 +44,7 @@ const getTicketProviderFromCommon = () => {
  */
 class SalePrice extends PureComponent {
 	static propTypes = {
+		clientId: PropTypes.string,
 		isDisabled: PropTypes.bool,
 		currencyDecimalPoint: PropTypes.string,
 		currencyNumberOfDecimals: PropTypes.number,
@@ -72,6 +74,7 @@ class SalePrice extends PureComponent {
 
 	render() {
 		const {
+			clientId,
 			isDisabled,
 			currencyDecimalPoint,
 			currencyNumberOfDecimals,
@@ -170,6 +173,9 @@ class SalePrice extends PureComponent {
 			},
 		};
 
+		const startPicker = <DayPickerInput { ...FromDateProps } />;
+		const endPicker = <DayPickerInput { ...ToDateProps } />;
+
 		return (
 			<div className={ 'tribe-editor__ticket__sale-price-wrapper' }>
 				<Checkbox
@@ -210,19 +216,35 @@ class SalePrice extends PureComponent {
 								{ SALE_PRICE_LABELS.invalid_price }
 							</div>
 						) }
-						<div className={ 'tribe-editor__ticket__sale-price--dates' }>
-							<LabeledItem
-								className="tribe-editor__ticket__sale-price__dates--label"
-								label={ SALE_PRICE_LABELS.on_sale_from }
-							/>
-							<div className={ 'tribe-editor__ticket__sale-price--start-date' }>
-								<DayPickerInput { ...FromDateProps } />
-							</div>
-							<span>{ SALE_PRICE_LABELS.to }</span>
-							<div className={ 'tribe-editor__ticket__sale-price--end-date' }>
-								<DayPickerInput { ...ToDateProps } />
-							</div>
-						</div>
+						{
+							/**
+							 * Filters what the sale price section renders in place of its sale dates row.
+							 *
+							 * @since TBD
+							 *
+							 * @param {Object} dates         The sale dates row, with its label and both date pickers.
+							 * @param {string} clientId      The client ID of the ticket block.
+							 * @param {Object} pickers       The date pickers of the row.
+							 * @param {Object} pickers.start The sale price start date picker.
+							 * @param {Object} pickers.end   The sale price end date picker.
+							 */
+							applyFilters(
+								'tec.tickets.blocks.Ticket.SalePrice.renderPickers',
+								<div className={ 'tribe-editor__ticket__sale-price--dates' }>
+									<LabeledItem
+										className="tribe-editor__ticket__sale-price__dates--label"
+										label={ SALE_PRICE_LABELS.on_sale_from }
+									/>
+									<div className={ 'tribe-editor__ticket__sale-price--start-date' }>
+										{ startPicker }
+									</div>
+									<span>{ SALE_PRICE_LABELS.to }</span>
+									<div className={ 'tribe-editor__ticket__sale-price--end-date' }>{ endPicker }</div>
+								</div>,
+								clientId,
+								{ start: startPicker, end: endPicker }
+							)
+						}
 					</div>
 				) }
 
