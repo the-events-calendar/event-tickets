@@ -93,7 +93,7 @@ final class Checks {
 			$ticket = $this->get_ticket_on_post( $ticket_id, $post_id );
 
 			if ( null === $ticket ) {
-				$rejections = $rejections->with( Parser::UPDATE, $ticket_id, $this->not_on_post_message( $ticket_id ) );
+				$rejections = $rejections->with( Parser::UPDATE, $ticket_id, $this->not_on_post_message( $ticket_id ), true );
 				unset( $update[ $ticket_id ] );
 				continue;
 			}
@@ -108,7 +108,7 @@ final class Checks {
 			$ticket = $this->get_ticket_on_post( $ticket_id, $post_id );
 
 			if ( null === $ticket ) {
-				$rejections = $rejections->with( Parser::MOVE, $ticket_id, $this->not_on_post_message( $ticket_id ) );
+				$rejections = $rejections->with( Parser::MOVE, $ticket_id, $this->not_on_post_message( $ticket_id ), true );
 				unset( $move[ $ticket_id ] );
 				continue;
 			}
@@ -142,7 +142,7 @@ final class Checks {
 			$ticket = $this->get_ticket_on_post( $ticket_id, $post_id );
 
 			if ( null === $ticket ) {
-				$rejections = $rejections->with( Parser::DELETE, $ticket_id, $this->not_on_post_message( $ticket_id ) );
+				$rejections = $rejections->with( Parser::DELETE, $ticket_id, $this->not_on_post_message( $ticket_id ), true );
 				continue;
 			}
 
@@ -162,7 +162,28 @@ final class Checks {
 			$delete[] = $ticket_id;
 		}
 
-		return new Outcome( new Payload( $update, $payload->get_create(), $delete, $move ), $rejections );
+		$create = $payload->get_create();
+
+		foreach ( $create as $position => $data ) {
+			if ( ! array_key_exists( Commit::DUPLICATE_OF, $data ) ) {
+				continue;
+			}
+
+			// A copy carries every meta of its source, so the source must be a ticket on this post the user may edit.
+			$source_id = $data[ Commit::DUPLICATE_OF ];
+			$source_id = is_int( $source_id ) || ( is_string( $source_id ) && ctype_digit( $source_id ) ) ? (int) $source_id : 0;
+			$source    = $source_id > 0 ? $this->get_ticket_on_post( $source_id, $post_id ) : null;
+
+			if ( null === $source || ! $this->permissions->for_ticket( $source )->user_can_edit_ticket( $source ) ) {
+				$rejections = $rejections->with( Parser::CREATE, $position, __( 'The ticket to copy is not one you can edit on this post.', 'event-tickets' ) );
+				unset( $create[ $position ] );
+				continue;
+			}
+
+			$create[ $position ][ Commit::DUPLICATE_OF ] = $source_id;
+		}
+
+		return new Outcome( new Payload( $update, $create, $delete, $move ), $rejections );
 	}
 
 	/**

@@ -50,11 +50,12 @@ New ticket</button><button
 				<th class="ticket_edit"></th>
 			</tr>
 		</thead>
-				<tbody class="tribe-tickets-editor-table-tickets-body">
+				<tbody class="tribe-tickets-editor-table-tickets-body" data-ticket-type="rsvp">
 		<tr class="Tribe__Tickets__RSVP is-expanded"
 	data-ticket-order-id="order_{{ ticket_id }}"
 	data-ticket-type-id="{{ ticket_id }}"
-	data-ticket-type="rsvp">
+	data-ticket-type="rsvp"
+	data-ticket-sold="0">
 	<td class="column-primary ticket_name Tribe__Tickets__RSVP" data-label="Ticket Type:">
 		<input
 			type="hidden"

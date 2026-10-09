@@ -717,13 +717,6 @@ export const stageTicketMove = ( ticketId, destinationId ) => ( {
 	},
 } );
 
-export const setStagedCreateOrder = ( clientIds ) => ( {
-	type: types.SET_STAGED_CREATE_ORDER,
-	payload: {
-		clientIds,
-	},
-} );
-
 /**
  * Clears the staged deletes and moves: all of them, or only the ones a post save sent.
  *

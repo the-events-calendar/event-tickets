@@ -111,7 +111,10 @@ export const createState = () => {
 		 */
 		restageCreate( position, fields ) {
 			if ( undefined !== create[ position ] ) {
-				create[ position ] = { ...entry( fieldsWithoutTicketId( fields ) ), key: create[ position ].key };
+				// The edit panel has no field for the ticket a copy copies: keep it from the staged entry.
+				const source = create[ position ].fields.filter( ( [ name ] ) => DUPLICATE_OF === name );
+				const edited = fieldsWithoutTicketId( fields ).filter( ( [ name ] ) => DUPLICATE_OF !== name );
+				create[ position ] = { ...entry( [ ...edited, ...source ] ), key: create[ position ].key };
 			}
 		},
 
@@ -347,6 +350,37 @@ const numberOrNull = ( value ) => {
 };
 
 /**
+ * Reads a price with the site's decimal separator, the only separator the panel lets an admin type in one.
+ *
+ * Without a known separator it falls back to `numberOrNull()`, which cannot tell `9.750` in a three-decimal
+ * currency from nine thousand seven hundred and fifty.
+ *
+ * @param {*}      value   The value.
+ * @param {string} decimal The site's decimal separator, or an empty string when it is not known.
+ *
+ * @return {number|null} The number, `NaN` when it is not a non-negative number, `null` when empty.
+ */
+const priceOrNull = ( value, decimal ) => {
+	if ( ! decimal ) {
+		return numberOrNull( value );
+	}
+
+	const text = String( value ?? '' ).replace( /\s/g, '' );
+
+	if ( '' === text ) {
+		return null;
+	}
+
+	const parts = text.split( decimal );
+
+	if ( parts.length > 2 || ! /\d/.test( text ) || ! parts.every( ( part ) => /^\d*$/.test( part ) ) ) {
+		return NaN;
+	}
+
+	return Number( `${ parts[ 0 ] || '0' }.${ parts[ 1 ] || '0' }` );
+};
+
+/**
  * Where the year, month and day sit in each datepicker format, by the index the site option stores
  * (`Tribe__Date_Utils::datepicker_formats()`, the list `tickets.js` uses).
  */
@@ -395,15 +429,16 @@ const isOn = ( value ) =>
  *
  * @since TBD
  *
- * @param {Array<Array<string>>}                 fields  The field set.
- * @param {{sold?: number, dateFormat?: number}} context What the page knows: the tickets sold and the datepicker format index.
+ * @param {Array<Array<string>>}                                   fields  The field set.
+ * @param {{sold?: number, dateFormat?: number, decimal?: string}} context What the page knows: the tickets sold, the datepicker format index and the price decimal separator.
  *
  * @return {Array<string>} The failing rules: `name`, `price`, `sale_price`, `sale_window`, `capacity`.
  */
 export const validateFields = ( fields, context = {} ) => {
 	const errors = [];
 	const name = firstValue( fields, 'ticket_name' );
-	const price = numberOrNull( firstValue( fields, 'ticket_price' ) );
+	const decimal = context.decimal || '';
+	const price = priceOrNull( firstValue( fields, 'ticket_price' ), decimal );
 	const capacity = numberOrNull( firstValue( fields, 'tribe-ticket[capacity]' ) );
 
 	if ( '' === name.trim() ) {
@@ -415,7 +450,7 @@ export const validateFields = ( fields, context = {} ) => {
 	}
 
 	if ( isOn( firstValue( fields, 'ticket_add_sale_price' ) ) ) {
-		const salePrice = numberOrNull( firstValue( fields, 'ticket_sale_price' ) );
+		const salePrice = priceOrNull( firstValue( fields, 'ticket_sale_price' ), decimal );
 
 		if (
 			null === salePrice ||
@@ -450,15 +485,43 @@ export const validateFields = ( fields, context = {} ) => {
 };
 
 /**
- * Copies a field set for a duplicate: the name gets " (copy)", the ID and SKU are dropped.
+ * The field of a staged copy that names the saved ticket it copies; the server copies that ticket's meta.
+ *
+ * @since TBD
+ *
+ * @type {string}
+ */
+export const DUPLICATE_OF = 'tec_tickets_duplicate_of';
+
+/**
+ * Stages-ready fields for a copy of a saved ticket: its fields, and the ticket they copy.
+ *
+ * @since TBD
+ *
+ * @param {Array<Array<string>>} fields   The saved ticket's field set.
+ * @param {number}               ticketId The saved ticket.
+ * @param {string}               suffix   What the copy's name ends with, translated.
+ *
+ * @return {Array<Array<string>>} The copy's field set.
+ */
+export const copyOfSaved = ( fields, ticketId, suffix = '(copy)' ) => [
+	...duplicateFields( fields, suffix ).filter( ( [ name ] ) => DUPLICATE_OF !== name ),
+	[ DUPLICATE_OF, String( ticketId ) ],
+];
+
+/**
+ * Copies a field set for a duplicate: the name gets the copy suffix, the ID and SKU are dropped.
  *
  * @since TBD
  *
  * @param {Array<Array<string>>} fields The field set to copy.
+ * @param {string}               suffix What the copy's name ends with, translated.
  *
  * @return {Array<Array<string>>} The copy.
  */
-export const duplicateFields = ( fields ) =>
+export const duplicateFields = ( fields, suffix = '(copy)' ) =>
 	fields
 		.filter( ( [ name ] ) => ! [ 'ticket_id', 'ticket_sku' ].includes( name ) )
-		.map( ( [ name, value ] ) => ( 'ticket_name' === name ? [ name, `${ value } (copy)` ] : [ name, value ] ) );
+		.map( ( [ name, value ] ) =>
+			'ticket_name' === name ? [ name, `${ value } ${ suffix }` ] : [ name, value ]
+		);

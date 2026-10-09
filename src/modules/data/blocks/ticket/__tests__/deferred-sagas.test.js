@@ -20,6 +20,7 @@ const mockEditor = {
 	order: [],
 	record: { id: 10 },
 	editPost: jest.fn(),
+	savePost: jest.fn(),
 	createErrorNotice: jest.fn(),
 	insertBlock: jest.fn(),
 };
@@ -34,6 +35,7 @@ jest.mock( '@wordpress/data', () => ( {
 	} ),
 	dispatch: () => ( {
 		editPost: mockEditor.editPost,
+		savePost: mockEditor.savePost,
 		createErrorNotice: mockEditor.createErrorNotice,
 		insertBlock: mockEditor.insertBlock,
 	} ),
@@ -52,7 +54,8 @@ jest.mock( '@wordpress/hooks', () => ( {
 	applyFilters: ( name, value ) => value,
 } ) );
 
-const { doAction } = require( '@wordpress/hooks' );
+const { doAction, addFilter } = require( '@wordpress/hooks' );
+const { isEqual } = require( 'lodash' );
 
 /**
  * Builds the tickets block state from ticket fields keyed by client ID.
@@ -119,6 +122,7 @@ beforeEach( () => {
 	mockEditor.order = [];
 	mockEditor.record = { id: 10 };
 	mockEditor.editPost.mockClear();
+	mockEditor.savePost.mockClear();
 	mockEditor.createErrorNotice.mockClear();
 	mockEditor.insertBlock.mockClear();
 	doAction.mockReset();
@@ -145,7 +149,7 @@ describe( 'refreshPayload', () => {
 				delete: [],
 				move: {},
 			},
-		} );
+		}, { undoIgnore: true } );
 	} );
 } );
 
@@ -334,7 +338,7 @@ describe( 'applying the answer of a save', () => {
 		const dispatched = run( stateWith( {} ), sagas.applyLastSaveResponse );
 
 		expect( ofType( dispatched, actions.setTicketSaveError( 'a', '' ).type ) ).toEqual( [] );
-		expect( mockEditor.editPost ).toHaveBeenCalledWith( { tec_tickets: undefined } );
+		expect( mockEditor.editPost ).toHaveBeenCalledWith( { tec_tickets: undefined }, { undoIgnore: true } );
 	} );
 } );
 
@@ -605,3 +609,95 @@ describe( 'the review of the stacked PRs, third round', () => {
 		expect( edits.tec_tickets.update[ 101 ][ 'tribe-ticket' ].capacity ).toBe( '5' );
 	} );
 } );
+
+describe( 'the cross-review of the stack', () => {
+	const save = ( state, response ) => {
+		prepare( state );
+		mockEditor.record = { id: 10, tec_tickets: response };
+
+		return run( state, sagas.applyLastSaveResponse );
+	};
+
+	it( 'saves the post again once a created ticket has its ID, so the saved content has it', () => {
+		mockEditor.order = [ 'a' ];
+		sagas.rememberBody( 'a', [ [ 'name', 'A' ] ] );
+
+		save( stateWith( { a: { isStaged: true } } ), { id: 's1', created: { 0: 101 }, errors: [] } );
+
+		expect( mockEditor.savePost ).toHaveBeenCalledTimes( 1 );
+	} );
+
+	it( 'does not save again when the save created nothing', () => {
+		mockEditor.order = [ 'u' ];
+		sagas.rememberBody( 'u', [ [ 'name', 'U' ] ] );
+
+		save( stateWith( { u: { isStaged: true, hasBeenCreated: true, ticketId: 30 } } ), { id: 's1', created: {}, errors: [] } );
+
+		expect( mockEditor.savePost ).not.toHaveBeenCalled();
+	} );
+
+	it( 'tells ticketDeleted which block the deleted ticket was in', () => {
+		const state = stateWith( {}, { deletes: [ 40 ] } );
+		run( state, sagas.stageDelete, 'd', 40 );
+
+		save( state, { id: 's1', created: {}, errors: [] } );
+
+		expect( doAction ).toHaveBeenCalledWith( 'tec.tickets.blocks.ticketDeleted', 'd', 40 );
+	} );
+
+	it( 'applies the second of two equal error-free answers, which core keeps as the same object only when they are equal', () => {
+		mockEditor.order = [ 'u' ];
+		const state = stateWith( { u: { isStaged: true, hasBeenCreated: true, ticketId: 30 } } );
+		// core-data keeps the previous object when the new value is deep-equal; the server's per-save id tells them apart.
+		const kept = ( previous, next ) => ( isEqual( previous, next ) ? previous : next );
+
+		sagas.rememberBody( 'u', [ [ 'name', 'U' ] ] );
+		const first = { id: 's1', created: {}, errors: [] };
+		save( state, first );
+		sagas.rememberBody( 'u', [ [ 'name', 'U' ] ] );
+		const second = save( state, kept( first, { id: 's2', created: {}, errors: [] } ) );
+
+		expect( second ).toContainEqual( actions.setTicketIsStaged( 'u', false ) );
+		expect( second ).not.toContainEqual(
+			actions.setTicketSaveError( 'u', 'The ticket changes were not saved with the post.' )
+		);
+	} );
+
+	it( 'keeps the payload edits out of the undo stack', () => {
+		mockEditor.order = [ 'a' ];
+		sagas.rememberBody( 'a', [ [ 'name', 'A' ] ] );
+
+		run( stateWith( { a: { isStaged: true } } ), sagas.refreshPayload );
+		run( stateWith( {} ), sagas.refreshPayload );
+		sagas.settlePayloadEdit( { id: 's1', created: {}, errors: [] } );
+
+		expect( mockEditor.editPost.mock.calls.length ).toBe( 3 );
+		mockEditor.editPost.mock.calls.forEach( ( [ , options ] ) => expect( options ).toEqual( { undoIgnore: true } ) );
+	} );
+
+	it( 'does not delete or move a ticket whose block Undo brought back', () => {
+		// Both blocks were removed, staging a delete and a move, then restored with Ctrl+Z.
+		mockEditor.order = [ 'u', 'v' ];
+		const state = stateWith(
+			{ u: { hasBeenCreated: true, ticketId: 30 }, v: { hasBeenCreated: true, ticketId: 31 } },
+			{ deletes: [ 30, 40 ], moves: { 31: 9, 41: 9 } }
+		);
+
+		run( state, sagas.refreshPayload );
+
+		const [ [ { tec_tickets: payload } ] ] = mockEditor.editPost.mock.calls.slice( -1 );
+		expect( payload.delete ).toEqual( [ 40 ] );
+		expect( payload.move ).toEqual( { 41: 9 } );
+	} );
+
+	it( 'sends a preview of a draft without the staged ticket changes, whose answer a preview never applies', () => {
+		addFilter.mockClear();
+		sagas.createPreSaveChannel();
+		const [ , , filter ] = addFilter.mock.calls.find( ( [ hook ] ) => 'editor.preSavePost' === hook );
+		const edits = { title: 'Draft', tec_tickets: { create: [ [ [ 'name', 'A' ] ] ], update: {}, delete: [], move: {} } };
+
+		expect( filter( edits, { isPreview: true } ) ).toEqual( { title: 'Draft' } );
+		expect( filter( edits, { isAutosave: true } ) ).toEqual( { title: 'Draft' } );
+	} );
+} );
+
