@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Commerce;
 
+use DateTimeImmutable;
 use Generator;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Status\Completed;
@@ -58,6 +59,26 @@ class Order_Actions_Test extends Controller_Test_Case {
 
 		$this->assertSame( tribe( Completed::class )->get_wp_slug(), get_post_status( $order->ID ) );
 		$this->assertSame( [ [ $order->ID, $items ] ], $this->calls );
+	}
+
+	public function test_it_does_not_fire_for_equal_items_holding_objects(): void {
+		$this->make_controller()->register();
+		$post_id = static::factory()->post->create( [ 'post_type' => Order::POSTTYPE ] );
+		add_post_meta( $post_id, Order::$items_meta_key, [ [ 'starts' => new DateTimeImmutable( '2030-01-01 10:00:00' ) ] ] );
+
+		// A new but equal object is not `===` to the stored one, so WordPress writes and reports it.
+		update_post_meta( $post_id, Order::$items_meta_key, [ [ 'starts' => new DateTimeImmutable( '2030-01-01 10:00:00' ) ] ] );
+
+		$this->assertSame( [], $this->calls );
+
+		// A connection using CLIENT_FOUND_ROWS counts the matched row as changed, so WordPress reports the write too.
+		do_action( 'updated_post_meta', 1, $post_id, Order::$items_meta_key, [ [ 'starts' => new DateTimeImmutable( '2030-01-01 10:00:00' ) ] ] );
+
+		$this->assertSame( [], $this->calls );
+
+		update_post_meta( $post_id, Order::$items_meta_key, [ [ 'starts' => new DateTimeImmutable( '2031-01-01 10:00:00' ) ] ] );
+
+		$this->assertCount( 1, $this->calls );
 	}
 
 	public function test_it_ignores_the_items_meta_key_on_other_post_types(): void {
