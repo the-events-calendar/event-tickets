@@ -15,6 +15,7 @@ use TEC\Common\REST\TEC\V1\Exceptions\InvalidRestArgumentException;
 use Tribe__Tickets__Global_Stock as Global_Stock;
 use stdClass;
 use TEC\Tickets\Commerce\Utils\Value;
+use TEC\Tickets\Relative_Sale_Dates\Ticket_Save;
 
 /**
  * Trait With_Filtered_Ticket_Params.
@@ -29,6 +30,7 @@ trait With_Filtered_Ticket_Params {
 	 *
 	 * @since 5.26.0
 	 * @since 5.29.3 Hardened sale price handling.
+	 * @since TBD Saves the Relative Sale Dates rule sent with the ticket.
 	 *
 	 * @param array $params The params to filter.
 	 *
@@ -151,6 +153,8 @@ trait With_Filtered_Ticket_Params {
 			'ticket_sale_start_date'       => $params['sale_price_start_date'] ?? $ticket_data[ $orm->get_update_fields_aliases()['sale_price_start_date'] ]['0'] ?? null,
 			'ticket_sale_end_date'         => $params['sale_price_end_date'] ?? $ticket_data[ $orm->get_update_fields_aliases()['sale_price_end_date'] ]['0'] ?? null,
 			'ticket_rsvp_enable_cannot_go' => $params['show_not_going'] ?? null,
+			// An update that leaves the rule out keeps the stored one; one that sends `null` removes it.
+			Ticket_Save::DATA_KEY          => array_key_exists( Ticket_Save::DATA_KEY, $params ) ? ( $params[ Ticket_Save::DATA_KEY ] ?? '' ) : null,
 		];
 
 		$sale_price = $new_params['ticket_sale_price'];
@@ -193,6 +197,7 @@ trait With_Filtered_Ticket_Params {
 			$params['price'],
 			$params['event'],
 			$params['title'],
+			$params[ Ticket_Save::DATA_KEY ],
 		);
 
 		$post_params = $params;
