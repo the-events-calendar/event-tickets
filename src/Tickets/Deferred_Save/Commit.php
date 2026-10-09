@@ -13,6 +13,8 @@ use TEC\Tickets\Event;
 use TEC\Tickets\Deferred_Save\Payload\Malformed_Exception;
 use TEC\Tickets\Deferred_Save\Payload\Parser;
 use TEC\Tickets\Deferred_Save\Payload\Rejections;
+use TEC\Tickets\Commerce\Module;
+use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
 use Tribe__Tickets__Tickets as Tickets;
 
 /**
@@ -277,6 +279,10 @@ final class Commit {
 			return $result->with_error( Parser::UPDATE, $ticket_id, $this->no_provider_message() );
 		}
 
+		if ( $this->has_invalid_price( $provider, $data ) ) {
+			return $result->with_error( Parser::UPDATE, $ticket_id, $this->invalid_price_message() );
+		}
+
 		$data['ticket_id']   = $ticket_id;
 		$data['ticket_type'] = $this->ticket_type( $data, get_post_meta( $ticket_id, '_type', true ) ?: 'default' );
 
@@ -314,6 +320,10 @@ final class Commit {
 
 		if ( ! $provider instanceof Tickets ) {
 			return $result->with_error( Parser::CREATE, $position, $this->no_provider_message() );
+		}
+
+		if ( $this->has_invalid_price( $provider, $data ) ) {
+			return $result->with_error( Parser::CREATE, $position, $this->invalid_price_message() );
 		}
 
 		unset( $data['ticket_id'] );
@@ -397,6 +407,47 @@ final class Commit {
 		$type = is_scalar( $type ) ? sanitize_text_field( (string) $type ) : '';
 
 		return '' !== $type ? $type : $fallback;
+	}
+
+	/**
+	 * Whether the entry carries a price the block editor's ticket endpoint would refuse.
+	 *
+	 * Tickets Commerce and PayPal refuse a negative or non-numeric price there; a blank price is a free ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param Tickets             $provider The provider the ticket is saved through.
+	 * @param array<string,mixed> $data     The ticket data.
+	 *
+	 * @return bool Whether the price is invalid.
+	 */
+	private function has_invalid_price( Tickets $provider, array $data ): bool {
+		if ( ! array_key_exists( 'ticket_price', $data ) ) {
+			return false;
+		}
+
+		if ( ! $provider instanceof Module && ! $provider instanceof PayPal ) {
+			return false;
+		}
+
+		if ( ! is_scalar( $data['ticket_price'] ) ) {
+			return true;
+		}
+
+		$price = trim( (string) $data['ticket_price'] );
+
+		return '' !== $price && ( ! is_numeric( $price ) || (float) $price < 0 );
+	}
+
+	/**
+	 * The message for an entry with an invalid price.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The message.
+	 */
+	private function invalid_price_message(): string {
+		return __( 'Invalid price', 'event-tickets' );
 	}
 
 	/**

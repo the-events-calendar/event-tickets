@@ -500,6 +500,60 @@ class Commit_Test extends WPTestCase {
 	}
 
 	/**
+	 * @return \Generator<string,array{0:mixed}>
+	 */
+	public function invalid_price_provider(): \Generator {
+		yield 'negative' => [ '-25' ];
+		yield 'not a number' => [ 'abc' ];
+		yield 'not a scalar' => [ [ '10' ] ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider invalid_price_provider
+	 */
+	public function it_should_reject_an_invalid_tickets_commerce_price_as_the_block_editor_endpoint_does( $price ): void {
+		$this->log_in_as_admin();
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+
+		$result = $this->commit()->run(
+			[
+				'update' => [ $ticket_id => $this->ticket_data( 'Updated', [ 'ticket_price' => $price ] ) ],
+				'create' => [ $this->ticket_data( 'Created', [ 'ticket_price' => $price ] ) ],
+			],
+			$post_id
+		);
+
+		$this->assertSame( [], $result->get_created() );
+		$this->assertSame( [ $ticket_id ], $this->error_keys( $result, 'update' ) );
+		$this->assertSame( [ 0 ], $this->error_keys( $result, 'create' ) );
+		$this->assertSame( '10', (string) get_post_meta( $ticket_id, '_price', true ) );
+		$this->assertSame( [ $ticket_id ], tribe_tickets()->where( 'event', $post_id )->get_ids() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_save_a_blank_tickets_commerce_price_as_free_and_leave_rsvp_prices_alone(): void {
+		$this->log_in_as_admin();
+		$post_id = static::factory()->post->create();
+
+		$result = $this->commit()->run(
+			[
+				'create' => [
+					$this->ticket_data( 'Free', [ 'ticket_price' => ' ' ] ),
+					$this->ticket_data( 'RSVP', [ 'ticket_price' => 'abc', 'ticket_provider' => RSVP::class ] ),
+				],
+			],
+			$post_id
+		);
+
+		$this->assertSame( [], $result->get_errors() );
+		$this->assertSame( [ 0, 1 ], array_keys( $result->get_created() ) );
+	}
+
+	/**
 	 * @test
 	 */
 	public function it_should_reject_a_payload_with_too_many_entries_as_a_whole(): void {
