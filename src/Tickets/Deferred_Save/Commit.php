@@ -478,9 +478,9 @@ final class Commit {
 		unset( $data['ticket_id'] );
 		$data['ticket_type'] = $this->ticket_type( $data, 'default' );
 		// What is on the post already, to tell the ticket this save adds if something throws once it is there.
-		$provider_class              = get_class( $provider );
+		$provider_class                = get_class( $provider );
 		$attached[ $provider_class ] ??= $this->attached_ids( $provider, $post_id );
-		$before                      = $attached[ $provider_class ];
+		$before                        = $attached[ $provider_class ];
 
 		try {
 			$ticket_id = $provider->ticket_add( $post_id, $data );
@@ -511,7 +511,7 @@ final class Commit {
 		$ticket_id = (int) $ticket_id;
 		$this->remember_key( $ticket_id, $key );
 		$attached[ $provider_class ][] = $ticket_id;
-		$result = $result->with_created( $position, $ticket_id );
+		$result                        = $result->with_created( $position, $ticket_id );
 
 		return $this->fire_added( $post_id, $ticket_id, $data )
 			? $result
