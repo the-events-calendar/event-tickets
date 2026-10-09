@@ -1,4 +1,4 @@
-import { validateFields, duplicateFields } from '../utils';
+import { validateFields, duplicateFields, copyOfSaved, createState, DUPLICATE_OF } from '../utils';
 
 const fields = ( overrides = {} ) =>
 	Object.entries( {
@@ -33,6 +33,17 @@ describe( 'validateFields', () => {
 		expect( validateFields( fields( { ticket_add_sale_price: '1', ticket_sale_price: '10' } ) ) ).toEqual( [ 'sale_price' ] );
 		expect( validateFields( fields( { ticket_add_sale_price: '1', ticket_sale_price: '8' } ) ) ).toEqual( [] );
 		expect( validateFields( fields( { ticket_add_sale_price: '', ticket_sale_price: '12' } ) ) ).toEqual( [] );
+	} );
+
+	it( 'reads prices with the site\'s decimal separator, whatever the number of decimals', () => {
+		const sale = ( price, salePrice ) => fields( { ticket_price: price, ticket_add_sale_price: '1', ticket_sale_price: salePrice } );
+
+		// A three-decimal currency: 9.750 is below 10.000, not 9750.
+		expect( validateFields( sale( '10.000', '9.750' ), { decimal: '.' } ) ).toEqual( [] );
+		expect( validateFields( sale( '10,000', '9,750' ), { decimal: ',' } ) ).toEqual( [] );
+		expect( validateFields( sale( '10,000', '10,500' ), { decimal: ',' } ) ).toEqual( [ 'sale_price' ] );
+		// The panel takes no thousands separator; one more decimal separator is not a price.
+		expect( validateFields( fields( { ticket_price: '1.000.5' } ), { decimal: '.' } ) ).toEqual( [ 'price' ] );
 	} );
 
 	it( 'requires the sale window start not to be after its end', () => {
@@ -86,5 +97,36 @@ describe( 'duplicateFields', () => {
 		const copy = duplicateFields( [ [ 'ticket_id', '9' ], [ 'ticket_name', 'VIP' ], [ 'ticket_sku', 'VIP-1' ], [ 'ticket_price', '20' ] ] );
 
 		expect( copy ).toEqual( [ [ 'ticket_name', 'VIP (copy)' ], [ 'ticket_price', '20' ] ] );
+	} );
+} );
+
+describe( 'duplicateFields with a translated suffix', () => {
+	it( 'names the copy with the suffix the site translates', () => {
+		expect( duplicateFields( [ [ 'ticket_name', 'VIP' ] ], '(copie)' ) ).toEqual( [ [ 'ticket_name', 'VIP (copie)' ] ] );
+		expect( copyOfSaved( [ [ 'ticket_name', 'VIP' ] ], 9, '(copie)' )[ 0 ] ).toEqual( [ 'ticket_name', 'VIP (copie)' ] );
+	} );
+} );
+
+describe( 'copyOfSaved', () => {
+	it( 'names the saved ticket it copies, so the server copies what the form does not carry', () => {
+		const copy = copyOfSaved( [ [ 'ticket_id', '9' ], [ 'ticket_name', 'VIP' ] ], 9 );
+
+		expect( copy ).toEqual( [
+			[ 'ticket_name', 'VIP (copy)' ],
+			[ DUPLICATE_OF, '9' ],
+		] );
+	} );
+
+	it( 'keeps the ticket it copies when the copy is edited again', () => {
+		const state = createState();
+		const position = state.stageCreate( copyOfSaved( [ [ 'ticket_name', 'VIP' ] ], 9 ) );
+
+		// The edit panel has no field for it.
+		state.restageCreate( position, [ [ 'ticket_name', 'VIP renamed' ] ] );
+
+		expect( state.getCreate( position ).fields ).toEqual( [
+			[ 'ticket_name', 'VIP renamed' ],
+			[ DUPLICATE_OF, '9' ],
+		] );
 	} );
 } );

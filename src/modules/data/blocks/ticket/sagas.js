@@ -585,6 +585,23 @@ export function* fetchTicket( action ) {
 	yield put( actions.setTicketIsLoading( clientId, false ) );
 }
 
+/**
+ * Makes the shared capacity typed in the ticket form the block's, when the block has none yet.
+ *
+ * The REST create does this once the ticket is saved; a staged create does it when it is staged, or a
+ * Cancel resets the shared capacity and every shared ticket becomes invalid.
+ *
+ * @since TBD
+ */
+export function* syncTempSharedCapacity() {
+	const sharedCapacity = yield select( selectors.getTicketsSharedCapacity );
+	const tempSharedCapacity = yield select( selectors.getTicketsTempSharedCapacity );
+
+	if ( sharedCapacity === '' && ! isNaN( tempSharedCapacity ) && tempSharedCapacity > 0 ) {
+		yield put( actions.setTicketsSharedCapacity( tempSharedCapacity ) );
+	}
+}
+
 export function* createNewTicket( action ) {
 	const { clientId } = action.payload;
 	const props = { clientId };
@@ -595,6 +612,7 @@ export function* createNewTicket( action ) {
 	// On a post that defers ticket saves the change is staged and travels with the post save.
 	if ( usesDeferredSave() ) {
 		yield call( deferredSagas.stageTicket, clientId, [ ...body.entries() ] );
+		yield call( syncTempSharedCapacity );
 		return;
 	}
 

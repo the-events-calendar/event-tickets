@@ -67,7 +67,7 @@ $ticket_type = $ticket_type ?? 'default';
 
 		$tickets = $handler->sort_tickets_by_menu_order( $tickets );
 		?>
-		<tbody class="tribe-tickets-editor-table-tickets-body">
+		<tbody class="tribe-tickets-editor-table-tickets-body" data-ticket-type="<?php echo esc_attr( $ticket_type ); ?>">
 		<?php
 		if ( ! empty( $tickets ) ) {
 			foreach ( $tickets as $ticket ) {

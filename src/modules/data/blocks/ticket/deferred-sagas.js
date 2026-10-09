@@ -61,6 +61,21 @@ let sent = null;
  */
 let lastApplied = null;
 
+/**
+ * The ticket block each staged delete removed, by ticket ID: `ticketDeleted` names the block, as the REST save did.
+ *
+ * @type {Object<number, string>}
+ */
+const deletedBlocks = {};
+
+/**
+ * The payload edits are bookkeeping, not changes the admin made: undoing one would leave the post clean while
+ * its tickets still say they are not saved.
+ *
+ * @type {Object}
+ */
+const UNDO_IGNORE = { undoIgnore: true };
+
 const hasOwn = ( target, key ) => Object.prototype.hasOwnProperty.call( target, key );
 
 const blockEditor = () => wpSelect( 'core/block-editor' );
@@ -218,11 +233,11 @@ export const editPostPayload = ( payload ) => {
 	if ( isEmptyPayload( payload ) ) {
 		// Nothing staged: make the edit equal the saved record's field so core drops it and the post is clean.
 		const post = wpSelect( 'core/editor' ).getCurrentPost();
-		wpDispatch( 'core/editor' ).editPost( { tec_tickets: post ? post.tec_tickets : undefined } );
+		wpDispatch( 'core/editor' ).editPost( { tec_tickets: post ? post.tec_tickets : undefined }, UNDO_IGNORE );
 		return;
 	}
 
-	wpDispatch( 'core/editor' ).editPost( { tec_tickets: payload } );
+	wpDispatch( 'core/editor' ).editPost( { tec_tickets: payload }, UNDO_IGNORE );
 };
 
 /**
@@ -233,7 +248,7 @@ export const editPostPayload = ( payload ) => {
  * @param {Object} response The `tec_tickets` field of the saved record.
  */
 export const settlePayloadEdit = ( response ) => {
-	wpDispatch( 'core/editor' ).editPost( { tec_tickets: response } );
+	wpDispatch( 'core/editor' ).editPost( { tec_tickets: response }, UNDO_IGNORE );
 };
 
 /**
@@ -260,12 +275,20 @@ export function* buildLivePayload( excluded = [] ) {
 		}
 	} );
 
+	// Undo brings back a removed block, not its staged delete or move: a ticket a block holds is neither.
+	const held = clientIds
+		.map( ( clientId ) => byClientId[ clientId ] )
+		.filter( ( ticket ) => ticket && ticket.hasBeenCreated && ticket.ticketId )
+		.map( ( ticket ) => Number( ticket.ticketId ) );
+
 	const { payload, createOrder } = buildPayload( {
 		clientIds: clientIds.filter( ( clientId ) => ! excluded.includes( clientId ) ),
 		byClientId,
 		bodies: positioned,
-		stagedDeletes,
-		stagedMoves,
+		stagedDeletes: stagedDeletes.filter( ( ticketId ) => ! held.includes( Number( ticketId ) ) ),
+		stagedMoves: Object.fromEntries(
+			Object.entries( stagedMoves ).filter( ( [ ticketId ] ) => ! held.includes( Number( ticketId ) ) )
+		),
 	} );
 
 	return { payload, createOrder, clientIds, byClientId };
@@ -277,9 +300,8 @@ export function* buildLivePayload( excluded = [] ) {
  * @since TBD
  */
 export function* refreshPayload() {
-	const { payload, createOrder } = yield call( buildLivePayload );
+	const { payload } = yield call( buildLivePayload );
 
-	yield put( actions.setStagedCreateOrder( createOrder ) );
 	yield call( editPostPayload, payload );
 }
 
@@ -315,6 +337,7 @@ export function* stageTicket( clientId, entries ) {
  */
 export function* stageDelete( clientId, ticketId ) {
 	forgetBody( clientId );
+	deletedBlocks[ ticketId ] = clientId;
 	yield put( actions.stageTicketDelete( ticketId ) );
 	yield call( refreshPayload );
 }
@@ -401,7 +424,7 @@ export function* stagePendingChanges() {
 		}
 
 		const isValid = yield select( selectors.isTicketValid, { clientId } );
-		const isSalePriceValid = yield select( selectors.isTicketSalePriceValid, { clientId } );
+		const isSalePriceValid = yield select( selectors.isTicketSalePriceAcceptable, { clientId } );
 		const hasDurationError = yield select( selectors.getTicketHasDurationError, { clientId } );
 
 		// The rules the confirm button applies; a ticket that fails them is not saved, and the block says so.
@@ -470,6 +493,7 @@ export function* prepareSave( edits, resolve ) {
 				updates,
 				bodies: { ...bodies },
 				deletes: [ ...payload.delete ],
+				deletedBlocks: { ...deletedBlocks },
 				moves: { ...payload.move },
 				positions: sentPositions,
 				details: sentDetails,
@@ -540,7 +564,11 @@ export function* applySaveResponse( response, sentNow ) {
 
 	const clientIds = yield select( selectors.getTicketsAllClientIds );
 	const byClientId = yield select( selectors.getTicketsByClientId );
-	const outcome = reconcileSaveResponse( { response, sent: sentNow, live: { clientIds, bodies } } );
+	const ticketIds = liveClientIds( clientIds )
+		.map( ( clientId ) => byClientId[ clientId ] )
+		.filter( ( ticket ) => ticket && ticket.hasBeenCreated && ticket.ticketId )
+		.map( ( ticket ) => Number( ticket.ticketId ) );
+	const outcome = reconcileSaveResponse( { response, sent: sentNow, live: { clientIds, bodies, ticketIds } } );
 
 	for ( const block of outcome.blocks ) {
 		if ( 'created' === block.hook ) {
@@ -584,9 +612,43 @@ export function* applySaveResponse( response, sentNow ) {
 		}
 	}
 
-	outcome.deleted.forEach( ( ticketId ) => runHook( 'tec.tickets.blocks.ticketDeleted', null, ticketId ) );
+	outcome.deleted.forEach( ( ticketId ) => {
+		const deletedBlocksSent = sentNow.deletedBlocks || {};
+		const clientId = hasOwn( deletedBlocksSent, ticketId ) ? deletedBlocksSent[ ticketId ] : null;
+
+		/**
+		 * Fires once a staged delete was committed with the post save, not when the block is removed.
+		 *
+		 * @since 5.20.0
+		 * @since TBD On a post that defers ticket saves, fires after the post save that deleted the ticket.
+		 *
+		 * @param {string|null} clientId The removed ticket block's client ID; `null` when it is not known.
+		 * @param {number}      ticketId The ticket's ID.
+		 */
+		runHook( 'tec.tickets.blocks.ticketDeleted', clientId, ticketId );
+		delete deletedBlocks[ ticketId ];
+	} );
 	outcome.notices.forEach( showNotice );
 	outcome.restore.forEach( restoreTicketBlock );
+
+	// A created ticket's ID reaches its block after the content was saved: save again so the content has it,
+	// or a reload shows the block empty next to a second block for the saved ticket. That save sends no payload.
+	if ( outcome.blocks.some( ( { hook } ) => 'created' === hook ) ) {
+		yield call( savePostAgain );
+	}
+}
+
+/**
+ * Saves the post again, so its content has the IDs of the tickets the last save created.
+ *
+ * @since TBD
+ */
+export function* savePostAgain() {
+	const editor = wpDispatch( 'core/editor' );
+
+	if ( editor && 'function' === typeof editor.savePost ) {
+		yield call( [ editor, editor.savePost ] );
+	}
 }
 
 /**
@@ -639,11 +701,17 @@ export function* applyLastSaveResponse() {
  */
 export const createPreSaveChannel = () =>
 	eventChannel( ( emitter ) => {
-		addFilter( 'editor.preSavePost', NAMESPACE, ( edits, options = {} ) =>
-			options.isAutosave || options.isPreview
-				? edits
-				: new Promise( ( resolve ) => emitter( { edits, resolve } ) )
-		);
+		addFilter( 'editor.preSavePost', NAMESPACE, ( edits, options = {} ) => {
+			if ( options.isAutosave || options.isPreview ) {
+				// A draft's preview is a real save whose answer is never applied: what it committed would stay staged.
+				// eslint-disable-next-line camelcase, no-unused-vars
+				const { tec_tickets, ...withoutPayload } = edits;
+
+				return withoutPayload;
+			}
+
+			return new Promise( ( resolve ) => emitter( { edits, resolve } ) );
+		} );
 
 		return () => removeFilter( 'editor.preSavePost', NAMESPACE );
 	}, buffers.expanding() );

@@ -158,6 +158,62 @@ class Checks_Test extends WPTestCase {
 	}
 
 	/**
+	 * Deliberate: tickets are published posts, so deleting one asks for `delete_published_posts`,
+	 * which a Contributor lacks even for the tickets they created on their own draft.
+	 *
+	 * @test
+	 */
+	public function it_should_let_a_contributor_create_tickets_on_their_draft_but_not_delete_them(): void {
+		$contributor_id = $this->log_in_as( 'contributor' );
+		$this->post_id  = static::factory()->post->create( [ 'post_author' => $contributor_id, 'post_status' => 'draft' ] );
+		$own_ticket_id  = $this->create_tc_ticket( $this->post_id, 10 );
+
+		$checked = $this->run_checks(
+			[
+				'create' => [ [ 'ticket_name' => 'x' ] ],
+				'delete' => [ $own_ticket_id ],
+			]
+		);
+
+		$this->assertSame( [], $this->payload_level_rejections() );
+		$this->assertCount( 1, $checked->get_create() );
+		$this->assertSame( [], $checked->get_delete() );
+		$this->assertSame( [ $own_ticket_id ], $this->error_keys( 'delete' ) );
+	}
+
+	/**
+	 * The editors put back the block of a refused delete or move, unless the ticket is no longer on the post.
+	 *
+	 * @test
+	 */
+	public function it_should_mark_the_rejections_of_tickets_that_are_not_on_the_post(): void {
+		$this->given_two_posts_with_tickets();
+		$this->log_in_as( 'editor' );
+		// A refusal that is not about where the ticket is.
+		add_filter( 'tec_tickets_user_can_delete_ticket', '__return_false' );
+
+		$this->run_checks(
+			[
+				'delete' => [ $this->foreign_ticket_id, $this->ticket_id ],
+				'move'   => [ $this->second_foreign_ticket_id => $this->other_post_id ],
+			]
+		);
+
+		$not_on_post = [];
+		foreach ( $this->rejections->all() as $rejection ) {
+			$not_on_post[ $rejection['key'] ] = ! empty( $rejection['not_on_post'] );
+		}
+		$this->assertSame(
+			[
+				$this->second_foreign_ticket_id => true,
+				$this->foreign_ticket_id        => true,
+				$this->ticket_id                => false,
+			],
+			$not_on_post
+		);
+	}
+
+	/**
 	 * @test
 	 */
 	public function it_should_reject_a_ticket_of_another_post_per_entry_and_keep_its_siblings(): void {
