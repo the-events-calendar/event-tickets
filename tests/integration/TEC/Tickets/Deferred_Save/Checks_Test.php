@@ -158,6 +158,30 @@ class Checks_Test extends WPTestCase {
 	}
 
 	/**
+	 * Deliberate: tickets are published posts, so deleting one asks for `delete_published_posts`,
+	 * which a Contributor lacks even for the tickets they created on their own draft.
+	 *
+	 * @test
+	 */
+	public function it_should_let_a_contributor_create_tickets_on_their_draft_but_not_delete_them(): void {
+		$contributor_id = $this->log_in_as( 'contributor' );
+		$this->post_id  = static::factory()->post->create( [ 'post_author' => $contributor_id, 'post_status' => 'draft' ] );
+		$own_ticket_id  = $this->create_tc_ticket( $this->post_id, 10 );
+
+		$checked = $this->run_checks(
+			[
+				'create' => [ [ 'ticket_name' => 'x' ] ],
+				'delete' => [ $own_ticket_id ],
+			]
+		);
+
+		$this->assertSame( [], $this->payload_level_rejections() );
+		$this->assertCount( 1, $checked->get_create() );
+		$this->assertSame( [], $checked->get_delete() );
+		$this->assertSame( [ $own_ticket_id ], $this->error_keys( 'delete' ) );
+	}
+
+	/**
 	 * @test
 	 */
 	public function it_should_reject_a_ticket_of_another_post_per_entry_and_keep_its_siblings(): void {
