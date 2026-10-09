@@ -243,7 +243,10 @@ describe( 'deferred-save module', () => {
 		loadedHooks.applyFilters( 'tec.tickets.admin.ticket.intercepted', false, 'duplicate', { ticketId: 12 } );
 
 		expect( post ).not.toHaveBeenCalled();
-		expect( module.state.getCreate( 0 ).fields ).toEqual( [ [ 'ticket_name', 'Edited (copy)' ] ] );
+		expect( module.state.getCreate( 0 ).fields ).toEqual( [
+			[ 'ticket_name', 'Edited (copy)' ],
+			[ 'tec_tickets_duplicate_of', '12' ],
+		] );
 		post.mockRestore();
 	} );
 

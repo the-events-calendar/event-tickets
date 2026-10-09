@@ -111,7 +111,10 @@ export const createState = () => {
 		 */
 		restageCreate( position, fields ) {
 			if ( undefined !== create[ position ] ) {
-				create[ position ] = { ...entry( fieldsWithoutTicketId( fields ) ), key: create[ position ].key };
+				// The edit panel has no field for the ticket a copy copies: keep it from the staged entry.
+				const source = create[ position ].fields.filter( ( [ name ] ) => DUPLICATE_OF === name );
+				const edited = fieldsWithoutTicketId( fields ).filter( ( [ name ] ) => DUPLICATE_OF !== name );
+				create[ position ] = { ...entry( [ ...edited, ...source ] ), key: create[ position ].key };
 			}
 		},
 
@@ -458,6 +461,30 @@ export const validateFields = ( fields, context = {} ) => {
  *
  * @return {Array<Array<string>>} The copy.
  */
+/**
+ * The field of a staged copy that names the saved ticket it copies; the server copies that ticket's meta.
+ *
+ * @since TBD
+ *
+ * @type {string}
+ */
+export const DUPLICATE_OF = 'tec_tickets_duplicate_of';
+
+/**
+ * Stages-ready fields for a copy of a saved ticket: its fields, and the ticket they copy.
+ *
+ * @since TBD
+ *
+ * @param {Array<Array<string>>} fields   The saved ticket's field set.
+ * @param {number}               ticketId The saved ticket.
+ *
+ * @return {Array<Array<string>>} The copy's field set.
+ */
+export const copyOfSaved = ( fields, ticketId ) => [
+	...duplicateFields( fields ).filter( ( [ name ] ) => DUPLICATE_OF !== name ),
+	[ DUPLICATE_OF, String( ticketId ) ],
+];
+
 export const duplicateFields = ( fields ) =>
 	fields
 		.filter( ( [ name ] ) => ! [ 'ticket_id', 'ticket_sku' ].includes( name ) )

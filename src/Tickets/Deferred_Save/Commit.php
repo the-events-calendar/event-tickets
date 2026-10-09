@@ -60,6 +60,19 @@ final class Commit {
 	public const CREATE_KEY_META = '_tec_tickets_deferred_save_create_key';
 
 	/**
+	 * The field of a `create` entry that names the ticket on the same post it copies.
+	 *
+	 * The copy is made by the provider's `duplicate_ticket()`, which copies the meta no edit form carries,
+	 * and the entry's fields are then saved over it. `Checks` requires the ticket to be on the post and
+	 * editable by the user.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const DUPLICATE_OF = 'tec_tickets_duplicate_of';
+
+	/**
 	 * The checks a payload passes before anything is saved.
 	 *
 	 * @since TBD
@@ -429,9 +442,17 @@ final class Commit {
 	 * @throws \Throwable When the provider throws before the ticket is on the post; `guarded()` reports it.
 	 */
 	private function create( Result $result, int $post_id, int $position, array $data, array &$attached ): Result {
-		$provider = empty( $data['ticket_provider'] ) || ! is_string( $data['ticket_provider'] )
-			? false
-			: Tickets::get_ticket_provider_instance( $data['ticket_provider'] );
+		// The checks left an int here only for a ticket on this post the user may edit; a copy is made by its provider.
+		$source_id = (int) ( $data[ self::DUPLICATE_OF ] ?? 0 );
+		unset( $data[ self::DUPLICATE_OF ] );
+
+		if ( $source_id ) {
+			$provider = tribe_tickets_get_ticket_provider( $source_id );
+		} else {
+			$provider = empty( $data['ticket_provider'] ) || ! is_string( $data['ticket_provider'] )
+				? false
+				: Tickets::get_ticket_provider_instance( $data['ticket_provider'] );
+		}
 
 		if ( ! $provider instanceof Tickets ) {
 			return $result->with_error( Parser::CREATE, $position, $this->no_provider_message() );
@@ -448,6 +469,10 @@ final class Commit {
 		if ( $created ) {
 			// An earlier try of this save created the ticket and its answer never reached the editor.
 			return $this->update_created( $result, $post_id, $position, $created, $data );
+		}
+
+		if ( $source_id ) {
+			return $this->create_copy( $result, $post_id, $position, $source_id, $provider, $data, $key, $attached );
 		}
 
 		unset( $data['ticket_id'] );
@@ -491,6 +516,40 @@ final class Commit {
 		return $this->fire_added( $post_id, $ticket_id, $data )
 			? $result
 			: $result->with_error( Parser::CREATE, $position, $this->saved_listener_failed_message(), true );
+	}
+
+	/**
+	 * Creates a ticket as a copy of another through the provider, then saves the entry's fields over the copy.
+	 *
+	 * `duplicate_ticket()` copies every meta of the source, including what no edit form carries, such as a
+	 * WooCommerce product's tax status, tax class and purchase note.
+	 *
+	 * @since TBD
+	 *
+	 * @param Result              $result    The result so far.
+	 * @param int                 $post_id   The post being saved.
+	 * @param int                 $position  The position of the entry in the `create` part.
+	 * @param int                 $source_id The ticket to copy, checked to be on the post.
+	 * @param Tickets             $provider  The source ticket's provider.
+	 * @param array<string,mixed> $data      The ticket data, as the editor sent it.
+	 * @param string              $key       The entry's create key, or an empty string.
+	 * @param array<string,int[]> $attached  The tickets each provider has on the post, by provider class.
+	 *
+	 * @return Result The result with this entry folded in.
+	 */
+	private function create_copy( Result $result, int $post_id, int $position, int $source_id, Tickets $provider, array $data, string $key, array &$attached ): Result {
+		$ticket_id = (int) $provider->duplicate_ticket( $post_id, $source_id );
+
+		if ( ! $ticket_id ) {
+			return $result->with_error( Parser::CREATE, $position, $this->not_saved_message() );
+		}
+
+		$this->remember_key( $ticket_id, $key );
+		$attached[ get_class( $provider ) ][] = $ticket_id;
+		$result                               = $result->with_created( $position, $ticket_id );
+
+		// Guarded here, so that a listener throwing during the update does not lose the ID the result now holds.
+		return $this->guarded( $result, Parser::CREATE, $position, fn( Result $r ) => $this->update( $r, $post_id, $ticket_id, $data, Parser::CREATE, $position ) );
 	}
 
 	/**

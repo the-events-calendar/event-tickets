@@ -720,6 +720,58 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_copy_a_duplicated_tickets_meta_and_apply_the_staged_fields_over_it(): void {
+		$this->log_in_as_admin();
+		$post_id   = static::factory()->post->create();
+		$source_id = $this->create_tc_ticket( $post_id, 10 );
+		// Meta no edit form carries, as a provider such as WooCommerce keeps for its tax status and purchase note.
+		update_post_meta( $source_id, '_not_on_the_form', 'copied' );
+
+		$result = $this->commit()->run(
+			[ 'create' => [ $this->ticket_data( 'The copy', [ Commit::DUPLICATE_OF => (string) $source_id, 'ticket_price' => '15' ] ) ] ],
+			$post_id
+		);
+
+		$this->assertSame( [], $result->get_errors() );
+		$copy_id = $result->get_created()[0];
+		$this->assertNotSame( $source_id, $copy_id );
+		$this->assertSame( 'The copy', get_the_title( $copy_id ) );
+		$this->assertSame( 'copied', get_post_meta( $copy_id, '_not_on_the_form', true ) );
+		$this->assertSame( '15', (string) get_post_meta( $copy_id, '_price', true ) );
+		$this->assertSame( '10', (string) get_post_meta( $source_id, '_price', true ) );
+		$this->assertEqualSets( [ $source_id, $copy_id ], tribe_tickets()->where( 'event', $post_id )->get_ids() );
+	}
+
+	/**
+	 * @return \Generator<string,array{0:callable}>
+	 */
+	public function duplicate_sources_that_are_refused_provider(): \Generator {
+		yield 'a ticket of another post' => [ fn() => $this->create_tc_ticket( static::factory()->post->create(), 10 ) ];
+		yield 'a post that is not a ticket' => [ static fn() => static::factory()->post->create() ];
+		yield 'not an ID' => [ static fn() => 'abc' ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider duplicate_sources_that_are_refused_provider
+	 */
+	public function it_should_refuse_to_copy_a_ticket_that_is_not_on_the_post( callable $make_source ): void {
+		$this->log_in_as_admin();
+		$post_id = static::factory()->post->create();
+
+		$result = $this->commit()->run(
+			[ 'create' => [ $this->ticket_data( 'The copy', [ Commit::DUPLICATE_OF => $make_source() ] ) ] ],
+			$post_id
+		);
+
+		$this->assertSame( [], $result->get_created() );
+		$this->assertSame( [ 0 ], $this->error_keys( $result, 'create' ) );
+		$this->assertSame( [], tribe_tickets()->where( 'event', $post_id )->get_ids() );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_refuse_updating_and_moving_the_same_ticket(): void {
 		$this->log_in_as_admin();
 		$post_id        = static::factory()->post->create();

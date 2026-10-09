@@ -11,7 +11,7 @@
  */
 
 import { addFilter, addAction } from '@wordpress/hooks';
-import { createState, buildHiddenFields, validateFields, duplicateFields } from './deferred-save/utils';
+import { createState, buildHiddenFields, validateFields, duplicateFields, copyOfSaved } from './deferred-save/utils';
 
 const CONTAINER = '#tec-tickets-deferred-save';
 const NAMESPACE = 'tec/tickets/deferred-save';
@@ -399,7 +399,7 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 		const staged = state.getUpdate( ticketId );
 
 		if ( staged ) {
-			state.stageCreate( duplicateFields( staged.fields ) );
+			state.stageCreate( copyOfSaved( staged.fields, ticketId ) );
 			render();
 			return;
 		}
@@ -425,7 +425,7 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 				const fields = $( doc.querySelectorAll( 'input,textarea,select' ) )
 					.serializeArray()
 					.map( ( { name, value } ) => [ name, value ] );
-				state.stageCreate( duplicateFields( fields ) );
+				state.stageCreate( copyOfSaved( fields, ticketId ) );
 				render();
 			},
 			'json'
