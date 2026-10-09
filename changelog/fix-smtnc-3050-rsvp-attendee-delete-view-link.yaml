@@ -1,0 +1,6 @@
+significance: patch
+type: fix
+entry: Resolved an issue where RSVP attendees could not be deleted from the
+  Attendees report and the View Attendees link was missing from the Tickets box
+  for events with RSVPs.
+timestamp: 2026-10-08T14:38:36.666Z
