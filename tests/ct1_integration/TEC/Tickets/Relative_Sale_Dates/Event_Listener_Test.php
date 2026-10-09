@@ -106,6 +106,32 @@ class Event_Listener_Test extends WPTestCase {
 	}
 
 	/**
+	 * The ticket dates keep their wall-clock times, but they now fall at other instants.
+	 *
+	 * @test
+	 */
+	public function should_reschedule_resolved_tickets_when_only_the_event_timezone_changes(): void {
+		$event_start = $this->get_future_event_start();
+		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
+		$ticket_id   = $this->create_ruled_ticket( $event_id );
+		$this->send_classic_event_save( $event_id, $event_start );
+		$in_new_york = new DateTimeImmutable( $event_start->format( 'Y-m-d H:i:s' ), new DateTimeZone( 'America/New_York' ) );
+		$resynced    = [];
+		add_action(
+			'tec_tickets_ticket_dates_updated',
+			static function ( int $id, int $start ) use ( &$resynced ): void {
+				$resynced[ $id ] = $start;
+			},
+			10,
+			2
+		);
+
+		$this->send_classic_event_save( $event_id, $in_new_york );
+
+		$this->assertSame( [ $ticket_id => $in_new_york->modify( '-2 weeks' )->getTimestamp() ], $resynced );
+	}
+
+	/**
 	 * @test
 	 */
 	public function should_resolve_each_ticket_once_when_a_save_changes_every_event_date(): void {

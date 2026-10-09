@@ -61,4 +61,20 @@ class Ticket_Dates_Test extends WPTestCase {
 		$this->assertTrue( $first );
 		$this->assertFalse( $second );
 	}
+
+	/**
+	 * The dates are wall-clock times in the event timezone, so a new timezone moves them even when the times stay.
+	 *
+	 * @test
+	 */
+	public function should_report_a_change_when_only_the_event_timezone_changes(): void {
+		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
+		$ticket_id = $this->create_tc_ticket( $event_id );
+		$rule      = Rule::from_array( [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => $this->relative( 1, DAY_IN_SECONDS ) ] );
+		tribe( Ticket_Dates::class )->write( $ticket_id, $event_id, $rule );
+		update_post_meta( $event_id, '_EventTimezone', 'America/New_York' );
+
+		$this->assertTrue( tribe( Ticket_Dates::class )->write( $ticket_id, $event_id, $rule ) );
+		$this->assertFalse( tribe( Ticket_Dates::class )->write( $ticket_id, $event_id, $rule ) );
+	}
 }

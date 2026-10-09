@@ -23,6 +23,17 @@ use Tribe__Date_Utils as Dates;
  */
 final class Ticket_Dates {
 	/**
+	 * The meta key of the event timezone the ticket's dates were last written in.
+	 *
+	 * The dates are stored as wall-clock times, so the same times in another timezone fall at other instants.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const TIMEZONE_META_KEY = '_tec_tickets_relative_sale_dates_timezone';
+
+	/**
 	 * The sales window resolver.
 	 *
 	 * @since TBD
@@ -45,7 +56,8 @@ final class Ticket_Dates {
 	/**
 	 * Writes the dates a rule resolves to into the ticket's sale date fields.
 	 *
-	 * A boundary the rule does not resolve, `specific` or a `default` start, keeps the date the ticket has.
+	 * A boundary the rule does not resolve, `specific` or a `default` start, keeps the date the ticket has. A new event
+	 * timezone counts as a change even when the dates stay the same: they now fall at other instants.
 	 *
 	 * @since TBD
 	 *
@@ -53,16 +65,17 @@ final class Ticket_Dates {
 	 * @param int  $post_id   The event post ID.
 	 * @param Rule $rule      The ticket's sales window rule.
 	 *
-	 * @return bool Whether any of the ticket's sale dates changed.
+	 * @return bool Whether any of the ticket's sale dates, or the timezone they are in, changed.
 	 */
 	public function write( int $ticket_id, int $post_id, Rule $rule ): bool {
-		$window = $this->sale_window->resolve_for_event( $rule, $post_id );
+		$window      = $this->sale_window->resolve_for_event( $rule, $post_id );
+		$event_dates = $this->sale_window->get_event_dates( $post_id );
 
-		if ( ! $window ) {
+		if ( ! $window || ! $event_dates ) {
 			return false;
 		}
 
-		$values = [];
+		$values = [ self::TIMEZONE_META_KEY => $event_dates[0]->getTimezone()->getName() ];
 		$start  = $window->get_start();
 		if ( $start ) {
 			$values[ Ticket::START_DATE_META_KEY ] = $start->format( Dates::DBDATEFORMAT );
