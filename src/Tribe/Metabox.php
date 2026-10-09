@@ -283,6 +283,7 @@ class Tribe__Tickets__Metabox {
 	 * @since 4.6.2
 	 * @since 4.10.9 Use customizable ticket name functions.
 	 * @since 5.5.7 Added optional parameter to return values instead of echoing directly.
+	 * @since TBD Rejects ticket data that `validate_ticket_data()` rejects.
 	 *
 	 * @param bool $return_value Optional, flags whether to JSON output directly or return results.
 	 *
@@ -361,6 +362,21 @@ class Tribe__Tickets__Metabox {
 
 		// If we have a ticket type, set it.
 		$data['ticket_type'] = $ticket_type;
+
+		$valid = $module->validate_ticket_data( $post_id, $data );
+
+		if ( is_wp_error( $valid ) ) {
+			$failed_ticket_output = esc_html( $valid->get_error_message() );
+			if ( $return_value ) {
+				return new WP_Error(
+					'bad_request',
+					$failed_ticket_output,
+					[ 'status' => 400 ]
+				);
+			}
+
+			wp_send_json_error( [ 'message' => $failed_ticket_output ] );
+		}
 
 		// Do the actual adding
 		$ticket_id = $module->ticket_add( $post_id, $data );

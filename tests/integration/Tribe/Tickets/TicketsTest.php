@@ -7,6 +7,7 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Tickets__Data_API as Data_API;
 use Tribe__Tickets__Global_Stock as Global_Stock;
 use Tribe__Tickets__Tickets as Tickets;
+use WP_Error;
 
 class TicketsTest extends \Codeception\TestCase\WPTestCase {
 	use Ticket_Maker;
@@ -249,5 +250,58 @@ class TicketsTest extends \Codeception\TestCase\WPTestCase {
 					'available' => 316,
 				],
 		], $count );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_pass_the_provider_class_to_the_validation_filter(): void {
+		$post_id  = static::factory()->post->create();
+		$rsvp     = tribe( 'tickets.rsvp' );
+		$received = [];
+		add_filter(
+			'tec_tickets_ticket_data_validation',
+			static function ( $valid, $filtered_post_id, $data ) use ( &$received ) {
+				$received[] = [ $filtered_post_id, $data['ticket_provider'] ];
+
+				return $valid;
+			},
+			10,
+			3
+		);
+
+		$commerce_valid = tribe( Module::class )->validate_ticket_data( $post_id, [ 'ticket_provider' => $rsvp->class_name ] );
+		$rsvp_valid     = $rsvp->validate_ticket_data( "{$post_id}", [] );
+
+		$this->assertTrue( $commerce_valid );
+		$this->assertTrue( $rsvp_valid );
+		$this->assertSame(
+			[
+				[ $post_id, Module::class ],
+				[ $post_id, $rsvp->class_name ],
+			],
+			$received
+		);
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_return_the_error_a_validation_callback_rejects_the_data_with(): void {
+		$post_id = static::factory()->post->create();
+		$error   = new WP_Error( 'rejected', 'Rejected by the test.' );
+		add_filter( 'tec_tickets_ticket_data_validation', static fn() => $error );
+
+		$this->assertSame( $error, tribe( Module::class )->validate_ticket_data( $post_id, [] ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_treat_a_value_that_is_not_an_error_as_valid(): void {
+		$post_id = static::factory()->post->create();
+		add_filter( 'tec_tickets_ticket_data_validation', '__return_false' );
+
+		$this->assertTrue( tribe( Module::class )->validate_ticket_data( $post_id, [] ) );
 	}
 }
