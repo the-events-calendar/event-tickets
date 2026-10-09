@@ -2,10 +2,11 @@
  * A stand-in for `@wordpress/data`, which is not installed: the block editor provides it at runtime.
  *
  * Each registered store runs its real reducer, actions and selectors in a Redux store, so specs read and write it
- * through `select()` and `dispatch()` as the block editor would.
+ * through `select()` and `dispatch()`, or `useSelect()` and `useDispatch()` in a component, as the block editor would.
  *
  * @since TBD
  */
+const { useSyncExternalStore } = require( 'react' );
 const { createStore } = require( 'redux' );
 
 const registered = {};
@@ -38,6 +39,16 @@ const dispatch = ( name ) => {
 	);
 };
 
+const subscribe = ( listener ) => {
+	const unsubscribes = Object.values( registered ).map( ( { store } ) => store.subscribe( listener ) );
+
+	return () => unsubscribes.forEach( ( unsubscribe ) => unsubscribe() );
+};
+
+const useSelect = ( mapSelect ) => useSyncExternalStore( subscribe, () => mapSelect( select ) );
+
+const useDispatch = ( name ) => dispatch( name );
+
 /**
  * Gets the whole state of a registered store, for specs that check what no selector exposes. Not part of
  * `@wordpress/data`.
@@ -48,4 +59,4 @@ const dispatch = ( name ) => {
  */
 const getStoreState = ( name ) => registered[ name ].store.getState();
 
-module.exports = { createReduxStore, register, select, dispatch, getStoreState };
+module.exports = { createReduxStore, register, select, dispatch, useSelect, useDispatch, getStoreState };

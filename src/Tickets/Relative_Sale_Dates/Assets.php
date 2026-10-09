@@ -19,7 +19,8 @@ use Tribe__Timezones as Timezones;
 use WP_Screen;
 
 /**
- * Registers the scripts of the sales window options in the classic ticket editor and in the Ticket block.
+ * Registers the scripts of the sales window options in the classic ticket editor and in the Ticket block, and the
+ * Ticket block's style.
  *
  * @since TBD
  *
@@ -43,6 +44,15 @@ final class Assets extends Controller_Contract {
 	 * @var string
 	 */
 	public const BLOCK_EDITOR_SCRIPT = 'tec-tickets-relative-sale-dates-block-editor';
+
+	/**
+	 * The handle of the Ticket block style.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const BLOCK_EDITOR_STYLE = 'tec-tickets-relative-sale-dates-block-editor-style';
 
 	/**
 	 * The manual UTC offsets the WordPress timezone field offers, in hours, as `wp_timezone_choice()` lists them.
@@ -119,6 +129,7 @@ final class Assets extends Controller_Contract {
 	public function unregister(): void {
 		Asset_Registry::init()->remove( self::CLASSIC_SCRIPT );
 		Asset_Registry::init()->remove( self::BLOCK_EDITOR_SCRIPT );
+		Asset_Registry::init()->remove( self::BLOCK_EDITOR_STYLE );
 	}
 
 	/**
@@ -155,6 +166,26 @@ final class Assets extends Controller_Contract {
 			self::BLOCK_EDITOR_SCRIPT,
 			'RelativeSaleDates/block-editor.js',
 			[ 'wp-data', 'wp-hooks' ],
+			'enqueue_block_editor_assets',
+			[
+				'group_path'   => Tickets_Plugin::class . '-packages',
+				'conditionals' => fn(): bool => $this->is_block_event_edit_screen(),
+				'localize'     => [
+					'name' => 'tec.tickets.relativeSaleDates.blockEditorData',
+					'data' => fn(): array => $this->get_block_editor_script_data(),
+				],
+				'translations' => [
+					'domain' => 'event-tickets',
+					'path'   => Tickets_Plugin::instance()->plugin_path . 'lang',
+				],
+			]
+		);
+
+		tec_asset(
+			Tickets_Plugin::instance(),
+			self::BLOCK_EDITOR_STYLE,
+			'RelativeSaleDates/style-block-editor.css',
+			[],
 			'enqueue_block_editor_assets',
 			[
 				'group_path'   => Tickets_Plugin::class . '-packages',
@@ -213,6 +244,22 @@ final class Assets extends Controller_Contract {
 				'invalidWindow'           => __( 'Ticket sales cannot end before they start. Please adjust the sales window.', 'event-tickets' ),
 				// Translators: %1$d is the smallest number a relative sale date takes, %2$d the largest.
 				'relativeValueOutOfRange' => sprintf( __( 'Enter a number from %1$d to %2$d.', 'event-tickets' ), Boundary::MIN_VALUE, Boundary::MAX_VALUE ),
+			],
+		];
+	}
+
+	/**
+	 * Gets the data the Ticket block script reads the relative values it offers by default from.
+	 *
+	 * @since TBD
+	 *
+	 * @return array{defaults: array{start: array{mode: string, value: int, unit: int, anchor: string}, end: array{mode: string, value: int, unit: int, anchor: string}}} The script data.
+	 */
+	private function get_block_editor_script_data(): array {
+		return [
+			'defaults' => [
+				'start' => Editor::DEFAULT_RELATIVE_START,
+				'end'   => Editor::DEFAULT_RELATIVE_END,
 			],
 		];
 	}

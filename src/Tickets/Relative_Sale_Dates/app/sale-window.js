@@ -12,13 +12,9 @@ import moment from 'moment-timezone';
 /**
  * Internal dependencies
  */
+import { ANCHOR_END, ANCHOR_START, MODE_DEFAULT, MODE_RELATIVE, UNIT_DAYS } from './rule-constants';
 import { getSaleWindowError } from './validation';
 
-const MODE_DEFAULT = 'default';
-const MODE_RELATIVE = 'relative';
-const ANCHOR_START = 'start';
-const ANCHOR_END = 'end';
-const DAY_IN_SECONDS = 86400;
 const MINUTE_IN_MILLISECONDS = 60000;
 
 const DATE_FORMAT = 'YYYY-MM-DD';
@@ -144,7 +140,7 @@ function before( anchor, value, unit, timezone ) {
 	const date = fromLocal( wallClock, timezone );
 
 	// Days and weeks keep their wall-clock time: a skipped time a day or more back still lands well before the anchor.
-	if ( unit >= DAY_IN_SECONDS || date.format( DATE_TIME_FORMAT ) === wallClock ) {
+	if ( unit >= UNIT_DAYS || date.format( DATE_TIME_FORMAT ) === wallClock ) {
 		return date;
 	}
 

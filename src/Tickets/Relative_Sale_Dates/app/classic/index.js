@@ -14,14 +14,13 @@ import { _nx } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
+import { MODE_RELATIVE, UNIT_DAYS, UNIT_HOURS, UNIT_MINUTES, UNIT_WEEKS } from '../rule-constants';
 import { resolveSaleWindow } from '../sale-window';
 import { readDateTime, readEventDates } from './event-dates';
 import { formatHelperText } from './helper-text';
 import { readRule, writeRule } from './rule';
 import { getListText } from './tickets-list';
 import { getOutOfRangeBoundary, getWindowError, RELATIVE_VALUE_OUT_OF_RANGE } from './window-check';
-
-const MODE_RELATIVE = 'relative';
 
 /**
  * The TEC event fields the event dates are read from.
@@ -51,10 +50,13 @@ const RULE_FIELDS = [ 'start', 'end' ]
  * @type {Object<string, function( number ): string>}
  */
 const UNIT_NAMES = {
-	60: ( number ) => _nx( 'minute', 'minutes', number, 'Unit of a relative ticket sale date.', 'event-tickets' ),
-	3600: ( number ) => _nx( 'hour', 'hours', number, 'Unit of a relative ticket sale date.', 'event-tickets' ),
-	86400: ( number ) => _nx( 'day', 'days', number, 'Unit of a relative ticket sale date.', 'event-tickets' ),
-	604800: ( number ) => _nx( 'week', 'weeks', number, 'Unit of a relative ticket sale date.', 'event-tickets' ),
+	[ UNIT_MINUTES ]: ( number ) =>
+		_nx( 'minute', 'minutes', number, 'Unit of a relative ticket sale date.', 'event-tickets' ),
+	[ UNIT_HOURS ]: ( number ) =>
+		_nx( 'hour', 'hours', number, 'Unit of a relative ticket sale date.', 'event-tickets' ),
+	[ UNIT_DAYS ]: ( number ) => _nx( 'day', 'days', number, 'Unit of a relative ticket sale date.', 'event-tickets' ),
+	[ UNIT_WEEKS ]: ( number ) =>
+		_nx( 'week', 'weeks', number, 'Unit of a relative ticket sale date.', 'event-tickets' ),
 };
 
 /**
