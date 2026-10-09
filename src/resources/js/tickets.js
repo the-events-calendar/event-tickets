@@ -805,7 +805,9 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 		// On a post that stages ticket changes the delete waits for the post save and can be undone until then.
 		const deferredSave = tribe.tickets.deferredSave;
 		const confirmMessage =
-			deferredSave && deferredSave.deleteConfirm ? deferredSave.deleteConfirm : tribe_ticket_notices.confirm_alert;
+			deferredSave && deferredSave.deleteConfirm
+				? deferredSave.deleteConfirm
+				: tribe_ticket_notices.confirm_alert;
 
 		if ( ! confirm( confirmMessage ) ) {
 			return false;
