@@ -21,21 +21,14 @@ export const BLOCK_API_VERSION = 3;
  * block's `edit` output, so the block has to render it itself through `useBlockProps()`. Without
  * it the block loses the attributes the editor relies on to select, drag and label it.
  *
- * Blocks that already declare version 2 or higher render their own wrapper and are returned as-is.
- *
  * @since TBD
  *
- * @param {Object}   block            The block definition to adapt.
- * @param {Function} block.edit       The component the editor renders for the block.
- * @param {number}   block.apiVersion The Block API version the block declares, if any.
+ * @param {Object}   block      The block definition to adapt.
+ * @param {Function} block.edit The component the editor renders for the block.
  *
  * @return {Object} The block definition, registering at the current Block API version.
  */
 const withBlockWrapper = ( block ) => {
-	if ( block.apiVersion >= 2 ) {
-		return block;
-	}
-
 	const Edit = block.edit;
 
 	const BlockEdit = ( props ) => {

@@ -68,10 +68,4 @@ describe( 'Block wrapper', () => {
 			props: { className: WRAPPER_CLASS_NAME },
 		} );
 	} );
-
-	it( 'Should not wrap a block that already renders its own wrapper', () => {
-		const migrated = { ...blockDefinition, apiVersion: 2 };
-
-		expect( withBlockWrapper( migrated ) ).toBe( migrated );
-	} );
 } );
