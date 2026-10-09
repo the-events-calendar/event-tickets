@@ -16,7 +16,6 @@ export const DEFAULT_STATE = {
 	tickets: tickets( undefined, {} ),
 	stagedDeletes: [],
 	stagedMoves: {},
-	stagedCreateOrder: [],
 };
 
 export default ( state = DEFAULT_STATE, action ) => {
@@ -68,11 +67,6 @@ export default ( state = DEFAULT_STATE, action ) => {
 				...state,
 				stagedMoves: { ...state.stagedMoves, [ action.payload.ticketId ]: action.payload.destinationId },
 			};
-		case types.SET_STAGED_CREATE_ORDER:
-			return {
-				...state,
-				stagedCreateOrder: [ ...action.payload.clientIds ],
-			};
 		case types.CLEAR_STAGED_TICKETS: {
 			const sent = action.payload && action.payload.sent;
 
@@ -81,7 +75,6 @@ export default ( state = DEFAULT_STATE, action ) => {
 					...state,
 					stagedDeletes: [],
 					stagedMoves: {},
-					stagedCreateOrder: [],
 				};
 			}
 

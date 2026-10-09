@@ -277,9 +277,8 @@ export function* buildLivePayload( excluded = [] ) {
  * @since TBD
  */
 export function* refreshPayload() {
-	const { payload, createOrder } = yield call( buildLivePayload );
+	const { payload } = yield call( buildLivePayload );
 
-	yield put( actions.setStagedCreateOrder( createOrder ) );
 	yield call( editPostPayload, payload );
 }
 
