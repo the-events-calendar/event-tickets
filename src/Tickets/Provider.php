@@ -107,8 +107,8 @@ class Provider extends Service_Provider {
 		// Seating.
 		$this->container->register( Seating\Controller::class );
 
-		// Relative Sale Dates.
-		$this->container->register( Relative_Sale_Dates\Controller::class );
+		// Relative Sale Dates resolve against event dates, so they only exist alongside The Events Calendar.
+		$this->container->register_on_action( 'tec_events_fully_loaded', Relative_Sale_Dates\Controller::class );
 
 		// Ticket Action hooks.
 		$this->container->register( Ticket_Actions::class );

@@ -38,6 +38,9 @@ final class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
+		remove_action( 'tec_tickets_ticket_pre_save', $this->container->callback( Ticket_Save::class, 'set_ticket_dates' ) );
+		remove_action( 'tec_tickets_ticket_upserted', $this->container->callback( Ticket_Save::class, 'save_rule' ) );
+		remove_action( 'tec_tickets_ticket_upserted', $this->container->callback( Ticket_Save::class, 'write_resolved_dates' ), 20 );
 	}
 
 	/**
@@ -73,10 +76,20 @@ final class Controller extends Controller_Contract {
 	/**
 	 * Registers the controller.
 	 *
+	 * `Ticket_Save` is bound as a singleton so the container returns the same callbacks to `unregister()`.
+	 *
 	 * @since TBD
 	 *
 	 * @return void
 	 */
 	protected function do_register(): void {
+		// The tickets handler is bound only by name: autowiring its class would build a second one, which hooks again.
+		$this->container->singleton( Rule_Store::class, static fn() => new Rule_Store( tribe( 'tickets.handler' ) ) );
+		$this->container->singleton( Ticket_Save::class );
+
+		add_action( 'tec_tickets_ticket_pre_save', $this->container->callback( Ticket_Save::class, 'set_ticket_dates' ), 10, 3 );
+		add_action( 'tec_tickets_ticket_upserted', $this->container->callback( Ticket_Save::class, 'save_rule' ), 10, 3 );
+		// After the rule is stored, and before Ticket_Actions schedules the sales actions from the ticket dates, at 1000.
+		add_action( 'tec_tickets_ticket_upserted', $this->container->callback( Ticket_Save::class, 'write_resolved_dates' ), 20, 2 );
 	}
 }
