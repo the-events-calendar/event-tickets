@@ -5,6 +5,7 @@ namespace TEC\Tickets\Relative_Sale_Dates;
 use Codeception\TestCase\WPTestCase;
 use DateTime;
 use DateTimeImmutable;
+use DateTimeInterface;
 use DateTimeZone;
 use Generator;
 use RuntimeException;
@@ -49,13 +50,60 @@ class Sale_Window_Test extends WPTestCase {
 	}
 
 	/**
-	 * @return Generator<string,array{0: array{name: string, rule: array{start: array{mode: string, value?: int, unit?: int, anchor?: string}, end: array{mode: string, value?: int, unit?: int, anchor?: string}}, timezone: string, event_start: string, event_end: string}, 1: string}>
+	 * @return Generator<string,array{0: array{name: string, rule: array{start: array{mode: string, value?: int, unit?: int}, end: array{mode: string, value?: int, unit?: int}}, timezone: string, event_start: string, event_end: string, expected: array{start: ?string, end: ?string}}}>
+	 */
+	public function sale_price_fixtures_provider(): Generator {
+		$fixtures = json_decode( file_get_contents( codecept_data_dir( 'relative-sale-dates/sale-price-cases.json' ) ), true );
+
+		foreach ( $fixtures['cases'] as $case ) {
+			yield "sale price: {$case['name']}" => [ $case ];
+		}
+	}
+
+	/**
+	 * @test
+	 * @dataProvider sale_price_fixtures_provider
+	 */
+	public function should_resolve_the_shared_sale_price_fixture_case( array $case ): void {
+		$timezone    = new DateTimeZone( $case['timezone'] );
+		$event_start = new DateTimeImmutable( $case['event_start'], $timezone );
+		$event_end   = new DateTimeImmutable( $case['event_end'], $timezone );
+		$rule        = Rule::from_array( $case['rule'], Window_Kind::sale_price() );
+
+		$window = tribe( Sale_Window::class )->resolve( $rule, $event_start, $event_end );
+
+		/*
+		 * The fixture holds the dates the sale price metas store: `Y-m-d`, with `''` for a Now start that has no date
+		 * and `null` for a specific boundary, which keeps the ticket's own date.
+		 */
+		foreach ( [ 'start' => $window->get_start(), 'end' => $window->get_end() ] as $key => $date ) {
+			if ( ! $case['expected'][ $key ] ) {
+				$this->assertNull( $date );
+
+				continue;
+			}
+
+			$this->assertInstanceOf( DateTimeImmutable::class, $date );
+			$this->assertSame( $case['expected'][ $key ], $date->format( 'Y-m-d' ) );
+			$this->assertSame( $timezone->getName(), $date->getTimezone()->getName() );
+		}
+	}
+
+	/**
+	 * @return Generator<string,array{0: Window_Kind, 1: array{name: string, rule: array{start: array{mode: string, value?: int, unit?: int, anchor?: string}, end: array{mode: string, value?: int, unit?: int, anchor?: string}}, timezone: string, event_start: string, event_end: string}, 2: string}>
 	 */
 	public function relative_boundaries_provider(): Generator {
-		foreach ( $this->fixtures_provider() as $name => [ $case ] ) {
-			foreach ( [ 'start', 'end' ] as $key ) {
-				if ( 'relative' === $case['rule'][ $key ]['mode'] ) {
-					yield "{$name}: {$key}" => [ $case, $key ];
+		$fixtures = [
+			''             => [ Window_Kind::sales(), $this->fixtures_provider() ],
+			'sale price: ' => [ Window_Kind::sale_price(), $this->sale_price_fixtures_provider() ],
+		];
+
+		foreach ( $fixtures as $prefix => [ $kind, $cases ] ) {
+			foreach ( $cases as [ $case ] ) {
+				foreach ( [ 'start', 'end' ] as $key ) {
+					if ( 'relative' === $case['rule'][ $key ]['mode'] ) {
+						yield "{$prefix}{$case['name']}: {$key}" => [ $kind, $case, $key ];
+					}
 				}
 			}
 		}
@@ -65,27 +113,29 @@ class Sale_Window_Test extends WPTestCase {
 	 * @test
 	 * @dataProvider relative_boundaries_provider
 	 */
-	public function should_resolve_a_relative_boundary_before_its_anchor( array $case, string $key ): void {
+	public function should_resolve_a_relative_boundary_before_its_anchor( Window_Kind $kind, array $case, string $key ): void {
 		$timezone = new DateTimeZone( $case['timezone'] );
 		$anchors  = [
 			'start' => new DateTimeImmutable( $case['event_start'], $timezone ),
 			'end'   => new DateTimeImmutable( $case['event_end'], $timezone ),
 		];
+		$rule     = Rule::from_array( $case['rule'], $kind );
+		$boundary = 'start' === $key ? $rule->get_start() : $rule->get_end();
 
-		$window   = tribe( Sale_Window::class )->resolve( Rule::from_array( $case['rule'] ), $anchors['start'], $anchors['end'] );
+		$window   = tribe( Sale_Window::class )->resolve( $rule, $anchors['start'], $anchors['end'] );
 		$resolved = 'start' === $key ? $window->get_start_utc() : $window->get_end_utc();
 
-		$this->assertLessThan(
-			$anchors[ $case['rule'][ $key ]['anchor'] ]->getTimestamp(),
-			$resolved->getTimestamp()
-		);
+		$this->assertLessThan( $anchors[ $boundary->get_anchor() ]->getTimestamp(), $resolved->getTimestamp() );
 	}
 
 	/**
-	 * @test
+	 * @return Generator<string,array{0: Window_Kind, 1: array<string,array<string,int|string>>, 2: DateTimeImmutable, 3: DateTimeInterface, 4: string, 5: string}>
 	 */
-	public function should_resolve_in_the_timezone_of_the_event_start(): void {
-		$rule        = Rule::from_array(
+	public function event_timezone_provider(): Generator {
+		$new_york = new DateTimeZone( 'America/New_York' );
+
+		yield 'an event end given in UTC' => [
+			Window_Kind::sales(),
 			[
 				'start' => [ 'mode' => 'default' ],
 				'end'   => [
@@ -94,15 +144,79 @@ class Sale_Window_Test extends WPTestCase {
 					'unit'   => HOUR_IN_SECONDS,
 					'anchor' => 'end',
 				],
-			]
+			],
+			new DateTimeImmutable( '2027-06-10 19:00:00', $new_york ),
+			new DateTime( '2027-06-11 01:00:00', new DateTimeZone( 'UTC' ) ),
+			'end',
+			'2027-06-10 20:00:00',
+		];
+
+		// 21:00 in New York is already the next day in UTC, so a date read in UTC would be a day late.
+		yield 'sale price: an evening event start' => [
+			Window_Kind::sale_price(),
+			[
+				'start' => [
+					'mode'  => 'relative',
+					'value' => 1,
+					'unit'  => DAY_IN_SECONDS,
+				],
+				'end'   => [ 'mode' => 'specific' ],
+			],
+			new DateTimeImmutable( '2027-06-10 21:00:00', $new_york ),
+			new DateTimeImmutable( '2027-06-10 23:00:00', $new_york ),
+			'start',
+			'2027-06-09 21:00:00',
+		];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider event_timezone_provider
+	 */
+	public function should_resolve_in_the_timezone_of_the_event_start(
+		Window_Kind $kind,
+		array $data,
+		DateTimeImmutable $event_start,
+		DateTimeInterface $event_end,
+		string $key,
+		string $expected
+	): void {
+		$window = tribe( Sale_Window::class )->resolve( Rule::from_array( $data, $kind ), $event_start, $event_end );
+
+		$date     = 'start' === $key ? $window->get_start() : $window->get_end();
+		$date_utc = 'start' === $key ? $window->get_start_utc() : $window->get_end_utc();
+		$timezone = $event_start->getTimezone()->getName();
+
+		$this->assert_date( $expected, $timezone, $date );
+		$this->assert_date(
+			( new DateTimeImmutable( $expected, new DateTimeZone( $timezone ) ) )->setTimezone( new DateTimeZone( 'UTC' ) )->format( 'Y-m-d H:i:s' ),
+			'UTC',
+			$date_utc
 		);
+	}
+
+	/**
+	 * @return Generator<string,array{0: Window_Kind, 1: string}>
+	 */
+	public function boundaries_without_a_date_provider(): Generator {
+		foreach ( [ 'sales: ' => Window_Kind::sales(), 'sale price: ' => Window_Kind::sale_price() ] as $prefix => $kind ) {
+			yield "{$prefix}an open start and a specific end" => [ $kind, $kind->get_open_start_mode() ];
+			yield "{$prefix}a specific start and a specific end" => [ $kind, Rule::MODE_SPECIFIC ];
+		}
+	}
+
+	/**
+	 * @test
+	 * @dataProvider boundaries_without_a_date_provider
+	 */
+	public function should_resolve_no_date_for_an_open_start_or_a_specific_boundary( Window_Kind $kind, string $start_mode ): void {
+		$rule        = Rule::from_array( [ 'start' => [ 'mode' => $start_mode ], 'end' => [ 'mode' => Rule::MODE_SPECIFIC ] ], $kind );
 		$event_start = new DateTimeImmutable( '2027-06-10 19:00:00', new DateTimeZone( 'America/New_York' ) );
-		$event_end   = new DateTime( '2027-06-11 01:00:00', new DateTimeZone( 'UTC' ) );
 
-		$window = tribe( Sale_Window::class )->resolve( $rule, $event_start, $event_end );
+		$window = tribe( Sale_Window::class )->resolve( $rule, $event_start, $event_start->modify( '+2 hours' ) );
 
-		$this->assert_date( '2027-06-10 20:00:00', 'America/New_York', $window->get_end() );
-		$this->assert_date( '2027-06-11 00:00:00', 'UTC', $window->get_end_utc() );
+		$this->assertNull( $window->get_start() );
+		$this->assertNull( $window->get_end() );
 	}
 
 	/**
@@ -140,23 +254,24 @@ class Sale_Window_Test extends WPTestCase {
 	}
 
 	/**
-	 * @return Generator<string,array{0: string, 1: bool}>
+	 * @return Generator<string,array{0: Window_Kind, 1: string, 2: bool}>
 	 */
 	public function now_start_provider(): Generator {
-		yield 'a ticket start later than now' => [ '+1 week', true ];
-		yield 'a ticket start already past' => [ '-1 week', false ];
-		yield 'no ticket start' => [ '', false ];
+		yield 'a ticket start later than now' => [ Window_Kind::sales(), '+1 week', true ];
+		yield 'a ticket start already past' => [ Window_Kind::sales(), '-1 week', false ];
+		yield 'no ticket start' => [ Window_Kind::sales(), '', false ];
+		yield 'sale price: a ticket start later than now' => [ Window_Kind::sale_price(), '+1 week', false ];
 	}
 
 	/**
 	 * @test
 	 * @dataProvider now_start_provider
 	 */
-	public function should_move_only_a_later_ticket_start_to_now_for_a_now_start( string $ticket_start_offset, bool $moved ): void {
+	public function should_move_only_a_later_ticket_start_to_now_for_a_now_start( Window_Kind $kind, string $ticket_start_offset, bool $moved ): void {
 		$now = new DateTimeImmutable( '2027-01-10 12:00:00', new DateTimeZone( 'UTC' ) );
 		$this->freeze_time( $now );
 		$event_id     = $this->create_event( '2027-06-24 19:00:00' );
-		$rule         = Rule::from_array( [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ] );
+		$rule         = Rule::from_array( [ 'start' => [ 'mode' => $kind->get_open_start_mode() ], 'end' => [ 'mode' => Rule::MODE_SPECIFIC ] ], $kind );
 		$ticket_start = $ticket_start_offset ? $now->modify( $ticket_start_offset )->format( 'Y-m-d H:i:s' ) : '';
 
 		$window = tribe( Sale_Window::class )->resolve_for_event( $rule, $event_id, $ticket_start );

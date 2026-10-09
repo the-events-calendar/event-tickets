@@ -1,6 +1,6 @@
 <?php
 /**
- * A ticket's sales window expressed relative to its event.
+ * A ticket's sales or sale price window expressed relative to its event.
  *
  * @since TBD
  *
@@ -15,7 +15,7 @@ use InvalidArgumentException;
 use JsonSerializable;
 
 /**
- * An immutable sales window rule: a boundary for each end of the window, `start` and `end`.
+ * An immutable window rule: a boundary for each end of the window, `start` and `end`, of one kind of window.
  *
  * @since TBD
  *
@@ -30,6 +30,15 @@ final class Rule implements JsonSerializable {
 	 * @var string
 	 */
 	public const MODE_DEFAULT = 'default';
+
+	/**
+	 * At the start of the sale price window, the sale price applies as soon as the ticket's sales window opens.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const MODE_NOW = 'now';
 
 	/**
 	 * This end of the window is a number of units before an anchor on the event.
@@ -68,7 +77,16 @@ final class Rule implements JsonSerializable {
 	public const ANCHOR_END = 'end';
 
 	/**
-	 * The start of the sales window.
+	 * The kind of window the rule describes.
+	 *
+	 * @since TBD
+	 *
+	 * @var Window_Kind
+	 */
+	private Window_Kind $kind;
+
+	/**
+	 * The start of the window.
 	 *
 	 * @since TBD
 	 *
@@ -77,7 +95,7 @@ final class Rule implements JsonSerializable {
 	private Boundary $start;
 
 	/**
-	 * The end of the sales window.
+	 * The end of the window.
 	 *
 	 * @since TBD
 	 *
@@ -93,19 +111,26 @@ final class Rule implements JsonSerializable {
 	 * @since TBD
 	 *
 	 * @param array{start?: mixed, end?: mixed} $data The rule, in the shape `['start' => [...], 'end' => [...]]`.
+	 * @param Window_Kind|null                  $kind The kind of window, or `null` for the sales window.
 	 *
 	 * @return self The rule.
 	 *
 	 * @throws InvalidArgumentException If the rule is not valid.
 	 */
-	public static function from_array( array $data ): self {
+	public static function from_array( array $data, ?Window_Kind $kind = null ): self {
+		$kind ??= Window_Kind::sales();
+
 		foreach ( [ 'start', 'end' ] as $key ) {
 			if ( ! isset( $data[ $key ] ) || ! is_array( $data[ $key ] ) ) {
 				throw new InvalidArgumentException( "The rule's {$key} is missing or is not an object." );
 			}
 		}
 
-		return new self( Boundary::from_array( $data['start'] ), Boundary::from_array( $data['end'] ) );
+		return new self(
+			$kind,
+			Boundary::from_array( $data['start'], $kind, 'start' ),
+			Boundary::from_array( $data['end'], $kind, 'end' )
+		);
 	}
 
 	/**
@@ -113,41 +138,96 @@ final class Rule implements JsonSerializable {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $json The rule, as JSON.
+	 * @param string           $json The rule, as JSON.
+	 * @param Window_Kind|null $kind The kind of window, or `null` for the sales window.
 	 *
 	 * @return self The rule.
 	 *
 	 * @throws InvalidArgumentException If the JSON cannot be decoded or the rule is not valid.
 	 */
-	public static function from_json( string $json ): self {
+	public static function from_json( string $json, ?Window_Kind $kind = null ): self {
 		$data = json_decode( $json, true );
 
 		if ( ! is_array( $data ) ) {
 			throw new InvalidArgumentException( 'The rule is not a JSON object.' );
 		}
 
-		return self::from_array( $data );
+		return self::from_array( $data, $kind );
 	}
 
 	/**
-	 * Builds a rule from what is stored for a ticket, which other top-level keys may share.
+	 * Builds a rule from the value a request sends for it, its array form or its JSON form.
+	 *
+	 * An invalid rule is not a request to remove the valid one already stored, so it builds nothing.
 	 *
 	 * @since TBD
 	 *
-	 * @param array{start?: mixed, end?: mixed} $stored The stored rules, keyed by their top-level key.
+	 * @param mixed            $raw  The rule as sent, a JSON string or an array.
+	 * @param Window_Kind|null $kind The kind of window, or `null` for the sales window.
 	 *
-	 * @return self|null The rule, or `null` when there is no valid rule in the stored data.
+	 * @return self|null The rule, or `null` when nothing valid was sent.
 	 */
-	public static function from_stored( array $stored ): ?self {
+	public static function from_raw( $raw, ?Window_Kind $kind = null ): ?self {
 		try {
-			return self::from_array( $stored );
+			if ( is_array( $raw ) ) {
+				return self::from_array( $raw, $kind );
+			}
+
+			if ( is_string( $raw ) ) {
+				return self::from_json( $raw, $kind );
+			}
+		} catch ( InvalidArgumentException $e ) {
+			return null;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Builds a rule from what is stored for a ticket, where the rules of every kind share one array.
+	 *
+	 * The sales window rule is its top level; another kind's rule sits under the kind's store key.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $stored The stored rules, keyed by their top-level key.
+	 * @param Window_Kind|null    $kind   The kind of window, or `null` for the sales window.
+	 *
+	 * @return self|null The rule, or `null` when there is no valid rule of the kind in the stored data.
+	 */
+	public static function from_stored( array $stored, ?Window_Kind $kind = null ): ?self {
+		$kind ??= Window_Kind::sales();
+
+		$key = $kind->get_store_key();
+
+		if ( null !== $key ) {
+			if ( ! isset( $stored[ $key ] ) || ! is_array( $stored[ $key ] ) ) {
+				return null;
+			}
+
+			$stored = $stored[ $key ];
+		}
+
+		try {
+			return self::from_array( $stored, $kind );
 		} catch ( InvalidArgumentException $e ) {
 			return null;
 		}
 	}
 
 	/**
-	 * Gets the start of the sales window.
+	 * Gets the kind of window the rule describes.
+	 *
+	 * @since TBD
+	 *
+	 * @return Window_Kind The kind.
+	 */
+	public function get_kind(): Window_Kind {
+		return $this->kind;
+	}
+
+	/**
+	 * Gets the start of the window.
 	 *
 	 * @since TBD
 	 *
@@ -158,7 +238,7 @@ final class Rule implements JsonSerializable {
 	}
 
 	/**
-	 * Gets the end of the sales window.
+	 * Gets the end of the window.
 	 *
 	 * @since TBD
 	 *
@@ -173,14 +253,16 @@ final class Rule implements JsonSerializable {
 	 *
 	 * A specific end leaves the end to the ticket, as a ticket without a rule does, and the classic editor stores such a
 	 * rule the first time it saves a ticket made before the feature. The end stays put when the start counts back from
-	 * the event end, which could fall after an end moved to the event start.
+	 * the event end, which could fall after an end moved to the event start. Only a sales window rule moves the sale end.
 	 *
 	 * @since TBD
 	 *
 	 * @return bool Whether the sale end may follow the event start.
 	 */
 	public function lets_end_follow_event_start(): bool {
-		return self::MODE_SPECIFIC === $this->end->get_mode() && self::ANCHOR_END !== $this->start->get_anchor();
+		return Window_Kind::SALES === $this->kind->get_id()
+			&& self::MODE_SPECIFIC === $this->end->get_mode()
+			&& self::ANCHOR_END !== $this->start->get_anchor();
 	}
 
 	/**
@@ -227,10 +309,12 @@ final class Rule implements JsonSerializable {
 	 *
 	 * @since TBD
 	 *
-	 * @param Boundary $start The start of the sales window.
-	 * @param Boundary $end   The end of the sales window.
+	 * @param Window_Kind $kind  The kind of window the rule describes.
+	 * @param Boundary    $start The start of the window.
+	 * @param Boundary    $end   The end of the window.
 	 */
-	private function __construct( Boundary $start, Boundary $end ) {
+	private function __construct( Window_Kind $kind, Boundary $start, Boundary $end ) {
+		$this->kind  = $kind;
 		$this->start = $start;
 		$this->end   = $end;
 	}

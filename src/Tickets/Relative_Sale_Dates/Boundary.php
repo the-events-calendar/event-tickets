@@ -1,6 +1,6 @@
 <?php
 /**
- * A boundary of a ticket's sales window, its start or its end, as a rule describes it.
+ * A boundary of a ticket's sales or sale price window, its start or its end, as a rule describes it.
  *
  * @since TBD
  *
@@ -16,7 +16,9 @@ use InvalidArgumentException;
 use JsonSerializable;
 
 /**
- * An immutable boundary of the sales window: a mode and, for a relative boundary, how far before which event date it falls.
+ * An immutable boundary of a window: a mode and, for a relative boundary, how far before which event date it falls.
+ *
+ * The window kind sets the modes, values, units and anchors the boundary accepts.
  *
  * @since TBD
  *
@@ -24,7 +26,7 @@ use JsonSerializable;
  */
 final class Boundary implements JsonSerializable {
 	/**
-	 * The lowest number of units a relative boundary accepts.
+	 * The lowest number of units a relative boundary of any window accepts.
 	 *
 	 * @since TBD
 	 *
@@ -33,7 +35,7 @@ final class Boundary implements JsonSerializable {
 	public const MIN_VALUE = 1;
 
 	/**
-	 * The highest number of units a relative boundary accepts.
+	 * The highest number of units a relative boundary of the sales window accepts.
 	 *
 	 * @since TBD
 	 *
@@ -54,6 +56,15 @@ final class Boundary implements JsonSerializable {
 		DAY_IN_SECONDS    => 'P%dD',
 		WEEK_IN_SECONDS   => 'P%dW',
 	];
+
+	/**
+	 * The kind of window the boundary belongs to.
+	 *
+	 * @since TBD
+	 *
+	 * @var Window_Kind
+	 */
+	private Window_Kind $kind;
 
 	/**
 	 * The mode, one of the `Rule::MODE_*` constants.
@@ -96,45 +107,61 @@ final class Boundary implements JsonSerializable {
 	/**
 	 * Builds a boundary from its array form.
 	 *
-	 * Keys the mode does not use are ignored.
+	 * Keys the mode does not use are ignored. A kind that takes no anchor implies it, so a relative boundary of that
+	 * kind that names one is rejected rather than read as something it cannot be.
 	 *
 	 * @since TBD
 	 *
 	 * @param array{mode?: mixed, value?: mixed, unit?: mixed, anchor?: mixed} $data The boundary, not yet validated.
+	 * @param Window_Kind|null                                                 $kind The kind of window, or `null` for the sales window.
+	 * @param string                                                           $end  The end of the window the boundary is, `start` or `end`.
 	 *
 	 * @return self The boundary.
 	 *
 	 * @throws InvalidArgumentException If the boundary is not valid.
 	 */
-	public static function from_array( array $data ): self {
-		$mode = $data['mode'] ?? null;
+	public static function from_array( array $data, ?Window_Kind $kind = null, string $end = 'start' ): self {
+		$kind ??= Window_Kind::sales();
 
-		if ( Rule::MODE_DEFAULT === $mode || Rule::MODE_SPECIFIC === $mode ) {
-			return new self( $mode );
+		$mode  = $data['mode'] ?? null;
+		$modes = $kind->get_modes( $end );
+
+		if ( ! in_array( $mode, $modes, true ) ) {
+			throw new InvalidArgumentException(
+				sprintf( "The window's %s mode must be one of: %s.", $end, implode( ', ', $modes ) )
+			);
 		}
 
 		if ( Rule::MODE_RELATIVE !== $mode ) {
-			throw new InvalidArgumentException( 'The boundary has an unknown mode.' );
+			return new self( $kind, $mode );
 		}
 
 		$value = $data['value'] ?? null;
-		if ( ! is_int( $value ) || $value < self::MIN_VALUE || $value > self::MAX_VALUE ) {
+		if ( ! is_int( $value ) || $value < $kind->get_min_value() || $value > $kind->get_max_value() ) {
 			throw new InvalidArgumentException(
-				sprintf( 'The boundary value must be an integer from %d to %d.', self::MIN_VALUE, self::MAX_VALUE )
+				sprintf( 'The boundary value must be an integer from %d to %d.', $kind->get_min_value(), $kind->get_max_value() )
 			);
 		}
 
 		$unit = $data['unit'] ?? null;
-		if ( ! is_int( $unit ) || ! isset( self::INTERVAL_FORMATS[ $unit ] ) ) {
+		if ( ! in_array( $unit, $kind->get_units(), true ) ) {
 			throw new InvalidArgumentException( 'The boundary has an unknown unit.' );
 		}
 
+		if ( ! $kind->takes_anchor() ) {
+			if ( array_key_exists( 'anchor', $data ) ) {
+				throw new InvalidArgumentException( 'The boundary is always counted from the same event date and takes no anchor.' );
+			}
+
+			return new self( $kind, $mode, $value, $unit, $kind->get_anchors()[0] );
+		}
+
 		$anchor = $data['anchor'] ?? null;
-		if ( ! in_array( $anchor, [ Rule::ANCHOR_START, Rule::ANCHOR_END ], true ) ) {
+		if ( ! in_array( $anchor, $kind->get_anchors(), true ) ) {
 			throw new InvalidArgumentException( 'The boundary has an unknown anchor.' );
 		}
 
-		return new self( $mode, $value, $unit, $anchor );
+		return new self( $kind, $mode, $value, $unit, $anchor );
 	}
 
 	/**
@@ -149,7 +176,7 @@ final class Boundary implements JsonSerializable {
 	}
 
 	/**
-	 * Returns the boundary's canonical array form, which holds only the keys its mode uses.
+	 * Returns the boundary's canonical array form, which holds only the keys its mode and its kind use.
 	 *
 	 * @since TBD
 	 *
@@ -160,12 +187,28 @@ final class Boundary implements JsonSerializable {
 			return [ 'mode' => $this->mode ];
 		}
 
-		return [
-			'mode'   => $this->mode,
-			'value'  => $this->value,
-			'unit'   => $this->unit,
-			'anchor' => $this->anchor,
+		$data = [
+			'mode'  => $this->mode,
+			'value' => $this->value,
+			'unit'  => $this->unit,
 		];
+
+		if ( $this->kind->takes_anchor() ) {
+			$data['anchor'] = $this->anchor;
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Gets the kind of window the boundary belongs to.
+	 *
+	 * @since TBD
+	 *
+	 * @return Window_Kind The kind.
+	 */
+	public function get_kind(): Window_Kind {
+		return $this->kind;
 	}
 
 	/**
@@ -184,7 +227,7 @@ final class Boundary implements JsonSerializable {
 	 *
 	 * @since TBD
 	 *
-	 * @return string|null The anchor, one of the `Rule::ANCHOR_*` constants, or `null` when the boundary is not relative.
+	 * @return string|null The anchor, one of the `Rule::ANCHOR_*` constants, or `null` when the boundary is not relative. A kind that takes no anchor gives the one it implies.
 	 */
 	public function get_anchor(): ?string {
 		return $this->anchor;
@@ -210,12 +253,14 @@ final class Boundary implements JsonSerializable {
 	 *
 	 * @since TBD
 	 *
+	 * @param Window_Kind $kind   The kind of window the boundary belongs to.
 	 * @param string      $mode   The mode, one of the `Rule::MODE_*` constants.
 	 * @param int|null    $value  The number of units before the anchor, for a relative boundary.
 	 * @param int|null    $unit   The unit, one of the `*_IN_SECONDS` constants from `MINUTE_IN_SECONDS` to `WEEK_IN_SECONDS`, for a relative boundary.
 	 * @param string|null $anchor The event date the boundary is counted from, for a relative boundary.
 	 */
-	private function __construct( string $mode, ?int $value = null, ?int $unit = null, ?string $anchor = null ) {
+	private function __construct( Window_Kind $kind, string $mode, ?int $value = null, ?int $unit = null, ?string $anchor = null ) {
+		$this->kind   = $kind;
 		$this->mode   = $mode;
 		$this->value  = $value;
 		$this->unit   = $unit;
