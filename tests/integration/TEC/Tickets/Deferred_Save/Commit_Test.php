@@ -130,7 +130,7 @@ class Commit_Test extends WPTestCase {
 		$this->record_ticket_actions();
 		$_POST = [
 			'post_id'     => $post_id,
-			'data'        => $this->ticket_data( 'AJAX ticket' ),
+			'data'        => http_build_query( $this->ticket_data( 'AJAX ticket' ) ),
 			'ticket_type' => 'default',
 			'nonce'       => wp_create_nonce( 'add_ticket_nonce' ),
 		];
@@ -140,7 +140,7 @@ class Commit_Test extends WPTestCase {
 		$ajax_ticket_id  = (int) end( $ajax_ticket_ids );
 		$_POST = [
 			'post_id'     => $post_id,
-			'data'        => $this->ticket_data( 'AJAX ticket renamed', [ 'ticket_id' => $ajax_ticket_id ] ),
+			'data'        => http_build_query( $this->ticket_data( 'AJAX ticket renamed', [ 'ticket_id' => $ajax_ticket_id ] ) ),
 			'ticket_type' => 'default',
 			'nonce'       => wp_create_nonce( 'add_ticket_nonce' ),
 		];
@@ -424,6 +424,166 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_check_a_different_payload_routed_under_the_saved_posts_own_id(): void {
+		$this->log_in_as_admin();
+		$post_id           = static::factory()->post->create();
+		$other_post_id     = static::factory()->post->create();
+		$ticket_id         = $this->create_tc_ticket( $post_id, 10 );
+		$foreign_ticket_id = $this->create_tc_ticket( $other_post_id, 10 );
+		add_filter(
+			'tec_tickets_deferred_save_routes',
+			static function ( array $routes, int $routed_post_id ) use ( $foreign_ticket_id ): array {
+				return [ $routed_post_id => new Payload( [ $foreign_ticket_id => [ 'ticket_name' => 'Hijacked' ] ] ) ];
+			},
+			10,
+			2
+		);
+
+		$result = $this->commit()->run( [ 'update' => [ $ticket_id => [ 'ticket_name' => 'Renamed' ] ] ], $post_id );
+
+		$this->assertContains( $foreign_ticket_id, $this->error_keys( $result, 'update' ) );
+		$this->assertNotSame( 'Hijacked', get_the_title( $foreign_ticket_id ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_write_a_route_to_an_occurrence_id_against_the_post_it_was_checked_against(): void {
+		$this->log_in_as_admin();
+		$post_id       = static::factory()->post->create();
+		$other_post_id = static::factory()->post->create();
+		$occurrence_id = $other_post_id + 100000;
+		add_filter(
+			'tec_tickets_filter_event_id',
+			static fn( $id ) => (int) $id === $occurrence_id ? $other_post_id : $id
+		);
+		add_filter(
+			'tec_tickets_deferred_save_routes',
+			static fn( array $routes, int $routed_post_id, Payload $payload ): array => [ $occurrence_id => $payload ],
+			10,
+			3
+		);
+
+		$result = $this->commit()->run( [ 'create' => [ $this->ticket_data( 'On the occurrence' ) ] ], $post_id );
+
+		$this->assertSame( [], $result->get_errors() );
+		$this->assertSame( array_values( $result->get_created() ), tribe_tickets()->where( 'event', $other_post_id )->get_ids() );
+	}
+
+	/**
+	 * @return \Generator<string,array{0:callable}>
+	 */
+	public function routes_that_drop_entries_provider(): \Generator {
+		yield 'no routes' => [ static fn() => [] ];
+		yield 'null' => [ static fn() => null ];
+		yield 'not a payload' => [ static fn( array $routes, int $post_id ) => [ $post_id => 'nope' ] ];
+		yield 'key that is not an int' => [ static fn( array $routes, int $post_id, Payload $payload ) => [ " $post_id" => $payload ] ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider routes_that_drop_entries_provider
+	 */
+	public function it_should_report_every_checked_entry_no_route_replayed( callable $routes ): void {
+		$this->log_in_as_admin();
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+		add_filter( 'tec_tickets_deferred_save_routes', $routes, 10, 3 );
+
+		$result = $this->commit()->run(
+			[
+				'update' => [ $ticket_id => [ 'ticket_name' => 'Renamed' ] ],
+				'create' => [ 3 => $this->ticket_data( 'New' ) ],
+			],
+			$post_id
+		);
+
+		$this->assertSame( [], $result->get_created() );
+		$this->assertSame( [ $ticket_id ], $this->error_keys( $result, 'update' ) );
+		$this->assertSame( [ 3 ], $this->error_keys( $result, 'create' ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_skip_a_routed_payload_whose_keys_are_not_ints_instead_of_failing(): void {
+		$this->log_in_as_admin();
+		$post_id       = static::factory()->post->create();
+		$other_post_id = static::factory()->post->create();
+		add_filter(
+			'tec_tickets_deferred_save_routes',
+			static fn( array $routes, int $routed_post_id, Payload $payload ): array => [
+				$routed_post_id => $payload,
+				$other_post_id  => new Payload( [ 'abc' => [ 'ticket_name' => 'x' ] ], [ 'k' => [ 'ticket_name' => 'y' ] ] ),
+			],
+			10,
+			3
+		);
+
+		$result = $this->commit()->run( [ 'create' => [ $this->ticket_data( 'Kept' ) ] ], $post_id );
+
+		$this->assertSame( [ 0 ], array_keys( $result->get_created() ) );
+		$this->assertSame( [], $result->get_errors(), 'The skipped route carried nothing the checks passed.' );
+		$this->assertSame( [], tribe_tickets()->where( 'event', $other_post_id )->get_ids() );
+	}
+
+	/**
+	 * @return \Generator<string,array{0:mixed}>
+	 */
+	public function invalid_price_provider(): \Generator {
+		yield 'negative' => [ '-25' ];
+		yield 'not a number' => [ 'abc' ];
+		yield 'not a scalar' => [ [ '10' ] ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider invalid_price_provider
+	 */
+	public function it_should_reject_an_invalid_tickets_commerce_price_as_the_block_editor_endpoint_does( $price ): void {
+		$this->log_in_as_admin();
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+
+		$result = $this->commit()->run(
+			[
+				'update' => [ $ticket_id => $this->ticket_data( 'Updated', [ 'ticket_price' => $price ] ) ],
+				'create' => [ $this->ticket_data( 'Created', [ 'ticket_price' => $price ] ) ],
+			],
+			$post_id
+		);
+
+		$this->assertSame( [], $result->get_created() );
+		$this->assertSame( [ $ticket_id ], $this->error_keys( $result, 'update' ) );
+		$this->assertSame( [ 0 ], $this->error_keys( $result, 'create' ) );
+		$this->assertSame( '10', (string) get_post_meta( $ticket_id, '_price', true ) );
+		$this->assertSame( [ $ticket_id ], tribe_tickets()->where( 'event', $post_id )->get_ids() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_save_a_blank_tickets_commerce_price_as_free_and_leave_rsvp_prices_alone(): void {
+		$this->log_in_as_admin();
+		$post_id = static::factory()->post->create();
+
+		$result = $this->commit()->run(
+			[
+				'create' => [
+					$this->ticket_data( 'Free', [ 'ticket_price' => ' ' ] ),
+					$this->ticket_data( 'RSVP', [ 'ticket_price' => 'abc', 'ticket_provider' => RSVP::class ] ),
+				],
+			],
+			$post_id
+		);
+
+		$this->assertSame( [], $result->get_errors() );
+		$this->assertSame( [ 0, 1 ], array_keys( $result->get_created() ) );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_reject_a_payload_with_too_many_entries_as_a_whole(): void {
 		$this->log_in_as_admin();
 		$post_id = static::factory()->post->create();
@@ -475,6 +635,86 @@ class Commit_Test extends WPTestCase {
 			],
 			$fired
 		);
+	}
+
+	/**
+	 * @return \Generator<string,array{0:callable}>
+	 */
+	public function destinations_that_cannot_hold_tickets_provider(): \Generator {
+		yield 'attachment' => [ static fn() => static::factory()->attachment->create() ];
+		yield 'post type that is not ticketable' => [
+			static function () {
+				register_post_type( 'not_ticketable' );
+
+				return static::factory()->post->create( [ 'post_type' => 'not_ticketable' ] );
+			},
+		];
+		yield 'ticket' => [ fn() => $this->create_tc_ticket( static::factory()->post->create(), 5 ) ];
+		yield 'trashed post' => [ static fn() => static::factory()->post->create( [ 'post_status' => 'trash' ] ) ];
+		yield 'auto-draft' => [ static fn() => static::factory()->post->create( [ 'post_status' => 'auto-draft' ] ) ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider destinations_that_cannot_hold_tickets_provider
+	 */
+	public function it_should_refuse_to_move_a_ticket_where_no_editor_can_reach_it( callable $make_destination ): void {
+		$this->log_in_as_admin();
+		$post_id        = static::factory()->post->create();
+		$ticket_id      = $this->create_tc_ticket( $post_id, 10 );
+		$destination_id = $make_destination();
+
+		$result = $this->commit()->run( [ 'move' => [ $ticket_id => $destination_id ] ], $post_id );
+
+		$this->assertSame( [ $ticket_id ], $this->error_keys( $result, 'move' ) );
+		$this->assertSame( [ $ticket_id ], tribe_tickets()->where( 'event', $post_id )->get_ids() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_say_which_step_failed_when_a_move_or_delete_throws(): void {
+		$this->log_in_as_admin();
+		$post_id        = static::factory()->post->create();
+		$destination_id = static::factory()->post->create();
+		$moved_id       = $this->create_tc_ticket( $post_id, 10 );
+		$deleted_id     = $this->create_tc_ticket( $post_id, 20 );
+		$explode        = static function () {
+			throw new \RuntimeException( 'listener failed' );
+		};
+		add_action( 'tribe_tickets_ticket_type_before_move', $explode );
+		add_filter( 'pre_delete_post', $explode );
+		add_filter( 'pre_trash_post', $explode );
+
+		$result = $this->commit()->run( [ 'move' => [ $moved_id => $destination_id ], 'delete' => [ $deleted_id ] ], $post_id );
+
+		$messages = array_column( $result->get_errors(), 'message', 'part' );
+		$this->assertSame( 'The ticket could not be moved.', $messages['move'] );
+		$this->assertSame( 'The ticket could not be deleted.', $messages['delete'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_read_the_tickets_already_on_the_post_once_per_save_not_once_per_create(): void {
+		$this->log_in_as_admin();
+		$post_id = static::factory()->post->create();
+		$lookups = 0;
+		$counter = static function ( \WP_Query $query ) use ( &$lookups ) {
+			// The lookup of every ticket a provider has on the post: its ticket type, IDs only, every status.
+			if ( \TEC\Tickets\Commerce\Ticket::POSTTYPE === $query->get( 'post_type' ) && 'ids' === $query->get( 'fields' ) && 'any' === $query->get( 'post_status' ) ) {
+				++$lookups;
+			}
+		};
+		add_action( 'pre_get_posts', $counter );
+
+		$result = $this->commit()->run(
+			[ 'create' => [ $this->ticket_data( 'One' ), $this->ticket_data( 'Two' ), $this->ticket_data( 'Three' ) ] ],
+			$post_id
+		);
+
+		$this->assertSame( [ 0, 1, 2 ], array_keys( $result->get_created() ) );
+		$this->assertSame( 1, $lookups );
 	}
 
 	/**
@@ -585,26 +825,35 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_should_sanitize_data_as_the_request_helper_does_for_the_ajax_save(): void {
+	public function it_should_save_text_and_markup_as_the_classic_ajax_save_does(): void {
 		$this->log_in_as_admin();
 		$post_id = static::factory()->post->create();
 		$data    = $this->ticket_data(
-			'<b>Bold</b> <script>alert(1)</script> name',
+			'<b>Bold</b> 2 < 3 name',
 			[
-				'ticket_description' => '<p>Kept</p><script>alert(2)</script>',
-				'ticket_sku'         => 'SKU <i>x</i>',
+				'ticket_description' => '<p>Kept</p>',
+				'ticket_sku'         => 'SKU-1',
 			]
 		);
-		$expected = $data;
-		tribe_sanitize_deep( $expected );
 
-		$result = $this->commit()->run( [ 'create' => [ $data ] ], $post_id );
+		// Today's path: tickets.js posts the edit form serialized, so `data` reaches the request helper as a string.
+		$_POST = [
+			'post_id'     => $post_id,
+			'data'        => http_build_query( $data ),
+			'ticket_type' => 'default',
+			'nonce'       => wp_create_nonce( 'add_ticket_nonce' ),
+		];
+		$this->assertIsArray( tribe( 'tickets.metabox' )->ajax_ticket_add( true ) );
+		$_POST          = [];
+		$ajax_ticket_id = (int) tribe_tickets()->where( 'event', $post_id )->first()->ID;
 
+		$result    = $this->commit()->run( [ 'create' => [ $data ] ], $post_id );
 		$ticket_id = $result->get_created()[0];
-		$this->assertSame( $expected['ticket_name'], get_post_field( 'post_title', $ticket_id, 'raw' ) );
-		$this->assertSame( $expected['ticket_description'], get_post_field( 'post_excerpt', $ticket_id, 'raw' ) );
-		$this->assertSame( $expected['ticket_sku'], get_post_meta( $ticket_id, '_sku', true ) );
-		$this->assertStringNotContainsString( '<', get_post_field( 'post_title', $ticket_id, 'raw' ) );
+
+		$this->assertStringContainsString( '<p>Kept</p>', get_post_field( 'post_excerpt', $ticket_id, 'raw' ) );
+		$this->assertSame( get_post_field( 'post_title', $ajax_ticket_id, 'raw' ), get_post_field( 'post_title', $ticket_id, 'raw' ) );
+		$this->assertSame( get_post_field( 'post_excerpt', $ajax_ticket_id, 'raw' ), get_post_field( 'post_excerpt', $ticket_id, 'raw' ) );
+		$this->assertSame( get_post_meta( $ajax_ticket_id, '_sku', true ), get_post_meta( $ticket_id, '_sku', true ) );
 	}
 
 	/**

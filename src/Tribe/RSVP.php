@@ -1600,13 +1600,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			'title'      => $ticket->name,
 			'excerpt'    => $ticket->description,
 			'status'     => 'publish',
-			'author'     => get_current_user_id(),
 			'menu_order' => $ticket->menu_order ?? tribe_get_request_var( 'menu_order', -1 ),
 		];
 
-		// Add event relationship for new tickets.
+		// Add event relationship and author for new tickets: an update must not hand the ticket to whoever saved it.
 		if ( $is_new ) {
 			$ticket_data['event_id'] = $post_id;
+			$ticket_data['author']   = get_current_user_id();
 		}
 
 		// Handle show_description field.
