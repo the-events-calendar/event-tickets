@@ -1,5 +1,5 @@
 /**
- * The modes, anchors, units and range of a sales window rule, as the server's `Rule` and `Boundary` define them.
+ * The modes, anchors, units and range of a window rule, as the server's `Rule` and `Boundary` define them.
  *
  * @since TBD
  */
@@ -7,6 +7,7 @@
 export const MODE_DEFAULT = 'default';
 export const MODE_RELATIVE = 'relative';
 export const MODE_SPECIFIC = 'specific';
+export const MODE_NOW = 'now';
 
 export const ANCHOR_START = 'start';
 export const ANCHOR_END = 'end';
