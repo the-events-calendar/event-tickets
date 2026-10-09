@@ -166,7 +166,7 @@ function before( anchor, value, unit, timezone ) {
  *
  * @return {moment.Moment} The date, in the event timezone.
  */
-function fromEventLocal( dateTime, timezone ) {
+export function fromEventLocal( dateTime, timezone ) {
 	const date = fromLocal( dateTime, timezone );
 	const zone = FIXED_OFFSET.test( timezone ) ? null : moment.tz.zone( timezone );
 

@@ -2,18 +2,33 @@
  * External dependencies
  */
 import { useDispatch, useSelect } from '@wordpress/data';
-import { useEffect, useMemo } from '@wordpress/element';
-import { __, _x } from '@wordpress/i18n';
+import { useEffect, useMemo, useSyncExternalStore } from '@wordpress/element';
+import { __, _x, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import { markTicketChanged } from '../common-store-bridge';
+import {
+	clearTicketDurationError,
+	hasTicketDurationError,
+	markTicketChanged,
+	subscribeToCommonStore,
+} from '../common-store-bridge';
 import { useEventDates } from '../event-dates';
-import { ANCHOR_END, ANCHOR_START, MODE_DEFAULT, MODE_RELATIVE, MODE_SPECIFIC } from '../../rule-constants';
-import { getFormRule } from '../rule';
+import {
+	ANCHOR_END,
+	ANCHOR_START,
+	MAX_VALUE,
+	MIN_VALUE,
+	MODE_DEFAULT,
+	MODE_RELATIVE,
+	MODE_SPECIFIC,
+} from '../../rule-constants';
+import { getFormRule, isSpecificWindow } from '../rule';
 import { getHelperText, resolveTicketWindow } from '../sale-dates';
 import { STORE_NAME } from '../store/constants';
+import { useTicketWindowError } from '../window-error';
+import { RELATIVE_VALUE_OUT_OF_RANGE, getOutOfRangeBoundary } from '../../window-check';
 import SalesWindowEnd from './sales-window-end';
 import './style.pcss';
 
@@ -104,6 +119,10 @@ export default function SalesWindow( { clientId, picker } ) {
 	const formRule = getFormRule( rule );
 	const eventDates = useEventDates();
 	const saleWindow = useMemo( () => resolveTicketWindow( getFormRule( rule ), eventDates ), [ rule, eventDates ] );
+	const error = useTicketWindowError( clientId, rule, eventDates );
+	const outOfRange = RELATIVE_VALUE_OUT_OF_RANGE === error ? getOutOfRangeBoundary( formRule ) : null;
+	const isSpecific = isSpecificWindow( formRule );
+	const hasDurationError = useSyncExternalStore( subscribeToCommonStore, () => hasTicketDurationError( clientId ) );
 
 	useEffect( () => {
 		if ( undefined === rule ) {
@@ -111,8 +130,18 @@ export default function SalesWindow( { clientId, picker } ) {
 		}
 	}, [ clientId, rule, setDraftRule ] );
 
+	// The legacy code checks the picker's dates again on every picker edit, though they are hidden unless both are specific.
+	useEffect( () => {
+		if ( hasDurationError && ! isSpecific ) {
+			clearTicketDurationError( clientId );
+		}
+	}, [ clientId, hasDurationError, isSpecific ] );
+
 	const onChange = ( name, changes ) => {
-		setDraftRule( clientId, { ...formRule, [ name ]: { ...formRule[ name ], ...changes } } );
+		const changed = { ...formRule, [ name ]: { ...formRule[ name ], ...changes } };
+		setDraftRule( clientId, changed );
+
+		// The legacy dashboard re-checks its Create or Update button, which reads this draft, only on a legacy store change.
 		markTicketChanged( clientId );
 	};
 
@@ -128,6 +157,24 @@ export default function SalesWindow( { clientId, picker } ) {
 					picker={ picker }
 					helperText={
 						MODE_RELATIVE === formRule[ name ].mode ? getHelperText( name, saleWindow?.[ name ] ) : ''
+					}
+					errorMessage={
+						'end' === name && error && ! outOfRange
+							? __(
+									'Ticket sales cannot end before they start. Please adjust the sales window.',
+									'event-tickets'
+							  )
+							: ''
+					}
+					valueErrorMessage={
+						name === outOfRange
+							? sprintf(
+									// translators: %1$d is the smallest number a relative sale date takes, %2$d the largest.
+									__( 'Enter a number from %1$d to %2$d.', 'event-tickets' ),
+									MIN_VALUE,
+									MAX_VALUE
+							  )
+							: ''
 					}
 					onChange={ ( changes ) => onChange( name, changes ) }
 					{ ...settings[ name ] }

@@ -8,7 +8,13 @@ import * as legacySelectors from '@moderntribe/tickets/data/blocks/ticket/select
 import { STORE_NAME } from '@tec/tickets/relative-sale-dates/block-editor/store/constants';
 import '@tec/tickets/relative-sale-dates/block-editor/store';
 import SalesWindow from '@tec/tickets/relative-sale-dates/block-editor/sales-window';
-import { DEFAULT_EVENT, clearBlockEditorGlobals, setBlockEditorData, setEventState } from './block-editor-event-state';
+import {
+	DEFAULT_EVENT,
+	clearBlockEditorGlobals,
+	setBlockEditorData,
+	setEventState,
+	setTicketFormDates,
+} from './block-editor-event-state';
 
 jest.mock( '@wordpress/data', () => require( './wordpress-data-registry' ) );
 
@@ -23,14 +29,17 @@ jest.mock( '@wordpress/i18n', () => jest.requireActual( '@wordpress/i18n' ) );
  * props are enough to read and drive the options.
  */
 jest.mock( '@wordpress/components', () => ( {
-	SelectControl: ( { label, value, options, onChange } ) => (
-		<select aria-label={ label } value={ value } onChange={ ( event ) => onChange( event.target.value ) }>
-			{ options.map( ( option ) => (
-				<option key={ option.value } value={ option.value }>
-					{ option.label }
-				</option>
-			) ) }
-		</select>
+	SelectControl: ( { label, value, options, onChange, help } ) => (
+		<>
+			<select aria-label={ label } value={ value } onChange={ ( event ) => onChange( event.target.value ) }>
+				{ options.map( ( option ) => (
+					<option key={ option.value } value={ option.value }>
+						{ option.label }
+					</option>
+				) ) }
+			</select>
+			{ help }
+		</>
 	),
 	TextControl: ( { label, value, onChange, hideLabelFromVision, ...rest } ) => (
 		<input aria-label={ label } value={ value } onChange={ ( event ) => onChange( event.target.value ) } { ...rest } />
@@ -280,6 +289,64 @@ describe( 'the Ticket block sales window options', () => {
 		expect( window.__tribe_common_store__.dispatch ).toHaveBeenCalledWith( legacyActions.setTicketHasChanges( clientId, true ) );
 	} );
 
+	describe( 'with the legacy duration error', () => {
+		/**
+		 * Sets the legacy sales duration error of a ticket, as the legacy picker check does.
+		 *
+		 * @param {string}  clientId The client ID of the ticket block.
+		 * @param {boolean} hasError Whether the ticket has the error.
+		 *
+		 * @return {void}
+		 */
+		const setDurationError = ( clientId, hasError ) =>
+			act( () => {
+				commonStore.dispatch( legacyActions.setTicketHasDurationError( clientId, hasError ) );
+			} );
+
+		const hasDurationError = ( clientId ) =>
+			legacySelectors.getTicketHasDurationError( commonStore.getState(), { clientId } );
+
+		/**
+		 * Renders the options of a ticket block the legacy store knows, with the legacy duration error set.
+		 *
+		 * @return {string} The client ID of the ticket block.
+		 */
+		const renderWithDurationError = () => {
+			const clientId = newClientId();
+			commonStore.dispatch( legacyActions.registerTicketBlock( clientId ) );
+			renderSalesWindow( clientId );
+			change( SelectControl, START_LABELS.mode, 'specific' );
+			change( SelectControl, END_LABELS.mode, 'specific' );
+			setDurationError( clientId, true );
+
+			return clientId;
+		};
+
+		it( 'should leave it to the legacy check while both ends are specific dates', () => {
+			const clientId = renderWithDurationError();
+
+			expect( hasDurationError( clientId ) ).toBe( true );
+		} );
+
+		it( 'should clear it once an end no longer shows the specific dates', () => {
+			const clientId = renderWithDurationError();
+
+			change( SelectControl, END_LABELS.mode, 'relative' );
+
+			expect( hasDurationError( clientId ) ).toBe( false );
+		} );
+
+		// The legacy check runs again on every picker edit, against the dates the relative end hides.
+		it( 'should clear it again when a picker edit brings it back while an end is not a specific date', () => {
+			const clientId = renderWithDurationError();
+			change( SelectControl, END_LABELS.mode, 'relative' );
+
+			setDurationError( clientId, true );
+
+			expect( hasDurationError( clientId ) ).toBe( false );
+		} );
+	} );
+
 	it( 'should take a relative number from 1 to 60', () => {
 		renderSalesWindow( newClientId() );
 		change( SelectControl, START_LABELS.mode, 'relative' );
@@ -401,6 +468,92 @@ describe( 'the Ticket block sales window options', () => {
 		change( SelectControl, START_LABELS.mode, 'relative' );
 
 		expect( findControl( TextControl, START_LABELS.value ).props.value ).toBe( 10 );
+	} );
+
+	describe( 'window check', () => {
+		const ERROR = 'Ticket sales cannot end before they start. Please adjust the sales window.';
+		const OUT_OF_RANGE = 'Enter a number from 1 to 60.';
+
+		/**
+		 * Returns the error message rendered, if any.
+		 *
+		 * @return {Object|undefined} The error element's test instance.
+		 */
+		function findError() {
+			return root.findAll( ( node ) => 'string' === typeof node.type && 'alert' === node.props.role )[ 0 ];
+		}
+
+		/**
+		 * Renders the options of a ticket whose form sends the given sale dates.
+		 *
+		 * @param {string} clientId The client ID of the ticket block.
+		 *
+		 * @return {void}
+		 */
+		function renderTicket( clientId ) {
+			setTicketFormDates( commonStore, clientId, '2040-09-01 10:00:00', '2040-10-20 19:00:00' );
+			renderSalesWindow( clientId );
+		}
+
+		it( 'should show the error and mark the end invalid while the window ends before it starts', () => {
+			renderTicket( newClientId() );
+			change( SelectControl, START_LABELS.mode, 'relative' );
+			change( SelectControl, START_LABELS.unit, String( UNIT_HOURS ) );
+			change( TextControl, START_LABELS.value, '1' );
+			change( SelectControl, END_LABELS.mode, 'relative' );
+			change( TextControl, END_LABELS.value, '2' );
+
+			const endMode = findControl( SelectControl, END_LABELS.mode );
+
+			// Passed as the end's help, so the control describes itself with it.
+			expect( endMode.props.help.props.children ).toBe( ERROR );
+			expect( findError().props.children ).toBe( ERROR );
+			expect( endMode.props[ 'aria-invalid' ] ).toBe( true );
+		} );
+
+		it( 'should style the error as its own, not as the legacy duration error', () => {
+			renderTicket( newClientId() );
+			change( SelectControl, START_LABELS.mode, 'relative' );
+			change( SelectControl, START_LABELS.unit, String( UNIT_HOURS ) );
+			change( TextControl, START_LABELS.value, '1' );
+			change( SelectControl, END_LABELS.mode, 'relative' );
+			change( TextControl, END_LABELS.value, '2' );
+
+			expect( findError().props.className ).toBe( 'tec-tickets-relative-sale-dates__error' );
+		} );
+
+		it( 'should show no error for a window that starts before it ends', () => {
+			renderTicket( newClientId() );
+			change( SelectControl, START_LABELS.mode, 'relative' );
+			change( SelectControl, END_LABELS.mode, 'relative' );
+
+			expect( findError() ).toBeUndefined();
+			expect( findControl( SelectControl, END_LABELS.mode ).props[ 'aria-invalid' ] ).toBeUndefined();
+			expect( findControl( SelectControl, END_LABELS.mode ).props.help ).toBeUndefined();
+		} );
+
+		it( 'should name a cleared start number on the number itself, not as a window that ends before it starts', () => {
+			renderTicket( newClientId() );
+			change( SelectControl, START_LABELS.mode, 'relative' );
+			change( TextControl, START_LABELS.value, '' );
+
+			const startValue = findControl( TextControl, START_LABELS.value );
+
+			expect( startValue.props.help.props.children ).toBe( OUT_OF_RANGE );
+			expect( startValue.props[ 'aria-invalid' ] ).toBe( true );
+			expect( findControl( SelectControl, END_LABELS.mode ).props.help ).toBeUndefined();
+			expect( findControl( SelectControl, END_LABELS.mode ).props[ 'aria-invalid' ] ).toBeUndefined();
+		} );
+
+		// The field keeps a typed number within 1 to 60, so only a cleared one is out of range.
+		it( 'should name a cleared end number on the end number', () => {
+			renderTicket( newClientId() );
+			change( SelectControl, END_LABELS.mode, 'relative' );
+			change( TextControl, END_LABELS.value, '' );
+
+			expect( findControl( TextControl, END_LABELS.value ).props.help.props.children ).toBe( OUT_OF_RANGE );
+			expect( findControl( TextControl, START_LABELS.value ) ).toBeUndefined();
+		} );
 	} );
 
 	describe( 'helper text', () => {

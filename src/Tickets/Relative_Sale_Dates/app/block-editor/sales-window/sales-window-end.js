@@ -70,16 +70,20 @@ function getUnitOptions( value ) {
  *
  * @since TBD
  *
- * @param {Object}                           props               The component props.
- * @param {string}                           props.name          The end of the window, `start` or `end`.
- * @param {SaleWindowEnd}                    props.end           The end's mode and relative values.
- * @param {SalesWindowEndLabels}             props.labels        The labels of the end's controls.
- * @param {{label: string, value: string}[]} props.modeOptions   The mode options.
- * @param {{label: string, value: string}[]} props.anchorOptions The anchor options.
- * @param {Object}                           props.picker        The date and time range picker element.
- * @param {string}                           props.helperText    The date a relative end works out to, or an empty
- *                                                               string.
- * @param {Function}                         props.onChange      Called with the changed values of the end.
+ * @param {Object}                           props                   The component props.
+ * @param {string}                           props.name              The end of the window, `start` or `end`.
+ * @param {SaleWindowEnd}                    props.end               The end's mode and relative values.
+ * @param {SalesWindowEndLabels}             props.labels            The labels of the end's controls.
+ * @param {{label: string, value: string}[]} props.modeOptions       The mode options.
+ * @param {{label: string, value: string}[]} props.anchorOptions     The anchor options.
+ * @param {Object}                           props.picker            The date and time range picker element.
+ * @param {string}                           props.helperText        The date a relative end works out to, or an empty
+ *                                                                   string.
+ * @param {string}                           props.errorMessage      The sales window error this end is marked with, or
+ *                                                                   an empty string.
+ * @param {string}                           props.valueErrorMessage The range error of the relative number, or an
+ *                                                                   empty string.
+ * @param {Function}                         props.onChange          Called with the changed values of the end.
  *
  * @return {Object} The end's options.
  */
@@ -91,6 +95,8 @@ export default function SalesWindowEnd( {
 	anchorOptions,
 	picker,
 	helperText,
+	errorMessage,
+	valueErrorMessage,
 	onChange,
 } ) {
 	return (
@@ -99,6 +105,15 @@ export default function SalesWindowEnd( {
 				__next40pxDefaultSize
 				__nextHasNoMarginBottom
 				label={ labels.mode }
+				aria-invalid={ errorMessage ? true : undefined }
+				// The control points `aria-describedby` at its help, so the error goes there to be announced with it.
+				help={
+					errorMessage ? (
+						<span className="tec-tickets-relative-sale-dates__error" role="alert">
+							{ errorMessage }
+						</span>
+					) : undefined
+				}
 				value={ end.mode }
 				options={ modeOptions }
 				onChange={ ( mode ) => onChange( { mode } ) }
@@ -115,6 +130,14 @@ export default function SalesWindowEnd( {
 						max={ MAX_VALUE }
 						step={ 1 }
 						value={ end.value }
+						aria-invalid={ valueErrorMessage ? true : undefined }
+						help={
+							valueErrorMessage ? (
+								<span className="tec-tickets-relative-sale-dates__error" role="alert">
+									{ valueErrorMessage }
+								</span>
+							) : undefined
+						}
 						onChange={ ( value ) => onChange( { value: toRelativeValue( value ) } ) }
 					/>
 					<SelectControl
