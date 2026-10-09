@@ -219,4 +219,19 @@ class Rule_Store_Test extends WPTestCase {
 
 		$this->assertSame( [], tribe( Rule_Store::class )->get_ticket_ids_for_event( $event_id ) );
 	}
+
+	/**
+	 * @test
+	 */
+	public function should_return_at_most_the_query_limit_of_ruled_tickets(): void {
+		$event_id = static::factory()->post->create();
+		// One more than the limit, so an unbounded query would return them all.
+		$ticket_ids = static::factory()->post->create_many( Rule_Store::TICKETS_QUERY_LIMIT + 1, [ 'post_type' => Ticket::POSTTYPE ] );
+		foreach ( $ticket_ids as $ticket_id ) {
+			update_post_meta( $ticket_id, Ticket::$event_relation_meta_key, $event_id );
+			update_post_meta( $ticket_id, Rule_Store::META_KEY, wp_json_encode( [ 'start' => [ 'mode' => 'default' ] ] ) );
+		}
+
+		$this->assertCount( Rule_Store::TICKETS_QUERY_LIMIT, tribe( Rule_Store::class )->get_ticket_ids_for_event( $event_id ) );
+	}
 }

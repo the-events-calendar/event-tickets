@@ -31,6 +31,15 @@ final class Rule_Store {
 	public const META_KEY = '_tec_tickets_relative_sale_dates';
 
 	/**
+	 * The most ruled tickets the query for one event returns, so an event with thousands of tickets cannot run it unbounded.
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	public const TICKETS_QUERY_LIMIT = 300;
+
+	/**
 	 * The tickets handler, which owns the flag that keeps a ticket end from following the event start.
 	 *
 	 * @since TBD
@@ -72,7 +81,7 @@ final class Rule_Store {
 	}
 
 	/**
-	 * Gets the Tickets Commerce tickets of an event that have stored rules.
+	 * Gets the Tickets Commerce tickets of an event that have stored rules, at most `TICKETS_QUERY_LIMIT` of them.
 	 *
 	 * @since TBD
 	 *
@@ -92,7 +101,7 @@ final class Rule_Store {
 				->where( 'event', $event_id )
 				->where( 'meta_exists', self::META_KEY )
 				->where( 'post_status', 'any' )
-				->per_page( -1 )
+				->per_page( self::TICKETS_QUERY_LIMIT )
 				->get_ids()
 		);
 	}
