@@ -93,7 +93,7 @@ final class Checks {
 			$ticket = $this->get_ticket_on_post( $ticket_id, $post_id );
 
 			if ( null === $ticket ) {
-				$rejections = $rejections->with( Parser::UPDATE, $ticket_id, $this->not_on_post_message( $ticket_id ) );
+				$rejections = $rejections->with( Parser::UPDATE, $ticket_id, $this->not_on_post_message( $ticket_id ), true );
 				unset( $update[ $ticket_id ] );
 				continue;
 			}
@@ -108,7 +108,7 @@ final class Checks {
 			$ticket = $this->get_ticket_on_post( $ticket_id, $post_id );
 
 			if ( null === $ticket ) {
-				$rejections = $rejections->with( Parser::MOVE, $ticket_id, $this->not_on_post_message( $ticket_id ) );
+				$rejections = $rejections->with( Parser::MOVE, $ticket_id, $this->not_on_post_message( $ticket_id ), true );
 				unset( $move[ $ticket_id ] );
 				continue;
 			}
@@ -142,7 +142,7 @@ final class Checks {
 			$ticket = $this->get_ticket_on_post( $ticket_id, $post_id );
 
 			if ( null === $ticket ) {
-				$rejections = $rejections->with( Parser::DELETE, $ticket_id, $this->not_on_post_message( $ticket_id ) );
+				$rejections = $rejections->with( Parser::DELETE, $ticket_id, $this->not_on_post_message( $ticket_id ), true );
 				continue;
 			}
 
