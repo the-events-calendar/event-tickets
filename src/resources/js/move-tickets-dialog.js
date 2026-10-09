@@ -43,6 +43,39 @@ var tribe_move_tickets = tribe_move_tickets || {};
 	}
 
 	/**
+	 * Stages a ticket type move in the parent window, when the post there defers ticket saves.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Window|null} parent       The window the dialog was opened over, or `null`.
+	 * @param {number}      ticketTypeId The ticket to move.
+	 * @param {number}      targetPostId The post to move it to.
+	 * @param {string}      targetTitle  The post's title, for the staged row.
+	 *
+	 * @return {{staged: boolean, message: string}|null} What happened, or `null` when the move is the dialog's to make.
+	 */
+	obj.stage_move_in_parent = function ( parent, ticketTypeId, targetPostId, targetTitle ) {
+		let deferredSave = null;
+
+		try {
+			deferredSave = parent && parent.tribe && parent.tribe.tickets ? parent.tribe.tickets.deferredSave : null;
+		} catch ( e ) {
+			// A cross-origin parent throws on access; the dialog then behaves as it does today.
+			return null;
+		}
+
+		if ( ! deferredSave || ! deferredSave.isEnabled || ! deferredSave.isEnabled() ) {
+			return null;
+		}
+
+		// A ticket carries one staged change: the parent refuses a move while an edit of it is staged.
+		const staged = false !== deferredSave.stageMove( ticketTypeId, targetPostId, targetTitle );
+		const strings = deferredSave.strings || {};
+
+		return { staged, message: ( staged ? strings.moveStaged : strings.moveBlocked ) || '' };
+	};
+
+	/**
 	 * Can be used to obtain the jQuery object representing the dialog's
 	 * #main element (useful for triggering/listening for dialog events).
 	 *
@@ -475,33 +508,25 @@ var tribe_move_tickets = tribe_move_tickets || {};
 			}
 
 			// On a post that defers ticket saves, the move is staged in the parent window and happens with the post save.
-			let deferredSave = null;
-			try {
-				deferredSave = top !== window && top.tribe && top.tribe.tickets ? top.tribe.tickets.deferredSave : null;
-			} catch ( e ) {
-				// A cross-origin parent throws on access; the dialog then behaves as it does today.
-				deferredSave = null;
-			}
-			if ( deferredSave && deferredSave.isEnabled && deferredSave.isEnabled() ) {
-				// The post list is local to the choose-event stage, so it is found again here.
-				const targetTitle = $( '#choose-event .select-single-container input:checked' ).parent().text().trim();
-				const staged = deferredSave.stageMove(
-					tribe_move_tickets_data.ticket_type_id,
-					target_post_id,
-					targetTitle
-				);
+			// The post list is local to the choose-event stage, so it is found again here.
+			const targetTitle = $( '#choose-event .select-single-container input:checked' ).parent().text().trim();
+			const staged = obj.stage_move_in_parent(
+				top !== window ? top : null,
+				tribe_move_tickets_data.ticket_type_id,
+				target_post_id,
+				targetTitle
+			);
+
+			if ( staged ) {
 				$stages.hide();
 				$back.hide();
 				$next.hide();
+				$processing.text( staged.message ).show();
 
-				// A ticket carries one staged change: the parent refuses a move while an edit of it is staged.
-				if ( false === staged ) {
-					$processing.text( deferredSave.strings.moveBlocked || '' ).show();
-					return;
+				if ( staged.staged ) {
+					top.jQuery( '#ticket_form_cancel' ).trigger( 'click' );
 				}
 
-				$processing.text( deferredSave.strings.moveStaged || '' ).show();
-				top.jQuery( '#ticket_form_cancel' ).trigger( 'click' );
 				return;
 			}
 
