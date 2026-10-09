@@ -424,7 +424,7 @@ export function* stagePendingChanges() {
 		}
 
 		const isValid = yield select( selectors.isTicketValid, { clientId } );
-		const isSalePriceValid = yield select( selectors.isTicketSalePriceValid, { clientId } );
+		const isSalePriceValid = yield select( selectors.isTicketSalePriceAcceptable, { clientId } );
 		const hasDurationError = yield select( selectors.getTicketHasDurationError, { clientId } );
 
 		// The rules the confirm button applies; a ticket that fails them is not saved, and the block says so.

@@ -468,6 +468,18 @@ export const isTicketSalePriceValid = createSelector(
 	}
 );
 
+/**
+ * Whether the sale price can be saved: it is off, or it is below the price.
+ *
+ * An unticked sale price is hidden and not saved, so it must not block the ticket.
+ *
+ * @since TBD
+ */
+export const isTicketSalePriceAcceptable = createSelector(
+	[ getTempSalePriceChecked, isTicketSalePriceValid ],
+	( checked, valid ) => ! checked || valid
+);
+
 export const isTempTitleValid = createSelector( [ getTicketTempTitle ], ( title ) => trim( title ) !== '' );
 
 export const isTempCapacityValid = createSelector(

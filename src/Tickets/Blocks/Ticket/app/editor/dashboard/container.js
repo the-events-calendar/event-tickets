@@ -36,7 +36,7 @@ export const getIsConfirmDisabled = ( state, ownProps ) => {
 		! selectors.isTicketValid( state, ownProps ) ||
 		// A staged ticket travels with the post save, so nothing invalid may be staged: the sale price rule applies
 		// too. Staging during a save is fine: the answer settles only what that save sent.
-		( usesDeferredSave() && ! selectors.isTicketSalePriceValid( state, ownProps ) );
+		( usesDeferredSave() && ! selectors.isTicketSalePriceAcceptable( state, ownProps ) );
 
 	/**
 	 * Filters whether the confirm button should be disabled.

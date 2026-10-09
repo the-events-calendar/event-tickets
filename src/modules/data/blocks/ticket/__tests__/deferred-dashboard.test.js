@@ -76,6 +76,12 @@ describe( 'the deferred Ticket block dashboard', () => {
 		expect( getIsConfirmDisabled( stateWith(), ownProps ) ).toBe( false );
 	} );
 
+	it( 'refuses a sale price above the price only when the sale price is on', () => {
+		expect( getIsConfirmDisabled( stateWith( { salePriceChecked: true, salePrice: '20' } ), ownProps ) ).toBe( true );
+		// Unticked, the sale price is hidden and not saved: it must not block Confirm.
+		expect( getIsConfirmDisabled( stateWith( { salePriceChecked: false, salePrice: '20' } ), ownProps ) ).toBe( false );
+	} );
+
 	it( 'keeps a staged ticket on Cancel and drops only the unconfirmed changes', () => {
 		const dispatched = [];
 
