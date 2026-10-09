@@ -350,7 +350,7 @@ const numberOrNull = ( value ) => {
 };
 
 /**
- * Reads a price with the site's decimal separator, the only separator the panel lets an admin type in one.
+ * Reads a price with the site's decimal separator; the other of `.` and `,` can only group thousands.
  *
  * Without a known separator it falls back to `numberOrNull()`, which cannot tell `9.750` in a three-decimal
  * currency from nine thousand seven hundred and fifty.
@@ -371,7 +371,8 @@ const priceOrNull = ( value, decimal ) => {
 		return null;
 	}
 
-	const parts = text.split( decimal );
+	const thousands = '.' === decimal ? ',' : '.';
+	const parts = text.split( thousands ).join( '' ).split( decimal );
 
 	if ( parts.length > 2 || ! /\d/.test( text ) || ! parts.every( ( part ) => /^\d*$/.test( part ) ) ) {
 		return NaN;
