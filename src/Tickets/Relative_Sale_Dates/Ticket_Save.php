@@ -201,12 +201,12 @@ final class Ticket_Save {
 	}
 
 	/**
-	 * Rejects ticket data whose rule is invalid or whose sales window does not start before it ends.
+	 * Rejects ticket data whose rule of any kind is invalid, whose window ends before it starts, or whose window starts
+	 * outside its parent window.
 	 *
-	 * The rule judged is the one the save applies: the one sent, or else the one stored for the ticket. A boundary the
-	 * rule leaves to the ticket is judged with the date the save stores for it: the submitted date, now for a `default`
-	 * start submitted ahead of now, or for a `default` start sent without one, the day the event was published. A
-	 * `specific` boundary sent without its date is rejected.
+	 * Each kind is judged in turn, the parent first, and the first error is returned: a sales window it rejects is not
+	 * judged again as the parent of the sale price. A kind the save drops, such as a sale price that is unchecked or not
+	 * lower than the price, is not judged.
 	 *
 	 * @since TBD
 	 *
@@ -214,47 +214,26 @@ final class Ticket_Save {
 	 * @param int                 $post_id The ticket parent post ID.
 	 * @param array<string,mixed> $data    The ticket data about to be saved.
 	 *
-	 * @return true|WP_Error `true` when the sales window is valid or does not apply, the error otherwise.
+	 * @return true|WP_Error `true` when every window is valid or does not apply, the first error otherwise.
 	 */
 	public function validate_ticket_data( $valid, int $post_id, array $data ) {
-		$kind = Window_Kind::sales();
-
 		if (
 			is_wp_error( $valid )
-			|| $this->removes_rule( $data, $kind )
 			|| Module::class !== ( $data['ticket_provider'] ?? Module::class )
 			|| ! $this->applies_to( $post_id, $data['ticket_type'] ?? 'default' )
 		) {
 			return $valid;
 		}
 
-		// The save would keep the stored rule, but the admin who sent this one expects it to apply.
-		if ( isset( $data[ self::DATA_KEY ] ) && ! Rule::from_raw( $data[ self::DATA_KEY ], $kind ) ) {
-			return $this->get_invalid_window_error();
+		foreach ( Window_Kind::all() as $kind ) {
+			$error = $this->validate_window( $post_id, $data, $kind );
+
+			if ( $error ) {
+				return $error;
+			}
 		}
 
-		$rule        = $this->get_rule_to_apply( absint( $data['ticket_id'] ?? 0 ), $data, $kind );
-		$event_dates = $rule ? $this->sale_window->get_event_dates( $post_id ) : null;
-
-		if ( ! $event_dates ) {
-			return $valid;
-		}
-
-		$timezone  = $event_dates[0]->getTimezone();
-		$submitted = $this->get_submitted_date( $data, 'start', $timezone );
-		$window    = $this->sale_window->resolve_for_event( $rule, $post_id, $submitted ? $submitted->format( 'Y-m-d H:i:s' ) : '' );
-		$start     = ( $window ? $window->get_start() : null ) ?? $submitted;
-		$end       = ( $window ? $window->get_end() : null ) ?? $this->get_submitted_date( $data, 'end', $timezone );
-
-		if ( ! $start && Rule::MODE_DEFAULT === $rule->get_start()->get_mode() && empty( $data['ticket_start_date'] ) ) {
-			$start = $this->get_post_day( $post_id, $timezone );
-		}
-
-		if ( ! ( $start && $end ) ) {
-			return $this->get_invalid_window_error();
-		}
-
-		return ( new Resolved_Window( $start, $end ) )->is_valid() ? $valid : $this->get_invalid_window_error();
+		return $valid;
 	}
 
 	/**
@@ -346,19 +325,165 @@ final class Ticket_Save {
 	}
 
 	/**
-	 * Gets the date submitted for one end of the sales window, read the way `ticket_add()` reads it.
+	 * Judges the window of one kind the ticket data would save.
+	 *
+	 * The rule judged is the one the save applies: the one sent, or else the one stored for the ticket. Without one, or
+	 * without event dates, there is nothing to judge. The order of the window's ends is judged at the kind's precision;
+	 * a start without a date of its own counts as the start of the parent window. A start with its own date must fall
+	 * within the parent window, and without both ends of the parent window there is nothing to judge the window against.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string,mixed> $data     The ticket data.
-	 * @param string              $end      The end of the window, `start` or `end`.
-	 * @param DateTimeZone        $timezone The event timezone.
+	 * @param int                 $post_id The ticket parent post ID.
+	 * @param array<string,mixed> $data    The ticket data about to be saved.
+	 * @param Window_Kind         $kind    The kind of window to judge.
+	 *
+	 * @return WP_Error|null The error of the kind that rejects the window, or `null` when it is valid or not judged.
+	 */
+	private function validate_window( int $post_id, array $data, Window_Kind $kind ): ?WP_Error {
+		if ( $this->removes_rule( $data, $kind ) || ! $kind->is_saved_with( $data ) ) {
+			return null;
+		}
+
+		$key = $kind->get_rule_keys()['data'];
+
+		// The save would keep the stored rule, but the admin who sent this one expects it to apply.
+		if ( isset( $data[ $key ] ) && ! Rule::from_raw( $data[ $key ], $kind ) ) {
+			return $kind->get_ends_before_start_error();
+		}
+
+		if ( ! $this->get_rule_to_apply( absint( $data['ticket_id'] ?? 0 ), $data, $kind ) || ! $this->sale_window->get_event_dates( $post_id ) ) {
+			return null;
+		}
+
+		$window = $this->get_window( $post_id, $data, $kind );
+
+		if ( ! $window ) {
+			return $kind->get_ends_before_start_error();
+		}
+
+		$parent        = $kind->get_parent();
+		$parent_window = $parent ? $this->get_window( $post_id, $data, $parent ) : null;
+		$parent_start  = $parent_window ? $parent_window->get_start() : null;
+		$parent_end    = $parent_window ? $parent_window->get_end() : null;
+
+		if ( $parent && ! ( $parent_start && $parent_end ) ) {
+			return null;
+		}
+
+		$own_start = $window->get_start();
+		$start     = $own_start ?? $parent_start;
+		$end       = $window->get_end();
+
+		if ( $start && $end && $this->compare_dates( $end, $start, $kind ) <= 0 ) {
+			return $kind->get_ends_before_start_error();
+		}
+
+		if (
+			$own_start && $parent_start && $parent_end
+			&& ( $this->compare_dates( $own_start, $parent_start, $kind ) < 0 || $this->compare_dates( $own_start, $parent_end, $kind ) > 0 )
+		) {
+			return $kind->get_outside_parent_error();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Gets the window of a kind a save of the ticket data would store.
+	 *
+	 * The rule applied is the one sent, or else the one stored for the ticket. A boundary the rule leaves to the ticket
+	 * takes its submitted date, except a Now start of the ticket sales submitted ahead of now, which the save moves to
+	 * now. An open start of a kind that writes one as a value of its own has no date: the window opens with its parent.
+	 * For the ticket's own sales dates, `ticket_add()` fills an empty start with the day the event was published and an
+	 * empty end with the event start; here the start fallback applies only to an open start or a ticket without a rule,
+	 * and the end fallback only to a ticket without a rule, so a `specific` boundary sent without its date has none.
+	 *
+	 * @since TBD
+	 *
+	 * @param int                 $post_id The ticket parent post ID.
+	 * @param array<string,mixed> $data    The ticket data about to be saved.
+	 * @param Window_Kind         $kind    The kind of window.
+	 *
+	 * @return Resolved_Window|null The window, whose ends are `null` where it has no date; `null` when the event has no
+	 *                              valid dates, a submitted date cannot be read, or a boundary of a kind that needs a
+	 *                              date has none.
+	 */
+	private function get_window( int $post_id, array $data, Window_Kind $kind ): ?Resolved_Window {
+		$event_dates = $this->sale_window->get_event_dates( $post_id );
+
+		if ( ! $event_dates ) {
+			return null;
+		}
+
+		$timezone = $event_dates[0]->getTimezone();
+		$fields   = $kind->get_submitted_fields();
+		$rule     = $this->get_rule_to_apply( absint( $data['ticket_id'] ?? 0 ), $data, $kind );
+		$opens    = $rule && $rule->opens_at_once();
+		$is_open  = $opens && null !== $kind->get_open_start_value();
+
+		$submitted_start = $this->get_submitted_date( $data, $fields['start'], $timezone );
+		$window          = $rule ? $this->sale_window->resolve_for_event( $rule, $post_id, $submitted_start ? $submitted_start->format( 'Y-m-d H:i:s' ) : '' ) : null;
+		$start           = $window ? $window->get_start() : null;
+		$end             = $window ? $window->get_end() : null;
+
+		// A date the datepicker format cannot read would be stored as 1970, or as no date.
+		if (
+			( ! $start && ! $is_open && $this->sends_an_unreadable_date( $data, $fields['start'], $timezone ) )
+			|| ( ! $end && $this->sends_an_unreadable_date( $data, $fields['end'], $timezone ) )
+		) {
+			return null;
+		}
+
+		$start ??= $is_open ? null : $submitted_start;
+		$end   ??= $this->get_submitted_date( $data, $fields['end'], $timezone );
+
+		if ( $kind->owns_ticket_sales_dates() ) {
+			$start ??= ! $rule || $opens ? $this->get_post_day( $post_id, $timezone ) : null;
+			$end   ??= $rule ? null : $event_dates[0];
+		}
+
+		if ( $kind->specific_needs_date() && ( ! ( $start || $is_open ) || ! $end ) ) {
+			return null;
+		}
+
+		return new Resolved_Window( $start, $end );
+	}
+
+	/**
+	 * Compares two dates of a window at the precision of its kind.
+	 *
+	 * @since TBD
+	 *
+	 * @param DateTimeImmutable $date  The date to compare.
+	 * @param DateTimeImmutable $other The date to compare it with.
+	 * @param Window_Kind       $kind  The kind of window.
+	 *
+	 * @return int Less than, equal to, or greater than zero as the date falls before, with, or after the other.
+	 */
+	private function compare_dates( DateTimeImmutable $date, DateTimeImmutable $other, Window_Kind $kind ): int {
+		if ( $kind->compares_days() ) {
+			return strcmp( $date->format( Dates::DBDATEFORMAT ), $other->format( Dates::DBDATEFORMAT ) );
+		}
+
+		return $date <=> $other;
+	}
+
+	/**
+	 * Gets the date submitted for one end of a window, read the way `ticket_add()` reads it.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed>                $data     The ticket data.
+	 * @param array{date: string, time: ?string} $field    The fields of the end, its date and, for a kind that submits
+	 *                                                     times, its time.
+	 * @param DateTimeZone                       $timezone The event timezone.
 	 *
 	 * @return DateTimeImmutable|null The submitted date, or `null` when none was submitted or it cannot be read.
 	 */
-	private function get_submitted_date( array $data, string $end, DateTimeZone $timezone ): ?DateTimeImmutable {
-		$date = $data[ "ticket_{$end}_date" ] ?? '';
-		$time = $data[ "ticket_{$end}_time" ] ?? '';
+	private function get_submitted_date( array $data, array $field, DateTimeZone $timezone ): ?DateTimeImmutable {
+		$date = $data[ $field['date'] ] ?? '';
+		$time = null === $field['time'] ? '' : ( $data[ $field['time'] ] ?? '' );
 
 		if ( ! is_string( $date ) || '' === $date ) {
 			return null;
@@ -379,6 +504,24 @@ final class Ticket_Save {
 	}
 
 	/**
+	 * Returns whether the ticket data sends a date for one end of a window that cannot be read.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed>                $data     The ticket data.
+	 * @param array{date: string, time: ?string} $field    The fields of the end, its date and, for a kind that submits
+	 *                                                     times, its time.
+	 * @param DateTimeZone                       $timezone The event timezone.
+	 *
+	 * @return bool Whether a date was sent and cannot be read.
+	 */
+	private function sends_an_unreadable_date( array $data, array $field, DateTimeZone $timezone ): bool {
+		$date = $data[ $field['date'] ] ?? '';
+
+		return is_string( $date ) && '' !== $date && ! $this->get_submitted_date( $data, $field, $timezone );
+	}
+
+	/**
 	 * Gets the day the event was published, which `ticket_add()` stores as the start of a ticket sent without one.
 	 *
 	 * @since TBD
@@ -392,20 +535,5 @@ final class Ticket_Save {
 		$date = date_create_immutable( get_post_field( 'post_date', $post_id, 'raw' ), $timezone );
 
 		return $date ? $date->setTime( 0, 0 ) : null;
-	}
-
-	/**
-	 * Gets the error that rejects an invalid rule, or a sales window that does not start before it ends.
-	 *
-	 * @since TBD
-	 *
-	 * @return WP_Error The error, with a 400 status for REST responses.
-	 */
-	private function get_invalid_window_error(): WP_Error {
-		return new WP_Error(
-			'tec_tickets_relative_sale_dates_invalid_window',
-			__( 'Ticket sales cannot end before they start. Please adjust the sales window.', 'event-tickets' ),
-			[ 'status' => 400 ]
-		);
 	}
 }

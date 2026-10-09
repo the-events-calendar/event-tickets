@@ -4,6 +4,7 @@ namespace TEC\Tickets\Relative_Sale_Dates;
 
 use Codeception\TestCase\WPTestCase;
 use DateTimeImmutable;
+use DateTimeZone;
 use Generator;
 use TEC\Tickets\Commerce\Ticket;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -71,6 +72,32 @@ class Ticket_Dates_Test extends WPTestCase {
 			[
 				'start' => $this->format_for( $kind, 'start', $event_start->modify( '-2 weeks' ) ),
 				'end'   => $this->format_for( $kind, 'end', $event_start->modify( '-1 week' ) ),
+			],
+			$this->get_dates( $kind, $ticket_id )
+		);
+	}
+
+	/**
+	 * An event at 21:00 in New York starts at 01:00 the next day in UTC, so a sale price boundary counted back from it
+	 * falls on an evening whose day in UTC is the next one.
+	 *
+	 * @test
+	 */
+	public function should_write_the_sale_price_days_in_the_event_timezone(): void {
+		$event_start = new DateTimeImmutable( '2027-06-24 21:00:00', new DateTimeZone( 'America/New_York' ) );
+		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ), 'America/New_York' );
+		$ticket_id   = $this->create_sale_price_ticket( $event_id );
+		$kind        = Window_Kind::sale_price();
+		$start       = $event_start->modify( '-2 weeks' );
+		$end         = $event_start->modify( '-1 week' );
+		$this->assertNotSame( $start->format( 'Y-m-d' ), $start->setTimezone( new DateTimeZone( 'UTC' ) )->format( 'Y-m-d' ) );
+
+		tribe( Ticket_Dates::class )->write( $ticket_id, $event_id, $this->get_relative_rule( $kind, 2, 1 ) );
+
+		$this->assertSame(
+			[
+				'start' => [ 'date' => $start->format( 'Y-m-d' ) ],
+				'end'   => [ 'date' => $end->format( 'Y-m-d' ) ],
 			],
 			$this->get_dates( $kind, $ticket_id )
 		);

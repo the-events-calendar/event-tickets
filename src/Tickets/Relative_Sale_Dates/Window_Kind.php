@@ -11,13 +11,15 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
+use Closure;
 use TEC\Tickets\Commerce\Ticket;
+use WP_Error;
 
 /**
  * An immutable kind of window: the modes, values, units and anchors its rule accepts, where the rule and the dates it
- * resolves to are stored, and how the window relates to the ticket's own sales.
+ * resolves to are submitted and stored, how the window relates to the ticket's own sales, and the errors that reject it.
  *
- * The rules, boundaries, resolver, writer and save work the same for every kind; only these differ.
+ * The rules, boundaries, resolver, writer, save and validation work the same for every kind; only these differ.
  *
  * @since TBD
  *
@@ -152,16 +154,18 @@ final class Window_Kind {
 
 	/**
 	 * The keys of the sale the window belongs to, or `null` for a window every ticket has: `enabled_meta`, the ticket
-	 * meta that turns the sale on.
+	 * meta that turns the sale on; `enabled_data`, the ticket data field that keeps it when the ticket is saved; and
+	 * `price` and `regular_price`, the ticket data fields of the sale price and of the price it must be lower than.
 	 *
 	 * @since TBD
 	 *
-	 * @var array{enabled_meta: string}|null
+	 * @var array{enabled_meta: string, enabled_data: string, price: string, regular_price: string}|null
 	 */
 	private ?array $sale_keys;
 
 	/**
-	 * Whether the window's dates are the ticket's own sales dates.
+	 * Whether the window's dates are the ticket's own sales dates: the ones the ticket is on sale between, which
+	 * `ticket_add()` fills in, the sales actions announce and the event start moves.
 	 *
 	 * @since TBD
 	 *
@@ -188,6 +192,52 @@ final class Window_Kind {
 	private array $submitted_fields;
 
 	/**
+	 * Whether a specific boundary sent without a date leaves the window without one, which the save rejects.
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
+	 */
+	private bool $specific_needs_date;
+
+	/**
+	 * The code of the error that rejects an invalid rule, or a window that ends before it starts.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private string $ends_before_start_code;
+
+	/**
+	 * Returns the message of the error that rejects an invalid rule, or a window that ends before it starts.
+	 *
+	 * @since TBD
+	 *
+	 * @var Closure(): string
+	 */
+	private Closure $ends_before_start_message;
+
+	/**
+	 * The code of the error that rejects a window starting outside its parent window, or `null` for a kind without one.
+	 *
+	 * @since TBD
+	 *
+	 * @var string|null
+	 */
+	private ?string $outside_parent_code;
+
+	/**
+	 * Returns the message of the error that rejects a window starting outside its parent window, or `null` for a kind
+	 * without one.
+	 *
+	 * @since TBD
+	 *
+	 * @var (Closure(): string)|null
+	 */
+	private ?Closure $outside_parent_message;
+
+	/**
 	 * Gets the sales window kind.
 	 *
 	 * @since TBD
@@ -195,50 +245,58 @@ final class Window_Kind {
 	 * @return self The sales window kind.
 	 */
 	public static function sales(): self {
-		if ( ! isset( self::$instances[ self::SALES ] ) ) {
-			$modes = [ Rule::MODE_DEFAULT, Rule::MODE_RELATIVE, Rule::MODE_SPECIFIC ];
-
-			self::$instances[ self::SALES ] = new self(
-				self::SALES,
-				[
-					'start' => $modes,
-					'end'   => $modes,
-				],
-				Rule::MODE_DEFAULT,
-				Boundary::MAX_VALUE,
-				[ MINUTE_IN_SECONDS, HOUR_IN_SECONDS, DAY_IN_SECONDS, WEEK_IN_SECONDS ],
-				[ Rule::ANCHOR_START, Rule::ANCHOR_END ],
-				null,
-				null,
-				[ 'data' => Ticket_Save::DATA_KEY ],
-				[
-					'start' => [
-						'date' => Ticket::START_DATE_META_KEY,
-						'time' => Ticket::START_TIME_META_KEY,
-					],
-					'end'   => [
-						'date' => Ticket::END_DATE_META_KEY,
-						'time' => Ticket::END_TIME_META_KEY,
-					],
-				],
-				null,
-				null,
-				true,
-				true,
-				[
-					'start' => [
-						'date' => 'ticket_start_date',
-						'time' => 'ticket_start_time',
-					],
-					'end'   => [
-						'date' => 'ticket_end_date',
-						'time' => 'ticket_end_time',
-					],
-				]
-			);
+		if ( isset( self::$instances[ self::SALES ] ) ) {
+			return self::$instances[ self::SALES ];
 		}
 
-		return self::$instances[ self::SALES ];
+		$modes = [ Rule::MODE_DEFAULT, Rule::MODE_RELATIVE, Rule::MODE_SPECIFIC ];
+		$kind  = new self();
+
+		$kind->id                           = self::SALES;
+		$kind->modes                        = [
+			'start' => $modes,
+			'end'   => $modes,
+		];
+		$kind->open_start_mode              = Rule::MODE_DEFAULT;
+		$kind->max_value                    = Boundary::MAX_VALUE;
+		$kind->units                        = [ MINUTE_IN_SECONDS, HOUR_IN_SECONDS, DAY_IN_SECONDS, WEEK_IN_SECONDS ];
+		$kind->anchors                      = [ Rule::ANCHOR_START, Rule::ANCHOR_END ];
+		$kind->store_key                    = null;
+		$kind->parent                       = null;
+		$kind->rule_keys                    = [ 'data' => Ticket_Save::DATA_KEY ];
+		$kind->date_metas                   = [
+			'start' => [
+				'date' => Ticket::START_DATE_META_KEY,
+				'time' => Ticket::START_TIME_META_KEY,
+			],
+			'end'   => [
+				'date' => Ticket::END_DATE_META_KEY,
+				'time' => Ticket::END_TIME_META_KEY,
+			],
+		];
+		$kind->open_start_value             = null;
+		$kind->sale_keys                    = null;
+		$kind->owns_ticket_sales_dates      = true;
+		$kind->is_removed_by_front_end_form = true;
+		$kind->submitted_fields             = [
+			'start' => [
+				'date' => 'ticket_start_date',
+				'time' => 'ticket_start_time',
+			],
+			'end'   => [
+				'date' => 'ticket_end_date',
+				'time' => 'ticket_end_time',
+			],
+		];
+		$kind->specific_needs_date          = true;
+		$kind->ends_before_start_code       = 'tec_tickets_relative_sale_dates_invalid_window';
+		$kind->ends_before_start_message    = static fn(): string => __( 'Ticket sales cannot end before they start. Please adjust the sales window.', 'event-tickets' );
+		$kind->outside_parent_code          = null;
+		$kind->outside_parent_message       = null;
+
+		self::$instances[ self::SALES ] = $kind;
+
+		return $kind;
 	}
 
 	/**
@@ -252,48 +310,62 @@ final class Window_Kind {
 	 * @return self The sale price window kind.
 	 */
 	public static function sale_price(): self {
-		if ( ! isset( self::$instances[ self::SALE_PRICE ] ) ) {
-			self::$instances[ self::SALE_PRICE ] = new self(
-				self::SALE_PRICE,
-				[
-					'start' => [ Rule::MODE_NOW, Rule::MODE_RELATIVE, Rule::MODE_SPECIFIC ],
-					'end'   => [ Rule::MODE_RELATIVE, Rule::MODE_SPECIFIC ],
-				],
-				Rule::MODE_NOW,
-				30,
-				[ DAY_IN_SECONDS, WEEK_IN_SECONDS ],
-				[ Rule::ANCHOR_START ],
-				'sale_price',
-				self::sales(),
-				[ 'data' => 'ticket_sale_price_relative' ],
-				[
-					'start' => [
-						'date' => Ticket::$sale_price_start_date_key,
-						'time' => null,
-					],
-					'end'   => [
-						'date' => Ticket::$sale_price_end_date_key,
-						'time' => null,
-					],
-				],
-				'',
-				[ 'enabled_meta' => Ticket::$sale_price_checked_key ],
-				false,
-				false,
-				[
-					'start' => [
-						'date' => 'ticket_sale_start_date',
-						'time' => null,
-					],
-					'end'   => [
-						'date' => 'ticket_sale_end_date',
-						'time' => null,
-					],
-				]
-			);
+		if ( isset( self::$instances[ self::SALE_PRICE ] ) ) {
+			return self::$instances[ self::SALE_PRICE ];
 		}
 
-		return self::$instances[ self::SALE_PRICE ];
+		$kind = new self();
+
+		$kind->id                           = self::SALE_PRICE;
+		$kind->modes                        = [
+			'start' => [ Rule::MODE_NOW, Rule::MODE_RELATIVE, Rule::MODE_SPECIFIC ],
+			'end'   => [ Rule::MODE_RELATIVE, Rule::MODE_SPECIFIC ],
+		];
+		$kind->open_start_mode              = Rule::MODE_NOW;
+		$kind->max_value                    = 30;
+		$kind->units                        = [ DAY_IN_SECONDS, WEEK_IN_SECONDS ];
+		$kind->anchors                      = [ Rule::ANCHOR_START ];
+		$kind->store_key                    = 'sale_price';
+		$kind->parent                       = self::sales();
+		$kind->rule_keys                    = [ 'data' => 'ticket_sale_price_relative' ];
+		$kind->date_metas                   = [
+			'start' => [
+				'date' => Ticket::$sale_price_start_date_key,
+				'time' => null,
+			],
+			'end'   => [
+				'date' => Ticket::$sale_price_end_date_key,
+				'time' => null,
+			],
+		];
+		$kind->open_start_value             = '';
+		$kind->sale_keys                    = [
+			'enabled_meta'  => Ticket::$sale_price_checked_key,
+			'enabled_data'  => 'ticket_add_sale_price',
+			'price'         => 'ticket_sale_price',
+			'regular_price' => 'ticket_price',
+		];
+		$kind->owns_ticket_sales_dates      = false;
+		$kind->is_removed_by_front_end_form = false;
+		$kind->submitted_fields             = [
+			'start' => [
+				'date' => 'ticket_sale_start_date',
+				'time' => null,
+			],
+			'end'   => [
+				'date' => 'ticket_sale_end_date',
+				'time' => null,
+			],
+		];
+		$kind->specific_needs_date          = false;
+		$kind->ends_before_start_code       = 'tec_tickets_relative_sale_dates_sale_price_ends_before_start';
+		$kind->ends_before_start_message    = static fn(): string => __( 'The sale price cannot end before it starts. Please adjust the sale price window.', 'event-tickets' );
+		$kind->outside_parent_code          = 'tec_tickets_relative_sale_dates_sale_price_outside_sales_window';
+		$kind->outside_parent_message       = static fn(): string => __( 'The sale price window falls outside the ticket sales window. Please adjust the dates.', 'event-tickets' );
+
+		self::$instances[ self::SALE_PRICE ] = $kind;
+
+		return $kind;
 	}
 
 	/**
@@ -417,7 +489,9 @@ final class Window_Kind {
 	 * - has its dates announced by the "sales started" and "sales ended" actions, so a change to them, or to the event
 	 *   timezone they are written in, reschedules those actions;
 	 * - flags an end the rule now leaves to the ticket as set by hand, and clears that flag when the rule is removed by a
-	 *   save without an end of its own.
+	 *   save without an end of its own;
+	 * - has an empty date filled in the way `ticket_add()` fills it in: the day the event was published for the start,
+	 *   the event start for the end.
 	 *
 	 * @since TBD
 	 *
@@ -505,57 +579,104 @@ final class Window_Kind {
 	}
 
 	/**
-	 * Window_Kind constructor.
+	 * Returns whether a specific boundary sent without a date is rejected.
+	 *
+	 * Where it is not, as for the sale price, whose dates are stored empty when none is set, an empty start counts as
+	 * the day the parent window opens, and an empty end as no end.
 	 *
 	 * @since TBD
 	 *
-	 * @param string                                           $id                           The kind's ID.
-	 * @param array{start: string[], end: string[]}            $modes                        The modes each end of the window accepts.
-	 * @param string                                           $open_start_mode              The start mode that opens the window at once.
-	 * @param int                                              $max_value                    The highest number of units a relative boundary accepts.
-	 * @param int[]                                            $units                        The units a relative boundary accepts.
-	 * @param string[]                                         $anchors                      The event dates a relative boundary may be counted from.
-	 * @param string|null                                      $store_key                    The key the rule is stored under, or `null` for the top level.
-	 * @param self|null                                        $parent_kind                  The kind this one is judged against, or `null`.
-	 * @param array{data: string}                              $rule_keys                    The keys that carry the rule.
-	 * @param array<string,array{date: string, time: ?string}> $date_metas                   The ticket metas each end, `start` and `end`, is written to.
-	 * @param string|null                                      $open_start_value             The value an open start is written as, or `null`.
-	 * @param array{enabled_meta: string}|null                 $sale_keys                    The keys of the sale the window belongs to, or `null`.
-	 * @param bool                                             $owns_ticket_sales_dates      Whether the window's dates are the ticket's own sales dates.
-	 * @param bool                                             $is_removed_by_front_end_form Whether a front-end form that sends no rule removes it.
-	 * @param array<string,array{date: string, time: ?string}> $submitted_fields             The ticket data fields each end, `start` and `end`, is submitted in.
+	 * @return bool Whether the save rejects a specific boundary without a date.
 	 */
-	private function __construct(
-		string $id,
-		array $modes,
-		string $open_start_mode,
-		int $max_value,
-		array $units,
-		array $anchors,
-		?string $store_key,
-		?self $parent_kind,
-		array $rule_keys,
-		array $date_metas,
-		?string $open_start_value,
-		?array $sale_keys,
-		bool $owns_ticket_sales_dates,
-		bool $is_removed_by_front_end_form,
-		array $submitted_fields
-	) {
-		$this->id                           = $id;
-		$this->modes                        = $modes;
-		$this->open_start_mode              = $open_start_mode;
-		$this->max_value                    = $max_value;
-		$this->units                        = $units;
-		$this->anchors                      = $anchors;
-		$this->store_key                    = $store_key;
-		$this->parent                       = $parent_kind;
-		$this->rule_keys                    = $rule_keys;
-		$this->date_metas                   = $date_metas;
-		$this->open_start_value             = $open_start_value;
-		$this->sale_keys                    = $sale_keys;
-		$this->owns_ticket_sales_dates      = $owns_ticket_sales_dates;
-		$this->is_removed_by_front_end_form = $is_removed_by_front_end_form;
-		$this->submitted_fields             = $submitted_fields;
+	public function specific_needs_date(): bool {
+		return $this->specific_needs_date;
+	}
+
+	/**
+	 * Returns whether the window's dates are compared as days, the way they are stored and read, rather than instants.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the window is judged by the day.
+	 */
+	public function compares_days(): bool {
+		return null === $this->date_metas['start']['time'];
+	}
+
+	/**
+	 * Returns whether a save of the ticket data keeps the window.
+	 *
+	 * Tickets Commerce drops a sale price that is unchecked or not lower than the price, with this same `>=` comparison
+	 * on the raw values.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $data The ticket data about to be saved.
+	 *
+	 * @return bool Whether the ticket will have the window once saved.
+	 */
+	public function is_saved_with( array $data ): bool {
+		if ( null === $this->sale_keys ) {
+			return true;
+		}
+
+		if ( ! tribe_is_truthy( $data[ $this->sale_keys['enabled_data'] ] ?? false ) ) {
+			return false;
+		}
+
+		return ! ( ( $data[ $this->sale_keys['price'] ] ?? false ) >= ( $data[ $this->sale_keys['regular_price'] ] ?? false ) );
+	}
+
+	/**
+	 * Gets the error that rejects an invalid rule of the kind, or a window that ends before it starts.
+	 *
+	 * @since TBD
+	 *
+	 * @return WP_Error The error, with a 400 status for REST responses.
+	 */
+	public function get_ends_before_start_error(): WP_Error {
+		return $this->build_error( $this->ends_before_start_code, $this->ends_before_start_message );
+	}
+
+	/**
+	 * Gets the error that rejects a window starting outside its parent window.
+	 *
+	 * @since TBD
+	 *
+	 * @return WP_Error|null The error, with a 400 status for REST responses, or `null` for a kind without a parent.
+	 */
+	public function get_outside_parent_error(): ?WP_Error {
+		if ( null === $this->outside_parent_code || null === $this->outside_parent_message ) {
+			return null;
+		}
+
+		return $this->build_error( $this->outside_parent_code, $this->outside_parent_message );
+	}
+
+	/**
+	 * Window_Kind constructor.
+	 *
+	 * Private: each factory builds its kind and sets every property by name.
+	 *
+	 * @since TBD
+	 */
+	private function __construct() {
+	}
+
+	/**
+	 * Builds an error of the kind.
+	 *
+	 * The message is translated when the error is built, not when the kind is: a kind can be built before the text
+	 * domain loads, and it lasts the whole request.
+	 *
+	 * @since TBD
+	 *
+	 * @param string  $code    The error code.
+	 * @param Closure $message Returns the translated message.
+	 *
+	 * @return WP_Error The error, with a 400 status for REST responses.
+	 */
+	private function build_error( string $code, Closure $message ): WP_Error {
+		return new WP_Error( $code, $message(), [ 'status' => 400 ] );
 	}
 }

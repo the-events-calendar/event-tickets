@@ -53,6 +53,8 @@ class Window_Kind_Test extends WPTestCase {
 			],
 			$kind->get_submitted_fields()
 		);
+		$this->assertTrue( $kind->specific_needs_date() );
+		$this->assertFalse( $kind->compares_days() );
 	}
 
 	/**
@@ -101,6 +103,66 @@ class Window_Kind_Test extends WPTestCase {
 			],
 			$kind->get_submitted_fields()
 		);
+		$this->assertFalse( $kind->specific_needs_date() );
+		$this->assertTrue( $kind->compares_days() );
+	}
+
+	/**
+	 * @return Generator<string,array{0: Window_Kind, 1: array{0: string, 1: string}, 2: array{0: string, 1: string}|null}>
+	 */
+	public function errors_provider(): Generator {
+		yield 'sales' => [
+			Window_Kind::sales(),
+			[ 'tec_tickets_relative_sale_dates_invalid_window', 'Ticket sales cannot end before they start. Please adjust the sales window.' ],
+			null,
+		];
+		yield 'sale price' => [
+			Window_Kind::sale_price(),
+			[ 'tec_tickets_relative_sale_dates_sale_price_ends_before_start', 'The sale price cannot end before it starts. Please adjust the sale price window.' ],
+			[ 'tec_tickets_relative_sale_dates_sale_price_outside_sales_window', 'The sale price window falls outside the ticket sales window. Please adjust the dates.' ],
+		];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider errors_provider
+	 */
+	public function should_reject_with_the_errors_of_the_kind( Window_Kind $kind, array $ends_before_start, ?array $outside_parent ): void {
+		$error = $kind->get_ends_before_start_error();
+		$this->assertSame( $ends_before_start, [ $error->get_error_code(), $error->get_error_message() ] );
+		$this->assertSame( [ 'status' => 400 ], $error->get_error_data() );
+
+		$error = $kind->get_outside_parent_error();
+		if ( null === $outside_parent ) {
+			$this->assertNull( $error );
+
+			return;
+		}
+
+		$this->assertSame( $outside_parent, [ $error->get_error_code(), $error->get_error_message() ] );
+		$this->assertSame( [ 'status' => 400 ], $error->get_error_data() );
+	}
+
+	/**
+	 * Tickets Commerce drops a sale price that is unchecked or not lower than the price.
+	 *
+	 * @return Generator<string,array{0: Window_Kind, 1: array<string,string|int|bool>, 2: bool}>
+	 */
+	public function saved_with_provider(): Generator {
+		yield 'sales: no data' => [ Window_Kind::sales(), [], true ];
+		yield 'sale price: checked and lower' => [ Window_Kind::sale_price(), [ 'ticket_add_sale_price' => 'on', 'ticket_sale_price' => 10, 'ticket_price' => 20 ], true ];
+		yield 'sale price: unchecked' => [ Window_Kind::sale_price(), [ 'ticket_add_sale_price' => false, 'ticket_sale_price' => 10, 'ticket_price' => 20 ], false ];
+		yield 'sale price: not sent' => [ Window_Kind::sale_price(), [ 'ticket_sale_price' => 10, 'ticket_price' => 20 ], false ];
+		yield 'sale price: equal to the price' => [ Window_Kind::sale_price(), [ 'ticket_add_sale_price' => 'on', 'ticket_sale_price' => 20, 'ticket_price' => 20 ], false ];
+		yield 'sale price: higher than the price' => [ Window_Kind::sale_price(), [ 'ticket_add_sale_price' => 'on', 'ticket_sale_price' => 30, 'ticket_price' => 20 ], false ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider saved_with_provider
+	 */
+	public function should_tell_whether_a_save_of_the_ticket_data_keeps_the_window( Window_Kind $kind, array $data, bool $saved ): void {
+		$this->assertSame( $saved, $kind->is_saved_with( $data ) );
 	}
 
 	/**
