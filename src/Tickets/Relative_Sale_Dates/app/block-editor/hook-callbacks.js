@@ -1,0 +1,121 @@
+/**
+ * External dependencies
+ */
+import { dispatch, select } from '@wordpress/data';
+
+/**
+ * Internal dependencies
+ */
+import { STORE_NAME } from './store/constants';
+
+/** @typedef {import( '../sale-window' ).SaleWindowEnd} SaleWindowEnd */
+/** @typedef {import( '../sale-window' ).SaleWindowRule} SaleWindowRule */
+
+const MODE_RELATIVE = 'relative';
+
+/**
+ * The provider slug the block editor tickets REST API gives a Tickets Commerce ticket, the only provider the rule applies
+ * to.
+ *
+ * @since TBD
+ *
+ * @type {string}
+ */
+const TICKETS_COMMERCE_PROVIDER = 'tc';
+
+/**
+ * Builds the form of one end of the window the server accepts.
+ *
+ * The server only accepts a relative `value` and `unit` that are integers, and form controls hold strings.
+ *
+ * @since TBD
+ *
+ * @param {SaleWindowEnd} end The end of the window.
+ *
+ * @return {SaleWindowEnd} The end of the window, with only the keys its mode uses.
+ */
+function toRequestEnd( { mode, value, unit, anchor } ) {
+	if ( MODE_RELATIVE !== mode ) {
+		return { mode };
+	}
+
+	return {
+		mode,
+		value: parseInt( value, 10 ),
+		unit: parseInt( unit, 10 ),
+		anchor,
+	};
+}
+
+/**
+ * Loads the rule of a Tickets Commerce ticket fetched from the server.
+ *
+ * The store knows nothing of a ticket another provider sells, so its requests carry no rule.
+ *
+ * @since TBD
+ *
+ * @param {string} clientId The client ID of the ticket block.
+ * @param {Object} ticket   The ticket, as the block editor tickets REST API returns it.
+ *
+ * @return {void}
+ */
+export function loadTicketRule( clientId, ticket ) {
+	if ( TICKETS_COMMERCE_PROVIDER !== ticket?.provider ) {
+		return;
+	}
+
+	dispatch( STORE_NAME ).setRule( clientId, ticket.relative_sale_dates ?? null );
+}
+
+/**
+ * Keeps the rule a ticket was just created or updated with as its saved rule.
+ *
+ * @since TBD
+ *
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {void}
+ */
+export function saveTicketRule( clientId ) {
+	dispatch( STORE_NAME ).saveDraftRule( clientId );
+}
+
+/**
+ * Discards the rule a ticket block was being edited to when its edits are cancelled.
+ *
+ * @since TBD
+ *
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {void}
+ */
+export function resetTicketRule( clientId ) {
+	dispatch( STORE_NAME ).resetDraftRule( clientId );
+}
+
+/**
+ * Adds the ticket's draft rule to the body of the request that creates or updates it.
+ *
+ * A ticket the store knows nothing of sends no rule, so the server keeps the one stored; one whose draft has no rule
+ * sends an empty one, which removes it.
+ *
+ * @since TBD
+ *
+ * @param {FormData} body     The request body.
+ * @param {string}   clientId The client ID of the ticket block.
+ *
+ * @return {FormData} The request body.
+ */
+export function filterSetBodyDetails( body, clientId ) {
+	/** @type {SaleWindowRule|null|undefined} */
+	const rule = select( STORE_NAME ).getDraftRule( clientId );
+
+	if ( undefined === rule ) {
+		return body;
+	}
+
+	const value = rule ? JSON.stringify( { start: toRequestEnd( rule.start ), end: toRequestEnd( rule.end ) } ) : '';
+	body.append( 'ticket[relative_sale_dates]', value );
+
+	return body;
+}

@@ -19,7 +19,7 @@ use Tribe__Timezones as Timezones;
 use WP_Screen;
 
 /**
- * Registers the script of the sales window options in the classic ticket editor.
+ * Registers the scripts of the sales window options in the classic ticket editor and in the Ticket block.
  *
  * @since TBD
  *
@@ -34,6 +34,15 @@ final class Assets extends Controller_Contract {
 	 * @var string
 	 */
 	public const CLASSIC_SCRIPT = 'tec-tickets-relative-sale-dates-classic';
+
+	/**
+	 * The handle of the Ticket block script.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const BLOCK_EDITOR_SCRIPT = 'tec-tickets-relative-sale-dates-block-editor';
 
 	/**
 	 * The manual UTC offsets the WordPress timezone field offers, in hours, as `wp_timezone_choice()` lists them.
@@ -109,6 +118,7 @@ final class Assets extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		Asset_Registry::init()->remove( self::CLASSIC_SCRIPT );
+		Asset_Registry::init()->remove( self::BLOCK_EDITOR_SCRIPT );
 	}
 
 	/**
@@ -139,6 +149,18 @@ final class Assets extends Controller_Contract {
 				],
 			]
 		);
+
+		tec_asset(
+			Tickets_Plugin::instance(),
+			self::BLOCK_EDITOR_SCRIPT,
+			'RelativeSaleDates/block-editor.js',
+			[ 'wp-data', 'wp-hooks' ],
+			'enqueue_block_editor_assets',
+			[
+				'group_path'   => Tickets_Plugin::class . '-packages',
+				'conditionals' => fn(): bool => $this->is_block_event_edit_screen(),
+			]
+		);
 	}
 
 	/**
@@ -153,6 +175,18 @@ final class Assets extends Controller_Contract {
 	 */
 	private function is_classic_event_edit_screen(): bool {
 		return $this->is_event_edit_screen() && ! get_current_screen()->is_block_editor() && tec_tickets_commerce_is_enabled();
+	}
+
+	/**
+	 * Returns whether the current admin screen edits an event in the block editor, where the Ticket block shows the sales
+	 * window options: only for Tickets Commerce tickets, so only with Tickets Commerce on.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the current screen is the block editor event edit screen, with Tickets Commerce on.
+	 */
+	private function is_block_event_edit_screen(): bool {
+		return $this->is_event_edit_screen() && get_current_screen()->is_block_editor() && tec_tickets_commerce_is_enabled();
 	}
 
 	/**
@@ -259,7 +293,7 @@ final class Assets extends Controller_Contract {
 	}
 
 	/**
-	 * Returns whether the current admin screen edits an event, where the classic ticket form can show.
+	 * Returns whether the current admin screen edits an event, where the classic ticket form or the Ticket block can show.
 	 *
 	 * @since TBD
 	 *
