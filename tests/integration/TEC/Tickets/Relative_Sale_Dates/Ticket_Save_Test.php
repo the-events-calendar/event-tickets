@@ -1099,13 +1099,20 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	 * @test
 	 */
 	public function should_store_the_event_cost_with_the_resolved_sale_price_dates(): void {
-		$event_id = $this->create_event( self::EVENT_START );
+		/*
+		 * `is_on_sale()` reads today through `Date_I18n`, which the clock mock does not freeze, so the event is placed
+		 * from the real date: the sale price starts in a week, and the ticket sells at its regular price today.
+		 */
+		$event_start      = ( new DateTimeImmutable( 'now', new DateTimeZone( 'UTC' ) ) )->setTime( 19, 0 )->modify( '+3 weeks' );
+		$sale_price_start = $event_start->modify( '-2 weeks' );
+		$event_id         = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
 
-		$this->create_sale_price_ticket(
+		$ticket_id = $this->create_sale_price_ticket(
 			$event_id,
 			[ self::SALE_PRICE_DATA_KEY => wp_json_encode( $this->get_sale_price_rule( $this->sale_price_relative( 2, WEEK_IN_SECONDS ), $this->sale_price_relative( 1, WEEK_IN_SECONDS ) ) ) ]
 		);
 
+		$this->assertSame( [ $sale_price_start->format( 'Y-m-d' ), $event_start->modify( '-1 week' )->format( 'Y-m-d' ) ], $this->get_sale_price_dates( $ticket_id ) );
 		$this->assertSame( [ '20' ], get_post_meta( $event_id, '_EventCost' ) );
 	}
 
@@ -1187,6 +1194,21 @@ class Ticket_Save_Test extends Controller_Test_Case {
 				'ticket_sale_end_date'    => $event_start->modify( '+2 days' )->format( 'Y-m-d' ),
 			],
 			self::SALE_PRICE_OUTSIDE_SALES_WINDOW_MESSAGE,
+		];
+		// The legacy store keeps empty sale price dates, so a specific boundary sent without its date is saved as is.
+		yield 'a specific start sent without a date' => [
+			[
+				self::SALE_PRICE_DATA_KEY => $rule( $specific, $relative( 3 ) ),
+				'ticket_sale_start_date'  => '',
+			],
+			true,
+		];
+		yield 'a specific end sent without a date' => [
+			[
+				self::SALE_PRICE_DATA_KEY => $rule( $relative( 7 ), $specific ),
+				'ticket_sale_end_date'    => '',
+			],
+			true,
 		];
 		yield 'a specific start before the submitted sales start' => [
 			[

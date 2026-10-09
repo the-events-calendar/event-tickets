@@ -352,18 +352,22 @@ final class Ticket_Save {
 			return $kind->get_ends_before_start_error();
 		}
 
-		if ( ! $this->get_rule_to_apply( absint( $data['ticket_id'] ?? 0 ), $data, $kind ) || ! $this->sale_window->get_event_dates( $post_id ) ) {
+		$ticket_id   = absint( $data['ticket_id'] ?? 0 );
+		$rule        = $this->get_rule_to_apply( $ticket_id, $data, $kind );
+		$event_dates = $this->sale_window->get_event_dates( $post_id );
+
+		if ( ! $rule || ! $event_dates ) {
 			return null;
 		}
 
-		$window = $this->get_window( $post_id, $data, $kind );
+		$window = $this->get_window( $post_id, $data, $kind, $rule, $event_dates );
 
 		if ( ! $window ) {
 			return $kind->get_ends_before_start_error();
 		}
 
 		$parent        = $kind->get_parent();
-		$parent_window = $parent ? $this->get_window( $post_id, $data, $parent ) : null;
+		$parent_window = $parent ? $this->get_window( $post_id, $data, $parent, $this->get_rule_to_apply( $ticket_id, $data, $parent ), $event_dates ) : null;
 		$parent_start  = $parent_window ? $parent_window->get_start() : null;
 		$parent_end    = $parent_window ? $parent_window->get_end() : null;
 
@@ -401,24 +405,20 @@ final class Ticket_Save {
 	 *
 	 * @since TBD
 	 *
-	 * @param int                 $post_id The ticket parent post ID.
-	 * @param array<string,mixed> $data    The ticket data about to be saved.
-	 * @param Window_Kind         $kind    The kind of window.
+	 * @param int                                               $post_id     The ticket parent post ID.
+	 * @param array<string,mixed>                               $data        The ticket data about to be saved.
+	 * @param Window_Kind                                       $kind        The kind of window.
+	 * @param Rule|null                                         $rule        The rule of the kind the save applies, or
+	 *                                                                       `null` for none.
+	 * @param array{0: DateTimeImmutable, 1: DateTimeImmutable} $event_dates The event start and end, in the event
+	 *                                                                       timezone.
 	 *
-	 * @return Resolved_Window|null The window, whose ends are `null` where it has no date; `null` when the event has no
-	 *                              valid dates, a submitted date cannot be read, or a boundary of a kind that needs a
-	 *                              date has none.
+	 * @return Resolved_Window|null The window, whose ends are `null` where it has no date; `null` when a submitted date
+	 *                              cannot be read, or a boundary of a kind that needs a date has none.
 	 */
-	private function get_window( int $post_id, array $data, Window_Kind $kind ): ?Resolved_Window {
-		$event_dates = $this->sale_window->get_event_dates( $post_id );
-
-		if ( ! $event_dates ) {
-			return null;
-		}
-
+	private function get_window( int $post_id, array $data, Window_Kind $kind, ?Rule $rule, array $event_dates ): ?Resolved_Window {
 		$timezone = $event_dates[0]->getTimezone();
 		$fields   = $kind->get_submitted_fields();
-		$rule     = $this->get_rule_to_apply( absint( $data['ticket_id'] ?? 0 ), $data, $kind );
 		$opens    = $rule && $rule->opens_at_once();
 		$is_open  = $opens && null !== $kind->get_open_start_value();
 
