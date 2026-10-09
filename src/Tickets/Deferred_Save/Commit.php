@@ -1,0 +1,476 @@
+<?php
+/**
+ * Saves the ticket changes sent with a post save.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Deferred_Save
+ */
+
+namespace TEC\Tickets\Deferred_Save;
+
+use TEC\Tickets\Event;
+use TEC\Tickets\Deferred_Save\Payload\Malformed_Exception;
+use TEC\Tickets\Deferred_Save\Payload\Parser;
+use TEC\Tickets\Deferred_Save\Payload\Rejections;
+use TEC\Tickets\Commerce\Module;
+use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
+use Tribe__Tickets__Tickets as Tickets;
+
+/**
+ * Class Commit.
+ *
+ * The one handler that turns the raw `tec_tickets` value of a request into saved tickets. It parses
+ * the payload, runs the checks against the post being saved, lets other code route the entries, and
+ * replays each part through the functions Event Tickets uses for ticket writes today, so every hook
+ * that fires on a ticket save or delete today still fires, in the same order.
+ *
+ * Parts run in the order `update`, `create`, `delete`. One failing entry never stops the others.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Deferred_Save
+ */
+final class Commit {
+	/**
+	 * The checks a payload passes before anything is saved.
+	 *
+	 * @since TBD
+	 *
+	 * @var Checks
+	 */
+	private Checks $checks;
+
+	/**
+	 * The parser that turns the raw request value into a payload.
+	 *
+	 * @since TBD
+	 *
+	 * @var Parser
+	 */
+	private Parser $parser;
+
+	/**
+	 * Commit constructor.
+	 *
+	 * @since TBD
+	 *
+	 * @param Checks $checks The checks a payload passes before anything is saved.
+	 * @param Parser $parser The parser that turns the raw request value into a payload.
+	 */
+	public function __construct( Checks $checks, Parser $parser ) {
+		$this->checks = $checks;
+		$this->parser = $parser;
+	}
+
+	/**
+	 * Parses, checks, routes and saves the ticket changes for a post.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $raw     The raw `tec_tickets` value of the request. `null` means "no ticket changes".
+	 * @param int   $post_id The ID of the post being saved.
+	 *
+	 * @return Result The created ticket IDs by position and one error per entry that did not go through.
+	 */
+	public function run( $raw, int $post_id ): Result {
+		try {
+			$parsed = $this->parser->parse( $raw );
+		} catch ( Malformed_Exception $e ) {
+			// Input that cannot be a payload is answered like any other whole-payload refusal.
+			return new Result( [], ( new Rejections() )->with( null, null, $e->getMessage() )->all() );
+		}
+
+		$payload = $parsed->payload();
+		$entries = count( $payload->get_update() ) + count( $payload->get_create() ) + count( $payload->get_delete() ) + count( $payload->get_move() );
+
+		/**
+		 * Filters how many entries one payload may carry.
+		 *
+		 * Every entry is at least one post write plus every listener on the ticket save actions, so a
+		 * payload is capped to keep one save from queueing thousands of writes.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $max_entries The maximum number of entries across all parts. Default 100.
+		 * @param int $post_id     The ID of the post being saved.
+		 */
+		$max_entries = (int) apply_filters( 'tec_tickets_deferred_save_max_entries', 100, $post_id );
+
+		if ( $entries > $max_entries ) {
+			$too_many = sprintf(
+				/* translators: %d: the maximum number of ticket changes in one save. */
+				__( 'Too many ticket changes in one save; the limit is %d.', 'event-tickets' ),
+				$max_entries
+			);
+
+			return new Result( [], $parsed->rejections()->with( null, null, $too_many )->all() );
+		}
+
+		$checked    = $this->checks->run( $payload, $post_id );
+		$rejections = $parsed->rejections()->merge( $checked->rejections() );
+		$result     = new Result( [], $rejections->all() );
+		$payload    = $checked->payload();
+
+		if ( ! $payload->has_changes() ) {
+			return $result;
+		}
+
+		/**
+		 * Filters which post each part of a checked payload is applied to.
+		 *
+		 * By default the whole payload is applied to the post being saved. A callback may return any map of
+		 * post ID to `Payload`, redirecting entries to another post or splitting them across posts; positions
+		 * in `create` are kept, so the result still reports created IDs by the position the editor sent.
+		 *
+		 * The checks have already run against the post being saved. Any other payload, and any payload routed
+		 * to another post, is checked again against the post it is routed to, so its user must be able to edit
+		 * it and its `update`, `delete` and `move` entries must name tickets on it. Route keys must be post IDs
+		 * as ints; a checked entry no route hands out is reported as not saved.
+		 *
+		 * @since TBD
+		 *
+		 * @param array<int,Payload> $routes  Post ID => the payload to apply to it.
+		 * @param int                $post_id The ID of the post being saved.
+		 * @param Payload            $payload The checked payload.
+		 */
+		$routes = apply_filters( 'tec_tickets_deferred_save_routes', [ $post_id => $payload ], $post_id, $payload );
+
+		$checked_post_id = (int) Event::filter_event_id( $post_id, 'deferred_save' );
+		$handled         = new Payload();
+
+		foreach ( (array) $routes as $route_post_id => $route_payload ) {
+			// A key that is not an int, or a payload whose keys are not, is not a route; its entries are reported below.
+			if ( ! $route_payload instanceof Payload || ! is_int( $route_post_id ) || ! $this->has_int_keys( $route_payload ) ) {
+				continue;
+			}
+
+			$route_post_id = (int) Event::filter_event_id( $route_post_id, 'deferred_save' );
+			$handled       = $this->with_entries( $handled, $route_payload );
+
+			// Only the payload the checks returned, applied to the post they ran against, skips a second check.
+			if ( $route_payload !== $payload || $route_post_id !== $checked_post_id ) {
+				$route         = $this->checks->run( $route_payload, $route_post_id );
+				$route_payload = $route->payload();
+				$result        = new Result( $result->get_created(), array_merge( $result->get_errors(), $route->rejections()->all() ) );
+			}
+
+			$result = $result->merge( $this->replay( $route_payload, $route_post_id ) );
+		}
+
+		return $this->with_unrouted( $result, $payload, $handled );
+	}
+
+	/**
+	 * Whether every key of a payload is an int, as a parsed payload's are.
+	 *
+	 * @since TBD
+	 *
+	 * @param Payload $payload The payload a route returned.
+	 *
+	 * @return bool Whether every ticket ID and position is an int.
+	 */
+	private function has_int_keys( Payload $payload ): bool {
+		$keys = array_merge(
+			array_keys( $payload->get_update() ),
+			array_keys( $payload->get_create() ),
+			array_values( $payload->get_delete() ),
+			array_keys( $payload->get_move() )
+		);
+
+		return [] === array_filter( $keys, static fn( $key ) => ! is_int( $key ) );
+	}
+
+	/**
+	 * Adds a route's entries to the ones the routes have handed out so far.
+	 *
+	 * @since TBD
+	 *
+	 * @param Payload $handled The entries handed out so far.
+	 * @param Payload $route   The payload of one route.
+	 *
+	 * @return Payload The entries handed out, this route's included.
+	 */
+	private function with_entries( Payload $handled, Payload $route ): Payload {
+		return new Payload(
+			$handled->get_update() + $route->get_update(),
+			$handled->get_create() + $route->get_create(),
+			array_merge( $handled->get_delete(), $route->get_delete() ),
+			$handled->get_move() + $route->get_move()
+		);
+	}
+
+	/**
+	 * Reports every checked entry that no route handed out, so a route that drops entries is not a silent success.
+	 *
+	 * @since TBD
+	 *
+	 * @param Result  $result  The result so far.
+	 * @param Payload $checked The checked payload.
+	 * @param Payload $handled The entries the routes handed out.
+	 *
+	 * @return Result The result with one error per dropped entry.
+	 */
+	private function with_unrouted( Result $result, Payload $checked, Payload $handled ): Result {
+		$message = __( 'No route applied this ticket change, so it was not saved.', 'event-tickets' );
+		$dropped = [
+			Parser::UPDATE => array_diff( array_keys( $checked->get_update() ), array_keys( $handled->get_update() ) ),
+			Parser::CREATE => array_diff( array_keys( $checked->get_create() ), array_keys( $handled->get_create() ) ),
+			Parser::DELETE => array_diff( $checked->get_delete(), $handled->get_delete() ),
+			Parser::MOVE   => array_diff( array_keys( $checked->get_move() ), array_keys( $handled->get_move() ) ),
+		];
+
+		foreach ( $dropped as $part => $keys ) {
+			foreach ( $keys as $key ) {
+				$result = $result->with_error( $part, $key, $message );
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Saves the entries of a checked payload on a post.
+	 *
+	 * @since TBD
+	 *
+	 * @param Payload $payload The checked payload.
+	 * @param int     $post_id The post to apply it to.
+	 *
+	 * @return Result The outcome for this post.
+	 */
+	private function replay( Payload $payload, int $post_id ): Result {
+		$result = new Result();
+
+		foreach ( $payload->get_update() as $ticket_id => $data ) {
+			$result = $this->update( $result, $post_id, $ticket_id, $data );
+		}
+
+		foreach ( $payload->get_create() as $position => $data ) {
+			$result = $this->create( $result, $post_id, $position, $data );
+		}
+
+		foreach ( $payload->get_delete() as $ticket_id ) {
+			$result = $this->delete( $result, $post_id, $ticket_id );
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Saves an existing ticket through its own provider.
+	 *
+	 * An update replaces the ticket, so the entry must carry the whole ticket, as the editors send it: a price,
+	 * capacity, description or date it leaves out is saved empty. Only the type and the menu order keep what the
+	 * ticket has when the entry does not mention them, since `ticket_add()` would otherwise reset the type to
+	 * `default` and, for Tickets Commerce, the menu order to 0.
+	 *
+	 * @since TBD
+	 *
+	 * @param Result              $result    The result so far.
+	 * @param int                 $post_id   The post being saved.
+	 * @param int                 $ticket_id The ticket to save.
+	 * @param array<string,mixed> $data      The ticket data, as the editor sent it.
+	 *
+	 * @return Result The result with this entry folded in.
+	 */
+	private function update( Result $result, int $post_id, int $ticket_id, array $data ): Result {
+		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
+
+		if ( ! $provider instanceof Tickets ) {
+			return $result->with_error( Parser::UPDATE, $ticket_id, $this->no_provider_message() );
+		}
+
+		if ( $this->has_invalid_price( $provider, $data ) ) {
+			return $result->with_error( Parser::UPDATE, $ticket_id, $this->invalid_price_message() );
+		}
+
+		$data['ticket_id']   = $ticket_id;
+		$data['ticket_type'] = $this->ticket_type( $data, get_post_meta( $ticket_id, '_type', true ) ?: 'default' );
+
+		if ( ! isset( $data['ticket_menu_order'] ) ) {
+			$data['ticket_menu_order'] = (int) get_post_field( 'menu_order', $ticket_id );
+		}
+
+		$saved = $provider->ticket_add( $post_id, $data );
+
+		if ( ! $saved ) {
+			return $result->with_error( Parser::UPDATE, $ticket_id, $this->not_saved_message() );
+		}
+
+		$this->fire_added( $post_id, $ticket_id, $data );
+
+		return $result;
+	}
+
+	/**
+	 * Creates a ticket through the provider the entry names.
+	 *
+	 * @since TBD
+	 *
+	 * @param Result              $result   The result so far.
+	 * @param int                 $post_id  The post being saved.
+	 * @param int                 $position The position of the entry in the `create` part.
+	 * @param array<string,mixed> $data     The ticket data, as the editor sent it.
+	 *
+	 * @return Result The result with this entry folded in.
+	 */
+	private function create( Result $result, int $post_id, int $position, array $data ): Result {
+		$provider = empty( $data['ticket_provider'] ) || ! is_string( $data['ticket_provider'] )
+			? false
+			: Tickets::get_ticket_provider_instance( $data['ticket_provider'] );
+
+		if ( ! $provider instanceof Tickets ) {
+			return $result->with_error( Parser::CREATE, $position, $this->no_provider_message() );
+		}
+
+		if ( $this->has_invalid_price( $provider, $data ) ) {
+			return $result->with_error( Parser::CREATE, $position, $this->invalid_price_message() );
+		}
+
+		unset( $data['ticket_id'] );
+		$data['ticket_type'] = $this->ticket_type( $data, 'default' );
+
+		$ticket_id = $provider->ticket_add( $post_id, $data );
+
+		if ( empty( $ticket_id ) ) {
+			return $result->with_error( Parser::CREATE, $position, $this->not_saved_message() );
+		}
+
+		$this->fire_added( $post_id, (int) $ticket_id, $data );
+
+		return $result->with_created( $position, (int) $ticket_id );
+	}
+
+	/**
+	 * Deletes a ticket through its own provider.
+	 *
+	 * @since TBD
+	 *
+	 * @param Result $result    The result so far.
+	 * @param int    $post_id   The post being saved.
+	 * @param int    $ticket_id The ticket to delete.
+	 *
+	 * @return Result The result with this entry folded in.
+	 */
+	private function delete( Result $result, int $post_id, int $ticket_id ): Result {
+		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
+
+		if ( ! $provider instanceof Tickets ) {
+			return $result->with_error( Parser::DELETE, $ticket_id, $this->no_provider_message() );
+		}
+
+		if ( ! $provider->delete_ticket( $post_id, $ticket_id ) ) {
+			return $result->with_error(
+				Parser::DELETE,
+				$ticket_id,
+				sprintf(
+					/* translators: %d: the ticket ID. */
+					__( 'Ticket %d could not be deleted.', 'event-tickets' ),
+					$ticket_id
+				)
+			);
+		}
+
+		/** This action is documented in src/Tribe/Metabox.php */
+		do_action( 'tribe_tickets_ticket_deleted', $post_id );
+
+		return $result;
+	}
+
+	/**
+	 * Fires the action the classic and REST callers fire after a ticket is saved.
+	 *
+	 * @since TBD
+	 *
+	 * @param int                 $post_id   The post the ticket is on.
+	 * @param int                 $ticket_id The saved ticket.
+	 * @param array<string,mixed> $data      The data it was saved with.
+	 *
+	 * @return void
+	 */
+	private function fire_added( int $post_id, int $ticket_id, array $data ): void {
+		/** This action is documented in src/Tribe/Metabox.php */
+		do_action( 'tribe_tickets_ticket_added', $post_id, $ticket_id, $data );
+	}
+
+	/**
+	 * Sanitizes the ticket type the entry names, as the classic AJAX save does, falling back when it names none.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $data     The ticket data.
+	 * @param string              $fallback The type to use when the data names none.
+	 *
+	 * @return string The ticket type.
+	 */
+	private function ticket_type( array $data, string $fallback ): string {
+		$type = $data['ticket_type'] ?? '';
+		$type = is_scalar( $type ) ? sanitize_text_field( (string) $type ) : '';
+
+		return '' !== $type ? $type : $fallback;
+	}
+
+	/**
+	 * Whether the entry carries a price the block editor's ticket endpoint would refuse.
+	 *
+	 * Tickets Commerce and PayPal refuse a negative or non-numeric price there; a blank price is a free ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param Tickets             $provider The provider the ticket is saved through.
+	 * @param array<string,mixed> $data     The ticket data.
+	 *
+	 * @return bool Whether the price is invalid.
+	 */
+	private function has_invalid_price( Tickets $provider, array $data ): bool {
+		if ( ! array_key_exists( 'ticket_price', $data ) ) {
+			return false;
+		}
+
+		if ( ! $provider instanceof Module && ! $provider instanceof PayPal ) {
+			return false;
+		}
+
+		if ( ! is_scalar( $data['ticket_price'] ) ) {
+			return true;
+		}
+
+		$price = trim( (string) $data['ticket_price'] );
+
+		return '' !== $price && ( ! is_numeric( $price ) || (float) $price < 0 );
+	}
+
+	/**
+	 * The message for an entry with an invalid price.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The message.
+	 */
+	private function invalid_price_message(): string {
+		return __( 'Invalid price', 'event-tickets' );
+	}
+
+	/**
+	 * The message for an entry whose provider cannot be resolved.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The message.
+	 */
+	private function no_provider_message(): string {
+		return __( 'The ticket provider is missing or not active.', 'event-tickets' );
+	}
+
+	/**
+	 * The message for an entry the provider refused to save.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The message.
+	 */
+	private function not_saved_message(): string {
+		return __( 'The ticket could not be saved.', 'event-tickets' );
+	}
+}
