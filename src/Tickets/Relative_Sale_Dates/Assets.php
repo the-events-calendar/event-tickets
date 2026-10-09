@@ -36,6 +36,71 @@ final class Assets extends Controller_Contract {
 	public const CLASSIC_SCRIPT = 'tec-tickets-relative-sale-dates-classic';
 
 	/**
+	 * The manual UTC offsets the WordPress timezone field offers, in hours, as `wp_timezone_choice()` lists them.
+	 *
+	 * @since TBD
+	 *
+	 * @var float[]
+	 */
+	private const MANUAL_OFFSETS = [
+		-12,
+		-11.5,
+		-11,
+		-10.5,
+		-10,
+		-9.5,
+		-9,
+		-8.5,
+		-8,
+		-7.5,
+		-7,
+		-6.5,
+		-6,
+		-5.5,
+		-5,
+		-4.5,
+		-4,
+		-3.5,
+		-3,
+		-2.5,
+		-2,
+		-1.5,
+		-1,
+		-0.5,
+		0,
+		0.5,
+		1,
+		1.5,
+		2,
+		2.5,
+		3,
+		3.5,
+		4,
+		4.5,
+		5,
+		5.5,
+		5.75,
+		6,
+		6.5,
+		7,
+		7.5,
+		8,
+		8.5,
+		8.75,
+		9,
+		9.5,
+		10,
+		10.5,
+		11,
+		11.5,
+		12,
+		12.75,
+		13,
+		13.75,
+		14,
+	];
+
+	/**
 	 * Unregisters the controller.
 	 *
 	 * @since TBD
@@ -120,11 +185,11 @@ final class Assets extends Controller_Contract {
 	 * @return array<string,string> The zone names, keyed by the offset option value.
 	 */
 	private function get_manual_offset_zones(): array {
-		preg_match_all( '/value="(UTC[+-][^"]*)"/', wp_timezone_choice( '' ), $matches );
-
 		$zones = [];
-		foreach ( $matches[1] as $offset ) {
-			$zones[ $offset ] = Timezones::build_timezone_object( $offset )->getName();
+		foreach ( self::MANUAL_OFFSETS as $offset ) {
+			// The option value `wp_timezone_choice()` prints, such as `UTC+5.5`, `UTC-0.5` or `UTC+0`.
+			$value           = 'UTC' . ( 0 <= $offset ? '+' : '' ) . $offset;
+			$zones[ $value ] = Timezones::build_timezone_object( $value )->getName();
 		}
 
 		return $zones;
