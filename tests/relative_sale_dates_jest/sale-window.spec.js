@@ -3,8 +3,16 @@
  * @timezone Pacific/Auckland
  */
 import moment from 'moment-timezone';
-import { resolveSaleWindow, resolveWindow, toZone } from '@tec/tickets/relative-sale-dates/sale-window';
+import {
+	DATE_FORMAT,
+	isStoredOpenStart,
+	resolveSaleWindow,
+	resolveWindow,
+	toZone,
+} from '@tec/tickets/relative-sale-dates/sale-window';
+import { isValidRule } from '@tec/tickets/relative-sale-dates/window-check';
 import { SALE_PRICE_WINDOW, SALES_WINDOW } from '@tec/tickets/relative-sale-dates/window-kinds';
+import salePriceFixtures from '../_data/relative-sale-dates/sale-price-cases.json';
 import fixtures from '../_data/relative-sale-dates/sale-window-cases.json';
 
 const FORMAT = 'YYYY-MM-DD HH:mm:ss';
@@ -156,5 +164,48 @@ describe( 'resolveWindow', () => {
 		const rule = { start: { mode: 'now' }, end: { mode: 'relative', value: 1, unit: UNIT_DAYS } };
 
 		expect( resolveWindow( rule, null, SALE_PRICE_WINDOW ) ).toBeNull();
+	} );
+} );
+
+describe( 'resolveWindow on the shared sale price fixtures', () => {
+	it.each( salePriceFixtures.cases.map( ( fixture ) => [ fixture.name, fixture ] ) )(
+		'should resolve each boundary to the day the server stores: %s',
+		( name, { rule, timezone, event_start: start, event_end: end, expected } ) => {
+			const window = resolveWindow( rule, { start, end, timezone }, SALE_PRICE_WINDOW );
+			const day = ( key ) => ( window[ key ]?.isValid() ? window[ key ].format( DATE_FORMAT ) : null );
+
+			// The server stores an open start as empty, a value of the kind's own rather than a resolved day.
+			expect( isStoredOpenStart( rule, SALE_PRICE_WINDOW ) ).toBe( '' === expected.start );
+			expect( { start: day( 'start' ), end: day( 'end' ) } ).toStrictEqual( {
+				start: expected.start || null,
+				end: expected.end,
+			} );
+		}
+	);
+} );
+
+describe( 'isValidRule', () => {
+	it.each( [
+		...fixtures.cases.map( ( fixture ) => [ 'sales window', fixture.name, fixture.rule, SALES_WINDOW ] ),
+		...salePriceFixtures.cases.map( ( fixture ) => [
+			'sale price',
+			fixture.name,
+			fixture.rule,
+			SALE_PRICE_WINDOW,
+		] ),
+	] )( 'should accept the shared %s fixture rule: %s', ( label, name, rule, kind ) => {
+		expect( isValidRule( rule, kind ) ).toBe( true );
+	} );
+
+	it.each( [
+		...fixtures.invalid_rules.map( ( fixture ) => [ 'sales window', fixture.name, fixture.rule, SALES_WINDOW ] ),
+		...salePriceFixtures.invalid_rules.map( ( fixture ) => [
+			'sale price',
+			fixture.name,
+			fixture.rule,
+			SALE_PRICE_WINDOW,
+		] ),
+	] )( 'should reject the shared %s fixture invalid rule: %s', ( label, name, rule, kind ) => {
+		expect( isValidRule( rule, kind ) ).toBe( false );
 	} );
 } );

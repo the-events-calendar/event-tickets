@@ -20,8 +20,8 @@ import { DATE_FORMAT } from './sale-window';
  * Gets the text that says how long a window lasts, in weeks when it lasts a whole number of them and in days otherwise,
  * worded by the window's kind.
  *
- * The length counts the days the window's dates fall on, each in its own timezone, as a kind kept by the day stores
- * them.
+ * The length counts the days the window's dates fall on, each in its own timezone, as a kind kept at the precision of a
+ * day stores them.
  *
  * @since TBD
  *

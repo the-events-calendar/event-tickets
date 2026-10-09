@@ -187,6 +187,27 @@ class Assets_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
+	public function should_localize_the_sale_price_window_errors_the_server_answers_with(): void {
+		$data = $this->get_localized_data();
+
+		$this->assertSame( 'The sale price cannot end before it starts. Please adjust the sale price window.', $data['text']['salePriceEndsBeforeStart'] );
+		$this->assertSame( 'The sale price window falls outside the ticket sales window. Please adjust the dates.', $data['text']['salePriceOutsideWindow'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_localize_the_range_a_relative_sale_price_number_takes(): void {
+		$kind = Window_Kind::sale_price();
+
+		$data = $this->get_localized_data();
+
+		$this->assertSame( sprintf( 'Enter a number from %d to %d.', Boundary::MIN_VALUE, $kind->get_max_value() ), $data['text']['salePriceValueOutOfRange'] );
+	}
+
+	/**
+	 * @test
+	 */
 	public function should_localize_the_date_format_of_the_tickets_list(): void {
 		tribe_update_option( 'dateWithYearFormat', 'd/m/Y' );
 
@@ -394,7 +415,7 @@ class Assets_Test extends Controller_Test_Case {
 	 * The data is read from the registered asset: the library prints each localized object once per request, so
 	 * printing the script would only show it to the first test.
 	 *
-	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, listDateFormat: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, invalidWindow: string, relativeValueOutOfRange: string}} The localized data.
+	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, listDateFormat: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, invalidWindow: string, relativeValueOutOfRange: string, salePriceEndsBeforeStart: string, salePriceOutsideWindow: string, salePriceValueOutOfRange: string}} The localized data.
 	 */
 	private function get_localized_data(): array {
 		$this->make_controller()->register();

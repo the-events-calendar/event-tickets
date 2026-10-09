@@ -135,6 +135,21 @@ export function resolveWindow( rule, eventDates, kind ) {
 }
 
 /**
+ * Returns whether a rule opens a window of a kind whose open start the server stores as a value of its own, such as
+ * the sale price's Now, rather than as the date the form sends.
+ *
+ * @since TBD
+ *
+ * @param {SaleWindowRule}                        rule The rule of the window.
+ * @param {import( './window-kinds' ).WindowKind} kind The kind of the window.
+ *
+ * @return {boolean} Whether the start is an open start the kind stores itself.
+ */
+export function isStoredOpenStart( rule, kind ) {
+	return kind.openStartMode === rule.start.mode && null !== kind.openStartValue;
+}
+
+/**
  * Resolves one end of the window, or returns `null` when the end is not relative.
  *
  * @since TBD

@@ -1,5 +1,5 @@
 /**
- * Checks the sales window of a ticket form the way the server checks it on save.
+ * Checks a window of a ticket form, of any kind, the way the server checks it on save.
  *
  * @since TBD
  */
@@ -12,12 +12,23 @@ import moment from 'moment';
 /**
  * Internal dependencies
  */
-import { MAX_VALUE, MIN_VALUE, MODE_RELATIVE, MODE_SPECIFIC } from './rule-constants';
-import { fromEventLocal, resolveWindow, toZone } from './sale-window';
-import { getSaleWindowError, SALES_END_BEFORE_START } from './validation';
+import { MIN_VALUE, MODE_RELATIVE, MODE_SPECIFIC } from './rule-constants';
+import { fromEventLocal, isStoredOpenStart, resolveWindow, toZone } from './sale-window';
+import { ENDS_BEFORE_START, OUTSIDE_PARENT, RELATIVE_VALUE_OUT_OF_RANGE } from './window-errors';
 import { SALES_WINDOW } from './window-kinds';
 
+export { ENDS_BEFORE_START, OUTSIDE_PARENT, RELATIVE_VALUE_OUT_OF_RANGE };
+
 /** @typedef {import( 'moment' ).Moment} Moment */
+
+/** @typedef {import( './window-kinds' ).WindowKind} WindowKind */
+
+/**
+ * @typedef {Object} FormWindow
+ *
+ * @property {Moment|null} start The start, in the event timezone, or `null` when it has no date.
+ * @property {Moment|null} end   The end, in the event timezone, or `null` when it has no date.
+ */
 
 /**
  * Gets the window a save of the form would store, as far as the form knows it.
@@ -32,16 +43,18 @@ import { SALES_WINDOW } from './window-kinds';
  *
  * @since TBD
  *
- * @param {import( './sale-window' ).SaleWindowRule}    rule                The rule the form expresses.
- * @param {import( './server-event-dates' ).EventDates} eventDates          The event dates, as the server reads them,
- *                                                                          or `null` when they are not known.
- * @param {{start: string|null, end: string|null}}      formDates           The start and end dates the form sends,
- *                                                                          `YYYY-MM-DD HH:mm:ss` in the event
- *                                                                          timezone, or `null`.
- * @param {import( './window-kinds' ).WindowKind}       [kind=SALES_WINDOW] The kind of the window.
+ * @param {import( './sale-window' ).SaleWindowRule}           rule                The rule the form expresses.
+ * @param {import( './server-event-dates' ).EventDates}        eventDates          The event dates, as the server
+ *                                                                                 reads them, or `null` when they
+ *                                                                                 are not known.
+ * @param {{start: string|null|false, end: string|null|false}} formDates           The start and end dates the form
+ *                                                                                 sends, `YYYY-MM-DD HH:mm:ss` in
+ *                                                                                 the event timezone, `null` for
+ *                                                                                 none, or `false` for one that
+ *                                                                                 cannot be read.
+ * @param {WindowKind}                                         [kind=SALES_WINDOW] The kind of the window.
  *
- * @return {{start: Moment|null, end: Moment|null}|null} The window in the event timezone, or `null` without event
- *                                                       dates.
+ * @return {FormWindow|null} The window in the event timezone, or `null` without event dates.
  */
 export function getFormWindow( rule, eventDates, formDates, kind = SALES_WINDOW ) {
 	const resolved = resolveWindow( rule, eventDates, kind );
@@ -64,7 +77,7 @@ export function getFormWindow( rule, eventDates, formDates, kind = SALES_WINDOW 
 			return resolved[ key ];
 		}
 
-		if ( null !== kind.openStartValue ) {
+		if ( isStoredOpenStart( rule, kind ) ) {
 			return now;
 		}
 
@@ -77,73 +90,168 @@ export function getFormWindow( rule, eventDates, formDates, kind = SALES_WINDOW 
 }
 
 /**
- * The message key of a relative boundary whose number is out of range.
+ * Returns whether a relative boundary's number is one the server takes for a kind.
  *
  * @since TBD
  *
- * @type {string}
+ * @param {*}          value The number, `NaN` for a cleared field.
+ * @param {WindowKind} kind  The kind of the window.
+ *
+ * @return {boolean} Whether the number is a whole number in the kind's range.
  */
-export const RELATIVE_VALUE_OUT_OF_RANGE = 'relative_value_out_of_range';
-
-/**
- * Returns whether a relative boundary's number is one the server takes.
- *
- * @since TBD
- *
- * @param {number} value The number, `NaN` for a cleared field.
- *
- * @return {boolean} Whether the number is a whole number in the range.
- */
-function isInRange( value ) {
-	return Number.isInteger( value ) && value >= MIN_VALUE && value <= MAX_VALUE;
+function isInRange( value, kind ) {
+	return Number.isInteger( value ) && value >= MIN_VALUE && value <= kind.maxValue;
 }
 
 /**
- * Returns the boundary whose relative number is out of range, the start first.
+ * Returns whether one boundary of a rule is valid for a kind, as the server's `Boundary` judges it.
  *
  * @since TBD
  *
- * @param {import( '../sale-window' ).SaleWindowRule} rule The rule the form expresses.
+ * @param {*}          boundary The boundary, not yet validated.
+ * @param {string}     key      The boundary, `start` or `end`.
+ * @param {WindowKind} kind     The kind of the window.
  *
- * @return {string|null} `start` or `end`, or `null` when both numbers are in range.
+ * @return {boolean} Whether the boundary is valid.
  */
-export function getOutOfRangeBoundary( rule ) {
+function isValidBoundary( boundary, key, kind ) {
+	if ( ! boundary || 'object' !== typeof boundary || ! kind.modes[ key ].includes( boundary.mode ) ) {
+		return false;
+	}
+
+	if ( MODE_RELATIVE !== boundary.mode ) {
+		return true;
+	}
+
+	const isValidAnchor = kind.takesAnchor ? kind.anchors.includes( boundary.anchor ) : ! ( 'anchor' in boundary );
+
+	return isInRange( boundary.value, kind ) && kind.units.includes( boundary.unit ) && isValidAnchor;
+}
+
+/**
+ * Returns whether a rule is valid for a kind, as the server's `Rule` judges it.
+ *
+ * @since TBD
+ *
+ * @param {*}          rule                The rule, not yet validated.
+ * @param {WindowKind} [kind=SALES_WINDOW] The kind of the window.
+ *
+ * @return {boolean} Whether the rule is valid.
+ */
+export function isValidRule( rule, kind = SALES_WINDOW ) {
 	return (
-		[ 'start', 'end' ].find( ( key ) => MODE_RELATIVE === rule[ key ].mode && ! isInRange( rule[ key ].value ) ) ||
-		null
+		Boolean( rule ) &&
+		'object' === typeof rule &&
+		[ 'start', 'end' ].every( ( key ) => isValidBoundary( rule[ key ], key, kind ) )
 	);
 }
 
 /**
- * Returns the error of a sales window, or `null` when it is valid.
- *
- * A boundary the rule resolves takes the date it resolves to. One it leaves to the ticket, a specific boundary or a
- * default start, takes the date the form sends for it, read as the server reads it; a specific boundary without a date
- * is rejected. A default start the form dates later than now takes now, as the server sells it from now on, and one
- * already past keeps its date. A default start sent without a date is left unjudged: the server judges it by the day
- * the event was published, which the form does not know.
+ * Returns the boundary whose relative number is out of the range of a kind, the start first.
  *
  * @since TBD
  *
- * @param {import( './sale-window' ).SaleWindowRule}    rule       The rule the form expresses.
- * @param {import( './server-event-dates' ).EventDates} eventDates The event dates, as the server reads them.
- * @param {{start: string|null, end: string|null}}      formDates  The start and end dates the form sends,
- *                                                                 `YYYY-MM-DD HH:mm:ss` in the event timezone.
+ * @param {import( './sale-window' ).SaleWindowRule} rule                The rule the form expresses.
+ * @param {WindowKind}                               [kind=SALES_WINDOW] The kind of the window.
  *
- * @return {string|null} The message key of the error, `RELATIVE_VALUE_OUT_OF_RANGE` or a `validation.js` one, or
+ * @return {string|null} `start` or `end`, or `null` when both numbers are in range.
+ */
+export function getOutOfRangeBoundary( rule, kind = SALES_WINDOW ) {
+	return (
+		[ 'start', 'end' ].find(
+			( key ) => MODE_RELATIVE === rule[ key ].mode && ! isInRange( rule[ key ].value, kind )
+		) || null
+	);
+}
+
+/**
+ * Returns whether one date is before another at the precision a kind is kept at.
+ *
+ * @since TBD
+ *
+ * @param {Moment}     date  The date.
+ * @param {Moment}     other The date to compare it with.
+ * @param {WindowKind} kind  The kind of the window.
+ *
+ * @return {boolean} Whether `date` is before `other`: on an earlier day for a kind kept by the day.
+ */
+function isBefore( date, other, kind ) {
+	return date.isBefore( other, kind.precision || 'millisecond' );
+}
+
+/**
+ * Returns the error of a window of a kind, or `null` when it is valid, in the order the server checks them.
+ *
+ * In order:
+ * - a relative number out of the kind's range is named, as the server's error for such a rule names neither the
+ *   field nor the range;
+ * - a rule the server does not take is rejected, as the save would keep the stored one;
+ * - a specific boundary sent with a date that cannot be read is rejected, and so is one sent without a date for a
+ *   kind that needs one;
+ * - the window must end after it starts, at the precision the kind is kept at. A start with no date of its own, such
+ *   as an open start the kind stores itself, opens with the parent window, so the end is judged against the parent's
+ *   start;
+ * - the window's own start must fall inside the parent window, judged only with both of the parent's ends.
+ *
+ * Each boundary takes the date `getFormWindow()` gives it. A date that is not known, such as a default start sent
+ * without one, leaves what it is part of unjudged: the server judges it with the day the event was published.
+ *
+ * @since TBD
+ *
+ * @param {import( './sale-window' ).SaleWindowRule}           rule                The rule the form expresses.
+ * @param {import( './server-event-dates' ).EventDates}        eventDates          The event dates, as the server
+ *                                                                                 reads them.
+ * @param {{start: string|null|false, end: string|null|false}} formDates           The start and end dates the form
+ *                                                                                 sends, `YYYY-MM-DD HH:mm:ss` in
+ *                                                                                 the event timezone, `null` for
+ *                                                                                 none, or `false` for one that
+ *                                                                                 cannot be read.
+ * @param {WindowKind}                                         [kind=SALES_WINDOW] The kind of the window.
+ * @param {FormWindow|null}                                    [parentWindow=null] The parent window the form gives,
+ *                                                                                 or `null` for a kind without one.
+ *
+ * @return {string|null} The error key, `ENDS_BEFORE_START`, `RELATIVE_VALUE_OUT_OF_RANGE` or `OUTSIDE_PARENT`, or
  *                       `null` when the window is valid.
  */
-export function getWindowError( rule, eventDates, formDates ) {
-	// The input's own range is not enforced, and the server's error for such a rule names neither the field nor the range.
-	if ( getOutOfRangeBoundary( rule ) ) {
+export function getWindowError( rule, eventDates, formDates, kind = SALES_WINDOW, parentWindow = null ) {
+	if ( getOutOfRangeBoundary( rule, kind ) ) {
 		return RELATIVE_VALUE_OUT_OF_RANGE;
 	}
 
-	const dates = getFormWindow( rule, eventDates, formDates );
-
-	if ( [ 'start', 'end' ].some( ( key ) => ! dates[ key ] && MODE_SPECIFIC === rule[ key ].mode ) ) {
-		return SALES_END_BEFORE_START;
+	if ( ! isValidRule( rule, kind ) ) {
+		return ENDS_BEFORE_START;
 	}
 
-	return getSaleWindowError( dates.start, dates.end );
+	const hasNoUsableDate = ( key ) => false === formDates[ key ] || ( kind.specificNeedsDate && ! formDates[ key ] );
+
+	if ( [ 'start', 'end' ].some( ( key ) => MODE_SPECIFIC === rule[ key ].mode && hasNoUsableDate( key ) ) ) {
+		return ENDS_BEFORE_START;
+	}
+
+	const dates = getFormWindow( rule, eventDates, formDates, kind );
+
+	if ( ! dates ) {
+		return null;
+	}
+
+	const ownStart = isStoredOpenStart( rule, kind ) ? null : dates.start;
+	const start = ownStart || parentWindow?.start || null;
+
+	if ( start && dates.end && ! isBefore( start, dates.end, kind ) ) {
+		return ENDS_BEFORE_START;
+	}
+
+	const parentStart = parentWindow?.start;
+	const parentEnd = parentWindow?.end;
+
+	if (
+		ownStart &&
+		parentStart &&
+		parentEnd &&
+		( isBefore( ownStart, parentStart, kind ) || isBefore( parentEnd, ownStart, kind ) )
+	) {
+		return OUTSIDE_PARENT;
+	}
+
+	return null;
 }
