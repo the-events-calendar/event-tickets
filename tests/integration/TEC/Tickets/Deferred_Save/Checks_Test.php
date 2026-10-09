@@ -182,6 +182,38 @@ class Checks_Test extends WPTestCase {
 	}
 
 	/**
+	 * The editors put back the block of a refused delete or move, unless the ticket is no longer on the post.
+	 *
+	 * @test
+	 */
+	public function it_should_mark_the_rejections_of_tickets_that_are_not_on_the_post(): void {
+		$this->given_two_posts_with_tickets();
+		$this->log_in_as( 'editor' );
+		// A refusal that is not about where the ticket is.
+		add_filter( 'tec_tickets_user_can_delete_ticket', '__return_false' );
+
+		$this->run_checks(
+			[
+				'delete' => [ $this->foreign_ticket_id, $this->ticket_id ],
+				'move'   => [ $this->second_foreign_ticket_id => $this->other_post_id ],
+			]
+		);
+
+		$not_on_post = [];
+		foreach ( $this->rejections->all() as $rejection ) {
+			$not_on_post[ $rejection['key'] ] = ! empty( $rejection['not_on_post'] );
+		}
+		$this->assertSame(
+			[
+				$this->second_foreign_ticket_id => true,
+				$this->foreign_ticket_id        => true,
+				$this->ticket_id                => false,
+			],
+			$not_on_post
+		);
+	}
+
+	/**
 	 * @test
 	 */
 	public function it_should_reject_a_ticket_of_another_post_per_entry_and_keep_its_siblings(): void {
