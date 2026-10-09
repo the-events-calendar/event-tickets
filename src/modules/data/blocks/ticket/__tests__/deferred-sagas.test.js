@@ -20,6 +20,7 @@ const mockEditor = {
 	order: [],
 	record: { id: 10 },
 	editPost: jest.fn(),
+	savePost: jest.fn(),
 	createErrorNotice: jest.fn(),
 	insertBlock: jest.fn(),
 };
@@ -34,6 +35,7 @@ jest.mock( '@wordpress/data', () => ( {
 	} ),
 	dispatch: () => ( {
 		editPost: mockEditor.editPost,
+		savePost: mockEditor.savePost,
 		createErrorNotice: mockEditor.createErrorNotice,
 		insertBlock: mockEditor.insertBlock,
 	} ),
@@ -120,6 +122,7 @@ beforeEach( () => {
 	mockEditor.order = [];
 	mockEditor.record = { id: 10 };
 	mockEditor.editPost.mockClear();
+	mockEditor.savePost.mockClear();
 	mockEditor.createErrorNotice.mockClear();
 	mockEditor.insertBlock.mockClear();
 	doAction.mockReset();
@@ -594,6 +597,24 @@ describe( 'the cross-review of the stack', () => {
 
 		return run( state, sagas.applyLastSaveResponse );
 	};
+
+	it( 'saves the post again once a created ticket has its ID, so the saved content has it', () => {
+		mockEditor.order = [ 'a' ];
+		sagas.rememberBody( 'a', [ [ 'name', 'A' ] ] );
+
+		save( stateWith( { a: { isStaged: true } } ), { id: 's1', created: { 0: 101 }, errors: [] } );
+
+		expect( mockEditor.savePost ).toHaveBeenCalledTimes( 1 );
+	} );
+
+	it( 'does not save again when the save created nothing', () => {
+		mockEditor.order = [ 'u' ];
+		sagas.rememberBody( 'u', [ [ 'name', 'U' ] ] );
+
+		save( stateWith( { u: { isStaged: true, hasBeenCreated: true, ticketId: 30 } } ), { id: 's1', created: {}, errors: [] } );
+
+		expect( mockEditor.savePost ).not.toHaveBeenCalled();
+	} );
 
 	it( 'tells ticketDeleted which block the deleted ticket was in', () => {
 		const state = stateWith( {}, { deletes: [ 40 ] } );

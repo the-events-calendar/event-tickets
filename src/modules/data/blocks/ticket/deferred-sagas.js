@@ -594,6 +594,25 @@ export function* applySaveResponse( response, sentNow ) {
 	} );
 	outcome.notices.forEach( showNotice );
 	outcome.restore.forEach( restoreTicketBlock );
+
+	// A created ticket's ID reaches its block after the content was saved: save again so the content has it,
+	// or a reload shows the block empty next to a second block for the saved ticket. That save sends no payload.
+	if ( outcome.blocks.some( ( { hook } ) => 'created' === hook ) ) {
+		yield call( savePostAgain );
+	}
+}
+
+/**
+ * Saves the post again, so its content has the IDs of the tickets the last save created.
+ *
+ * @since TBD
+ */
+export function* savePostAgain() {
+	const editor = wpDispatch( 'core/editor' );
+
+	if ( editor && 'function' === typeof editor.savePost ) {
+		yield call( [ editor, editor.savePost ] );
+	}
 }
 
 /**
