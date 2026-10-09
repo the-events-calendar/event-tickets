@@ -318,7 +318,7 @@ final class Commit {
 				[
 					'part' => $part,
 					'key'  => $key,
-				] 
+				]
 			);
 
 			return $result->with_error( $part, $key, $this->failed_message( $part ) );
