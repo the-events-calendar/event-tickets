@@ -1,6 +1,6 @@
 <?php
 /**
- * Hands the sales window rule to the classic ticket editor.
+ * Hands the relative sale dates rules to the classic ticket editor.
  *
  * @since TBD
  *
@@ -12,7 +12,7 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Relative_Sale_Dates;
 
 /**
- * Adds the ticket's stored rule to the data the classic ticket edit panel is built from.
+ * Adds the ticket's stored rules to the data the classic ticket edit panel is built from.
  *
  * @since TBD
  *
@@ -40,7 +40,8 @@ final class Classic_Panel_Data {
 	}
 
 	/**
-	 * Adds the ticket's stored rule, or `null` for a new ticket or one without a rule, to the panel data.
+	 * Adds the ticket's stored rule of each window kind, or `null` for a new ticket or one without that rule, to the panel
+	 * data.
 	 *
 	 * @since TBD
 	 *
@@ -48,12 +49,16 @@ final class Classic_Panel_Data {
 	 * @param int                 $post_id   The ID of the post being edited.
 	 * @param int|null            $ticket_id The ID of the ticket being edited, or `null` for a new ticket.
 	 *
-	 * @return array<string,mixed> The panel data, with `relative_sale_dates`.
+	 * @return array<string,mixed> The panel data, with `relative_sale_dates` and `ticket_sale_price_relative`.
 	 */
 	public function add_rule_to_panel_data( array $data, int $post_id, ?int $ticket_id ): array {
-		$rule = $ticket_id ? Rule::from_stored( $this->rule_store->get( $ticket_id ) ) : null;
+		$stored = $ticket_id ? $this->rule_store->get( $ticket_id ) : [];
 
-		$data[ Ticket_Save::DATA_KEY ] = $rule ? $rule->to_array() : null;
+		foreach ( Window_Kind::all() as $kind ) {
+			$rule = Rule::from_stored( $stored, $kind );
+
+			$data[ $kind->get_rule_keys()['data'] ] = $rule ? $rule->to_array() : null;
+		}
 
 		return $data;
 	}

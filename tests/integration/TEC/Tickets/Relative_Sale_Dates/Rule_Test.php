@@ -121,6 +121,14 @@ class Rule_Test extends WPTestCase {
 	}
 
 	/**
+	 * @test
+	 * @dataProvider valid_rules_provider
+	 */
+	public function should_return_its_canonical_json( Window_Kind $kind, array $data ): void {
+		$this->assertSame( wp_json_encode( $data ), Rule::from_array( $data, $kind )->to_json() );
+	}
+
+	/**
 	 * @return Generator<string,array{0: Window_Kind, 1: string, 2: string}>
 	 */
 	public function rule_modes_provider(): Generator {

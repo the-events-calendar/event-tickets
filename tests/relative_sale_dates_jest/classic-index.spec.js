@@ -276,6 +276,27 @@ describe( 'classic editor script', () => {
 		expect( getUnitLabel( 'start' ) ).toBe( 'semana' );
 	} );
 
+	it( 'should change the sale price unit name when the number changes', async () => {
+		renderEventForm();
+		document.getElementById( 'tribe_panel_edit' ).insertAdjacentHTML(
+			'beforeend',
+			`<input type="number" id="ticket_sale_end_value" value="1" />
+			<select id="ticket_sale_end_unit">
+				<option value="${ UNIT_DAYS }">day</option>
+				<option value="${ UNIT_WEEKS }" selected>week</option>
+			</select>`
+		);
+		await loadScript();
+
+		jQuery( '#ticket_sale_end_value' ).val( '3' ).trigger( 'input' );
+
+		const unit = document.getElementById( 'ticket_sale_end_unit' );
+		expect( Array.from( unit.options ).map( ( option ) => option.textContent ) ).toStrictEqual( [
+			'days',
+			'weeks',
+		] );
+	} );
+
 	it( 'should write the sale dates of a listed ticket from the event dates in the form', async () => {
 		renderEventForm();
 		await loadScript();
@@ -517,6 +538,28 @@ describe( 'classic editor script', () => {
 		expect( JSON.parse( document.getElementById( 'ticket_relative_sale_dates' ).value ) ).toStrictEqual( {
 			start: { mode: 'relative', value: 2, unit: UNIT_WEEKS, anchor: 'start' },
 			end: { mode: 'default' },
+		} );
+	} );
+
+	it( 'should write the sale price rule before the ticket is saved', async () => {
+		renderMetabox();
+		document.getElementById( 'tribe_panel_edit' ).insertAdjacentHTML(
+			'beforeend',
+			`<select id="ticket_sale_start_mode"><option value="now" selected>Now</option></select>
+			<input type="number" id="ticket_sale_start_value" value="2" />
+			<select id="ticket_sale_start_unit"><option value="${ UNIT_WEEKS }" selected>weeks</option></select>
+			<select id="ticket_sale_end_mode"><option value="relative" selected>Relative</option></select>
+			<input type="number" id="ticket_sale_end_value" value="3" />
+			<select id="ticket_sale_end_unit"><option value="${ UNIT_DAYS }" selected>days</option></select>
+			<input type="hidden" name="ticket_sale_price_relative" id="ticket_sale_price_relative" value="" />`
+		);
+		await loadScript();
+
+		jQuery( '#tribetickets' ).trigger( 'pre-save-ticket.tribe' );
+
+		expect( JSON.parse( document.getElementById( 'ticket_sale_price_relative' ).value ) ).toStrictEqual( {
+			start: { mode: 'now' },
+			end: { mode: 'relative', value: 3, unit: UNIT_DAYS },
 		} );
 	} );
 

@@ -47,7 +47,6 @@ class Window_Kind_Test extends WPTestCase {
 			$kind->get_date_metas()
 		);
 		$this->assertNull( $kind->get_open_start_value() );
-		$this->assertTrue( $kind->is_removed_by_front_end_form() );
 		$this->assertSame(
 			[
 				'start' => [
@@ -64,6 +63,24 @@ class Window_Kind_Test extends WPTestCase {
 		$this->assertTrue( $kind->specific_needs_date() );
 		$this->assertFalse( $kind->compares_days() );
 		$this->assertTrue( $kind->returns_block_editor_rule_for_every_provider() );
+		$this->assertSame(
+			[
+				'start' => [
+					'mode'   => Rule::MODE_DEFAULT,
+					'value'  => 2,
+					'unit'   => WEEK_IN_SECONDS,
+					'anchor' => Rule::ANCHOR_START,
+				],
+				'end'   => [
+					'mode'   => Rule::MODE_DEFAULT,
+					'value'  => 1,
+					'unit'   => HOUR_IN_SECONDS,
+					'anchor' => Rule::ANCHOR_START,
+				],
+			],
+			$kind->get_form_defaults()
+		);
+		$this->assertSame( 'relative-sale-dates/sales-window', $kind->get_classic_template() );
 	}
 
 	/**
@@ -106,7 +123,6 @@ class Window_Kind_Test extends WPTestCase {
 			$kind->get_date_metas()
 		);
 		$this->assertSame( '', $kind->get_open_start_value() );
-		$this->assertFalse( $kind->is_removed_by_front_end_form() );
 		$this->assertSame(
 			[
 				'start' => [
@@ -123,6 +139,22 @@ class Window_Kind_Test extends WPTestCase {
 		$this->assertFalse( $kind->specific_needs_date() );
 		$this->assertTrue( $kind->compares_days() );
 		$this->assertFalse( $kind->returns_block_editor_rule_for_every_provider() );
+		$this->assertSame(
+			[
+				'start' => [
+					'mode'  => Rule::MODE_NOW,
+					'value' => 2,
+					'unit'  => WEEK_IN_SECONDS,
+				],
+				'end'   => [
+					'mode'  => Rule::MODE_RELATIVE,
+					'value' => 1,
+					'unit'  => WEEK_IN_SECONDS,
+				],
+			],
+			$kind->get_form_defaults()
+		);
+		$this->assertSame( 'relative-sale-dates/sale-price', $kind->get_classic_template() );
 	}
 
 	/**

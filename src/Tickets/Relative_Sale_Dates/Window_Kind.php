@@ -176,15 +176,6 @@ final class Window_Kind {
 	private bool $owns_ticket_sales_dates;
 
 	/**
-	 * Whether a front-end ticket form that sends no rule removes the stored one.
-	 *
-	 * @since TBD
-	 *
-	 * @var bool
-	 */
-	private bool $is_removed_by_front_end_form;
-
-	/**
 	 * The ticket data fields each end of the window is submitted in: its date and, for a kind that stores times, its time.
 	 *
 	 * @since TBD
@@ -235,6 +226,25 @@ final class Window_Kind {
 	private array $rest_descriptions;
 
 	/**
+	 * The boundaries the classic form opens a ticket without a rule on: the mode, and the relative values each end
+	 * offers.
+	 *
+	 * @since TBD
+	 *
+	 * @var array{start: array{mode: string, value: int, unit: int, anchor?: string}, end: array{mode: string, value: int, unit: int, anchor?: string}}
+	 */
+	private array $form_defaults;
+
+	/**
+	 * The admin view that renders the window's options in the classic ticket form.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private string $classic_template;
+
+	/**
 	 * Gets the sales window kind.
 	 *
 	 * @since TBD
@@ -249,24 +259,24 @@ final class Window_Kind {
 		$modes = [ Rule::MODE_DEFAULT, Rule::MODE_RELATIVE, Rule::MODE_SPECIFIC ];
 		$kind  = new self();
 
-		$kind->id                           = self::SALES;
-		$kind->modes                        = [
+		$kind->id                      = self::SALES;
+		$kind->modes                   = [
 			'start' => $modes,
 			'end'   => $modes,
 		];
-		$kind->open_start_mode              = Rule::MODE_DEFAULT;
-		$kind->max_value                    = Boundary::MAX_VALUE;
-		$kind->units                        = [ MINUTE_IN_SECONDS, HOUR_IN_SECONDS, DAY_IN_SECONDS, WEEK_IN_SECONDS ];
-		$kind->anchors                      = [ Rule::ANCHOR_START, Rule::ANCHOR_END ];
-		$kind->store_key                    = null;
-		$kind->parent                       = null;
-		$kind->rule_keys                    = [
+		$kind->open_start_mode         = Rule::MODE_DEFAULT;
+		$kind->max_value               = Boundary::MAX_VALUE;
+		$kind->units                   = [ MINUTE_IN_SECONDS, HOUR_IN_SECONDS, DAY_IN_SECONDS, WEEK_IN_SECONDS ];
+		$kind->anchors                 = [ Rule::ANCHOR_START, Rule::ANCHOR_END ];
+		$kind->store_key               = null;
+		$kind->parent                  = null;
+		$kind->rule_keys               = [
 			'data'                  => Ticket_Save::DATA_KEY,
 			'tec_rest'              => 'relative_sale_dates',
 			'block_editor_request'  => [ 'relative_sale_dates' ],
 			'block_editor_response' => [ 'relative_sale_dates' ],
 		];
-		$kind->date_metas                   = [
+		$kind->date_metas              = [
 			'start' => [
 				'date' => Ticket::START_DATE_META_KEY,
 				'time' => Ticket::START_TIME_META_KEY,
@@ -276,11 +286,10 @@ final class Window_Kind {
 				'time' => Ticket::END_TIME_META_KEY,
 			],
 		];
-		$kind->open_start_value             = null;
-		$kind->sale_keys                    = null;
-		$kind->owns_ticket_sales_dates      = true;
-		$kind->is_removed_by_front_end_form = true;
-		$kind->submitted_fields             = [
+		$kind->open_start_value        = null;
+		$kind->sale_keys               = null;
+		$kind->owns_ticket_sales_dates = true;
+		$kind->submitted_fields        = [
 			'start' => [
 				'date' => 'ticket_start_date',
 				'time' => 'ticket_start_time',
@@ -290,8 +299,8 @@ final class Window_Kind {
 				'time' => 'ticket_end_time',
 			],
 		];
-		$kind->specific_needs_date          = true;
-		$kind->errors                       = [
+		$kind->specific_needs_date     = true;
+		$kind->errors                  = [
 			'endsBeforeStart' => [
 				'code'    => 'tec_tickets_relative_sale_dates_invalid_window',
 				'message' => static fn(): string => __( 'Ticket sales cannot end before they start. Please adjust the sales window.', 'event-tickets' ),
@@ -299,6 +308,12 @@ final class Window_Kind {
 		];
 		// The block editor reads `relative_sale_dates` on every ticket, as `null` on one the rule does not apply to.
 		$kind->returns_block_editor_rule_for_every_provider = true;
+		// A new ticket opens on the default modes; the relative values are the ones the Ticket block offers too.
+		$kind->form_defaults    = [
+			'start' => [ 'mode' => Rule::MODE_DEFAULT ] + Editor::DEFAULT_RELATIVE_START,
+			'end'   => [ 'mode' => Rule::MODE_DEFAULT ] + Editor::DEFAULT_RELATIVE_END,
+		];
+		$kind->classic_template = 'relative-sale-dates/sales-window';
 
 		$sales_mode              = static fn(): string => __( 'How this end of the window is set: `default` (sales open at once, or close when the event starts), `relative` (before the event) or `specific` (the date sent with the ticket).', 'event-tickets' );
 		$kind->rest_descriptions = [
@@ -342,24 +357,24 @@ final class Window_Kind {
 
 		$kind = new self();
 
-		$kind->id                           = self::SALE_PRICE;
-		$kind->modes                        = [
+		$kind->id                      = self::SALE_PRICE;
+		$kind->modes                   = [
 			'start' => [ Rule::MODE_NOW, Rule::MODE_RELATIVE, Rule::MODE_SPECIFIC ],
 			'end'   => [ Rule::MODE_RELATIVE, Rule::MODE_SPECIFIC ],
 		];
-		$kind->open_start_mode              = Rule::MODE_NOW;
-		$kind->max_value                    = 30;
-		$kind->units                        = [ DAY_IN_SECONDS, WEEK_IN_SECONDS ];
-		$kind->anchors                      = [ Rule::ANCHOR_START ];
-		$kind->store_key                    = 'sale_price';
-		$kind->parent                       = self::sales();
-		$kind->rule_keys                    = [
+		$kind->open_start_mode         = Rule::MODE_NOW;
+		$kind->max_value               = 30;
+		$kind->units                   = [ DAY_IN_SECONDS, WEEK_IN_SECONDS ];
+		$kind->anchors                 = [ Rule::ANCHOR_START ];
+		$kind->store_key               = 'sale_price';
+		$kind->parent                  = self::sales();
+		$kind->rule_keys               = [
 			'data'                  => 'ticket_sale_price_relative',
 			'tec_rest'              => 'sale_price_relative',
 			'block_editor_request'  => [ 'sale_price', 'relative' ],
 			'block_editor_response' => [ 'sale_price_data', 'relative' ],
 		];
-		$kind->date_metas                   = [
+		$kind->date_metas              = [
 			'start' => [
 				'date' => Ticket::$sale_price_start_date_key,
 				'time' => null,
@@ -369,16 +384,15 @@ final class Window_Kind {
 				'time' => null,
 			],
 		];
-		$kind->open_start_value             = '';
-		$kind->sale_keys                    = [
+		$kind->open_start_value        = '';
+		$kind->sale_keys               = [
 			'enabled_meta'  => Ticket::$sale_price_checked_key,
 			'enabled_data'  => 'ticket_add_sale_price',
 			'price'         => 'ticket_sale_price',
 			'regular_price' => 'ticket_price',
 		];
-		$kind->owns_ticket_sales_dates      = false;
-		$kind->is_removed_by_front_end_form = false;
-		$kind->submitted_fields             = [
+		$kind->owns_ticket_sales_dates = false;
+		$kind->submitted_fields        = [
 			'start' => [
 				'date' => 'ticket_sale_start_date',
 				'time' => null,
@@ -388,8 +402,8 @@ final class Window_Kind {
 				'time' => null,
 			],
 		];
-		$kind->specific_needs_date          = false;
-		$kind->errors                       = [
+		$kind->specific_needs_date     = false;
+		$kind->errors                  = [
 			'endsBeforeStart' => [
 				'code'    => 'tec_tickets_relative_sale_dates_sale_price_ends_before_start',
 				'message' => static fn(): string => __( 'The sale price cannot end before it starts. Please adjust the sale price window.', 'event-tickets' ),
@@ -401,6 +415,20 @@ final class Window_Kind {
 		];
 		// Every provider answers with `sale_price_data`, an empty array for an RSVP; only Tickets Commerce's has the rule.
 		$kind->returns_block_editor_rule_for_every_provider = false;
+		// A new ticket's sale price starts now and ends a week before the event starts.
+		$kind->form_defaults    = [
+			'start' => [
+				'mode'  => Rule::MODE_NOW,
+				'value' => 2,
+				'unit'  => WEEK_IN_SECONDS,
+			],
+			'end'   => [
+				'mode'  => Rule::MODE_RELATIVE,
+				'value' => 1,
+				'unit'  => WEEK_IN_SECONDS,
+			],
+		];
+		$kind->classic_template = 'relative-sale-dates/sale-price';
 
 		$kind->rest_descriptions = [
 			'rule'       => static fn(): string => __( 'The sale price window relative to the event start, or null when the sale price has fixed dates. Sending null removes the rule.', 'event-tickets' ),
@@ -618,19 +646,6 @@ final class Window_Kind {
 	}
 
 	/**
-	 * Returns whether a front-end ticket form, such as Community Events', removes the stored rule by sending none.
-	 *
-	 * Such a form offers no options for the window, so the dates it sends are the ones the person set.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool Whether a front-end save without the rule removes it.
-	 */
-	public function is_removed_by_front_end_form(): bool {
-		return $this->is_removed_by_front_end_form;
-	}
-
-	/**
 	 * Gets the ticket data fields each end of the window is submitted in, its date and its time.
 	 *
 	 * A `null` time means the kind is submitted as whole days.
@@ -732,6 +747,31 @@ final class Window_Kind {
 	 */
 	public function get_rest_descriptions(): array {
 		return $this->rest_descriptions;
+	}
+
+	/**
+	 * Gets the boundaries the classic form opens a ticket without a rule on.
+	 *
+	 * A boundary the form shows in another mode still offers these relative values next to it.
+	 *
+	 * @since TBD
+	 *
+	 * @return array{start: array{mode: string, value: int, unit: int, anchor?: string}, end: array{mode: string, value: int, unit: int, anchor?: string}} The
+	 *         mode and relative values of each end; the anchor only for a kind that takes one.
+	 */
+	public function get_form_defaults(): array {
+		return $this->form_defaults;
+	}
+
+	/**
+	 * Gets the admin view that renders the window's options in the classic ticket form.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The template name, relative to the admin views folder.
+	 */
+	public function get_classic_template(): string {
+		return $this->classic_template;
 	}
 
 	/**

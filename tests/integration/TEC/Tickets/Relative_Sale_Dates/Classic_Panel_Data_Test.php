@@ -34,6 +34,29 @@ class Classic_Panel_Data_Test extends Controller_Test_Case {
 		$data = ( new Ticket_Panel_Data( $event_id, $ticket_id ) )->to_array();
 
 		$this->assertSame( $rule, $data['relative_sale_dates'] );
+		$this->assertNull( $data['ticket_sale_price_relative'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_add_the_stored_sale_price_rule_to_the_classic_ticket_panel_data(): void {
+		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
+		$ticket_id = $this->create_tc_ticket( $event_id );
+		$rule      = [
+			'start' => [ 'mode' => Rule::MODE_NOW ],
+			'end'   => [
+				'mode'  => Rule::MODE_RELATIVE,
+				'value' => 3,
+				'unit'  => DAY_IN_SECONDS,
+			],
+		];
+		tribe( Rule_Store::class )->save( $ticket_id, [ Window_Kind::sale_price()->get_store_key() => $rule ] );
+
+		$data = ( new Ticket_Panel_Data( $event_id, $ticket_id ) )->to_array();
+
+		$this->assertSame( $rule, $data['ticket_sale_price_relative'] );
+		$this->assertNull( $data['relative_sale_dates'] );
 	}
 
 	/**
@@ -47,6 +70,8 @@ class Classic_Panel_Data_Test extends Controller_Test_Case {
 
 		$this->assertArrayHasKey( 'relative_sale_dates', $data );
 		$this->assertNull( $data['relative_sale_dates'] );
+		$this->assertArrayHasKey( 'ticket_sale_price_relative', $data );
+		$this->assertNull( $data['ticket_sale_price_relative'] );
 	}
 
 	/**
@@ -57,5 +82,7 @@ class Classic_Panel_Data_Test extends Controller_Test_Case {
 
 		$this->assertArrayHasKey( 'relative_sale_dates', $data );
 		$this->assertNull( $data['relative_sale_dates'] );
+		$this->assertArrayHasKey( 'ticket_sale_price_relative', $data );
+		$this->assertNull( $data['ticket_sale_price_relative'] );
 	}
 }
