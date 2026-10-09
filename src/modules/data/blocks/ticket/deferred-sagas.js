@@ -541,7 +541,11 @@ export function* applySaveResponse( response, sentNow ) {
 
 	const clientIds = yield select( selectors.getTicketsAllClientIds );
 	const byClientId = yield select( selectors.getTicketsByClientId );
-	const outcome = reconcileSaveResponse( { response, sent: sentNow, live: { clientIds, bodies } } );
+	const ticketIds = liveClientIds( clientIds )
+		.map( ( clientId ) => byClientId[ clientId ] )
+		.filter( ( ticket ) => ticket && ticket.hasBeenCreated && ticket.ticketId )
+		.map( ( ticket ) => Number( ticket.ticketId ) );
+	const outcome = reconcileSaveResponse( { response, sent: sentNow, live: { clientIds, bodies, ticketIds } } );
 
 	for ( const block of outcome.blocks ) {
 		if ( 'created' === block.hook ) {

@@ -244,7 +244,7 @@ export const buildPayload = ( { clientIds, byClientId, bodies, stagedDeletes, st
  * @param {Object} args.response The `tec_tickets` field of the saved record: `created` by position and `errors`.
  * @param {Object} args.sent     What the payload carried: `createOrder`, `updates` (client ID to ticket ID),
  *                               the `bodies` it was built from, `deletes` and `moves`.
- * @param {Object} args.live     The ticket blocks now: `clientIds` and the current `bodies`.
+ * @param {Object} args.live     The ticket blocks now: `clientIds`, the current `bodies` and the `ticketIds` they hold.
  *
  * @return {{blocks: Array<Object>, deleted: Array<number>, settle: {deletes: Array<number>, moves: Array<number>}, notices: Array<string>, restore: Array<number>}} What to do.
  */
@@ -318,6 +318,13 @@ export const reconcileSaveResponse = ( { response, sent, live } ) => {
 	} );
 
 	const sentDeletes = sent.deletes.map( Number );
+	const heldTicketIds = ( live.ticketIds || [] ).map( Number );
+	// A refused ticket comes back as a block only when it is still on the post and no block holds it already.
+	const canRestore = ( ticketId ) => {
+		const error = errorOf( 'delete', ticketId ) || errorOf( 'move', ticketId );
+
+		return ! ( error && error.not_on_post ) && ! heldTicketIds.includes( ticketId );
+	};
 	const sentMoves = Object.keys( sent.moves ).map( Number );
 	const refused = ( part, ticketId ) => {
 		const error = errorFor( part, ticketId );
@@ -347,6 +354,6 @@ export const reconcileSaveResponse = ( { response, sent, live } ) => {
 		restore: [
 			...sentDeletes.filter( ( id ) => isRefused( 'delete', id ) ),
 			...sentMoves.filter( ( id ) => isRefused( 'move', id ) ),
-		],
+		].filter( ( id ) => canRestore( id ) ),
 	};
 };

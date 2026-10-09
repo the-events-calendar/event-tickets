@@ -290,6 +290,26 @@ describe( 'reconcileSaveResponse', () => {
 		expect( outcome.restore ).toEqual( [ 40, 50 ] );
 	} );
 
+	it( 'brings back the block of a refused ticket only when it is still on the post and no block holds it', () => {
+		const outcome = reconcileSaveResponse( {
+			response: {
+				created: { 0: 101, 1: 102 },
+				errors: [
+					{ part: 'delete', key: 40, message: 'Ticket 40 does not belong to this post.', not_on_post: true },
+					{ part: 'move', key: 50, message: 'Could not move' },
+				],
+			},
+			sent,
+			// Undo already brought ticket 50's block back.
+			live: { ...live, ticketIds: [ 50 ] },
+		} );
+
+		expect( outcome.restore ).toEqual( [] );
+		// The refusals are still reported, and neither ticket was deleted.
+		expect( outcome.notices ).toHaveLength( 2 );
+		expect( outcome.deleted ).toEqual( [] );
+	} );
+
 	it( 'does not name the ticket twice when the server\'s reason already names it', () => {
 		const outcome = reconcileSaveResponse( {
 			response: {
