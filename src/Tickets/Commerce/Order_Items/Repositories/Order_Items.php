@@ -73,6 +73,8 @@ class Order_Items extends Custom_Table_Repository {
 			$rows[ $index ] = array_replace( $columns, $row );
 		}
 
+		Cached_Order_Items::flush();
+
 		return Order_Items_Table::insert_many( array_values( $rows ) );
 	}
 
@@ -128,6 +130,8 @@ class Order_Items extends Custom_Table_Repository {
 			}
 		}
 
+		Cached_Order_Items::flush();
+
 		$changed = 0;
 
 		foreach ( $rows as $row ) {
@@ -152,6 +156,8 @@ class Order_Items extends Custom_Table_Repository {
 	 * @return int The number of rows deleted.
 	 */
 	public function delete_by_order( int $order_id ): int {
+		Cached_Order_Items::flush();
+
 		return $order_id > 0 ? Order_Items_Table::delete_many( [ $order_id ], 'order_id' ) : 0;
 	}
 
@@ -165,6 +171,8 @@ class Order_Items extends Custom_Table_Repository {
 	 * @return int The number of rows deleted.
 	 */
 	public function delete_many( array $ids ): int {
+		Cached_Order_Items::flush();
+
 		return (int) Order_Items_Table::delete_many( $ids );
 	}
 }

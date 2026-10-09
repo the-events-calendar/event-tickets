@@ -9,7 +9,7 @@
 
 namespace TEC\Tickets\Commerce\Order_Items;
 
-use TEC\Tickets\Commerce\Order_Items\Repositories\Order_Items;
+use TEC\Tickets\Commerce\Order_Items\Repositories\Cached_Order_Items;
 use Throwable;
 use WP_Post;
 
@@ -24,31 +24,22 @@ use WP_Post;
  */
 class Fallbacks {
 	/**
-	 * The Order Items repository.
+	 * The cached Order Items repository.
 	 *
 	 * @since TBD
 	 *
-	 * @var Order_Items
+	 * @var Cached_Order_Items
 	 */
-	private Order_Items $repository;
-
-	/**
-	 * The values stored at purchase, by order ID, then item key.
-	 *
-	 * @since TBD
-	 *
-	 * @var array<int,array<string,array{name: string, ticket_type: ?string}>>
-	 */
-	private array $rows = [];
+	private Cached_Order_Items $repository;
 
 	/**
 	 * Fallbacks constructor.
 	 *
 	 * @since TBD
 	 *
-	 * @param Order_Items $repository The Order Items repository.
+	 * @param Cached_Order_Items $repository The cached Order Items repository.
 	 */
-	public function __construct( Order_Items $repository ) {
+	public function __construct( Cached_Order_Items $repository ) {
 		$this->repository = $repository;
 	}
 
@@ -112,7 +103,7 @@ class Fallbacks {
 	}
 
 	/**
-	 * Returns the name and ticket type an order stored at purchase for each line, reading its rows once per request.
+	 * Returns the name and ticket type an order stored at purchase for each line.
 	 *
 	 * @since TBD
 	 *
@@ -122,28 +113,24 @@ class Fallbacks {
 	 *                                                                 not stored in the table.
 	 */
 	private function get_stored_rows( int $order_id ): array {
-		if ( isset( $this->rows[ $order_id ] ) ) {
-			return $this->rows[ $order_id ];
-		}
-
-		$this->rows[ $order_id ] = [];
-
 		// Without the reader the table may not exist, and the order shows the items from its meta.
-		if ( ! Reader::is_registered() || Writer::VERSION !== absint( get_post_meta( $order_id, Writer::VERSION_META_KEY, true ) ) ) {
+		if ( ! Controller::is_registered() || Writer::VERSION !== absint( get_post_meta( $order_id, Writer::VERSION_META_KEY, true ) ) ) {
 			return [];
 		}
 
+		$rows = [];
+
 		try {
 			foreach ( $this->repository->get_by_order( $order_id ) as $row ) {
-				$this->rows[ $order_id ][ $row->item_key ] = [
+				$rows[ $row->item_key ] = [
 					'name'        => $row->name,
 					'ticket_type' => $row->ticket_type,
 				];
 			}
 		} catch ( Throwable $e ) {
-			$this->rows[ $order_id ] = [];
+			return [];
 		}
 
-		return $this->rows[ $order_id ];
+		return $rows;
 	}
 }
