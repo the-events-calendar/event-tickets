@@ -73,6 +73,28 @@ class Attendees_Test extends WPTestCase {
 		$this->assertSame( '0', get_post_meta( $attendee->ID, Attendees::TICKET_NAME_META_KEY, true ) );
 	}
 
+	/**
+	 * @dataProvider order_items_switch_provider
+	 */
+	public function test_the_commerce_provider_hooks_it_to_the_create_args_filter( Closure $switch ): void {
+		$switch();
+		$ticket       = new Ticket_Object();
+		$ticket->name = 'A ticket';
+		$create_args  = [ 'title' => 'An attendee' ];
+
+		$filtered = apply_filters( 'tec_tickets_commerce_attendee_create_args', $create_args, null, $ticket, [] );
+
+		$this->assertSame( $ticket->name, $filtered[ Attendees::TICKET_NAME_META_KEY ] );
+		$this->assertSame( $create_args['title'], $filtered['title'] );
+	}
+
+	public function test_it_is_hooked_once_with_the_same_callback_the_container_hands_out(): void {
+		$callback = tribe()->callback( Attendees::class, 'add_ticket_name' );
+
+		$this->assertSame( 10, has_filter( 'tec_tickets_commerce_attendee_create_args', $callback ) );
+		$this->assertSame( $callback, tribe()->callback( Attendees::class, 'add_ticket_name' ) );
+	}
+
 	public function test_a_ticket_with_an_empty_name_stores_nothing(): void {
 		$ticket       = new Ticket_Object();
 		$ticket->name = '';
