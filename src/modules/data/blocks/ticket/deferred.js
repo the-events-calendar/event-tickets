@@ -9,6 +9,11 @@
  */
 
 /**
+ * WordPress dependencies
+ */
+import { __, sprintf } from '@wordpress/i18n';
+
+/**
  * Internal dependencies
  */
 import { globals } from '@moderntribe/common/utils';
@@ -192,6 +197,9 @@ export const restBodyToTicketData = ( entries ) => {
 /**
  * Builds the `tec_tickets` payload from the store.
  *
+ * Each `create` entry carries its block's client ID as its key: a save whose answer never came is sent again
+ * with the same keys, and the server saves those entries over the tickets it created instead of creating them twice.
+ *
  * @since TBD
  *
  * @param {Object}                args               The inputs.
@@ -228,7 +236,7 @@ export const buildPayload = ( { clientIds, byClientId, bodies, stagedDeletes, st
 			return;
 		}
 
-		create.push( data );
+		create.push( { ...data, tec_tickets_create_key: clientId } );
 		createOrder.push( clientId );
 	} );
 
@@ -242,5 +250,137 @@ export const buildPayload = ( { clientIds, byClientId, bodies, stagedDeletes, st
 			),
 		},
 		createOrder,
+	};
+};
+
+/**
+ * Works out what a post save's answer means for the staged changes that went out with it.
+ *
+ * Only what was sent is settled: a block staged again after the request left keeps its newer change, and
+ * deletes or moves staged meanwhile stay staged. A payload-level error (no part) means nothing was
+ * committed, so every sent change stays staged with the message. Refused deletes and moves have no block
+ * left to show their error on, so they become notices, and their tickets, still on the post, come back as
+ * blocks. An error marked `applied` is not a refusal: the change happened and something that runs after it
+ * failed, so it is settled like a save and the error stays as a warning; a delete or move becomes a notice
+ * and no block comes back. A create that carries both an ID and a refusal exists but did not finish saving:
+ * the block gets the ID, so the next save sends an update instead of creating the ticket again.
+ *
+ * @since TBD
+ *
+ * @param {Object} args          The inputs.
+ * @param {Object} args.response The `tec_tickets` field of the saved record: `created` by position and `errors`.
+ * @param {Object} args.sent     What the payload carried: `createOrder`, `updates` (client ID to ticket ID),
+ *                               the `bodies` it was built from, `deletes` and `moves`.
+ * @param {Object} args.live     The ticket blocks now: `clientIds`, the current `bodies` and the `ticketIds` they hold.
+ *
+ * @return {{blocks: Array<Object>, deleted: Array<number>, settle: {deletes: Array<number>, moves: Array<number>}, notices: Array<string>, restore: Array<number>}} What to do.
+ */
+export const reconcileSaveResponse = ( { response, sent, live } ) => {
+	const created = response.created || {};
+	const errors = Array.isArray( response.errors ) ? response.errors : [];
+	const errorOf = ( part, key ) => errors.find( ( e ) => e && e.part === part && String( e.key ) === String( key ) );
+	const errorFor = ( part, key ) => {
+		const error = errorOf( part, key );
+
+		return error ? String( error.message ?? '' ) : '';
+	};
+	// Refused: the ticket is still where it was. An `applied` error is a write that happened, not a refusal.
+	const isRefused = ( part, key ) => {
+		const error = errorOf( part, key );
+
+		return !! error && ! error.applied;
+	};
+	const payloadError = errors.find( ( e ) => e && null === e.part );
+	const isLive = ( clientId ) => live.clientIds.includes( clientId );
+	const changedSince = ( clientId ) => live.bodies[ clientId ] !== sent.bodies[ clientId ];
+	const blocks = [];
+
+	if ( payloadError ) {
+		const message = String( payloadError.message ?? '' );
+
+		[ ...sent.createOrder, ...Object.keys( sent.updates ) ].filter( isLive ).forEach( ( clientId ) => {
+			blocks.push( { clientId, staged: true, error: message, hook: null } );
+		} );
+
+		return { blocks, deleted: [], settle: { deletes: [], moves: [] }, notices: [ message ], restore: [] };
+	}
+
+	sent.createOrder.forEach( ( clientId, position ) => {
+		if ( ! isLive( clientId ) ) {
+			// The block is gone; a ticket created for it appears on the next load.
+			return;
+		}
+
+		const ticketId = parseInt( created[ position ], 10 );
+
+		if ( ticketId ) {
+			const error = errorFor( 'create', position );
+			const staged = changedSince( clientId ) || isRefused( 'create', position );
+			blocks.push( { clientId, ticketId, staged, error, hook: 'created' } );
+			return;
+		}
+
+		blocks.push( {
+			clientId,
+			staged: true,
+			error:
+				errorFor( 'create', position ) ||
+				__( 'The ticket changes were not saved with the post.', 'event-tickets' ),
+			hook: null,
+		} );
+	} );
+
+	Object.entries( sent.updates ).forEach( ( [ clientId, ticketId ] ) => {
+		if ( ! isLive( clientId ) ) {
+			return;
+		}
+
+		const error = errorFor( 'update', ticketId );
+
+		blocks.push(
+			isRefused( 'update', ticketId )
+				? { clientId, staged: true, error, hook: null }
+				: { clientId, ticketId, staged: changedSince( clientId ), error, hook: 'updated' }
+		);
+	} );
+
+	const sentDeletes = sent.deletes.map( Number );
+	const heldTicketIds = ( live.ticketIds || [] ).map( Number );
+	// A refused ticket comes back as a block only when it is still on the post and no block holds it already.
+	const canRestore = ( ticketId ) => {
+		const error = errorOf( 'delete', ticketId ) || errorOf( 'move', ticketId );
+
+		return ! ( error && error.not_on_post ) && ! heldTicketIds.includes( ticketId );
+	};
+	const sentMoves = Object.keys( sent.moves ).map( Number );
+	const refused = ( part, ticketId ) => {
+		const error = errorFor( part, ticketId );
+
+		if ( ! error ) {
+			return '';
+		}
+
+		// Most of the server's reasons already name the ticket, in whatever language they are in.
+		if ( new RegExp( `(^|\\D)${ ticketId }(\\D|$)` ).test( error ) ) {
+			return error;
+		}
+
+		/* translators: %1$d: the ticket ID, %2$s: the reason it was not saved. */
+		return sprintf( __( 'Ticket %1$d: %2$s', 'event-tickets' ), ticketId, error );
+	};
+	const notices = [
+		...sentDeletes.map( ( id ) => refused( 'delete', id ) ),
+		...sentMoves.map( ( id ) => refused( 'move', id ) ),
+	].filter( Boolean );
+
+	return {
+		blocks,
+		deleted: sentDeletes.filter( ( id ) => ! isRefused( 'delete', id ) ),
+		settle: { deletes: sentDeletes, moves: sentMoves },
+		notices,
+		restore: [
+			...sentDeletes.filter( ( id ) => isRefused( 'delete', id ) ),
+			...sentMoves.filter( ( id ) => isRefused( 'move', id ) ),
+		].filter( ( id ) => canRestore( id ) ),
 	};
 };

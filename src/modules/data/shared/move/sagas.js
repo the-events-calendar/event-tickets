@@ -17,6 +17,9 @@ import * as types from './types';
 import { globals } from '@moderntribe/common/utils';
 import * as selectors from './selectors';
 import * as actions from './actions';
+import { usesDeferredSave } from '../../blocks/ticket/deferred';
+import { stageMove } from '../../blocks/ticket/deferred-sagas';
+import * as ticketSelectors from '../../blocks/ticket/selectors';
 
 export function createBody( params ) {
 	return Object.entries( params )
@@ -106,6 +109,20 @@ export function* fetchPostChoices( { ignore, post_type, search_terms = '' } ) {
 }
 
 /**
+ * Whether the block being moved is a Ticket block, rather than an RSVP.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the tickets store holds the block the move dialog was opened for.
+ */
+export function* isTicketBlockMove() {
+	const clientId = yield select( selectors.getModalClientId );
+	const ticketClientIds = yield select( ticketSelectors.getTicketsAllClientIds );
+
+	return ticketClientIds.includes( clientId );
+}
+
+/**
  * Moves ticket/RSVP from one post to another
  *
  * @yield
@@ -119,6 +136,18 @@ export function* moveTicket( { src_post_id, ticket_type_id, target_post_id } ) {
 		yield put( {
 			type: types.MOVE_TICKET,
 		} );
+
+		// On a post that defers ticket saves a Ticket block's move is staged and happens with the post save. An RSVP,
+		// whose other changes are saved at once, is moved at once too: a staged move would read as done to it.
+		if ( usesDeferredSave() && ( yield call( isTicketBlockMove ) ) ) {
+			yield call( stageMove, parseInt( ticket_type_id, 10 ), parseInt( target_post_id, 10 ) );
+			const data = { remove_ticket_type: parseInt( ticket_type_id, 10 ), staged: true };
+			yield put( {
+				type: types.MOVE_TICKET_SUCCESS,
+				data,
+			} );
+			return data;
+		}
 		const { data } = yield call( _fetch, {
 			action: 'move_ticket_type',
 			src_post_id,

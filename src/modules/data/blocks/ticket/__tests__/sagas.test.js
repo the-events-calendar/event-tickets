@@ -18,6 +18,8 @@ import * as constants from '../constants';
 import * as types from '../types';
 import * as actions from '../actions';
 import watchers, * as sagas from '../sagas';
+import * as deferred from '../deferred';
+import * as deferredSagas from '../deferred-sagas';
 import * as selectors from '../selectors';
 import {
 	DEFAULT_STATE as TICKET_HEADER_IMAGE_DEFAULT_STATE,
@@ -151,6 +153,7 @@ describe( 'Ticket Block sagas', () => {
 			expect( gen.next().value ).toEqual(
 				fork( sagas.handleEventStartDateChanges ),
 			);
+			expect( gen.next().value ).toEqual( fork( deferredSagas.watchPostSaves ) );
 			expect( gen.next().done ).toEqual( true );
 		} );
 	} );
@@ -1556,15 +1559,9 @@ describe( 'Ticket Block sagas', () => {
 				},
 			};
 
-			expect( gen.next( response ).value ).toEqual(
-				select( selectors.getTicketsSharedCapacity ),
-			);
+			expect( gen.next( response ).value ).toEqual( call( sagas.syncTempSharedCapacity ) );
 
-			expect( gen.next( '' ).value ).toEqual(
-				select( selectors.getTicketsTempSharedCapacity ),
-			);
-
-			expect( gen.next( 0 ).value ).toEqual(
+			expect( gen.next().value ).toEqual(
 				all( [
 					select( selectors.getTicketTempTitle, { clientId: action.payload.clientId } ),
 					select( selectors.getTicketTempDescription, { clientId: action.payload.clientId } ),
@@ -2137,4 +2134,81 @@ describe( 'Ticket Block sagas', () => {
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
-	} );} );
+	} );
+
+	describe( 'deferred save branches', () => {
+		const fakeBody = () => ( { entries: () => [ [ 'name', 'Staged' ], [ 'provider', 'rsvp' ] ][ Symbol.iterator ]() } );
+
+		afterEach( () => {
+			jest.restoreAllMocks();
+		} );
+
+		it( 'createNewTicket stages instead of posting on a deferred post', () => {
+			jest.spyOn( deferred, 'usesDeferredSave' ).mockReturnValue( true );
+			const gen = sagas.createNewTicket( { payload: { clientId: 'a' } } );
+
+			expect( gen.next().value ).toEqual( call( sagas.setBodyDetails, 'a' ) );
+			expect( gen.next( fakeBody() ).value ).toEqual(
+				call( deferredSagas.stageTicket, 'a', [ [ 'name', 'Staged' ], [ 'provider', 'rsvp' ] ] )
+			);
+			// As the REST create did: a first shared capacity set in the ticket form becomes the block's.
+			expect( gen.next().value ).toEqual( call( sagas.syncTempSharedCapacity ) );
+			expect( gen.next().done ).toBe( true );
+		} );
+
+		it( 'syncTempSharedCapacity makes the capacity typed in the ticket form the block\'s when it has none', () => {
+			const gen = sagas.syncTempSharedCapacity();
+
+			expect( gen.next().value ).toEqual( select( selectors.getTicketsSharedCapacity ) );
+			expect( gen.next( '' ).value ).toEqual( select( selectors.getTicketsTempSharedCapacity ) );
+			expect( gen.next( '50' ).value ).toEqual( put( actions.setTicketsSharedCapacity( '50' ) ) );
+			expect( gen.next().done ).toBe( true );
+
+			const kept = sagas.syncTempSharedCapacity();
+			kept.next();
+			kept.next( '20' );
+			expect( kept.next( '50' ).done ).toBe( true );
+		} );
+
+		it( 'updateTicket stages instead of putting on a deferred post', () => {
+			jest.spyOn( deferred, 'usesDeferredSave' ).mockReturnValue( true );
+			const gen = sagas.updateTicket( { payload: { clientId: 'a' } } );
+
+			expect( gen.next().value ).toEqual( call( sagas.setBodyDetails, 'a' ) );
+			expect( gen.next( fakeBody() ).value ).toEqual(
+				call( deferredSagas.stageTicket, 'a', [ [ 'name', 'Staged' ], [ 'provider', 'rsvp' ] ] )
+			);
+			expect( gen.next().done ).toBe( true );
+		} );
+
+		it( 'setTicketInitialState remembers the block position instead of re-saving the ticket on every post save', () => {
+			jest.spyOn( deferred, 'usesDeferredSave' ).mockReturnValue( true );
+			const gen = sagas.setTicketInitialState( {
+				payload: { clientId: 'a', get: ( key, fallback ) => fallback },
+			} );
+			const effects = [];
+			let step = gen.next();
+			while ( ! step.done ) {
+				effects.push( step.value );
+				step = gen.next();
+			}
+
+			expect( effects ).toContainEqual( call( deferredSagas.rememberPosition, 'a' ) );
+			expect( effects ).not.toContainEqual( fork( sagas.saveTicketWithPostSave, 'a' ) );
+		} );
+
+		it( 'deleteTicket stages the deletion of a saved ticket on a deferred post and sends no request', () => {
+			jest.spyOn( deferred, 'usesDeferredSave' ).mockReturnValue( true );
+			const gen = sagas.deleteTicket( { payload: { clientId: 'a', askForDeletion: false } } );
+
+			expect( gen.next().value ).toEqual( select( selectors.getTicketId, { clientId: 'a' } ) );
+			expect( gen.next( 12 ).value ).toEqual( select( selectors.getTicketHasBeenCreated, { clientId: 'a' } ) );
+			expect( gen.next( true ).value ).toEqual( put( actions.setTicketIsSelected( 'a', false ) ) );
+			expect( gen.next().value ).toEqual( put( actions.removeTicketBlock( 'a' ) ) );
+			gen.next(); // clearSelectedBlock
+			gen.next(); // removeBlocks
+			expect( gen.next().value ).toEqual( call( deferredSagas.stageDelete, 'a', 12 ) );
+			expect( gen.next().done ).toBe( true );
+		} );
+	} );
+} );
