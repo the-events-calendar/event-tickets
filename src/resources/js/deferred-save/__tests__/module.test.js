@@ -144,6 +144,43 @@ describe( 'deferred-save module', () => {
 		expect( module.state.toPayload().create ).toHaveLength( 1 );
 	} );
 
+	it( 'checks a lower capacity against the tickets the row says it sold, not against a shared pool', () => {
+		// Shared capacity: 100 for this ticket, 40 left in the pool other tickets sold from, none of this one sold.
+		const row = `<table><tbody class="tribe-tickets-editor-table-tickets-body" data-ticket-type="default">
+			<tr data-ticket-type-id="12" data-ticket-sold="0">
+				<td><div class="tribe-tickets__tickets-editor-ticket-name-title">Capped</div></td>
+				<td class="ticket_capacity">100</td><td class="ticket_available">40</td>
+			</tr></tbody></table>`;
+		const module = load( { savedTables: row } );
+		module.state.stageUpdate( 12, [ [ 'ticket_name', 'Capped' ], [ 'tribe-ticket[capacity]', '50' ] ] );
+		module.render();
+
+		const event = new window.Event( 'submit', { cancelable: true } );
+		document.getElementById( 'post' ).dispatchEvent( event );
+
+		expect( event.defaultPrevented ).toBe( false );
+
+		// Below what this ticket itself sold is still refused.
+		$( 'tr[data-ticket-type-id="12"]' ).attr( 'data-ticket-sold', '60' );
+		const refused = new window.Event( 'submit', { cancelable: true } );
+		document.getElementById( 'post' ).dispatchEvent( refused );
+
+		expect( refused.defaultPrevented ).toBe( true );
+	} );
+
+	it( 'lets a preview through with invalid staged tickets, which a preview does not save', () => {
+		const module = load();
+		module.state.stageCreate( [ [ 'ticket_name', '' ] ] );
+		module.render();
+		document.getElementById( 'wp-preview' ).value = 'dopreview';
+
+		const event = new window.Event( 'submit', { cancelable: true } );
+		document.getElementById( 'post' ).dispatchEvent( event );
+
+		expect( event.defaultPrevented ).toBe( false );
+		expect( $( '.tec-tickets-deferred-save-validation' ).length ).toBe( 0 );
+	} );
+
 	it( 'lets the fields a staged ticket turned on show again when it is edited', () => {
 		const module = load( {
 			editPanel: `
@@ -171,6 +208,18 @@ describe( 'deferred-save module', () => {
 		expect( $( '#ticket_add_sale_price' ).prop( 'checked' ) ).toBe( true );
 		expect( $( '#ticket_sale_price' ).prop( 'disabled' ) ).toBe( false );
 		expect( $( '#ticket_sale_price' ).val() ).toBe( '8' );
+	} );
+
+	it( 'sends a price typed with a comma decimal as the plain number the server reads', () => {
+		window.price_format = { decimal: ',' };
+		const module = load();
+		delete window.price_format;
+		module.state.stageCreate( [ [ 'ticket_name', 'General' ], [ 'ticket_price', '12,50' ] ] );
+		module.render();
+
+		expect( $( 'input[name="tec_tickets[create][0][ticket_price]"]' ).val() ).toBe( '12.5' );
+		// The row still shows the price as the admin typed it.
+		expect( $( '.tec-tickets-deferred-save-row [data-tec-slot="price"]' ).text() ).toBe( '12,50' );
 	} );
 
 	it( 'drops the leave warning when the post form submits for real', () => {
@@ -262,5 +311,32 @@ describe( 'deferred-save module', () => {
 		expect( event.defaultPrevented ).toBe( true );
 		expect( $( '.tec-tickets-deferred-save-validation' ).text() ).toContain( 'Too many fields.' );
 		expect( $( '#publish' ).prop( 'disabled' ) ).toBe( false );
+	} );
+
+	it( 'duplicates a saved ticket with a staged edit from the edit, without asking the server', () => {
+		const module = load();
+		const post = jest.spyOn( $, 'post' );
+		module.state.stageUpdate( 12, [ [ 'ticket_name', 'Edited' ], [ 'ticket_id', '12' ] ] );
+
+		loadedHooks.applyFilters( 'tec.tickets.admin.ticket.intercepted', false, 'duplicate', { ticketId: 12 } );
+
+		expect( post ).not.toHaveBeenCalled();
+		expect( module.state.getCreate( 0 ).fields ).toEqual( [
+			[ 'ticket_name', 'Edited (copy)' ],
+			[ 'tec_tickets_duplicate_of', '12' ],
+		] );
+		post.mockRestore();
+	} );
+
+	it( 'says so when the saved ticket to duplicate cannot be read', () => {
+		load( { strings: { duplicateFailed: 'The ticket could not be copied.' } } );
+		window.ajaxurl = '/wp-admin/admin-ajax.php';
+		window.TribeTickets = { edit_ticket_nonce: 'n' };
+		const post = jest.spyOn( $, 'post' ).mockImplementation( () => ( { fail: ( callback ) => callback() } ) );
+
+		loadedHooks.applyFilters( 'tec.tickets.admin.ticket.intercepted', false, 'duplicate', { ticketId: 12 } );
+
+		expect( $( '.tec-tickets-deferred-save-validation' ).text() ).toContain( 'The ticket could not be copied.' );
+		post.mockRestore();
 	} );
 } );

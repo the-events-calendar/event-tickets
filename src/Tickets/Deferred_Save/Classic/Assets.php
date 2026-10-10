@@ -90,15 +90,28 @@ final class Assets {
 	 */
 	public function localized_data(): array {
 		return [
-			'free'          => __( 'Free', 'event-tickets' ),
-			'unlimited'     => __( 'Unlimited', 'event-tickets' ),
-			'leaveMessage'  => __( 'You have ticket changes that are not saved yet. Leave without saving them?', 'event-tickets' ),
+			'free'            => __( 'Free', 'event-tickets' ),
+			'unlimited'       => __( 'Unlimited', 'event-tickets' ),
+			'leaveMessage'    => __( 'You have ticket changes that are not saved yet. Leave without saving them?', 'event-tickets' ),
 			// PHP drops the fields past this count without a word; the module refuses a submit that would pass it.
-			'maxInputVars'  => (int) ini_get( 'max_input_vars' ),
-			'inputLimit'    => __( 'There are too many ticket changes to save with the post at once. Save the post with fewer of them staged, then stage the rest.', 'event-tickets' ),
-			'moveBlocked'   => __( 'This ticket has changes waiting for the post save. Save the post before moving it.', 'event-tickets' ),
-			'editBlocked'   => __( 'This ticket moves when the post is saved. Undo the move to edit it.', 'event-tickets' ),
-			'deleteConfirm' => __( 'Delete this ticket when the post is saved? You can undo this until then.', 'event-tickets' ),
+			'maxInputVars'    => (int) ini_get( 'max_input_vars' ),
+			'inputLimit'      => __( 'There are too many ticket changes to save with the post at once. Save the post with fewer of them staged, then stage the rest.', 'event-tickets' ),
+			'moveBlocked'     => __( 'This ticket has changes waiting for the post save. Save the post before moving it.', 'event-tickets' ),
+			'editBlocked'     => __( 'This ticket moves when the post is saved. Undo the move to edit it.', 'event-tickets' ),
+			'deleteConfirm'   => __( 'Delete this ticket when the post is saved? You can undo this until then.', 'event-tickets' ),
+			// The same string the provider's `duplicate_ticket()` adds to a copy's name.
+			'copySuffix'      => __( '(copy)', 'event-tickets' ),
+			'dateFormat'      => (int) \Tribe__Date_Utils::get_datepicker_format_index(),
+			'duplicateFailed' => __( 'The ticket could not be copied. Reload the page and try again.', 'event-tickets' ),
+			'invalidHeading'  => __( 'Some staged tickets are not valid. Fix them before saving the post.', 'event-tickets' ),
+			'moveStaged'      => __( 'The move is staged and happens when you save the post. You may now close this window.', 'event-tickets' ),
+			'rules'           => [
+				'name'        => __( 'a name is required', 'event-tickets' ),
+				'price'       => __( 'the price must be a non-negative number', 'event-tickets' ),
+				'sale_price'  => __( 'the sale price must be a number below the price', 'event-tickets' ),
+				'sale_window' => __( 'the sale window must start before it ends', 'event-tickets' ),
+				'capacity'    => __( 'the capacity cannot be below the tickets already sold', 'event-tickets' ),
+			],
 		];
 	}
 

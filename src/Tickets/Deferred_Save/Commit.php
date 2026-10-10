@@ -26,8 +26,9 @@ use Tribe__Tickets__Tickets as Tickets;
  * replays each part through the functions Event Tickets uses for ticket writes today, so every hook
  * that fires on a ticket save or delete today still fires, in the same order.
  *
- * Parts run in the order `update`, `move`, `create`, `delete`; the parser refuses a ticket named in
- * more than one of them. One failing entry never stops the others.
+ * Parts run in the order `update`, `create`, `move`, `delete`, so a copy is taken while its source is
+ * still on the post; the parser refuses a ticket named in more than one of `update`, `move` and
+ * `delete`. One failing entry never stops the others.
  *
  * A write that happened is never reported as refused: when something that runs after it throws, the
  * entry's error is marked `applied`. A ticket a provider created but did not finish is reported with its
@@ -58,6 +59,19 @@ final class Commit {
 	 * @var string
 	 */
 	public const CREATE_KEY_META = '_tec_tickets_deferred_save_create_key';
+
+	/**
+	 * The field of a `create` entry that names the ticket on the same post it copies.
+	 *
+	 * The copy is made by the provider's `duplicate_ticket()`, which copies the meta no edit form carries,
+	 * and the entry's fields are then saved over it. `Checks` requires the ticket to be on the post and
+	 * editable by the user.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const DUPLICATE_OF = 'tec_tickets_duplicate_of';
 
 	/**
 	 * The checks a payload passes before anything is saved.
@@ -276,10 +290,6 @@ final class Commit {
 			$result = $this->guarded( $result, Parser::UPDATE, $ticket_id, fn( Result $r ) => $this->update( $r, $post_id, $ticket_id, $data ) );
 		}
 
-		foreach ( $payload->get_move() as $ticket_id => $destination_id ) {
-			$result = $this->guarded( $result, Parser::MOVE, $ticket_id, fn( Result $r ) => $this->move( $r, $ticket_id, $destination_id ) );
-		}
-
 		// The tickets each provider has on the post, read at the first create and kept in step, not read again for each one.
 		$attached = [];
 
@@ -292,6 +302,10 @@ final class Commit {
 					return $this->create( $r, $post_id, $position, $data, $attached );
 				}
 			);
+		}
+
+		foreach ( $payload->get_move() as $ticket_id => $destination_id ) {
+			$result = $this->guarded( $result, Parser::MOVE, $ticket_id, fn( Result $r ) => $this->move( $r, $ticket_id, $destination_id ) );
 		}
 
 		foreach ( $payload->get_delete() as $ticket_id ) {
@@ -413,7 +427,11 @@ final class Commit {
 	}
 
 	/**
-	 * Creates a ticket through the provider the entry names.
+	 * Creates a ticket through the provider the entry names, or copies one through its provider.
+	 *
+	 * `duplicate_ticket()` copies every meta of the source, including what no edit form carries, such as a
+	 * WooCommerce product's tax status, tax class and purchase note; the entry's fields are then saved over
+	 * the copy as an update.
 	 *
 	 * @since TBD
 	 *
@@ -429,9 +447,17 @@ final class Commit {
 	 * @throws \Throwable When the provider throws before the ticket is on the post; `guarded()` reports it.
 	 */
 	private function create( Result $result, int $post_id, int $position, array $data, array &$attached ): Result {
-		$provider = empty( $data['ticket_provider'] ) || ! is_string( $data['ticket_provider'] )
-			? false
-			: Tickets::get_ticket_provider_instance( $data['ticket_provider'] );
+		// The checks left an int here only for a ticket on this post the user may edit; a copy is made by its provider.
+		$source_id = (int) ( $data[ self::DUPLICATE_OF ] ?? 0 );
+		unset( $data[ self::DUPLICATE_OF ] );
+
+		if ( $source_id ) {
+			$provider = tribe_tickets_get_ticket_provider( $source_id );
+		} else {
+			$provider = empty( $data['ticket_provider'] ) || ! is_string( $data['ticket_provider'] )
+				? false
+				: Tickets::get_ticket_provider_instance( $data['ticket_provider'] );
+		}
 
 		if ( ! $provider instanceof Tickets ) {
 			return $result->with_error( Parser::CREATE, $position, $this->no_provider_message() );
@@ -450,15 +476,18 @@ final class Commit {
 			return $this->update_created( $result, $post_id, $position, $created, $data );
 		}
 
-		unset( $data['ticket_id'] );
-		$data['ticket_type'] = $this->ticket_type( $data, 'default' );
+		if ( ! $source_id ) {
+			unset( $data['ticket_id'] );
+			$data['ticket_type'] = $this->ticket_type( $data, 'default' );
+		}
+
 		// What is on the post already, to tell the ticket this save adds if something throws once it is there.
 		$provider_class                = get_class( $provider );
 		$attached[ $provider_class ] ??= $this->attached_ids( $provider, $post_id );
 		$before                        = $attached[ $provider_class ];
 
 		try {
-			$ticket_id = $provider->ticket_add( $post_id, $data );
+			$ticket_id = $source_id ? $provider->duplicate_ticket( $post_id, $source_id ) : $provider->ticket_add( $post_id, $data );
 		} catch ( \Throwable $e ) {
 			// Whichever listener threw, and wherever the provider relates the ticket to the post, the ticket is there or not.
 			$added = array_values( array_diff( $this->attached_ids( $provider, $post_id ), $before ) );
@@ -487,6 +516,11 @@ final class Commit {
 		$this->remember_key( $ticket_id, $key );
 		$attached[ $provider_class ][] = $ticket_id;
 		$result                        = $result->with_created( $position, $ticket_id );
+
+		if ( $source_id ) {
+			// Guarded here, so that a listener throwing during the update does not lose the ID the result now holds.
+			return $this->guarded( $result, Parser::CREATE, $position, fn( Result $r ) => $this->update( $r, $post_id, $ticket_id, $data, Parser::CREATE, $position ) );
+		}
 
 		return $this->fire_added( $post_id, $ticket_id, $data )
 			? $result

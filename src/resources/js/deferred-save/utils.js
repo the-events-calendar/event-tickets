@@ -111,7 +111,10 @@ export const createState = () => {
 		 */
 		restageCreate( position, fields ) {
 			if ( undefined !== create[ position ] ) {
-				create[ position ] = { ...entry( fieldsWithoutTicketId( fields ) ), key: create[ position ].key };
+				// The edit panel has no field for the ticket a copy copies: keep it from the staged entry.
+				const source = create[ position ].fields.filter( ( [ name ] ) => DUPLICATE_OF === name );
+				const edited = fieldsWithoutTicketId( fields ).filter( ( [ name ] ) => DUPLICATE_OF !== name );
+				create[ position ] = { ...entry( [ ...edited, ...source ] ), key: create[ position ].key };
 			}
 		},
 
@@ -275,28 +278,40 @@ export const createState = () => {
 };
 
 /**
+ * The price fields the server reads as plain numbers.
+ */
+const PRICE_FIELDS = [ 'ticket_price', 'ticket_sale_price' ];
+
+/**
  * Builds the hidden inputs the post form carries for the staged state.
  *
  * @since TBD
  *
- * @param {Object} state The staged state.
+ * @param {Object}             state   The staged state.
+ * @param {{decimal?: string}} context The site's price decimal separator, when the page knows it.
  *
  * @return {Array<Array<string>>} `[ name, value ]` pairs.
  */
-export const buildHiddenFields = ( state ) => {
+export const buildHiddenFields = ( state, context = {} ) => {
 	const payload = state.toPayload();
 	const fields = [];
+	// A price typed as `12,50` on a comma-decimal site is sent as `12.5`; one that cannot be read goes as typed and is refused.
+	const valueOf = ( name, value ) => {
+		const price = context.decimal && PRICE_FIELDS.includes( name ) ? priceOrNull( value, context.decimal ) : null;
+
+		return Number.isFinite( price ) ? String( price ) : String( value );
+	};
 
 	payload.create.forEach( ( { fields: entryFields, key }, position ) => {
 		entryFields.forEach( ( [ name, value ] ) => {
-			fields.push( [ `tec_tickets[create][${ position }]${ bracketName( name ) }`, String( value ) ] );
+			fields.push( [ `tec_tickets[create][${ position }]${ bracketName( name ) }`, valueOf( name, value ) ] );
 		} );
 		fields.push( [ `tec_tickets[create][${ position }][tec_tickets_create_key]`, key ] );
 	} );
 
 	Object.entries( payload.update ).forEach( ( [ ticketId, { fields: entryFields } ] ) => {
 		entryFields.forEach( ( [ name, value ] ) => {
-			fields.push( [ `tec_tickets[update][${ ticketId }]${ bracketName( name ) }`, String( value ) ] );
+			fields.push( [ `tec_tickets[update][${ ticketId }]${ bracketName( name ) }`, valueOf( name, value ) ] );
 		} );
 	} );
 
@@ -315,3 +330,211 @@ export const buildHiddenFields = ( state ) => {
 
 	return fields;
 };
+
+/**
+ * Reads a price the way the panel lets an admin type it: digits with an optional thousands separator and
+ * decimal separator, either of `.` and `,`. The last separator is the decimal one when one or two digits
+ * follow it; otherwise every separator groups thousands.
+ *
+ * @param {*} value The value.
+ *
+ * @return {number|null} The number, `NaN` when it is not a non-negative number, `null` when empty.
+ */
+const numberOrNull = ( value ) => {
+	const text = String( value ?? '' ).replace( /\s/g, '' );
+
+	if ( '' === text ) {
+		return null;
+	}
+
+	if ( ! /^[\d.,]*\d[\d.,]*$/.test( text ) ) {
+		return NaN;
+	}
+
+	const last = Math.max( text.lastIndexOf( '.' ), text.lastIndexOf( ',' ) );
+	const decimals = last < 0 ? '' : text.slice( last + 1 );
+
+	if ( last >= 0 && decimals.length >= 1 && decimals.length <= 2 ) {
+		return Number( `${ text.slice( 0, last ).replace( /[.,]/g, '' ) || '0' }.${ decimals }` );
+	}
+
+	return Number( text.replace( /[.,]/g, '' ) );
+};
+
+/**
+ * Reads a price with the site's decimal separator; the other of `.` and `,` can only group thousands.
+ *
+ * Without a known separator it falls back to `numberOrNull()`, which cannot tell `9.750` in a three-decimal
+ * currency from nine thousand seven hundred and fifty.
+ *
+ * @param {*}      value   The value.
+ * @param {string} decimal The site's decimal separator, or an empty string when it is not known.
+ *
+ * @return {number|null} The number, `NaN` when it is not a non-negative number, `null` when empty.
+ */
+const priceOrNull = ( value, decimal ) => {
+	if ( ! decimal ) {
+		return numberOrNull( value );
+	}
+
+	const text = String( value ?? '' ).replace( /\s/g, '' );
+
+	if ( '' === text ) {
+		return null;
+	}
+
+	const thousands = '.' === decimal ? ',' : '.';
+	const parts = text.split( thousands ).join( '' ).split( decimal );
+
+	if ( parts.length > 2 || ! /\d/.test( text ) || ! parts.every( ( part ) => /^\d*$/.test( part ) ) ) {
+		return NaN;
+	}
+
+	return Number( `${ parts[ 0 ] || '0' }.${ parts[ 1 ] || '0' }` );
+};
+
+/**
+ * Where the year, month and day sit in each datepicker format, by the index the site option stores
+ * (`Tribe__Date_Utils::datepicker_formats()`, the list `tickets.js` uses).
+ */
+const DATE_ORDERS = [ 'ymd', 'mdy', 'mdy', 'dmy', 'dmy', 'mdy', 'mdy', 'dmy', 'dmy', 'ymd', 'mdy', 'dmy' ];
+
+/**
+ * Reads a date typed in the site's datepicker format.
+ *
+ * @since TBD
+ *
+ * @param {string} value       The date.
+ * @param {number} formatIndex The datepicker format index.
+ *
+ * @return {Date|null} The date, or `null` when it cannot be read in that format.
+ */
+export const parseDatepickerDate = ( value, formatIndex ) => {
+	const order = DATE_ORDERS[ formatIndex ];
+	const parts = String( value ?? '' )
+		.trim()
+		.split( /[-/.]/ );
+
+	if ( ! order || 3 !== parts.length || parts.some( ( part ) => ! /^\d+$/.test( part ) ) ) {
+		return null;
+	}
+
+	const at = ( unit ) => parseInt( parts[ order.indexOf( unit ) ], 10 );
+	const [ year, month, day ] = [ at( 'y' ), at( 'm' ), at( 'd' ) ];
+	const date = new Date( year, month - 1, day );
+
+	return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day ? date : null;
+};
+
+const isOn = ( value ) =>
+	! [ '', '0', 'false', 'no', 'off' ].includes(
+		String( value ?? '' )
+			.trim()
+			.toLowerCase()
+	);
+
+/**
+ * Validates a staged field set with the rules the editors share.
+ *
+ * Rules: a name is present; the price, when given, is a non-negative number; when the sale price is
+ * on it is a number below the price; the sale window start is not after its end; and the capacity,
+ * when given and when the tickets sold are known, is not below them.
+ *
+ * @since TBD
+ *
+ * @param {Array<Array<string>>}                                   fields  The field set.
+ * @param {{sold?: number, dateFormat?: number, decimal?: string}} context What the page knows: the tickets sold, the datepicker format index and the price decimal separator.
+ *
+ * @return {Array<string>} The failing rules: `name`, `price`, `sale_price`, `sale_window`, `capacity`.
+ */
+export const validateFields = ( fields, context = {} ) => {
+	const errors = [];
+	const name = firstValue( fields, 'ticket_name' );
+	const decimal = context.decimal || '';
+	const price = priceOrNull( firstValue( fields, 'ticket_price' ), decimal );
+	const capacity = numberOrNull( firstValue( fields, 'tribe-ticket[capacity]' ) );
+
+	if ( '' === name.trim() ) {
+		errors.push( 'name' );
+	}
+
+	if ( null !== price && ( Number.isNaN( price ) || price < 0 ) ) {
+		errors.push( 'price' );
+	}
+
+	if ( isOn( firstValue( fields, 'ticket_add_sale_price' ) ) ) {
+		const salePrice = priceOrNull( firstValue( fields, 'ticket_sale_price' ), decimal );
+
+		if (
+			null === salePrice ||
+			Number.isNaN( salePrice ) ||
+			null === price ||
+			Number.isNaN( price ) ||
+			salePrice >= price
+		) {
+			errors.push( 'sale_price' );
+		}
+
+		const dateFormat = undefined === context.dateFormat ? 0 : context.dateFormat;
+		const start = parseDatepickerDate( firstValue( fields, 'ticket_sale_start_date' ), dateFormat );
+		const end = parseDatepickerDate( firstValue( fields, 'ticket_sale_end_date' ), dateFormat );
+
+		// A date the format cannot read is left to the server rather than reported as a bad window.
+		if ( start && end && start > end ) {
+			errors.push( 'sale_window' );
+		}
+	}
+
+	if (
+		'number' === typeof context.sold &&
+		null !== capacity &&
+		! Number.isNaN( capacity ) &&
+		capacity < context.sold
+	) {
+		errors.push( 'capacity' );
+	}
+
+	return errors;
+};
+
+/**
+ * The field of a staged copy that names the saved ticket it copies; the server copies that ticket's meta.
+ *
+ * @since TBD
+ *
+ * @type {string}
+ */
+export const DUPLICATE_OF = 'tec_tickets_duplicate_of';
+
+/**
+ * Stages-ready fields for a copy of a saved ticket: its fields, and the ticket they copy.
+ *
+ * @since TBD
+ *
+ * @param {Array<Array<string>>} fields   The saved ticket's field set.
+ * @param {number}               ticketId The saved ticket.
+ * @param {string}               suffix   What the copy's name ends with, translated.
+ *
+ * @return {Array<Array<string>>} The copy's field set.
+ */
+export const copyOfSaved = ( fields, ticketId, suffix = '(copy)' ) => [
+	...duplicateFields( fields, suffix ).filter( ( [ name ] ) => DUPLICATE_OF !== name ),
+	[ DUPLICATE_OF, String( ticketId ) ],
+];
+
+/**
+ * Copies a field set for a duplicate: the name gets the copy suffix, the ID and SKU are dropped.
+ *
+ * @since TBD
+ *
+ * @param {Array<Array<string>>} fields The field set to copy.
+ * @param {string}               suffix What the copy's name ends with, translated.
+ *
+ * @return {Array<Array<string>>} The copy.
+ */
+export const duplicateFields = ( fields, suffix = '(copy)' ) =>
+	fields
+		.filter( ( [ name ] ) => ! [ 'ticket_id', 'ticket_sku' ].includes( name ) )
+		.map( ( [ name, value ] ) =>
+			'ticket_name' === name ? [ name, `${ value } ${ suffix }` ] : [ name, value ]
+		);
