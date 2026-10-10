@@ -103,15 +103,6 @@ final class Window_Kind {
 	private array $anchors;
 
 	/**
-	 * Whether a relative boundary names its anchor.
-	 *
-	 * @since TBD
-	 *
-	 * @var bool
-	 */
-	private bool $takes_anchor;
-
-	/**
 	 * The key the rule is stored under in the shared rules meta, or `null` for its top level.
 	 *
 	 * @since TBD
@@ -128,6 +119,15 @@ final class Window_Kind {
 	 * @var self|null
 	 */
 	private ?self $parent;
+
+	/**
+	 * Whether the window's dates are the ticket's own sales dates.
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
+	 */
+	private bool $owns_ticket_sales_dates;
 
 	/**
 	 * Gets the sales window kind.
@@ -150,9 +150,9 @@ final class Window_Kind {
 				Boundary::MAX_VALUE,
 				[ MINUTE_IN_SECONDS, HOUR_IN_SECONDS, DAY_IN_SECONDS, WEEK_IN_SECONDS ],
 				[ Rule::ANCHOR_START, Rule::ANCHOR_END ],
-				true,
 				null,
-				null
+				null,
+				true
 			);
 		}
 
@@ -180,9 +180,9 @@ final class Window_Kind {
 				30,
 				[ DAY_IN_SECONDS, WEEK_IN_SECONDS ],
 				[ Rule::ANCHOR_START ],
-				false,
 				'sale_price',
-				self::sales()
+				self::sales(),
+				false
 			);
 		}
 
@@ -236,17 +236,6 @@ final class Window_Kind {
 	}
 
 	/**
-	 * Gets the lowest number of units a relative boundary accepts.
-	 *
-	 * @since TBD
-	 *
-	 * @return int The lowest value.
-	 */
-	public function get_min_value(): int {
-		return Boundary::MIN_VALUE;
-	}
-
-	/**
 	 * Gets the highest number of units a relative boundary accepts.
 	 *
 	 * @since TBD
@@ -280,14 +269,14 @@ final class Window_Kind {
 	}
 
 	/**
-	 * Returns whether a relative boundary names its anchor.
+	 * Returns whether a relative boundary names its anchor, which it does when it may be counted from more than one.
 	 *
 	 * @since TBD
 	 *
 	 * @return bool Whether the anchor is sent and stored; when it is not, it is implied and must not be sent.
 	 */
 	public function takes_anchor(): bool {
-		return $this->takes_anchor;
+		return count( $this->anchors ) > 1;
 	}
 
 	/**
@@ -313,19 +302,34 @@ final class Window_Kind {
 	}
 
 	/**
+	 * Returns whether the window's dates are the ticket's own sales dates, the ones the ticket is on sale between.
+	 *
+	 * Only such a window:
+	 * - moves a ticket start later than now to now when its start opens the window at once;
+	 * - lets its end follow the event start when the event moves and the rule leaves the end to the ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the window's dates are the ticket's sales dates.
+	 */
+	public function owns_ticket_sales_dates(): bool {
+		return $this->owns_ticket_sales_dates;
+	}
+
+	/**
 	 * Window_Kind constructor.
 	 *
 	 * @since TBD
 	 *
-	 * @param string                                $id              The kind's ID.
-	 * @param array{start: string[], end: string[]} $modes           The modes each end of the window accepts.
-	 * @param string                                $open_start_mode The start mode that opens the window at once.
-	 * @param int                                   $max_value       The highest number of units a relative boundary accepts.
-	 * @param int[]                                 $units           The units a relative boundary accepts.
-	 * @param string[]                              $anchors         The event dates a relative boundary may be counted from.
-	 * @param bool                                  $takes_anchor    Whether a relative boundary names its anchor.
-	 * @param string|null                           $store_key       The key the rule is stored under, or `null` for the top level.
-	 * @param self|null                             $parent_kind     The kind this one is judged against, or `null`.
+	 * @param string                                $id                      The kind's ID.
+	 * @param array{start: string[], end: string[]} $modes                   The modes each end of the window accepts.
+	 * @param string                                $open_start_mode         The start mode that opens the window at once.
+	 * @param int                                   $max_value               The highest number of units a relative boundary accepts.
+	 * @param int[]                                 $units                   The units a relative boundary accepts.
+	 * @param string[]                              $anchors                 The event dates a relative boundary may be counted from.
+	 * @param string|null                           $store_key               The key the rule is stored under, or `null` for the top level.
+	 * @param self|null                             $parent_kind             The kind this one is judged against, or `null`.
+	 * @param bool                                  $owns_ticket_sales_dates Whether the window's dates are the ticket's own sales dates.
 	 */
 	private function __construct(
 		string $id,
@@ -334,18 +338,18 @@ final class Window_Kind {
 		int $max_value,
 		array $units,
 		array $anchors,
-		bool $takes_anchor,
 		?string $store_key,
-		?self $parent_kind
+		?self $parent_kind,
+		bool $owns_ticket_sales_dates
 	) {
-		$this->id              = $id;
-		$this->modes           = $modes;
-		$this->open_start_mode = $open_start_mode;
-		$this->max_value       = $max_value;
-		$this->units           = $units;
-		$this->anchors         = $anchors;
-		$this->takes_anchor    = $takes_anchor;
-		$this->store_key       = $store_key;
-		$this->parent          = $parent_kind;
+		$this->id                      = $id;
+		$this->modes                   = $modes;
+		$this->open_start_mode         = $open_start_mode;
+		$this->max_value               = $max_value;
+		$this->units                   = $units;
+		$this->anchors                 = $anchors;
+		$this->store_key               = $store_key;
+		$this->parent                  = $parent_kind;
+		$this->owns_ticket_sales_dates = $owns_ticket_sales_dates;
 	}
 }

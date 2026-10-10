@@ -137,9 +137,9 @@ final class Boundary implements JsonSerializable {
 		}
 
 		$value = $data['value'] ?? null;
-		if ( ! is_int( $value ) || $value < $kind->get_min_value() || $value > $kind->get_max_value() ) {
+		if ( ! is_int( $value ) || $value < self::MIN_VALUE || $value > $kind->get_max_value() ) {
 			throw new InvalidArgumentException(
-				sprintf( 'The boundary value must be an integer from %d to %d.', $kind->get_min_value(), $kind->get_max_value() )
+				sprintf( 'The boundary value must be an integer from %d to %d.', self::MIN_VALUE, $kind->get_max_value() )
 			);
 		}
 
