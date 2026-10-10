@@ -14,6 +14,7 @@ namespace TEC\Tickets\Relative_Sale_Dates;
 use TEC\Common\REST\TEC\V1\Collections\PropertiesCollection;
 use TEC\Common\REST\TEC\V1\Contracts\OpenAPI_Schema;
 use TEC\Common\REST\TEC\V1\Parameter_Types\Definition_Parameter;
+use TEC\Common\StellarWP\Arrays\Arr;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket;
 use Tribe__Tickets__Tickets as Tickets;
@@ -72,12 +73,14 @@ final class Rest {
 		}
 
 		foreach ( Window_Kind::all() as $kind ) {
-			$path   = $kind->get_block_editor_request_path();
+			$keys   = $kind->get_rule_keys();
+			$path   = $keys['block_editor_request'];
 			$key    = array_pop( $path );
-			$parent = $this->get_array_at( $ticket, $path );
+			$parent = Arr::get( $ticket, $path );
 
-			if ( null !== $parent && array_key_exists( $key, $parent ) ) {
-				$ticket_data[ $kind->get_rule_keys()['data'] ] = $parent[ $key ];
+			// A rule sent as `null` still removes the stored one, so the key is looked for, not its value.
+			if ( is_array( $parent ) && array_key_exists( $key, $parent ) ) {
+				$ticket_data[ $keys['data'] ] = $parent[ $key ];
 			}
 		}
 
@@ -103,14 +106,17 @@ final class Rest {
 		$is_commerce_ticket = $ticket_id && Ticket::POSTTYPE === get_post_type( $ticket_id );
 
 		foreach ( Window_Kind::all() as $kind ) {
-			$path = $kind->get_block_editor_response_path();
-			$key  = array_pop( $path );
+			$path = $kind->get_rule_keys()['block_editor_response'];
 
-			if ( ! $is_commerce_ticket && ! $kind->returns_block_editor_rule_for_every_provider() ) {
+			// `Arr::set()` would create the levels the path goes through, which the data must already have.
+			if (
+				( ! $is_commerce_ticket && ! $kind->returns_block_editor_rule_for_every_provider() )
+				|| ! is_array( Arr::get( $data, array_slice( $path, 0, -1 ) ) )
+			) {
 				continue;
 			}
 
-			$data = $this->set_array_at( $data, $path, $key, $ticket_id ? $this->get_stored_rule( $ticket_id, $kind ) : null );
+			$data = Arr::set( $data, $path, $ticket_id ? $this->get_stored_rule( $ticket_id, $kind ) : null );
 		}
 
 		return $data;
@@ -157,7 +163,7 @@ final class Rest {
 	 */
 	public function keep_a_rule_sent_as_null( array $filtered_data, array $data, OpenAPI_Schema $schema ): array {
 		foreach ( Window_Kind::all() as $kind ) {
-			$field = $kind->get_tec_rest_field();
+			$field = $kind->get_rule_keys()['tec_rest'];
 
 			if ( array_key_exists( $field, $data ) && null === $data[ $field ] && $this->documents_field( $schema, $field ) ) {
 				$filtered_data[ $field ] = null;
@@ -180,7 +186,7 @@ final class Rest {
 		$ticket_id = absint( $entity['id'] ?? 0 );
 
 		foreach ( Window_Kind::all() as $kind ) {
-			$entity[ $kind->get_tec_rest_field() ] = $ticket_id ? $this->get_stored_rule( $ticket_id, $kind ) : null;
+			$entity[ $kind->get_rule_keys()['tec_rest'] ] = $ticket_id ? $this->get_stored_rule( $ticket_id, $kind ) : null;
 		}
 
 		return $entity;
@@ -226,58 +232,5 @@ final class Rest {
 		$rule = Rule::from_stored( $this->rule_store->get( $ticket_id ), $kind );
 
 		return $rule ? $rule->to_array() : null;
-	}
-
-	/**
-	 * Gets the array found by following keys into an array.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string,mixed> $data The array to read.
-	 * @param string[]            $path The keys to follow, outermost first.
-	 *
-	 * @return array<string,mixed>|null The array at the end of the path, or `null` when a key is missing or does not
-	 *                                  hold an array.
-	 */
-	private function get_array_at( array $data, array $path ): ?array {
-		foreach ( $path as $key ) {
-			if ( ! isset( $data[ $key ] ) || ! is_array( $data[ $key ] ) ) {
-				return null;
-			}
-
-			$data = $data[ $key ];
-		}
-
-		return $data;
-	}
-
-	/**
-	 * Sets a value in the array found by following keys into an array.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string,mixed> $data  The array to write to.
-	 * @param string[]            $path  The keys to follow to the array the value goes in, outermost first.
-	 * @param string              $key   The key of the value.
-	 * @param mixed               $value The value.
-	 *
-	 * @return array<string,mixed> The array, unchanged when a key of the path is missing or does not hold an array.
-	 */
-	private function set_array_at( array $data, array $path, string $key, $value ): array {
-		if ( ! $path ) {
-			$data[ $key ] = $value;
-
-			return $data;
-		}
-
-		$first = array_shift( $path );
-
-		if ( ! isset( $data[ $first ] ) || ! is_array( $data[ $first ] ) ) {
-			return $data;
-		}
-
-		$data[ $first ] = $this->set_array_at( $data[ $first ], $path, $key, $value );
-
-		return $data;
 	}
 }

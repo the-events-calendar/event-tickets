@@ -51,9 +51,9 @@ final class Rule_Parameter extends Parameter {
 	 * @param Window_Kind $kind The kind of the rule.
 	 */
 	private function __construct( Window_Kind $kind ) {
-		$descriptions = self::get_descriptions()[ $kind->get_id() ];
+		$descriptions = $kind->get_rest_descriptions();
 
-		$this->name                 = $kind->get_tec_rest_field();
+		$this->name                 = $kind->get_rule_keys()['tec_rest'];
 		$this->description_provider = $descriptions['rule'];
 		$this->required             = false;
 		$this->nullable             = true;
@@ -141,7 +141,7 @@ final class Rule_Parameter extends Parameter {
 	 *
 	 * @param Window_Kind           $kind         The kind of the rule.
 	 * @param string                $name         The boundary, `start` or `end`.
-	 * @param array<string,Closure> $descriptions The kind's descriptions, from `get_descriptions()`.
+	 * @param array<string,Closure> $descriptions The kind's descriptions, from `Window_Kind::get_rest_descriptions()`.
 	 *
 	 * @return Entity The boundary's documentation.
 	 */
@@ -171,57 +171,5 @@ final class Rule_Parameter extends Parameter {
 		}
 
 		return new Entity( $name, $descriptions[ $name ], $properties, false );
-	}
-
-	/**
-	 * Gets the descriptions of each kind's rule, keyed by the kind's ID.
-	 *
-	 * The value and unit descriptions take the kind's bounds and units, so each kind's copy lists what it accepts.
-	 *
-	 * @since TBD
-	 *
-	 * @return array<string,array{rule: Closure(): string, start: Closure(): string, end: Closure(): string, start_mode: Closure(): string, end_mode: Closure(): string, value: Closure(int, int): string, unit: Closure(int ...): string}> The descriptions.
-	 */
-	private static function get_descriptions(): array {
-		$sales_mode = static fn(): string => __( 'How this end of the window is set: `default` (sales open at once, or close when the event starts), `relative` (before the event) or `specific` (the date sent with the ticket).', 'event-tickets' );
-
-		return [
-			Window_Kind::SALES      => [
-				'rule'       => static fn(): string => __( 'The sales window relative to the event, or null when the ticket has fixed sale dates. Sending null removes the rule.', 'event-tickets' ),
-				'start'      => static fn(): string => __( 'When sales start.', 'event-tickets' ),
-				'end'        => static fn(): string => __( 'When sales end.', 'event-tickets' ),
-				'start_mode' => $sales_mode,
-				'end_mode'   => $sales_mode,
-				'value'      => static fn( int $min, int $max ): string => sprintf(
-					// translators: 1) the lowest number of units, 2) the highest number of units.
-					__( 'For a relative boundary, the number of units before the anchor, from %1$d to %2$d.', 'event-tickets' ),
-					$min,
-					$max
-				),
-				'unit'       => static fn( int ...$units ): string => sprintf(
-					// translators: 1) a minute, 2) an hour, 3) a day and 4) a week, each in seconds.
-					__( 'For a relative boundary, the unit in seconds: %1$d (minutes), %2$d (hours), %3$d (days) or %4$d (weeks).', 'event-tickets' ),
-					...$units
-				),
-			],
-			Window_Kind::SALE_PRICE => [
-				'rule'       => static fn(): string => __( 'The sale price window relative to the event start, or null when the sale price has fixed dates. Sending null removes the rule.', 'event-tickets' ),
-				'start'      => static fn(): string => __( 'When the sale price starts.', 'event-tickets' ),
-				'end'        => static fn(): string => __( 'When the sale price ends.', 'event-tickets' ),
-				'start_mode' => static fn(): string => __( 'How the start is set: `now` (as soon as ticket sales open), `relative` (before the event start) or `specific` (the date sent in `sale_price_start_date`).', 'event-tickets' ),
-				'end_mode'   => static fn(): string => __( 'How the end is set: `relative` (before the event start) or `specific` (the date sent in `sale_price_end_date`).', 'event-tickets' ),
-				'value'      => static fn( int $min, int $max ): string => sprintf(
-					// translators: 1) the lowest number of units, 2) the highest number of units.
-					__( 'For a relative boundary, the number of units before the event start, from %1$d to %2$d.', 'event-tickets' ),
-					$min,
-					$max
-				),
-				'unit'       => static fn( int ...$units ): string => sprintf(
-					// translators: 1) a day and 2) a week, each in seconds.
-					__( 'For a relative boundary, the unit in seconds: %1$d (days) or %2$d (weeks).', 'event-tickets' ),
-					...$units
-				),
-			],
-		];
 	}
 }

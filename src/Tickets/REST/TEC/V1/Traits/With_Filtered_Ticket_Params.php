@@ -156,10 +156,10 @@ trait With_Filtered_Ticket_Params {
 		];
 
 		foreach ( Window_Kind::all() as $kind ) {
-			$field = $kind->get_tec_rest_field();
+			$keys = $kind->get_rule_keys();
 
 			// An update that leaves a rule out keeps the stored one; one that sends `null` removes it.
-			$new_params[ $kind->get_rule_keys()['data'] ] = array_key_exists( $field, $params ) ? ( $params[ $field ] ?? '' ) : null;
+			$new_params[ $keys['data'] ] = array_key_exists( $keys['tec_rest'], $params ) ? ( $params[ $keys['tec_rest'] ] ?? '' ) : null;
 		}
 
 		$sale_price = $new_params['ticket_sale_price'];
@@ -205,7 +205,7 @@ trait With_Filtered_Ticket_Params {
 		);
 
 		foreach ( Window_Kind::all() as $kind ) {
-			unset( $params[ $kind->get_tec_rest_field() ] );
+			unset( $params[ $kind->get_rule_keys()['tec_rest'] ] );
 		}
 
 		$post_params = $params;

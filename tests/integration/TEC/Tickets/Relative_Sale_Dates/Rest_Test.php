@@ -60,12 +60,12 @@ class Rest_Test extends Controller_Test_Case {
 		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
 		$ticket_id = $this->create_tc_ticket( $event_id );
 
-		$response = $this->send_block_editor_ticket_save( 'PUT', "/tickets/{$ticket_id}", $event_id, 'edit_ticket_nonce', $kind['block_editor_body']( wp_json_encode( $kind['rule'] ) ) );
+		$response = $this->send_block_editor_ticket_save( 'PUT', "/tickets/{$ticket_id}", $event_id, 'edit_ticket_nonce', $kind['block_editor_body']( wp_json_encode( $kind['update_rule'] ) ) );
 
 		$this->assertFalse( $response->is_error() );
-		$this->assertSame( $kind['rule'], $this->get_stored_rule( $ticket_id, $kind ) );
+		$this->assertSame( $kind['update_rule'], $this->get_stored_rule( $ticket_id, $kind ) );
 		// The Ticket block keeps as saved the rule a save answers with.
-		$this->assertSame( $kind['rule'], $this->get_at_path( $response->get_data(), $kind['response_path'] ) );
+		$this->assertSame( $kind['update_rule'], $this->get_at_path( $response->get_data(), $kind['response_path'] ) );
 		$this->assertSame( 'tc', $response->get_data()['provider'] );
 	}
 
@@ -430,9 +430,9 @@ class Rest_Test extends Controller_Test_Case {
 	/**
 	 * The fixtures of each kind of rule, with the keys that carry it written as the REST APIs send them.
 	 *
-	 * Both rules start two weeks before the event start.
+	 * Both rules start two weeks before the event start. The rule an update sends ends on a relative date too.
 	 *
-	 * @return Generator<string,array{0: array{field: string, data_key: string, store_key: ?string, rule: array{start: array<string,int|string>, end: array<string,int|string>}, other_stored: array<string,mixed>, tec_rest_api_params: array<string,int>, tec_rest_api_update: array<string,int|string>, block_editor_body: callable(string): array<string,mixed>, response_path: string[], start_formats: array<string,string>, modes: array{start: string[], end: string[]}, boundary_keys: string[]}}>
+	 * @return Generator<string,array{0: array{field: string, data_key: string, store_key: ?string, rule: array{start: array<string,int|string>, end: array<string,int|string>}, update_rule: array{start: array<string,int|string>, end: array<string,int|string>}, other_stored: array<string,mixed>, tec_rest_api_params: array<string,int>, tec_rest_api_update: array<string,int|string>, block_editor_body: callable(string): array<string,mixed>, response_path: string[], start_formats: array<string,string>, modes: array{start: string[], end: string[]}, boundary_keys: string[]}}>
 	 */
 	public function rule_kind_provider(): Generator {
 		$sales_rule = [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => [ 'mode' => 'default' ] ];
@@ -443,6 +443,7 @@ class Rest_Test extends Controller_Test_Case {
 				'data_key'            => 'relative_sale_dates',
 				'store_key'           => null,
 				'rule'                => $sales_rule,
+				'update_rule'         => [ 'start' => $sales_rule['start'], 'end' => $this->relative( 1, DAY_IN_SECONDS ) ],
 				'other_stored'        => [ 'sale_price' => $this->get_sale_price_rule() ],
 				'tec_rest_api_params' => [ 'price' => 10 ],
 				'tec_rest_api_update' => [ 'price' => 20 ],
@@ -465,6 +466,7 @@ class Rest_Test extends Controller_Test_Case {
 				'data_key'            => 'ticket_sale_price_relative',
 				'store_key'           => 'sale_price',
 				'rule'                => $this->get_sale_price_rule(),
+				'update_rule'         => $this->get_sale_price_rule(),
 				'other_stored'        => $sales_rule,
 				'tec_rest_api_params' => [
 					'price'      => 20,
