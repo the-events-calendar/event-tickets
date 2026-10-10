@@ -18,7 +18,14 @@ import '../zone-data';
 import { createTypingTracker, getShownError } from '../live-error';
 import { MODE_RELATIVE, UNIT_DAYS, UNIT_HOURS, UNIT_MINUTES, UNIT_WEEKS } from '../rule-constants';
 import { resolveWindow } from '../sale-window';
-import { getFormWindow, getOutOfRangeBoundary, getWindowError, RELATIVE_VALUE_OUT_OF_RANGE } from '../window-check';
+import {
+	ENDS_BEFORE_START,
+	getFormWindow,
+	getOutOfRangeBoundary,
+	getWindowError,
+	OUTSIDE_PARENT,
+	RELATIVE_VALUE_OUT_OF_RANGE,
+} from '../window-check';
 import { SALES_WINDOW, WINDOW_KINDS } from '../window-kinds';
 import { getWindowLengthText } from '../window-length';
 import { updateDateLimit } from './date-limits';
@@ -63,6 +70,29 @@ const UNIT_NAMES = {
 const RELATIVE_VALUE_FIELDS = WINDOW_KINDS.flatMap( ( kind ) =>
 	[ 'start', 'end' ].map( ( key ) => `#${ kind.fieldPrefix }_${ key }_value` )
 ).join( ', ' );
+
+/**
+ * The key of each error's text among a kind's localized texts: the server's own key for an error it rejects a save
+ * with.
+ *
+ * @since TBD
+ *
+ * @type {Object<string, string>}
+ */
+const TEXT_KEYS = Object.freeze( {
+	[ ENDS_BEFORE_START ]: 'endsBeforeStart',
+	[ OUTSIDE_PARENT ]: 'outsideParent',
+	[ RELATIVE_VALUE_OUT_OF_RANGE ]: 'valueOutOfRange',
+} );
+
+/**
+ * The keys of the errors the server rejects a save with.
+ *
+ * @since TBD
+ *
+ * @type {string[]}
+ */
+const SERVER_ERROR_KEYS = [ 'endsBeforeStart', 'outsideParent' ];
 
 /**
  * The kinds whose window the form says the length of.
@@ -525,7 +555,7 @@ function readWindowError( kind ) {
 	}
 
 	return {
-		message: settings.text[ kind.messages[ error ] ],
+		message: settings.text.windows[ kind.id ][ TEXT_KEYS[ error ] ],
 		fieldId:
 			RELATIVE_VALUE_OUT_OF_RANGE === error
 				? `${ kind.fieldPrefix }_${ getOutOfRangeBoundary( rule, kind ) }_value`
@@ -651,8 +681,7 @@ function showServerError( response ) {
 	const code = response?.data?.code;
 	// The code the server rejects the save with tells the window the error is about.
 	const kind = WINDOW_KINDS.find(
-		( candidate ) =>
-			Boolean( code ) && Object.values( candidate.messages ).some( ( key ) => key && codes[ key ] === code )
+		( candidate ) => Boolean( code ) && SERVER_ERROR_KEYS.some( ( key ) => codes[ candidate.id ]?.[ key ] === code )
 	);
 
 	if ( kind ) {

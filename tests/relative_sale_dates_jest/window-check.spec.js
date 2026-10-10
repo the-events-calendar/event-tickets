@@ -286,6 +286,13 @@ describe( 'getWindowError', () => {
 
 			expect( judgeSalePrice( rule, NO_FORM_DATES, null ) ).toBeNull();
 		} );
+
+		// 3 weeks before the event is before sales open, but the server judges nothing without both ends of the sales.
+		it( 'should leave a now start unjudged without the sales end, as the server does', () => {
+			const rule = { start: { mode: 'now' }, end: relative( SALE_PRICE_WINDOW, 3, UNIT_WEEKS ) };
+
+			expect( judgeSalePrice( rule, NO_FORM_DATES, parentWindow( '2099-06-08 09:00:00', null ) ) ).toBeNull();
+		} );
 	} );
 } );
 
