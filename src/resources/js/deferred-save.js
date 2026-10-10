@@ -551,9 +551,7 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 		event.preventDefault();
 		event.stopImmediatePropagation();
 		showValidationNotice( problems );
-		// WordPress disables the publish button and shows its spinner before the form submits; hand them back.
-		$( '#publish, #save-post' ).prop( 'disabled', false ).removeClass( 'disabled' );
-		$( '#publishing-action .spinner, #save-action .spinner' ).removeClass( 'is-active' );
+		handBackSubmit();
 		$( '.tec-tickets-deferred-save-row--invalid' ).first().find( 'button' ).first().trigger( 'focus' );
 
 		return false;
