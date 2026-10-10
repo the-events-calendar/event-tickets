@@ -417,7 +417,7 @@ class Editor_Test extends Controller_Test_Case {
 	 * @test
 	 */
 	public function should_leave_the_date_fields_of_an_rsvp_on_an_event_unchanged(): void {
-		$event_id = $this->create_event( '2027-06-24 19:00:00' );
+		$event_id = $this->create_event( self::EVENT_START );
 		$rsvp_id  = $this->create_rsvp_ticket( $event_id );
 		$hook     = 'tribe_template_include_html:tickets/admin-views/editor/panel/fields/dates';
 		$callback = $this->test_services->callback( Editor::class, 'render_sales_window_fields' );

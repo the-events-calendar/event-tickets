@@ -415,7 +415,7 @@ final class Window_Kind {
 		];
 		// Every provider answers with `sale_price_data`, an empty array for an RSVP; only Tickets Commerce's has the rule.
 		$kind->returns_block_editor_rule_for_every_provider = false;
-		// A new ticket's sale price starts now and ends a week before the event starts.
+
 		$kind->form_defaults    = [
 			'start' => [
 				'mode'  => Rule::MODE_NOW,
@@ -757,7 +757,7 @@ final class Window_Kind {
 	 * @since TBD
 	 *
 	 * @return array{start: array{mode: string, value: int, unit: int, anchor?: string}, end: array{mode: string, value: int, unit: int, anchor?: string}} The
-	 *         mode and relative values of each end; the anchor only for a kind that takes one.
+	 *         default mode, relative value and unit of the start and of the end, with the anchor only for a kind that takes one.
 	 */
 	public function get_form_defaults(): array {
 		return $this->form_defaults;
