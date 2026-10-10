@@ -9,7 +9,6 @@
 
 namespace TEC\Tickets\Commerce\Order_Items;
 
-use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
@@ -19,7 +18,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
  *
  * @package TEC\Tickets\Commerce\Order_Items
  */
-class Attendees extends Controller_Contract {
+final class Attendees {
 	/**
 	 * The attendee meta key holding the ticket's name as it was when the attendee was created.
 	 *
@@ -28,28 +27,6 @@ class Attendees extends Controller_Contract {
 	 * @var string
 	 */
 	public const TICKET_NAME_META_KEY = '_tec_tickets_commerce_ticket_name';
-
-	/**
-	 * Unhooks the listener.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function unregister(): void {
-		remove_filter( 'tec_tickets_commerce_attendee_create_args', [ $this, 'add_ticket_name' ] );
-	}
-
-	/**
-	 * Hooks the listener.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	protected function do_register(): void {
-		add_filter( 'tec_tickets_commerce_attendee_create_args', [ $this, 'add_ticket_name' ], 10, 3 );
-	}
 
 	/**
 	 * Adds the ticket's name to the attendee create arguments.
