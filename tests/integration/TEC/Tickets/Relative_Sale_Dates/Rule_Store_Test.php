@@ -208,6 +208,21 @@ class Rule_Store_Test extends WPTestCase {
 	}
 
 	/**
+	 * @test
+	 */
+	public function should_not_flag_a_sale_price_end_switched_to_specific_as_set_by_hand(): void {
+		$ticket_id       = static::factory()->post->create();
+		$tickets_handler = tribe( 'tickets.handler' );
+		$kind            = Window_Kind::sale_price();
+		$start           = [ 'mode' => Rule::MODE_NOW ];
+		tribe( Rule_Store::class )->save_rule( $ticket_id, Rule::from_array( [ 'start' => $start, 'end' => [ 'mode' => Rule::MODE_RELATIVE, 'value' => 1, 'unit' => DAY_IN_SECONDS ] ], $kind ) );
+
+		tribe( Rule_Store::class )->save_rule( $ticket_id, Rule::from_array( [ 'start' => $start, 'end' => [ 'mode' => Rule::MODE_SPECIFIC ] ], $kind ) );
+
+		$this->assertFalse( $tickets_handler->has_manual_update( $ticket_id, $tickets_handler->key_end_date ) );
+	}
+
+	/**
 	 * @return Generator<string,array{0: Window_Kind}>
 	 */
 	public function kinds_provider(): Generator {

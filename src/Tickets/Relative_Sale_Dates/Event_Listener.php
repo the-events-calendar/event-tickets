@@ -91,7 +91,7 @@ final class Event_Listener {
 			foreach ( Window_Kind::all() as $kind ) {
 				$rule = Rule::from_stored( $stored, $kind );
 
-				if ( $rule && $this->ticket_dates->write( $ticket_id, $post_id, $rule ) && $kind->has_sales_actions() ) {
+				if ( $rule && $this->ticket_dates->write( $ticket_id, $post_id, $rule ) && $kind->owns_ticket_sales_dates() ) {
 					$reschedule = true;
 				}
 			}

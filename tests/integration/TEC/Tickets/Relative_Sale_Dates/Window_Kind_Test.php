@@ -24,7 +24,7 @@ class Window_Kind_Test extends WPTestCase {
 		$this->assertNull( $kind->get_store_key() );
 		$this->assertNull( $kind->get_parent() );
 		$this->assertTrue( $kind->owns_ticket_sales_dates() );
-		$this->assertSame( Ticket_Save::DATA_KEY, $kind->get_data_key() );
+		$this->assertSame( [ 'data' => Ticket_Save::DATA_KEY ], $kind->get_rule_keys() );
 		$this->assertSame(
 			[
 				'start' => [
@@ -39,10 +39,20 @@ class Window_Kind_Test extends WPTestCase {
 			$kind->get_date_metas()
 		);
 		$this->assertNull( $kind->get_open_start_value() );
-		$this->assertTrue( $kind->moves_open_start_to_now() );
-		$this->assertTrue( $kind->lets_end_follow_event_start() );
-		$this->assertTrue( $kind->has_sales_actions() );
 		$this->assertTrue( $kind->is_removed_by_front_end_form() );
+		$this->assertSame(
+			[
+				'start' => [
+					'date' => 'ticket_start_date',
+					'time' => 'ticket_start_time',
+				],
+				'end'   => [
+					'date' => 'ticket_end_date',
+					'time' => 'ticket_end_time',
+				],
+			],
+			$kind->get_submitted_fields()
+		);
 	}
 
 	/**
@@ -62,7 +72,7 @@ class Window_Kind_Test extends WPTestCase {
 		$this->assertSame( 'sale_price', $kind->get_store_key() );
 		$this->assertSame( Window_Kind::sales(), $kind->get_parent() );
 		$this->assertFalse( $kind->owns_ticket_sales_dates() );
-		$this->assertSame( 'ticket_sale_price_relative', $kind->get_data_key() );
+		$this->assertSame( [ 'data' => 'ticket_sale_price_relative' ], $kind->get_rule_keys() );
 		$this->assertSame(
 			[
 				'start' => [
@@ -77,10 +87,20 @@ class Window_Kind_Test extends WPTestCase {
 			$kind->get_date_metas()
 		);
 		$this->assertSame( '', $kind->get_open_start_value() );
-		$this->assertFalse( $kind->moves_open_start_to_now() );
-		$this->assertFalse( $kind->lets_end_follow_event_start() );
-		$this->assertFalse( $kind->has_sales_actions() );
 		$this->assertFalse( $kind->is_removed_by_front_end_form() );
+		$this->assertSame(
+			[
+				'start' => [
+					'date' => 'ticket_sale_start_date',
+					'time' => null,
+				],
+				'end'   => [
+					'date' => 'ticket_sale_end_date',
+					'time' => null,
+				],
+			],
+			$kind->get_submitted_fields()
+		);
 	}
 
 	/**

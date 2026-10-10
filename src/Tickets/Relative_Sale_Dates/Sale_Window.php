@@ -50,7 +50,7 @@ final class Sale_Window {
 
 		$window = $this->resolve( $rule, ...$event_dates );
 
-		if ( ! $rule->get_kind()->moves_open_start_to_now() || ! $rule->opens_at_once() ) {
+		if ( ! $rule->get_kind()->owns_ticket_sales_dates() || ! $rule->opens_at_once() ) {
 			return $window;
 		}
 

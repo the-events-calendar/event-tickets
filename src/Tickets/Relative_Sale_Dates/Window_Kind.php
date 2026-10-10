@@ -124,13 +124,13 @@ final class Window_Kind {
 	private ?self $parent;
 
 	/**
-	 * The ticket data key that carries the rule.
+	 * The keys that carry the rule: `data`, the ticket data key a save sends it under.
 	 *
 	 * @since TBD
 	 *
-	 * @var string
+	 * @var array{data: string}
 	 */
-	private string $data_key;
+	private array $rule_keys;
 
 	/**
 	 * The ticket metas each end of the window is written to: its date and, for a kind that stores times, its time.
@@ -151,13 +151,14 @@ final class Window_Kind {
 	private ?string $open_start_value;
 
 	/**
-	 * The ticket meta that turns the window on, or `null` for a window every ticket has.
+	 * The keys of the sale the window belongs to, or `null` for a window every ticket has: `enabled_meta`, the ticket
+	 * meta that turns the sale on.
 	 *
 	 * @since TBD
 	 *
-	 * @var string|null
+	 * @var array{enabled_meta: string}|null
 	 */
-	private ?string $enabled_meta_key;
+	private ?array $sale_keys;
 
 	/**
 	 * Whether the window's dates are the ticket's own sales dates.
@@ -176,6 +177,15 @@ final class Window_Kind {
 	 * @var bool
 	 */
 	private bool $is_removed_by_front_end_form;
+
+	/**
+	 * The ticket data fields each end of the window is submitted in: its date and, for a kind that stores times, its time.
+	 *
+	 * @since TBD
+	 *
+	 * @var array{start: array{date: string, time: ?string}, end: array{date: string, time: ?string}}
+	 */
+	private array $submitted_fields;
 
 	/**
 	 * Gets the sales window kind.
@@ -200,7 +210,7 @@ final class Window_Kind {
 				[ Rule::ANCHOR_START, Rule::ANCHOR_END ],
 				null,
 				null,
-				Ticket_Save::DATA_KEY,
+				[ 'data' => Ticket_Save::DATA_KEY ],
 				[
 					'start' => [
 						'date' => Ticket::START_DATE_META_KEY,
@@ -214,7 +224,17 @@ final class Window_Kind {
 				null,
 				null,
 				true,
-				true
+				true,
+				[
+					'start' => [
+						'date' => 'ticket_start_date',
+						'time' => 'ticket_start_time',
+					],
+					'end'   => [
+						'date' => 'ticket_end_date',
+						'time' => 'ticket_end_time',
+					],
+				]
 			);
 		}
 
@@ -245,7 +265,7 @@ final class Window_Kind {
 				[ Rule::ANCHOR_START ],
 				'sale_price',
 				self::sales(),
-				'ticket_sale_price_relative',
+				[ 'data' => 'ticket_sale_price_relative' ],
 				[
 					'start' => [
 						'date' => Ticket::$sale_price_start_date_key,
@@ -257,9 +277,19 @@ final class Window_Kind {
 					],
 				],
 				'',
-				Ticket::$sale_price_checked_key,
+				[ 'enabled_meta' => Ticket::$sale_price_checked_key ],
 				false,
-				false
+				false,
+				[
+					'start' => [
+						'date' => 'ticket_sale_start_date',
+						'time' => null,
+					],
+					'end'   => [
+						'date' => 'ticket_sale_end_date',
+						'time' => null,
+					],
+				]
 			);
 		}
 
@@ -383,7 +413,11 @@ final class Window_Kind {
 	 *
 	 * Only such a window:
 	 * - moves a ticket start later than now to now when its start opens the window at once;
-	 * - lets its end follow the event start when the event moves and the rule leaves the end to the ticket.
+	 * - lets its end follow the event start when the event moves and the rule leaves the end to the ticket;
+	 * - has its dates announced by the "sales started" and "sales ended" actions, so a change to them, or to the event
+	 *   timezone they are written in, reschedules those actions;
+	 * - flags an end the rule now leaves to the ticket as set by hand, and clears that flag when the rule is removed by a
+	 *   save without an end of its own.
 	 *
 	 * @since TBD
 	 *
@@ -394,14 +428,15 @@ final class Window_Kind {
 	}
 
 	/**
-	 * Gets the ticket data key that carries the rule.
+	 * Gets the keys that carry the rule.
 	 *
 	 * @since TBD
 	 *
-	 * @return string The key; its value is a JSON string, an array, or `null` or `''` to remove the rule.
+	 * @return array{data: string} The keys: `data`, the ticket data key a save sends the rule under, as a JSON string,
+	 *                             an array, or `null` or `''` to remove it.
 	 */
-	public function get_data_key(): string {
-		return $this->data_key;
+	public function get_rule_keys(): array {
+		return $this->rule_keys;
 	}
 
 	/**
@@ -422,8 +457,8 @@ final class Window_Kind {
 	 *
 	 * @since TBD
 	 *
-	 * @return string|null The value, or `null` to leave the ticket's own start, which `moves_open_start_to_now()` may
-	 *                     move to now.
+	 * @return string|null The value, or `null` to leave the ticket's own start, which a kind that
+	 *                     `owns_ticket_sales_dates()` may move to now.
 	 */
 	public function get_open_start_value(): ?string {
 		return $this->open_start_value;
@@ -440,41 +475,7 @@ final class Window_Kind {
 	 *              sale price window.
 	 */
 	public function is_enabled_for_ticket( int $ticket_id ): bool {
-		return null === $this->enabled_meta_key || tribe_is_truthy( get_post_meta( $ticket_id, $this->enabled_meta_key, true ) );
-	}
-
-	/**
-	 * Returns whether an open start moves a ticket start later than now to now.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool Whether the open start puts the ticket on sale at once.
-	 */
-	public function moves_open_start_to_now(): bool {
-		return $this->owns_ticket_sales_dates;
-	}
-
-	/**
-	 * Returns whether the window's end is the ticket's sale end, which the ticket moves to the event start when the
-	 * event moves and the rule leaves the end to the ticket.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool Whether the window's end may follow the event start.
-	 */
-	public function lets_end_follow_event_start(): bool {
-		return $this->owns_ticket_sales_dates;
-	}
-
-	/**
-	 * Returns whether the window's dates are announced by the "sales started" and "sales ended" actions.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool Whether a change to the window's dates reschedules the sales actions.
-	 */
-	public function has_sales_actions(): bool {
-		return $this->owns_ticket_sales_dates;
+		return null === $this->sale_keys || tribe_is_truthy( get_post_meta( $ticket_id, $this->sale_keys['enabled_meta'], true ) );
 	}
 
 	/**
@@ -491,6 +492,19 @@ final class Window_Kind {
 	}
 
 	/**
+	 * Gets the ticket data fields each end of the window is submitted in, its date and its time.
+	 *
+	 * A `null` time means the kind is submitted as whole days.
+	 *
+	 * @since TBD
+	 *
+	 * @return array{start: array{date: string, time: ?string}, end: array{date: string, time: ?string}} The field keys.
+	 */
+	public function get_submitted_fields(): array {
+		return $this->submitted_fields;
+	}
+
+	/**
 	 * Window_Kind constructor.
 	 *
 	 * @since TBD
@@ -503,12 +517,13 @@ final class Window_Kind {
 	 * @param string[]                                         $anchors                      The event dates a relative boundary may be counted from.
 	 * @param string|null                                      $store_key                    The key the rule is stored under, or `null` for the top level.
 	 * @param self|null                                        $parent_kind                  The kind this one is judged against, or `null`.
-	 * @param string                                           $data_key                     The ticket data key that carries the rule.
+	 * @param array{data: string}                              $rule_keys                    The keys that carry the rule.
 	 * @param array<string,array{date: string, time: ?string}> $date_metas                   The ticket metas each end, `start` and `end`, is written to.
 	 * @param string|null                                      $open_start_value             The value an open start is written as, or `null`.
-	 * @param string|null                                      $enabled_meta_key             The ticket meta that turns the window on, or `null`.
+	 * @param array{enabled_meta: string}|null                 $sale_keys                    The keys of the sale the window belongs to, or `null`.
 	 * @param bool                                             $owns_ticket_sales_dates      Whether the window's dates are the ticket's own sales dates.
 	 * @param bool                                             $is_removed_by_front_end_form Whether a front-end form that sends no rule removes it.
+	 * @param array<string,array{date: string, time: ?string}> $submitted_fields             The ticket data fields each end, `start` and `end`, is submitted in.
 	 */
 	private function __construct(
 		string $id,
@@ -519,12 +534,13 @@ final class Window_Kind {
 		array $anchors,
 		?string $store_key,
 		?self $parent_kind,
-		string $data_key,
+		array $rule_keys,
 		array $date_metas,
 		?string $open_start_value,
-		?string $enabled_meta_key,
+		?array $sale_keys,
 		bool $owns_ticket_sales_dates,
-		bool $is_removed_by_front_end_form
+		bool $is_removed_by_front_end_form,
+		array $submitted_fields
 	) {
 		$this->id                           = $id;
 		$this->modes                        = $modes;
@@ -534,11 +550,12 @@ final class Window_Kind {
 		$this->anchors                      = $anchors;
 		$this->store_key                    = $store_key;
 		$this->parent                       = $parent_kind;
-		$this->data_key                     = $data_key;
+		$this->rule_keys                    = $rule_keys;
 		$this->date_metas                   = $date_metas;
 		$this->open_start_value             = $open_start_value;
-		$this->enabled_meta_key             = $enabled_meta_key;
+		$this->sale_keys                    = $sale_keys;
 		$this->owns_ticket_sales_dates      = $owns_ticket_sales_dates;
 		$this->is_removed_by_front_end_form = $is_removed_by_front_end_form;
+		$this->submitted_fields             = $submitted_fields;
 	}
 }

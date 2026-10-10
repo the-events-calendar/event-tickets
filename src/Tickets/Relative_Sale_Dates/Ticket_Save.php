@@ -157,7 +157,7 @@ final class Ticket_Save {
 
 		foreach ( Window_Kind::all() as $kind ) {
 			if ( ! $kind->is_enabled_for_ticket( $ticket_id ) || $this->removes_rule( $data, $kind ) ) {
-				$this->rule_store->remove_rule( $ticket_id, $kind, ! empty( $data['ticket_end_date'] ) );
+				$this->rule_store->remove_rule( $ticket_id, $kind, ! empty( $data[ $kind->get_submitted_fields()['end']['date'] ] ) );
 
 				continue;
 			}
@@ -302,7 +302,7 @@ final class Ticket_Save {
 	 * @return bool Whether the rule is to be removed.
 	 */
 	private function removes_rule( array $data, Window_Kind $kind ): bool {
-		$key = $kind->get_data_key();
+		$key = $kind->get_rule_keys()['data'];
 
 		if ( array_key_exists( $key, $data ) ) {
 			return in_array( $data[ $key ], [ null, '' ], true );
@@ -336,7 +336,7 @@ final class Ticket_Save {
 			return null;
 		}
 
-		$rule = Rule::from_raw( $data[ $kind->get_data_key() ] ?? null, $kind );
+		$rule = Rule::from_raw( $data[ $kind->get_rule_keys()['data'] ] ?? null, $kind );
 
 		if ( $rule || ! $ticket_id ) {
 			return $rule;

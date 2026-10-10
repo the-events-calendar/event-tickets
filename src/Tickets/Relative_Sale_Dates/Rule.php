@@ -261,7 +261,7 @@ final class Rule implements JsonSerializable {
 	 * @return bool Whether the sale end may follow the event start.
 	 */
 	public function lets_end_follow_event_start(): bool {
-		return $this->kind->lets_end_follow_event_start()
+		return $this->kind->owns_ticket_sales_dates()
 			&& self::MODE_SPECIFIC === $this->end->get_mode()
 			&& self::ANCHOR_END !== $this->start->get_anchor();
 	}
