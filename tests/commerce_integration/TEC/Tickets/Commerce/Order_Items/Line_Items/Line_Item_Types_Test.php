@@ -298,6 +298,21 @@ class Line_Item_Types_Test extends WPTestCase {
 		tribe( Line_Item_Types::class )->get_for_item( $item )::to_row( 0, $item, 1, 'USD' );
 	}
 
+	public function test_a_field_nested_too_deep_is_rejected(): void {
+		$item   = $this->fixture( 'tickets' )[0];
+		$nested = new stdClass();
+
+		for ( $level = 0; $level < 100; $level++ ) {
+			$nested = (object) [ 'child' => $nested ];
+		}
+
+		$item['nested'] = $nested;
+
+		$this->expectException( InvalidArgumentException::class );
+
+		tribe( Line_Item_Types::class )->get_for_item( $item )::to_row( 0, $item, 1, 'USD' );
+	}
+
 	public function test_a_field_holding_a_resource_is_rejected(): void {
 		$item             = $this->fixture( 'tickets' )[0];
 		$item['resource'] = fopen( 'php://memory', 'r' );
