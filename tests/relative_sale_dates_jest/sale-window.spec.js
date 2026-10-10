@@ -3,7 +3,7 @@
  * @timezone Pacific/Auckland
  */
 import moment from 'moment-timezone';
-import { resolveSaleWindow, resolveWindow, toStoredDates, toZone } from '@tec/tickets/relative-sale-dates/sale-window';
+import { resolveSaleWindow, resolveWindow, toZone } from '@tec/tickets/relative-sale-dates/sale-window';
 import { SALE_PRICE_WINDOW, SALES_WINDOW } from '@tec/tickets/relative-sale-dates/window-kinds';
 import fixtures from '../_data/relative-sale-dates/sale-window-cases.json';
 
@@ -156,56 +156,5 @@ describe( 'resolveWindow', () => {
 		const rule = { start: { mode: 'now' }, end: { mode: 'relative', value: 1, unit: UNIT_DAYS } };
 
 		expect( resolveWindow( rule, null, SALE_PRICE_WINDOW ) ).toBeNull();
-	} );
-} );
-
-describe( 'toStoredDates', () => {
-	it( 'should store a kind kept by the day as the days its boundaries fall on in the event timezone', () => {
-		const rule = {
-			start: { mode: 'relative', value: 2, unit: UNIT_WEEKS },
-			end: { mode: 'relative', value: 1, unit: UNIT_DAYS },
-		};
-
-		expect(
-			toStoredDates( resolveWindow( rule, EVENT_DATES, SALE_PRICE_WINDOW ), SALE_PRICE_WINDOW, rule )
-		).toStrictEqual( { start: '2099-06-10', end: '2099-06-23' } );
-	} );
-
-	it( 'should store the open start of a kind that stores one as the kind does, and leave a specific end out', () => {
-		const rule = { start: { mode: 'now' }, end: { mode: 'specific' } };
-
-		expect(
-			toStoredDates( resolveWindow( rule, EVENT_DATES, SALE_PRICE_WINDOW ), SALE_PRICE_WINDOW, rule )
-		).toStrictEqual( { start: '', end: null } );
-	} );
-
-	it( 'should store a kind kept as instants with its times, and leave an open start to the ticket', () => {
-		const rule = {
-			start: { mode: 'default' },
-			end: { mode: 'relative', value: 1, unit: UNIT_DAYS, anchor: 'start' },
-		};
-
-		expect( toStoredDates( resolveWindow( rule, EVENT_DATES, SALES_WINDOW ), SALES_WINDOW, rule ) ).toStrictEqual( {
-			start: null,
-			end: '2099-06-23 01:00:00',
-		} );
-	} );
-
-	it.each( [
-		[ 'the sales window', SALES_WINDOW, { mode: 'relative', value: Number.NaN, unit: UNIT_DAYS, anchor: 'start' } ],
-		[ 'the sale price window', SALE_PRICE_WINDOW, { mode: 'relative', value: Number.NaN, unit: UNIT_DAYS } ],
-	] )( 'should leave out a boundary of %s whose number was cleared', ( label, kind, end ) => {
-		const rule = { start: { mode: 'specific' }, end };
-
-		expect( toStoredDates( resolveWindow( rule, EVENT_DATES, kind ), kind, rule ) ).toStrictEqual( {
-			start: null,
-			end: null,
-		} );
-	} );
-
-	it( 'should store nothing without a resolved window', () => {
-		const rule = { start: { mode: 'now' }, end: { mode: 'specific' } };
-
-		expect( toStoredDates( null, SALE_PRICE_WINDOW, rule ) ).toBeNull();
 	} );
 } );

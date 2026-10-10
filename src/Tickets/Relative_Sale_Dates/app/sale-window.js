@@ -97,15 +97,6 @@ export function resolveSaleWindow( rule, eventStart, eventEnd, timezone ) {
 }
 
 /**
- * @typedef {Object} StoredDates
- *
- * @property {string|null} start The start as the server stores it: `YYYY-MM-DD` for a kind kept by the day,
- *                               `YYYY-MM-DD HH:mm:ss` for one kept as instants, both in the event timezone, the kind's
- *                               stored value for an open start, or `null` when the window gives it no date.
- * @property {string|null} end   The end, stored as the start is, or `null` when the window gives it no date.
- */
-
-/**
  * Resolves the rule of a window of a kind against an event's dates.
  *
  * A relative boundary that names no anchor is counted from the kind's implied one. A relative boundary without a whole
@@ -141,34 +132,6 @@ export function resolveWindow( rule, eventDates, kind ) {
 		} );
 
 	return resolved;
-}
-
-/**
- * Gets the dates the server stores for a resolved window of a kind.
- *
- * @since TBD
- *
- * @param {ResolvedSaleWindow|null}               resolved The resolved window, or `null` when there is none.
- * @param {import( './window-kinds' ).WindowKind} kind     The kind of the window.
- * @param {SaleWindowRule}                        rule     The rule the window was resolved from.
- *
- * @return {StoredDates|null} The stored dates, or `null` without a resolved window.
- */
-export function toStoredDates( resolved, kind, rule ) {
-	if ( ! resolved ) {
-		return null;
-	}
-
-	const format = 'day' === kind.precision ? DATE_FORMAT : DATE_TIME_FORMAT;
-	const getDate = ( key ) => {
-		if ( 'start' === key && kind.openStartMode === rule.start.mode && null !== kind.openStartValue ) {
-			return kind.openStartValue;
-		}
-
-		return resolved[ key ] && resolved[ key ].isValid() ? resolved[ key ].format( format ) : null;
-	};
-
-	return { start: getDate( 'start' ), end: getDate( 'end' ) };
 }
 
 /**

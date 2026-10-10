@@ -234,7 +234,8 @@ function updateWindowLength( kind ) {
 			getEventDates( settings, dynamic ),
 			readFormDates( kind, dynamic ),
 			kind
-		)
+		),
+		kind
 	);
 }
 
