@@ -15,7 +15,7 @@ class Order_Actions_Test extends Controller_Test_Case {
 	use Order_Maker;
 	use Ticket_Maker;
 
-	protected string $controller_class = Order_Actions::class;
+	protected string $controller_class = Order_Actions\Controller::class;
 
 	/**
 	 * @var array<int,array{0: mixed, 1: mixed}>

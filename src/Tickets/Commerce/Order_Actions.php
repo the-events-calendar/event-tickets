@@ -9,7 +9,6 @@
 
 namespace TEC\Tickets\Commerce;
 
-use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use WP_Post;
 
 /**
@@ -19,7 +18,7 @@ use WP_Post;
  *
  * @package TEC\Tickets\Commerce
  */
-class Order_Actions extends Controller_Contract {
+final class Order_Actions {
 	/**
 	 * The items an order held before the write in progress, keyed by order ID.
 	 *
@@ -28,20 +27,6 @@ class Order_Actions extends Controller_Contract {
 	 * @var array<int,mixed>
 	 */
 	private array $previous_items = [];
-
-	/**
-	 * Unhooks the controller.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function unregister(): void {
-		remove_filter( 'update_post_metadata', [ $this, 'remember_previous_items' ] );
-		remove_action( 'added_post_meta', [ $this, 'fire_order_updated' ] );
-		remove_action( 'updated_post_meta', [ $this, 'fire_order_updated' ] );
-		remove_action( 'deleted_post', [ $this, 'fire_order_deleted' ] );
-	}
 
 	/**
 	 * Remembers the items an order held before its items meta is written.
@@ -132,19 +117,5 @@ class Order_Actions extends Controller_Contract {
 		 * @param int $order_id The order ID.
 		 */
 		do_action( 'tec_tickets_commerce_order_deleted', absint( $post_id ) );
-	}
-
-	/**
-	 * Hooks the controller.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	protected function do_register(): void {
-		add_filter( 'update_post_metadata', [ $this, 'remember_previous_items' ], 10, 3 );
-		add_action( 'added_post_meta', [ $this, 'fire_order_updated' ], 10, 4 );
-		add_action( 'updated_post_meta', [ $this, 'fire_order_updated' ], 10, 4 );
-		add_action( 'deleted_post', [ $this, 'fire_order_deleted' ], 10, 2 );
 	}
 }

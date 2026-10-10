@@ -673,6 +673,8 @@ class Writer_Test extends Controller_Test_Case {
 		add_filter( 'tec_tickets_commerce_order_items_active', $active ? '__return_true' : '__return_false' );
 		$controller = $this->make_controller();
 		$controller->register();
+		// These tests count the writer's queries, so the reader's own query on a loaded order stays out of them.
+		remove_filter( 'tec_tickets_commerce_order_model_items', tribe()->callback( Reader::class, 'read_items' ) );
 
 		return $controller;
 	}
