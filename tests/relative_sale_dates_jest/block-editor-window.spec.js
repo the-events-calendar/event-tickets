@@ -633,8 +633,9 @@ describe( 'the Ticket block sale price window options', () => {
 		const OUT_OF_RANGE = 'Enter a number from 1 to 30.';
 
 		/**
-		 * Renders the sale price window options of a ticket block with its sale price checked, whose sales window opens
-		 * 4 weeks before the event, or on its own start date, 2040-09-01, without a sales window rule.
+		 * Renders the sale price window options of a ticket block with its sale price checked and lower than the price,
+		 * whose sales window opens 4 weeks before the event, or on its own start date, 2040-09-01, without a sales
+		 * window rule.
 		 *
 		 * @param {Object|null} salePriceRule The ticket's sale price rule.
 		 * @param {Object|null} windowRule    The ticket's sales window rule.
@@ -646,6 +647,8 @@ describe( 'the Ticket block sale price window options', () => {
 			setTicketFormDates( window.__tribe_common_store__, clientId, '2040-09-01 10:00:00', '2040-10-20 19:00:00' );
 			// The options only render once the sale price is checked.
 			window.__tribe_common_store__.dispatch( legacyActions.setTempSalePriceChecked( clientId, true ) );
+			window.__tribe_common_store__.dispatch( legacyActions.setTicketTempPrice( clientId, '20.00' ) );
+			window.__tribe_common_store__.dispatch( legacyActions.setTempSalePrice( clientId, '15.00' ) );
 			dispatch( STORE_NAME ).setDraftRule( clientId, windowRule, SALES_WINDOW );
 			dispatch( STORE_NAME ).setRule( clientId, salePriceRule, SALE_PRICE_WINDOW );
 			renderSalePriceWindow( clientId );

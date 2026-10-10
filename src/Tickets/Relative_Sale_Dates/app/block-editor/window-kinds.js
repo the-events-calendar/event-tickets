@@ -8,12 +8,12 @@
 /**
  * External dependencies
  */
-import { __, _x } from '@wordpress/i18n';
+import { __, _x, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import { MODE_DEFAULT, MODE_NOW, MODE_RELATIVE, MODE_SPECIFIC } from '../rule-constants';
+import { MIN_VALUE, MODE_DEFAULT, MODE_NOW, MODE_RELATIVE, MODE_SPECIFIC } from '../rule-constants';
 import { ENDS_BEFORE_START, OUTSIDE_PARENT, RELATIVE_VALUE_OUT_OF_RANGE } from '../window-errors';
 import { SALES_WINDOW, SALE_PRICE_WINDOW } from '../window-kinds';
 import {
@@ -47,6 +47,7 @@ import {
 /** @typedef {function( Object ): (SaleWindowRule|null|undefined)} StoredRuleReader */
 /** @typedef {function( Object, string ): {start: string|null, end: string|null}} FormDatesReader */
 /** @typedef {function( Object, string ): boolean} KeptReader */
+/** @typedef {function( WindowKind ): string} ErrorText */
 
 /**
  * @typedef {Object} BlockWindowKindFields
@@ -72,9 +73,9 @@ import {
  * @property {FormDatesReader}             readFormDates        Reads the start and end dates the ticket's form sends
  *                                                              from the legacy ticket state and the client ID, each
  *                                                              `YYYY-MM-DD HH:mm:ss` in the event timezone, or `null`.
- * @property {Object<string, string|null>} messages             The key of the block's text of each error the window
- *                                                              can have, keyed by the error's key, `null` for one it
- *                                                              cannot.
+ * @property {Object<string, ErrorText>}   errorTexts           The text of each error the window can have, keyed by
+ *                                                              the error's key: the server's own where it rejects a
+ *                                                              save with the error, so one translation serves both.
  */
 
 /** @typedef {WindowKind & BlockWindowKindFields} BlockWindowKind */
@@ -187,6 +188,26 @@ function getSalePriceSettings() {
 }
 
 /**
+ * Gets the text of a relative number out of the range a kind takes.
+ *
+ * The msgid is the classic editor's, so one translation serves both.
+ *
+ * @since TBD
+ *
+ * @param {WindowKind} kind The window kind.
+ *
+ * @return {string} The text.
+ */
+function getRangeText( kind ) {
+	return sprintf(
+		// translators: %1$d is the smallest number a relative sale date takes, %2$d the largest.
+		__( 'Enter a number from %1$d to %2$d.', 'event-tickets' ),
+		MIN_VALUE,
+		kind.maxValue
+	);
+}
+
+/**
  * The ticket's sales window, as the Ticket block shows and sends it.
  *
  * @since TBD
@@ -206,10 +227,10 @@ export const BLOCK_SALES_WINDOW = Object.freeze( {
 	readStored: ( ticket ) => ticket.relative_sale_dates ?? null,
 	isAnswered: ( ticket ) => undefined !== ticket.relative_sale_dates,
 	readFormDates: getTicketFormDates,
-	messages: Object.freeze( {
-		[ ENDS_BEFORE_START ]: 'invalidWindow',
-		[ RELATIVE_VALUE_OUT_OF_RANGE ]: 'relativeValueOutOfRange',
-		[ OUTSIDE_PARENT ]: null,
+	errorTexts: Object.freeze( {
+		[ ENDS_BEFORE_START ]: () =>
+			__( 'Ticket sales cannot end before they start. Please adjust the sales window.', 'event-tickets' ),
+		[ RELATIVE_VALUE_OUT_OF_RANGE ]: getRangeText,
 	} ),
 } );
 
@@ -239,10 +260,15 @@ export const BLOCK_SALE_PRICE_WINDOW = Object.freeze( {
 	readStored: ( ticket ) => ( ticket.sale_price_data?.enabled ? ticket.sale_price_data.relative ?? null : undefined ),
 	isAnswered: ( ticket ) => undefined !== ticket.sale_price_data,
 	readFormDates: getTicketSalePriceFormDates,
-	messages: Object.freeze( {
-		[ ENDS_BEFORE_START ]: 'salePriceEndsBeforeStart',
-		[ RELATIVE_VALUE_OUT_OF_RANGE ]: 'salePriceValueOutOfRange',
-		[ OUTSIDE_PARENT ]: 'salePriceOutsideWindow',
+	errorTexts: Object.freeze( {
+		[ ENDS_BEFORE_START ]: () =>
+			__( 'The sale price cannot end before it starts. Please adjust the sale price window.', 'event-tickets' ),
+		[ RELATIVE_VALUE_OUT_OF_RANGE ]: getRangeText,
+		[ OUTSIDE_PARENT ]: () =>
+			__(
+				'The sale price window falls outside the ticket sales window. Please adjust the dates.',
+				'event-tickets'
+			),
 	} ),
 } );
 

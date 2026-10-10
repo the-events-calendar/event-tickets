@@ -95,8 +95,22 @@ function getSavedRule( clientId, kind = SALES_WINDOW ) {
 }
 
 /**
- * Checks or unchecks the sale price of a ticket block of a Tickets Commerce block in the legacy store, with the event
- * dates in the editor, whose form holds the dates the editor always gives it: 2040-09-01 at 10:00 to the event start.
+ * Gives a ticket block a price of 20.00 and a sale price of 15.00, which a save keeps while it is checked.
+ *
+ * @param {Object} store    The common store.
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {void}
+ */
+function setLowerSalePrice( store, clientId ) {
+	store.dispatch( legacyActions.setTicketTempPrice( clientId, '20.00' ) );
+	store.dispatch( legacyActions.setTempSalePrice( clientId, '15.00' ) );
+}
+
+/**
+ * Checks or unchecks the sale price, lower than the price, of a ticket block of a Tickets Commerce block in the legacy
+ * store, with the event dates in the editor, whose form holds the dates the editor always gives it: 2040-09-01 at
+ * 10:00 to the event start.
  *
  * @param {string}  clientId The client ID of the ticket block.
  * @param {boolean} checked  Whether the sale price is checked.
@@ -110,6 +124,7 @@ function setSalePriceChecked( clientId, checked ) {
 
 	setTicketFormDates( store, clientId, '2040-09-01 10:00:00', '2040-10-20 19:00:00' );
 	store.dispatch( legacyActions.setTempSalePriceChecked( clientId, checked ) );
+	setLowerSalePrice( store, clientId );
 }
 
 /**
@@ -215,8 +230,8 @@ function legacyTicketState( clientId, start, end ) {
 }
 
 /**
- * Builds the legacy ticket state of a ticket block with a sale price and the sale price start its form holds; the form
- * sends the dates the editor always gives it, 2040-09-01 at 10:00 to the event start.
+ * Builds the legacy ticket state of a ticket block with a sale price lower than the price and the sale price start its
+ * form holds; the form sends the dates the editor always gives it, 2040-09-01 at 10:00 to the event start.
  *
  * @param {string}      clientId The client ID of the ticket block.
  * @param {boolean}     checked  Whether the sale price is checked.
@@ -228,6 +243,7 @@ function salePriceState( clientId, checked, start = null ) {
 	const store = window.__tribe_common_store__;
 	legacyTicketState( clientId, '2040-09-01 10:00:00', '2040-10-20 19:00:00' );
 	store.dispatch( legacyActions.setTempSalePriceChecked( clientId, checked ) );
+	setLowerSalePrice( store, clientId );
 	store.dispatch( legacyActions.setTicketTempSaleStartDate( clientId, start ?? '' ) );
 
 	return store.getState();
@@ -287,11 +303,6 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 	describe.each( REQUEST_CASES )( 'on tec.tickets.blocks.fetchTicket, for $title', ( kindCase ) => {
 		const { kind, field, fetched, stored } = kindCase;
 
-		afterEach( () => {
-			delete window.tribe;
-			clearBlockEditorGlobals();
-		} );
-
 		it( 'should load the rule of the fetched ticket', () => {
 			const clientId = newClientId();
 
@@ -335,11 +346,6 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 
 	describe.each( REQUEST_CASES )( 'on tec.tickets.blocks.setBodyDetails, for $title', ( kindCase ) => {
 		const { kind, field, newTicket } = kindCase;
-
-		afterEach( () => {
-			delete window.tribe;
-			clearBlockEditorGlobals();
-		} );
 
 		it( 'should send the draft rule as JSON', () => {
 			const clientId = newTicket();
@@ -396,11 +402,6 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 
 	describe( 'on tec.tickets.blocks.setBodyDetails', () => {
 		describe( 'with a sale price', () => {
-			afterEach( () => {
-				delete window.tribe;
-				clearBlockEditorGlobals();
-			} );
-
 			it( 'should send the sales window and sale price rules side by side', () => {
 				const clientId = newClientId();
 				setSalePriceChecked( clientId, true );
@@ -460,6 +461,29 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 
 				expect( body.has( BODY_FIELD ) ).toBe( false );
 				expect( body.has( SALE_PRICE_BODY_FIELD ) ).toBe( false );
+			} );
+
+			// The save drops a sale price that is not lower than the price, so the server never judges its window.
+			it( 'should send a sale price window that ends before it starts, and leave Create enabled, while the save drops the sale price', () => {
+				const clientId = newSalePriceTicket();
+				const store = window.__tribe_common_store__;
+				const endsBeforeStart = {
+					start: salePriceBoundary( 1, UNIT_WEEKS ),
+					end: salePriceBoundary( 2, UNIT_WEEKS ),
+				};
+				const isConfirmDisabled = () =>
+					applyFilters( 'tec.tickets.blocks.confirmButton.isDisabled', false, store.getState(), { clientId } );
+				dispatch( STORE_NAME ).setDraftRule( clientId, endsBeforeStart, SALE_PRICE_WINDOW );
+
+				store.dispatch( legacyActions.setTempSalePrice( clientId, '20.00' ) );
+
+				expect( JSON.parse( buildBody( clientId ).get( SALE_PRICE_BODY_FIELD ) ) ).toStrictEqual( endsBeforeStart );
+				expect( isConfirmDisabled() ).toBe( false );
+
+				store.dispatch( legacyActions.setTempSalePrice( clientId, '15.00' ) );
+
+				expect( buildBody( clientId ).has( SALE_PRICE_BODY_FIELD ) ).toBe( false );
+				expect( isConfirmDisabled() ).toBe( true );
 			} );
 		} );
 
@@ -527,11 +551,6 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 	describe.each( REQUEST_CASES )( 'on tec.tickets.blocks.ticketCancelled, for $title', ( kindCase ) => {
 		const { kind, newTicket, stored, edited } = kindCase;
 
-		afterEach( () => {
-			delete window.tribe;
-			clearBlockEditorGlobals();
-		} );
-
 		it( 'should restore the saved rule into the draft', () => {
 			const clientId = newTicket();
 			dispatch( STORE_NAME ).setRule( clientId, stored, kind );
@@ -562,11 +581,6 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 
 			return applyFilters( 'tec.tickets.blocks.Ticket.Duration.renderPicker', <Picker />, clientId );
 		}
-
-		afterEach( () => {
-			delete window.tribe;
-			delete window.__tribe_common_store__;
-		} );
 
 		it( 'should render the sales window options of a Tickets Commerce ticket around the picker', () => {
 			const clientId = newClientId();
@@ -624,11 +638,6 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 				end: <EndPicker />,
 			} );
 		}
-
-		afterEach( () => {
-			delete window.tribe;
-			delete window.__tribe_common_store__;
-		} );
 
 		it( 'should render the sale price window options of a Tickets Commerce ticket with its pickers', () => {
 			const clientId = newClientId();
@@ -748,14 +757,8 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 		}
 
 		beforeEach( () => {
-			window.tribe = { tickets: { data: { blocks: { selectors: legacySelectors } } } };
 			setBlockEditorData();
 			setEventState( DEFAULT_EVENT ).dispatch( legacyActions.setTicketsProvider( TICKETS_COMMERCE ) );
-		} );
-
-		afterEach( () => {
-			delete window.tribe;
-			clearBlockEditorGlobals();
 		} );
 
 		// The server sells a start of Now from now on when the ticket dates it later, as a ticket switched from a specific date.
@@ -1005,11 +1008,6 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 	} );
 
 	describe.each( [ 'tec.tickets.blocks.ticketCreated', 'tec.tickets.blocks.ticketUpdated' ] )( 'on %s', ( hook ) => {
-		afterEach( () => {
-			delete window.tribe;
-			clearBlockEditorGlobals();
-		} );
-
 		describe.each( REQUEST_CASES )( 'for $title', ( kindCase ) => {
 			const { kind, newTicket, stored, edited, later } = kindCase;
 

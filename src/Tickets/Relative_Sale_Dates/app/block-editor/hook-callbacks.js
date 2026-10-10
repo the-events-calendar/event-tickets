@@ -249,10 +249,9 @@ export function filterConfirmDisabled( isDisabled, state, { clientId } ) {
 	}
 
 	const eventDates = readEventDates();
-	const readWindow = getTicketWindowReader( clientId, select, ( kind ) => ( {
-		formDates: kind.readFormDates( state, clientId ),
-		isKept: kind.isKept( state, clientId ),
-	} ) );
+	const readWindow = getTicketWindowReader( clientId, select, ( kind ) =>
+		readTicketWindowForm( clientId, kind, state )
+	);
 
 	return BLOCK_WINDOW_KINDS.some( ( kind ) => null !== getTicketWindowError( kind, readWindow, eventDates ) );
 }

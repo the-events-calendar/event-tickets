@@ -9,12 +9,10 @@
  */
 import { useSelect } from '@wordpress/data';
 import { useMemo } from '@wordpress/element';
-import { __, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import { MIN_VALUE } from '../rule-constants';
 import {
 	ENDS_BEFORE_START,
 	RELATIVE_VALUE_OUT_OF_RANGE,
@@ -52,44 +50,6 @@ import { useCommonStoreValue } from './use-common-store-value';
  * @property {string} errorMessage      The window error the boundary is marked with, or an empty string.
  * @property {string} valueErrorMessage The range error of the boundary's relative number, or an empty string.
  */
-
-/**
- * The text of each error, keyed by the key a block kind's `messages` name for it.
- *
- * The msgids are the ones the server rejects a save with where it names the error, so one translation serves both.
- *
- * @since TBD
- *
- * @type {Object<string, function( BlockWindowKind ): string>}
- */
-const MESSAGES = {
-	invalidWindow: () =>
-		__( 'Ticket sales cannot end before they start. Please adjust the sales window.', 'event-tickets' ),
-	relativeValueOutOfRange: getRangeMessage,
-	salePriceEndsBeforeStart: () =>
-		__( 'The sale price cannot end before it starts. Please adjust the sale price window.', 'event-tickets' ),
-	salePriceValueOutOfRange: getRangeMessage,
-	salePriceOutsideWindow: () =>
-		__( 'The sale price window falls outside the ticket sales window. Please adjust the dates.', 'event-tickets' ),
-};
-
-/**
- * Gets the message of a relative number out of the range a kind takes.
- *
- * @since TBD
- *
- * @param {BlockWindowKind} kind The window kind.
- *
- * @return {string} The message.
- */
-function getRangeMessage( kind ) {
-	return sprintf(
-		// translators: %1$d is the smallest number a relative sale date takes, %2$d the largest.
-		__( 'Enter a number from %1$d to %2$d.', 'event-tickets' ),
-		MIN_VALUE,
-		kind.maxValue
-	);
-}
 
 /**
  * Returns a kind followed by the windows it must start inside, its parent first.
@@ -193,17 +153,22 @@ export function getTicketWindowReader( clientId, selectStore, readForm ) {
 }
 
 /**
- * Reads the form of a ticket's window of a kind from the common store.
+ * Reads the form of a ticket's window of a kind from the legacy ticket state.
  *
  * @since TBD
  *
  * @param {string}          clientId The client ID of the ticket block.
  * @param {BlockWindowKind} kind     The window kind.
+ * @param {Object}          [state]  The legacy ticket state, such as the one the dashboard is rendered with; the common
+ *                                   store's when left out.
  *
  * @return {TicketWindowForm} The form.
  */
-export function readTicketWindowForm( clientId, kind ) {
-	return { formDates: readTicketFormWindowDates( clientId, kind ), isKept: readTicketWindowKept( clientId, kind ) };
+export function readTicketWindowForm( clientId, kind, state ) {
+	return {
+		formDates: readTicketFormWindowDates( clientId, kind, state ),
+		isKept: readTicketWindowKept( clientId, kind, state ),
+	};
 }
 
 /**
@@ -244,9 +209,9 @@ export function useWindowError( clientId, kind ) {
  * @return {string} The message, or an empty string without an error the kind can have.
  */
 export function getWindowErrorMessage( key, kind ) {
-	const textKey = key ? kind.messages[ key ] : null;
+	const text = key ? kind.errorTexts[ key ] : null;
 
-	return textKey ? MESSAGES[ textKey ]( kind ) : '';
+	return text ? text( kind ) : '';
 }
 
 /**
