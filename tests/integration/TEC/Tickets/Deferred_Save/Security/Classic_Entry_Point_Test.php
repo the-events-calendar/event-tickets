@@ -1,0 +1,235 @@
+<?php
+
+namespace TEC\Tickets\Deferred_Save\Security;
+
+use Codeception\TestCase\WPTestCase;
+use Generator;
+use TEC\Tickets\Deferred_Save\Classic\Notices;
+use TEC\Tickets\Deferred_Save\Classic_Save;
+use TEC\Tickets\Deferred_Save\Commit;
+use Tribe\Tickets\Test\Commerce\Attendee_Maker;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
+use Tribe\Tests\Tickets\Traits\Deferred_Save_Attacks;
+
+/**
+ * Attacks through the classic post form: `$_POST` set as WordPress leaves it, then `wp_update_post()`.
+ */
+class Classic_Entry_Point_Test extends WPTestCase {
+	use Ticket_Maker;
+	use Attendee_Maker;
+	use With_Tickets_Commerce;
+	use Deferred_Save_Attacks;
+
+	public function tearDown(): void {
+		$_POST = [];
+		wp_set_current_user( 0 );
+		parent::tearDown();
+	}
+
+	/**
+	 * Submits the form for a post: the payload, the deferred save nonce, the completeness marker the classic editor
+	 * writes after the payload, and the post ID, slashed as WordPress does. With the marker, a refusal comes from the
+	 * check the test is about, never from an incomplete payload.
+	 */
+	protected function submit_form( int $post_id, array $payload, array $overrides = [] ): void {
+		$post = array_merge(
+			[
+				'tec_tickets'                => $payload,
+				'post_ID'                    => $post_id,
+				Classic_Save::NONCE_FIELD    => wp_create_nonce( Classic_Save::NONCE_ACTION ),
+				Classic_Save::COMPLETE_FIELD => '1',
+			],
+			$overrides
+		);
+		$_POST = wp_slash( $post );
+		wp_update_post( [ 'ID' => $post_id, 'post_title' => get_the_title( $post_id ) . ' saved' ] );
+	}
+
+	protected function remembered_errors(): array {
+		$remembered = get_transient( Notices::TRANSIENT_PREFIX . get_current_user_id() );
+
+		return is_array( $remembered ) ? (array) ( $remembered['errors'] ?? [] ) : [];
+	}
+
+	public function roles_that_cannot_edit_someone_elses_post(): Generator {
+		yield 'subscriber' => [ 'subscriber' ];
+		yield 'contributor' => [ 'contributor' ];
+		yield 'author' => [ 'author' ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider roles_that_cannot_edit_someone_elses_post
+	 */
+	public function it_should_change_nothing_for_a_user_who_cannot_edit_the_post( string $role ): void {
+		$this->given_two_posts_with_tickets();
+		$this->log_in_as( $role );
+		$before = $this->snapshot();
+
+		$this->submit_form( $this->post_a, $this->hostile_payload() );
+
+		$this->assert_world_unchanged( $before, "A $role changed something through the classic form." );
+		$this->assertNotEmpty( $this->remembered_errors(), 'The refusal is reported.' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_change_and_report_nothing_without_a_valid_nonce(): void {
+		$this->given_two_posts_with_tickets();
+		wp_set_current_user( $this->owner_id );
+		$before = $this->snapshot();
+
+		$this->submit_form( $this->post_a, [ 'create' => [ $this->ticket_data( 'No nonce' ) ] ], [ Classic_Save::NONCE_FIELD => '' ] );
+		$this->submit_form( $this->post_a, [ 'create' => [ $this->ticket_data( 'Bad nonce' ) ] ], [ Classic_Save::NONCE_FIELD => 'forged' ] );
+
+		$this->assert_world_unchanged( $before );
+		$this->assertSame( [], $this->remembered_errors() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_change_nothing_but_say_so_when_only_the_tickets_nonce_fails_on_the_admins_own_form(): void {
+		$this->given_two_posts_with_tickets();
+		wp_set_current_user( $this->owner_id );
+		$before = $this->snapshot();
+
+		// `nonce_life` filtered per action can expire the tickets nonce while the post form's own still verifies.
+		$this->submit_form(
+			$this->post_a,
+			[ 'create' => [ $this->ticket_data( 'Expired nonce' ) ] ],
+			[
+				Classic_Save::NONCE_FIELD => 'expired',
+				'_wpnonce'                => wp_create_nonce( 'update-post_' . $this->post_a ),
+			]
+		);
+
+		$this->assert_world_unchanged( $before );
+		$this->assertCount( 1, $this->remembered_errors(), 'The admin is told the ticket changes were not saved.' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_let_a_create_key_reach_a_ticket_on_another_post(): void {
+		$this->given_two_posts_with_tickets();
+		wp_set_current_user( $this->owner_id );
+		// The key an earlier save of post B left on its ticket, sent again in a create on post A.
+		update_post_meta( $this->ticket_b, '_tec_tickets_deferred_save_create_key', 'key-of-ticket-b' );
+		$before = $this->snapshot();
+
+		$this->submit_form( $this->post_a, [ 'create' => [ $this->ticket_data( 'Created on A', [ Commit::CREATE_KEY => 'key-of-ticket-b' ] ) ] ] );
+
+		$this->assert_b_untouched_and_a_created( $before );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_change_nothing_for_a_form_for_another_post(): void {
+		$this->given_two_posts_with_tickets();
+		wp_set_current_user( $this->owner_id );
+		$before = $this->snapshot();
+
+		// The form says it is for post B while post A is the one being saved: neither receives the payload.
+		$this->submit_form( $this->post_a, [ 'create' => [ $this->ticket_data( 'Wrong post' ) ] ], [ 'post_ID' => $this->post_b ] );
+
+		$this->assert_world_unchanged( $before );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_let_an_editor_of_post_a_reach_post_b_through_any_part(): void {
+		$this->given_two_posts_with_tickets();
+		wp_set_current_user( $this->owner_id );
+		// The owner may edit both posts; make B someone else's so the move destination is refused too.
+		wp_update_post( [ 'ID' => $this->post_b, 'post_author' => static::factory()->user->create( [ 'role' => 'administrator' ] ) ] );
+		$author_of_a = $this->log_in_as( 'author' );
+		wp_update_post( [ 'ID' => $this->post_a, 'post_author' => $author_of_a ] );
+		$before = $this->snapshot();
+
+		$this->submit_form( $this->post_a, $this->hostile_payload() );
+
+		$this->assert_b_untouched_and_a_created( $before );
+		$keys = array_map( fn( array $e ) => [ $e['part'], $e['key'] ], $this->remembered_errors() );
+		$this->assertEqualSets( $this->hostile_payload_refusals(), $keys );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_change_nothing_for_a_payload_over_the_cap(): void {
+		$this->given_two_posts_with_tickets();
+		wp_set_current_user( $this->owner_id );
+		add_filter( 'tec_tickets_deferred_save_max_entries', static fn() => 3 );
+		$before = $this->snapshot();
+
+		$this->submit_form( $this->post_a, [ 'create' => array_fill( 0, 4, $this->ticket_data( 'Flood' ) ) ] );
+
+		$this->assert_world_unchanged( $before );
+		$this->assertCount( 1, $this->remembered_errors() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_store_data_exactly_as_the_ajax_save_does(): void {
+		$this->given_two_posts_with_tickets();
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$data = $this->ticket_data(
+			'<b>Bold</b> <script>alert(1)</script> name',
+			[
+				'ticket_description' => '<p>Kept</p><script>alert(2)</script><img src=x onerror=alert(3)>',
+				'ticket_sku'         => 'SKU <i>x</i>',
+			]
+		);
+
+		// Today's path, on a post of its own so the panels it renders have nothing else to load.
+		$post_c = static::factory()->post->create();
+		$_POST  = [
+			'post_id'     => $post_c,
+			// tickets.js posts the edit form serialized: the request helper sanitizes that string, not the fields in it.
+			'data'        => http_build_query( $data ),
+			'ticket_type' => 'default',
+			'nonce'       => wp_create_nonce( 'add_ticket_nonce' ),
+		];
+		$this->assertIsArray( tribe( 'tickets.metabox' )->ajax_ticket_add( true ) );
+		$ajax_ids = tribe_tickets()->where( 'event', $post_c )->get_ids();
+		$ajax_id  = (int) reset( $ajax_ids );
+
+		// The deferred path.
+		$this->submit_form( $this->post_a, [ 'create' => [ $data ] ] );
+		$deferred_ids = array_diff( tribe_tickets()->where( 'event', $this->post_a )->get_ids(), [ $this->ticket_a ] );
+		$deferred_id  = (int) reset( $deferred_ids );
+
+		$this->assertGreaterThan( 0, $ajax_id );
+		$this->assertGreaterThan( 0, $deferred_id );
+		$stored = fn( int $id ) => [
+			'title'   => get_post_field( 'post_title', $id, 'raw' ),
+			'excerpt' => get_post_field( 'post_excerpt', $id, 'raw' ),
+			'sku'     => get_post_meta( $id, '_sku', true ),
+			'price'   => get_post_meta( $id, '_price', true ),
+		];
+		$this->assertSame( $stored( $ajax_id ), $stored( $deferred_id ) );
+		// What reaches a ticket is what the provider and WordPress keep for this user, as on the AJAX path.
+		$this->assertStringContainsString( '<p>Kept</p>', $stored( $deferred_id )['excerpt'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_change_nothing_for_a_payload_the_server_cut_short(): void {
+		$this->given_two_posts_with_tickets();
+		wp_set_current_user( $this->owner_id );
+		$before = $this->snapshot();
+
+		// PHP dropped the fields past `max_input_vars`, the marker written after the payload among them.
+		$this->submit_form( $this->post_a, [ 'update' => [ $this->ticket_a => [ 'ticket_name' => 'Half a ticket' ] ] ], [ Classic_Save::COMPLETE_FIELD => null ] );
+
+		$this->assert_world_unchanged( $before );
+		$this->assertCount( 1, $this->remembered_errors() );
+	}
+}
