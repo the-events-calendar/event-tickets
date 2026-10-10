@@ -173,6 +173,22 @@ class Controller_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
+	public function it_should_hook_the_block_editor_flag_and_unhook_it_on_unregister(): void {
+		$controller = $this->make_controller();
+		$callback   = $this->test_services->callback( Block\Editor_Config::class, 'add_flag' );
+
+		$controller->register();
+
+		$this->assertSame( 10, has_filter( 'tec_tickets_editor_configuration_localized_data', $callback ) );
+
+		$controller->unregister();
+
+		$this->assertFalse( has_filter( 'tec_tickets_editor_configuration_localized_data', $callback ) );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_hook_the_nonce_refresh_after_core_and_unhook_it_on_unregister(): void {
 		$controller = $this->make_controller();
 		$callback   = $this->test_services->callback( Classic_Save::class, 'refresh_nonce' );
