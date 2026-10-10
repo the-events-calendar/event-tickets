@@ -39,8 +39,8 @@ final class Controller extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		remove_action( 'tec_tickets_ticket_pre_save', $this->container->callback( Ticket_Save::class, 'set_ticket_dates' ) );
-		remove_action( 'tec_tickets_ticket_upserted', $this->container->callback( Ticket_Save::class, 'save_rule' ) );
-		remove_action( 'tec_tickets_ticket_upserted', $this->container->callback( Ticket_Save::class, 'write_resolved_dates' ), 20 );
+		remove_action( 'tec_tickets_ticket_upserted', $this->container->callback( Ticket_Save::class, 'save_rule' ), 8 );
+		remove_action( 'tec_tickets_ticket_upserted', $this->container->callback( Ticket_Save::class, 'write_resolved_dates' ), 9 );
 		remove_filter( 'tec_tickets_ticket_data_validation', $this->container->callback( Ticket_Save::class, 'validate_ticket_data' ) );
 		remove_action( 'tec_events_custom_tables_v1_after_save_occurrences', $this->container->callback( Event_Listener::class, 'update_ticket_dates' ) );
 		remove_filter( 'tec_tickets_ticket_end_date_follows_event_start', $this->container->callback( Event_Listener::class, 'filter_end_date_follows_event_start' ) );
@@ -104,9 +104,14 @@ final class Controller extends Controller_Contract {
 		$this->container->singleton( Ticket_Save::class );
 
 		add_action( 'tec_tickets_ticket_pre_save', $this->container->callback( Ticket_Save::class, 'set_ticket_dates' ), 10, 3 );
-		add_action( 'tec_tickets_ticket_upserted', $this->container->callback( Ticket_Save::class, 'save_rule' ), 10, 3 );
+
+		/*
+		 * The rules are stored, and their dates written, before Ticket_Actions stores the event cost at 10: the cost lists
+		 * the sale price only while its dates put it on sale.
+		 */
+		add_action( 'tec_tickets_ticket_upserted', $this->container->callback( Ticket_Save::class, 'save_rule' ), 8, 3 );
 		// After the rules are stored, and before Ticket_Actions schedules the sales actions from the ticket dates, at 1000.
-		add_action( 'tec_tickets_ticket_upserted', $this->container->callback( Ticket_Save::class, 'write_resolved_dates' ), 20, 2 );
+		add_action( 'tec_tickets_ticket_upserted', $this->container->callback( Ticket_Save::class, 'write_resolved_dates' ), 9, 2 );
 		add_filter( 'tec_tickets_ticket_data_validation', $this->container->callback( Ticket_Save::class, 'validate_ticket_data' ), 10, 3 );
 
 		$this->container->singleton( Event_Listener::class );
