@@ -15,13 +15,13 @@ class Window_Kind_Test extends WPTestCase {
 		$this->assertSame( [ Rule::MODE_DEFAULT, Rule::MODE_RELATIVE, Rule::MODE_SPECIFIC ], $kind->get_modes( 'start' ) );
 		$this->assertSame( [ Rule::MODE_DEFAULT, Rule::MODE_RELATIVE, Rule::MODE_SPECIFIC ], $kind->get_modes( 'end' ) );
 		$this->assertSame( Rule::MODE_DEFAULT, $kind->get_open_start_mode() );
-		$this->assertSame( Boundary::MIN_VALUE, $kind->get_min_value() );
 		$this->assertSame( Boundary::MAX_VALUE, $kind->get_max_value() );
 		$this->assertSame( [ MINUTE_IN_SECONDS, HOUR_IN_SECONDS, DAY_IN_SECONDS, WEEK_IN_SECONDS ], $kind->get_units() );
 		$this->assertSame( [ Rule::ANCHOR_START, Rule::ANCHOR_END ], $kind->get_anchors() );
 		$this->assertTrue( $kind->takes_anchor() );
 		$this->assertNull( $kind->get_store_key() );
 		$this->assertNull( $kind->get_parent() );
+		$this->assertTrue( $kind->owns_ticket_sales_dates() );
 	}
 
 	/**
@@ -34,13 +34,13 @@ class Window_Kind_Test extends WPTestCase {
 		$this->assertSame( [ Rule::MODE_NOW, Rule::MODE_RELATIVE, Rule::MODE_SPECIFIC ], $kind->get_modes( 'start' ) );
 		$this->assertSame( [ Rule::MODE_RELATIVE, Rule::MODE_SPECIFIC ], $kind->get_modes( 'end' ) );
 		$this->assertSame( Rule::MODE_NOW, $kind->get_open_start_mode() );
-		$this->assertSame( 1, $kind->get_min_value() );
 		$this->assertSame( 30, $kind->get_max_value() );
 		$this->assertSame( [ DAY_IN_SECONDS, WEEK_IN_SECONDS ], $kind->get_units() );
 		$this->assertSame( [ Rule::ANCHOR_START ], $kind->get_anchors() );
 		$this->assertFalse( $kind->takes_anchor() );
 		$this->assertSame( 'sale_price', $kind->get_store_key() );
 		$this->assertSame( Window_Kind::sales(), $kind->get_parent() );
+		$this->assertFalse( $kind->owns_ticket_sales_dates() );
 	}
 
 	/**

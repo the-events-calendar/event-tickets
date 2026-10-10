@@ -253,14 +253,15 @@ final class Rule implements JsonSerializable {
 	 *
 	 * A specific end leaves the end to the ticket, as a ticket without a rule does, and the classic editor stores such a
 	 * rule the first time it saves a ticket made before the feature. The end stays put when the start counts back from
-	 * the event end, which could fall after an end moved to the event start. Only a sales window rule moves the sale end.
+	 * the event end, which could fall after an end moved to the event start. Only a kind that owns the ticket sales dates
+	 * moves the sale end.
 	 *
 	 * @since TBD
 	 *
 	 * @return bool Whether the sale end may follow the event start.
 	 */
 	public function lets_end_follow_event_start(): bool {
-		return Window_Kind::SALES === $this->kind->get_id()
+		return $this->kind->owns_ticket_sales_dates()
 			&& self::MODE_SPECIFIC === $this->end->get_mode()
 			&& self::ANCHOR_END !== $this->start->get_anchor();
 	}

@@ -55,7 +55,7 @@ final class Sale_Window {
 		$window = $this->resolve( $rule, ...$event_dates );
 		$kind   = $rule->get_kind();
 
-		if ( Window_Kind::SALES !== $kind->get_id() || $kind->get_open_start_mode() !== $rule->get_start()->get_mode() ) {
+		if ( ! $kind->owns_ticket_sales_dates() || $kind->get_open_start_mode() !== $rule->get_start()->get_mode() ) {
 			return $window;
 		}
 

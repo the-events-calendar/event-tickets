@@ -49,7 +49,6 @@ class Boundary_Test extends WPTestCase {
 		yield 'sale price: specific start' => [ $sale_price, 'start', [ 'mode' => Rule::MODE_SPECIFIC ] ];
 		yield 'sale price: specific end' => [ $sale_price, 'end', [ 'mode' => Rule::MODE_SPECIFIC ] ];
 
-		// The sale price dates are whole days, from 1 to 30 of them.
 		foreach ( [ 'days' => DAY_IN_SECONDS, 'weeks' => WEEK_IN_SECONDS ] as $unit_name => $unit ) {
 			foreach ( [ 1, 30 ] as $value ) {
 				foreach ( [ 'start', 'end' ] as $end ) {
