@@ -201,6 +201,32 @@ final class Writer {
 	}
 
 	/**
+	 * Deletes the rows of a permanently deleted order.
+	 *
+	 * A failure is logged, never thrown, so it cannot stop the order from being deleted.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_id The order ID.
+	 *
+	 * @return void
+	 */
+	public function delete_order_rows( int $order_id ): void {
+		try {
+			$this->repository->delete_by_order( $order_id );
+		} catch ( Throwable $e ) {
+			$this->log(
+				Log::DEBUG,
+				'The order items could not be deleted from the table.',
+				[
+					'order_id' => $order_id,
+					'error'    => $e->getMessage(),
+				]
+			);
+		}
+	}
+
+	/**
 	 * Maps an order's items to table rows, positioned in list order, without `id` and `created_at`.
 	 *
 	 * @since TBD
