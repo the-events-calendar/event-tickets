@@ -1142,6 +1142,72 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_report_a_copy_saved_before_a_listener_threw_as_created_and_not_copy_it_again(): void {
+		$this->log_in_as_admin();
+		$post_id   = static::factory()->post->create();
+		$source_id = $this->create_tc_ticket( $post_id, 10 );
+		$entry     = $this->ticket_data( 'The copy', [ Commit::DUPLICATE_OF => (string) $source_id, Commit::CREATE_KEY => 'copy-key-1' ] );
+		// Fired inside the `ticket_add()` that `duplicate_ticket()` runs, after the provider saved the copy.
+		$throw = static function () {
+			throw new \RuntimeException( 'A listener inside duplicate_ticket() failed.' );
+		};
+		add_action( 'tec_tickets_ticket_add', $throw );
+
+		$result = $this->commit()->run( [ 'create' => [ $entry ] ], $post_id );
+
+		$copy_ids = array_values( array_diff( tribe_tickets()->where( 'event', $post_id )->get_ids(), [ $source_id ] ) );
+		$this->assertCount( 1, $copy_ids );
+		// The copy exists, so the editor must know its ID and never copy the ticket again.
+		$this->assertSame( [ 0 => (int) $copy_ids[0] ], $result->get_created() );
+		$this->assertSame( [ [ 'create', 0, false ] ], $this->error_outcomes( $result ) );
+
+		remove_action( 'tec_tickets_ticket_add', $throw );
+		$again = $this->commit()->run( [ 'create' => [ $entry ] ], $post_id );
+
+		$this->assertSame( [], $again->get_errors() );
+		$this->assertSame( [ 0 => (int) $copy_ids[0] ], $again->get_created() );
+		$this->assertCount( 2, tribe_tickets()->where( 'event', $post_id )->get_ids() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_report_a_ticket_saved_before_a_listener_threw_as_created_after_a_copy_in_the_same_save(): void {
+		$this->log_in_as_admin();
+		$post_id   = static::factory()->post->create();
+		$source_id = $this->create_tc_ticket( $post_id, 10 );
+		add_action(
+			'tec_tickets_ticket_add',
+			static function ( $event_id, $ticket ) {
+				if ( 'Second' === $ticket->name ) {
+					throw new \RuntimeException( 'A listener inside ticket_add() failed.' );
+				}
+			},
+			10,
+			2
+		);
+
+		$result = $this->commit()->run(
+			[
+				'create' => [
+					$this->ticket_data( 'The copy', [ Commit::DUPLICATE_OF => (string) $source_id ] ),
+					$this->ticket_data( 'Second' ),
+				],
+			],
+			$post_id
+		);
+
+		$ticket_ids = tribe_tickets()->where( 'event', $post_id )->get_ids();
+		$this->assertCount( 3, $ticket_ids );
+		$created = $result->get_created();
+		$this->assertSame( [ 0, 1 ], array_keys( $created ) );
+		$this->assertSame( 'Second', get_the_title( $created[1] ) );
+		$this->assertSame( [ [ 'create', 1, false ] ], $this->error_outcomes( $result ) );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_report_a_ticket_never_attached_to_the_post_as_not_saved(): void {
 		$this->log_in_as_admin();
 		$post_id = static::factory()->post->create();
