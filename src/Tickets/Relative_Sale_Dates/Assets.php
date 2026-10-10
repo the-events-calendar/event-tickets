@@ -226,7 +226,7 @@ final class Assets extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, listDateFormat: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, invalidWindow: string, relativeValueOutOfRange: string}} The script data.
+	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, listDateFormat: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, windows: array<string,array{endsBeforeStart: string, outsideParent?: string, valueOutOfRange: string}>}} The script data.
 	 */
 	private function get_classic_script_data(): array {
 		return [
@@ -239,14 +239,50 @@ final class Assets extends Controller_Contract {
 			'allDay'         => $this->get_all_day_times(),
 			'text'           => [
 				// Translators: %1$s is the date sales start on, %2$s the time.
-				'start'                   => __( 'Sales start %1$s at %2$s', 'event-tickets' ),
+				'start'   => __( 'Sales start %1$s at %2$s', 'event-tickets' ),
 				// Translators: %1$s is the date sales end on, %2$s the time.
-				'end'                     => __( 'Sales end %1$s at %2$s', 'event-tickets' ),
-				'invalidWindow'           => __( 'Ticket sales cannot end before they start. Please adjust the sales window.', 'event-tickets' ),
-				// Translators: %1$d is the smallest number a relative sale date takes, %2$d the largest.
-				'relativeValueOutOfRange' => sprintf( __( 'Enter a number from %1$d to %2$d.', 'event-tickets' ), Boundary::MIN_VALUE, Boundary::MAX_VALUE ),
+				'end'     => __( 'Sales end %1$s at %2$s', 'event-tickets' ),
+				'windows' => $this->get_window_error_texts(),
 			],
 		];
+	}
+
+	/**
+	 * Gets the text of each error a window of each kind can have, keyed by the kind's ID.
+	 *
+	 * The errors the server rejects a save with carry the server's own text, so the classic script can tell which window
+	 * a rejected save was about.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string,array{endsBeforeStart: string, outsideParent?: string, valueOutOfRange: string}> The texts of
+	 *         each kind, keyed by the error as the editors key it; `outsideParent` only for a kind with a parent window.
+	 */
+	private function get_window_error_texts(): array {
+		$texts = [];
+
+		foreach ( Window_Kind::all() as $kind ) {
+			$kind_texts = [];
+
+			foreach ( [ 'endsBeforeStart', 'outsideParent' ] as $key ) {
+				$error = $kind->get_error( $key );
+
+				if ( $error ) {
+					$kind_texts[ $key ] = $error->get_error_message();
+				}
+			}
+
+			$kind_texts['valueOutOfRange'] = sprintf(
+				// Translators: %1$d is the smallest number a relative sale date takes, %2$d the largest.
+				__( 'Enter a number from %1$d to %2$d.', 'event-tickets' ),
+				Boundary::MIN_VALUE,
+				$kind->get_max_value()
+			);
+
+			$texts[ $kind->get_id() ] = $kind_texts;
+		}
+
+		return $texts;
 	}
 
 	/**

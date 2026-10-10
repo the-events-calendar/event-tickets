@@ -16,7 +16,14 @@ import { _nx } from '@wordpress/i18n';
  */
 import { MODE_RELATIVE, UNIT_DAYS, UNIT_HOURS, UNIT_MINUTES, UNIT_WEEKS } from '../rule-constants';
 import { resolveSaleWindow } from '../sale-window';
-import { getFormWindow, getOutOfRangeBoundary, getWindowError, RELATIVE_VALUE_OUT_OF_RANGE } from '../window-check';
+import {
+	ENDS_BEFORE_START,
+	getFormWindow,
+	getOutOfRangeBoundary,
+	getWindowError,
+	OUTSIDE_PARENT,
+	RELATIVE_VALUE_OUT_OF_RANGE,
+} from '../window-check';
 import { SALES_WINDOW, WINDOW_KINDS } from '../window-kinds';
 import { getWindowLengthText } from '../window-length';
 import { readDateTime, readEventDates } from './event-dates';
@@ -62,6 +69,29 @@ const RELATIVE_VALUE_FIELDS = WINDOW_KINDS.flatMap( ( kind ) =>
 ).join( ', ' );
 
 /**
+ * The key of each error's text among a kind's localized texts: the server's own key for an error it rejects a save
+ * with.
+ *
+ * @since TBD
+ *
+ * @type {Object<string, string>}
+ */
+const TEXT_KEYS = Object.freeze( {
+	[ ENDS_BEFORE_START ]: 'endsBeforeStart',
+	[ OUTSIDE_PARENT ]: 'outsideParent',
+	[ RELATIVE_VALUE_OUT_OF_RANGE ]: 'valueOutOfRange',
+} );
+
+/**
+ * The keys of the texts of the errors the server rejects a save with.
+ *
+ * @since TBD
+ *
+ * @type {string[]}
+ */
+const SERVER_TEXT_KEYS = [ 'endsBeforeStart', 'outsideParent' ];
+
+/**
  * The kinds whose window the form says the length of.
  *
  * @since TBD
@@ -71,8 +101,8 @@ const RELATIVE_VALUE_FIELDS = WINDOW_KINDS.flatMap( ( kind ) =>
 const LENGTH_KINDS = WINDOW_KINDS.filter( ( kind ) => kind.lengthId );
 
 /**
- * Gets the selector of every field a window of a kind is read from: the mode and relative fields of each boundary, and
- * the fields of its specific date.
+ * Gets the selector of every field a window of a kind is read from: the mode and relative fields of each boundary, the
+ * fields of its specific date, and the field that adds the window to the ticket.
  *
  * @since TBD
  *
@@ -89,6 +119,7 @@ function getFieldSelector( kind ) {
 			kind.dateFields[ key ].date,
 			kind.dateFields[ key ].time,
 		] )
+		.concat( kind.enabledFieldId )
 		.filter( Boolean )
 		.map( ( id ) => `#${ id }` )
 		.join( ', ' );
@@ -97,15 +128,17 @@ function getFieldSelector( kind ) {
 /**
  * Reads the dates the form sends for the specific boundaries of a window of a kind.
  *
- * A disabled field, like the date a Now start hides, is not sent, so the server does not judge it either.
+ * A disabled field, like the date a Now start hides, is not sent, so the server does not judge it either. A date sent
+ * that cannot be read is told apart from one not sent: the server rejects it rather than leave the boundary without a
+ * date.
  *
  * @since TBD
  *
  * @param {import( '../window-kinds' ).WindowKind} kind    The kind of the window.
  * @param {Object}                                 dynamic The date formats TEC localizes for its own helper text.
  *
- * @return {{start: string|null, end: string|null}} Each date, `YYYY-MM-DD HH:mm:ss`, or `null` when it is not sent or
- *                                                   cannot be read.
+ * @return {{start: string|null|false, end: string|null|false}} Each date, `YYYY-MM-DD HH:mm:ss`, `null` when it is not
+ *                                                               sent, or `false` when it cannot be read.
  */
 function readFormDates( kind, dynamic ) {
 	const field = ( id ) => {
@@ -113,12 +146,15 @@ function readFormDates( kind, dynamic ) {
 
 		return input && ! input.disabled ? input.value : undefined;
 	};
-	const read = ( key ) =>
-		readDateTime(
-			field( kind.dateFields[ key ].date ),
-			field( kind.dateFields[ key ].time ),
-			dynamic.datepicker_format
-		);
+	const read = ( key ) => {
+		const date = field( kind.dateFields[ key ].date );
+
+		if ( '' === ( date || '' ).trim() ) {
+			return null;
+		}
+
+		return readDateTime( date, field( kind.dateFields[ key ].time ), dynamic.datepicker_format ) ?? false;
+	};
 
 	return { start: read( 'start' ), end: read( 'end' ) };
 }
@@ -353,21 +389,22 @@ function addDescription( field, id ) {
 }
 
 /**
- * Shows an error under the sales window, marking the field it is about invalid, or clears both.
+ * Shows an error under a window of a kind, marking the field it is about invalid, or clears both.
  *
  * The field is marked with `aria-invalid` rather than common's `tribe-validation-error` class: common validates the
  * form again after the save click and strips that class from every field it does not flag itself.
  *
  * @since TBD
  *
- * @param {string}      message                           The error, or an empty string to clear it.
- * @param {string|null} [fieldId='ticket_sales_end_mode'] The id of the field the error is about, or `null` for an
- *                                                        error that is not about a field.
+ * @param {import( '../window-kinds' ).WindowKind} kind           The kind of the window.
+ * @param {string}                                 message        The error, or an empty string to clear it.
+ * @param {string|null}                            [fieldId=null] The id of the field the error is about, or `null`
+ *                                                                for an error that is not about a field.
  *
  * @return {HTMLElement|null} The field marked invalid, or `null` when none is.
  */
-function showWindowError( message, fieldId = 'ticket_sales_end_mode' ) {
-	const error = document.getElementById( 'ticket_sales_window_error' );
+function showError( kind, message, fieldId = null ) {
+	const error = document.getElementById( kind.errorId );
 
 	if ( ! error ) {
 		return null;
@@ -392,25 +429,72 @@ function showWindowError( message, fieldId = 'ticket_sales_end_mode' ) {
 }
 
 /**
- * Blocks the ticket save when the sales window does not start before it ends.
- *
- * `tickets.js` keeps only the last answer of the `additionalValidation.tribe` handlers, and Event Tickets Plus answers
- * with the value it was passed. So an invalid window stops the handlers after this one, and a valid one keeps the
- * answer of a handler before it.
+ * Clears the error of a window of a kind, and of every window judged against it.
  *
  * @since TBD
  *
- * @param {jQuery.Event} event The validation event.
- * @param {boolean}      valid Whether the ticket is valid so far.
+ * @param {import( '../window-kinds' ).WindowKind} kind The kind of the window.
+ *
+ * @return {void}
+ */
+function clearErrors( kind ) {
+	WINDOW_KINDS.filter( ( other ) => other === kind || other.parent === kind ).forEach( ( other ) =>
+		showError( other, '' )
+	);
+}
+
+/**
+ * Gets the parent window of a window of a kind as the form gives it.
+ *
+ * @since TBD
+ *
+ * @param {import( '../window-kinds' ).WindowKind} kind       The kind of the window.
+ * @param {import( './event-dates' ).EventDates}   eventDates The event dates.
+ * @param {Object}                                 dynamic    The date formats TEC localizes for its own helper text.
+ *
+ * @return {import( '../window-check' ).FormWindow|null} The parent window, or `null` for a kind without one or a form
+ *                                                       without its fields.
+ */
+function getParentWindow( kind, eventDates, dynamic ) {
+	const { parent } = kind;
+
+	if ( ! parent || ! document.getElementById( `${ parent.fieldPrefix }_start_mode` ) ) {
+		return null;
+	}
+
+	return getFormWindow( readRule( document, parent ), eventDates, readFormDates( parent, dynamic ), parent );
+}
+
+/**
+ * Blocks the ticket save when a window of a kind is one the server rejects: its relative number is out of range, it
+ * does not end after it starts, or it starts outside its parent window.
+ *
+ * `tickets.js` keeps only the last answer of the `additionalValidation.tribe` handlers, and Event Tickets Plus answers
+ * with the value it was passed. So an invalid window stops the handlers after this one, and a valid one keeps the
+ * answer of a handler before it. The handlers are bound in the order the server judges the kinds, so a window judged
+ * against its parent is not judged once the parent is invalid. A window the save does not keep is not judged, and its
+ * error is cleared.
+ *
+ * @since TBD
+ *
+ * @param {import( '../window-kinds' ).WindowKind} kind  The kind of the window.
+ * @param {jQuery.Event}                           event The validation event.
+ * @param {boolean}                                valid Whether the ticket is valid so far.
  *
  * @return {boolean} Whether the ticket can be saved.
  */
-function validateSaleWindow( event, valid ) {
+function validateWindow( kind, event, valid ) {
 	const answer = undefined === event.result ? valid : event.result;
 	const settings = window.tec?.tickets?.relativeSaleDates?.classicData;
 	const dynamic = window.tribe_dynamic_help_text;
 
-	if ( ! settings || ! dynamic || ! document.getElementById( 'ticket_sales_window_error' ) ) {
+	if ( ! settings || ! dynamic || ! document.getElementById( kind.errorId ) ) {
+		return answer;
+	}
+
+	if ( ! kind.isEnabled( document ) ) {
+		showError( kind, '' );
+
 		return answer;
 	}
 
@@ -421,18 +505,26 @@ function validateSaleWindow( event, valid ) {
 		return answer;
 	}
 
-	const error = getWindowError( readRule( document ), eventDates, readFormDates( SALES_WINDOW, dynamic ) );
+	const rule = readRule( document, kind );
+	const error = getWindowError(
+		rule,
+		eventDates,
+		readFormDates( kind, dynamic ),
+		kind,
+		getParentWindow( kind, eventDates, dynamic )
+	);
 
 	if ( ! error ) {
-		showWindowError( '' );
+		showError( kind, '' );
 
 		return answer;
 	}
 
-	const outOfRange = RELATIVE_VALUE_OUT_OF_RANGE === error ? getOutOfRangeBoundary( readRule( document ) ) : null;
-	const marked = outOfRange
-		? showWindowError( settings.text.relativeValueOutOfRange, `ticket_sales_${ outOfRange }_value` )
-		: showWindowError( settings.text.invalidWindow );
+	const fieldId =
+		RELATIVE_VALUE_OUT_OF_RANGE === error
+			? `${ kind.fieldPrefix }_${ getOutOfRangeBoundary( rule, kind ) }_value`
+			: `${ kind.fieldPrefix }_end_mode`;
+	const marked = showError( kind, settings.text.windows[ kind.id ][ TEXT_KEYS[ error ] ], fieldId );
 
 	// The save button keeps the focus otherwise, away from the field that blocks the save.
 	marked?.focus();
@@ -459,22 +551,20 @@ function showServerError( response ) {
 
 	// The server escapes the message for HTML; the error element takes text.
 	const text = new window.DOMParser().parseFromString( message, 'text/html' ).documentElement.textContent;
-	const settings = window.tec?.tickets?.relativeSaleDates?.classicData;
+	const texts = window.tec?.tickets?.relativeSaleDates?.classicData?.text?.windows ?? {};
+	// The server answers with the text only, so the window an error is about is told apart by its text.
+	const kind = WINDOW_KINDS.find( ( candidate ) =>
+		SERVER_TEXT_KEYS.some( ( key ) => texts[ candidate.id ]?.[ key ] === text )
+	);
 
-	// Only the sales window error is about the window; another reason is shown without marking the window invalid.
-	showWindowError( text, text === settings?.text?.invalidWindow ? 'ticket_sales_end_mode' : null );
-}
+	if ( kind ) {
+		showError( kind, text, `${ kind.fieldPrefix }_end_mode` );
 
-/**
- * Updates the helper text and clears a sales window error once a field the window depends on changes.
- *
- * @since TBD
- *
- * @return {void}
- */
-function onWindowChange() {
-	showWindowError( '' );
-	updateHelperText();
+		return;
+	}
+
+	// Another reason is shown under the sales window, the ticket's own, without marking a field invalid.
+	showError( SALES_WINDOW, text );
 }
 
 /**
@@ -485,7 +575,8 @@ function onWindowChange() {
  * @return {void}
  */
 function onEventChange() {
-	onWindowChange();
+	WINDOW_KINDS.forEach( clearErrors );
+	updateHelperText();
 	updateWindowLengths();
 	updateTicketsList();
 }
@@ -510,15 +601,21 @@ function onPanelsRefreshed() {
  * stops the save event from bubbling, and the element itself is not replaced when the panels are.
  */
 jQuery( () => {
-	jQuery( '#tribetickets' )
-		.on( 'pre-save-ticket.tribe', () => WINDOW_KINDS.forEach( ( kind ) => writeRule( document, kind ) ) )
-		.on( 'additionalValidation.tribe', validateSaleWindow );
+	const tickets = jQuery( '#tribetickets' );
+
+	tickets.on( 'pre-save-ticket.tribe', () => WINDOW_KINDS.forEach( ( kind ) => writeRule( document, kind ) ) );
+	WINDOW_KINDS.forEach( ( kind ) =>
+		tickets.on( 'additionalValidation.tribe', ( event, valid ) => validateWindow( kind, event, valid ) )
+	);
 	onPanelsRefreshed();
 } );
 
 jQuery( document ).on( 'change', EVENT_FIELDS, onEventChange );
 // `tickets.js` tells this script of a date picked from the calendar with the namespaced event, which a plain change fires too.
-jQuery( document ).on( 'change.tecRelativeSaleDates input', getFieldSelector( SALES_WINDOW ), onWindowChange );
+WINDOW_KINDS.forEach( ( kind ) =>
+	jQuery( document ).on( 'change.tecRelativeSaleDates input', getFieldSelector( kind ), () => clearErrors( kind ) )
+);
+jQuery( document ).on( 'change.tecRelativeSaleDates input', getFieldSelector( SALES_WINDOW ), updateHelperText );
 LENGTH_KINDS.forEach( ( kind ) =>
 	jQuery( document ).on( 'change.tecRelativeSaleDates input', getFieldSelector( kind ), () =>
 		updateWindowLength( kind )

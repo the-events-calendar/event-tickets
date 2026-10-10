@@ -701,6 +701,20 @@ class Editor_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
+	public function should_hold_an_alert_for_an_invalid_sale_price_window(): void {
+		$this->make_controller()->register();
+
+		$form = $this->render_ticket_form( $this->create_event( self::EVENT_START ) );
+
+		$error = $this->get_element( $form, 'ticket_sale_price_error' );
+		$this->assertSame( 'alert', $error->getAttribute( 'role' ) );
+		$this->assertSame( '', trim( $error->textContent ) );
+		$this->assertSame( '#ticket_add_sale_price', $this->get_dependent( $error )->getAttribute( 'data-depends' ) );
+	}
+
+	/**
+	 * @test
+	 */
 	public function should_keep_the_attributes_of_the_existing_sale_price_inputs(): void {
 		$event_id  = $this->create_event( self::EVENT_START );
 		$ticket_id = $this->create_sale_price_ticket_up_to_the_event( $event_id );
