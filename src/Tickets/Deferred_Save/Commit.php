@@ -26,8 +26,9 @@ use Tribe__Tickets__Tickets as Tickets;
  * replays each part through the functions Event Tickets uses for ticket writes today, so every hook
  * that fires on a ticket save or delete today still fires, in the same order.
  *
- * Parts run in the order `update`, `move`, `create`, `delete`; the parser refuses a ticket named in
- * more than one of them. One failing entry never stops the others.
+ * Parts run in the order `update`, `create`, `move`, `delete`, so a copy is taken while its source is
+ * still on the post; the parser refuses a ticket named in more than one of `update`, `move` and
+ * `delete`. One failing entry never stops the others.
  *
  * A write that happened is never reported as refused: when something that runs after it throws, the
  * entry's error is marked `applied`. A ticket a provider created but did not finish is reported with its
@@ -289,10 +290,6 @@ final class Commit {
 			$result = $this->guarded( $result, Parser::UPDATE, $ticket_id, fn( Result $r ) => $this->update( $r, $post_id, $ticket_id, $data ) );
 		}
 
-		foreach ( $payload->get_move() as $ticket_id => $destination_id ) {
-			$result = $this->guarded( $result, Parser::MOVE, $ticket_id, fn( Result $r ) => $this->move( $r, $ticket_id, $destination_id ) );
-		}
-
 		// The tickets each provider has on the post, read at the first create and kept in step, not read again for each one.
 		$attached = [];
 
@@ -305,6 +302,10 @@ final class Commit {
 					return $this->create( $r, $post_id, $position, $data, $attached );
 				}
 			);
+		}
+
+		foreach ( $payload->get_move() as $ticket_id => $destination_id ) {
+			$result = $this->guarded( $result, Parser::MOVE, $ticket_id, fn( Result $r ) => $this->move( $r, $ticket_id, $destination_id ) );
 		}
 
 		foreach ( $payload->get_delete() as $ticket_id ) {

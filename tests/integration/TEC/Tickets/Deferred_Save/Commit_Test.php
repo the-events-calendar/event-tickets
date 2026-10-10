@@ -743,6 +743,29 @@ class Commit_Test extends WPTestCase {
 	}
 
 	/**
+	 * @test
+	 */
+	public function it_should_put_the_copy_on_the_saved_post_when_the_same_save_moves_its_source(): void {
+		$this->log_in_as_admin();
+		$post_id        = static::factory()->post->create();
+		$destination_id = static::factory()->post->create();
+		$source_id      = $this->create_tc_ticket( $post_id, 10 );
+
+		$result = $this->commit()->run(
+			[
+				'create' => [ $this->ticket_data( 'The copy', [ Commit::DUPLICATE_OF => (string) $source_id ] ) ],
+				'move'   => [ $source_id => $destination_id ],
+			],
+			$post_id
+		);
+
+		$this->assertSame( [], $result->get_errors() );
+		$copy_id = $result->get_created()[0];
+		$this->assertSame( [ $copy_id ], tribe_tickets()->where( 'event', $post_id )->get_ids() );
+		$this->assertSame( [ $source_id ], tribe_tickets()->where( 'event', $destination_id )->get_ids() );
+	}
+
+	/**
 	 * @return \Generator<string,array{0:callable}>
 	 */
 	public function duplicate_sources_that_are_refused_provider(): \Generator {
@@ -817,7 +840,7 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_should_run_the_parts_in_update_move_create_delete_order(): void {
+	public function it_should_run_the_parts_in_update_create_move_delete_order(): void {
 		$this->log_in_as_admin();
 		$post_id        = static::factory()->post->create();
 		$destination_id = static::factory()->post->create();
@@ -843,7 +866,8 @@ class Commit_Test extends WPTestCase {
 				static fn( string $action ) => in_array( $action, [ 'tec_tickets_ticket_update', 'tribe_tickets_ticket_type_moved', 'tec_tickets_ticket_add', 'tribe_tickets_ticket_deleted' ], true )
 			)
 		);
-		$this->assertSame( [ 'tec_tickets_ticket_update', 'tribe_tickets_ticket_type_moved', 'tec_tickets_ticket_add', 'tribe_tickets_ticket_deleted' ], $milestones );
+		// Creates come before moves, so a copy is taken while its source is still on the post.
+		$this->assertSame( [ 'tec_tickets_ticket_update', 'tec_tickets_ticket_add', 'tribe_tickets_ticket_type_moved', 'tribe_tickets_ticket_deleted' ], $milestones );
 	}
 
 	/**
