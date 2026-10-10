@@ -109,15 +109,6 @@ export function* fetchPostChoices( { ignore, post_type, search_terms = '' } ) {
 }
 
 /**
- * Moves ticket/RSVP from one post to another
- *
- * @yield
- * @param {Object} args                The move arguments.
- * @param {number} args.src_post_id    The source post ID.
- * @param {number} args.ticket_type_id The ticket type ID.
- * @param {number} args.target_post_id The target post ID.
- */
-/**
  * Whether the block being moved is a Ticket block, rather than an RSVP.
  *
  * @since TBD
@@ -131,6 +122,15 @@ export function* isTicketBlockMove() {
 	return ticketClientIds.includes( clientId );
 }
 
+/**
+ * Moves ticket/RSVP from one post to another
+ *
+ * @yield
+ * @param {Object} args                The move arguments.
+ * @param {number} args.src_post_id    The source post ID.
+ * @param {number} args.ticket_type_id The ticket type ID.
+ * @param {number} args.target_post_id The target post ID.
+ */
 export function* moveTicket( { src_post_id, ticket_type_id, target_post_id } ) {
 	try {
 		yield put( {
