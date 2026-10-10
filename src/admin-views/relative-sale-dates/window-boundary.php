@@ -17,7 +17,7 @@
  * @var array{relative?: string, value: string, unit: string, anchor?: string, date: string} $boundary_labels The text that opens the relative date, if any, and the accessible names of the inputs.
  * @var string                                                           $date_input_id     The id of the input of the specific date.
  * @var bool                                                             $shows_helper_text Whether the relative inputs are described by a helper text the script writes.
- * @var callable                                                         $render_date_inputs Renders the inputs of the specific date of the boundary it is given, `start` or `end`.
+ * @var callable(string): void                                           $render_date_inputs Renders the inputs of the specific date of the boundary it is given, `start` or `end`.
  */
 
 use TEC\Tickets\Relative_Sale_Dates\Boundary;
