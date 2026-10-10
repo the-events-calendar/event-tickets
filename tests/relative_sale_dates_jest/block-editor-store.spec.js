@@ -162,6 +162,18 @@ describe( 'the Relative Sale Dates block editor store', () => {
 			expect( getDraftRule( clientId, kind ) ).toStrictEqual( edited );
 		} );
 
+		// As a reload does: a sale price saved unchecked has no rule to load.
+		it( 'should forget the saved rule the server answered without, and leave the draft alone', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setRule( clientId, saved, kind );
+			dispatch( STORE_NAME ).setDraftRule( clientId, edited, kind );
+
+			dispatch( STORE_NAME ).saveConfirmedRule( clientId, undefined, kind );
+
+			expect( getSavedRule( clientId, kind ) ).toBeUndefined();
+			expect( getDraftRule( clientId, kind ) ).toStrictEqual( edited );
+		} );
+
 		it( 'should leave a ticket it knows nothing of out of the store when its rule is confirmed', () => {
 			const clientId = newClientId();
 

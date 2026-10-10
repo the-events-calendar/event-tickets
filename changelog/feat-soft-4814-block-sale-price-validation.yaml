@@ -1,0 +1,8 @@
+significance: minor
+type: feature
+entry: Added relative sale dates for Tickets Commerce tickets on events, so
+  ticket sales and the sale price can start and end a set time before the event
+  in both the classic and block editors, and follow the event when its date
+  changes. Also kept the Ticket block from saving 1970-01-01 as the date of a
+  sale price saved without dates when the ticket is updated.
+timestamp: 2026-10-01T00:21:32.440Z

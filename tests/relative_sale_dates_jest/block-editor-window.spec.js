@@ -5,7 +5,7 @@ import { resetLocaleData, setLocaleData } from '@wordpress/i18n';
 import * as legacyActions from '@moderntribe/tickets/data/blocks/ticket/actions';
 import { STORE_NAME } from '@tec/tickets/relative-sale-dates/block-editor/store/constants';
 import { SALES_WINDOW, SALE_PRICE_WINDOW } from '@tec/tickets/relative-sale-dates/window-kinds';
-import { DEFAULT_EVENT } from './block-editor-event-state';
+import { DEFAULT_EVENT, setTicketFormDates } from './block-editor-event-state';
 import {
 	EndPicker,
 	SALE_PRICE_LABELS,
@@ -280,6 +280,45 @@ describe( 'the Ticket block sale price window options', () => {
 	const START_LABELS = SALE_PRICE_LABELS.start;
 	const END_LABELS = SALE_PRICE_LABELS.end;
 
+	/**
+	 * Returns the helper text paragraphs rendered.
+	 *
+	 * @return {Object[]} The paragraphs' test instances.
+	 */
+	function findHelpers() {
+		return getRoot().findAll(
+			( node ) => 'p' === node.type && 'tec-tickets-relative-sale-dates__helper' === node.props.className
+		);
+	}
+
+	/**
+	 * Returns the sale price length the helper text under *Sale Ends* shows.
+	 *
+	 * @return {string|undefined} The helper text, or `undefined` when it is not rendered.
+	 */
+	function getLengthText() {
+		const [ helper ] = findHelpers();
+
+		return helper ? helper.props.children : undefined;
+	}
+
+	/**
+	 * Registers the ticket block in the legacy store with the specific sale price dates its form holds.
+	 *
+	 * @param {string}      clientId The client ID of the ticket block.
+	 * @param {string|null} start    The sale price start date, `YYYY-MM-DD`, or `null` for none.
+	 * @param {string|null} end      The sale price end date, `YYYY-MM-DD`, or `null` for none.
+	 *
+	 * @return {void}
+	 */
+	function setFormSalePriceDates( clientId, start, end ) {
+		act( () => {
+			window.__tribe_common_store__.dispatch( legacyActions.registerTicketBlock( clientId ) );
+			window.__tribe_common_store__.dispatch( legacyActions.setTicketTempSaleStartDate( clientId, start ?? '' ) );
+			window.__tribe_common_store__.dispatch( legacyActions.setTicketTempSaleEndDate( clientId, end ?? '' ) );
+		} );
+	}
+
 	describe( 'for a new ticket', () => {
 		it( 'should start the sale price now and end it 1 week before the event starts', () => {
 			renderSalePriceWindow( newClientId() );
@@ -338,7 +377,8 @@ describe( 'the Ticket block sale price window options', () => {
 		expect( optionLabels ).not.toContain( 'before the event ends' );
 	} );
 
-	it( 'should show only the picker of a boundary set to a specific date, labelled for screen readers', () => {
+	// Common's DayPickerInput puts `inputProps` on its `<input>`; its own spec covers that, so this checks what ET hands it.
+	it( 'should show only the picker of a boundary set to a specific date, with its accessible name in inputProps', () => {
 		renderSalePriceWindow( newClientId() );
 
 		change( SelectControl, END_LABELS.mode, 'specific' );
@@ -376,47 +416,6 @@ describe( 'the Ticket block sale price window options', () => {
 			start: { mode: 'relative', ...start },
 			end: { mode: 'relative', ...end },
 		} );
-
-		/**
-		 * Returns the helper text paragraphs rendered.
-		 *
-		 * @return {Object[]} The paragraphs' test instances.
-		 */
-		function findHelpers() {
-			return getRoot().findAll(
-				( node ) => 'p' === node.type && 'tec-tickets-relative-sale-dates__helper' === node.props.className
-			);
-		}
-
-		/**
-		 * Returns the sale price length the helper text under *Sale Ends* shows.
-		 *
-		 * @return {string|undefined} The helper text, or `undefined` when it is not rendered.
-		 */
-		function getLengthText() {
-			const [ helper ] = findHelpers();
-
-			return helper ? helper.props.children : undefined;
-		}
-
-		/**
-		 * Registers the ticket block in the legacy store with the specific sale price dates its form holds.
-		 *
-		 * @param {string}      clientId The client ID of the ticket block.
-		 * @param {string|null} start    The sale price start date, `YYYY-MM-DD`, or `null` for none.
-		 * @param {string|null} end      The sale price end date, `YYYY-MM-DD`, or `null` for none.
-		 *
-		 * @return {void}
-		 */
-		function setFormSalePriceDates( clientId, start, end ) {
-			act( () => {
-				window.__tribe_common_store__.dispatch( legacyActions.registerTicketBlock( clientId ) );
-				window.__tribe_common_store__.dispatch(
-					legacyActions.setTicketTempSaleStartDate( clientId, start ?? '' )
-				);
-				window.__tribe_common_store__.dispatch( legacyActions.setTicketTempSaleEndDate( clientId, end ?? '' ) );
-			} );
-		}
 
 		afterEach( () => {
 			jest.useRealTimers();
@@ -616,6 +615,214 @@ describe( 'the Ticket block sale price window options', () => {
 
 			expect( helper.props[ 'aria-live' ] ).toBe( 'polite' );
 			expect( findHelpers() ).toHaveLength( 1 );
+		} );
+	} );
+
+	describe( 'the sale price window errors under Sale Ends', () => {
+		/*
+		 * Sales open 4 weeks before the event, on 2040-09-22, and close when it starts on 2040-10-20; 1 week before
+		 * the event is 2040-10-13, 2 weeks 2040-10-06 and 5 weeks 2040-09-15.
+		 */
+		const salesWindowRule = {
+			start: { mode: 'relative', value: 4, unit: UNIT_WEEKS, anchor: 'start' },
+			end: { mode: 'default' },
+		};
+		const ENDS_BEFORE_START = 'The sale price cannot end before it starts. Please adjust the sale price window.';
+		const OUTSIDE_SALES_WINDOW =
+			'The sale price window falls outside the ticket sales window. Please adjust the dates.';
+		const OUT_OF_RANGE = 'Enter a number from 1 to 30.';
+
+		/**
+		 * Renders the sale price window options of a ticket block with its sale price checked, whose sales window opens
+		 * 4 weeks before the event, or on its own start date, 2040-09-01, without a sales window rule.
+		 *
+		 * @param {Object|null} salePriceRule The ticket's sale price rule.
+		 * @param {Object|null} windowRule    The ticket's sales window rule.
+		 *
+		 * @return {string} The client ID of the ticket block.
+		 */
+		function renderWithSalesWindow( salePriceRule, windowRule = salesWindowRule ) {
+			const clientId = newClientId();
+			setTicketFormDates( window.__tribe_common_store__, clientId, '2040-09-01 10:00:00', '2040-10-20 19:00:00' );
+			// The options only render once the sale price is checked.
+			window.__tribe_common_store__.dispatch( legacyActions.setTempSalePriceChecked( clientId, true ) );
+			dispatch( STORE_NAME ).setDraftRule( clientId, windowRule, SALES_WINDOW );
+			dispatch( STORE_NAME ).setRule( clientId, salePriceRule, SALE_PRICE_WINDOW );
+			renderSalePriceWindow( clientId );
+
+			return clientId;
+		}
+
+		/**
+		 * Returns the error messages rendered.
+		 *
+		 * @return {string[]} The messages.
+		 */
+		function getErrors() {
+			return getRoot()
+				.findAll( ( node ) => 'span' === node.type && 'alert' === node.props.role )
+				.map( ( node ) => node.props.children );
+		}
+
+		it( 'should show the end-before-start message under Sale Ends and mark it invalid', () => {
+			renderWithSalesWindow( {
+				start: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+				end: { mode: 'relative', value: 2, unit: UNIT_WEEKS },
+			} );
+
+			expect( getErrors() ).toStrictEqual( [ ENDS_BEFORE_START ] );
+			expect( getLengthText() ).toBe( '' );
+			expect( findControl( SelectControl, END_LABELS.mode ).props[ 'aria-invalid' ] ).toBe( true );
+			expect( findControl( SelectControl, START_LABELS.mode ).props[ 'aria-invalid' ] ).toBeUndefined();
+		} );
+
+		it( 'should show the sales window message when the start falls before the sales window', () => {
+			renderWithSalesWindow( {
+				start: { mode: 'relative', value: 5, unit: UNIT_WEEKS },
+				end: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+			} );
+
+			expect( getErrors() ).toStrictEqual( [ OUTSIDE_SALES_WINDOW ] );
+		} );
+
+		it( 'should never show the sales window message for a Now start', () => {
+			renderWithSalesWindow( {
+				start: { mode: 'now' },
+				end: { mode: 'relative', value: 5, unit: UNIT_WEEKS },
+			} );
+
+			expect( getErrors() ).toStrictEqual( [ ENDS_BEFORE_START ] );
+		} );
+
+		it( 'should show no message for a valid sale price window', () => {
+			renderWithSalesWindow( {
+				start: { mode: 'relative', value: 2, unit: UNIT_WEEKS },
+				end: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+			} );
+
+			expect( getErrors() ).toStrictEqual( [] );
+			expect( findControl( SelectControl, END_LABELS.mode ).props[ 'aria-invalid' ] ).toBeUndefined();
+		} );
+
+		it( 'should show only the sales window error while the sales window itself is invalid', () => {
+			renderWithSalesWindow(
+				{
+					start: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+					end: { mode: 'relative', value: 2, unit: UNIT_WEEKS },
+				},
+				{ start: { ...salesWindowRule.start, value: '' }, end: { mode: 'default' } }
+			);
+
+			expect( getErrors() ).toStrictEqual( [] );
+		} );
+
+		it( 'should show no message for a sale price the save drops for not being lower than the price', () => {
+			const clientId = renderWithSalesWindow( {
+				start: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+				end: { mode: 'relative', value: 2, unit: UNIT_WEEKS },
+			} );
+
+			act( () => {
+				window.__tribe_common_store__.dispatch( legacyActions.setTicketTempPrice( clientId, '20.00' ) );
+				window.__tribe_common_store__.dispatch( legacyActions.setTempSalePrice( clientId, '25.00' ) );
+			} );
+
+			expect( getErrors() ).toStrictEqual( [] );
+		} );
+
+		it( 'should show no message for a sale price saved without a rule', () => {
+			renderWithSalesWindow( null );
+
+			expect( getErrors() ).toStrictEqual( [] );
+		} );
+
+		it( 'should check again when the admin changes an option', () => {
+			renderWithSalesWindow( {
+				start: { mode: 'relative', value: 2, unit: UNIT_WEEKS },
+				end: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+			} );
+
+			change( TextControl, END_LABELS.value, '3' );
+
+			expect( getErrors() ).toStrictEqual( [ ENDS_BEFORE_START ] );
+		} );
+
+		it( 'should check again when the sales window changes', () => {
+			const clientId = renderWithSalesWindow( {
+				start: { mode: 'relative', value: 5, unit: UNIT_WEEKS },
+				end: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+			} );
+
+			expect( getErrors() ).toStrictEqual( [ OUTSIDE_SALES_WINDOW ] );
+
+			act( () => {
+				dispatch( STORE_NAME ).setDraftRule(
+					clientId,
+					{ ...salesWindowRule, start: { ...salesWindowRule.start, value: 6 } },
+					SALES_WINDOW
+				);
+			} );
+
+			expect( getErrors() ).toStrictEqual( [] );
+		} );
+
+		// As the sales window names its own, the field that blocks the save says what it takes.
+		it( 'should name a cleared number on the number itself, not as a window that ends before it starts', () => {
+			renderWithSalesWindow( {
+				start: { mode: 'relative', value: 2, unit: UNIT_WEEKS },
+				end: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+			} );
+
+			change( TextControl, END_LABELS.value, '' );
+
+			const endValue = findControl( TextControl, END_LABELS.value );
+			const endMode = findControl( SelectControl, END_LABELS.mode );
+
+			// Passed as the number's help, so the field describes itself with it.
+			expect( endValue.props.help.props.children ).toBe( OUT_OF_RANGE );
+			expect( endValue.props.help.props.role ).toBe( 'alert' );
+			expect( endValue.props[ 'aria-invalid' ] ).toBe( true );
+			expect( endMode.props.help ).toBeUndefined();
+			expect( endMode.props[ 'aria-invalid' ] ).toBeUndefined();
+		} );
+
+		it( 'should name a number past the largest the sale price takes on the number itself', () => {
+			renderWithSalesWindow( {
+				start: { mode: 'relative', value: 31, unit: UNIT_DAYS },
+				end: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+			} );
+
+			expect( findControl( TextControl, START_LABELS.value ).props.help.props.children ).toBe( OUT_OF_RANGE );
+			expect( findControl( TextControl, END_LABELS.value ).props.help ).toBeUndefined();
+			expect( getErrors() ).toStrictEqual( [] );
+		} );
+
+		it( "should judge the sale price against the ticket's own dates without a sales window rule", () => {
+			const clientId = renderWithSalesWindow(
+				{ start: { mode: 'specific' }, end: { mode: 'relative', value: 1, unit: UNIT_WEEKS } },
+				null
+			);
+
+			setFormSalePriceDates( clientId, '2040-08-31', null );
+
+			expect( getErrors() ).toStrictEqual( [ OUTSIDE_SALES_WINDOW ] );
+
+			setFormSalePriceDates( clientId, '2040-09-02', null );
+
+			expect( getErrors() ).toStrictEqual( [] );
+		} );
+
+		it( 'should check again when the admin picks a specific sale price start', () => {
+			const clientId = renderWithSalesWindow( {
+				start: { mode: 'specific' },
+				end: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+			} );
+
+			expect( getErrors() ).toStrictEqual( [] );
+
+			setFormSalePriceDates( clientId, '2040-09-01', null );
+
+			expect( getErrors() ).toStrictEqual( [ OUTSIDE_SALES_WINDOW ] );
 		} );
 	} );
 
