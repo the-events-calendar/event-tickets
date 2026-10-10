@@ -11,6 +11,7 @@
  * Internal dependencies
  */
 import { TICKETS_COMMERCE_MODULE_CLASS } from '../../../../modules/data/blocks/ticket/constants';
+import { isSalePriceKept as keepsSalePrice } from '../php-compare';
 
 /**
  * The provider slug the block editor tickets REST API gives a Tickets Commerce ticket, which a fetched ticket keeps.
@@ -86,8 +87,8 @@ export function isSalePriceChecked( clientId ) {
 /**
  * Returns whether a ticket's form has a sale price the save keeps: a checked one lower than the price.
  *
- * The save drops a sale price that is not lower than the price, with the same `>=` comparison, and judges its window
- * only when it keeps it.
+ * The save drops a sale price that is at least the price, comparing the two strings the request sends as PHP does, and
+ * judges its window only when it keeps it.
  *
  * @since TBD
  *
@@ -100,13 +101,11 @@ export function isSalePriceKept( state, clientId ) {
 	const { selectors } = getTicketData();
 	const props = { clientId };
 
-	if ( ! selectors.getTempSalePriceChecked( state, props ) ) {
-		return false;
-	}
-
-	const salePrice = parseFloat( selectors.getTempSalePrice( state, props ) );
-
-	return ! ( salePrice >= parseFloat( selectors.getTicketTempPrice( state, props ) ) );
+	return keepsSalePrice(
+		Boolean( selectors.getTempSalePriceChecked( state, props ) ),
+		String( selectors.getTempSalePrice( state, props ) ),
+		String( selectors.getTicketTempPrice( state, props ) )
+	);
 }
 
 /**
@@ -292,30 +291,34 @@ export function getTicketSalePriceFormDates( state, clientId ) {
 }
 
 /**
- * Reads the start and end dates a ticket's form sends for a window, from the common store.
+ * Reads the start and end dates a ticket's form sends for a window, from the legacy ticket state.
  *
  * @since TBD
  *
  * @param {string}                                     clientId The client ID of the ticket block.
  * @param {import( './window-kinds' ).BlockWindowKind} kind     The window kind, which names the legacy dates it reads.
+ * @param {Object}                                     [state]  The legacy ticket state; the common store's when left
+ *                                                              out.
  *
  * @return {{start: string|null, end: string|null}} The start and end, `YYYY-MM-DD HH:mm:ss` in the event timezone, or
  *                                                 `null` for one the form sends no date for.
  */
-export function readTicketFormWindowDates( clientId, kind ) {
-	return kind.readFormDates( window.__tribe_common_store__.getState(), clientId );
+export function readTicketFormWindowDates( clientId, kind, state = window.__tribe_common_store__.getState() ) {
+	return kind.readFormDates( state, clientId );
 }
 
 /**
- * Returns whether a save of a ticket's form keeps a window, so the server judges it, from the common store.
+ * Returns whether a save of a ticket's form keeps a window, so the server judges it, from the legacy ticket state.
  *
  * @since TBD
  *
  * @param {string}                                     clientId The client ID of the ticket block.
  * @param {import( './window-kinds' ).BlockWindowKind} kind     The window kind, which names what keeps it.
+ * @param {Object}                                     [state]  The legacy ticket state; the common store's when left
+ *                                                              out.
  *
  * @return {boolean} Whether the save keeps the window.
  */
-export function readTicketWindowKept( clientId, kind ) {
-	return kind.isKept( window.__tribe_common_store__.getState(), clientId );
+export function readTicketWindowKept( clientId, kind, state = window.__tribe_common_store__.getState() ) {
+	return kind.isKept( state, clientId );
 }
