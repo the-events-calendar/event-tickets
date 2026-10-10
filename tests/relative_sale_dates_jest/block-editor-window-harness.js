@@ -214,6 +214,21 @@ export function tearDownBlockEditor() {
 }
 
 /**
+ * Counts the sales window pickers each end shows its own half of.
+ *
+ * @return {{start: number, end: number}} The number of pickers each end shows.
+ */
+function countSalesPickers() {
+	const count = ( name ) =>
+		root
+			.findAllByType( Picker )
+			.filter( ( node ) => node.props.className.includes( `tec-tickets-relative-sale-dates__picker--${ name }` ) )
+			.length;
+
+	return { start: count( 'start' ), end: count( 'end' ) };
+}
+
+/**
  * The sales window options, as the specs of every kind drive them.
  *
  * @type {{title: string, kind: Object, render: Function, labels: Object, countPickers: Function}}
@@ -223,7 +238,7 @@ export const salesWindowCase = {
 	kind: SALES_WINDOW,
 	render: renderSalesWindow,
 	labels: SALES_LABELS,
-	countPickers: () => root.findAllByType( Picker ).length,
+	countPickers: countSalesPickers,
 };
 
 /**
@@ -236,5 +251,8 @@ export const salePriceCase = {
 	kind: SALE_PRICE_WINDOW,
 	render: renderSalePriceWindow,
 	labels: SALE_PRICE_LABELS,
-	countPickers: () => root.findAllByType( StartPicker ).length + root.findAllByType( EndPicker ).length,
+	countPickers: () => ( {
+		start: root.findAllByType( StartPicker ).length,
+		end: root.findAllByType( EndPicker ).length,
+	} ),
 };

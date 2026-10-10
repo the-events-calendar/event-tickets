@@ -99,7 +99,7 @@ function getAnchorOptions( anchors ) {
  * @param {{label: string, value: string}[]} props.modeOptions         The mode options.
  * @param {Object}                           props.picker              The date picker element of a specific boundary,
  *                                                                     as the container prepared it.
- * @param {string}                           [props.helperText]        The text under the relative values, or
+ * @param {string}                           [props.helperText]        The text under the boundary's options, or
  *                                                                     `undefined` for a boundary that shows none.
  * @param {string}                           [props.errorMessage]      The window error this boundary is marked with,
  *                                                                     or an empty string.
@@ -186,14 +186,14 @@ export default function WindowBoundary( {
 					) : (
 						<span>{ anchorOptions[ 0 ].label }</span>
 					) }
-					{ undefined !== helperText && (
-						<p className="tec-tickets-relative-sale-dates__helper" aria-live="polite">
-							{ helperText }
-						</p>
-					) }
 				</div>
 			) }
 			{ MODE_SPECIFIC === boundary.mode && picker }
+			{ undefined !== helperText && (
+				<p className="tec-tickets-relative-sale-dates__helper" aria-live="polite">
+					{ helperText }
+				</p>
+			) }
 		</div>
 	);
 }

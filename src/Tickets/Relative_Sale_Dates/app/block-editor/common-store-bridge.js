@@ -216,3 +216,56 @@ export function getTicketFormDates( state, clientId ) {
 export function readTicketFormDates( clientId ) {
 	return getTicketFormDates( window.__tribe_common_store__.getState(), clientId );
 }
+
+/**
+ * Returns a sale price date the legacy ticket state holds as the start of its day, or `null` when it holds no day.
+ *
+ * The legacy code keeps an empty sale price date it loads or saves as the string `Invalid date`.
+ *
+ * @since TBD
+ *
+ * @param {string|null|undefined} date The date the legacy ticket state holds.
+ *
+ * @return {string|null} The start of the day, `YYYY-MM-DD HH:mm:ss`, or `null`.
+ */
+function toSalePriceFormDate( date ) {
+	return 'string' === typeof date && /^\d{4}-\d{2}-\d{2}$/.test( date ) ? `${ date } 00:00:00` : null;
+}
+
+/**
+ * Reads the sale price start and end a ticket's form sends, from the legacy ticket state.
+ *
+ * The sale price dates are whole days, so each is read as the start of its day.
+ *
+ * @since TBD
+ *
+ * @param {Object} state    The legacy ticket state.
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {{start: string|null, end: string|null}} The start and end, `YYYY-MM-DD HH:mm:ss` in the event timezone, or
+ *                                                 `null` for one the form holds no day for.
+ */
+export function getTicketSalePriceFormDates( state, clientId ) {
+	const { selectors } = getTicketData();
+	const props = { clientId };
+
+	return {
+		start: toSalePriceFormDate( selectors.getTicketTempSaleStartDate( state, props ) ),
+		end: toSalePriceFormDate( selectors.getTicketTempSaleEndDate( state, props ) ),
+	};
+}
+
+/**
+ * Reads the start and end dates a ticket's form sends for a window, from the common store.
+ *
+ * @since TBD
+ *
+ * @param {string}                                     clientId The client ID of the ticket block.
+ * @param {import( './window-kinds' ).BlockWindowKind} kind     The window kind, which names the legacy dates it reads.
+ *
+ * @return {{start: string|null, end: string|null}} The start and end, `YYYY-MM-DD HH:mm:ss` in the event timezone, or
+ *                                                 `null` for one the form sends no date for.
+ */
+export function readTicketFormWindowDates( clientId, kind ) {
+	return kind.readFormDates( window.__tribe_common_store__.getState(), clientId );
+}

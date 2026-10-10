@@ -61,7 +61,8 @@ export default function SalesWindow( { clientId, picker } ) {
 						.filter( Boolean )
 						.join( ' ' ),
 				} ),
-				helperText: MODE_RELATIVE === formRule[ name ].mode ? getHelperText( name, saleWindow?.[ name ] ) : '',
+				helperText:
+					MODE_RELATIVE === formRule[ name ].mode ? getHelperText( name, saleWindow?.[ name ] ) : undefined,
 				errorMessage:
 					'end' === name && error && ! outOfRange
 						? __(

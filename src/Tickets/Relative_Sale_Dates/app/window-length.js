@@ -13,6 +13,7 @@ import moment from 'moment';
  * Internal dependencies
  */
 import { DATE_FORMAT } from './sale-window';
+import { getFormWindow, isValidRule } from './window-check';
 
 /** @typedef {import( 'moment' ).Moment} Moment */
 
@@ -47,4 +48,29 @@ export function getWindowLengthText( window, kind ) {
 	}
 
 	return 0 === days % 7 ? kind.lengthText.weeks( days / 7 ) : kind.lengthText.days( days );
+}
+
+/**
+ * Gets the text that says how long the window a form's rule gives lasts, as a save of the form would store it.
+ *
+ * A rule the server would reject, such as one with a cleared or out-of-range number, has no length: the save keeps
+ * the stored window.
+ *
+ * @since TBD
+ *
+ * @param {import( './sale-window' ).SaleWindowRule}           rule       The rule the form expresses.
+ * @param {import( './server-event-dates' ).EventDates|null}   eventDates The event dates, as the server reads them,
+ *                                                                        or `null` when they are not known.
+ * @param {{start: string|null|false, end: string|null|false}} formDates  The start and end dates the form sends, as
+ *                                                                        `getFormWindow()` reads them.
+ * @param {import( './window-kinds' ).WindowKind}              kind       The kind of the window.
+ *
+ * @return {string} The text, or an empty string when the window has no length to tell.
+ */
+export function getFormWindowLengthText( rule, eventDates, formDates, kind ) {
+	if ( ! isValidRule( rule, kind ) ) {
+		return '';
+	}
+
+	return getWindowLengthText( getFormWindow( rule, eventDates, formDates, kind ), kind );
 }
