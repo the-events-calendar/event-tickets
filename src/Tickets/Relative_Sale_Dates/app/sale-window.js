@@ -22,7 +22,7 @@ import { getSaleWindowError } from './validation';
 
 const MINUTE_IN_MILLISECONDS = 60000;
 
-const DATE_FORMAT = 'YYYY-MM-DD';
+export const DATE_FORMAT = 'YYYY-MM-DD';
 const TIME_FORMAT = 'HH:mm:ss';
 const DATE_TIME_FORMAT = `${ DATE_FORMAT } ${ TIME_FORMAT }`;
 
@@ -94,6 +94,44 @@ export function resolveSaleWindow( rule, eventStart, eventEnd, timezone ) {
 		endUtc: toUtc( end ),
 		valid: start && end ? null === getSaleWindowError( start, end ) : null,
 	};
+}
+
+/**
+ * Resolves the rule of a window of a kind against an event's dates.
+ *
+ * A relative boundary that names no anchor is counted from the kind's implied one. A relative boundary without a whole
+ * number, as a cleared field reads, has no date: subtracting it would put the boundary on its anchor.
+ *
+ * @since TBD
+ *
+ * @param {SaleWindowRule}                              rule       The rule of the window.
+ * @param {import( './server-event-dates' ).EventDates} eventDates The event dates, or `null` when they are not known.
+ * @param {import( './window-kinds' ).WindowKind}       kind       The kind of the window.
+ *
+ * @return {ResolvedSaleWindow|null} The resolved window, or `null` without event dates.
+ */
+export function resolveWindow( rule, eventDates, kind ) {
+	if ( ! eventDates ) {
+		return null;
+	}
+
+	const withAnchor = ( boundary ) => ( { anchor: kind.anchors[ 0 ], ...boundary } );
+	const resolved = resolveSaleWindow(
+		{ start: withAnchor( rule.start ), end: withAnchor( rule.end ) },
+		eventDates.start,
+		eventDates.end,
+		eventDates.timezone
+	);
+
+	[ 'start', 'end' ]
+		.filter( ( key ) => MODE_RELATIVE === rule[ key ].mode && ! Number.isInteger( rule[ key ].value ) )
+		.forEach( ( key ) => {
+			resolved[ key ] = null;
+			resolved[ `${ key }Utc` ] = null;
+			resolved.valid = null;
+		} );
+
+	return resolved;
 }
 
 /**
@@ -197,6 +235,24 @@ export function fromLocal( dateTime, timezone ) {
 	}
 
 	return moment.tz( dateTime, DATE_TIME_FORMAT, true, timezone );
+}
+
+/**
+ * Gets the wall-clock time of an instant in the event timezone.
+ *
+ * @since TBD
+ *
+ * @param {moment.Moment} instant  The instant, which is left as it is.
+ * @param {string}        timezone The event timezone: an IANA name, or a fixed offset such as `+03:00`.
+ *
+ * @return {moment.Moment} The same instant, in the event timezone.
+ */
+export function toZone( instant, timezone ) {
+	if ( FIXED_OFFSET.test( timezone ) ) {
+		return instant.clone().utcOffset( timezone );
+	}
+
+	return instant.clone().tz( timezone );
 }
 
 /**

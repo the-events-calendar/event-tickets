@@ -63,7 +63,7 @@ class Ticket_Dates_Test extends WPTestCase {
 	public function should_write_the_dates_a_relative_rule_resolves_to_in_the_kind_date_metas( Window_Kind $kind ): void {
 		$event_start = new DateTimeImmutable( '2027-06-24 19:00:00' );
 		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
-		$ticket_id   = $this->create_sale_price_ticket( $event_id );
+		$ticket_id   = $this->create_dated_sale_price_ticket( $event_id );
 		$rule        = $this->get_relative_rule( $kind, 2, 1 );
 
 		tribe( Ticket_Dates::class )->write( $ticket_id, $event_id, $rule );
@@ -86,7 +86,7 @@ class Ticket_Dates_Test extends WPTestCase {
 	public function should_write_the_sale_price_days_in_the_event_timezone(): void {
 		$event_start = new DateTimeImmutable( '2027-06-24 21:00:00', new DateTimeZone( 'America/New_York' ) );
 		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ), 'America/New_York' );
-		$ticket_id   = $this->create_sale_price_ticket( $event_id );
+		$ticket_id   = $this->create_dated_sale_price_ticket( $event_id );
 		$kind        = Window_Kind::sale_price();
 		$start       = $event_start->modify( '-2 weeks' );
 		$end         = $event_start->modify( '-1 week' );
@@ -119,7 +119,7 @@ class Ticket_Dates_Test extends WPTestCase {
 	 */
 	public function should_write_the_open_start_value_only_for_an_open_start( Window_Kind $kind, string $start_mode, ?string $written ): void {
 		$event_id   = $this->create_event( '2027-06-24 19:00:00' );
-		$ticket_id  = $this->create_sale_price_ticket( $event_id );
+		$ticket_id  = $this->create_dated_sale_price_ticket( $event_id );
 		$start_meta = $kind->get_date_metas()['start']['date'];
 		$before     = get_post_meta( $ticket_id, $start_meta, true );
 		$rule       = Rule::from_array( [ 'start' => [ 'mode' => $start_mode ], 'end' => [ 'mode' => Rule::MODE_SPECIFIC ] ], $kind );
@@ -136,7 +136,7 @@ class Ticket_Dates_Test extends WPTestCase {
 	 */
 	public function should_write_nothing_for_a_post_without_event_dates( Window_Kind $kind ): void {
 		$post_id   = static::factory()->post->create();
-		$ticket_id = $this->create_sale_price_ticket( $post_id );
+		$ticket_id = $this->create_dated_sale_price_ticket( $post_id );
 		$before    = $this->get_dates( $kind, $ticket_id );
 
 		$changed = tribe( Ticket_Dates::class )->write( $ticket_id, $post_id, $this->get_relative_rule( $kind, 3, 1 ) );
@@ -150,7 +150,7 @@ class Ticket_Dates_Test extends WPTestCase {
 	 */
 	public function should_write_nothing_for_a_kind_the_ticket_has_turned_off(): void {
 		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
-		$ticket_id = $this->create_sale_price_ticket( $event_id, [ 'ticket_add_sale_price' => false ] );
+		$ticket_id = $this->create_dated_sale_price_ticket( $event_id, [ 'ticket_add_sale_price' => false ] );
 		$kind      = Window_Kind::sale_price();
 
 		$changed = tribe( Ticket_Dates::class )->write( $ticket_id, $event_id, $this->get_relative_rule( $kind, 2, 1 ) );
@@ -171,7 +171,7 @@ class Ticket_Dates_Test extends WPTestCase {
 	 */
 	public function should_report_whether_the_write_changed_a_date( Window_Kind $kind ): void {
 		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
-		$ticket_id = $this->create_sale_price_ticket( $event_id );
+		$ticket_id = $this->create_dated_sale_price_ticket( $event_id );
 		$rule      = $this->get_relative_rule( $kind, 2, 1 );
 
 		$first  = tribe( Ticket_Dates::class )->write( $ticket_id, $event_id, $rule );
@@ -205,7 +205,7 @@ class Ticket_Dates_Test extends WPTestCase {
 	 */
 	public function should_keep_the_event_timezone_only_for_a_kind_with_sales_actions( Window_Kind $kind ): void {
 		$event_id  = $this->create_event( '2027-06-24 19:00:00', 'America/New_York' );
-		$ticket_id = $this->create_sale_price_ticket( $event_id );
+		$ticket_id = $this->create_dated_sale_price_ticket( $event_id );
 
 		tribe( Ticket_Dates::class )->write( $ticket_id, $event_id, $this->get_relative_rule( $kind, 2, 1 ) );
 
@@ -220,14 +220,11 @@ class Ticket_Dates_Test extends WPTestCase {
 	 *
 	 * @return int The ticket post ID.
 	 */
-	private function create_sale_price_ticket( int $post_id, array $overrides = [] ): int {
-		return $this->create_tc_ticket(
+	private function create_dated_sale_price_ticket( int $post_id, array $overrides = [] ): int {
+		return $this->create_sale_price_ticket(
 			$post_id,
-			20,
 			array_merge(
 				[
-					'ticket_add_sale_price'  => 'on',
-					'ticket_sale_price'      => 10,
 					'ticket_sale_start_date' => self::SALE_PRICE_START,
 					'ticket_sale_end_date'   => self::SALE_PRICE_END,
 				],

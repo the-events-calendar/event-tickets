@@ -10,7 +10,6 @@ use DOMXPath;
 use Generator;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Module;
-use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
 use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
@@ -382,7 +381,7 @@ class Editor_Test extends Controller_Test_Case {
 				$post_id = static::factory()->post->create( [ 'post_type' => 'page' ] );
 				$this->enable_tickets_on( 'page' );
 
-				return [ $post_id, $this->create_sale_price_ticket( $post_id ), null ];
+				return [ $post_id, $this->create_sale_price_ticket_up_to_the_event( $post_id ), null ];
 			},
 		];
 
@@ -392,7 +391,7 @@ class Editor_Test extends Controller_Test_Case {
 				// What `tickets.js` sends outside wp-admin.
 				$_POST['is_admin'] = 'false';
 
-				return [ $event_id, $this->create_sale_price_ticket( $event_id ), null ];
+				return [ $event_id, $this->create_sale_price_ticket_up_to_the_event( $event_id ), null ];
 			},
 		];
 	}
@@ -500,7 +499,7 @@ class Editor_Test extends Controller_Test_Case {
 	public function should_prefill_the_sale_price_options_from_the_stored_rule(): void {
 		$this->make_controller()->register();
 		$event_id  = $this->create_event( self::EVENT_START );
-		$ticket_id = $this->create_sale_price_ticket( $event_id );
+		$ticket_id = $this->create_sale_price_ticket_up_to_the_event( $event_id );
 		$rule      = [ 'start' => $this->sale_price_relative( 10, DAY_IN_SECONDS ), 'end' => $this->sale_price_relative( 1, WEEK_IN_SECONDS ) ];
 		$this->store_sale_price_rule( $ticket_id, $rule );
 
@@ -521,7 +520,7 @@ class Editor_Test extends Controller_Test_Case {
 	public function should_offer_the_relative_defaults_next_to_a_stored_sale_price_boundary_that_is_not_relative(): void {
 		$this->make_controller()->register();
 		$event_id  = $this->create_event( self::EVENT_START );
-		$ticket_id = $this->create_sale_price_ticket( $event_id );
+		$ticket_id = $this->create_sale_price_ticket_up_to_the_event( $event_id );
 		$this->store_sale_price_rule( $ticket_id, [ 'start' => [ 'mode' => 'now' ], 'end' => [ 'mode' => 'specific' ] ] );
 
 		$form = $this->render_ticket_form( $event_id, $ticket_id );
@@ -571,7 +570,7 @@ class Editor_Test extends Controller_Test_Case {
 		$this->make_controller()->register();
 		$event_id = $this->create_event( self::EVENT_START );
 
-		$form = $this->render_ticket_form( $event_id, $this->create_sale_price_ticket( $event_id ) );
+		$form = $this->render_ticket_form( $event_id, $this->create_sale_price_ticket_up_to_the_event( $event_id ) );
 
 		$this->assertSame( 'specific', $this->get_selected_value( $form, 'ticket_sale_start_mode' ) );
 		$this->assertSame( 'specific', $this->get_selected_value( $form, 'ticket_sale_end_mode' ) );
@@ -604,7 +603,7 @@ class Editor_Test extends Controller_Test_Case {
 	public function should_offer_one_to_thirty_days_or_weeks_named_for_the_number(): void {
 		$this->make_controller()->register();
 		$event_id  = $this->create_event( self::EVENT_START );
-		$ticket_id = $this->create_sale_price_ticket( $event_id );
+		$ticket_id = $this->create_sale_price_ticket_up_to_the_event( $event_id );
 		$this->store_sale_price_rule( $ticket_id, [ 'start' => $this->sale_price_relative( 3, WEEK_IN_SECONDS ), 'end' => $this->sale_price_relative( 1, DAY_IN_SECONDS ) ] );
 		$kind = Window_Kind::sale_price();
 
@@ -629,7 +628,7 @@ class Editor_Test extends Controller_Test_Case {
 	public function should_name_each_sale_price_unit_with_the_translation_the_script_uses(): void {
 		$this->make_controller()->register();
 		$event_id  = $this->create_event( self::EVENT_START );
-		$ticket_id = $this->create_sale_price_ticket( $event_id );
+		$ticket_id = $this->create_sale_price_ticket_up_to_the_event( $event_id );
 		$this->store_sale_price_rule( $ticket_id, [ 'start' => $this->sale_price_relative( 3, WEEK_IN_SECONDS ), 'end' => $this->sale_price_relative( 1, WEEK_IN_SECONDS ) ] );
 		add_filter(
 			'ngettext_with_context_event-tickets',
@@ -686,9 +685,25 @@ class Editor_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
+	public function should_hold_a_live_sale_length_under_the_sale_end_for_either_mode(): void {
+		$this->make_controller()->register();
+
+		$form = $this->render_ticket_form( $this->create_event( self::EVENT_START ) );
+
+		$helper = $this->get_element( $form, 'ticket_sale_price_length' );
+		$this->assertSame( 'polite', $helper->getAttribute( 'aria-live' ) );
+		$this->assertSame( '', trim( $helper->textContent ) );
+		// Only the sale price checkbox shows and hides it, whichever mode the end is in.
+		$this->assertSame( '#ticket_add_sale_price', $this->get_dependent( $helper )->getAttribute( 'data-depends' ) );
+		$this->assertSame( $helper->parentNode, $this->get_element( $form, 'ticket_sale_end_mode' )->parentNode );
+	}
+
+	/**
+	 * @test
+	 */
 	public function should_keep_the_attributes_of_the_existing_sale_price_inputs(): void {
 		$event_id  = $this->create_event( self::EVENT_START );
-		$ticket_id = $this->create_sale_price_ticket( $event_id );
+		$ticket_id = $this->create_sale_price_ticket_up_to_the_event( $event_id );
 		$expected  = $this->get_input_attributes( $this->render_ticket_form( $event_id, $ticket_id ), self::SALE_PRICE_INPUT_IDS );
 
 		$this->make_controller()->register();
@@ -712,7 +727,7 @@ class Editor_Test extends Controller_Test_Case {
 			);
 		}
 
-		$form = $this->render_ticket_form( $event_id, $this->create_sale_price_ticket( $event_id ) );
+		$form = $this->render_ticket_form( $event_id, $this->create_sale_price_ticket_up_to_the_event( $event_id ) );
 
 		$this->get_element( $form, 'ticket_sale_start_mode' );
 		$this->get_element( $form, 'before-the-sale-price-fields' );
@@ -727,7 +742,7 @@ class Editor_Test extends Controller_Test_Case {
 	public function should_drop_the_stored_sale_price_rule_when_a_front_end_form_saves_the_ticket(): void {
 		$this->make_controller()->register();
 		$event_id  = $this->create_event( self::EVENT_START );
-		$ticket_id = $this->create_sale_price_ticket( $event_id );
+		$ticket_id = $this->create_sale_price_ticket_up_to_the_event( $event_id );
 		$this->store_sale_price_rule( $ticket_id, [ 'start' => $this->sale_price_relative( 2, WEEK_IN_SECONDS ), 'end' => $this->sale_price_relative( 1, WEEK_IN_SECONDS ) ] );
 		$_POST['is_admin'] = 'false';
 		$fields            = $this->serialize_form( $this->render_ticket_form( $event_id, $ticket_id ) );
@@ -748,7 +763,7 @@ class Editor_Test extends Controller_Test_Case {
 		$this->make_controller()->register();
 		$event_start = new DateTimeImmutable( self::EVENT_START );
 		$event_id    = $this->create_event( self::EVENT_START );
-		$ticket_id   = $this->create_sale_price_ticket( $event_id );
+		$ticket_id   = $this->create_sale_price_ticket_up_to_the_event( $event_id );
 		$rule        = [ 'start' => $this->sale_price_relative( 2, WEEK_IN_SECONDS ), 'end' => $this->sale_price_relative( 1, WEEK_IN_SECONDS ) ];
 		$fields      = $this->serialize_form( $this->render_ticket_form( $event_id, $ticket_id ) );
 
@@ -774,7 +789,7 @@ class Editor_Test extends Controller_Test_Case {
 	public function should_keep_the_stored_sale_price_rule_when_the_classic_form_is_saved_unchanged(): void {
 		$this->make_controller()->register();
 		$event_id  = $this->create_event( self::EVENT_START );
-		$ticket_id = $this->create_sale_price_ticket( $event_id );
+		$ticket_id = $this->create_sale_price_ticket_up_to_the_event( $event_id );
 		$rule      = [ 'start' => [ 'mode' => 'now' ], 'end' => $this->sale_price_relative( 3, DAY_IN_SECONDS ) ];
 		$this->store_sale_price_rule( $ticket_id, $rule );
 
@@ -838,33 +853,16 @@ class Editor_Test extends Controller_Test_Case {
 	 *
 	 * @return int The ticket post ID.
 	 */
-	private function create_sale_price_ticket( int $post_id ): int {
+	private function create_sale_price_ticket_up_to_the_event( int $post_id ): int {
 		$event_start = new DateTimeImmutable( self::EVENT_START );
 
-		return $this->create_tc_ticket(
+		return $this->create_sale_price_ticket(
 			$post_id,
-			20,
 			[
-				'ticket_add_sale_price'  => 'on',
-				'ticket_sale_price'      => 10,
 				'ticket_sale_start_date' => $event_start->modify( '-1 month' )->format( 'Y-m-d' ),
 				'ticket_sale_end_date'   => $event_start->format( 'Y-m-d' ),
 			]
 		);
-	}
-
-	/**
-	 * @param int $value The number of units before the event start.
-	 * @param int $unit  `DAY_IN_SECONDS` or `WEEK_IN_SECONDS`.
-	 *
-	 * @return array{mode: string, value: int, unit: int} A relative boundary of the sale price window.
-	 */
-	private function sale_price_relative( int $value, int $unit ): array {
-		return [
-			'mode'  => Rule::MODE_RELATIVE,
-			'value' => $value,
-			'unit'  => $unit,
-		];
 	}
 
 	/**
@@ -882,17 +880,5 @@ class Editor_Test extends Controller_Test_Case {
 	 */
 	private function get_stored_sale_price_rule( int $ticket_id ): ?array {
 		return tribe( Rule_Store::class )->get( $ticket_id )[ Window_Kind::sale_price()->get_store_key() ] ?? null;
-	}
-
-	/**
-	 * @param int $ticket_id The ticket post ID.
-	 *
-	 * @return array{0: string, 1: string} The stored sale price start and end dates.
-	 */
-	private function get_sale_price_dates( int $ticket_id ): array {
-		return [
-			get_post_meta( $ticket_id, Ticket::$sale_price_start_date_key, true ),
-			get_post_meta( $ticket_id, Ticket::$sale_price_end_date_key, true ),
-		];
 	}
 }

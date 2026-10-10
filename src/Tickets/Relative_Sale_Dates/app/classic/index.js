@@ -16,8 +16,9 @@ import { _nx } from '@wordpress/i18n';
  */
 import { MODE_RELATIVE, UNIT_DAYS, UNIT_HOURS, UNIT_MINUTES, UNIT_WEEKS } from '../rule-constants';
 import { resolveSaleWindow } from '../sale-window';
-import { getOutOfRangeBoundary, getWindowError, RELATIVE_VALUE_OUT_OF_RANGE } from '../window-check';
-import { WINDOW_KINDS } from '../window-kinds';
+import { getFormWindow, getOutOfRangeBoundary, getWindowError, RELATIVE_VALUE_OUT_OF_RANGE } from '../window-check';
+import { SALES_WINDOW, WINDOW_KINDS } from '../window-kinds';
+import { getWindowLengthText } from '../window-length';
 import { readDateTime, readEventDates } from './event-dates';
 import { formatHelperText } from './helper-text';
 import { readRule, writeRule } from './rule';
@@ -31,17 +32,6 @@ import { getListText } from './tickets-list';
  * @type {string}
  */
 const EVENT_FIELDS = '#EventStartDate, #EventStartTime, #EventEndDate, #EventEndTime, #allDayCheckbox, #event-timezone';
-
-/**
- * The sales window fields a relative end is read from.
- *
- * @since TBD
- *
- * @type {string}
- */
-const RULE_FIELDS = [ 'start', 'end' ]
-	.flatMap( ( key ) => [ 'mode', 'value', 'unit', 'anchor' ].map( ( field ) => `#ticket_sales_${ key }_${ field }` ) )
-	.join( ', ' );
 
 /**
  * The name of each unit for a number of it, keyed by the unit in seconds. The msgids and context match the template's.
@@ -61,15 +51,6 @@ const UNIT_NAMES = {
 };
 
 /**
- * The fields of the dates typed for a specific start and end.
- *
- * @since TBD
- *
- * @type {string}
- */
-const SPECIFIC_DATE_FIELDS = '#ticket_start_date, #ticket_start_time, #ticket_end_date, #ticket_end_time';
-
-/**
  * The number fields of the relative boundaries of every window, whose unit names follow the number typed.
  *
  * @since TBD
@@ -79,6 +60,68 @@ const SPECIFIC_DATE_FIELDS = '#ticket_start_date, #ticket_start_time, #ticket_en
 const RELATIVE_VALUE_FIELDS = WINDOW_KINDS.flatMap( ( kind ) =>
 	[ 'start', 'end' ].map( ( key ) => `#${ kind.fieldPrefix }_${ key }_value` )
 ).join( ', ' );
+
+/**
+ * The kinds whose window the form says the length of.
+ *
+ * @since TBD
+ *
+ * @type {import( '../window-kinds' ).WindowKind[]}
+ */
+const LENGTH_KINDS = WINDOW_KINDS.filter( ( kind ) => kind.lengthId );
+
+/**
+ * Gets the selector of every field a window of a kind is read from: the mode and relative fields of each boundary, and
+ * the fields of its specific date.
+ *
+ * @since TBD
+ *
+ * @param {import( '../window-kinds' ).WindowKind} kind The kind of the window.
+ *
+ * @return {string} The selector.
+ */
+function getFieldSelector( kind ) {
+	const ruleFields = kind.takesAnchor ? [ 'mode', 'value', 'unit', 'anchor' ] : [ 'mode', 'value', 'unit' ];
+
+	return [ 'start', 'end' ]
+		.flatMap( ( key ) => [
+			...ruleFields.map( ( field ) => `${ kind.fieldPrefix }_${ key }_${ field }` ),
+			kind.dateFields[ key ].date,
+			kind.dateFields[ key ].time,
+		] )
+		.filter( Boolean )
+		.map( ( id ) => `#${ id }` )
+		.join( ', ' );
+}
+
+/**
+ * Reads the dates the form sends for the specific boundaries of a window of a kind.
+ *
+ * A disabled field, like the date a Now start hides, is not sent, so the server does not judge it either.
+ *
+ * @since TBD
+ *
+ * @param {import( '../window-kinds' ).WindowKind} kind    The kind of the window.
+ * @param {Object}                                 dynamic The date formats TEC localizes for its own helper text.
+ *
+ * @return {{start: string|null, end: string|null}} Each date, `YYYY-MM-DD HH:mm:ss`, or `null` when it is not sent or
+ *                                                   cannot be read.
+ */
+function readFormDates( kind, dynamic ) {
+	const field = ( id ) => {
+		const input = id ? document.getElementById( id ) : null;
+
+		return input && ! input.disabled ? input.value : undefined;
+	};
+	const read = ( key ) =>
+		readDateTime(
+			field( kind.dateFields[ key ].date ),
+			field( kind.dateFields[ key ].time ),
+			dynamic.datepicker_format
+		);
+
+	return { start: read( 'start' ), end: read( 'end' ) };
+}
 
 /**
  * Reads the event dates from the TEC event fields.
@@ -165,6 +208,46 @@ function updateHelperText() {
 				? formatHelperText( settings.text[ key ], date, formats, moment().year() )
 				: '';
 	} );
+}
+
+/**
+ * Writes how long the window of a kind lasts for the event dates in the form.
+ *
+ * @since TBD
+ *
+ * @param {import( '../window-kinds' ).WindowKind} kind The kind of the window.
+ *
+ * @return {void}
+ */
+function updateWindowLength( kind ) {
+	const settings = window.tec?.tickets?.relativeSaleDates?.classicData;
+	const dynamic = window.tribe_dynamic_help_text;
+	const length = document.getElementById( kind.lengthId );
+
+	if ( ! settings || ! dynamic || ! length ) {
+		return;
+	}
+
+	length.textContent = getWindowLengthText(
+		getFormWindow(
+			readRule( document, kind ),
+			getEventDates( settings, dynamic ),
+			readFormDates( kind, dynamic ),
+			kind
+		),
+		kind
+	);
+}
+
+/**
+ * Writes how long the window of every kind that shows its length lasts.
+ *
+ * @since TBD
+ *
+ * @return {void}
+ */
+function updateWindowLengths() {
+	LENGTH_KINDS.forEach( updateWindowLength );
 }
 
 /**
@@ -338,16 +421,7 @@ function validateSaleWindow( event, valid ) {
 		return answer;
 	}
 
-	// A disabled field, like the date a Now start hides, is not sent, so the server does not judge it either.
-	const field = ( id ) => {
-		const input = document.getElementById( id );
-
-		return input && ! input.disabled ? input.value : undefined;
-	};
-	const error = getWindowError( readRule( document ), eventDates, {
-		start: readDateTime( field( 'ticket_start_date' ), field( 'ticket_start_time' ), dynamic.datepicker_format ),
-		end: readDateTime( field( 'ticket_end_date' ), field( 'ticket_end_time' ), dynamic.datepicker_format ),
-	} );
+	const error = getWindowError( readRule( document ), eventDates, readFormDates( SALES_WINDOW, dynamic ) );
 
 	if ( ! error ) {
 		showWindowError( '' );
@@ -412,6 +486,7 @@ function onWindowChange() {
  */
 function onEventChange() {
 	onWindowChange();
+	updateWindowLengths();
 	updateTicketsList();
 }
 
@@ -425,6 +500,7 @@ function onEventChange() {
 function onPanelsRefreshed() {
 	updateUnitNames();
 	updateHelperText();
+	updateWindowLengths();
 	updateTicketsList();
 }
 
@@ -442,10 +518,11 @@ jQuery( () => {
 
 jQuery( document ).on( 'change', EVENT_FIELDS, onEventChange );
 // `tickets.js` tells this script of a date picked from the calendar with the namespaced event, which a plain change fires too.
-jQuery( document ).on(
-	'change.tecRelativeSaleDates input',
-	`${ RULE_FIELDS }, ${ SPECIFIC_DATE_FIELDS }`,
-	onWindowChange
+jQuery( document ).on( 'change.tecRelativeSaleDates input', getFieldSelector( SALES_WINDOW ), onWindowChange );
+LENGTH_KINDS.forEach( ( kind ) =>
+	jQuery( document ).on( 'change.tecRelativeSaleDates input', getFieldSelector( kind ), () =>
+		updateWindowLength( kind )
+	)
 );
 jQuery( document ).on( 'change input', RELATIVE_VALUE_FIELDS, updateUnitNames );
 

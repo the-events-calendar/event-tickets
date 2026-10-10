@@ -12,9 +12,69 @@ import moment from 'moment';
 /**
  * Internal dependencies
  */
-import { MAX_VALUE, MIN_VALUE, MODE_DEFAULT, MODE_RELATIVE, MODE_SPECIFIC } from './rule-constants';
-import { fromEventLocal, resolveSaleWindow } from './sale-window';
+import { MAX_VALUE, MIN_VALUE, MODE_RELATIVE, MODE_SPECIFIC } from './rule-constants';
+import { fromEventLocal, resolveWindow, toZone } from './sale-window';
 import { getSaleWindowError, SALES_END_BEFORE_START } from './validation';
+import { SALES_WINDOW } from './window-kinds';
+
+/** @typedef {import( 'moment' ).Moment} Moment */
+
+/**
+ * Gets the window a save of the form would store, as far as the form knows it.
+ *
+ * A relative boundary, or a default end, takes the date it resolves to; a relative one without a whole number has none.
+ * A specific boundary takes the date the form sends for it, read as the server reads it, or none.
+ *
+ * An open start takes what the server stores for it. A kind that leaves the ticket's own start, the sales window, takes
+ * the date the form sends, or now when that date is later, as the server sells it from now on; sent without a date, it
+ * has none, as the server takes the day the event was published, which the form does not know. A kind that stores its
+ * open start itself, the sale price, opens now.
+ *
+ * @since TBD
+ *
+ * @param {import( './sale-window' ).SaleWindowRule}    rule                The rule the form expresses.
+ * @param {import( './server-event-dates' ).EventDates} eventDates          The event dates, as the server reads them,
+ *                                                                          or `null` when they are not known.
+ * @param {{start: string|null, end: string|null}}      formDates           The start and end dates the form sends,
+ *                                                                          `YYYY-MM-DD HH:mm:ss` in the event
+ *                                                                          timezone, or `null`.
+ * @param {import( './window-kinds' ).WindowKind}       [kind=SALES_WINDOW] The kind of the window.
+ *
+ * @return {{start: Moment|null, end: Moment|null}|null} The window in the event timezone, or `null` without event
+ *                                                       dates.
+ */
+export function getFormWindow( rule, eventDates, formDates, kind = SALES_WINDOW ) {
+	const resolved = resolveWindow( rule, eventDates, kind );
+
+	if ( ! resolved ) {
+		return null;
+	}
+
+	const now = toZone( moment(), eventDates.timezone );
+	const getFormDate = ( key ) =>
+		formDates[ key ] ? fromEventLocal( formDates[ key ], eventDates.timezone ) : null;
+	const getDate = ( key ) => {
+		const { mode } = rule[ key ];
+
+		if ( MODE_SPECIFIC === mode ) {
+			return getFormDate( key );
+		}
+
+		if ( 'start' !== key || kind.openStartMode !== mode ) {
+			return resolved[ key ];
+		}
+
+		if ( null !== kind.openStartValue ) {
+			return now;
+		}
+
+		const date = getFormDate( key );
+
+		return date && date.isAfter( now ) ? now : date;
+	};
+
+	return { start: getDate( 'start' ), end: getDate( 'end' ) };
+}
 
 /**
  * The message key of a relative boundary whose number is out of range.
@@ -79,27 +139,10 @@ export function getWindowError( rule, eventDates, formDates ) {
 		return RELATIVE_VALUE_OUT_OF_RANGE;
 	}
 
-	const resolved = resolveSaleWindow( rule, eventDates.start, eventDates.end, eventDates.timezone );
-	const dates = {};
+	const dates = getFormWindow( rule, eventDates, formDates );
 
-	for ( const key of [ 'start', 'end' ] ) {
-		if ( resolved[ key ] ) {
-			dates[ key ] = resolved[ key ];
-			continue;
-		}
-
-		if ( ! formDates[ key ] ) {
-			if ( MODE_SPECIFIC === rule[ key ].mode ) {
-				return SALES_END_BEFORE_START;
-			}
-
-			dates[ key ] = null;
-			continue;
-		}
-
-		const date = fromEventLocal( formDates[ key ], eventDates.timezone );
-		const now = moment();
-		dates[ key ] = MODE_DEFAULT === rule[ key ].mode && date.isAfter( now ) ? now : date;
+	if ( [ 'start', 'end' ].some( ( key ) => ! dates[ key ] && MODE_SPECIFIC === rule[ key ].mode ) ) {
+		return SALES_END_BEFORE_START;
 	}
 
 	return getSaleWindowError( dates.start, dates.end );

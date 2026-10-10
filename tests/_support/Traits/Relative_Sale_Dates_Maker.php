@@ -7,6 +7,8 @@ use ActionScheduler_Store;
 use DateTimeImmutable;
 use TEC\Tickets\Commerce\Module;
 use RuntimeException;
+use TEC\Tickets\Commerce\Ticket;
+use TEC\Tickets\Relative_Sale_Dates\Rule;
 use TEC\Tickets\Relative_Sale_Dates\Rule_Store;
 use TEC\Tickets\Ticket_Actions;
 use WP_REST_Request;
@@ -15,7 +17,8 @@ use WP_REST_Response;
 /**
  * Builds the events, rules and lookups the Relative Sale Dates tests share.
  *
- * `create_ruled_ticket()` needs the Tickets Commerce `Ticket_Maker` trait in the test case as well.
+ * `create_ruled_ticket()` and `create_sale_price_ticket()` need the Tickets Commerce `Ticket_Maker` trait in the test case
+ * as well.
  */
 trait Relative_Sale_Dates_Maker {
 	/**
@@ -30,6 +33,20 @@ trait Relative_Sale_Dates_Maker {
 			'value'  => $value,
 			'unit'   => $unit,
 			'anchor' => 'start',
+		];
+	}
+
+	/**
+	 * @param int $value The number of units before the event start.
+	 * @param int $unit  `DAY_IN_SECONDS` or `WEEK_IN_SECONDS`.
+	 *
+	 * @return array{mode: string, value: int, unit: int} A relative boundary of the sale price window.
+	 */
+	protected function sale_price_relative( int $value, int $unit ): array {
+		return [
+			'mode'  => Rule::MODE_RELATIVE,
+			'value' => $value,
+			'unit'  => $unit,
 		];
 	}
 
@@ -210,6 +227,42 @@ trait Relative_Sale_Dates_Maker {
 		);
 
 		return $ticket_id;
+	}
+
+	/**
+	 * Creates a Tickets Commerce ticket priced 20 with a sale price of 10.
+	 *
+	 * @param int                                                                                                                                              $post_id   The ticketed post ID.
+	 * @param array<string,string|int|bool|null|array{start: array{mode: string, value?: int, unit?: int}, end: array{mode: string, value?: int, unit?: int}}> $overrides The ticket data to override.
+	 *
+	 * @return int The ticket post ID.
+	 */
+	protected function create_sale_price_ticket( int $post_id, array $overrides = [] ): int {
+		return $this->create_tc_ticket( $post_id, 20, array_merge( $this->get_sale_price_data(), $overrides ) );
+	}
+
+	/**
+	 * @return array{ticket_add_sale_price: string, ticket_sale_price: int, ticket_sale_start_date: string, ticket_sale_end_date: string} The sale price fields of a ticket form with a sale price of 10.
+	 */
+	protected function get_sale_price_data(): array {
+		return [
+			'ticket_add_sale_price'  => 'on',
+			'ticket_sale_price'      => 10,
+			'ticket_sale_start_date' => '',
+			'ticket_sale_end_date'   => '',
+		];
+	}
+
+	/**
+	 * @param int $ticket_id The ticket post ID.
+	 *
+	 * @return array{0: string, 1: string} The stored sale price start and end dates.
+	 */
+	protected function get_sale_price_dates( int $ticket_id ): array {
+		return [
+			get_post_meta( $ticket_id, Ticket::$sale_price_start_date_key, true ),
+			get_post_meta( $ticket_id, Ticket::$sale_price_end_date_key, true ),
+		];
 	}
 
 	/**

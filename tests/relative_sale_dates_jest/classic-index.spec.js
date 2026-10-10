@@ -107,6 +107,39 @@ function renderPanel( { value, unit, anchor }, end = { mode: 'relative', value: 
 		</div>`;
 }
 
+/**
+ * Adds the sale price fields to the ticket edit panel, with the helper text that holds the sale length.
+ *
+ * @param {Object} start          The start: `mode`, and `value` and `unit` for a relative one.
+ * @param {Object} end            The end: `mode`, and `value` and `unit` for a relative one.
+ * @param {string} [startDate=''] The specific start date, in the datepicker format.
+ */
+function appendSalePriceFields( start, end, startDate = '' ) {
+	const fields = ( key, { mode, value = 1, unit = UNIT_WEEKS } ) => `
+		<select id="ticket_sale_${ key }_mode"><option value="${ mode }" selected>mode</option></select>
+		<input type="number" id="ticket_sale_${ key }_value" value="${ value }" />
+		<select id="ticket_sale_${ key }_unit">
+			<option value="${ UNIT_DAYS }" ${ UNIT_DAYS === unit ? 'selected' : '' }>days</option>
+			<option value="${ UNIT_WEEKS }" ${ UNIT_WEEKS === unit ? 'selected' : '' }>weeks</option>
+		</select>`;
+
+	document.getElementById( 'tribe_panel_edit' ).insertAdjacentHTML(
+		'beforeend',
+		`${ fields( 'start', start ) }
+		<input id="ticket_sale_start_date" value="${ startDate }" />
+		${ fields( 'end', end ) }
+		<input id="ticket_sale_end_date" value="" />
+		<span id="ticket_sale_price_length"></span>`
+	);
+}
+
+/**
+ * @return {string} The sale length the helper text shows.
+ */
+function getSaleLengthText() {
+	return document.getElementById( 'ticket_sale_price_length' ).textContent;
+}
+
 const INVALID_WINDOW = 'Ticket sales cannot end before they start. Please adjust the sales window.';
 
 const OUT_OF_RANGE = 'Enter a number from 1 to 60.';
@@ -237,6 +270,17 @@ describe( 'classic editor script', () => {
 		expect( getHelperText( 'start' ) ).toBe( 'Sales start June 23, 2099 at 10:00 pm' );
 	} );
 
+	it( 'should show the sale length of a panel the editor replaced', async () => {
+		renderEventForm();
+		const hooks = await loadScript();
+
+		jQuery( '#tribetickets' ).replaceWith( renderPanel( { value: 1, unit: UNIT_DAYS, anchor: 'end' } ) );
+		appendSalePriceFields( { mode: 'relative', value: 2 }, { mode: 'relative', value: 1 } );
+		hooks.doAction( 'tec.tickets.admin.panels.refreshed', {} );
+
+		expect( getSaleLengthText() ).toBe( 'Tickets on sale for 1 week' );
+	} );
+
 	it( 'should leave the helper text of an end that is not relative empty', async () => {
 		renderEventForm();
 		jQuery( '#ticket_sales_start_mode' ).html( '<option value="default" selected>Default</option>' );
@@ -295,6 +339,57 @@ describe( 'classic editor script', () => {
 			'days',
 			'weeks',
 		] );
+	} );
+
+	it( 'should show how long the sale price lasts', async () => {
+		renderEventForm();
+		appendSalePriceFields( { mode: 'relative', value: 2 }, { mode: 'relative', value: 1 } );
+		await loadScript();
+
+		expect( getSaleLengthText() ).toBe( 'Tickets on sale for 1 week' );
+	} );
+
+	it( 'should update the sale length when a sale price field changes', async () => {
+		renderEventForm();
+		appendSalePriceFields( { mode: 'relative', value: 2 }, { mode: 'relative', value: 1 } );
+		await loadScript();
+
+		jQuery( '#ticket_sale_start_unit' ).val( String( UNIT_DAYS ) ).trigger( 'change' );
+		jQuery( '#ticket_sale_start_value' ).val( '10' ).trigger( 'input' );
+
+		expect( getSaleLengthText() ).toBe( 'Tickets on sale for 3 days' );
+	} );
+
+	it( 'should clear the sale length when the relative sale price end is cleared', async () => {
+		renderEventForm();
+		appendSalePriceFields( { mode: 'relative', value: 2 }, { mode: 'relative', value: 1 } );
+		await loadScript();
+
+		jQuery( '#ticket_sale_end_value' ).val( '' ).trigger( 'input' );
+
+		expect( getSaleLengthText() ).toBe( '' );
+	} );
+
+	it( 'should update the sale length when a sale price date is picked from the calendar', async () => {
+		renderEventForm();
+		appendSalePriceFields( { mode: 'specific' }, { mode: 'relative', value: 1 } );
+		await loadScript();
+		const before = getSaleLengthText();
+
+		// What `tickets.js` fires after a pick, which no plain `change` listener sees.
+		jQuery( '#ticket_sale_start_date' ).val( '6/10/2099' ).trigger( 'change.tecRelativeSaleDates' );
+
+		expect( getSaleLengthText() ).not.toBe( before );
+	} );
+
+	it( 'should update the sale length when the event date changes', async () => {
+		renderEventForm();
+		appendSalePriceFields( { mode: 'specific' }, { mode: 'relative', value: 1 }, '6/10/2099' );
+		await loadScript();
+
+		jQuery( '#EventStartDate' ).val( '6/25/2099' ).trigger( 'change' );
+
+		expect( getSaleLengthText() ).toBe( 'Tickets on sale for 8 days' );
 	} );
 
 	it( 'should write the sale dates of a listed ticket from the event dates in the form', async () => {
