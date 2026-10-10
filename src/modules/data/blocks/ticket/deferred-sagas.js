@@ -381,6 +381,15 @@ export function* stageTicket( clientId, entries ) {
 	yield put( actions.setTicketHasChanges( clientId, false ) );
 	yield call( refreshPayload );
 
+	/**
+	 * Fires when a ticket block's create or update is staged for the post save, on a post that defers ticket
+	 * saves. `tec.tickets.blocks.ticketCreated` or `tec.tickets.blocks.ticketUpdated` fires once the post save
+	 * commits it.
+	 *
+	 * @since TBD
+	 *
+	 * @param {string} clientId The ticket block's client ID.
+	 */
 	runHook( 'tec.tickets.blocks.ticketStaged', clientId );
 }
 
