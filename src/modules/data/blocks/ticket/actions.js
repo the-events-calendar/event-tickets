@@ -718,13 +718,13 @@ export const stageTicketMove = ( ticketId, destinationId ) => ( {
 } );
 
 /**
- * Clears the staged deletes and moves: all of them, or only the ones a post save sent.
+ * Clears the staged deletes and moves a post save sent, or that Undo took back.
  *
- * @param {{deletes: Array<number>, moves: Array<number>}|null} sent The ticket IDs to clear, or `null` for all.
+ * @param {{deletes: Array<number>, moves: Array<number>}} sent The ticket IDs to clear.
  *
  * @return {Object} The action.
  */
-export const clearStagedTickets = ( sent = null ) => ( {
+export const clearStagedTickets = ( sent ) => ( {
 	type: types.CLEAR_STAGED_TICKETS,
 	payload: { sent },
 } );

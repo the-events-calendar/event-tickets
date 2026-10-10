@@ -194,7 +194,7 @@ describe( 'staged state in the store', () => {
 		expect( selectors.getStagedDeletes( wrap( block ) ) ).toEqual( [ 12 ] );
 		expect( selectors.getStagedMoves( wrap( block ) ) ).toEqual( { 13: 99 } );
 
-		block = reducer( block, actions.clearStagedTickets() );
+		block = reducer( block, actions.clearStagedTickets( { deletes: [ 12 ], moves: [ 13 ] } ) );
 		expect( selectors.getStagedDeletes( wrap( block ) ) ).toEqual( [] );
 		expect( selectors.getStagedMoves( wrap( block ) ) ).toEqual( {} );
 	} );
