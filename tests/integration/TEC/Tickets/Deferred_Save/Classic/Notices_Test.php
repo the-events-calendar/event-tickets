@@ -105,6 +105,21 @@ class Notices_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_not_name_a_refused_ticket_twice_when_the_reason_already_names_it(): void {
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$post_id        = static::factory()->post->create();
+		$foreign_ticket = $this->create_tc_ticket( static::factory()->post->create(), 10 );
+		$result         = ( new Result() )->with_error( 'delete', $foreign_ticket, "Ticket {$foreign_ticket} does not belong to this post." );
+
+		do_action( 'tec_tickets_deferred_save_classic_committed', $result, $post_id );
+		$html = $this->render_admin_notices();
+
+		$this->assertStringContainsString( "<li>Ticket {$foreign_ticket} does not belong to this post.</li>", $html );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_escape_the_output(): void {
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 		$post_id = static::factory()->post->create( [ 'post_title' => 'Post <script>alert(1)</script>' ] );

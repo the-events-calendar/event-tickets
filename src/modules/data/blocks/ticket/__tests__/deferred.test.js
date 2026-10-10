@@ -84,6 +84,18 @@ describe( 'restBodyToTicketData', () => {
 			'tribe-ticket': { fees: { selected_fees: [ '3', '4' ] } },
 		} );
 	} );
+
+	it( 'sends the attendee fields ET+ adds as JSON as the list the ticket save reads, and leaves out an empty or unreadable one', () => {
+		// ET+ Ticket Presets appends them through `tec.tickets.blocks.setBodyDetails`; its `Meta::save_meta()` filters an array.
+		const fields = [ { type: 'text', label: 'Name', required: 'on' } ];
+
+		expect( restBodyToTicketData( [ [ 'tribe-tickets-input', JSON.stringify( fields ) ] ] ) ).toEqual( {
+			'tribe-tickets-input': fields,
+		} );
+		// The REST save sent these as a request var that ET+ decodes and, when empty, ignores.
+		expect( restBodyToTicketData( [ [ 'tribe-tickets-input', '[]' ] ] ) ).toEqual( {} );
+		expect( restBodyToTicketData( [ [ 'tribe-tickets-input', 'not json' ] ] ) ).toEqual( {} );
+	} );
 } );
 
 describe( 'buildPayload', () => {

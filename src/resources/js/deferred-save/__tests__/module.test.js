@@ -181,6 +181,47 @@ describe( 'deferred-save module', () => {
 		expect( $( '.tec-tickets-deferred-save-validation' ).length ).toBe( 0 );
 	} );
 
+	it( 'lets the fields a staged ticket turned on show again when it is edited', () => {
+		const module = load( {
+			editPanel: `
+				<input name="ticket_name" value="">
+				<input type="checkbox" id="ticket_add_sale_price" class="tribe-dependency" name="ticket_add_sale_price" value="on">
+				<input id="ticket_sale_price" name="ticket_sale_price" value="" disabled>`,
+		} );
+		window.tribe.tickets.editor = { fetchPanels: jest.fn() };
+		// Stands in for common's tribe-dependency, which tickets.js ran before the refreshed action, on the empty form.
+		$( document ).on( 'verify.dependency change.dependency', '.tribe-dependency', function () {
+			$( '#ticket_sale_price' ).prop( 'disabled', ! this.checked );
+		} );
+		module.state.stageCreate( [
+			[ 'ticket_name', 'General' ],
+			[ 'ticket_price', '10' ],
+			[ 'ticket_add_sale_price', 'on' ],
+			[ 'ticket_sale_price', '8' ],
+		] );
+		module.render();
+
+		$( '.tec-tickets-deferred-save-row__edit' ).trigger( 'click' );
+		loadedHooks.doAction( 'tec.tickets.admin.panels.refreshed', { swapTo: 'ticket' } );
+		$( document ).off( 'verify.dependency change.dependency' );
+
+		expect( $( '#ticket_add_sale_price' ).prop( 'checked' ) ).toBe( true );
+		expect( $( '#ticket_sale_price' ).prop( 'disabled' ) ).toBe( false );
+		expect( $( '#ticket_sale_price' ).val() ).toBe( '8' );
+	} );
+
+	it( 'sends a price typed with a comma decimal as the plain number the server reads', () => {
+		window.price_format = { decimal: ',' };
+		const module = load();
+		delete window.price_format;
+		module.state.stageCreate( [ [ 'ticket_name', 'General' ], [ 'ticket_price', '12,50' ] ] );
+		module.render();
+
+		expect( $( 'input[name="tec_tickets[create][0][ticket_price]"]' ).val() ).toBe( '12.5' );
+		// The row still shows the price as the admin typed it.
+		expect( $( '.tec-tickets-deferred-save-row [data-tec-slot="price"]' ).text() ).toBe( '12,50' );
+	} );
+
 	it( 'drops the leave warning when the post form submits for real', () => {
 		const module = load();
 		module.state.stageCreate( [ [ 'ticket_name', 'General' ] ] );
