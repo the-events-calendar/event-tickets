@@ -630,11 +630,7 @@ export function* createNewTicket( action ) {
 		} );
 
 		if ( response.ok ) {
-			const sharedCapacity = yield select( selectors.getTicketsSharedCapacity );
-			const tempSharedCapacity = yield select( selectors.getTicketsTempSharedCapacity );
-			if ( sharedCapacity === '' && ! isNaN( tempSharedCapacity ) && tempSharedCapacity > 0 ) {
-				yield put( actions.setTicketsSharedCapacity( tempSharedCapacity ) );
-			}
+			yield call( syncTempSharedCapacity );
 			const available = ticket.capacity_details.available === -1 ? 0 : ticket.capacity_details.available;
 
 			const { sale_price_data } = ticket; // eslint-disable-line camelcase
