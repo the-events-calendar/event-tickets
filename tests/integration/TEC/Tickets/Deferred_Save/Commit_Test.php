@@ -743,6 +743,29 @@ class Commit_Test extends WPTestCase {
 	}
 
 	/**
+	 * @test
+	 */
+	public function it_should_put_the_copy_on_the_saved_post_when_the_same_save_moves_its_source(): void {
+		$this->log_in_as_admin();
+		$post_id        = static::factory()->post->create();
+		$destination_id = static::factory()->post->create();
+		$source_id      = $this->create_tc_ticket( $post_id, 10 );
+
+		$result = $this->commit()->run(
+			[
+				'create' => [ $this->ticket_data( 'The copy', [ Commit::DUPLICATE_OF => (string) $source_id ] ) ],
+				'move'   => [ $source_id => $destination_id ],
+			],
+			$post_id
+		);
+
+		$this->assertSame( [], $result->get_errors() );
+		$copy_id = $result->get_created()[0];
+		$this->assertSame( [ $copy_id ], tribe_tickets()->where( 'event', $post_id )->get_ids() );
+		$this->assertSame( [ $source_id ], tribe_tickets()->where( 'event', $destination_id )->get_ids() );
+	}
+
+	/**
 	 * @return \Generator<string,array{0:callable}>
 	 */
 	public function duplicate_sources_that_are_refused_provider(): \Generator {
@@ -817,7 +840,7 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_should_run_the_parts_in_update_move_create_delete_order(): void {
+	public function it_should_run_the_parts_in_update_create_move_delete_order(): void {
 		$this->log_in_as_admin();
 		$post_id        = static::factory()->post->create();
 		$destination_id = static::factory()->post->create();
@@ -843,7 +866,8 @@ class Commit_Test extends WPTestCase {
 				static fn( string $action ) => in_array( $action, [ 'tec_tickets_ticket_update', 'tribe_tickets_ticket_type_moved', 'tec_tickets_ticket_add', 'tribe_tickets_ticket_deleted' ], true )
 			)
 		);
-		$this->assertSame( [ 'tec_tickets_ticket_update', 'tribe_tickets_ticket_type_moved', 'tec_tickets_ticket_add', 'tribe_tickets_ticket_deleted' ], $milestones );
+		// Creates come before moves, so a copy is taken while its source is still on the post.
+		$this->assertSame( [ 'tec_tickets_ticket_update', 'tec_tickets_ticket_add', 'tribe_tickets_ticket_type_moved', 'tribe_tickets_ticket_deleted' ], $milestones );
 	}
 
 	/**
@@ -1113,6 +1137,72 @@ class Commit_Test extends WPTestCase {
 		$this->assertCount( 1, $ticket_ids );
 		$this->assertSame( [ 0 => $ticket_ids[0] ], $result->get_created() );
 		$this->assertSame( [ [ 'create', 0, false ] ], $this->error_outcomes( $result ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_report_a_copy_saved_before_a_listener_threw_as_created_and_not_copy_it_again(): void {
+		$this->log_in_as_admin();
+		$post_id   = static::factory()->post->create();
+		$source_id = $this->create_tc_ticket( $post_id, 10 );
+		$entry     = $this->ticket_data( 'The copy', [ Commit::DUPLICATE_OF => (string) $source_id, Commit::CREATE_KEY => 'copy-key-1' ] );
+		// Fired inside the `ticket_add()` that `duplicate_ticket()` runs, after the provider saved the copy.
+		$throw = static function () {
+			throw new \RuntimeException( 'A listener inside duplicate_ticket() failed.' );
+		};
+		add_action( 'tec_tickets_ticket_add', $throw );
+
+		$result = $this->commit()->run( [ 'create' => [ $entry ] ], $post_id );
+
+		$copy_ids = array_values( array_diff( tribe_tickets()->where( 'event', $post_id )->get_ids(), [ $source_id ] ) );
+		$this->assertCount( 1, $copy_ids );
+		// The copy exists, so the editor must know its ID and never copy the ticket again.
+		$this->assertSame( [ 0 => (int) $copy_ids[0] ], $result->get_created() );
+		$this->assertSame( [ [ 'create', 0, false ] ], $this->error_outcomes( $result ) );
+
+		remove_action( 'tec_tickets_ticket_add', $throw );
+		$again = $this->commit()->run( [ 'create' => [ $entry ] ], $post_id );
+
+		$this->assertSame( [], $again->get_errors() );
+		$this->assertSame( [ 0 => (int) $copy_ids[0] ], $again->get_created() );
+		$this->assertCount( 2, tribe_tickets()->where( 'event', $post_id )->get_ids() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_report_a_ticket_saved_before_a_listener_threw_as_created_after_a_copy_in_the_same_save(): void {
+		$this->log_in_as_admin();
+		$post_id   = static::factory()->post->create();
+		$source_id = $this->create_tc_ticket( $post_id, 10 );
+		add_action(
+			'tec_tickets_ticket_add',
+			static function ( $event_id, $ticket ) {
+				if ( 'Second' === $ticket->name ) {
+					throw new \RuntimeException( 'A listener inside ticket_add() failed.' );
+				}
+			},
+			10,
+			2
+		);
+
+		$result = $this->commit()->run(
+			[
+				'create' => [
+					$this->ticket_data( 'The copy', [ Commit::DUPLICATE_OF => (string) $source_id ] ),
+					$this->ticket_data( 'Second' ),
+				],
+			],
+			$post_id
+		);
+
+		$ticket_ids = tribe_tickets()->where( 'event', $post_id )->get_ids();
+		$this->assertCount( 3, $ticket_ids );
+		$created = $result->get_created();
+		$this->assertSame( [ 0, 1 ], array_keys( $created ) );
+		$this->assertSame( 'Second', get_the_title( $created[1] ) );
+		$this->assertSame( [ [ 'create', 1, false ] ], $this->error_outcomes( $result ) );
 	}
 
 	/**

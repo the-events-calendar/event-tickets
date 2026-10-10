@@ -1559,15 +1559,9 @@ describe( 'Ticket Block sagas', () => {
 				},
 			};
 
-			expect( gen.next( response ).value ).toEqual(
-				select( selectors.getTicketsSharedCapacity ),
-			);
+			expect( gen.next( response ).value ).toEqual( call( sagas.syncTempSharedCapacity ) );
 
-			expect( gen.next( '' ).value ).toEqual(
-				select( selectors.getTicketsTempSharedCapacity ),
-			);
-
-			expect( gen.next( 0 ).value ).toEqual(
+			expect( gen.next().value ).toEqual(
 				all( [
 					select( selectors.getTicketTempTitle, { clientId: action.payload.clientId } ),
 					select( selectors.getTicketTempDescription, { clientId: action.payload.clientId } ),
