@@ -1,5 +1,5 @@
 /**
- * The sales window options of the classic ticket form.
+ * The sales window and sale price options of the classic ticket form.
  *
  * @since TBD
  */
@@ -17,6 +17,7 @@ import { _nx } from '@wordpress/i18n';
 import { MODE_RELATIVE, UNIT_DAYS, UNIT_HOURS, UNIT_MINUTES, UNIT_WEEKS } from '../rule-constants';
 import { resolveSaleWindow } from '../sale-window';
 import { getOutOfRangeBoundary, getWindowError, RELATIVE_VALUE_OUT_OF_RANGE } from '../window-check';
+import { WINDOW_KINDS } from '../window-kinds';
 import { readDateTime, readEventDates } from './event-dates';
 import { formatHelperText } from './helper-text';
 import { readRule, writeRule } from './rule';
@@ -67,6 +68,17 @@ const UNIT_NAMES = {
  * @type {string}
  */
 const SPECIFIC_DATE_FIELDS = '#ticket_start_date, #ticket_start_time, #ticket_end_date, #ticket_end_time';
+
+/**
+ * The number fields of the relative boundaries of every window, whose unit names follow the number typed.
+ *
+ * @since TBD
+ *
+ * @type {string}
+ */
+const RELATIVE_VALUE_FIELDS = WINDOW_KINDS.flatMap( ( kind ) =>
+	[ 'start', 'end' ].map( ( key ) => `#${ kind.fieldPrefix }_${ key }_value` )
+).join( ', ' );
 
 /**
  * Reads the event dates from the TEC event fields.
@@ -156,29 +168,29 @@ function updateHelperText() {
 }
 
 /**
- * Names the units of each relative end in the plural form of the number typed for it.
+ * Names the units of each relative end of every window in the plural form of the number typed for it.
  *
  * @since TBD
  *
  * @return {void}
  */
 function updateUnitNames() {
-	[ 'start', 'end' ].forEach( ( key ) => {
-		const value = document.getElementById( `ticket_sales_${ key }_value` );
-		const unit = document.getElementById( `ticket_sales_${ key }_unit` );
+	WINDOW_KINDS.forEach( ( kind ) => {
+		[ 'start', 'end' ].forEach( ( key ) => {
+			const value = document.getElementById( `${ kind.fieldPrefix }_${ key }_value` );
+			const unit = document.getElementById( `${ kind.fieldPrefix }_${ key }_unit` );
 
-		if ( ! value || ! unit ) {
-			return;
-		}
-
-		const number = parseInt( value.value, 10 );
-
-		Array.from( unit.options ).forEach( ( option ) => {
-			const name = UNIT_NAMES[ option.value ];
-
-			if ( name ) {
-				option.textContent = name( Number.isNaN( number ) ? 2 : number );
+			if ( ! value || ! unit ) {
+				return;
 			}
+
+			const number = parseInt( value.value, 10 );
+
+			Array.from( unit.options )
+				.filter( ( option ) => kind.units.includes( Number( option.value ) ) )
+				.forEach( ( option ) => {
+					option.textContent = UNIT_NAMES[ option.value ]( Number.isNaN( number ) ? 2 : number );
+				} );
 		} );
 	} );
 }
@@ -423,7 +435,7 @@ function onPanelsRefreshed() {
  */
 jQuery( () => {
 	jQuery( '#tribetickets' )
-		.on( 'pre-save-ticket.tribe', () => writeRule( document ) )
+		.on( 'pre-save-ticket.tribe', () => WINDOW_KINDS.forEach( ( kind ) => writeRule( document, kind ) ) )
 		.on( 'additionalValidation.tribe', validateSaleWindow );
 	onPanelsRefreshed();
 } );
@@ -435,7 +447,7 @@ jQuery( document ).on(
 	`${ RULE_FIELDS }, ${ SPECIFIC_DATE_FIELDS }`,
 	onWindowChange
 );
-jQuery( document ).on( 'change input', '#ticket_sales_start_value, #ticket_sales_end_value', updateUnitNames );
+jQuery( document ).on( 'change input', RELATIVE_VALUE_FIELDS, updateUnitNames );
 
 addAction( 'tec.tickets.admin.panels.refreshed', 'tec.tickets.relativeSaleDates', onPanelsRefreshed );
 addAction( 'tec.tickets.admin.ticketSaveFailed', 'tec.tickets.relativeSaleDates', showServerError );

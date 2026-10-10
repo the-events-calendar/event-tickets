@@ -268,10 +268,10 @@ final class Ticket_Save {
 	/**
 	 * Returns whether the ticket data asks to remove the rule of a kind, sending it as `null` or `''`.
 	 *
-	 * A front-end ticket form, such as Community Events', offers no sales window options, so the dates it sends are the
-	 * ones the person set: for a kind such a form removes, a save from it that does not send the rule removes the stored
-	 * one. `tickets.js` tells such a form apart by sending `is_admin` as false; a REST request sends no `is_admin`, and
-	 * leaving the rule out keeps it.
+	 * A front-end ticket form, such as Community Events', offers no relative options for either window, so the dates it
+	 * sends are the ones the person set: a save from it that does not send a rule removes the stored one. `tickets.js`
+	 * tells such a form apart by sending `is_admin` as false; a REST request sends no `is_admin`, and leaving the rule out
+	 * keeps it.
 	 *
 	 * @since TBD
 	 *
@@ -285,10 +285,6 @@ final class Ticket_Save {
 
 		if ( array_key_exists( $key, $data ) ) {
 			return in_array( $data[ $key ], [ null, '' ], true );
-		}
-
-		if ( ! $kind->is_removed_by_front_end_form() ) {
-			return false;
 		}
 
 		$is_admin = tec_get_request_var( 'is_admin' );

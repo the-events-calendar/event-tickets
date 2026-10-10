@@ -901,11 +901,12 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	}
 
 	/**
-	 * Only the sales window rule is removed by a front-end form, such as Community Events', that sends no rule.
+	 * A front-end form, such as Community Events', offers neither window's options, so a save from it that sends no
+	 * rule removes both.
 	 *
 	 * @test
 	 */
-	public function should_keep_the_sale_price_rule_when_a_front_end_form_drops_the_sales_window_rule(): void {
+	public function should_drop_both_rules_when_a_front_end_form_saves_without_them(): void {
 		$event_id        = $this->create_event( self::EVENT_START );
 		$sale_price_rule = $this->get_sale_price_rule( [ 'mode' => Rule::MODE_NOW ], $this->sale_price_relative( 1, WEEK_IN_SECONDS ) );
 		$ticket_id       = $this->create_sale_price_ticket(
@@ -920,7 +921,7 @@ class Ticket_Save_Test extends Controller_Test_Case {
 
 		$this->update_sale_price_ticket( $ticket_id, [] );
 
-		$this->assertSame( [ self::SALE_PRICE_STORE_KEY => $sale_price_rule ], $this->get_stored( $ticket_id ) );
+		$this->assertSame( [], $this->get_stored( $ticket_id ) );
 	}
 
 	/**

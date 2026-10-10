@@ -3,7 +3,8 @@
  * The sales window fields of the classic ticket form, for a Tickets Commerce ticket on an event.
  *
  * Replaces `editor/panel/fields/dates`: the date and time inputs are that template's, unchanged, shown for a specific
- * date. The mode and relative inputs have no `name`: the rule is sent as JSON in the `relative_sale_dates` field.
+ * date. Each end of the window is rendered by `relative-sale-dates/window-boundary`; the rule is sent as JSON in the
+ * `relative_sale_dates` field.
  *
  * @since TBD
  *
@@ -19,13 +20,13 @@
  * @var string                                                                                   $timepicker_step              The timepicker step.
  * @var string                                                                                   $timepicker_round             The timepicker round.
  * @var Tribe__Tickets__Ticket_Object|null                                                       $ticket                       The ticket, or `null` for a new ticket.
- * @var array{start: array{mode: string, value: int, unit: int, anchor: string}, end: array{mode: string, value: int, unit: int, anchor: string}} $sales_window The mode and relative values of each end of the sales window.
+ * @var Window_Kind                                                                              $window_kind                  The sales window kind.
+ * @var array{start: array{mode: string, value: int, unit: int, anchor: string}, end: array{mode: string, value: int, unit: int, anchor: string}} $window_fields The mode and relative values of each end of the sales window.
  * @var string                                                                                   $rule_json                    The stored rule as JSON, or an empty string when there is none.
  */
 
-use TEC\Tickets\Relative_Sale_Dates\Boundary;
 use TEC\Tickets\Relative_Sale_Dates\Rule;
-use TEC\Tickets\Relative_Sale_Dates\Ticket_Save;
+use TEC\Tickets\Relative_Sale_Dates\Window_Kind;
 use Tribe__Date_Utils as Date_Utils;
 
 defined( 'ABSPATH' ) || die();
@@ -52,22 +53,6 @@ $modes = [
 	],
 ];
 
-/*
- * The unit names follow the number, as the script does when it changes; the msgids and context match the script's so
- * one translation serves both.
- */
-$get_units = static fn( int $value ): array => [
-	MINUTE_IN_SECONDS => _nx( 'minute', 'minutes', $value, 'Unit of a relative ticket sale date.', 'event-tickets' ),
-	HOUR_IN_SECONDS   => _nx( 'hour', 'hours', $value, 'Unit of a relative ticket sale date.', 'event-tickets' ),
-	DAY_IN_SECONDS    => _nx( 'day', 'days', $value, 'Unit of a relative ticket sale date.', 'event-tickets' ),
-	WEEK_IN_SECONDS   => _nx( 'week', 'weeks', $value, 'Unit of a relative ticket sale date.', 'event-tickets' ),
-];
-
-$anchors = [
-	Rule::ANCHOR_START => _x( 'before the event starts', 'What a relative ticket sale date is measured from.', 'event-tickets' ),
-	Rule::ANCHOR_END   => _x( 'before the event ends', 'What a relative ticket sale date is measured from.', 'event-tickets' ),
-];
-
 $labels = [
 	'start' => [
 		'mode'     => __( 'Start sale:', 'event-tickets' ),
@@ -87,71 +72,24 @@ $labels = [
 	],
 ];
 
-?>
-<?php foreach ( [ 'start', 'end' ] as $sales_end ) : ?>
-	<?php $fields = $sales_window[ $sales_end ]; ?>
-<div class="input_block tec-tickets-relative-sale-dates">
-	<label class="ticket_form_label ticket_form_left" for="ticket_sales_<?php echo esc_attr( $sales_end ); ?>_mode">
-		<?php echo esc_html( $labels[ $sales_end ]['mode'] ); ?>
-	</label>
-	<div class="ticket_form_right">
-		<select
-			class="tribe-dependency"
-			id="ticket_sales_<?php echo esc_attr( $sales_end ); ?>_mode"
-		>
-			<?php foreach ( $modes[ $sales_end ] as $sales_mode => $mode_label ) : ?>
-				<option value="<?php echo esc_attr( $sales_mode ); ?>" <?php selected( $fields['mode'], $sales_mode ); ?>><?php echo esc_html( $mode_label ); ?></option>
-			<?php endforeach; ?>
-		</select>
-		<div
-			class="tribe-dependent tec-tickets-relative-sale-dates__relative"
-			data-depends="#ticket_sales_<?php echo esc_attr( $sales_end ); ?>_mode"
-			data-condition="<?php echo esc_attr( Rule::MODE_RELATIVE ); ?>"
-		>
-			<span><?php echo esc_html( $labels[ $sales_end ]['relative'] ); ?></span>
-			<input
-				type="number"
-				min="<?php echo esc_attr( Boundary::MIN_VALUE ); ?>"
-				max="<?php echo esc_attr( Boundary::MAX_VALUE ); ?>"
-				step="1"
-				id="ticket_sales_<?php echo esc_attr( $sales_end ); ?>_value"
-				value="<?php echo esc_attr( $fields['value'] ); ?>"
-				aria-label="<?php echo esc_attr( $labels[ $sales_end ]['value'] ); ?>"
-				aria-describedby="ticket_sales_<?php echo esc_attr( $sales_end ); ?>_helper"
-			/>
-			<select
-				id="ticket_sales_<?php echo esc_attr( $sales_end ); ?>_unit"
-				aria-label="<?php echo esc_attr( $labels[ $sales_end ]['unit'] ); ?>"
-				aria-describedby="ticket_sales_<?php echo esc_attr( $sales_end ); ?>_helper"
-			>
-				<?php foreach ( $get_units( $fields['value'] ) as $unit => $unit_label ) : ?>
-					<option value="<?php echo esc_attr( $unit ); ?>" <?php selected( $fields['unit'], $unit ); ?>><?php echo esc_html( $unit_label ); ?></option>
-				<?php endforeach; ?>
-			</select>
-			<select
-				id="ticket_sales_<?php echo esc_attr( $sales_end ); ?>_anchor"
-				aria-label="<?php echo esc_attr( $labels[ $sales_end ]['anchor'] ); ?>"
-				aria-describedby="ticket_sales_<?php echo esc_attr( $sales_end ); ?>_helper"
-			>
-				<?php foreach ( $anchors as $anchor => $anchor_label ) : ?>
-					<option value="<?php echo esc_attr( $anchor ); ?>" <?php selected( $fields['anchor'], $anchor ); ?>><?php echo esc_html( $anchor_label ); ?></option>
-				<?php endforeach; ?>
-			</select>
-			<span
-				class="tec-tickets-relative-sale-dates__helper"
-				id="ticket_sales_<?php echo esc_attr( $sales_end ); ?>_helper"
-				aria-live="polite"
-			></span>
-		</div>
-		<div
-			class="tribe-dependent tec-tickets-relative-sale-dates__specific"
-			data-depends="#ticket_sales_<?php echo esc_attr( $sales_end ); ?>_mode"
-			data-condition="<?php echo esc_attr( Rule::MODE_SPECIFIC ); ?>"
-		>
-			<label class="screen-reader-text" for="ticket_<?php echo esc_attr( $sales_end ); ?>_date">
-				<?php echo esc_html( $labels[ $sales_end ]['date'] ); ?>
-			</label>
-			<?php if ( 'start' === $sales_end ) : ?>
+$render_date_inputs = static function ( string $sales_end ) use (
+	$ticket,
+	$ticket_start_date,
+	$ticket_start_time,
+	$ticket_end_date,
+	$ticket_end_time,
+	$default_start_date,
+	$default_start_time,
+	$default_end_date,
+	$default_end_time,
+	$ticket_start_date_aria_label,
+	$ticket_end_date_aria_label,
+	$start_date_errors,
+	$timepicker_step,
+	$timepicker_round
+): void {
+	if ( 'start' === $sales_end ) :
+		?>
 			<input
 				autocomplete="off"
 				type="text"
@@ -178,7 +116,10 @@ $labels = [
 				aria-label="<?php echo esc_attr( $ticket_start_date_aria_label ); ?>"
 			/>
 			<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ); ?></span>
-			<?php else : ?>
+			<?php
+			return;
+	endif;
+	?>
 			<input
 				autocomplete="off"
 				type="text"
@@ -202,15 +143,36 @@ $labels = [
 				aria-label="<?php echo esc_attr( $ticket_end_date_aria_label ); ?>"
 			/>
 			<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ); ?></span>
-			<?php endif; ?>
-		</div>
+			<?php
+};
+
+?>
+<?php foreach ( [ 'start', 'end' ] as $sales_end ) : ?>
+	<?php
+	$boundary_args = [
+		'boundary_end'       => $sales_end,
+		'boundary_fields'    => $window_fields[ $sales_end ],
+		'field_prefix'       => 'ticket_sales',
+		'mode_labels'        => $modes[ $sales_end ],
+		'boundary_labels'    => $labels[ $sales_end ],
+		'date_input_id'      => "ticket_{$sales_end}_date",
+		'shows_helper_text'  => true,
+		'render_date_inputs' => $render_date_inputs,
+	];
+	?>
+<div class="input_block tec-tickets-relative-sale-dates">
+	<label class="ticket_form_label ticket_form_left" for="ticket_sales_<?php echo esc_attr( $sales_end ); ?>_mode">
+		<?php echo esc_html( $labels[ $sales_end ]['mode'] ); ?>
+	</label>
+	<div class="ticket_form_right">
+		<?php $this->template( 'relative-sale-dates/window-boundary', $boundary_args ); ?>
 	</div>
 </div>
 <?php endforeach; ?>
 <p class="tec-tickets-relative-sale-dates__error ticket_form_right" id="ticket_sales_window_error" role="alert"></p>
 <input
 	type="hidden"
-	name="<?php echo esc_attr( Ticket_Save::DATA_KEY ); ?>"
+	name="<?php echo esc_attr( $window_kind->get_rule_keys()['data'] ); ?>"
 	id="ticket_relative_sale_dates"
 	value="<?php echo esc_attr( $rule_json ); ?>"
 />
