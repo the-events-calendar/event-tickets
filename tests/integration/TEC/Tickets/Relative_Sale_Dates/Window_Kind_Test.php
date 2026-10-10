@@ -108,18 +108,21 @@ class Window_Kind_Test extends WPTestCase {
 	}
 
 	/**
-	 * @return Generator<string,array{0: Window_Kind, 1: array{0: string, 1: string}, 2: array{0: string, 1: string}|null}>
+	 * @return Generator<string,array{0: Window_Kind, 1: array<string,array{0: string, 1: string}>}>
 	 */
 	public function errors_provider(): Generator {
 		yield 'sales' => [
 			Window_Kind::sales(),
-			[ 'tec_tickets_relative_sale_dates_invalid_window', 'Ticket sales cannot end before they start. Please adjust the sales window.' ],
-			null,
+			[
+				'endsBeforeStart' => [ 'tec_tickets_relative_sale_dates_invalid_window', 'Ticket sales cannot end before they start. Please adjust the sales window.' ],
+			],
 		];
 		yield 'sale price' => [
 			Window_Kind::sale_price(),
-			[ 'tec_tickets_relative_sale_dates_sale_price_ends_before_start', 'The sale price cannot end before it starts. Please adjust the sale price window.' ],
-			[ 'tec_tickets_relative_sale_dates_sale_price_outside_sales_window', 'The sale price window falls outside the ticket sales window. Please adjust the dates.' ],
+			[
+				'endsBeforeStart' => [ 'tec_tickets_relative_sale_dates_sale_price_ends_before_start', 'The sale price cannot end before it starts. Please adjust the sale price window.' ],
+				'outsideParent'   => [ 'tec_tickets_relative_sale_dates_sale_price_outside_sales_window', 'The sale price window falls outside the ticket sales window. Please adjust the dates.' ],
+			],
 		];
 	}
 
@@ -127,20 +130,19 @@ class Window_Kind_Test extends WPTestCase {
 	 * @test
 	 * @dataProvider errors_provider
 	 */
-	public function should_reject_with_the_errors_of_the_kind( Window_Kind $kind, array $ends_before_start, ?array $outside_parent ): void {
-		$error = $kind->get_ends_before_start_error();
-		$this->assertSame( $ends_before_start, [ $error->get_error_code(), $error->get_error_message() ] );
-		$this->assertSame( [ 'status' => 400 ], $error->get_error_data() );
+	public function should_reject_with_the_errors_of_the_kind( Window_Kind $kind, array $errors ): void {
+		foreach ( [ 'endsBeforeStart', 'outsideParent', 'valueOutOfRange' ] as $key ) {
+			$error = $kind->get_error( $key );
 
-		$error = $kind->get_outside_parent_error();
-		if ( null === $outside_parent ) {
-			$this->assertNull( $error );
+			if ( ! isset( $errors[ $key ] ) ) {
+				$this->assertNull( $error, $key );
 
-			return;
+				continue;
+			}
+
+			$this->assertSame( $errors[ $key ], [ $error->get_error_code(), $error->get_error_message() ], $key );
+			$this->assertSame( [ 'status' => 400 ], $error->get_error_data(), $key );
 		}
-
-		$this->assertSame( $outside_parent, [ $error->get_error_code(), $error->get_error_message() ] );
-		$this->assertSame( [ 'status' => 400 ], $error->get_error_data() );
 	}
 
 	/**

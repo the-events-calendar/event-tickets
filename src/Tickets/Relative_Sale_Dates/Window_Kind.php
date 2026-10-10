@@ -201,41 +201,17 @@ final class Window_Kind {
 	private bool $specific_needs_date;
 
 	/**
-	 * The code of the error that rejects an invalid rule, or a window that ends before it starts.
+	 * The errors that reject the window, keyed as the editors key them: `endsBeforeStart` for an invalid rule or a window
+	 * that ends before it starts, and `outsideParent` for a window that starts outside its parent window.
+	 *
+	 * Each message is a closure, translated when the error is built: a kind can be built before the text domain loads,
+	 * and it lasts the whole request.
 	 *
 	 * @since TBD
 	 *
-	 * @var string
+	 * @var array<string,array{code: string, message: Closure(): string}>
 	 */
-	private string $ends_before_start_code;
-
-	/**
-	 * Returns the message of the error that rejects an invalid rule, or a window that ends before it starts.
-	 *
-	 * @since TBD
-	 *
-	 * @var Closure(): string
-	 */
-	private Closure $ends_before_start_message;
-
-	/**
-	 * The code of the error that rejects a window starting outside its parent window, or `null` for a kind without one.
-	 *
-	 * @since TBD
-	 *
-	 * @var string|null
-	 */
-	private ?string $outside_parent_code;
-
-	/**
-	 * Returns the message of the error that rejects a window starting outside its parent window, or `null` for a kind
-	 * without one.
-	 *
-	 * @since TBD
-	 *
-	 * @var (Closure(): string)|null
-	 */
-	private ?Closure $outside_parent_message;
+	private array $errors;
 
 	/**
 	 * Gets the sales window kind.
@@ -289,10 +265,12 @@ final class Window_Kind {
 			],
 		];
 		$kind->specific_needs_date          = true;
-		$kind->ends_before_start_code       = 'tec_tickets_relative_sale_dates_invalid_window';
-		$kind->ends_before_start_message    = static fn(): string => __( 'Ticket sales cannot end before they start. Please adjust the sales window.', 'event-tickets' );
-		$kind->outside_parent_code          = null;
-		$kind->outside_parent_message       = null;
+		$kind->errors                       = [
+			'endsBeforeStart' => [
+				'code'    => 'tec_tickets_relative_sale_dates_invalid_window',
+				'message' => static fn(): string => __( 'Ticket sales cannot end before they start. Please adjust the sales window.', 'event-tickets' ),
+			],
+		];
 
 		self::$instances[ self::SALES ] = $kind;
 
@@ -358,10 +336,16 @@ final class Window_Kind {
 			],
 		];
 		$kind->specific_needs_date          = false;
-		$kind->ends_before_start_code       = 'tec_tickets_relative_sale_dates_sale_price_ends_before_start';
-		$kind->ends_before_start_message    = static fn(): string => __( 'The sale price cannot end before it starts. Please adjust the sale price window.', 'event-tickets' );
-		$kind->outside_parent_code          = 'tec_tickets_relative_sale_dates_sale_price_outside_sales_window';
-		$kind->outside_parent_message       = static fn(): string => __( 'The sale price window falls outside the ticket sales window. Please adjust the dates.', 'event-tickets' );
+		$kind->errors                       = [
+			'endsBeforeStart' => [
+				'code'    => 'tec_tickets_relative_sale_dates_sale_price_ends_before_start',
+				'message' => static fn(): string => __( 'The sale price cannot end before it starts. Please adjust the sale price window.', 'event-tickets' ),
+			],
+			'outsideParent'   => [
+				'code'    => 'tec_tickets_relative_sale_dates_sale_price_outside_sales_window',
+				'message' => static fn(): string => __( 'The sale price window falls outside the ticket sales window. Please adjust the dates.', 'event-tickets' ),
+			],
+		];
 
 		self::$instances[ self::SALE_PRICE ] = $kind;
 
@@ -628,29 +612,20 @@ final class Window_Kind {
 	}
 
 	/**
-	 * Gets the error that rejects an invalid rule of the kind, or a window that ends before it starts.
+	 * Gets an error that rejects the window.
 	 *
 	 * @since TBD
 	 *
-	 * @return WP_Error The error, with a 400 status for REST responses.
-	 */
-	public function get_ends_before_start_error(): WP_Error {
-		return $this->build_error( $this->ends_before_start_code, $this->ends_before_start_message );
-	}
-
-	/**
-	 * Gets the error that rejects a window starting outside its parent window.
+	 * @param string $key The error, as the editors key it: `endsBeforeStart` or `outsideParent`.
 	 *
-	 * @since TBD
-	 *
-	 * @return WP_Error|null The error, with a 400 status for REST responses, or `null` for a kind without a parent.
+	 * @return WP_Error|null The error, with a 400 status for REST responses, or `null` for one the kind does not have.
 	 */
-	public function get_outside_parent_error(): ?WP_Error {
-		if ( null === $this->outside_parent_code || null === $this->outside_parent_message ) {
+	public function get_error( string $key ): ?WP_Error {
+		if ( ! isset( $this->errors[ $key ] ) ) {
 			return null;
 		}
 
-		return $this->build_error( $this->outside_parent_code, $this->outside_parent_message );
+		return new WP_Error( $this->errors[ $key ]['code'], $this->errors[ $key ]['message'](), [ 'status' => 400 ] );
 	}
 
 	/**
@@ -661,22 +636,5 @@ final class Window_Kind {
 	 * @since TBD
 	 */
 	private function __construct() {
-	}
-
-	/**
-	 * Builds an error of the kind.
-	 *
-	 * The message is translated when the error is built, not when the kind is: a kind can be built before the text
-	 * domain loads, and it lasts the whole request.
-	 *
-	 * @since TBD
-	 *
-	 * @param string  $code    The error code.
-	 * @param Closure $message Returns the translated message.
-	 *
-	 * @return WP_Error The error, with a 400 status for REST responses.
-	 */
-	private function build_error( string $code, Closure $message ): WP_Error {
-		return new WP_Error( $code, $message(), [ 'status' => 400 ] );
 	}
 }
