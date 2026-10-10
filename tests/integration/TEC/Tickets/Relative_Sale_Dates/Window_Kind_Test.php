@@ -24,7 +24,15 @@ class Window_Kind_Test extends WPTestCase {
 		$this->assertNull( $kind->get_store_key() );
 		$this->assertNull( $kind->get_parent() );
 		$this->assertTrue( $kind->owns_ticket_sales_dates() );
-		$this->assertSame( [ 'data' => Ticket_Save::DATA_KEY ], $kind->get_rule_keys() );
+		$this->assertSame(
+			[
+				'data'                  => Ticket_Save::DATA_KEY,
+				'tec_rest'              => 'relative_sale_dates',
+				'block_editor_request'  => [ 'relative_sale_dates' ],
+				'block_editor_response' => [ 'relative_sale_dates' ],
+			],
+			$kind->get_rule_keys()
+		);
 		$this->assertSame(
 			[
 				'start' => [
@@ -55,6 +63,7 @@ class Window_Kind_Test extends WPTestCase {
 		);
 		$this->assertTrue( $kind->specific_needs_date() );
 		$this->assertFalse( $kind->compares_days() );
+		$this->assertTrue( $kind->returns_block_editor_rule_for_every_provider() );
 	}
 
 	/**
@@ -74,7 +83,15 @@ class Window_Kind_Test extends WPTestCase {
 		$this->assertSame( 'sale_price', $kind->get_store_key() );
 		$this->assertSame( Window_Kind::sales(), $kind->get_parent() );
 		$this->assertFalse( $kind->owns_ticket_sales_dates() );
-		$this->assertSame( [ 'data' => 'ticket_sale_price_relative' ], $kind->get_rule_keys() );
+		$this->assertSame(
+			[
+				'data'                  => 'ticket_sale_price_relative',
+				'tec_rest'              => 'sale_price_relative',
+				'block_editor_request'  => [ 'sale_price', 'relative' ],
+				'block_editor_response' => [ 'sale_price_data', 'relative' ],
+			],
+			$kind->get_rule_keys()
+		);
 		$this->assertSame(
 			[
 				'start' => [
@@ -105,6 +122,7 @@ class Window_Kind_Test extends WPTestCase {
 		);
 		$this->assertFalse( $kind->specific_needs_date() );
 		$this->assertTrue( $kind->compares_days() );
+		$this->assertFalse( $kind->returns_block_editor_rule_for_every_provider() );
 	}
 
 	/**

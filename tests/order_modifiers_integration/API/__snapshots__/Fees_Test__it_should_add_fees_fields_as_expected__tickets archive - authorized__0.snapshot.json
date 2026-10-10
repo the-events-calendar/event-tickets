@@ -68,7 +68,8 @@
                 "enabled": "",
                 "sale_price": "",
                 "start_date": "",
-                "end_date": ""
+                "end_date": "",
+                "relative": null
             },
             "supports_attendee_information": false,
             "attendees": [],
@@ -455,7 +456,8 @@
                 "enabled": "",
                 "sale_price": "",
                 "start_date": "",
-                "end_date": ""
+                "end_date": "",
+                "relative": null
             },
             "supports_attendee_information": false,
             "attendees": [],
@@ -839,7 +841,8 @@
                 "enabled": "",
                 "sale_price": "",
                 "start_date": "",
-                "end_date": ""
+                "end_date": "",
+                "relative": null
             },
             "supports_attendee_information": false,
             "attendees": [],
@@ -1226,7 +1229,8 @@
                 "enabled": "",
                 "sale_price": "",
                 "start_date": "",
-                "end_date": ""
+                "end_date": "",
+                "relative": null
             },
             "supports_attendee_information": false,
             "attendees": [],
@@ -1613,7 +1617,8 @@
                 "enabled": "",
                 "sale_price": "",
                 "start_date": "",
-                "end_date": ""
+                "end_date": "",
+                "relative": null
             },
             "supports_attendee_information": false,
             "attendees": [],
@@ -2000,7 +2005,8 @@
                 "enabled": "",
                 "sale_price": "",
                 "start_date": "",
-                "end_date": ""
+                "end_date": "",
+                "relative": null
             },
             "supports_attendee_information": false,
             "attendees": [],
@@ -2387,7 +2393,8 @@
                 "enabled": "",
                 "sale_price": "",
                 "start_date": "",
-                "end_date": ""
+                "end_date": "",
+                "relative": null
             },
             "supports_attendee_information": false,
             "attendees": [],
@@ -2774,7 +2781,8 @@
                 "enabled": "",
                 "sale_price": "",
                 "start_date": "",
-                "end_date": ""
+                "end_date": "",
+                "relative": null
             },
             "supports_attendee_information": false,
             "attendees": [],
@@ -3158,7 +3166,8 @@
                 "enabled": "",
                 "sale_price": "",
                 "start_date": "",
-                "end_date": ""
+                "end_date": "",
+                "relative": null
             },
             "supports_attendee_information": false,
             "attendees": [],
@@ -3545,7 +3554,8 @@
                 "enabled": "",
                 "sale_price": "",
                 "start_date": "",
-                "end_date": ""
+                "end_date": "",
+                "relative": null
             },
             "supports_attendee_information": false,
             "attendees": [],

@@ -126,11 +126,13 @@ final class Window_Kind {
 	private ?self $parent;
 
 	/**
-	 * The keys that carry the rule: `data`, the ticket data key a save sends it under.
+	 * The keys that carry the rule: `data`, the ticket data key a save sends it under; `tec_rest`, the TEC REST API
+	 * ticket field; and `block_editor_request` and `block_editor_response`, the paths of keys to the rule in the
+	 * `ticket` param of a block editor ticket save and in the ticket data the block editor reads.
 	 *
 	 * @since TBD
 	 *
-	 * @var array{data: string}
+	 * @var array{data: string, tec_rest: string, block_editor_request: string[], block_editor_response: string[]}
 	 */
 	private array $rule_keys;
 
@@ -214,6 +216,25 @@ final class Window_Kind {
 	private array $errors;
 
 	/**
+	 * Whether the block editor ticket data of every provider carries the rule, or only that of Tickets Commerce tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
+	 */
+	private bool $returns_block_editor_rule_for_every_provider;
+
+	/**
+	 * The copy the TEC REST API documents the rule with, each a closure translated when it is read: the rule, its
+	 * `start` and `end` boundaries and their modes, and the value and unit, which take the kind's range and units.
+	 *
+	 * @since TBD
+	 *
+	 * @var array{rule: Closure(): string, start: Closure(): string, end: Closure(): string, start_mode: Closure(): string, end_mode: Closure(): string, value: Closure(int, int): string, unit: Closure(int ...): string}
+	 */
+	private array $rest_descriptions;
+
+	/**
 	 * Gets the sales window kind.
 	 *
 	 * @since TBD
@@ -239,7 +260,12 @@ final class Window_Kind {
 		$kind->anchors                      = [ Rule::ANCHOR_START, Rule::ANCHOR_END ];
 		$kind->store_key                    = null;
 		$kind->parent                       = null;
-		$kind->rule_keys                    = [ 'data' => Ticket_Save::DATA_KEY ];
+		$kind->rule_keys                    = [
+			'data'                  => Ticket_Save::DATA_KEY,
+			'tec_rest'              => 'relative_sale_dates',
+			'block_editor_request'  => [ 'relative_sale_dates' ],
+			'block_editor_response' => [ 'relative_sale_dates' ],
+		];
 		$kind->date_metas                   = [
 			'start' => [
 				'date' => Ticket::START_DATE_META_KEY,
@@ -270,6 +296,28 @@ final class Window_Kind {
 				'code'    => 'tec_tickets_relative_sale_dates_invalid_window',
 				'message' => static fn(): string => __( 'Ticket sales cannot end before they start. Please adjust the sales window.', 'event-tickets' ),
 			],
+		];
+		// The block editor reads `relative_sale_dates` on every ticket, as `null` on one the rule does not apply to.
+		$kind->returns_block_editor_rule_for_every_provider = true;
+
+		$sales_mode              = static fn(): string => __( 'How this end of the window is set: `default` (sales open at once, or close when the event starts), `relative` (before the event) or `specific` (the date sent with the ticket).', 'event-tickets' );
+		$kind->rest_descriptions = [
+			'rule'       => static fn(): string => __( 'The sales window relative to the event, or null when the ticket has fixed sale dates. Sending null removes the rule.', 'event-tickets' ),
+			'start'      => static fn(): string => __( 'When sales start.', 'event-tickets' ),
+			'end'        => static fn(): string => __( 'When sales end.', 'event-tickets' ),
+			'start_mode' => $sales_mode,
+			'end_mode'   => $sales_mode,
+			'value'      => static fn( int $min, int $max ): string => sprintf(
+				// translators: 1) the lowest number of units, 2) the highest number of units.
+				__( 'For a relative boundary, the number of units before the anchor, from %1$d to %2$d.', 'event-tickets' ),
+				$min,
+				$max
+			),
+			'unit'       => static fn( int ...$units ): string => sprintf(
+				// translators: 1) a minute, 2) an hour, 3) a day and 4) a week, each in seconds.
+				__( 'For a relative boundary, the unit in seconds: %1$d (minutes), %2$d (hours), %3$d (days) or %4$d (weeks).', 'event-tickets' ),
+				...$units
+			),
 		];
 
 		self::$instances[ self::SALES ] = $kind;
@@ -305,7 +353,12 @@ final class Window_Kind {
 		$kind->anchors                      = [ Rule::ANCHOR_START ];
 		$kind->store_key                    = 'sale_price';
 		$kind->parent                       = self::sales();
-		$kind->rule_keys                    = [ 'data' => 'ticket_sale_price_relative' ];
+		$kind->rule_keys                    = [
+			'data'                  => 'ticket_sale_price_relative',
+			'tec_rest'              => 'sale_price_relative',
+			'block_editor_request'  => [ 'sale_price', 'relative' ],
+			'block_editor_response' => [ 'sale_price_data', 'relative' ],
+		];
 		$kind->date_metas                   = [
 			'start' => [
 				'date' => Ticket::$sale_price_start_date_key,
@@ -345,6 +398,27 @@ final class Window_Kind {
 				'code'    => 'tec_tickets_relative_sale_dates_sale_price_outside_sales_window',
 				'message' => static fn(): string => __( 'The sale price window falls outside the ticket sales window. Please adjust the dates.', 'event-tickets' ),
 			],
+		];
+		// Every provider answers with `sale_price_data`, an empty array for an RSVP; only Tickets Commerce's has the rule.
+		$kind->returns_block_editor_rule_for_every_provider = false;
+
+		$kind->rest_descriptions = [
+			'rule'       => static fn(): string => __( 'The sale price window relative to the event start, or null when the sale price has fixed dates. Sending null removes the rule.', 'event-tickets' ),
+			'start'      => static fn(): string => __( 'When the sale price starts.', 'event-tickets' ),
+			'end'        => static fn(): string => __( 'When the sale price ends.', 'event-tickets' ),
+			'start_mode' => static fn(): string => __( 'How the start is set: `now` (as soon as ticket sales open), `relative` (before the event start) or `specific` (the date sent in `sale_price_start_date`).', 'event-tickets' ),
+			'end_mode'   => static fn(): string => __( 'How the end is set: `relative` (before the event start) or `specific` (the date sent in `sale_price_end_date`).', 'event-tickets' ),
+			'value'      => static fn( int $min, int $max ): string => sprintf(
+				// translators: 1) the lowest number of units, 2) the highest number of units.
+				__( 'For a relative boundary, the number of units before the event start, from %1$d to %2$d.', 'event-tickets' ),
+				$min,
+				$max
+			),
+			'unit'       => static fn( int ...$units ): string => sprintf(
+				// translators: 1) a day and 2) a week, each in seconds.
+				__( 'For a relative boundary, the unit in seconds: %1$d (days) or %2$d (weeks).', 'event-tickets' ),
+				...$units
+			),
 		];
 
 		self::$instances[ self::SALE_PRICE ] = $kind;
@@ -490,8 +564,15 @@ final class Window_Kind {
 	 *
 	 * @since TBD
 	 *
-	 * @return array{data: string} The keys: `data`, the ticket data key a save sends the rule under, as a JSON string,
-	 *                             an array, or `null` or `''` to remove it.
+	 * @return array{data: string, tec_rest: string, block_editor_request: string[], block_editor_response: string[]} The keys:
+	 *         - `data`, the ticket data key a save sends the rule under, as a JSON string, an array, or `null` or `''`
+	 *           to remove it;
+	 *         - `tec_rest`, the TEC REST API ticket field, `relative_sale_dates` or `sale_price_relative`, whose value
+	 *           is the rule as an object, or `null` to remove it;
+	 *         - `block_editor_request`, the keys to the rule in the `ticket` param of a block editor ticket save,
+	 *           outermost first, such as `ticket[sale_price][relative]`; the rule is sent as JSON, or `''` to remove it;
+	 *         - `block_editor_response`, the keys to the stored rule in the ticket data the block editor reads, such as
+	 *           `sale_price_data.relative`; the rule is returned as an array, or `null`.
 	 */
 	public function get_rule_keys(): array {
 		return $this->rule_keys;
@@ -626,6 +707,31 @@ final class Window_Kind {
 		}
 
 		return new WP_Error( $this->errors[ $key ]['code'], $this->errors[ $key ]['message'](), [ 'status' => 400 ] );
+	}
+
+	/**
+	 * Returns whether the block editor ticket data of every provider carries the rule, or only that of Tickets Commerce
+	 * tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the rule, or `null`, is returned for a ticket of any provider: true for the sales window, whose
+	 *              `relative_sale_dates` every ticket answers with, and false for the sale price, which only a Tickets
+	 *              Commerce ticket's `sale_price_data` carries.
+	 */
+	public function returns_block_editor_rule_for_every_provider(): bool {
+		return $this->returns_block_editor_rule_for_every_provider;
+	}
+
+	/**
+	 * Gets the copy the TEC REST API documents the rule with.
+	 *
+	 * @since TBD
+	 *
+	 * @return array{rule: Closure(): string, start: Closure(): string, end: Closure(): string, start_mode: Closure(): string, end_mode: Closure(): string, value: Closure(int, int): string, unit: Closure(int ...): string} The descriptions of the rule, of its `start` and `end` boundaries and their modes, and of a relative boundary's value, given the kind's range, and unit, given its units.
+	 */
+	public function get_rest_descriptions(): array {
+		return $this->rest_descriptions;
 	}
 
 	/**
