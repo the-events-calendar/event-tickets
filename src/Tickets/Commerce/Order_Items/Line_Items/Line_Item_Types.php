@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Commerce\Order_Items\Line_Items;
 
 use InvalidArgumentException;
+use TEC\Tickets\RSVP\V2\Constants;
 
 /**
  * Class Line_Item_Types.
@@ -27,7 +28,11 @@ class Line_Item_Types {
 	 * @var array<string,class-string<Line_Item_Type>>
 	 */
 	private const TYPES = [
-		'ticket' => Ticket_Line_Item::class,
+		'ticket'                => Ticket_Line_Item::class,
+		'fee'                   => Fee_Line_Item::class,
+		'coupon'                => Coupon_Line_Item::class,
+		'discount'              => Discount_Line_Item::class,
+		Constants::TC_RSVP_TYPE => Ticket_Line_Item::class,
 	];
 
 	/**
