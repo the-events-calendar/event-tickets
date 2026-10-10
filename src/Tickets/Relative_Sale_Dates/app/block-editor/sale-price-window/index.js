@@ -8,7 +8,7 @@ import { cloneElement } from '@wordpress/element';
  */
 import { MODE_SPECIFIC } from '../../rule-constants';
 import { useWindowDraft } from '../use-window-draft';
-import WindowBoundary from '../window-boundary';
+import WindowBoundaries from '../window-boundaries';
 import { BLOCK_SALE_PRICE_WINDOW } from '../window-kinds';
 
 /** @typedef {import( '../../sale-window' ).SaleWindowRule} SaleWindowRule */
@@ -76,21 +76,14 @@ function preparePicker( picker, name, label, formRule ) {
  */
 export default function SalePriceWindow( { clientId, pickers } ) {
 	const { formRule, onChange } = useWindowDraft( clientId, BLOCK_SALE_PRICE_WINDOW );
-	const settings = BLOCK_SALE_PRICE_WINDOW.getBoundarySettings();
-
 	return (
-		<div className="tec-tickets-relative-sale-dates">
-			{ [ 'start', 'end' ].map( ( name ) => (
-				<WindowBoundary
-					key={ name }
-					kind={ BLOCK_SALE_PRICE_WINDOW }
-					name={ name }
-					boundary={ formRule[ name ] }
-					picker={ preparePicker( pickers[ name ], name, settings[ name ].labels.date, formRule ) }
-					onChange={ ( changes ) => onChange( name, changes ) }
-					{ ...settings[ name ] }
-				/>
-			) ) }
-		</div>
+		<WindowBoundaries
+			kind={ BLOCK_SALE_PRICE_WINDOW }
+			formRule={ formRule }
+			onChange={ onChange }
+			getBoundaryProps={ ( name, settings ) => ( {
+				picker: preparePicker( pickers[ name ], name, settings.labels.date, formRule ),
+			} ) }
+		/>
 	);
 }

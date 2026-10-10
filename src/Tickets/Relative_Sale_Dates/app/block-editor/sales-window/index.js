@@ -14,7 +14,7 @@ import { resolveWindow } from '../../sale-window';
 import { getFormRule, isSpecificWindow } from '../rule';
 import { getHelperText } from '../sale-dates';
 import { useWindowDraft } from '../use-window-draft';
-import WindowBoundary from '../window-boundary';
+import WindowBoundaries from '../window-boundaries';
 import { useShownError, useTicketWindowError } from '../window-error';
 import { BLOCK_SALES_WINDOW } from '../window-kinds';
 import { RELATIVE_VALUE_OUT_OF_RANGE, getOutOfRangeBoundary } from '../../window-check';
@@ -50,47 +50,36 @@ export default function SalesWindow( { clientId, picker } ) {
 		}
 	}, [ clientId, hasDurationError, isSpecific ] );
 
-	const settings = BLOCK_SALES_WINDOW.getBoundarySettings();
-
 	return (
-		<div className="tec-tickets-relative-sale-dates">
-			{ [ 'start', 'end' ].map( ( name ) => (
-				<WindowBoundary
-					key={ name }
-					kind={ BLOCK_SALES_WINDOW }
-					name={ name }
-					boundary={ formRule[ name ] }
-					// Each end shows its own half of the range picker.
-					picker={ cloneElement( picker, {
-						className: [ picker.props.className, `tec-tickets-relative-sale-dates__picker--${ name }` ]
-							.filter( Boolean )
-							.join( ' ' ),
-					} ) }
-					helperText={
-						MODE_RELATIVE === formRule[ name ].mode ? getHelperText( name, saleWindow?.[ name ] ) : ''
-					}
-					errorMessage={
-						'end' === name && error && ! outOfRange
-							? __(
-									'Ticket sales cannot end before they start. Please adjust the sales window.',
-									'event-tickets'
-							  )
-							: ''
-					}
-					valueErrorMessage={
-						name === outOfRange
-							? sprintf(
-									// translators: %1$d is the smallest number a relative sale date takes, %2$d the largest.
-									__( 'Enter a number from %1$d to %2$d.', 'event-tickets' ),
-									MIN_VALUE,
-									MAX_VALUE
-							  )
-							: ''
-					}
-					onChange={ ( changes ) => onChange( name, changes ) }
-					{ ...settings[ name ] }
-				/>
-			) ) }
-		</div>
+		<WindowBoundaries
+			kind={ BLOCK_SALES_WINDOW }
+			formRule={ formRule }
+			onChange={ onChange }
+			getBoundaryProps={ ( name ) => ( {
+				// Each end shows its own half of the range picker.
+				picker: cloneElement( picker, {
+					className: [ picker.props.className, `tec-tickets-relative-sale-dates__picker--${ name }` ]
+						.filter( Boolean )
+						.join( ' ' ),
+				} ),
+				helperText: MODE_RELATIVE === formRule[ name ].mode ? getHelperText( name, saleWindow?.[ name ] ) : '',
+				errorMessage:
+					'end' === name && error && ! outOfRange
+						? __(
+								'Ticket sales cannot end before they start. Please adjust the sales window.',
+								'event-tickets'
+						  )
+						: '',
+				valueErrorMessage:
+					name === outOfRange
+						? sprintf(
+								// translators: %1$d is the smallest number a relative sale date takes, %2$d the largest.
+								__( 'Enter a number from %1$d to %2$d.', 'event-tickets' ),
+								MIN_VALUE,
+								MAX_VALUE
+						  )
+						: '',
+			} ) }
+		/>
 	);
 }
