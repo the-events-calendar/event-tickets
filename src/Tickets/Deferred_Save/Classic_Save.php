@@ -50,6 +50,18 @@ final class Classic_Save {
 	public const NONCE_FIELD = 'tec_tickets_nonce';
 
 	/**
+	 * The name of the form field the classic editor writes after every staged field.
+	 *
+	 * PHP drops the request fields past `max_input_vars` in the order they arrive, so a payload without
+	 * it lost some of its fields on the way and must not be applied.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const COMPLETE_FIELD = 'tec_tickets_complete';
+
+	/**
 	 * The priority on `save_post`: after the ticket order and settings save at 10.
 	 *
 	 * @since TBD
@@ -158,18 +170,27 @@ final class Classic_Save {
 			return null;
 		}
 
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST[ self::NONCE_FIELD ] ) ), self::NONCE_ACTION ) ) {
+		$verified = (bool) wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST[ self::NONCE_FIELD ] ) ), self::NONCE_ACTION );
+
+		// Without the post form's own nonce either, the request may not be the admin's: apply nothing and say nothing.
+		if ( ! $verified && ! $this->is_post_form_of( $post_id ) ) {
 			return null;
 		}
-
-		// The payload is parsed by `Payload` and its ticket data is sanitized by the providers when they save it, as on the AJAX path.
-		$raw = wp_unslash( $_POST['tec_tickets'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		// The post may be saved again during this save (TEC does it when "Sticky in Month View" changes): commit once.
 		$this->committed[ $post_id ] = true;
 
-		$result = $this->commit->run( $raw, $post_id );
+		if ( ! $verified ) {
+			// `nonce_life` is filtered per action, so this nonce can expire while the form's own still verifies.
+			$result = ( new Result() )->with_error( null, null, __( 'The ticket changes were not saved because the page had been open too long. Stage them again and save the post.', 'event-tickets' ) );
+		} elseif ( ! isset( $_POST[ self::COMPLETE_FIELD ] ) ) {
+			// A partial `update` would save a ticket with half its fields: apply nothing, and say so.
+			$result = ( new Result() )->with_error( null, null, __( 'The ticket changes did not all reach the server, so none were saved. Stage fewer changes per save.', 'event-tickets' ) );
+		} else {
+			// The payload is parsed by `Payload` and its ticket data is sanitized by the providers when they save it, as on the AJAX path.
+			$result = $this->commit->run( wp_unslash( $_POST['tec_tickets'] ), $post_id ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		}
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		/**
 		 * Fires after the ticket changes sent with a classic editor post save were committed.
@@ -182,5 +203,21 @@ final class Classic_Save {
 		do_action( 'tec_tickets_deferred_save_classic_committed', $result, $post_id );
 
 		return $result;
+	}
+
+	/**
+	 * Whether the request is the post form of a post the user may edit, its own nonce verified as `post.php` verifies it.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The ID of the post being saved.
+	 *
+	 * @return bool Whether it is.
+	 */
+	private function is_post_form_of( int $post_id ): bool {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- This is the verification.
+		$nonce = isset( $_POST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ) : '';
+
+		return current_user_can( 'edit_post', $post_id ) && (bool) wp_verify_nonce( $nonce, 'update-post_' . $post_id );
 	}
 }

@@ -1,7 +1,7 @@
 /* global tribe_event_tickets_plus,
  tribe_ticket_datepicker_format, TribeTickets, tribe_timepickers */
 
-import { doAction } from '@wordpress/hooks';
+import { doAction, applyFilters } from '@wordpress/hooks';
 
 // For compatibility purposes we add this
 if ( 'undefined' === typeof tribe.tickets ) {
@@ -741,6 +741,27 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 
 		$tribe_tickets.trigger( 'pre-save-ticket.tribe', e );
 
+		/**
+		 * Lets another script take over the save, e.g. to stage it with the post save instead.
+		 *
+		 * Asked after `pre-save-ticket.tribe`, so its listeners (Tickets Plus' Save as preset) run either way.
+		 *
+		 * @since TBD
+		 *
+		 * @param {boolean} intercepted Whether the save was handled elsewhere. Default false.
+		 * @param {string}  action      The action, `save`.
+		 * @param {Object}  context     The event, the edit panel and the ticket type.
+		 */
+		if (
+			applyFilters( 'tec.tickets.admin.ticket.intercepted', false, 'save', {
+				event: e,
+				panel: $edit_panel,
+				ticketType,
+			} )
+		) {
+			return;
+		}
+
 		const ticketID = $edit_panel.find( '#ticket_id' ).val();
 		const $editParent = $base_panel.find( `[data-ticket-type-id="${ ticketID }"]` );
 		const orders = $editParent.find( '.tribe-ticket-field-order' ).val();
@@ -781,7 +802,14 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 
 	/* "Delete Ticket" link action */
 	$document.on( 'click', '.ticket_delete', function ( event ) {
-		if ( ! confirm( tribe_ticket_notices.confirm_alert ) ) {
+		// On a post that stages ticket changes the delete waits for the post save and can be undone until then.
+		const deferredSave = tribe.tickets.deferredSave;
+		const confirmMessage =
+			deferredSave && deferredSave.deleteConfirm
+				? deferredSave.deleteConfirm
+				: tribe_ticket_notices.confirm_alert;
+
+		if ( ! confirm( confirmMessage ) ) {
 			return false;
 		}
 
@@ -790,6 +818,16 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 		$tribe_tickets.trigger( 'delete-ticket.tribe', event );
 
 		const deleted_ticket_id = $( this ).attr( 'attr-ticket-id' );
+
+		/** This filter is documented in the save handler above. */
+		if (
+			applyFilters( 'tec.tickets.admin.ticket.intercepted', false, 'delete', {
+				event,
+				ticketId: deleted_ticket_id,
+			} )
+		) {
+			return;
+		}
 
 		const params = {
 			action: 'tribe-ticket-delete',
@@ -817,6 +855,16 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 	$document.on( 'click', '.ticket_duplicate', function ( event ) {
 		// Prevent Form Submit on button click.
 		event.preventDefault();
+
+		/** This filter is documented in the save handler above. */
+		if (
+			applyFilters( 'tec.tickets.admin.ticket.intercepted', false, 'duplicate', {
+				event,
+				ticketId: $( this ).data( 'ticketId' ),
+			} )
+		) {
+			return;
+		}
 
 		// Where we clicked.
 		const $button = $( this );

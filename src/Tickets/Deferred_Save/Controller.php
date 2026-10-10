@@ -99,6 +99,9 @@ final class Controller extends Controller_Contract {
 		add_action( 'tec_tickets_deferred_save_classic_committed', $this->container->callback( Classic\Notices::class, 'remember' ), 10, 2 );
 		add_action( 'admin_notices', $this->container->callback( Classic\Notices::class, 'render' ) );
 
+		$this->container->singleton( Classic\Assets::class );
+		$this->container->get( Classic\Assets::class )->register();
+
 		$this->hook_rest_saves();
 		// A type made ticketable after this ran, by a theme's filter for instance, is hooked once REST starts.
 		add_action( 'rest_api_init', [ $this, 'hook_rest_saves' ] );
@@ -149,5 +152,7 @@ final class Controller extends Controller_Contract {
 		remove_action( 'tribe_tickets_metabox_end', $this->container->callback( Classic\Editor::class, 'print_fields' ) );
 		remove_action( 'tec_tickets_deferred_save_classic_committed', $this->container->callback( Classic\Notices::class, 'remember' ), 10 );
 		remove_action( 'admin_notices', $this->container->callback( Classic\Notices::class, 'render' ) );
+
+		$this->container->get( Classic\Assets::class )->unregister();
 	}
 }
