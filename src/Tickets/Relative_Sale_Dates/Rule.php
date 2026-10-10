@@ -253,8 +253,8 @@ final class Rule implements JsonSerializable {
 	 *
 	 * A specific end leaves the end to the ticket, as a ticket without a rule does, and the classic editor stores such a
 	 * rule the first time it saves a ticket made before the feature. The end stays put when the start counts back from
-	 * the event end, which could fall after an end moved to the event start. Only a kind that owns the ticket sales dates
-	 * moves the sale end.
+	 * the event end, which could fall after an end moved to the event start. Only the kind whose end is the ticket's sale
+	 * end moves it.
 	 *
 	 * @since TBD
 	 *
@@ -264,6 +264,17 @@ final class Rule implements JsonSerializable {
 		return $this->kind->owns_ticket_sales_dates()
 			&& self::MODE_SPECIFIC === $this->end->get_mode()
 			&& self::ANCHOR_END !== $this->start->get_anchor();
+	}
+
+	/**
+	 * Returns whether the window opens at once: its start is the kind's open start, which has no date of its own.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the start opens the window at once.
+	 */
+	public function opens_at_once(): bool {
+		return $this->kind->get_open_start_mode() === $this->start->get_mode();
 	}
 
 	/**

@@ -342,25 +342,33 @@ class Rule_Test extends WPTestCase {
 	}
 
 	/**
-	 * @return Generator<string,array{0: string}>
+	 * @return Generator<string,array{0: Window_Kind, 1: string}>
 	 */
 	public function invalid_json_provider(): Generator {
-		yield 'malformed' => [ '{"start":' ];
-		yield 'empty string' => [ '' ];
-		yield 'a list' => [ '[{"mode":"default"},{"mode":"default"}]' ];
-		yield 'a scalar' => [ '"default"' ];
-		yield 'null' => [ 'null' ];
-		yield 'invalid rule' => [ '{"start":{"mode":"default"}}' ];
+		$sales      = Window_Kind::sales();
+		$sale_price = Window_Kind::sale_price();
+
+		yield 'malformed' => [ $sales, '{"start":' ];
+		yield 'empty string' => [ $sales, '' ];
+		yield 'a list' => [ $sales, '[{"mode":"default"},{"mode":"default"}]' ];
+		yield 'a scalar' => [ $sales, '"default"' ];
+		yield 'null' => [ $sales, 'null' ];
+		yield 'invalid rule' => [ $sales, '{"start":{"mode":"default"}}' ];
+		yield 'sale price: malformed' => [ $sale_price, '{"start":' ];
+		yield 'sale price: empty string' => [ $sale_price, '' ];
+		yield 'sale price: a scalar' => [ $sale_price, '"now"' ];
+		yield 'sale price: null' => [ $sale_price, 'null' ];
+		yield 'sale price: invalid rule' => [ $sale_price, '{"start":{"mode":"now"}}' ];
 	}
 
 	/**
 	 * @test
 	 * @dataProvider invalid_json_provider
 	 */
-	public function should_reject_invalid_json( string $json ): void {
+	public function should_reject_invalid_json( Window_Kind $kind, string $json ): void {
 		$this->expectException( InvalidArgumentException::class );
 
-		Rule::from_json( $json );
+		Rule::from_json( $json, $kind );
 	}
 
 	/**

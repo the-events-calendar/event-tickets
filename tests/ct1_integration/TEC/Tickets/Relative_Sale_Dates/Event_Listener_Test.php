@@ -6,6 +6,8 @@ use Codeception\TestCase\WPTestCase;
 use DateTimeImmutable;
 use DateTimeZone;
 use TEC\Events\Custom_Tables\V1\Updates\Controller as Updates_Controller;
+use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Ticket_Actions;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Relative_Sale_Dates_Maker;
@@ -288,6 +290,86 @@ class Event_Listener_Test extends WPTestCase {
 		$this->assertSame( [ $specific_end->format( 'Y-m-d' ), $specific_end->format( 'H:i:s' ) ], $this->get_ticket_end( $ticket_id ) );
 		$this->assertSame( [], $this->get_scheduled_timestamps( Ticket_Actions::TICKET_START_SALES_HOOK, $ticket_id ) );
 		$this->assertSame( [], $this->get_scheduled_timestamps( Ticket_Actions::TICKET_END_SALES_HOOK, $ticket_id ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_move_the_sale_price_dates_of_a_ticket_with_only_a_sale_price_rule(): void {
+		$event_start = $this->get_future_event_start();
+		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
+		$ticket_id   = $this->create_sale_price_ruled_ticket( $event_id, 14, 7 );
+		$moved       = $event_start->modify( '+3 days' );
+		$resynced    = [];
+		add_action(
+			'tec_tickets_ticket_dates_updated',
+			static function ( int $id ) use ( &$resynced ): void {
+				$resynced[] = $id;
+			}
+		);
+
+		$this->send_classic_event_save( $event_id, $moved );
+
+		$this->assertSame(
+			[ $moved->modify( '-14 days' )->format( 'Y-m-d' ), $moved->modify( '-7 days' )->format( 'Y-m-d' ) ],
+			[ get_post_meta( $ticket_id, Ticket::$sale_price_start_date_key, true ), get_post_meta( $ticket_id, Ticket::$sale_price_end_date_key, true ) ]
+		);
+		// The sales actions announce the sales window only, and the ticket has no rule for it.
+		$this->assertSame( [], $resynced );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_not_leave_a_cached_on_sale_behind_when_a_programmatic_move_ends_the_sale(): void {
+		$today     = new DateTimeImmutable( 'today', new DateTimeZone( 'UTC' ) );
+		$event_id  = $this->create_event( $today->modify( '+10 days' )->format( 'Y-m-d 19:00:00' ) );
+		// From 10 days before the event, today, to 2 days before it.
+		$ticket_id = $this->create_sale_price_ruled_ticket( $event_id, 10, 2 );
+		$this->assertTrue( tribe( Module::class )->get_ticket( $event_id, $ticket_id )->on_sale );
+		$moved = new DateTimeImmutable( $today->modify( '+17 days' )->format( 'Y-m-d 19:00:00' ), new DateTimeZone( 'UTC' ) );
+
+		// Only the ticket's own meta writes clear its cache here: nothing saves the ticket.
+		tribe_events()
+			->where( 'id', $event_id )
+			->set( 'start_date', $moved->format( 'Y-m-d H:i:s' ) )
+			->set( 'end_date', $moved->modify( '+3 hours' )->format( 'Y-m-d H:i:s' ) )
+			->save();
+		tribe( Updates_Controller::class )->commit_updates();
+
+		$this->assertSame( $moved->modify( '-10 days' )->format( 'Y-m-d' ), get_post_meta( $ticket_id, Ticket::$sale_price_start_date_key, true ) );
+		$this->assertFalse( tribe( Module::class )->get_ticket( $event_id, $ticket_id )->on_sale );
+	}
+
+	/**
+	 * Creates a Tickets Commerce ticket priced 20 with a sale price of 10, and stores a sale price rule on it.
+	 *
+	 * @param int $event_id   The event post ID.
+	 * @param int $start_days How many days before the event start the sale price starts.
+	 * @param int $end_days   How many days before the event start the sale price ends.
+	 *
+	 * @return int The ticket post ID.
+	 */
+	private function create_sale_price_ruled_ticket( int $event_id, int $start_days, int $end_days ): int {
+		$ticket_id = $this->create_tc_ticket(
+			$event_id,
+			20,
+			[
+				'ticket_add_sale_price' => 'on',
+				'ticket_sale_price'     => 10,
+			]
+		);
+		$rule      = Rule::from_array(
+			[
+				'start' => [ 'mode' => Rule::MODE_RELATIVE, 'value' => $start_days, 'unit' => DAY_IN_SECONDS ],
+				'end'   => [ 'mode' => Rule::MODE_RELATIVE, 'value' => $end_days, 'unit' => DAY_IN_SECONDS ],
+			],
+			Window_Kind::sale_price()
+		);
+		tribe( Rule_Store::class )->save_rule( $ticket_id, $rule );
+		tribe( Ticket_Dates::class )->write( $ticket_id, $event_id, $rule );
+
+		return $ticket_id;
 	}
 
 	/**

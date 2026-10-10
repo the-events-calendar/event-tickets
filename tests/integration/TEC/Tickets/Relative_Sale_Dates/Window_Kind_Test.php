@@ -3,6 +3,8 @@
 namespace TEC\Tickets\Relative_Sale_Dates;
 
 use Codeception\TestCase\WPTestCase;
+use Generator;
+use TEC\Tickets\Commerce\Ticket;
 
 class Window_Kind_Test extends WPTestCase {
 	/**
@@ -22,6 +24,35 @@ class Window_Kind_Test extends WPTestCase {
 		$this->assertNull( $kind->get_store_key() );
 		$this->assertNull( $kind->get_parent() );
 		$this->assertTrue( $kind->owns_ticket_sales_dates() );
+		$this->assertSame( [ 'data' => Ticket_Save::DATA_KEY ], $kind->get_rule_keys() );
+		$this->assertSame(
+			[
+				'start' => [
+					'date' => Ticket::START_DATE_META_KEY,
+					'time' => Ticket::START_TIME_META_KEY,
+				],
+				'end'   => [
+					'date' => Ticket::END_DATE_META_KEY,
+					'time' => Ticket::END_TIME_META_KEY,
+				],
+			],
+			$kind->get_date_metas()
+		);
+		$this->assertNull( $kind->get_open_start_value() );
+		$this->assertTrue( $kind->is_removed_by_front_end_form() );
+		$this->assertSame(
+			[
+				'start' => [
+					'date' => 'ticket_start_date',
+					'time' => 'ticket_start_time',
+				],
+				'end'   => [
+					'date' => 'ticket_end_date',
+					'time' => 'ticket_end_time',
+				],
+			],
+			$kind->get_submitted_fields()
+		);
 	}
 
 	/**
@@ -41,6 +72,64 @@ class Window_Kind_Test extends WPTestCase {
 		$this->assertSame( 'sale_price', $kind->get_store_key() );
 		$this->assertSame( Window_Kind::sales(), $kind->get_parent() );
 		$this->assertFalse( $kind->owns_ticket_sales_dates() );
+		$this->assertSame( [ 'data' => 'ticket_sale_price_relative' ], $kind->get_rule_keys() );
+		$this->assertSame(
+			[
+				'start' => [
+					'date' => Ticket::$sale_price_start_date_key,
+					'time' => null,
+				],
+				'end'   => [
+					'date' => Ticket::$sale_price_end_date_key,
+					'time' => null,
+				],
+			],
+			$kind->get_date_metas()
+		);
+		$this->assertSame( '', $kind->get_open_start_value() );
+		$this->assertFalse( $kind->is_removed_by_front_end_form() );
+		$this->assertSame(
+			[
+				'start' => [
+					'date' => 'ticket_sale_start_date',
+					'time' => null,
+				],
+				'end'   => [
+					'date' => 'ticket_sale_end_date',
+					'time' => null,
+				],
+			],
+			$kind->get_submitted_fields()
+		);
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_enable_the_sales_window_for_every_ticket(): void {
+		$this->assertTrue( Window_Kind::sales()->is_enabled_for_ticket( static::factory()->post->create() ) );
+	}
+
+	/**
+	 * @return Generator<string,array{0: string|null, 1: bool}>
+	 */
+	public function sale_price_checked_provider(): Generator {
+		yield 'checked' => [ '1', true ];
+		yield 'unchecked' => [ '', false ];
+		yield 'never set' => [ null, false ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider sale_price_checked_provider
+	 */
+	public function should_enable_the_sale_price_window_only_for_a_ticket_with_its_sale_price_checked( ?string $checked, bool $enabled ): void {
+		$ticket_id = static::factory()->post->create();
+		if ( null !== $checked ) {
+			update_post_meta( $ticket_id, Ticket::$sale_price_checked_key, $checked );
+		}
+
+		$this->assertSame( $enabled, Window_Kind::sale_price()->is_enabled_for_ticket( $ticket_id ) );
 	}
 
 	/**

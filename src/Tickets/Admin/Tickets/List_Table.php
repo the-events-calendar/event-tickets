@@ -912,6 +912,7 @@ class List_Table extends WP_List_Table {
 	 * Modify the filter arguments.
 	 *
 	 * @since 5.14.0
+	 * @since TBD Counted a sale price without a start or end date as discounted.
 	 *
 	 * @param array $args The arguments used to query the tickets for the Admin Tickets Table.
 	 *
@@ -965,17 +966,48 @@ class List_Table extends WP_List_Table {
 					'key'     => '_sale_price',
 					'compare' => 'EXISTS',
 				];
+				// Other providers, such as WooCommerce, keep a `_sale_price` without the dates the clauses below read.
 				$args['meta_query'][] = [
-					'key'     => '_sale_price_start_date',
-					'value'   => current_time( 'mysql' ),
-					'compare' => '<',
-					'type'    => 'DATETIME',
+					'key'   => '_sale_price_checked',
+					'value' => '1',
 				];
+				// Casting an empty date matches no row on MySQL, and `is_on_sale()` reads an empty start as started.
 				$args['meta_query'][] = [
-					'key'     => '_sale_price_end_date',
-					'value'   => current_time( 'mysql' ),
-					'compare' => '>',
-					'type'    => 'DATETIME',
+					'relation' => 'OR',
+					[
+						'key'     => '_sale_price_start_date',
+						'value'   => current_time( 'mysql' ),
+						'compare' => '<',
+						'type'    => 'DATETIME',
+					],
+					[
+						'key'     => '_sale_price_start_date',
+						'value'   => '',
+						'compare' => '=',
+					],
+					[
+						'key'     => '_sale_price_start_date',
+						'compare' => 'NOT EXISTS',
+					],
+				];
+				// It reads an empty end as no end.
+				$args['meta_query'][] = [
+					'relation' => 'OR',
+					[
+						'key'     => '_sale_price_end_date',
+						'value'   => current_time( 'mysql' ),
+						'compare' => '>',
+						'type'    => 'DATETIME',
+					],
+					[
+						'key'     => '_sale_price_end_date',
+						'value'   => '',
+						'compare' => '=',
+					],
+					[
+						'key'     => '_sale_price_end_date',
+						'compare' => 'NOT EXISTS',
+					],
 				];
 				break;
 		}

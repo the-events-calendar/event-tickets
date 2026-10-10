@@ -1,6 +1,6 @@
 <?php
 /**
- * Stores a ticket's sales window rule and writes the dates it resolves to.
+ * Stores a ticket's rules, its sales window rule and its sale price rule, and writes the dates they resolve to.
  *
  * @since TBD
  *
@@ -23,10 +23,11 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use WP_Error;
 
 /**
- * Applies the rule of a Tickets Commerce ticket on an event when the ticket is saved.
+ * Applies the rules of a Tickets Commerce ticket on an event when the ticket is saved.
  *
- * The rule sent with the ticket data replaces the stored one; a save that does not send the rule keeps the stored one
- * and applies it again, and an empty rule removes it.
+ * Each kind of window has its own rule, sent under the kind's data key. The rule sent with the ticket data replaces the
+ * stored one; a save that does not send the rule keeps the stored one and applies it again, and an empty rule removes
+ * it. A rule whose window the ticket does not have, such as a sale price rule without a sale price, is removed.
  *
  * @since TBD
  *
@@ -34,7 +35,8 @@ use WP_Error;
  */
 final class Ticket_Save {
 	/**
-	 * The ticket data key that carries the rule; its value is a JSON string, an array, or `null` or `''` to remove it.
+	 * The ticket data key that carries the sales window rule; its value is a JSON string, an array, or `null` or `''` to
+	 * remove it.
 	 *
 	 * @since TBD
 	 *
@@ -112,7 +114,8 @@ final class Ticket_Save {
 			return;
 		}
 
-		$rule         = $this->get_rule_to_apply( $ticket->ID ?? 0, $data );
+		// Only the sales window dates are the ticket's own, which the provider saves with the ticket.
+		$rule         = $this->get_rule_to_apply( $ticket->ID ?? 0, $data, Window_Kind::sales() );
 		$ticket_start = $ticket->start_date ? trim( $ticket->start_date . ' ' . $ticket->start_time ) : '';
 		$window       = $rule ? $this->sale_window->resolve_for_event( $rule, $post_id, $ticket_start ) : null;
 
@@ -134,7 +137,10 @@ final class Ticket_Save {
 	}
 
 	/**
-	 * Stores the rule to apply to the ticket, or removes it when the ticket data asks to.
+	 * Stores the rule of each kind to apply to the ticket, or removes it when the ticket data asks to or the ticket does
+	 * not have the kind's window.
+	 *
+	 * Tickets Commerce has saved the sale price by now, and removed it when it is unchecked or not lower than the price.
 	 *
 	 * @since TBD
 	 *
@@ -149,26 +155,27 @@ final class Ticket_Save {
 			return;
 		}
 
-		if ( $this->removes_rule( $data ) ) {
-			$this->rule_store->remove_sales_window( $ticket_id, ! empty( $data['ticket_end_date'] ) );
+		foreach ( Window_Kind::all() as $kind ) {
+			if ( ! $kind->is_enabled_for_ticket( $ticket_id ) || $this->removes_rule( $data, $kind ) ) {
+				$this->rule_store->remove_rule( $ticket_id, $kind, ! empty( $data[ $kind->get_submitted_fields()['end']['date'] ] ) );
 
-			return;
+				continue;
+			}
+
+			$rule = $this->get_rule_to_apply( $ticket_id, $data, $kind );
+
+			if ( $rule ) {
+				$this->rule_store->save_rule( $ticket_id, $rule );
+			}
 		}
-
-		$rule = $this->get_rule_to_apply( $ticket_id, $data );
-
-		if ( ! $rule ) {
-			return;
-		}
-
-		$this->rule_store->save_sales_window( $ticket_id, $rule );
 	}
 
 	/**
-	 * Writes the dates the stored rule resolves to once the ticket is saved.
+	 * Writes the dates the stored rule of each kind resolves to once the ticket is saved.
 	 *
 	 * `ticket_add()` replaces an empty start or end date with a default after the provider has saved the ticket,
-	 * so the dates set before the save do not survive it when the ticket data leaves the start or end empty.
+	 * so the dates set before the save do not survive it when the ticket data leaves the start or end empty. Tickets
+	 * Commerce writes the submitted sale price dates during the save, so the resolved ones go over them afterwards.
 	 *
 	 * @since TBD
 	 *
@@ -182,10 +189,14 @@ final class Ticket_Save {
 			return;
 		}
 
-		$rule = Rule::from_stored( $this->rule_store->get( $ticket_id ) );
+		$stored = $this->rule_store->get( $ticket_id );
 
-		if ( $rule ) {
-			$this->ticket_dates->write( $ticket_id, $post_id, $rule );
+		foreach ( Window_Kind::all() as $kind ) {
+			$rule = Rule::from_stored( $stored, $kind );
+
+			if ( $rule ) {
+				$this->ticket_dates->write( $ticket_id, $post_id, $rule );
+			}
 		}
 	}
 
@@ -206,9 +217,11 @@ final class Ticket_Save {
 	 * @return true|WP_Error `true` when the sales window is valid or does not apply, the error otherwise.
 	 */
 	public function validate_ticket_data( $valid, int $post_id, array $data ) {
+		$kind = Window_Kind::sales();
+
 		if (
 			is_wp_error( $valid )
-			|| $this->removes_rule( $data )
+			|| $this->removes_rule( $data, $kind )
 			|| Module::class !== ( $data['ticket_provider'] ?? Module::class )
 			|| ! $this->applies_to( $post_id, $data['ticket_type'] ?? 'default' )
 		) {
@@ -216,11 +229,11 @@ final class Ticket_Save {
 		}
 
 		// The save would keep the stored rule, but the admin who sent this one expects it to apply.
-		if ( isset( $data[ self::DATA_KEY ] ) && ! Rule::from_raw( $data[ self::DATA_KEY ] ) ) {
+		if ( isset( $data[ self::DATA_KEY ] ) && ! Rule::from_raw( $data[ self::DATA_KEY ], $kind ) ) {
 			return $this->get_invalid_window_error();
 		}
 
-		$rule        = $this->get_rule_to_apply( absint( $data['ticket_id'] ?? 0 ), $data );
+		$rule        = $this->get_rule_to_apply( absint( $data['ticket_id'] ?? 0 ), $data, $kind );
 		$event_dates = $rule ? $this->sale_window->get_event_dates( $post_id ) : null;
 
 		if ( ! $event_dates ) {
@@ -274,21 +287,29 @@ final class Ticket_Save {
 	}
 
 	/**
-	 * Returns whether the ticket data asks to remove the rule, sending it as `null` or `''`.
+	 * Returns whether the ticket data asks to remove the rule of a kind, sending it as `null` or `''`.
 	 *
 	 * A front-end ticket form, such as Community Events', offers no sales window options, so the dates it sends are the
-	 * ones the person set: a save from it that does not send a rule removes the stored one. `tickets.js` tells such a
-	 * form apart by sending `is_admin` as false; a REST request sends no `is_admin`, and leaving the rule out keeps it.
+	 * ones the person set: for a kind such a form removes, a save from it that does not send the rule removes the stored
+	 * one. `tickets.js` tells such a form apart by sending `is_admin` as false; a REST request sends no `is_admin`, and
+	 * leaving the rule out keeps it.
 	 *
 	 * @since TBD
 	 *
 	 * @param array<string,mixed> $data The ticket data.
+	 * @param Window_Kind         $kind The kind of the rule.
 	 *
 	 * @return bool Whether the rule is to be removed.
 	 */
-	private function removes_rule( array $data ): bool {
-		if ( array_key_exists( self::DATA_KEY, $data ) ) {
-			return in_array( $data[ self::DATA_KEY ], [ null, '' ], true );
+	private function removes_rule( array $data, Window_Kind $kind ): bool {
+		$key = $kind->get_rule_keys()['data'];
+
+		if ( array_key_exists( $key, $data ) ) {
+			return in_array( $data[ $key ], [ null, '' ], true );
+		}
+
+		if ( ! $kind->is_removed_by_front_end_form() ) {
+			return false;
 		}
 
 		$is_admin = tec_get_request_var( 'is_admin' );
@@ -297,7 +318,7 @@ final class Ticket_Save {
 	}
 
 	/**
-	 * Gets the rule to apply to the ticket: the one in the ticket data, or else the stored one.
+	 * Gets the rule of a kind to apply to the ticket: the one in the ticket data, or else the stored one.
 	 *
 	 * A save that does not know about rules, like a plugin calling `ticket_add()` or an update of the price only, does
 	 * not send one, and an invalid rule is not a request to remove the valid one already stored.
@@ -306,21 +327,22 @@ final class Ticket_Save {
 	 *
 	 * @param int                 $ticket_id The ticket post ID, or `0` for a ticket not saved yet.
 	 * @param array<string,mixed> $data      The ticket data.
+	 * @param Window_Kind         $kind      The kind of the rule.
 	 *
 	 * @return Rule|null The rule, or `null` when the ticket data removes it or neither holds a valid one.
 	 */
-	private function get_rule_to_apply( int $ticket_id, array $data ): ?Rule {
-		if ( $this->removes_rule( $data ) ) {
+	private function get_rule_to_apply( int $ticket_id, array $data, Window_Kind $kind ): ?Rule {
+		if ( $this->removes_rule( $data, $kind ) ) {
 			return null;
 		}
 
-		$rule = Rule::from_raw( $data[ self::DATA_KEY ] ?? null );
+		$rule = Rule::from_raw( $data[ $kind->get_rule_keys()['data'] ] ?? null, $kind );
 
 		if ( $rule || ! $ticket_id ) {
 			return $rule;
 		}
 
-		return Rule::from_stored( $this->rule_store->get( $ticket_id ) );
+		return Rule::from_stored( $this->rule_store->get( $ticket_id ), $kind );
 	}
 
 	/**

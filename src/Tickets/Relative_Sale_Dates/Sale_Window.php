@@ -49,9 +49,8 @@ final class Sale_Window {
 		}
 
 		$window = $this->resolve( $rule, ...$event_dates );
-		$kind   = $rule->get_kind();
 
-		if ( ! $kind->owns_ticket_sales_dates() || $kind->get_open_start_mode() !== $rule->get_start()->get_mode() ) {
+		if ( ! $rule->get_kind()->owns_ticket_sales_dates() || ! $rule->opens_at_once() ) {
 			return $window;
 		}
 

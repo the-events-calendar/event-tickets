@@ -220,13 +220,12 @@ class Sale_Window_Test extends WPTestCase {
 	}
 
 	/**
-	 * @test
+	 * @return Generator<string,array{0: Window_Kind, 1: string, 2: array{start: array<string,int|string>, end: array<string,int|string>}, 3: string, 4: ?string}>
 	 */
-	public function should_resolve_a_rule_for_an_event_in_the_event_timezone(): void {
-		$timezone    = new DateTimeZone( 'America/New_York' );
-		$event_start = new DateTimeImmutable( '2027-06-24 19:00:00', $timezone );
-		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ), $timezone->getName() );
-		$rule        = Rule::from_array(
+	public function event_in_its_timezone_provider(): Generator {
+		yield 'sales' => [
+			Window_Kind::sales(),
+			'2027-06-24 19:00:00',
 			[
 				'start' => [
 					'mode'   => 'relative',
@@ -235,20 +234,57 @@ class Sale_Window_Test extends WPTestCase {
 					'anchor' => 'start',
 				],
 				'end'   => [ 'mode' => 'default' ],
-			]
-		);
-
-		$window = tribe( Sale_Window::class )->resolve_for_event( $rule, $event_id );
-
-		$this->assert_date( $event_start->modify( '-2 weeks' )->format( 'Y-m-d H:i:s' ), $timezone->getName(), $window->get_start() );
-		$this->assert_date( $event_start->format( 'Y-m-d H:i:s' ), $timezone->getName(), $window->get_end() );
+			],
+			'-2 weeks',
+			'+0 days',
+		];
+		// 21:00 in New York is already the next day in UTC, so a date read in UTC would be a day late.
+		yield 'sale price: an evening event start' => [
+			Window_Kind::sale_price(),
+			'2027-06-10 21:00:00',
+			[
+				'start' => [
+					'mode'  => 'relative',
+					'value' => 1,
+					'unit'  => DAY_IN_SECONDS,
+				],
+				'end'   => [ 'mode' => 'specific' ],
+			],
+			'-1 day',
+			null,
+		];
 	}
 
 	/**
 	 * @test
+	 * @dataProvider event_in_its_timezone_provider
 	 */
-	public function should_not_resolve_a_rule_for_a_post_without_event_dates(): void {
-		$rule = Rule::from_array( [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ] );
+	public function should_resolve_a_rule_for_an_event_in_the_event_timezone( Window_Kind $kind, string $local_start, array $data, string $start_offset, ?string $end_offset ): void {
+		$timezone    = new DateTimeZone( 'America/New_York' );
+		$event_start = new DateTimeImmutable( $local_start, $timezone );
+		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ), $timezone->getName() );
+		$rule        = Rule::from_array( $data, $kind );
+
+		$window = tribe( Sale_Window::class )->resolve_for_event( $rule, $event_id );
+
+		$this->assert_date( $event_start->modify( $start_offset )->format( 'Y-m-d H:i:s' ), $timezone->getName(), $window->get_start() );
+		$this->assert_date( null === $end_offset ? null : $event_start->modify( $end_offset )->format( 'Y-m-d H:i:s' ), $timezone->getName(), $window->get_end() );
+	}
+
+	/**
+	 * @return Generator<string,array{0: Window_Kind, 1: string, 2: string}>
+	 */
+	public function rules_of_every_kind_provider(): Generator {
+		yield 'sales' => [ Window_Kind::sales(), Rule::MODE_DEFAULT, Rule::MODE_DEFAULT ];
+		yield 'sale price' => [ Window_Kind::sale_price(), Rule::MODE_NOW, Rule::MODE_SPECIFIC ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider rules_of_every_kind_provider
+	 */
+	public function should_not_resolve_a_rule_for_a_post_without_event_dates( Window_Kind $kind, string $start_mode, string $end_mode ): void {
+		$rule = Rule::from_array( [ 'start' => [ 'mode' => $start_mode ], 'end' => [ 'mode' => $end_mode ] ], $kind );
 
 		$this->assertNull( tribe( Sale_Window::class )->resolve_for_event( $rule, static::factory()->post->create() ) );
 	}
