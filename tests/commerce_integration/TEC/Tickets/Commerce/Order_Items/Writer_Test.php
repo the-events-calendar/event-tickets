@@ -27,8 +27,6 @@ class Writer_Test extends Controller_Test_Case {
 
 	protected string $controller_class = Controller::class;
 
-	protected array $sub_controller_classes = [ Writer::class ];
-
 	/**
 	 * @after
 	 */

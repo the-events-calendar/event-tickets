@@ -9,13 +9,12 @@
 
 namespace TEC\Tickets\Commerce\Order_Items;
 
-use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Common\lucatume\DI52\Container;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Order_Items\Line_Items\Line_Item_Types;
 use TEC\Tickets\Commerce\Order_Items\Repositories\Order_Items;
 use TEC\Tickets\Commerce\Utils\Currency;
 use Throwable;
+use Tribe__Log as Log;
 
 /**
  * Class Writer.
@@ -24,7 +23,7 @@ use Throwable;
  *
  * @package TEC\Tickets\Commerce\Order_Items
  */
-class Writer extends Controller_Contract {
+final class Writer {
 	/**
 	 * The meta key that marks an order whose lines are stored in the table.
 	 *
@@ -66,25 +65,12 @@ class Writer extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param Container       $container  The container.
 	 * @param Line_Item_Types $types      The line item types that turn order items into rows.
 	 * @param Order_Items     $repository The Order Items repository.
 	 */
-	public function __construct( Container $container, Line_Item_Types $types, Order_Items $repository ) {
-		parent::__construct( $container );
+	public function __construct( Line_Item_Types $types, Order_Items $repository ) {
 		$this->types      = $types;
 		$this->repository = $repository;
-	}
-
-	/**
-	 * Unhooks the writer.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function unregister(): void {
-		remove_action( 'tec_tickets_commerce_order_created', [ $this, 'write_created_order' ] );
 	}
 
 	/**
@@ -127,7 +113,8 @@ class Writer extends Controller_Contract {
 			 */
 			$this->repository->insert_many( $rows );
 		} catch ( Throwable $e ) {
-			$this->error(
+			$this->log(
+				Log::ERROR,
 				'The order items could not be written to the table; the order keeps them in its meta.',
 				[
 					'order_id' => $order_id,
@@ -144,13 +131,17 @@ class Writer extends Controller_Contract {
 	}
 
 	/**
-	 * Hooks the writer.
+	 * Logs a message.
 	 *
 	 * @since TBD
 	 *
+	 * @param string              $level   The log level.
+	 * @param string              $message The message to log.
+	 * @param array<string,mixed> $context The context to log with the message.
+	 *
 	 * @return void
 	 */
-	protected function do_register(): void {
-		add_action( 'tec_tickets_commerce_order_created', [ $this, 'write_created_order' ] );
+	private function log( string $level, string $message, array $context ): void {
+		do_action( 'tribe_log', $level, $message, [ 'controller' => Controller::class ] + $context );
 	}
 }
