@@ -179,10 +179,6 @@ export const restBodyToTicketData = ( entries ) => {
 
 		const path = pathOf( key );
 
-		if ( path.some( ( segment ) => FORBIDDEN_SEGMENTS.includes( segment ) ) ) {
-			return;
-		}
-
 		if ( 'ticket' === path[ 0 ] && path.length > 1 ) {
 			path[ 0 ] = 'tribe-ticket';
 		}
