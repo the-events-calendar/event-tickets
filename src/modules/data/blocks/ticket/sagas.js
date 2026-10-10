@@ -345,6 +345,22 @@ export function* setTicketInitialState( action ) {
 	yield fork( saveTicketWithPostSave, clientId );
 }
 
+/**
+ * Returns a sale price date as the ticket request sends it.
+ *
+ * The store keeps an empty sale price date it loads or saves as the string `Invalid date`, which the server rejects
+ * as a date it cannot read; it is sent empty, as it was when the ticket was created.
+ *
+ * @since TBD
+ *
+ * @param {string} date The sale price date the store holds.
+ *
+ * @return {string} The date, `YYYY-MM-DD`, or an empty string.
+ */
+export function toRequestSaleDate( date ) {
+	return 'string' === typeof date && /^\d{4}-\d{2}-\d{2}$/.test( date ) ? date : '';
+}
+
 export function* setBodyDetails( clientId ) {
 	let body = new FormData();
 	const props = { clientId };
@@ -384,8 +400,14 @@ export function* setBodyDetails( clientId ) {
 	if ( showSalePrice ) {
 		body.append( 'ticket[sale_price][checked]', yield select( selectors.getTempSalePriceChecked, props ) );
 		body.append( 'ticket[sale_price][price]', yield select( selectors.getTempSalePrice, props ) );
-		body.append( 'ticket[sale_price][start_date]', yield select( selectors.getTicketTempSaleStartDate, props ) );
-		body.append( 'ticket[sale_price][end_date]', yield select( selectors.getTicketTempSaleEndDate, props ) );
+		body.append(
+			'ticket[sale_price][start_date]',
+			toRequestSaleDate( yield select( selectors.getTicketTempSaleStartDate, props ) )
+		);
+		body.append(
+			'ticket[sale_price][end_date]',
+			toRequestSaleDate( yield select( selectors.getTicketTempSaleEndDate, props ) )
+		);
 	}
 
 	/**

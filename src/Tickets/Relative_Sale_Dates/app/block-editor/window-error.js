@@ -1,5 +1,5 @@
 /**
- * Checks a ticket block's sales window the way the server checks it on save.
+ * Checks a ticket block's windows, of every kind, the way the server checks them on save.
  *
  * @since TBD
  */
@@ -7,79 +7,232 @@
 /**
  * External dependencies
  */
-import { useSyncExternalStore } from '@wordpress/element';
+import { useSelect } from '@wordpress/data';
+import { useMemo } from '@wordpress/element';
 
 /**
  * Internal dependencies
  */
-import { RELATIVE_VALUE_OUT_OF_RANGE, getOutOfRangeBoundary, getWindowError } from '../window-check';
-import { readTicketFormDates, subscribeToCommonStore } from './common-store-bridge';
+import {
+	ENDS_BEFORE_START,
+	RELATIVE_VALUE_OUT_OF_RANGE,
+	getFormWindow,
+	getOutOfRangeBoundary,
+	getWindowError,
+	isValidRule,
+} from '../window-check';
+import { readTicketFormWindowDates, readTicketWindowKept } from './common-store-bridge';
+import { useEventDates } from './event-dates';
+import { getFormRule, toRequestRule } from './rule';
+import { STORE_NAME } from './store/constants';
+import { useCommonStoreValue } from './use-common-store-value';
 
 /** @typedef {import( '../sale-window' ).SaleWindowRule} SaleWindowRule */
 /** @typedef {import( '../server-event-dates' ).EventDates} EventDates */
+/** @typedef {import( './window-kinds' ).BlockWindowKind} BlockWindowKind */
 
 /**
- * Returns a rule with its relative numbers as the ticket request sends them: integers, or `NaN` for a cleared one.
+ * @typedef {Object} TicketWindowForm
+ *
+ * @property {{start: string|null, end: string|null}} formDates The start and end dates the ticket's form sends for the
+ *                                                              window, `YYYY-MM-DD HH:mm:ss` in the event timezone,
+ *                                                              or `null`.
+ * @property {boolean}                                isKept    Whether a save of the form keeps the window.
+ */
+
+/** @typedef {TicketWindowForm & {rule: SaleWindowRule|null|undefined}} TicketWindow */
+
+/** @typedef {function( BlockWindowKind ): TicketWindow} TicketWindowReader */
+
+/**
+ * @typedef {Object} BoundaryErrors
+ *
+ * @property {string} errorMessage      The window error the boundary is marked with, or an empty string.
+ * @property {string} valueErrorMessage The range error of the boundary's relative number, or an empty string.
+ */
+
+/**
+ * Returns a kind followed by the windows it must start inside, its parent first.
  *
  * @since TBD
  *
- * @param {SaleWindowRule} rule The ticket's draft rule, whose numbers can be strings.
+ * @param {BlockWindowKind} kind The window kind.
  *
- * @return {SaleWindowRule} The rule, with integer numbers.
+ * @return {BlockWindowKind[]} The kind and its ancestors.
  */
-function withSentNumbers( rule ) {
+function getKindLineage( kind ) {
+	return kind.parent ? [ kind, ...getKindLineage( kind.parent ) ] : [ kind ];
+}
+
+/**
+ * Returns the error of a ticket's window of a kind, or `null` when it is valid or is not judged.
+ *
+ * A window is judged only when the ticket has a rule for it and a save of its form keeps it. A window with a parent is
+ * judged only once its parent is valid, as the server rejects the save for the parent first, and against the parent
+ * window the form gives. The rule is judged as the request carries it. Without the event dates, only what the server
+ * rejects whatever the dates is judged: a relative number out of range, or a rule it does not take.
+ *
+ * @since TBD
+ *
+ * @param {BlockWindowKind}    kind       The window kind.
+ * @param {TicketWindowReader} readWindow Reads the draft rule and form of a window of the ticket.
+ * @param {EventDates|null}    eventDates The event dates, or `null` when they cannot be read.
+ *
+ * @return {string|null} The error key, or `null`.
+ */
+export function getTicketWindowError( kind, readWindow, eventDates ) {
+	const { rule, formDates, isKept } = readWindow( kind );
+	const { parent } = kind;
+
+	if ( ! rule || ! isKept ) {
+		return null;
+	}
+
+	if ( parent && null !== getTicketWindowError( parent, readWindow, eventDates ) ) {
+		return null;
+	}
+
+	// The rule is judged as the request carries it, with integer numbers, or `NaN` for a cleared one.
+	const sentRule = toRequestRule( rule, kind );
+
+	// The server rejects a rule it does not take, such as one with a cleared number, before it reads any date.
+	if ( ! eventDates ) {
+		if ( getOutOfRangeBoundary( sentRule, kind ) ) {
+			return RELATIVE_VALUE_OUT_OF_RANGE;
+		}
+
+		return isValidRule( sentRule, kind ) ? null : ENDS_BEFORE_START;
+	}
+
+	let parentWindow = null;
+
+	if ( parent ) {
+		const parentForm = readWindow( parent );
+
+		parentWindow = getFormWindow(
+			getFormRule( parentForm.rule, parent ),
+			eventDates,
+			parentForm.formDates,
+			parent
+		);
+	}
+
+	return getWindowError( sentRule, eventDates, formDates, kind, parentWindow );
+}
+
+/**
+ * Returns whether the server would reject a save of a ticket's window of a kind: the window or one it must start
+ * inside has an error.
+ *
+ * @since TBD
+ *
+ * @param {BlockWindowKind}    kind       The window kind.
+ * @param {TicketWindowReader} readWindow Reads the draft rule and form of a window of the ticket.
+ * @param {EventDates|null}    eventDates The event dates, or `null` when they cannot be read.
+ *
+ * @return {boolean} Whether the save would be rejected.
+ */
+export function hasTicketWindowSaveError( kind, readWindow, eventDates ) {
+	return getKindLineage( kind ).some( ( each ) => null !== getTicketWindowError( each, readWindow, eventDates ) );
+}
+
+/**
+ * Builds the reader of a ticket's windows: each one's draft rule, with its form as another reader gives it.
+ *
+ * @since TBD
+ *
+ * @param {string}                                        clientId    The client ID of the ticket block.
+ * @param {Function}                                      selectStore The `select()` of `@wordpress/data`, or the one
+ *                                                                    `useSelect()` passes.
+ * @param {function( BlockWindowKind ): TicketWindowForm} readForm    Reads the form of a window of the ticket.
+ *
+ * @return {TicketWindowReader} The reader.
+ */
+export function getTicketWindowReader( clientId, selectStore, readForm ) {
+	return ( kind ) => ( { rule: selectStore( STORE_NAME ).getDraftRule( clientId, kind ), ...readForm( kind ) } );
+}
+
+/**
+ * Reads the form of a ticket's window of a kind from the legacy ticket state.
+ *
+ * @since TBD
+ *
+ * @param {string}          clientId The client ID of the ticket block.
+ * @param {BlockWindowKind} kind     The window kind.
+ * @param {Object}          [state]  The legacy ticket state, such as the one the dashboard is rendered with; the common
+ *                                   store's when left out.
+ *
+ * @return {TicketWindowForm} The form.
+ */
+export function readTicketWindowForm( clientId, kind, state ) {
 	return {
-		start: { ...rule.start, value: parseInt( rule.start?.value, 10 ) },
-		end: { ...rule.end, value: parseInt( rule.end?.value, 10 ) },
+		formDates: readTicketFormWindowDates( clientId, kind, state ),
+		isKept: readTicketWindowKept( clientId, kind, state ),
 	};
 }
 
 /**
- * Returns the error of a ticket's sales window, or `null` when it is valid or cannot be judged.
- *
- * A relative start or end whose number the admin cleared is an error too, as one out of range: the server rejects a rule
- * without an integer there.
+ * Returns the error of a ticket block's window of a kind, checked again whenever the rules, the event dates or what
+ * the ticket form holds change, the parent window's included.
  *
  * @since TBD
  *
- * @param {SaleWindowRule|null|undefined}               rule       The ticket's draft rule.
- * @param {EventDates|null}                             eventDates The event dates, or `null` when they cannot be read.
- * @param {{start: string|null, end: string|null}|null} formDates  The start and end dates the ticket form sends, or
- *                                                                 `null` without the event dates.
+ * @param {string}          clientId The client ID of the ticket block.
+ * @param {BlockWindowKind} kind     The window kind.
  *
- * @return {string|null} The message key of the error, or `null`; without the event dates, only a relative number out
- *                       of range is judged.
+ * @return {string|null} The error key, or `null`.
  */
-export function getTicketWindowError( rule, eventDates, formDates ) {
-	if ( ! rule ) {
-		return null;
-	}
+export function useWindowError( clientId, kind ) {
+	const eventDates = useEventDates();
+	const lineage = useMemo( () => getKindLineage( kind ), [ kind ] );
+	const forms = useCommonStoreValue( () => lineage.map( ( each ) => readTicketWindowForm( clientId, each ) ) );
 
-	// The server rejects a relative boundary without a whole number before it reads any date.
-	if ( ! eventDates ) {
-		return getOutOfRangeBoundary( withSentNumbers( rule ) ) ? RELATIVE_VALUE_OUT_OF_RANGE : null;
-	}
-
-	return getWindowError( rule, eventDates, formDates );
+	return useSelect(
+		( select ) =>
+			getTicketWindowError(
+				kind,
+				getTicketWindowReader( clientId, select, ( each ) => forms[ lineage.indexOf( each ) ] ),
+				eventDates
+			),
+		[ clientId, kind, lineage, forms, eventDates ]
+	);
 }
 
 /**
- * Returns the error of a ticket block's sales window, checked again whenever the rule, the event dates or the dates the
- * ticket form sends change.
+ * Gets the message of a window error, as the kind words it.
  *
  * @since TBD
  *
- * @param {string}                        clientId   The client ID of the ticket block.
- * @param {SaleWindowRule|null|undefined} rule       The ticket's draft rule.
- * @param {EventDates|null}               eventDates The event dates, or `null` when they cannot be read.
+ * @param {string|null}     key  The error key, or `null`.
+ * @param {BlockWindowKind} kind The window kind.
  *
- * @return {string|null} The message key of the error, or `null`.
+ * @return {string} The message, or an empty string without an error the kind can have.
  */
-export function useTicketWindowError( clientId, rule, eventDates ) {
-	// A string, so the store's snapshot compares equal while the dates stay the same.
-	const snapshot = useSyncExternalStore( subscribeToCommonStore, () =>
-		JSON.stringify( readTicketFormDates( clientId ) )
-	);
+export function getWindowErrorMessage( key, kind ) {
+	const text = key ? kind.errorTexts[ key ] : null;
 
-	return getTicketWindowError( rule, eventDates, JSON.parse( snapshot ) );
+	return text ? text( kind ) : '';
+}
+
+/**
+ * Gets the messages each boundary of a window shows for its error: a relative number out of range on that number, and
+ * any other error under the end.
+ *
+ * @since TBD
+ *
+ * @param {string|null}     error The error key, or `null`.
+ * @param {SaleWindowRule}  rule  The rule the options show.
+ * @param {BlockWindowKind} kind  The window kind.
+ *
+ * @return {{start: BoundaryErrors, end: BoundaryErrors}} The messages, keyed by boundary.
+ */
+export function getBoundaryErrors( error, rule, kind ) {
+	const outOfRange = RELATIVE_VALUE_OUT_OF_RANGE === error ? getOutOfRangeBoundary( rule, kind ) : null;
+	const message = getWindowErrorMessage( error, kind );
+	const forBoundary = ( name ) => ( {
+		errorMessage: 'end' === name && ! outOfRange ? message : '',
+		valueErrorMessage: name === outOfRange ? message : '',
+	} );
+
+	return { start: forBoundary( 'start' ), end: forBoundary( 'end' ) };
 }

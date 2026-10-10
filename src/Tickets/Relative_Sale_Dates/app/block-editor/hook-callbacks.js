@@ -7,12 +7,7 @@ import { getSettings } from '@wordpress/date';
 /**
  * Internal dependencies
  */
-import {
-	getTicketFormDates,
-	isTicketReadyBesidesDuration,
-	isTicketsCommerce,
-	TICKETS_COMMERCE_PROVIDER,
-} from './common-store-bridge';
+import { isTicketReadyBesidesDuration, isTicketsCommerce, TICKETS_COMMERCE_PROVIDER } from './common-store-bridge';
 import { readEventDates } from './event-dates';
 import { MODE_DEFAULT } from '../rule-constants';
 import { getFormRule, isSpecificWindow, toRequestRule } from './rule';
@@ -20,7 +15,12 @@ import { formatSaleDate, resolveTicketWindow } from './sale-dates';
 import SalePriceWindow from './sale-price-window';
 import SalesWindow from './sales-window';
 import { STORE_NAME } from './store/constants';
-import { getTicketWindowError } from './window-error';
+import {
+	getTicketWindowError,
+	getTicketWindowReader,
+	hasTicketWindowSaveError,
+	readTicketWindowForm,
+} from './window-error';
 import { BLOCK_WINDOW_KINDS } from './window-kinds';
 
 /** @typedef {import( '../sale-window' ).SaleWindowRule} SaleWindowRule */
@@ -95,9 +95,9 @@ export function resetTicketRule( clientId ) {
  * carried.
  *
  * A ticket the store knows nothing of sends no rule, so the server keeps the one stored; one whose draft has no rule
- * sends the kind's `emptyValue`. A draft the editor judges the server would reject sends no rule either: saving the
- * post updates the ticket too, and the server would reject the ticket's other changes with it. Nor does the rule of a
- * window the ticket form does not add.
+ * sends the kind's `emptyValue`. A draft the editor judges the server would reject sends no rule either, nor does one
+ * whose parent window is rejected: saving the post updates the ticket too, and the server would reject the ticket's
+ * other changes with it. Nor does the rule of a window the ticket form does not add.
  *
  * @since TBD
  *
@@ -114,7 +114,11 @@ export function appendRule( body, clientId, kind, rule ) {
 	}
 
 	const value = rule ? JSON.stringify( toRequestRule( rule, kind ) ) : kind.emptyValue;
-	const isSent = undefined !== value && kind.isAdded( clientId ) && ! kind.hasSaveError( rule, clientId );
+	const readWindow = getTicketWindowReader( clientId, select, ( each ) => readTicketWindowForm( clientId, each ) );
+	const isSent =
+		undefined !== value &&
+		kind.isAdded( clientId ) &&
+		! hasTicketWindowSaveError( kind, readWindow, readEventDates() );
 
 	if ( isSent ) {
 		body.append( kind.requestKey, value );
@@ -134,6 +138,11 @@ export function appendRule( body, clientId, kind, rule ) {
  * @return {FormData} The request body.
  */
 export function filterSetBodyDetails( body, clientId ) {
+	// The options are hidden for another provider, whose ticket the server saves without a rule.
+	if ( ! isTicketsCommerce( clientId ) ) {
+		return body;
+	}
+
 	BLOCK_WINDOW_KINDS.forEach( ( kind ) =>
 		appendRule( body, clientId, kind, select( STORE_NAME ).getDraftRule( clientId, kind ) )
 	);
@@ -191,6 +200,10 @@ export function filterSalePricePickers( dates, clientId, pickers ) {
  * @return {{fromDate: string, toDate: string}} The sale dates to show.
  */
 export function filterSaleWindowDates( dates, clientId ) {
+	if ( ! isTicketsCommerce( clientId ) ) {
+		return dates;
+	}
+
 	const saleWindow = resolveTicketWindow( select( STORE_NAME ).getDraftRule( clientId ), readEventDates() );
 
 	if ( ! saleWindow ) {
@@ -204,8 +217,9 @@ export function filterSaleWindowDates( dates, clientId ) {
 }
 
 /**
- * Keeps a ticket from being created or updated while its sales window is invalid: it does not start before it ends, or
- * a relative start or end has no number.
+ * Keeps a ticket from being created or updated while a window the server judges is invalid: it does not end after it
+ * starts, starts outside its parent window, or a relative number is missing or out of range. The sales window is
+ * judged first, and the sale price only when the save keeps it.
  *
  * The legacy sales duration error alone does not keep the button disabled once an end is relative or the default, since
  * the dates it checks are hidden then.
@@ -234,9 +248,12 @@ export function filterConfirmDisabled( isDisabled, state, { clientId } ) {
 		return true;
 	}
 
-	const error = getTicketWindowError( rule, readEventDates(), getTicketFormDates( state, clientId ) );
+	const eventDates = readEventDates();
+	const readWindow = getTicketWindowReader( clientId, select, ( kind ) =>
+		readTicketWindowForm( clientId, kind, state )
+	);
 
-	return null !== error;
+	return BLOCK_WINDOW_KINDS.some( ( kind ) => null !== getTicketWindowError( kind, readWindow, eventDates ) );
 }
 
 /**

@@ -1,6 +1,9 @@
 import * as legacyActions from '@moderntribe/tickets/data/blocks/ticket/actions';
 import * as legacySelectors from '@moderntribe/tickets/data/blocks/ticket/selectors';
-import { readTicketFormWindowDates } from '@tec/tickets/relative-sale-dates/block-editor/common-store-bridge';
+import {
+	isSalePriceKept,
+	readTicketFormWindowDates,
+} from '@tec/tickets/relative-sale-dates/block-editor/common-store-bridge';
 import {
 	BLOCK_SALES_WINDOW,
 	BLOCK_SALE_PRICE_WINDOW,
@@ -70,10 +73,58 @@ describe( 'readTicketFormWindowDates', () => {
 		} );
 	} );
 
+	it( 'should read the dates from the legacy state it is given rather than the store', () => {
+		setTicketFormDates( store, CLIENT_ID, '2040-10-01 10:00:00', '2040-10-13 18:30:00' );
+		const state = store.getState();
+		setTicketFormDates( store, CLIENT_ID, '2040-10-02 10:00:00', '2040-10-14 18:30:00' );
+
+		expect( readTicketFormWindowDates( CLIENT_ID, BLOCK_SALES_WINDOW, state ) ).toStrictEqual( {
+			start: '2040-10-01 10:00:00',
+			end: '2040-10-13 18:30:00',
+		} );
+	} );
+
 	it( 'should read no sale price dates for a ticket the legacy store does not hold', () => {
 		expect( readTicketFormWindowDates( CLIENT_ID, BLOCK_SALE_PRICE_WINDOW ) ).toStrictEqual( {
 			start: null,
 			end: null,
 		} );
+	} );
+} );
+
+describe( 'isSalePriceKept', () => {
+	/**
+	 * Reads whether a save keeps the checked sale price of the ticket block with the given prices.
+	 *
+	 * @param {string} price     The price the form holds.
+	 * @param {string} salePrice The sale price the form holds.
+	 *
+	 * @return {boolean} Whether the save keeps the sale price.
+	 */
+	function isKeptWith( price, salePrice ) {
+		store.dispatch( legacyActions.registerTicketBlock( CLIENT_ID ) );
+		store.dispatch( legacyActions.setTempSalePriceChecked( CLIENT_ID, true ) );
+		store.dispatch( legacyActions.setTicketTempPrice( CLIENT_ID, price ) );
+		store.dispatch( legacyActions.setTempSalePrice( CLIENT_ID, salePrice ) );
+
+		return isSalePriceKept( store.getState(), CLIENT_ID );
+	}
+
+	it.each( [
+		[ '20.00', '15', true ],
+		[ '20', '20.00', false ],
+		[ '20', '25', false ],
+		// The server compares a number with an empty price as strings, and drops the sale price.
+		[ '', '10', false ],
+		[ '', '', false ],
+	] )( 'should judge a price of "%s" with a sale price of "%s" as the server does', ( price, salePrice, kept ) => {
+		expect( isKeptWith( price, salePrice ) ).toBe( kept );
+	} );
+
+	it( 'should not keep an unchecked sale price', () => {
+		isKeptWith( '20', '15' );
+		store.dispatch( legacyActions.setTempSalePriceChecked( CLIENT_ID, false ) );
+
+		expect( isSalePriceKept( store.getState(), CLIENT_ID ) ).toBe( false );
 	} );
 } );

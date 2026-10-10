@@ -2,21 +2,19 @@
  * External dependencies
  */
 import { cloneElement, useEffect, useMemo, useSyncExternalStore } from '@wordpress/element';
-import { __, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
 import { clearTicketDurationError, hasTicketDurationError, subscribeToCommonStore } from '../common-store-bridge';
 import { useEventDates } from '../event-dates';
-import { MAX_VALUE, MIN_VALUE, MODE_RELATIVE } from '../../rule-constants';
+import { MODE_RELATIVE } from '../../rule-constants';
 import { getFormRule, isSpecificWindow } from '../rule';
 import { getHelperText, resolveTicketWindow } from '../sale-dates';
 import { useWindowDraft } from '../use-window-draft';
 import WindowBoundaries from '../window-boundaries';
-import { useTicketWindowError } from '../window-error';
+import { getBoundaryErrors, useWindowError } from '../window-error';
 import { BLOCK_SALES_WINDOW } from '../window-kinds';
-import { RELATIVE_VALUE_OUT_OF_RANGE, getOutOfRangeBoundary } from '../../window-check';
 import './style.pcss';
 
 /**
@@ -37,8 +35,7 @@ export default function SalesWindow( { clientId, picker } ) {
 		() => resolveTicketWindow( getFormRule( rule, BLOCK_SALES_WINDOW ), eventDates ),
 		[ rule, eventDates ]
 	);
-	const error = useTicketWindowError( clientId, rule, eventDates );
-	const outOfRange = RELATIVE_VALUE_OUT_OF_RANGE === error ? getOutOfRangeBoundary( formRule ) : null;
+	const errors = getBoundaryErrors( useWindowError( clientId, BLOCK_SALES_WINDOW ), formRule, BLOCK_SALES_WINDOW );
 	const isSpecific = isSpecificWindow( formRule );
 	const hasDurationError = useSyncExternalStore( subscribeToCommonStore, () => hasTicketDurationError( clientId ) );
 
@@ -63,22 +60,7 @@ export default function SalesWindow( { clientId, picker } ) {
 				} ),
 				helperText:
 					MODE_RELATIVE === formRule[ name ].mode ? getHelperText( name, saleWindow?.[ name ] ) : undefined,
-				errorMessage:
-					'end' === name && error && ! outOfRange
-						? __(
-								'Ticket sales cannot end before they start. Please adjust the sales window.',
-								'event-tickets'
-						  )
-						: '',
-				valueErrorMessage:
-					name === outOfRange
-						? sprintf(
-								// translators: %1$d is the smallest number a relative sale date takes, %2$d the largest.
-								__( 'Enter a number from %1$d to %2$d.', 'event-tickets' ),
-								MIN_VALUE,
-								MAX_VALUE
-						  )
-						: '',
+				...errors[ name ],
 			} ) }
 		/>
 	);

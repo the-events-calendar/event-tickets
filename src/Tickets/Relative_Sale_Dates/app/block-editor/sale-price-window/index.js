@@ -11,6 +11,7 @@ import { useEventDates } from '../event-dates';
 import { useWindowDraft } from '../use-window-draft';
 import { useWindowLengthText } from '../use-window-length-text';
 import WindowBoundaries from '../window-boundaries';
+import { getBoundaryErrors, useWindowError } from '../window-error';
 import { BLOCK_SALE_PRICE_WINDOW } from '../window-kinds';
 
 /** @typedef {import( '../../sale-window' ).SaleWindowRule} SaleWindowRule */
@@ -67,7 +68,7 @@ function preparePicker( picker, name, label, formRule ) {
 
 /**
  * Renders the sale price window options of a ticket block in place of its sale dates row, with how long the sale price
- * lasts under *Sale Ends*.
+ * lasts, or why the window cannot be saved, under *Sale Ends*.
  *
  * @since TBD
  *
@@ -81,6 +82,11 @@ export default function SalePriceWindow( { clientId, pickers } ) {
 	const { formRule, onChange } = useWindowDraft( clientId, BLOCK_SALE_PRICE_WINDOW );
 	const eventDates = useEventDates();
 	const lengthText = useWindowLengthText( clientId, formRule, eventDates, BLOCK_SALE_PRICE_WINDOW );
+	const errors = getBoundaryErrors(
+		useWindowError( clientId, BLOCK_SALE_PRICE_WINDOW ),
+		formRule,
+		BLOCK_SALE_PRICE_WINDOW
+	);
 
 	return (
 		<WindowBoundaries
@@ -90,6 +96,7 @@ export default function SalePriceWindow( { clientId, pickers } ) {
 			getBoundaryProps={ ( name, settings ) => ( {
 				picker: preparePicker( pickers[ name ], name, settings.labels.date, formRule ),
 				helperText: 'end' === name ? lengthText : undefined,
+				...errors[ name ],
 			} ) }
 		/>
 	);
