@@ -15,6 +15,7 @@ import { applyFilters } from '@wordpress/hooks';
  */
 import Template from './template';
 import { actions, selectors } from '../../../../../../modules/data/blocks/ticket';
+import { usesDeferredSave } from '../../../../../../modules/data/blocks/ticket/deferred';
 import { withStore } from '@moderntribe/common/hoc';
 
 /**
@@ -27,12 +28,15 @@ import { withStore } from '@moderntribe/common/hoc';
  *
  * @return {boolean} Whether the confirm button should be disabled.
  */
-const getIsConfirmDisabled = ( state, ownProps ) => {
+export const getIsConfirmDisabled = ( state, ownProps ) => {
 	const shouldConfirmBeDisabled =
 		selectors.isTicketDisabled( state, ownProps ) ||
 		selectors.getTicketHasDurationError( state, ownProps ) ||
 		! selectors.getTicketHasChanges( state, ownProps ) ||
-		! selectors.isTicketValid( state, ownProps );
+		! selectors.isTicketValid( state, ownProps ) ||
+		// A staged ticket travels with the post save, so nothing invalid may be staged: the sale price rule applies
+		// too. Staging during a save is fine: the answer settles only what that save sent.
+		( usesDeferredSave() && ! selectors.isTicketSalePriceAcceptable( state, ownProps ) );
 
 	/**
 	 * Filters whether the confirm button should be disabled.
@@ -46,8 +50,9 @@ const getIsConfirmDisabled = ( state, ownProps ) => {
 	return applyFilters( 'tec.tickets.blocks.confirmButton.isDisabled', shouldConfirmBeDisabled, state, ownProps );
 };
 
-const onCancelClick = ( state, dispatch, ownProps ) => () => {
-	if ( selectors.getTicketHasBeenCreated( state, ownProps ) ) {
+export const onCancelClick = ( state, dispatch, ownProps ) => () => {
+	// A staged ticket is kept like a saved one: Cancel drops the unconfirmed changes, not the ticket.
+	if ( selectors.getTicketHasBeenCreated( state, ownProps ) || selectors.getTicketIsStaged( state, ownProps ) ) {
 		dispatch(
 			actions.setTicketTempDetails( ownProps.clientId, {
 				title: selectors.getTicketTitle( state, ownProps ),

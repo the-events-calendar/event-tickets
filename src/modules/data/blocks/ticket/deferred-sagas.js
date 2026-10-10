@@ -421,16 +421,39 @@ export function* dropStaged( clientId ) {
 }
 
 /**
- * Stages the move of a saved ticket.
+ * Stages the move of a saved ticket, unless an edit of it is staged.
+ *
+ * The server refuses a ticket named in both `update` and `move` and drops both, and moving removes the
+ * block, so the edit would be lost with no block left to say so. The edit is saved with the post first.
  *
  * @since TBD
  *
  * @param {number} ticketId      The saved ticket.
  * @param {number} destinationId The destination post.
+ *
+ * @return {boolean} Whether the move was staged.
  */
 export function* stageMove( ticketId, destinationId ) {
+	const clientIds = yield select( selectors.getTicketsAllClientIds );
+	const byClientId = yield select( selectors.getTicketsByClientId );
+	const hasStagedEdit = clientIds.some( ( clientId ) => {
+		const ticket = byClientId[ clientId ];
+
+		return ticket && ticket.isStaged && Number( ticket.ticketId ) === Number( ticketId );
+	} );
+
+	if ( hasStagedEdit ) {
+		showNotice(
+			__( 'This ticket has changes waiting for the post save. Save the post before moving it.', 'event-tickets' )
+		);
+
+		return false;
+	}
+
 	yield put( actions.stageTicketMove( ticketId, destinationId ) );
 	yield call( refreshPayload );
+
+	return true;
 }
 
 /**
@@ -467,7 +490,7 @@ export function* stagePendingChanges() {
 		}
 
 		const isValid = yield select( selectors.isTicketValid, { clientId } );
-		const isSalePriceValid = yield select( selectors.isTicketSalePriceValid, { clientId } );
+		const isSalePriceValid = yield select( selectors.isTicketSalePriceAcceptable, { clientId } );
 		const hasDurationError = yield select( selectors.getTicketHasDurationError, { clientId } );
 
 		// The rules the confirm button applies; a ticket that fails them is not saved, and the block says so.

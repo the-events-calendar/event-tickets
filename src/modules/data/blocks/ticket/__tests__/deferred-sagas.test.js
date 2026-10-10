@@ -355,6 +355,26 @@ describe( 'applying the answer of a save', () => {
 	} );
 } );
 
+describe( 'stageMove', () => {
+	it( 'stages the move of a saved ticket', () => {
+		const dispatched = run( stateWith( { c: { hasBeenCreated: true, ticketId: 12 } } ), sagas.stageMove, 12, 99 );
+
+		expect( dispatched ).toContainEqual( actions.stageTicketMove( 12, 99 ) );
+	} );
+
+	it( 'refuses to move a ticket with an edit waiting for the post save, and says why', () => {
+		const dispatched = run(
+			stateWith( { c: { hasBeenCreated: true, isStaged: true, ticketId: 12 } } ),
+			sagas.stageMove,
+			12,
+			99
+		);
+
+		expect( dispatched ).not.toContainEqual( actions.stageTicketMove( 12, 99 ) );
+		expect( mockEditor.createErrorNotice ).toHaveBeenCalledTimes( 1 );
+	} );
+} );
+
 describe( 'the review of the stacked PRs, second round', () => {
 	const save = ( state, response, moveDuringSave = null ) => {
 		prepare( state );
