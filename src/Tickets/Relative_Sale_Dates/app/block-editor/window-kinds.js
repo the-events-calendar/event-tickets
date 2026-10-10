@@ -14,15 +14,14 @@ import { __, _x } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { MODE_DEFAULT, MODE_NOW, MODE_RELATIVE, MODE_SPECIFIC } from '../rule-constants';
+import { ENDS_BEFORE_START, OUTSIDE_PARENT, RELATIVE_VALUE_OUT_OF_RANGE } from '../window-errors';
 import { SALES_WINDOW, SALE_PRICE_WINDOW } from '../window-kinds';
 import {
 	getTicketFormDates,
 	getTicketSalePriceFormDates,
 	isSalePriceChecked,
-	readTicketFormDates,
+	isSalePriceKept,
 } from './common-store-bridge';
-import { readEventDates } from './event-dates';
-import { getTicketWindowError } from './window-error';
 
 /** @typedef {import( '../sale-window' ).SaleWindowRule} SaleWindowRule */
 /** @typedef {import( '../window-kinds' ).WindowKind} WindowKind */
@@ -45,9 +44,9 @@ import { getTicketWindowError } from './window-error';
  */
 
 /** @typedef {{start: BoundarySettings, end: BoundarySettings}} WindowSettings */
-/** @typedef {function( SaleWindowRule|null, string ): boolean} SaveErrorCheck */
 /** @typedef {function( Object ): (SaleWindowRule|null|undefined)} StoredRuleReader */
 /** @typedef {function( Object, string ): {start: string|null, end: string|null}} FormDatesReader */
+/** @typedef {function( Object, string ): boolean} KeptReader */
 
 /**
  * @typedef {Object} BlockWindowKindFields
@@ -55,8 +54,10 @@ import { getTicketWindowError } from './window-error';
  * @property {function(): WindowSettings}  getBoundarySettings  The labels and mode options of each boundary.
  * @property {function( string ): boolean} isAdded              Whether the ticket block's form adds the window to the
  *                                                              ticket, so its request carries the rule.
- * @property {SaveErrorCheck}              hasSaveError         Whether the editor judges that the server rejects the
- *                                                              draft, which the request then leaves out.
+ * @property {KeptReader}                  isKept               Whether a save of the ticket's form keeps the window, so
+ *                                                              the server judges it, from the legacy ticket state and
+ *                                                              the client ID. The block's own reading of the shared
+ *                                                              kind's `isEnabled()`, which reads the classic form.
  * @property {boolean}                     marksNewRuleAsChange Whether keeping a new rule's defaults as the draft
  *                                                              marks the ticket as changed.
  * @property {string}                      requestKey           The field of the ticket request that carries the rule,
@@ -71,6 +72,9 @@ import { getTicketWindowError } from './window-error';
  * @property {FormDatesReader}             readFormDates        Reads the start and end dates the ticket's form sends
  *                                                              from the legacy ticket state and the client ID, each
  *                                                              `YYYY-MM-DD HH:mm:ss` in the event timezone, or `null`.
+ * @property {Object<string, string|null>} messages             The key of the block's text of each error the window
+ *                                                              can have, keyed by the error's key, `null` for one it
+ *                                                              cannot.
  */
 
 /** @typedef {WindowKind & BlockWindowKindFields} BlockWindowKind */
@@ -183,23 +187,6 @@ function getSalePriceSettings() {
 }
 
 /**
- * Returns whether a ticket's draft rule gives a sales window the server rejects, judged against the event dates in the
- * editor.
- *
- * @since TBD
- *
- * @param {SaleWindowRule|null} rule     The ticket's draft rule.
- * @param {string}              clientId The client ID of the ticket block.
- *
- * @return {boolean} Whether the window is invalid; without the event dates, whether a relative number is out of range.
- */
-function hasSalesWindowError( rule, clientId ) {
-	const eventDates = readEventDates();
-
-	return null !== getTicketWindowError( rule, eventDates, eventDates ? readTicketFormDates( clientId ) : null );
-}
-
-/**
  * The ticket's sales window, as the Ticket block shows and sends it.
  *
  * @since TBD
@@ -210,7 +197,7 @@ export const BLOCK_SALES_WINDOW = Object.freeze( {
 	...SALES_WINDOW,
 	getBoundarySettings: getSalesWindowSettings,
 	isAdded: () => true,
-	hasSaveError: hasSalesWindowError,
+	isKept: () => true,
 	// A new ticket shows the options with the block, before the admin has changed anything to save.
 	marksNewRuleAsChange: false,
 	requestKey: 'ticket[relative_sale_dates]',
@@ -219,6 +206,11 @@ export const BLOCK_SALES_WINDOW = Object.freeze( {
 	readStored: ( ticket ) => ticket.relative_sale_dates ?? null,
 	isAnswered: ( ticket ) => undefined !== ticket.relative_sale_dates,
 	readFormDates: getTicketFormDates,
+	messages: Object.freeze( {
+		[ ENDS_BEFORE_START ]: 'invalidWindow',
+		[ RELATIVE_VALUE_OUT_OF_RANGE ]: 'relativeValueOutOfRange',
+		[ OUTSIDE_PARENT ]: null,
+	} ),
 } );
 
 /**
@@ -234,8 +226,8 @@ export const BLOCK_SALE_PRICE_WINDOW = Object.freeze( {
 	getBoundarySettings: getSalePriceSettings,
 	// The server drops the rule along with an unchecked sale price.
 	isAdded: isSalePriceChecked,
-	// The server judges the sale price window on save.
-	hasSaveError: () => false,
+	// The server judges the window of a sale price it keeps: a checked one lower than the price.
+	isKept: isSalePriceKept,
 	/*
 	 * The options show once the admin checks the sale price: Create or Update was checked for that change before these
 	 * defaults existed, and is checked again only on a legacy store change.
@@ -247,6 +239,11 @@ export const BLOCK_SALE_PRICE_WINDOW = Object.freeze( {
 	readStored: ( ticket ) => ( ticket.sale_price_data?.enabled ? ticket.sale_price_data.relative ?? null : undefined ),
 	isAnswered: ( ticket ) => undefined !== ticket.sale_price_data,
 	readFormDates: getTicketSalePriceFormDates,
+	messages: Object.freeze( {
+		[ ENDS_BEFORE_START ]: 'salePriceEndsBeforeStart',
+		[ RELATIVE_VALUE_OUT_OF_RANGE ]: 'salePriceValueOutOfRange',
+		[ OUTSIDE_PARENT ]: 'salePriceOutsideWindow',
+	} ),
 } );
 
 /**

@@ -1189,6 +1189,14 @@ describe( 'Ticket Block sagas', () => {
 		} );
 	} );
 
+	describe( 'toRequestSaleDate', () => {
+		it( 'should send a sale price date the store keeps as Invalid date empty, as on create', () => {
+			expect( sagas.toRequestSaleDate( 'Invalid date' ) ).toBe( '' );
+			expect( sagas.toRequestSaleDate( '' ) ).toBe( '' );
+			expect( sagas.toRequestSaleDate( '2040-10-01' ) ).toBe( '2040-10-01' );
+		} );
+	} );
+
 	describe( 'setBodyDetails', () => {
 		it( 'should set body details', () => {
 			const postId = 10;
@@ -1266,6 +1274,25 @@ describe( 'Ticket Block sagas', () => {
 			);
 
 			expect( clone2.next().done ).toEqual( true );
+		} );
+
+		it( 'should send a sale price date the store holds as Invalid date empty', () => {
+			const props = { clientId: 'modern-tribe' };
+			const answers = new Map( [
+				[ selectors.getTicketTempCapacityType, TICKET_TYPES[ INDEPENDENT ] ],
+				[ selectors.showSalePrice, true ],
+				[ selectors.getTicketTempSaleStartDate, 'Invalid date' ],
+				[ selectors.getTicketTempSaleEndDate, '2040-10-01' ],
+			] );
+			const gen = sagas.setBodyDetails( props.clientId );
+			let step = gen.next();
+
+			while ( ! step.done ) {
+				step = gen.next( answers.get( step.value?.SELECT?.selector ) );
+			}
+
+			expect( step.value.get( 'ticket[sale_price][start_date]' ) ).toBe( '' );
+			expect( step.value.get( 'ticket[sale_price][end_date]' ) ).toBe( '2040-10-01' );
 		} );
 	} );
 
