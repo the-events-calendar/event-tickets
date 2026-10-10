@@ -66,6 +66,16 @@ abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 	private const SERIALIZABLE_CLASSES = [ DateTime::class, DateTimeImmutable::class, stdClass::class ];
 
 	/**
+	 * How deeply a stored value may nest. Real item data is a few levels deep; this also stops a self-referencing
+	 * object from recursing forever.
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	private const MAX_DEPTH = 32;
+
+	/**
 	 * The decimals of each currency read so far, keyed by currency code.
 	 *
 	 * @since TBD
@@ -317,10 +327,15 @@ abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 	 *
 	 * @param int|string $name  The item key the value belongs to.
 	 * @param mixed      $value The value.
+	 * @param int        $depth How many levels deep the value sits.
 	 *
-	 * @throws InvalidArgumentException When the value holds a resource or an object of any other class.
+	 * @throws InvalidArgumentException When the value holds a resource, an object of any other class, or nests too deep.
 	 */
-	private static function assert_serializable( $name, $value ): void {
+	private static function assert_serializable( $name, $value, int $depth = 0 ): void {
+		if ( $depth > self::MAX_DEPTH ) {
+			throw new InvalidArgumentException( sprintf( 'Item field "%s" is nested more than %d levels deep, which cannot be stored exactly.', $name, self::MAX_DEPTH ) );
+		}
+
 		if ( is_resource( $value ) ) {
 			throw new InvalidArgumentException( sprintf( 'Item field "%s" holds a resource, which cannot be stored exactly.', $name ) );
 		}
@@ -331,7 +346,7 @@ abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 
 		if ( is_array( $value ) || $value instanceof stdClass ) {
 			foreach ( (array) $value as $nested ) {
-				static::assert_serializable( $name, $nested );
+				static::assert_serializable( $name, $nested, $depth + 1 );
 			}
 		}
 	}
