@@ -93,15 +93,7 @@ class Rest_Entry_Point_Test extends WPTestCase {
 		$this->assertNotNull( $result );
 		$this->assertSame( [ 0 ], array_keys( $result['created'] ) );
 		$keys = array_map( fn( array $e ) => [ $e['part'], $e['key'] ], $result['errors'] );
-		$this->assertEqualSets(
-			[
-				[ 'update', $this->ticket_b ],
-				[ 'update', $this->attendee_b ],
-				[ 'update', $this->post_b ],
-				[ 'move', $this->ticket_a ],
-			],
-			$keys
-		);
+		$this->assertEqualSets( $this->hostile_payload_refusals(), $keys );
 	}
 
 	/**

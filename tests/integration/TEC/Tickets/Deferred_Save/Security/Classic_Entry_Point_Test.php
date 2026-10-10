@@ -155,16 +155,7 @@ class Classic_Entry_Point_Test extends WPTestCase {
 
 		$this->assert_b_untouched_and_a_created( $before );
 		$keys = array_map( fn( array $e ) => [ $e['part'], $e['key'] ], $this->remembered_errors() );
-		// The same foreign ticket in `update` and `delete` is one error, keyed to `update`, by the payload contract.
-		$this->assertEqualSets(
-			[
-				[ 'update', $this->ticket_b ],
-				[ 'update', $this->attendee_b ],
-				[ 'update', $this->post_b ],
-				[ 'move', $this->ticket_a ],
-			],
-			$keys
-		);
+		$this->assertEqualSets( $this->hostile_payload_refusals(), $keys );
 	}
 
 	/**

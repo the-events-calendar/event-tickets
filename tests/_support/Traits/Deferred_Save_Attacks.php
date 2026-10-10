@@ -16,11 +16,13 @@ trait Deferred_Save_Attacks {
 	private int $post_b;
 	private int $ticket_a;
 	private int $ticket_b;
+	private int $ticket_b2;
+	private int $ticket_b3;
 	private int $attendee_b;
 	private int $owner_id;
 
 	/**
-	 * Two posts, owned by an editor, each with a Tickets Commerce ticket; post B also has an attendee.
+	 * Two posts, owned by an editor, each with Tickets Commerce tickets; post B also has an attendee.
 	 *
 	 * Posts rather than pages, so that an author can own one: authors cannot edit pages at all.
 	 */
@@ -30,6 +32,8 @@ trait Deferred_Save_Attacks {
 		$this->post_b     = static::factory()->post->create( [ 'post_author' => $this->owner_id ] );
 		$this->ticket_a   = $this->create_tc_ticket( $this->post_a, 10, [ 'ticket_name' => 'Ticket on A' ] );
 		$this->ticket_b   = $this->create_tc_ticket( $this->post_b, 20, [ 'ticket_name' => 'Ticket on B' ] );
+		$this->ticket_b2  = $this->create_tc_ticket( $this->post_b, 30, [ 'ticket_name' => 'Second ticket on B' ] );
+		$this->ticket_b3  = $this->create_tc_ticket( $this->post_b, 40, [ 'ticket_name' => 'Third ticket on B' ] );
 		$this->attendee_b = $this->create_attendee_for_ticket( $this->ticket_b, $this->post_b );
 	}
 
@@ -53,7 +57,11 @@ trait Deferred_Save_Attacks {
 	}
 
 	/**
-	 * A payload that tries every write against post A, naming post B's ticket, attendee and page.
+	 * A payload that tries every write against post A, naming post B's tickets, attendee and page.
+	 *
+	 * Each part names a different ticket of post B, so that the parser's rule against a ticket in two parts
+	 * never refuses one before the ownership checks see it. The move of B's ticket goes to post A, which the
+	 * user may edit, so only ownership refuses it; the move of A's ticket goes to B, which the user may not.
 	 */
 	protected function hostile_payload(): array {
 		return [
@@ -62,9 +70,26 @@ trait Deferred_Save_Attacks {
 				$this->attendee_b => [ 'ticket_name' => 'Attendee as ticket' ],
 				$this->post_b     => [ 'ticket_name' => 'Page as ticket' ],
 			],
-			'delete' => [ $this->ticket_b ],
-			'move'   => [ $this->ticket_a => $this->post_b ],
+			'delete' => [ $this->ticket_b2 ],
+			'move'   => [
+				$this->ticket_a  => $this->post_b,
+				$this->ticket_b3 => $this->post_a,
+			],
 			'create' => [ $this->ticket_data( 'Created on A' ) ],
+		];
+	}
+
+	/**
+	 * The entries of the hostile payload an editor of post A sees refused, as `[ part, key ]`.
+	 */
+	protected function hostile_payload_refusals(): array {
+		return [
+			[ 'update', $this->ticket_b ],
+			[ 'update', $this->attendee_b ],
+			[ 'update', $this->post_b ],
+			[ 'delete', $this->ticket_b2 ],
+			[ 'move', $this->ticket_a ],
+			[ 'move', $this->ticket_b3 ],
 		];
 	}
 
