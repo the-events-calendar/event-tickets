@@ -28,19 +28,14 @@ import { getLocalizedData } from './localized-data';
  * @return {SaleWindowRule} The rule the options show.
  */
 export function getFormRule( rule, kind = SALES_WINDOW ) {
-	const defaults = getLocalizedData()[ kind.defaultsKey ];
+	const defaults = getLocalizedData().windowDefaults[ kind.id ];
 	const withMode = ( key, mode ) => ( { ...defaults[ key ], mode } );
 
-	/*
-	 * A new rule opens on the kind's modes, or on the defaults' own; a window saved without a rule keeps the dates it
-	 * was saved with, as a specific window.
-	 */
 	if ( undefined === rule ) {
-		const newMode = ( key ) => ( kind.newModes ? kind.newModes[ key ] : defaults[ key ].mode );
-
-		return { start: withMode( 'start', newMode( 'start' ) ), end: withMode( 'end', newMode( 'end' ) ) };
+		return { start: { ...defaults.start }, end: { ...defaults.end } };
 	}
 
+	// A window saved without a rule keeps the dates it was saved with, as a specific window.
 	if ( null === rule ) {
 		return { start: withMode( 'start', MODE_SPECIFIC ), end: withMode( 'end', MODE_SPECIFIC ) };
 	}

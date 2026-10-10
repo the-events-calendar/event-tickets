@@ -35,8 +35,6 @@ import { isAtLeast } from './php-compare';
  *                              the day.
  */
 
-/** @typedef {function( Object ): (Object|null|undefined)} StoredRuleReader */
-
 /**
  * @typedef {Object} LengthText
  *
@@ -81,19 +79,6 @@ import { isAtLeast } from './php-compare';
  *                                                                    ticket, or `null` for a window every ticket has.
  * @property {function( Document ): boolean}        isEnabled         Whether a save of the form keeps the window, so
  *                                                                    the server judges it.
- * @property {string}                               defaultsKey       The key of the boundaries the Ticket block script
- *                                                                    is localized with for a ticket without a rule.
- * @property {{start: string, end: string}|null}    newModes          The modes a new rule opens on in the Ticket block,
- *                                                                    or `null` to keep the localized defaults' own.
- * @property {string}                               requestKey        The field of the Ticket block request that carries
- *                                                                    the rule, as JSON.
- * @property {string|undefined}                     emptyValue        What the Ticket block request carries for a draft
- *                                                                    without a rule, or `undefined` to carry nothing.
- * @property {StoredRuleReader}                     readStored        The rule a ticket from the block editor tickets
- *                                                                    REST API was stored with: `null` for none, and
- *                                                                    `undefined` for a window the ticket does not have.
- * @property {function( Object ): boolean}          isAnswered        Whether a ticket from that REST API says what was
- *                                                                    stored for the window.
  */
 
 /**
@@ -161,14 +146,6 @@ export const SALES_WINDOW = Object.freeze( {
 	parent: null,
 	enabledFieldId: null,
 	isEnabled: () => true,
-	defaultsKey: 'defaults',
-	// A new ticket's sales open now and close when the event starts; the defaults hold only the relative values offered.
-	newModes: Object.freeze( { start: MODE_DEFAULT, end: MODE_DEFAULT } ),
-	requestKey: 'ticket[relative_sale_dates]',
-	// An empty rule removes the stored one.
-	emptyValue: '',
-	readStored: ( ticket ) => ticket.relative_sale_dates ?? null,
-	isAnswered: ( ticket ) => undefined !== ticket.relative_sale_dates,
 } );
 
 /**
@@ -220,13 +197,6 @@ export const SALE_PRICE_WINDOW = Object.freeze( {
 	parent: SALES_WINDOW,
 	enabledFieldId: SALE_PRICE_FIELDS.enabled,
 	isEnabled: isSalePriceKept,
-	defaultsKey: 'salePriceDefaults',
-	newModes: null,
-	requestKey: 'ticket[sale_price][relative]',
-	// The server keeps the stored rule, or the dates of a sale price stored without one.
-	emptyValue: undefined,
-	readStored: ( ticket ) => ( ticket.sale_price_data?.enabled ? ticket.sale_price_data.relative ?? null : undefined ),
-	isAnswered: ( ticket ) => undefined !== ticket.sale_price_data,
 } );
 
 /**

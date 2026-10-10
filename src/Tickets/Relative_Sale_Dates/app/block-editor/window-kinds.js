@@ -41,6 +41,7 @@ import { getTicketWindowError } from './window-error';
 
 /** @typedef {{start: BoundarySettings, end: BoundarySettings}} WindowSettings */
 /** @typedef {function( SaleWindowRule|null, string ): boolean} SaveErrorCheck */
+/** @typedef {function( Object ): (SaleWindowRule|null|undefined)} StoredRuleReader */
 
 /**
  * @typedef {Object} BlockWindowKindFields
@@ -52,6 +53,15 @@ import { getTicketWindowError } from './window-error';
  *                                                              draft, which the request then leaves out.
  * @property {boolean}                     marksNewRuleAsChange Whether keeping a new rule's defaults as the draft
  *                                                              marks the ticket as changed.
+ * @property {string}                      requestKey           The field of the ticket request that carries the rule,
+ *                                                              as JSON.
+ * @property {string|undefined}            emptyValue           What the ticket request carries for a draft without a
+ *                                                              rule, or `undefined` to carry nothing.
+ * @property {StoredRuleReader}            readStored           The rule a ticket from the block editor tickets REST API
+ *                                                              was stored with: `null` for none, and `undefined` for a
+ *                                                              window the ticket does not have.
+ * @property {function( Object ): boolean} isAnswered           Whether a ticket from that REST API says what was stored
+ *                                                              for the window.
  */
 
 /** @typedef {WindowKind & BlockWindowKindFields} BlockWindowKind */
@@ -194,6 +204,11 @@ export const BLOCK_SALES_WINDOW = Object.freeze( {
 	hasSaveError: hasSalesWindowError,
 	// A new ticket shows the options with the block, before the admin has changed anything to save.
 	marksNewRuleAsChange: false,
+	requestKey: 'ticket[relative_sale_dates]',
+	// An empty rule removes the stored one.
+	emptyValue: '',
+	readStored: ( ticket ) => ticket.relative_sale_dates ?? null,
+	isAnswered: ( ticket ) => undefined !== ticket.relative_sale_dates,
 } );
 
 /**
@@ -216,6 +231,11 @@ export const BLOCK_SALE_PRICE_WINDOW = Object.freeze( {
 	 * defaults existed, and is checked again only on a legacy store change.
 	 */
 	marksNewRuleAsChange: true,
+	requestKey: 'ticket[sale_price][relative]',
+	// The server keeps the stored rule, or the dates of a sale price stored without one.
+	emptyValue: undefined,
+	readStored: ( ticket ) => ( ticket.sale_price_data?.enabled ? ticket.sale_price_data.relative ?? null : undefined ),
+	isAnswered: ( ticket ) => undefined !== ticket.sale_price_data,
 } );
 
 /**

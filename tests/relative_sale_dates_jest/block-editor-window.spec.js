@@ -52,11 +52,10 @@ describe.each( [
 		},
 		localizedDefaults: {
 			start: { mode: 'relative', value: 3, unit: UNIT_DAYS, anchor: 'end' },
-			end: { mode: 'relative', value: 30, unit: UNIT_MINUTES, anchor: 'end' },
+			end: { mode: 'default', value: 30, unit: UNIT_MINUTES, anchor: 'end' },
 		},
-		// A new ticket's sales open now and close when the event starts, whatever the relative values offered.
 		draftFromLocalized: {
-			start: { mode: 'default', value: 3, unit: UNIT_DAYS, anchor: 'end' },
+			start: { mode: 'relative', value: 3, unit: UNIT_DAYS, anchor: 'end' },
 			end: { mode: 'default', value: 30, unit: UNIT_MINUTES, anchor: 'end' },
 		},
 		savedRule: { start: { mode: 'relative', value: 3, unit: UNIT_DAYS, anchor: 'end' }, end: { mode: 'default' } },
@@ -128,7 +127,8 @@ describe.each( [
 	} );
 
 	it( 'should offer the defaults the server localizes', () => {
-		window.tec.tickets.relativeSaleDates.blockEditorData[ kind.defaultsKey ] = kindCase.localizedDefaults;
+		const data = window.tec.tickets.relativeSaleDates.blockEditorData;
+		data.windowDefaults = { ...data.windowDefaults, [ kind.id ]: kindCase.localizedDefaults };
 		const clientId = newClientId();
 
 		render( clientId );
