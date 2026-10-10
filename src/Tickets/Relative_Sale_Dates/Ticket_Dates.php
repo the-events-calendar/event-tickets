@@ -84,7 +84,7 @@ final class Ticket_Dates {
 		}
 
 		$metas  = $kind->get_date_metas();
-		$values = $kind->has_sales_actions() ? [ self::TIMEZONE_META_KEY => $window->get_timezone()->getName() ] : [];
+		$values = $kind->owns_ticket_sales_dates() ? [ self::TIMEZONE_META_KEY => $window->get_timezone()->getName() ] : [];
 		$start  = $window->get_start();
 
 		if ( $start ) {

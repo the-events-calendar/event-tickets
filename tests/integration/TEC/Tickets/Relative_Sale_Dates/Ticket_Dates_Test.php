@@ -182,7 +182,7 @@ class Ticket_Dates_Test extends WPTestCase {
 
 		tribe( Ticket_Dates::class )->write( $ticket_id, $event_id, $this->get_relative_rule( $kind, 2, 1 ) );
 
-		$this->assertSame( $kind->has_sales_actions() ? 'America/New_York' : '', get_post_meta( $ticket_id, Ticket_Dates::TIMEZONE_META_KEY, true ) );
+		$this->assertSame( $kind->owns_ticket_sales_dates() ? 'America/New_York' : '', get_post_meta( $ticket_id, Ticket_Dates::TIMEZONE_META_KEY, true ) );
 	}
 
 	/**
