@@ -169,6 +169,18 @@ final class Classic_Save {
 		// The post may be saved again during this save (TEC does it when "Sticky in Month View" changes): commit once.
 		$this->committed[ $post_id ] = true;
 
-		return $this->commit->run( $raw, $post_id );
+		$result = $this->commit->run( $raw, $post_id );
+
+		/**
+		 * Fires after the ticket changes sent with a classic editor post save were committed.
+		 *
+		 * @since TBD
+		 *
+		 * @param Result $result  The commit result: created ticket IDs by position and one error per failed entry.
+		 * @param int    $post_id The ID of the post that was saved.
+		 */
+		do_action( 'tec_tickets_deferred_save_classic_committed', $result, $post_id );
+
+		return $result;
 	}
 }

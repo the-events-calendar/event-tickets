@@ -136,6 +136,30 @@ class Controller_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
+	public function it_should_hook_the_classic_editor_fields_and_notices_and_unhook_them_on_unregister(): void {
+		$controller = $this->make_controller();
+		$hooks      = [
+			[ 'tribe_tickets_metabox_end', $this->test_services->callback( Classic\Editor::class, 'print_fields' ) ],
+			[ 'tec_tickets_deferred_save_classic_committed', $this->test_services->callback( Classic\Notices::class, 'remember' ) ],
+			[ 'admin_notices', $this->test_services->callback( Classic\Notices::class, 'render' ) ],
+		];
+
+		$controller->register();
+
+		foreach ( $hooks as [ $hook, $callback ] ) {
+			$this->assertSame( 10, has_action( $hook, $callback ), $hook );
+		}
+
+		$controller->unregister();
+
+		foreach ( $hooks as [ $hook, $callback ] ) {
+			$this->assertFalse( has_action( $hook, $callback ), $hook );
+		}
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_hook_the_nonce_refresh_after_core_and_unhook_it_on_unregister(): void {
 		$controller = $this->make_controller();
 		$callback   = $this->test_services->callback( Classic_Save::class, 'refresh_nonce' );
@@ -175,5 +199,21 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertFalse( has_action( 'rest_after_insert_late_ticketable', $on_insert ) );
 		$this->assertFalse( has_filter( 'rest_prepare_late_ticketable', $on_prepare ) );
 		$this->assertFalse( has_action( 'rest_api_init', [ $controller, 'hook_rest_saves' ] ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_bind_the_classic_editor_services_once_however_often_rest_starts(): void {
+		$controller = $this->make_controller();
+		$controller->register();
+		$editor  = $this->test_services->get( Classic\Editor::class );
+		$notices = $this->test_services->get( Classic\Notices::class );
+
+		$controller->hook_rest_saves();
+		$controller->hook_rest_saves();
+
+		$this->assertSame( $editor, $this->test_services->get( Classic\Editor::class ) );
+		$this->assertSame( $notices, $this->test_services->get( Classic\Notices::class ) );
 	}
 }
