@@ -5,6 +5,11 @@
  */
 
 /**
+ * External dependencies
+ */
+import { _n, sprintf } from '@wordpress/i18n';
+
+/**
  * Internal dependencies
  */
 import {
@@ -25,6 +30,13 @@ import {
  * @property {string}      date The id of the classic form field of the boundary's date.
  * @property {string|null} time The id of the classic form field of the boundary's time, or `null` for a kind kept by
  *                              the day.
+ */
+
+/**
+ * @typedef {Object} LengthText
+ *
+ * @property {function( number ): string} weeks The text for a window that lasts the given whole number of weeks.
+ * @property {function( number ): string} days  The text for a window that lasts the given number of days.
  */
 
 /**
@@ -51,6 +63,8 @@ import {
  * @property {{start: DateFields, end: DateFields}} dateFields     The classic form fields of each boundary's date.
  * @property {string|null}                          lengthId       The id of the element that says how long the window
  *                                                                 lasts, or `null` for a kind that shows none.
+ * @property {LengthText|null}                      lengthText     The text that says how long the window lasts, or
+ *                                                                 `null` for a kind that shows none.
  */
 
 /**
@@ -76,6 +90,7 @@ export const SALES_WINDOW = Object.freeze( {
 		end: Object.freeze( { date: 'ticket_end_date', time: 'ticket_end_time' } ),
 	} ),
 	lengthId: null,
+	lengthText: null,
 } );
 
 /**
@@ -104,6 +119,20 @@ export const SALE_PRICE_WINDOW = Object.freeze( {
 		end: Object.freeze( { date: 'ticket_sale_end_date', time: null } ),
 	} ),
 	lengthId: 'ticket_sale_price_length',
+	lengthText: Object.freeze( {
+		weeks: ( weeks ) =>
+			sprintf(
+				/* translators: %d: The number of weeks the ticket sale price lasts. */
+				_n( 'Tickets on sale for %d week', 'Tickets on sale for %d weeks', weeks, 'event-tickets' ),
+				weeks
+			),
+		days: ( days ) =>
+			sprintf(
+				/* translators: %d: The number of days the ticket sale price lasts. */
+				_n( 'Tickets on sale for %d day', 'Tickets on sale for %d days', days, 'event-tickets' ),
+				days
+			),
+	} ),
 } );
 
 /**
