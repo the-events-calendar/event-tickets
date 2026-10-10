@@ -377,7 +377,7 @@ final class Ticket_Save {
 
 		// The save would keep the stored rule, but the admin who sent this one expects it to apply.
 		if ( isset( $data[ $key ] ) && ! Rule::from_raw( $data[ $key ], $kind ) ) {
-			return $kind->get_ends_before_start_error();
+			return $kind->get_error( 'endsBeforeStart' );
 		}
 
 		$ticket_id   = absint( $data['ticket_id'] ?? 0 );
@@ -391,7 +391,7 @@ final class Ticket_Save {
 		$window = $this->get_window( $post_id, $data, $kind, $rule, $event_dates );
 
 		if ( ! $window ) {
-			return $kind->get_ends_before_start_error();
+			return $kind->get_error( 'endsBeforeStart' );
 		}
 
 		$parent        = $kind->get_parent();
@@ -408,14 +408,14 @@ final class Ticket_Save {
 		$end       = $window->get_end();
 
 		if ( $start && $end && $this->compare_dates( $end, $start, $kind ) <= 0 ) {
-			return $kind->get_ends_before_start_error();
+			return $kind->get_error( 'endsBeforeStart' );
 		}
 
 		if (
 			$own_start && $parent_start && $parent_end
 			&& ( $this->compare_dates( $own_start, $parent_start, $kind ) < 0 || $this->compare_dates( $own_start, $parent_end, $kind ) > 0 )
 		) {
-			return $kind->get_outside_parent_error();
+			return $kind->get_error( 'outsideParent' );
 		}
 
 		return null;
