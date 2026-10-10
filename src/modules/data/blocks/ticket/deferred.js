@@ -54,6 +54,27 @@ const KEY_MAP = {
 const DROPPED_KEYS = [ 'post_id', 'add_ticket_nonce', 'edit_ticket_nonce', 'remove_ticket_nonce' ];
 
 /**
+ * Body keys sent as JSON that the REST save's listeners decode from the request, while the ticket save
+ * reads them from its data as a list: ET+ attendee fields (`Tribe__Tickets_Plus__Meta::save_meta()`).
+ */
+const JSON_KEYS = [ 'tribe-tickets-input' ];
+
+/**
+ * Decodes a JSON body value.
+ *
+ * @param {string} value The value.
+ *
+ * @return {*} The decoded value, or `null` when it is not JSON.
+ */
+const fromJson = ( value ) => {
+	try {
+		return JSON.parse( value );
+	} catch ( error ) {
+		return null;
+	}
+};
+
+/**
  * What the tickets REST endpoint fills in when the body leaves it out (`Single_Ticket::ticket_args()`).
  *
  * `ticket_add()` reads a missing `ticket_show_description` as "no", so without this every ticket the block
@@ -146,16 +167,22 @@ export const restBodyToTicketData = ( entries ) => {
 			return;
 		}
 
+		if ( JSON_KEYS.includes( key ) ) {
+			const decoded = fromJson( value );
+
+			// An empty or unreadable value is left out, as the REST save's listeners ignore it.
+			if ( decoded && 'object' === typeof decoded && Object.keys( decoded ).length ) {
+				data[ key ] = decoded;
+			}
+			return;
+		}
+
 		if ( hasOwn( KEY_MAP, key ) ) {
 			data[ KEY_MAP[ key ] ] = value;
 			return;
 		}
 
 		const path = pathOf( key );
-
-		if ( path.some( ( segment ) => FORBIDDEN_SEGMENTS.includes( segment ) ) ) {
-			return;
-		}
 
 		if ( 'ticket' === path[ 0 ] && path.length > 1 ) {
 			path[ 0 ] = 'tribe-ticket';

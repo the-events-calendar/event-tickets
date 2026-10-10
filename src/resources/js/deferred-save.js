@@ -120,7 +120,7 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 	 */
 	const renderHiddenFields = () => {
 		$container.empty();
-		buildHiddenFields( state ).forEach( ( [ name, value ] ) => {
+		buildHiddenFields( state, { decimal } ).forEach( ( [ name, value ] ) => {
 			$( '<input>', { type: 'hidden', name, value } ).appendTo( $container );
 		} );
 	};
@@ -364,6 +364,9 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 				$fields.val( values[ values.length - 1 ] ).trigger( 'change' );
 			}
 		} );
+
+		// The panel script checked the dependent fields against the empty form; check them against these values.
+		$panel.find( '.tribe-dependency' ).trigger( 'verify.dependency' );
 	};
 
 	/**
@@ -548,9 +551,7 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 		event.preventDefault();
 		event.stopImmediatePropagation();
 		showValidationNotice( problems );
-		// WordPress disables the publish button and shows its spinner before the form submits; hand them back.
-		$( '#publish, #save-post' ).prop( 'disabled', false ).removeClass( 'disabled' );
-		$( '#publishing-action .spinner, #save-action .spinner' ).removeClass( 'is-active' );
+		handBackSubmit();
 		$( '.tec-tickets-deferred-save-row--invalid' ).first().find( 'button' ).first().trigger( 'focus' );
 
 		return false;

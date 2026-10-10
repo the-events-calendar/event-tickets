@@ -68,16 +68,7 @@ export default ( state = DEFAULT_STATE, action ) => {
 				stagedMoves: { ...state.stagedMoves, [ action.payload.ticketId ]: action.payload.destinationId },
 			};
 		case types.CLEAR_STAGED_TICKETS: {
-			const sent = action.payload && action.payload.sent;
-
-			if ( ! sent ) {
-				return {
-					...state,
-					stagedDeletes: [],
-					stagedMoves: {},
-				};
-			}
-
+			const { sent } = action.payload;
 			const sentMoves = sent.moves.map( Number );
 
 			return {
