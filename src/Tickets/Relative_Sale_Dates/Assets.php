@@ -286,21 +286,26 @@ final class Assets extends Controller_Contract {
 	}
 
 	/**
-	 * Gets the data the Ticket block script reads its defaults, the event date settings and the helper text formats from.
+	 * Gets the data the Ticket block script reads the defaults of each window kind, the event date settings and the
+	 * helper text formats from.
 	 *
 	 * @since TBD
 	 *
-	 * @return array{defaults: array{start: array{mode: string, value: int, unit: int, anchor: string}, end: array{mode: string, value: int, unit: int, anchor: string}}, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, dateNoYear: string, time: string}} The script data.
+	 * @return array{windowDefaults: array<string,array{start: array{mode: string, value: int, unit: int, anchor?: string}, end: array{mode: string, value: int, unit: int, anchor?: string}}>, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, dateNoYear: string, time: string}} The script data, with the defaults keyed by the kind's ID.
 	 */
 	private function get_block_editor_script_data(): array {
+		$window_defaults = [];
+
+		// The classic form's, so both editors open a new window on the same boundaries.
+		foreach ( Window_Kind::all() as $kind ) {
+			$window_defaults[ $kind->get_id() ] = $kind->get_form_defaults();
+		}
+
 		return [
-			'defaults'  => [
-				'start' => Editor::DEFAULT_RELATIVE_START,
-				'end'   => Editor::DEFAULT_RELATIVE_END,
-			],
-			'timezones' => $this->get_manual_offset_zones(),
-			'allDay'    => $this->get_all_day_times(),
-			'formats'   => [
+			'windowDefaults' => $window_defaults,
+			'timezones'      => $this->get_manual_offset_zones(),
+			'allDay'         => $this->get_all_day_times(),
+			'formats'        => [
 				'dateWithYear' => $this->get_date_format( true ),
 				'dateNoYear'   => $this->get_date_format( false ),
 				'time'         => $this->get_time_format(),

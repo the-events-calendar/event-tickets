@@ -1,109 +1,26 @@
 /**
  * External dependencies
  */
-import { useDispatch, useSelect } from '@wordpress/data';
-import { useEffect, useMemo, useSyncExternalStore } from '@wordpress/element';
-import { __, _x, sprintf } from '@wordpress/i18n';
+import { cloneElement, useEffect, useMemo, useSyncExternalStore } from '@wordpress/element';
+import { __, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import {
-	clearTicketDurationError,
-	hasTicketDurationError,
-	markTicketChanged,
-	subscribeToCommonStore,
-} from '../common-store-bridge';
+import { clearTicketDurationError, hasTicketDurationError, subscribeToCommonStore } from '../common-store-bridge';
 import { useEventDates } from '../event-dates';
-import {
-	ANCHOR_END,
-	ANCHOR_START,
-	MAX_VALUE,
-	MIN_VALUE,
-	MODE_DEFAULT,
-	MODE_RELATIVE,
-	MODE_SPECIFIC,
-} from '../../rule-constants';
+import { MAX_VALUE, MIN_VALUE, MODE_RELATIVE } from '../../rule-constants';
 import { getFormRule, isSpecificWindow } from '../rule';
 import { getHelperText, resolveTicketWindow } from '../sale-dates';
-import { STORE_NAME } from '../store/constants';
+import { useWindowDraft } from '../use-window-draft';
+import WindowBoundaries from '../window-boundaries';
 import { useTicketWindowError } from '../window-error';
+import { BLOCK_SALES_WINDOW } from '../window-kinds';
 import { RELATIVE_VALUE_OUT_OF_RANGE, getOutOfRangeBoundary } from '../../window-check';
-import SalesWindowEnd from './sales-window-end';
 import './style.pcss';
 
 /**
- * Builds the labels and options of each end of the window.
- *
- * Where a msgid is the classic editor's (Now, When the event starts, the anchors and the relative labels), its context
- * is too, so one translation serves both.
- *
- * @since TBD
- *
- * @return {Object} The labels, mode options and anchor options, keyed by end.
- */
-function getEndSettings() {
-	const anchorOptions = [
-		{
-			value: ANCHOR_START,
-			label: _x(
-				'before the event starts',
-				'What a relative ticket sale date is measured from.',
-				'event-tickets'
-			),
-		},
-		{
-			value: ANCHOR_END,
-			label: _x( 'before the event ends', 'What a relative ticket sale date is measured from.', 'event-tickets' ),
-		},
-	];
-
-	return {
-		start: {
-			labels: {
-				mode: _x( 'From', 'When ticket sales start, in the Ticket block.', 'event-tickets' ),
-				// translators: The screen reader label of the number of a relative ticket sales start.
-				value: __( 'Number of units before the event that sales start', 'event-tickets' ),
-				// translators: The screen reader label of the unit of a relative ticket sales start.
-				unit: __( 'Unit of the sales start', 'event-tickets' ),
-				// translators: The screen reader label of what a relative ticket sales start is measured from.
-				anchor: __( 'What the sales start is measured from', 'event-tickets' ),
-			},
-			modeOptions: [
-				{ value: MODE_DEFAULT, label: _x( 'Now', 'When ticket sales start.', 'event-tickets' ) },
-				{ value: MODE_RELATIVE, label: _x( 'A relative date', 'When ticket sales start.', 'event-tickets' ) },
-				{ value: MODE_SPECIFIC, label: _x( 'A specific date', 'When ticket sales start.', 'event-tickets' ) },
-			],
-			anchorOptions,
-		},
-		end: {
-			labels: {
-				mode: _x( 'To', 'When ticket sales end, in the Ticket block.', 'event-tickets' ),
-				// translators: The screen reader label of the number of a relative ticket sales end.
-				value: __( 'Number of units before the event that sales end', 'event-tickets' ),
-				// translators: The screen reader label of the unit of a relative ticket sales end.
-				unit: __( 'Unit of the sales end', 'event-tickets' ),
-				// translators: The screen reader label of what a relative ticket sales end is measured from.
-				anchor: __( 'What the sales end is measured from', 'event-tickets' ),
-			},
-			modeOptions: [
-				{
-					value: MODE_DEFAULT,
-					label: _x( 'When the event starts', 'When ticket sales end.', 'event-tickets' ),
-				},
-				{ value: MODE_RELATIVE, label: _x( 'A relative date', 'When ticket sales end.', 'event-tickets' ) },
-				{ value: MODE_SPECIFIC, label: _x( 'A specific date', 'When ticket sales end.', 'event-tickets' ) },
-			],
-			anchorOptions,
-		},
-	};
-}
-
-/**
  * Renders the sales window options of a ticket block in place of its date and time range picker.
- *
- * A new ticket's defaults are kept as its draft at once, so the ticket is saved with them as the classic editor saves
- * its form; a ticket saved without a rule keeps no draft until the admin changes an option.
  *
  * @since TBD
  *
@@ -114,21 +31,16 @@ function getEndSettings() {
  * @return {Object} The sales window options.
  */
 export default function SalesWindow( { clientId, picker } ) {
-	const rule = useSelect( ( select ) => select( STORE_NAME ).getDraftRule( clientId ), [ clientId ] );
-	const { setDraftRule } = useDispatch( STORE_NAME );
-	const formRule = getFormRule( rule );
+	const { rule, formRule, onChange } = useWindowDraft( clientId, BLOCK_SALES_WINDOW );
 	const eventDates = useEventDates();
-	const saleWindow = useMemo( () => resolveTicketWindow( getFormRule( rule ), eventDates ), [ rule, eventDates ] );
+	const saleWindow = useMemo(
+		() => resolveTicketWindow( getFormRule( rule, BLOCK_SALES_WINDOW ), eventDates ),
+		[ rule, eventDates ]
+	);
 	const error = useTicketWindowError( clientId, rule, eventDates );
 	const outOfRange = RELATIVE_VALUE_OUT_OF_RANGE === error ? getOutOfRangeBoundary( formRule ) : null;
 	const isSpecific = isSpecificWindow( formRule );
 	const hasDurationError = useSyncExternalStore( subscribeToCommonStore, () => hasTicketDurationError( clientId ) );
-
-	useEffect( () => {
-		if ( undefined === rule ) {
-			setDraftRule( clientId, getFormRule( rule ) );
-		}
-	}, [ clientId, rule, setDraftRule ] );
 
 	// The legacy code checks the picker's dates again on every picker edit, though they are hidden unless both are specific.
 	useEffect( () => {
@@ -137,49 +49,36 @@ export default function SalesWindow( { clientId, picker } ) {
 		}
 	}, [ clientId, hasDurationError, isSpecific ] );
 
-	const onChange = ( name, changes ) => {
-		const changed = { ...formRule, [ name ]: { ...formRule[ name ], ...changes } };
-		setDraftRule( clientId, changed );
-
-		// The legacy dashboard re-checks its Create or Update button, which reads this draft, only on a legacy store change.
-		markTicketChanged( clientId );
-	};
-
-	const settings = getEndSettings();
-
 	return (
-		<div className="tec-tickets-relative-sale-dates">
-			{ [ 'start', 'end' ].map( ( name ) => (
-				<SalesWindowEnd
-					key={ name }
-					name={ name }
-					end={ formRule[ name ] }
-					picker={ picker }
-					helperText={
-						MODE_RELATIVE === formRule[ name ].mode ? getHelperText( name, saleWindow?.[ name ] ) : ''
-					}
-					errorMessage={
-						'end' === name && error && ! outOfRange
-							? __(
-									'Ticket sales cannot end before they start. Please adjust the sales window.',
-									'event-tickets'
-							  )
-							: ''
-					}
-					valueErrorMessage={
-						name === outOfRange
-							? sprintf(
-									// translators: %1$d is the smallest number a relative sale date takes, %2$d the largest.
-									__( 'Enter a number from %1$d to %2$d.', 'event-tickets' ),
-									MIN_VALUE,
-									MAX_VALUE
-							  )
-							: ''
-					}
-					onChange={ ( changes ) => onChange( name, changes ) }
-					{ ...settings[ name ] }
-				/>
-			) ) }
-		</div>
+		<WindowBoundaries
+			kind={ BLOCK_SALES_WINDOW }
+			formRule={ formRule }
+			onChange={ onChange }
+			getBoundaryProps={ ( name ) => ( {
+				// Each end shows its own half of the range picker.
+				picker: cloneElement( picker, {
+					className: [ picker.props.className, `tec-tickets-relative-sale-dates__picker--${ name }` ]
+						.filter( Boolean )
+						.join( ' ' ),
+				} ),
+				helperText: MODE_RELATIVE === formRule[ name ].mode ? getHelperText( name, saleWindow?.[ name ] ) : '',
+				errorMessage:
+					'end' === name && error && ! outOfRange
+						? __(
+								'Ticket sales cannot end before they start. Please adjust the sales window.',
+								'event-tickets'
+						  )
+						: '',
+				valueErrorMessage:
+					name === outOfRange
+						? sprintf(
+								// translators: %1$d is the smallest number a relative sale date takes, %2$d the largest.
+								__( 'Enter a number from %1$d to %2$d.', 'event-tickets' ),
+								MIN_VALUE,
+								MAX_VALUE
+						  )
+						: '',
+			} ) }
+		/>
 	);
 }
