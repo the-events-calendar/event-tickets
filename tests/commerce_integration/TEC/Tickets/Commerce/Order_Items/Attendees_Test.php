@@ -226,6 +226,43 @@ class Attendees_Test extends WPTestCase {
 		$this->assertFalse( $listed[0]['ticket_exists'] );
 	}
 
+	public function escaped_name_provider(): Generator {
+		yield 'name stored at purchase' => [
+			static function ( int $post_id, int $ticket_id ): void {
+				wp_delete_post( $ticket_id, true );
+			},
+		];
+
+		yield 'name stored at deletion' => [
+			static function ( int $post_id, int $ticket_id, int $attendee_id ): void {
+				delete_post_meta( $attendee_id, Attendees::TICKET_NAME_META_KEY );
+				tribe( Ticket::class )->delete( $post_id, $ticket_id );
+			},
+		];
+	}
+
+	/**
+	 * The purchase name is stored raw and the deletion name is stored escaped, so each is escaped exactly once.
+	 *
+	 * @dataProvider escaped_name_provider
+	 */
+	public function test_the_fallback_title_is_escaped_exactly_once( Closure $remove_ticket ): void {
+		$post_id   = self::factory()->post->create( [ 'post_type' => 'page' ] );
+		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+		wp_update_post(
+			[
+				'ID'         => $ticket_id,
+				'post_title' => 'Fish & Chips',
+			]
+		);
+		$order       = $this->create_order( [ $ticket_id => 1 ] );
+		$attendee_id = tec_tc_attendees()->by( 'parent', $order->ID )->by( 'status', 'any' )->first_id();
+
+		$remove_ticket( $post_id, $ticket_id, $attendee_id );
+
+		$this->assertSame( 'Fish &amp; Chips', tribe( Attendee::class )->get_product_title( get_post( $attendee_id ) ) );
+	}
+
 	public function my_tickets_provider(): Generator {
 		yield 'ticket exists' => [
 			static function ( int $ticket_id, int $attendee_id, string $bought_as ): string {
