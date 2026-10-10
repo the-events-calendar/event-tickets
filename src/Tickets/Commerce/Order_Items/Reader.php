@@ -10,7 +10,7 @@
 namespace TEC\Tickets\Commerce\Order_Items;
 
 use TEC\Tickets\Commerce\Order_Items\Line_Items\Line_Item_Types;
-use TEC\Tickets\Commerce\Order_Items\Repositories\Order_Items;
+use TEC\Tickets\Commerce\Order_Items\Repositories\Order_Items_Repository;
 use Throwable;
 use Tribe__Log as Log;
 
@@ -36,9 +36,9 @@ final class Reader {
 	 *
 	 * @since TBD
 	 *
-	 * @var Order_Items
+	 * @var Order_Items_Repository
 	 */
-	private Order_Items $repository;
+	private Order_Items_Repository $repository;
 
 	/**
 	 * Reader constructor.
@@ -46,9 +46,9 @@ final class Reader {
 	 * @since TBD
 	 *
 	 * @param Line_Item_Types $types      The line item types that turn rows back into order items.
-	 * @param Order_Items     $repository The Order Items repository.
+	 * @param Order_Items_Repository $repository The Order Items repository.
 	 */
-	public function __construct( Line_Item_Types $types, Order_Items $repository ) {
+	public function __construct( Line_Item_Types $types, Order_Items_Repository $repository ) {
 		$this->types      = $types;
 		$this->repository = $repository;
 	}
