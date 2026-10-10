@@ -217,6 +217,11 @@ final class Notices {
 		$title = is_numeric( $key ) ? $this->ticket_name_on_post( (int) $key, $post_id ) : '';
 
 		if ( '' === $title ) {
+			// Most of the server's reasons already name the ticket, as the block editor's notices also check.
+			if ( preg_match( '/(^|\D)' . preg_quote( (string) $key, '/' ) . '(\D|$)/', $message ) ) {
+				return $message;
+			}
+
 			/* translators: %1$s: the ticket ID, %2$s: the error. */
 			return sprintf( __( 'Ticket %1$s: %2$s', 'event-tickets' ), (string) $key, $message );
 		}
