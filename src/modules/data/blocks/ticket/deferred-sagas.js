@@ -327,6 +327,16 @@ export function* buildLivePayload( excluded = [] ) {
 		.map( ( clientId ) => byClientId[ clientId ] )
 		.filter( ( ticket ) => ticket && ticket.hasBeenCreated && ticket.ticketId )
 		.map( ( ticket ) => Number( ticket.ticketId ) );
+	const heldDeletes = stagedDeletes.filter( ( ticketId ) => held.includes( Number( ticketId ) ) );
+	const heldMoves = Object.keys( stagedMoves )
+		.map( Number )
+		.filter( ( ticketId ) => held.includes( ticketId ) );
+
+	// Unstaged, not only left out: removing the block again with the toolbar, which stages nothing, must not resend them.
+	if ( heldDeletes.length || heldMoves.length ) {
+		heldDeletes.forEach( ( ticketId ) => delete deletedBlocks[ ticketId ] );
+		yield put( actions.clearStagedTickets( { deletes: heldDeletes, moves: heldMoves } ) );
+	}
 
 	const { payload, createOrder } = buildPayload( {
 		clientIds: clientIds.filter( ( clientId ) => ! excluded.includes( clientId ) ),

@@ -683,6 +683,22 @@ describe( 'the cross-review of the stack', () => {
 		expect( payload.move ).toEqual( { 41: 9 } );
 	} );
 
+	it( 'unstages the delete and move of a ticket whose block Undo brought back, so removing the block again keeps it', () => {
+		mockEditor.order = [ 'u', 'v' ];
+		const before = stateWith(
+			{ u: { hasBeenCreated: true, ticketId: 30 }, v: { hasBeenCreated: true, ticketId: 31 } },
+			{ deletes: [ 30, 40 ], moves: { 31: 9 } }
+		);
+		const block = run( before, sagas.refreshPayload ).reduce( reducer, before.tickets.blocks.ticket );
+
+		// Both restored blocks are removed again with the editor's own toolbar, which stages nothing.
+		mockEditor.order = [];
+		const edits = prepare( { tickets: { blocks: { ticket: block } } } );
+
+		expect( edits.tec_tickets.delete ).toEqual( [ 40 ] );
+		expect( edits.tec_tickets.move ).toEqual( {} );
+	} );
+
 	it( 'sends a preview of a draft without the staged ticket changes, whose answer a preview never applies', () => {
 		addFilter.mockClear();
 		sagas.createPreSaveChannel();
