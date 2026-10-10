@@ -18,7 +18,7 @@
 import { buffers, eventChannel } from 'redux-saga';
 import { call, fork, put, select, take } from 'redux-saga/effects';
 import { createBlock } from '@wordpress/blocks';
-import { dispatch as wpDispatch, select as wpSelect } from '@wordpress/data';
+import { dispatch as wpDispatch, select as wpSelect, subscribe } from '@wordpress/data';
 import { doAction, addAction, addFilter, removeAction, removeFilter } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 
@@ -60,6 +60,13 @@ let sent = null;
  * @type {Object|null}
  */
 let lastApplied = null;
+
+/**
+ * Whether the next post save is the one that stores created IDs in the content, which carries no payload.
+ *
+ * @type {boolean}
+ */
+let sendNoPayload = false;
 
 /**
  * The ticket block each staged delete removed, by ticket ID: `ticketDeleted` names the block, as the REST save did.
@@ -187,6 +194,46 @@ const restoreTicketBlock = ( ticketId ) => {
 		);
 	}
 };
+
+/**
+ * Writes attributes onto a ticket block now, rather than when the block next renders them from the store.
+ *
+ * @param {string} clientId   The ticket block.
+ * @param {Object} attributes The attributes.
+ */
+const writeBlockAttributes = ( clientId, attributes ) => {
+	const blocks = wpDispatch( 'core/block-editor' );
+
+	if ( blocks && 'function' === typeof blocks.updateBlockAttributes ) {
+		blocks.updateBlockAttributes( clientId, attributes );
+	}
+};
+
+/**
+ * Whether the editor is saving the post.
+ *
+ * @return {boolean} Whether a save is in flight.
+ */
+const isSavingPost = () => {
+	const editor = wpSelect( 'core/editor' );
+
+	return !! editor && 'function' === typeof editor.isSavingPost && editor.isSavingPost();
+};
+
+/**
+ * Resolves once the post save in flight has finished.
+ *
+ * @return {Promise} The promise.
+ */
+const saveFinished = () =>
+	new Promise( ( resolve ) => {
+		const unsubscribe = subscribe( () => {
+			if ( ! isSavingPost() ) {
+				unsubscribe();
+				resolve();
+			}
+		} );
+	} );
 
 /**
  * Remembers the body a ticket block would have sent, for the payload.
@@ -436,6 +483,14 @@ export function* prepareSave( edits, resolve ) {
 	// eslint-disable-next-line camelcase
 	const { tec_tickets: previous, ...withoutPayload } = edits;
 
+	if ( sendNoPayload ) {
+		// The save that stores created IDs in the content: what is still staged waits for the next save.
+		sendNoPayload = false;
+		sent = null;
+		resolve( withoutPayload );
+		return;
+	}
+
 	try {
 		const refused = yield call( stagePendingChanges );
 		const { payload, createOrder, clientIds, byClientId } = yield call( buildLivePayload, refused );
@@ -551,6 +606,7 @@ export function* applySaveResponse( response, sentNow ) {
 		if ( 'created' === block.hook ) {
 			yield put( actions.setTicketId( block.clientId, block.ticketId ) );
 			yield put( actions.setTicketHasBeenCreated( block.clientId, true ) );
+			yield call( writeBlockAttributes, block.clientId, { ticketId: block.ticketId, hasBeenCreated: true } );
 		}
 
 		yield put( actions.setTicketIsStaged( block.clientId, block.staged ) );
@@ -609,22 +665,36 @@ export function* applySaveResponse( response, sentNow ) {
 	outcome.restore.forEach( restoreTicketBlock );
 
 	// A created ticket's ID reaches its block after the content was saved: save again so the content has it,
-	// or a reload shows the block empty next to a second block for the saved ticket. That save sends no payload.
+	// or a reload shows the block empty next to a second block for the saved ticket.
 	if ( outcome.blocks.some( ( { hook } ) => 'created' === hook ) ) {
 		yield call( savePostAgain );
 	}
 }
 
 /**
- * Saves the post again, so its content has the IDs of the tickets the last save created.
+ * Saves the post again, without a payload, so its content has the IDs of the tickets the last save created.
  *
  * @since TBD
  */
 export function* savePostAgain() {
 	const editor = wpDispatch( 'core/editor' );
 
-	if ( editor && 'function' === typeof editor.savePost ) {
+	if ( ! editor || 'function' !== typeof editor.savePost ) {
+		return;
+	}
+
+	// The answer is applied inside the first save's `editor.savePost` action; core refuses a save until it finishes.
+	if ( isSavingPost() ) {
+		yield call( saveFinished );
+	}
+
+	sendNoPayload = true;
+
+	try {
 		yield call( [ editor, editor.savePost ] );
+	} finally {
+		// A save core refused never asked for the payload; the next one carries it.
+		sendNoPayload = false;
 	}
 }
 

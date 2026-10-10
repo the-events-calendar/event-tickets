@@ -19,10 +19,13 @@ import * as types from '../types';
 const mockEditor = {
 	order: [],
 	record: { id: 10 },
+	saving: false,
+	listeners: [],
 	editPost: jest.fn(),
 	savePost: jest.fn(),
 	createErrorNotice: jest.fn(),
 	insertBlock: jest.fn(),
+	updateBlockAttributes: jest.fn(),
 };
 
 jest.mock( '@wordpress/data', () => ( {
@@ -32,13 +35,20 @@ jest.mock( '@wordpress/data', () => ( {
 		getBlockIndex: ( clientId ) => mockEditor.order.indexOf( clientId ),
 		getBlocksByName: ( name ) => ( 'tribe/tickets' === name ? [ 'tickets-parent' ] : [] ),
 		getEditedPostAttribute: ( key ) => ( 'type' === key ? 'tribe_events' : undefined ),
+		isSavingPost: () => mockEditor.saving,
 	} ),
 	dispatch: () => ( {
 		editPost: mockEditor.editPost,
 		savePost: mockEditor.savePost,
 		createErrorNotice: mockEditor.createErrorNotice,
 		insertBlock: mockEditor.insertBlock,
+		updateBlockAttributes: mockEditor.updateBlockAttributes,
 	} ),
+	subscribe: ( listener ) => {
+		mockEditor.listeners.push( listener );
+
+		return () => ( mockEditor.listeners = mockEditor.listeners.filter( ( other ) => other !== listener ) );
+	},
 } ) );
 
 jest.mock( '@wordpress/blocks', () => ( {
@@ -121,8 +131,11 @@ const ofType = ( dispatched, type ) => dispatched.filter( ( action ) => action.t
 beforeEach( () => {
 	mockEditor.order = [];
 	mockEditor.record = { id: 10 };
+	mockEditor.saving = false;
+	mockEditor.listeners = [];
 	mockEditor.editPost.mockClear();
-	mockEditor.savePost.mockClear();
+	mockEditor.savePost.mockReset();
+	mockEditor.updateBlockAttributes.mockClear();
 	mockEditor.createErrorNotice.mockClear();
 	mockEditor.insertBlock.mockClear();
 	doAction.mockReset();
@@ -681,3 +694,50 @@ describe( 'the cross-review of the stack', () => {
 	} );
 } );
 
+describe( 'the follow-up save that stores the created IDs in the content', () => {
+	const flush = () => new Promise( ( resolve ) => setTimeout( resolve, 0 ) );
+
+	it( "writes a created ticket's ID into its block and saves again only once the first save has finished", async () => {
+		mockEditor.order = [ 'a' ];
+		sagas.rememberBody( 'a', [ [ 'name', 'A' ] ] );
+		const state = stateWith( { a: { isStaged: true } } );
+		prepare( state );
+		mockEditor.record = { id: 10, tec_tickets: { id: 's1', created: { 0: 101 }, errors: [] } };
+		// The answer is applied inside the first save's `editor.savePost` action, while core still says it is saving.
+		mockEditor.saving = true;
+
+		run( state, sagas.applyLastSaveResponse );
+		await flush();
+
+		// The content the follow-up save serializes holds the ID without waiting for the block to render.
+		expect( mockEditor.updateBlockAttributes ).toHaveBeenCalledWith( 'a', { ticketId: 101, hasBeenCreated: true } );
+		// Core refuses a save while one is in flight.
+		expect( mockEditor.savePost ).not.toHaveBeenCalled();
+
+		mockEditor.saving = false;
+		mockEditor.listeners.forEach( ( listener ) => listener() );
+		await flush();
+
+		expect( mockEditor.savePost ).toHaveBeenCalledTimes( 1 );
+	} );
+
+	it( 'sends the follow-up save without a payload and leaves what is still staged for the next save', async () => {
+		mockEditor.order = [ 'a', 'b' ];
+		sagas.rememberBody( 'a', [ [ 'name', 'A' ] ] );
+		prepare( stateWith( { a: { isStaged: true } } ) );
+		// Staged while the first save was out.
+		sagas.rememberBody( 'b', [ [ 'name', 'B' ] ] );
+		const state = stateWith( { a: { isStaged: true }, b: { isStaged: true } } );
+		mockEditor.record = { id: 10, tec_tickets: { id: 's1', created: { 0: 101 }, errors: [] } };
+		let followUp = null;
+		mockEditor.savePost.mockImplementation( () => {
+			followUp = prepare( state, { id: 10, content: 'x', tec_tickets: { create: [ {} ], update: {}, delete: [], move: {} } } );
+		} );
+
+		run( state, sagas.applyLastSaveResponse );
+		await flush();
+
+		expect( followUp ).toEqual( { id: 10, content: 'x' } );
+		expect( prepare( state ).tec_tickets.create.map( ( entry ) => entry.ticket_name ) ).toContain( 'B' );
+	} );
+} );
