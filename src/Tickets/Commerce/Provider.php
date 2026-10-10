@@ -110,8 +110,12 @@ class Provider extends Service_Provider {
 
 		$this->container->register( Order_Items\Controller::class );
 
-		// Registered outside the Order Items controller so the name is still stored when that feature is switched off.
-		$this->container->register( Order_Items\Attendees::class );
+		/*
+		 * Hooked here, not by the Order Items controller, so the name is still stored when that feature is switched off.
+		 * A singleton, so the container hands out the same callback every time.
+		 */
+		$this->container->singleton( Order_Items\Attendees::class );
+		add_filter( 'tec_tickets_commerce_attendee_create_args', $this->container->callback( Order_Items\Attendees::class, 'add_ticket_name' ), 10, 3 );
 
 		$this->container->register_on_action(
 			'tec_events_pro_custom_tables_v1_fully_activated',
