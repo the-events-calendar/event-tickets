@@ -66,7 +66,8 @@ export default function SalesWindow( { clientId, picker } ) {
 						[ 'start' === name ? 'toDate' : 'fromDate' ]: undefined,
 					} ),
 				} ),
-				helperText: MODE_RELATIVE === formRule[ name ].mode ? getHelperText( name, saleWindow?.[ name ] ) : '',
+				helperText:
+					MODE_RELATIVE === formRule[ name ].mode ? getHelperText( name, saleWindow?.[ name ] ) : undefined,
 				errorMessage:
 					'end' === name && error && ! outOfRange
 						? __(

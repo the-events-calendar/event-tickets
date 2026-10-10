@@ -1,10 +1,17 @@
 import moment from 'moment-timezone';
+import { getFormWindowLengthText, getWindowLengthText } from '@tec/tickets/relative-sale-dates/window-length';
 import { SALE_PRICE_WINDOW, SALES_WINDOW } from '@tec/tickets/relative-sale-dates/window-kinds';
-import { getWindowLengthText } from '@tec/tickets/relative-sale-dates/window-length';
 
 const FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
 const TIMEZONE = 'America/New_York';
+
+const UNIT_DAYS = 86400;
+const UNIT_WEEKS = 604800;
+
+const EVENT_DATES = { start: '2099-06-24 19:00:00', end: '2099-06-24 22:00:00', timezone: TIMEZONE };
+
+const NO_FORM_DATES = { start: null, end: null };
 
 /**
  * @param {string} dateTime The date and time in New York, `YYYY-MM-DD HH:mm:ss`.
@@ -87,5 +94,65 @@ describe( 'getWindowLengthText', () => {
 		const window = { start: at( '2099-06-10 19:00:00' ), end: at( '2099-06-17 19:00:00' ) };
 
 		expect( getWindowLengthText( window, SALES_WINDOW ) ).toBe( '' );
+	} );
+} );
+
+describe( 'getFormWindowLengthText', () => {
+	/**
+	 * @param {number|string} value The number of units before the event starts, as the form holds it.
+	 * @param {number}        unit  The unit, in seconds.
+	 *
+	 * @return {Object} A relative sale price boundary.
+	 */
+	const relative = ( value, unit ) => ( { mode: 'relative', value, unit } );
+
+	// The event starts on 2099-06-24 at 19:00 in New York, so 1 week before it is 2099-06-17.
+	it( 'should say how long the window the rule gives lasts', () => {
+		const rule = { start: relative( 2, UNIT_WEEKS ), end: relative( 1, UNIT_WEEKS ) };
+
+		expect( getFormWindowLengthText( rule, EVENT_DATES, NO_FORM_DATES, SALE_PRICE_WINDOW ) ).toBe(
+			'Tickets on sale for 1 week'
+		);
+	} );
+
+	it( 'should count a specific boundary from the date the form holds for it', () => {
+		const rule = { start: { mode: 'specific' }, end: relative( 1, UNIT_WEEKS ) };
+		const formDates = { start: '2099-06-16 00:00:00', end: null };
+
+		expect( getFormWindowLengthText( rule, EVENT_DATES, formDates, SALE_PRICE_WINDOW ) ).toBe(
+			'Tickets on sale for 1 day'
+		);
+	} );
+
+	it( 'should leave out a relative number the server would reject', () => {
+		// The sale price takes 1 to 30; the classic number field allows typing past its max.
+		const rule = { start: relative( 31, UNIT_DAYS ), end: relative( 1, UNIT_WEEKS ) };
+
+		expect( getFormWindowLengthText( rule, EVENT_DATES, NO_FORM_DATES, SALE_PRICE_WINDOW ) ).toBe( '' );
+	} );
+
+	it( 'should leave out a specific boundary whose date cannot be read', () => {
+		const rule = { start: { mode: 'specific' }, end: relative( 1, UNIT_WEEKS ) };
+
+		expect( getFormWindowLengthText( rule, EVENT_DATES, { start: false, end: null }, SALE_PRICE_WINDOW ) ).toBe(
+			''
+		);
+	} );
+
+	it.each( [
+		[ 'a cleared number read as NaN', Number.NaN ],
+		[ 'a cleared number kept as an empty string', '' ],
+	] )( 'should leave out a start with %s rather than count it from the event start', ( label, value ) => {
+		// A start on the event start, 2099-06-24, would read as 6 days to this end.
+		const rule = { start: relative( value, UNIT_WEEKS ), end: { mode: 'specific' } };
+		const formDates = { start: null, end: '2099-06-30 00:00:00' };
+
+		expect( getFormWindowLengthText( rule, EVENT_DATES, formDates, SALE_PRICE_WINDOW ) ).toBe( '' );
+	} );
+
+	it( 'should leave out a window without the event dates', () => {
+		const rule = { start: relative( 2, UNIT_WEEKS ), end: relative( 1, UNIT_WEEKS ) };
+
+		expect( getFormWindowLengthText( rule, null, NO_FORM_DATES, SALE_PRICE_WINDOW ) ).toBe( '' );
 	} );
 } );

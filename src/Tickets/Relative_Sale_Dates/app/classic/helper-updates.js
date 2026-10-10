@@ -16,8 +16,7 @@ import { _nx } from '@wordpress/i18n';
  */
 import { MODE_RELATIVE, UNIT_DAYS, UNIT_HOURS, UNIT_MINUTES, UNIT_WEEKS } from '../rule-constants';
 import { resolveWindow } from '../sale-window';
-import { getFormWindow } from '../window-check';
-import { getWindowLengthText } from '../window-length';
+import { getFormWindowLengthText } from '../window-length';
 import { getContext, getEventDates, readFormDates } from './form-context';
 import { formatHelperText } from './helper-text';
 import { readRule } from './rule';
@@ -148,8 +147,10 @@ export function updateWindowLength( kind ) {
 		return;
 	}
 
-	const text = getWindowLengthText(
-		getFormWindow( readRule( document, kind ), getEventDates( context ), readFormDates( kind, context ), kind ),
+	const text = getFormWindowLengthText(
+		readRule( document, kind ),
+		getEventDates( context ),
+		readFormDates( kind, context ),
 		kind
 	);
 
