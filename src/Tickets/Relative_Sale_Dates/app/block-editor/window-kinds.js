@@ -15,7 +15,12 @@ import { __, _x } from '@wordpress/i18n';
  */
 import { MODE_DEFAULT, MODE_NOW, MODE_RELATIVE, MODE_SPECIFIC } from '../rule-constants';
 import { SALES_WINDOW, SALE_PRICE_WINDOW } from '../window-kinds';
-import { isSalePriceChecked, readTicketFormDates } from './common-store-bridge';
+import {
+	getTicketFormDates,
+	getTicketSalePriceFormDates,
+	isSalePriceChecked,
+	readTicketFormDates,
+} from './common-store-bridge';
 import { readEventDates } from './event-dates';
 import { getTicketWindowError } from './window-error';
 
@@ -42,6 +47,7 @@ import { getTicketWindowError } from './window-error';
 /** @typedef {{start: BoundarySettings, end: BoundarySettings}} WindowSettings */
 /** @typedef {function( SaleWindowRule|null, string ): boolean} SaveErrorCheck */
 /** @typedef {function( Object ): (SaleWindowRule|null|undefined)} StoredRuleReader */
+/** @typedef {function( Object, string ): {start: string|null, end: string|null}} FormDatesReader */
 
 /**
  * @typedef {Object} BlockWindowKindFields
@@ -62,6 +68,9 @@ import { getTicketWindowError } from './window-error';
  *                                                              window the ticket does not have.
  * @property {function( Object ): boolean} isAnswered           Whether a ticket from that REST API says what was stored
  *                                                              for the window.
+ * @property {FormDatesReader}             readFormDates        Reads the start and end dates the ticket's form sends
+ *                                                              from the legacy ticket state and the client ID, each
+ *                                                              `YYYY-MM-DD HH:mm:ss` in the event timezone, or `null`.
  */
 
 /** @typedef {WindowKind & BlockWindowKindFields} BlockWindowKind */
@@ -209,6 +218,7 @@ export const BLOCK_SALES_WINDOW = Object.freeze( {
 	emptyValue: '',
 	readStored: ( ticket ) => ticket.relative_sale_dates ?? null,
 	isAnswered: ( ticket ) => undefined !== ticket.relative_sale_dates,
+	readFormDates: getTicketFormDates,
 } );
 
 /**
@@ -236,6 +246,7 @@ export const BLOCK_SALE_PRICE_WINDOW = Object.freeze( {
 	emptyValue: undefined,
 	readStored: ( ticket ) => ( ticket.sale_price_data?.enabled ? ticket.sale_price_data.relative ?? null : undefined ),
 	isAnswered: ( ticket ) => undefined !== ticket.sale_price_data,
+	readFormDates: getTicketSalePriceFormDates,
 } );
 
 /**

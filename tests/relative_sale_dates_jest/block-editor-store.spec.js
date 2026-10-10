@@ -68,6 +68,7 @@ describe( 'the Relative Sale Dates block editor store', () => {
 			title: 'the sales window',
 			kind: SALES_WINDOW,
 			other: SALE_PRICE_WINDOW,
+			otherSaved: savedSalePrice,
 			saved: savedRule,
 			edited: editedRule,
 		},
@@ -75,10 +76,11 @@ describe( 'the Relative Sale Dates block editor store', () => {
 			title: 'the sale price window',
 			kind: SALE_PRICE_WINDOW,
 			other: SALES_WINDOW,
+			otherSaved: savedRule,
 			saved: savedSalePrice,
 			edited: editedSalePrice,
 		},
-	] )( 'with the rule of $title', ( { kind, other, saved, edited } ) => {
+	] )( 'with the rule of $title', ( { kind, other, otherSaved, saved, edited } ) => {
 		it( 'should know nothing of a ticket it was never given a rule for', () => {
 			const clientId = newClientId();
 
@@ -166,6 +168,17 @@ describe( 'the Relative Sale Dates block editor store', () => {
 			dispatch( STORE_NAME ).saveConfirmedRule( clientId, saved, kind );
 
 			expect( getStoreState( STORE_NAME )[ clientId ] ).toBeUndefined();
+		} );
+
+		// A Tickets Commerce answer carries the sale price data even for a ticket whose sale price was never shown.
+		it( 'should leave the window of a known ticket that has none out of the store when its rule is confirmed', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setRule( clientId, otherSaved, other );
+
+			dispatch( STORE_NAME ).saveConfirmedRule( clientId, saved, kind );
+
+			expect( getStoreState( STORE_NAME )[ clientId ] ).not.toHaveProperty( kind.id );
+			expect( getSavedRule( clientId, other ) ).toStrictEqual( otherSaved );
 		} );
 
 		it( 'should restore the saved rule into the draft on cancel', () => {

@@ -25,7 +25,7 @@ import {
 	RELATIVE_VALUE_OUT_OF_RANGE,
 } from '../window-check';
 import { SALES_WINDOW, WINDOW_KINDS } from '../window-kinds';
-import { getWindowLengthText } from '../window-length';
+import { getFormWindowLengthText } from '../window-length';
 import { readDateTime, readEventDates } from './event-dates';
 import { formatHelperText } from './helper-text';
 import { readRule, writeRule } from './rule';
@@ -264,13 +264,10 @@ function updateWindowLength( kind ) {
 		return;
 	}
 
-	length.textContent = getWindowLengthText(
-		getFormWindow(
-			readRule( document, kind ),
-			getEventDates( settings, dynamic ),
-			readFormDates( kind, dynamic ),
-			kind
-		),
+	length.textContent = getFormWindowLengthText(
+		readRule( document, kind ),
+		getEventDates( settings, dynamic ),
+		readFormDates( kind, dynamic ),
 		kind
 	);
 }

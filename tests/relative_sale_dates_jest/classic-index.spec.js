@@ -473,6 +473,18 @@ describe( 'classic editor script', () => {
 		expect( getSaleLengthText() ).toBe( '' );
 	} );
 
+	it( 'should leave the sale length out while a relative number is one the server would reject', async () => {
+		renderEventForm();
+		appendSalePriceFields( { mode: 'relative', value: 2 }, { mode: 'relative', value: 1 } );
+		await loadScript();
+
+		// The number field allows typing past its max; 31 days before the event would read as 24 days to this end.
+		jQuery( '#ticket_sale_start_unit' ).val( String( UNIT_DAYS ) ).trigger( 'change' );
+		jQuery( '#ticket_sale_start_value' ).val( '31' ).trigger( 'input' );
+
+		expect( getSaleLengthText() ).toBe( '' );
+	} );
+
 	it( 'should update the sale length when a sale price date is picked from the calendar', async () => {
 		renderEventForm();
 		appendSalePriceFields( { mode: 'specific' }, { mode: 'relative', value: 1 } );

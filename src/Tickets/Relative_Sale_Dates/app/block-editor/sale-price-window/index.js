@@ -7,7 +7,9 @@ import { cloneElement } from '@wordpress/element';
  * Internal dependencies
  */
 import { MODE_SPECIFIC } from '../../rule-constants';
+import { useEventDates } from '../event-dates';
 import { useWindowDraft } from '../use-window-draft';
+import { useWindowLengthText } from '../use-window-length-text';
 import WindowBoundaries from '../window-boundaries';
 import { BLOCK_SALE_PRICE_WINDOW } from '../window-kinds';
 
@@ -64,7 +66,8 @@ function preparePicker( picker, name, label, formRule ) {
 }
 
 /**
- * Renders the sale price window options of a ticket block in place of its sale dates row.
+ * Renders the sale price window options of a ticket block in place of its sale dates row, with how long the sale price
+ * lasts under *Sale Ends*.
  *
  * @since TBD
  *
@@ -76,6 +79,9 @@ function preparePicker( picker, name, label, formRule ) {
  */
 export default function SalePriceWindow( { clientId, pickers } ) {
 	const { formRule, onChange } = useWindowDraft( clientId, BLOCK_SALE_PRICE_WINDOW );
+	const eventDates = useEventDates();
+	const lengthText = useWindowLengthText( clientId, formRule, eventDates, BLOCK_SALE_PRICE_WINDOW );
+
 	return (
 		<WindowBoundaries
 			kind={ BLOCK_SALE_PRICE_WINDOW }
@@ -83,6 +89,7 @@ export default function SalePriceWindow( { clientId, pickers } ) {
 			onChange={ onChange }
 			getBoundaryProps={ ( name, settings ) => ( {
 				picker: preparePicker( pickers[ name ], name, settings.labels.date, formRule ),
+				helperText: 'end' === name ? lengthText : undefined,
 			} ) }
 		/>
 	);
