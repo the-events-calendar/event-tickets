@@ -187,10 +187,24 @@ function renderSalesEndingBeforeStart() {
 }
 
 /**
+ * @typedef {Object} KindForm
+ *
+ * @property {function( boolean ): void} render          Renders the form with the window valid, or ending before it
+ *                                                       starts.
+ * @property {string}                    errorId         The id of the element that shows the window's error.
+ * @property {string}                    endModeId       The id of the mode field of the window's end.
+ * @property {string}                    valuePrefix     The prefix of the ids of the window's relative number fields.
+ * @property {string}                    endsBeforeStart The text of a window that ends before it starts.
+ * @property {string[]}                  serverErrors    The texts the server rejects a save of the window with.
+ * @property {string}                    outOfRange      The text of a relative number out of the window's range.
+ * @property {string}                    aboveRange      A relative number just above the window's range.
+ */
+
+/**
  * The classic form of each window kind: how to render it valid or ending before it starts, and the elements and texts
  * of its errors.
  *
- * @type {Array<[string, Object]>}
+ * @type {Array<[string, KindForm]>}
  */
 const KIND_FORMS = [
 	[
@@ -201,7 +215,7 @@ const KIND_FORMS = [
 			endModeId: 'ticket_sales_end_mode',
 			valuePrefix: 'ticket_sales',
 			endsBeforeStart: INVALID_WINDOW,
-			serverError: INVALID_WINDOW,
+			serverErrors: [ INVALID_WINDOW ],
 			outOfRange: OUT_OF_RANGE,
 			aboveRange: '61',
 		},
@@ -220,7 +234,7 @@ const KIND_FORMS = [
 			endModeId: 'ticket_sale_end_mode',
 			valuePrefix: 'ticket_sale',
 			endsBeforeStart: SALE_PRICE_ENDS_BEFORE_START,
-			serverError: SALE_PRICE_OUTSIDE_WINDOW,
+			serverErrors: [ SALE_PRICE_ENDS_BEFORE_START, SALE_PRICE_OUTSIDE_WINDOW ],
 			outOfRange: SALE_PRICE_OUT_OF_RANGE,
 			aboveRange: '31',
 		},
@@ -292,11 +306,14 @@ describe( 'classic editor script', () => {
 			text: {
 				start: 'Sales start %1$s at %2$s',
 				end: 'Sales end %1$s at %2$s',
-				invalidWindow: 'Ticket sales cannot end before they start. Please adjust the sales window.',
-				relativeValueOutOfRange: OUT_OF_RANGE,
-				salePriceEndsBeforeStart: SALE_PRICE_ENDS_BEFORE_START,
-				salePriceOutsideWindow: SALE_PRICE_OUTSIDE_WINDOW,
-				salePriceValueOutOfRange: SALE_PRICE_OUT_OF_RANGE,
+				windows: {
+					sales: { endsBeforeStart: INVALID_WINDOW, valueOutOfRange: OUT_OF_RANGE },
+					sale_price: {
+						endsBeforeStart: SALE_PRICE_ENDS_BEFORE_START,
+						outsideParent: SALE_PRICE_OUTSIDE_WINDOW,
+						valueOutOfRange: SALE_PRICE_OUT_OF_RANGE,
+					},
+				},
 			},
 		};
 		window.tribe_dynamic_help_text = {
@@ -614,6 +631,22 @@ describe( 'classic editor script', () => {
 		expect( isEndMarkedInvalid() ).toBe( false );
 	} );
 
+	// The server never rejects a save with a range text, so one is not read as an error of the window it names.
+	it( 'should show a range text the server answered with as another error, without marking a window', async () => {
+		renderEventForm();
+		appendSalePriceFields( { mode: 'relative', value: 2 }, { mode: 'relative', value: 1 } );
+		const hooks = await loadScript();
+
+		hooks.doAction( 'tec.tickets.admin.ticketSaveFailed', {
+			success: false,
+			data: { message: SALE_PRICE_OUT_OF_RANGE },
+		} );
+
+		expect( getWindowError() ).toBe( SALE_PRICE_OUT_OF_RANGE );
+		expect( readSalePriceError() ).toBe( '' );
+		expect( isMarkedInvalid( 'ticket_sale_end_mode', 'ticket_sale_price_error' ) ).toBe( false );
+	} );
+
 	describe.each( KIND_FORMS )( 'for %s', ( label, form ) => {
 		it( 'should block the save of a window that ends before it starts', async () => {
 			form.render( false );
@@ -677,16 +710,16 @@ describe( 'classic editor script', () => {
 			expect( document.getElementById( form.errorId ).textContent ).toBe( '' );
 		} );
 
-		it( 'should show the error of the window the server rejected the save with under the window, on its end', async () => {
+		it.each( form.serverErrors )( 'should show the error of the window the server rejected the save with under the window, on its end: %s', async ( serverError ) => {
 			form.render( true );
 			const hooks = await loadScript();
 
 			hooks.doAction( 'tec.tickets.admin.ticketSaveFailed', {
 				success: false,
-				data: { message: form.serverError },
+				data: { message: serverError },
 			} );
 
-			expect( document.getElementById( form.errorId ).textContent ).toBe( form.serverError );
+			expect( document.getElementById( form.errorId ).textContent ).toBe( serverError );
 			expect( isMarkedInvalid( form.endModeId, form.errorId ) ).toBe( true );
 			KIND_FORMS.filter( ( [ , other ] ) => other !== form && document.getElementById( other.errorId ) ).forEach(
 				( [ , other ] ) => expect( document.getElementById( other.errorId ).textContent ).toBe( '' )

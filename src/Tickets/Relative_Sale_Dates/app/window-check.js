@@ -190,7 +190,7 @@ function isBefore( date, other, kind ) {
  *   kind that needs one;
  * - the window must end after it starts, at the precision the kind is kept at. A start with no date of its own, such
  *   as an open start the kind stores itself, opens with the parent window, so the end is judged against the parent's
- *   start;
+ *   start, and only with both of the parent's ends, as the server judges it;
  * - the window's own start must fall inside the parent window, judged only with both of the parent's ends.
  *
  * Each boundary takes the date `getFormWindow()` gives it. A date that is not known, such as a default start sent
@@ -234,15 +234,14 @@ export function getWindowError( rule, eventDates, formDates, kind = SALES_WINDOW
 		return null;
 	}
 
+	const parentStart = parentWindow?.start;
+	const parentEnd = parentWindow?.end;
 	const ownStart = isStoredOpenStart( rule, kind ) ? null : dates.start;
-	const start = ownStart || parentWindow?.start || null;
+	const start = ownStart || ( parentEnd && parentStart ) || null;
 
 	if ( start && dates.end && ! isBefore( start, dates.end, kind ) ) {
 		return ENDS_BEFORE_START;
 	}
-
-	const parentStart = parentWindow?.start;
-	const parentEnd = parentWindow?.end;
 
 	if (
 		ownStart &&

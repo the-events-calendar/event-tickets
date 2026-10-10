@@ -16,7 +16,14 @@ import { _nx } from '@wordpress/i18n';
  */
 import { MODE_RELATIVE, UNIT_DAYS, UNIT_HOURS, UNIT_MINUTES, UNIT_WEEKS } from '../rule-constants';
 import { resolveSaleWindow } from '../sale-window';
-import { getFormWindow, getOutOfRangeBoundary, getWindowError, RELATIVE_VALUE_OUT_OF_RANGE } from '../window-check';
+import {
+	ENDS_BEFORE_START,
+	getFormWindow,
+	getOutOfRangeBoundary,
+	getWindowError,
+	OUTSIDE_PARENT,
+	RELATIVE_VALUE_OUT_OF_RANGE,
+} from '../window-check';
 import { SALES_WINDOW, WINDOW_KINDS } from '../window-kinds';
 import { getWindowLengthText } from '../window-length';
 import { readDateTime, readEventDates } from './event-dates';
@@ -60,6 +67,29 @@ const UNIT_NAMES = {
 const RELATIVE_VALUE_FIELDS = WINDOW_KINDS.flatMap( ( kind ) =>
 	[ 'start', 'end' ].map( ( key ) => `#${ kind.fieldPrefix }_${ key }_value` )
 ).join( ', ' );
+
+/**
+ * The key of each error's text among a kind's localized texts: the server's own key for an error it rejects a save
+ * with.
+ *
+ * @since TBD
+ *
+ * @type {Object<string, string>}
+ */
+const TEXT_KEYS = Object.freeze( {
+	[ ENDS_BEFORE_START ]: 'endsBeforeStart',
+	[ OUTSIDE_PARENT ]: 'outsideParent',
+	[ RELATIVE_VALUE_OUT_OF_RANGE ]: 'valueOutOfRange',
+} );
+
+/**
+ * The keys of the texts of the errors the server rejects a save with.
+ *
+ * @since TBD
+ *
+ * @type {string[]}
+ */
+const SERVER_TEXT_KEYS = [ 'endsBeforeStart', 'outsideParent' ];
 
 /**
  * The kinds whose window the form says the length of.
@@ -494,7 +524,7 @@ function validateWindow( kind, event, valid ) {
 		RELATIVE_VALUE_OUT_OF_RANGE === error
 			? `${ kind.fieldPrefix }_${ getOutOfRangeBoundary( rule, kind ) }_value`
 			: `${ kind.fieldPrefix }_end_mode`;
-	const marked = showError( kind, settings.text[ kind.messages[ error ] ], fieldId );
+	const marked = showError( kind, settings.text.windows[ kind.id ][ TEXT_KEYS[ error ] ], fieldId );
 
 	// The save button keeps the focus otherwise, away from the field that blocks the save.
 	marked?.focus();
@@ -521,10 +551,10 @@ function showServerError( response ) {
 
 	// The server escapes the message for HTML; the error element takes text.
 	const text = new window.DOMParser().parseFromString( message, 'text/html' ).documentElement.textContent;
-	const texts = window.tec?.tickets?.relativeSaleDates?.classicData?.text ?? {};
+	const texts = window.tec?.tickets?.relativeSaleDates?.classicData?.text?.windows ?? {};
 	// The server answers with the text only, so the window an error is about is told apart by its text.
 	const kind = WINDOW_KINDS.find( ( candidate ) =>
-		Object.values( candidate.messages ).some( ( key ) => key && texts[ key ] === text )
+		SERVER_TEXT_KEYS.some( ( key ) => texts[ candidate.id ]?.[ key ] === text )
 	);
 
 	if ( kind ) {

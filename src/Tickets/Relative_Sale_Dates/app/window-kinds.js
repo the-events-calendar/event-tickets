@@ -25,7 +25,7 @@ import {
 	UNIT_MINUTES,
 	UNIT_WEEKS,
 } from './rule-constants';
-import { ENDS_BEFORE_START, OUTSIDE_PARENT, RELATIVE_VALUE_OUT_OF_RANGE } from './window-errors';
+import { isAtLeast } from './php-compare';
 
 /**
  * @typedef {Object} DateFields
@@ -74,9 +74,6 @@ import { ENDS_BEFORE_START, OUTSIDE_PARENT, RELATIVE_VALUE_OUT_OF_RANGE } from '
  *                                                                    rejected, rather than left without one.
  * @property {string}                               errorId           The id of the element that shows the window's
  *                                                                    error in the classic ticket form.
- * @property {Object<string, string|null>}          messages          The key of the localized text of each error the
- *                                                                    window can have, keyed by the error's key, `null`
- *                                                                    for one it cannot.
  * @property {WindowKind|null}                      parent            The window this one must start inside, or `null`.
  * @property {string|null}                          enabledFieldId    The id of the field that adds the window to the
  *                                                                    ticket, or `null` for a window every ticket has.
@@ -96,23 +93,6 @@ const SALE_PRICE_FIELDS = Object.freeze( {
 	price: 'ticket_sale_price',
 	regularPrice: 'ticket_price',
 } );
-
-/**
- * Returns whether one value the form sends is at least another, as PHP compares the two strings: as numbers when both
- * are numeric, and as strings otherwise.
- *
- * @since TBD
- *
- * @param {string} value The value to compare.
- * @param {string} other The value to compare it with.
- *
- * @return {boolean} Whether `value` is at least `other`.
- */
-function isAtLeast( value, other ) {
-	const isNumeric = ( text ) => '' !== text.trim() && Number.isFinite( Number( text ) );
-
-	return isNumeric( value ) && isNumeric( other ) ? Number( value ) >= Number( other ) : value >= other;
-}
 
 /**
  * Returns whether a save of the form keeps the sale price, as the server's `Window_Kind::is_saved_with()` judges it:
@@ -163,11 +143,6 @@ export const SALES_WINDOW = Object.freeze( {
 	} ),
 	specificNeedsDate: true,
 	errorId: 'ticket_sales_window_error',
-	messages: Object.freeze( {
-		[ ENDS_BEFORE_START ]: 'invalidWindow',
-		[ RELATIVE_VALUE_OUT_OF_RANGE ]: 'relativeValueOutOfRange',
-		[ OUTSIDE_PARENT ]: null,
-	} ),
 	parent: null,
 	enabledFieldId: null,
 	isEnabled: () => true,
@@ -219,11 +194,6 @@ export const SALE_PRICE_WINDOW = Object.freeze( {
 	} ),
 	specificNeedsDate: false,
 	errorId: 'ticket_sale_price_error',
-	messages: Object.freeze( {
-		[ ENDS_BEFORE_START ]: 'salePriceEndsBeforeStart',
-		[ RELATIVE_VALUE_OUT_OF_RANGE ]: 'salePriceValueOutOfRange',
-		[ OUTSIDE_PARENT ]: 'salePriceOutsideWindow',
-	} ),
 	parent: SALES_WINDOW,
 	enabledFieldId: SALE_PRICE_FIELDS.enabled,
 	isEnabled: isSalePriceKept,

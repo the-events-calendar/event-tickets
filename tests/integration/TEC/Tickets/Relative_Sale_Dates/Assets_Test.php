@@ -148,8 +148,6 @@ class Assets_Test extends Controller_Test_Case {
 		$this->assertSame( 'H:i', $data['timeFormat'] );
 		$this->assertSame( 'Sales start %1$s at %2$s', $data['text']['start'] );
 		$this->assertSame( 'Sales end %1$s at %2$s', $data['text']['end'] );
-		$this->assertSame( 'Ticket sales cannot end before they start. Please adjust the sales window.', $data['text']['invalidWindow'] );
-		$this->assertSame( sprintf( 'Enter a number from %d to %d.', Boundary::MIN_VALUE, Boundary::MAX_VALUE ), $data['text']['relativeValueOutOfRange'] );
 	}
 
 	/**
@@ -185,24 +183,30 @@ class Assets_Test extends Controller_Test_Case {
 	}
 
 	/**
+	 * The errors the server rejects a save with carry its own text, so the script can tell which window a save was
+	 * rejected for; only the sale price has a parent window to start outside of.
+	 *
 	 * @test
 	 */
-	public function should_localize_the_sale_price_window_errors_the_server_answers_with(): void {
-		$data = $this->get_localized_data();
-
-		$this->assertSame( 'The sale price cannot end before it starts. Please adjust the sale price window.', $data['text']['salePriceEndsBeforeStart'] );
-		$this->assertSame( 'The sale price window falls outside the ticket sales window. Please adjust the dates.', $data['text']['salePriceOutsideWindow'] );
-	}
-
-	/**
-	 * @test
-	 */
-	public function should_localize_the_range_a_relative_sale_price_number_takes(): void {
-		$kind = Window_Kind::sale_price();
+	public function should_localize_the_error_texts_of_each_window_kind(): void {
+		$range = static fn( Window_Kind $kind ): string => sprintf( 'Enter a number from %d to %d.', Boundary::MIN_VALUE, $kind->get_max_value() );
 
 		$data = $this->get_localized_data();
 
-		$this->assertSame( sprintf( 'Enter a number from %d to %d.', Boundary::MIN_VALUE, $kind->get_max_value() ), $data['text']['salePriceValueOutOfRange'] );
+		$this->assertSame(
+			[
+				Window_Kind::SALES      => [
+					'endsBeforeStart' => 'Ticket sales cannot end before they start. Please adjust the sales window.',
+					'valueOutOfRange' => $range( Window_Kind::sales() ),
+				],
+				Window_Kind::SALE_PRICE => [
+					'endsBeforeStart' => 'The sale price cannot end before it starts. Please adjust the sale price window.',
+					'outsideParent'   => 'The sale price window falls outside the ticket sales window. Please adjust the dates.',
+					'valueOutOfRange' => $range( Window_Kind::sale_price() ),
+				],
+			],
+			$data['text']['windows']
+		);
 	}
 
 	/**
@@ -415,7 +419,7 @@ class Assets_Test extends Controller_Test_Case {
 	 * The data is read from the registered asset: the library prints each localized object once per request, so
 	 * printing the script would only show it to the first test.
 	 *
-	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, listDateFormat: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, invalidWindow: string, relativeValueOutOfRange: string, salePriceEndsBeforeStart: string, salePriceOutsideWindow: string, salePriceValueOutOfRange: string}} The localized data.
+	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, listDateFormat: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, windows: array<string,array{endsBeforeStart: string, outsideParent?: string, valueOutOfRange: string}>}} The localized data.
 	 */
 	private function get_localized_data(): array {
 		$this->make_controller()->register();
@@ -445,7 +449,7 @@ class Assets_Test extends Controller_Test_Case {
 	 * @param string $handle      The script handle.
 	 * @param string $object_name The name of the localized object.
 	 *
-	 * @return array{timeFormat: string, listDateFormat: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, invalidWindow: string}}|array{defaults: array{start: array{mode: string, value: int, unit: int, anchor: string}, end: array{mode: string, value: int, unit: int, anchor: string}}, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, dateNoYear: string, time: string}} The localized data of the classic or the Ticket block script.
+	 * @return array{timeFormat: string, listDateFormat: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, windows: array<string,array{endsBeforeStart: string, outsideParent?: string, valueOutOfRange: string}>}}|array{defaults: array{start: array{mode: string, value: int, unit: int, anchor: string}, end: array{mode: string, value: int, unit: int, anchor: string}}, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, dateNoYear: string, time: string}} The localized data of the classic or the Ticket block script.
 	 */
 	private function read_localized_data( string $handle, string $object_name ): array {
 		$asset     = Asset_Registry::init()->get( $handle );
