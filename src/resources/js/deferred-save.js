@@ -364,6 +364,9 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 				$fields.val( values[ values.length - 1 ] ).trigger( 'change' );
 			}
 		} );
+
+		// The panel script checked the dependent fields against the empty form; check them against these values.
+		$panel.find( '.tribe-dependency' ).trigger( 'verify.dependency' );
 	};
 
 	/**
