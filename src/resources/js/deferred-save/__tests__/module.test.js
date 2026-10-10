@@ -210,6 +210,18 @@ describe( 'deferred-save module', () => {
 		expect( $( '#ticket_sale_price' ).val() ).toBe( '8' );
 	} );
 
+	it( 'sends a price typed with a comma decimal as the plain number the server reads', () => {
+		window.price_format = { decimal: ',' };
+		const module = load();
+		delete window.price_format;
+		module.state.stageCreate( [ [ 'ticket_name', 'General' ], [ 'ticket_price', '12,50' ] ] );
+		module.render();
+
+		expect( $( 'input[name="tec_tickets[create][0][ticket_price]"]' ).val() ).toBe( '12.5' );
+		// The row still shows the price as the admin typed it.
+		expect( $( '.tec-tickets-deferred-save-row [data-tec-slot="price"]' ).text() ).toBe( '12,50' );
+	} );
+
 	it( 'drops the leave warning when the post form submits for real', () => {
 		const module = load();
 		module.state.stageCreate( [ [ 'ticket_name', 'General' ] ] );

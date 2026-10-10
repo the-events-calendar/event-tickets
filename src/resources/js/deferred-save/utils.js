@@ -278,28 +278,40 @@ export const createState = () => {
 };
 
 /**
+ * The price fields the server reads as plain numbers.
+ */
+const PRICE_FIELDS = [ 'ticket_price', 'ticket_sale_price' ];
+
+/**
  * Builds the hidden inputs the post form carries for the staged state.
  *
  * @since TBD
  *
- * @param {Object} state The staged state.
+ * @param {Object}             state   The staged state.
+ * @param {{decimal?: string}} context The site's price decimal separator, when the page knows it.
  *
  * @return {Array<Array<string>>} `[ name, value ]` pairs.
  */
-export const buildHiddenFields = ( state ) => {
+export const buildHiddenFields = ( state, context = {} ) => {
 	const payload = state.toPayload();
 	const fields = [];
+	// A price typed as `12,50` on a comma-decimal site is sent as `12.5`; one that cannot be read goes as typed and is refused.
+	const valueOf = ( name, value ) => {
+		const price = context.decimal && PRICE_FIELDS.includes( name ) ? priceOrNull( value, context.decimal ) : null;
+
+		return Number.isFinite( price ) ? String( price ) : String( value );
+	};
 
 	payload.create.forEach( ( { fields: entryFields, key }, position ) => {
 		entryFields.forEach( ( [ name, value ] ) => {
-			fields.push( [ `tec_tickets[create][${ position }]${ bracketName( name ) }`, String( value ) ] );
+			fields.push( [ `tec_tickets[create][${ position }]${ bracketName( name ) }`, valueOf( name, value ) ] );
 		} );
 		fields.push( [ `tec_tickets[create][${ position }][tec_tickets_create_key]`, key ] );
 	} );
 
 	Object.entries( payload.update ).forEach( ( [ ticketId, { fields: entryFields } ] ) => {
 		entryFields.forEach( ( [ name, value ] ) => {
-			fields.push( [ `tec_tickets[update][${ ticketId }]${ bracketName( name ) }`, String( value ) ] );
+			fields.push( [ `tec_tickets[update][${ ticketId }]${ bracketName( name ) }`, valueOf( name, value ) ] );
 		} );
 	} );
 

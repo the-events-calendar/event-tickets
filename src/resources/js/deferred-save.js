@@ -120,7 +120,7 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 	 */
 	const renderHiddenFields = () => {
 		$container.empty();
-		buildHiddenFields( state ).forEach( ( [ name, value ] ) => {
+		buildHiddenFields( state, { decimal } ).forEach( ( [ name, value ] ) => {
 			$( '<input>', { type: 'hidden', name, value } ).appendTo( $container );
 		} );
 	};
