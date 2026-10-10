@@ -7,6 +7,7 @@ use Codeception\TestCase\WPTestCase;
 use Generator;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 class Attendees_Test extends WPTestCase {
 	use Ticket_Maker;
@@ -70,6 +71,22 @@ class Attendees_Test extends WPTestCase {
 		$attendee = tec_tc_attendees()->by( 'parent', $order->ID )->by( 'status', 'any' )->first();
 
 		$this->assertSame( '0', get_post_meta( $attendee->ID, Attendees::TICKET_NAME_META_KEY, true ) );
+	}
+
+	public function test_a_ticket_with_an_empty_name_stores_nothing(): void {
+		$ticket       = new Ticket_Object();
+		$ticket->name = '';
+		$create_args  = [ 'title' => 'An attendee' ];
+
+		$this->assertSame( $create_args, tribe( Attendees::class )->add_ticket_name( $create_args, null, $ticket ) );
+	}
+
+	public function test_it_leaves_create_args_it_cannot_use_untouched(): void {
+		$ticket       = new Ticket_Object();
+		$ticket->name = 'A ticket';
+
+		$this->assertSame( 'not an array', tribe( Attendees::class )->add_ticket_name( 'not an array', null, $ticket ) );
+		$this->assertSame( [ 'title' => 'An attendee' ], tribe( Attendees::class )->add_ticket_name( [ 'title' => 'An attendee' ], null, 'not a ticket' ) );
 	}
 
 	public function test_renaming_the_ticket_keeps_the_name_it_was_bought_under(): void {
