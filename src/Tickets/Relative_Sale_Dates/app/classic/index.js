@@ -103,7 +103,6 @@ const SERVER_ERROR_KEYS = [ 'endsBeforeStart', 'outsideParent' ];
  */
 const LENGTH_KINDS = WINDOW_KINDS.filter( ( kind ) => kind.lengthId );
 
-
 /**
  * Gets the selector of every field a window of a kind is read from: the mode and relative fields of each boundary, the
  * fields of its specific date, and the field that adds the window to the ticket.
@@ -575,13 +574,13 @@ function validateWindow( kind, event, valid ) {
 }
 
 /**
- * Whether the admin is typing in a sales window field, checking the window again once they stop.
+ * Whether the admin is typing in a window field, checking every window again once they stop.
  *
  * @since TBD
  *
  * @type {{type: function(): void, settle: function(): void, isTyping: function(): boolean}}
  */
-const typing = createTypingTracker( () => checkWindows( SALES_WINDOW ) );
+const typing = createTypingTracker( () => WINDOW_KINDS.forEach( checkWindow ) );
 
 /**
  * Whether a change of a window field ends the admin's edit: an option picked, or a date or time picked, which the
@@ -716,19 +715,18 @@ jQuery( () => {
 } );
 
 jQuery( document ).on( 'change', EVENT_FIELDS, onEventChange );
-WINDOW_KINDS.filter( ( kind ) => SALES_WINDOW !== kind ).forEach( ( kind ) =>
-	jQuery( document ).on( 'change input', getFieldSelector( kind ), () => checkWindows( kind ) )
-);
-jQuery( document ).on( 'input', getFieldSelector( SALES_WINDOW ), () => {
-	typing.type();
-	checkWindows( SALES_WINDOW );
-} );
-jQuery( document ).on( 'change', getFieldSelector( SALES_WINDOW ), ( event ) => {
-	if ( endsEdit( event ) ) {
-		typing.settle();
-	}
+WINDOW_KINDS.forEach( ( kind ) => {
+	jQuery( document ).on( 'input', getFieldSelector( kind ), () => {
+		typing.type();
+		checkWindows( kind );
+	} );
+	jQuery( document ).on( 'change', getFieldSelector( kind ), ( event ) => {
+		if ( endsEdit( event ) ) {
+			typing.settle();
+		}
 
-	checkWindows( SALES_WINDOW );
+		checkWindows( kind );
+	} );
 } );
 jQuery( document ).on( 'change input', getFieldSelector( SALES_WINDOW ), updateHelperText );
 LENGTH_KINDS.forEach( ( kind ) =>
@@ -741,10 +739,12 @@ addAction( 'tec.tickets.admin.ticketSaveFailed', 'tec.tickets.relativeSaleDates'
 // A date picked from the calendar ends the edit of its field.
 addAction( 'tec.tickets.admin.ticketDatePicked', 'tec.tickets.relativeSaleDates', ( input ) => {
 	if ( input?.matches?.( getFieldSelector( SALES_WINDOW ) ) ) {
-		typing.settle();
 		updateHelperText();
 	}
 
-	WINDOW_KINDS.filter( ( kind ) => input?.matches?.( getFieldSelector( kind ) ) ).forEach( checkWindows );
+	WINDOW_KINDS.filter( ( kind ) => input?.matches?.( getFieldSelector( kind ) ) ).forEach( ( kind ) => {
+		typing.settle();
+		checkWindows( kind );
+	} );
 	LENGTH_KINDS.filter( ( kind ) => input?.matches?.( getFieldSelector( kind ) ) ).forEach( updateWindowLength );
 } );

@@ -1001,18 +1001,68 @@ describe( 'classic editor script', () => {
 			expect( readSalePriceError() ).toBe( '' );
 		} );
 
-		it( 'should show the sale price error as soon as a change makes it end before it starts, leaving the focus where it is', async () => {
+		it( 'should hold a new sale price error back while the admin types, and show it once they stop, leaving the focus where it is', async () => {
 			renderEventForm();
 			appendSalePriceFields( { mode: 'relative', value: 2 }, { mode: 'relative', value: 1 } );
 			await loadScript();
+			jest.useFakeTimers();
 			const endValue = document.getElementById( 'ticket_sale_end_value' );
 			endValue.focus();
 
 			jQuery( endValue ).val( '3' ).trigger( 'input' );
 
+			expect( readSalePriceError() ).toBe( '' );
+			expect( isMarkedInvalid( 'ticket_sale_end_mode', 'ticket_sale_price_error' ) ).toBe( false );
+
+			jest.advanceTimersByTime( TYPING_SETTLE_DELAY );
+
 			expect( readSalePriceError() ).toBe( SALE_PRICE_ENDS_BEFORE_START );
 			expect( isMarkedInvalid( 'ticket_sale_end_mode', 'ticket_sale_price_error' ) ).toBe( true );
 			expect( endValue.ownerDocument.activeElement ).toBe( endValue );
+		} );
+
+		it( 'should show a new sale price error as soon as an option is picked', async () => {
+			renderEventForm();
+			appendSalePriceFields( { mode: 'relative', value: 2 }, { mode: 'relative', value: 1 } );
+			await loadScript();
+			jest.useFakeTimers();
+
+			jQuery( '#ticket_sale_end_value' ).val( '3' ).trigger( 'input' );
+			document.getElementById( 'ticket_sale_end_unit' ).dispatchEvent( new Event( 'change', { bubbles: true } ) );
+
+			expect( readSalePriceError() ).toBe( SALE_PRICE_ENDS_BEFORE_START );
+		} );
+
+		it( 'should hold a new sale price error back when the typed number loses the focus', async () => {
+			renderEventForm();
+			appendSalePriceFields( { mode: 'relative', value: 2 }, { mode: 'relative', value: 1 } );
+			await loadScript();
+			jest.useFakeTimers();
+			const endValue = document.getElementById( 'ticket_sale_end_value' );
+
+			jQuery( endValue ).val( '3' ).trigger( 'input' );
+			endValue.dispatchEvent( new Event( 'change', { bubbles: true } ) );
+
+			expect( readSalePriceError() ).toBe( '' );
+
+			jest.advanceTimersByTime( TYPING_SETTLE_DELAY );
+
+			expect( readSalePriceError() ).toBe( SALE_PRICE_ENDS_BEFORE_START );
+		} );
+
+		it( 'should clear a sale price error already shown on the keystroke that fixes the window', async () => {
+			renderEventForm();
+			appendSalePriceFields( { mode: 'relative', value: 2 }, { mode: 'relative', value: 3 } );
+			await loadScript();
+			jest.useFakeTimers();
+			validateTicket();
+
+			expect( readSalePriceError() ).toBe( SALE_PRICE_ENDS_BEFORE_START );
+
+			jQuery( '#ticket_sale_end_value' ).val( '1' ).trigger( 'input' );
+
+			expect( readSalePriceError() ).toBe( '' );
+			expect( isMarkedInvalid( 'ticket_sale_end_mode', 'ticket_sale_price_error' ) ).toBe( false );
 		} );
 
 		it( 'should show the sale price error once the admin stops typing a sales window change that leaves it starting before sales open', async () => {
