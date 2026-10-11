@@ -361,15 +361,51 @@ describe( 'classic editor script', () => {
 		expect( validateTicket() ).toBe( false );
 	} );
 
-	it( 'should clear the error once the window changes', async () => {
+	it( 'should clear the error once a change fixes the window', async () => {
 		renderEventForm( { value: 1, unit: 3600, anchor: 'start' }, { mode: 'relative', value: 2, unit: 3600, anchor: 'start' } );
 		await loadScript();
 		validateTicket();
 
-		jQuery( '#ticket_sales_end_value' ).val( '0' ).trigger( 'change' );
+		jQuery( '#ticket_sales_start_value' ).val( '3' ).trigger( 'change' );
 
 		expect( getWindowError() ).toBe( '' );
 		expect( isEndMarkedInvalid() ).toBe( false );
+	} );
+
+	it( 'should show the error as soon as a change makes the window end before it starts, leaving the focus where it is', async () => {
+		renderEventForm( { value: 3, unit: 3600, anchor: 'start' }, { mode: 'relative', value: 2, unit: 3600, anchor: 'start' } );
+		await loadScript();
+		const startValue = document.getElementById( 'ticket_sales_start_value' );
+		startValue.focus();
+
+		jQuery( startValue ).val( '1' ).trigger( 'input' );
+
+		expect( getWindowError() ).toBe( INVALID_WINDOW );
+		expect( isEndMarkedInvalid() ).toBe( true );
+		expect( document.activeElement ).toBe( startValue );
+	} );
+
+	it( 'should name a number out of range as soon as it is typed', async () => {
+		renderEventForm();
+		await loadScript();
+		const endValue = document.getElementById( 'ticket_sales_end_value' );
+
+		jQuery( endValue ).val( '61' ).trigger( 'input' );
+
+		expect( getWindowError() ).toBe( OUT_OF_RANGE );
+		expect( endValue.getAttribute( 'aria-invalid' ) ).toBe( 'true' );
+	} );
+
+	it( 'should check the window again when the event dates change', async () => {
+		// A start two weeks before the event, on 2099-06-10, and a specific end on 2099-06-23.
+		renderEventForm( undefined, { mode: 'specific', value: 1, unit: 3600, anchor: 'start', date: '6/23/2099', time: '10:00' } );
+		await loadScript();
+
+		jQuery( '#EventEndDate' ).val( '7/24/2099' );
+		jQuery( '#EventStartDate' ).val( '7/24/2099' ).trigger( 'change' );
+
+		expect( getWindowError() ).toBe( INVALID_WINDOW );
+		expect( isEndMarkedInvalid() ).toBe( true );
 	} );
 
 	it( 'should show the sales window error the server rejected the save with on the end of the window', async () => {

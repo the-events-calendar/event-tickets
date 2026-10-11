@@ -232,6 +232,51 @@ function showWindowError( message, fieldId = 'ticket_sales_end_mode' ) {
 }
 
 /**
+ * Reads why the sales window in the form cannot be saved.
+ *
+ * @since TBD
+ *
+ * @return {{message: string, fieldId: string}|null} The error and the id of the field it is about, or `null` for a
+ *                                                   window that can be saved or cannot be judged here.
+ */
+function readSaleWindowError() {
+	const settings = window.tec?.tickets?.relativeSaleDates?.classicData;
+	const dynamic = window.tribe_dynamic_help_text;
+
+	if ( ! settings || ! dynamic || ! document.getElementById( 'ticket_sales_window_error' ) ) {
+		return null;
+	}
+
+	const eventDates = getEventDates( settings, dynamic );
+
+	// Without event dates the window cannot be judged here; the server still checks it.
+	if ( ! eventDates ) {
+		return null;
+	}
+
+	// A disabled field, like the date a Now start hides, is not sent, so the server does not judge it either.
+	const field = ( id ) => {
+		const input = document.getElementById( id );
+
+		return input && ! input.disabled ? input.value : undefined;
+	};
+	const error = getWindowError( readRule( document ), eventDates, {
+		start: readDateTime( field( 'ticket_start_date' ), field( 'ticket_start_time' ), dynamic.datepicker_format ),
+		end: readDateTime( field( 'ticket_end_date' ), field( 'ticket_end_time' ), dynamic.datepicker_format ),
+	} );
+
+	if ( ! error ) {
+		return null;
+	}
+
+	const outOfRange = RELATIVE_VALUE_OUT_OF_RANGE === error ? getOutOfRangeBoundary( readRule( document ) ) : null;
+
+	return outOfRange
+		? { message: settings.text.relativeValueOutOfRange, fieldId: `ticket_sales_${ outOfRange }_value` }
+		: { message: settings.text.invalidWindow, fieldId: 'ticket_sales_end_mode' };
+}
+
+/**
  * Blocks the ticket save when the sales window does not start before it ends.
  *
  * `tickets.js` keeps only the last answer of the `additionalValidation.tribe` handlers, and Event Tickets Plus answers
@@ -247,30 +292,7 @@ function showWindowError( message, fieldId = 'ticket_sales_end_mode' ) {
  */
 function validateSaleWindow( event, valid ) {
 	const answer = undefined === event.result ? valid : event.result;
-	const settings = window.tec?.tickets?.relativeSaleDates?.classicData;
-	const dynamic = window.tribe_dynamic_help_text;
-
-	if ( ! settings || ! dynamic || ! document.getElementById( 'ticket_sales_window_error' ) ) {
-		return answer;
-	}
-
-	const eventDates = getEventDates( settings, dynamic );
-
-	// Without event dates the window cannot be judged here; the server still checks it.
-	if ( ! eventDates ) {
-		return answer;
-	}
-
-	// A disabled field, like the date a Now start hides, is not sent, so the server does not judge it either.
-	const field = ( id ) => {
-		const input = document.getElementById( id );
-
-		return input && ! input.disabled ? input.value : undefined;
-	};
-	const error = getWindowError( readRule( document ), eventDates, {
-		start: readDateTime( field( 'ticket_start_date' ), field( 'ticket_start_time' ), dynamic.datepicker_format ),
-		end: readDateTime( field( 'ticket_end_date' ), field( 'ticket_end_time' ), dynamic.datepicker_format ),
-	} );
+	const error = readSaleWindowError();
 
 	if ( ! error ) {
 		showWindowError( '' );
@@ -278,13 +300,8 @@ function validateSaleWindow( event, valid ) {
 		return answer;
 	}
 
-	const outOfRange = RELATIVE_VALUE_OUT_OF_RANGE === error ? getOutOfRangeBoundary( readRule( document ) ) : null;
-	const marked = outOfRange
-		? showWindowError( settings.text.relativeValueOutOfRange, `ticket_sales_${ outOfRange }_value` )
-		: showWindowError( settings.text.invalidWindow );
-
 	// The save button keeps the focus otherwise, away from the field that blocks the save.
-	marked?.focus();
+	showWindowError( error.message, error.fieldId )?.focus();
 	event.stopImmediatePropagation();
 
 	return false;
@@ -315,14 +332,19 @@ function showServerError( response ) {
 }
 
 /**
- * Updates the helper text and clears a sales window error once a field the window depends on changes.
+ * Updates the helper text and checks the sales window again once a field the window depends on changes, so an error
+ * shows as the admin makes it rather than on the save click.
+ *
+ * The focus stays where the admin is typing; only the save click moves it to the field that blocks the save.
  *
  * @since TBD
  *
  * @return {void}
  */
 function onWindowChange() {
-	showWindowError( '' );
+	const error = readSaleWindowError();
+
+	showWindowError( error ? error.message : '', error?.fieldId );
 	updateHelperText();
 }
 
