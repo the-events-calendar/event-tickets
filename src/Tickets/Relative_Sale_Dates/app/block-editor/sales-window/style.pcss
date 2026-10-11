@@ -1,13 +1,45 @@
+/*
+ * The options take the rest of the row beside their section label, as the other fields do, with each end's label
+ * beside its mode select and the rest of the end under that select.
+ */
 .tec-tickets-relative-sale-dates {
+	--tec-tickets-relative-sale-dates-label-width: 40px;
 	display: flex;
-	flex-wrap: wrap;
-	gap: 8px 16px;
+	flex: 1;
+	flex-direction: column;
+	gap: 16px;
+	min-width: 0;
 }
 
 .tec-tickets-relative-sale-dates__end {
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
+
+	> :not(.components-select-control) {
+		margin-left: calc(var(--tec-tickets-relative-sale-dates-label-width) + 8px);
+	}
+
+	> .components-select-control {
+
+		.components-input-base {
+			justify-content: flex-start;
+		}
+
+		.components-input-control__label {
+			font-size: 13px;
+			font-weight: 400;
+			text-transform: none;
+			white-space: normal;
+			width: var(--tec-tickets-relative-sale-dates-label-width);
+		}
+
+		.components-input-control__container {
+			flex: none;
+			max-width: 100%;
+			width: 245px;
+		}
+	}
 }
 
 .tec-tickets-relative-sale-dates__relative {
@@ -15,6 +47,10 @@
 	display: flex;
 	flex-wrap: wrap;
 	gap: 8px;
+
+	.components-text-control__input {
+		width: 64px;
+	}
 }
 
 /* Each end shows only its own half of the picker it is handed. */

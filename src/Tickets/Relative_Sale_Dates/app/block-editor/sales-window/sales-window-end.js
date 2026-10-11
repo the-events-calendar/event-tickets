@@ -88,6 +88,7 @@ export default function SalesWindowEnd( { name, end, labels, modeOptions, anchor
 				__next40pxDefaultSize
 				__nextHasNoMarginBottom
 				label={ labels.mode }
+				labelPosition="side"
 				value={ end.mode }
 				options={ modeOptions }
 				onChange={ ( mode ) => onChange( { mode } ) }
