@@ -983,3 +983,23 @@ p.description {
 		margin-left: 132px;
 	}
 }
+
+/*
+ * The sale price fields line up in two columns, their labels and then their controls, with the rest of a boundary under
+ * its mode select.
+ */
+.ticket_sale_price_wrapper .ticket_sale_price:has(.tec-tickets-relative-sale-dates) div.ticket_sale_price-field {
+	align-items: center;
+	column-gap: 8px;
+	display: grid;
+	grid-template-columns: 100px minmax(0, 1fr);
+
+	> :not(label) {
+		grid-column: 2;
+	}
+
+	input#ticket_sale_price {
+		justify-self: start;
+		margin-left: 0;
+	}
+}
