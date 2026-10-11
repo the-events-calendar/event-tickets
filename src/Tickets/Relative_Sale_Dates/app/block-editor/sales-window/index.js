@@ -27,7 +27,8 @@ import {
 import { getFormRule, isSpecificWindow } from '../rule';
 import { getHelperText, resolveTicketWindow } from '../sale-dates';
 import { STORE_NAME } from '../store/constants';
-import { useTicketWindowError } from '../window-error';
+import { useTicketTyping } from '../use-ticket-typing';
+import { useShownError, useTicketWindowError } from '../window-error';
 import { RELATIVE_VALUE_OUT_OF_RANGE, getOutOfRangeBoundary } from '../../window-check';
 import SalesWindowEnd from './sales-window-end';
 import './style.pcss';
@@ -143,7 +144,8 @@ export default function SalesWindow( { clientId, picker } ) {
 	const formRule = getFormRule( rule );
 	const eventDates = useEventDates();
 	const saleWindow = useMemo( () => resolveTicketWindow( getFormRule( rule ), eventDates ), [ rule, eventDates ] );
-	const error = useTicketWindowError( clientId, rule, eventDates );
+	const typing = useTicketTyping( clientId );
+	const error = useShownError( useTicketWindowError( clientId, rule, eventDates ), typing.isTyping );
 	const outOfRange = RELATIVE_VALUE_OUT_OF_RANGE === error ? getOutOfRangeBoundary( formRule ) : null;
 	const isSpecific = isSpecificWindow( formRule );
 	const hasDurationError = useSyncExternalStore( subscribeToCommonStore, () => hasTicketDurationError( clientId ) );
@@ -162,6 +164,13 @@ export default function SalesWindow( { clientId, picker } ) {
 	}, [ clientId, hasDurationError, isSpecific ] );
 
 	const onChange = ( name, changes ) => {
+		// Only the relative number is typed; picking an option ends the edit.
+		if ( 'value' in changes ) {
+			typing.type();
+		} else {
+			typing.settle();
+		}
+
 		const changed = { ...formRule, [ name ]: { ...formRule[ name ], ...changes } };
 		setDraftRule( clientId, changed );
 

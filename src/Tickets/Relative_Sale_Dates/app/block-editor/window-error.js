@@ -7,11 +7,12 @@
 /**
  * External dependencies
  */
-import { useSyncExternalStore } from '@wordpress/element';
+import { useState, useSyncExternalStore } from '@wordpress/element';
 
 /**
  * Internal dependencies
  */
+import { getShownError } from '../live-error';
 import { RELATIVE_VALUE_OUT_OF_RANGE, getOutOfRangeBoundary, getWindowError } from '../window-check';
 import { readTicketFormDates, subscribeToCommonStore } from './common-store-bridge';
 
@@ -65,4 +66,26 @@ export function useTicketWindowError( clientId, rule, eventDates ) {
 	);
 
 	return getTicketWindowError( rule, eventDates, JSON.parse( snapshot ) );
+}
+
+/**
+ * Returns the error a ticket block's window shows while the admin edits it: a new error waits until the admin stops
+ * typing, and an error already shown follows every keystroke.
+ *
+ * @since TBD
+ *
+ * @param {string|null} error    The error key the window has now, or `null`.
+ * @param {boolean}     isTyping Whether the admin is typing in a window field of the ticket.
+ *
+ * @return {string|null} The error key to show, or `null`.
+ */
+export function useShownError( error, isTyping ) {
+	const [ shown, setShown ] = useState( null );
+	const next = getShownError( shown, error, isTyping );
+
+	if ( next !== shown ) {
+		setShown( next );
+	}
+
+	return next;
 }

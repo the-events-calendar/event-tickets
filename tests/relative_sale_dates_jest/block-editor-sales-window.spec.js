@@ -8,6 +8,7 @@ import * as legacySelectors from '@moderntribe/tickets/data/blocks/ticket/select
 import { STORE_NAME } from '@tec/tickets/relative-sale-dates/block-editor/store/constants';
 import '@tec/tickets/relative-sale-dates/block-editor/store';
 import SalesWindow from '@tec/tickets/relative-sale-dates/block-editor/sales-window';
+import { TYPING_SETTLE_DELAY } from '@tec/tickets/relative-sale-dates/live-error';
 import {
 	DEFAULT_EVENT,
 	clearBlockEditorGlobals,
@@ -137,6 +138,17 @@ function findControl( type, label ) {
 function change( type, label, value ) {
 	act( () => {
 		findControl( type, label ).props.onChange( value );
+	} );
+}
+
+/**
+ * Waits out the pause after which a new window error shows, as when the admin stops typing.
+ *
+ * @return {void}
+ */
+function pause() {
+	act( () => {
+		jest.advanceTimersByTime( TYPING_SETTLE_DELAY );
 	} );
 }
 
@@ -619,8 +631,10 @@ describe( 'the Ticket block sales window options', () => {
 
 		it( 'should name a cleared start number on the number itself, not as a window that ends before it starts', () => {
 			renderTicket( newClientId() );
+			jest.useFakeTimers();
 			change( SelectControl, START_LABELS.mode, 'relative' );
 			change( TextControl, START_LABELS.value, '' );
+			pause();
 
 			const startValue = findControl( TextControl, START_LABELS.value );
 
@@ -633,11 +647,71 @@ describe( 'the Ticket block sales window options', () => {
 		// The field keeps a typed number within 1 to 60, so only a cleared one is out of range.
 		it( 'should name a cleared end number on the end number', () => {
 			renderTicket( newClientId() );
+			jest.useFakeTimers();
 			change( SelectControl, END_LABELS.mode, 'relative' );
 			change( TextControl, END_LABELS.value, '' );
+			pause();
 
 			expect( findControl( TextControl, END_LABELS.value ).props.help.props.children ).toBe( OUT_OF_RANGE );
 			expect( findControl( TextControl, START_LABELS.value ) ).toBeUndefined();
+		} );
+
+		describe( 'while the admin types', () => {
+			/**
+			 * Renders a ticket with a relative start 2 hours and a relative end 1 hour before the event starts.
+			 *
+			 * @param {string} clientId The client ID of the ticket block.
+			 *
+			 * @return {void}
+			 */
+			function renderValidWindow( clientId ) {
+				renderTicket( clientId );
+				change( SelectControl, START_LABELS.mode, 'relative' );
+				change( SelectControl, START_LABELS.unit, String( UNIT_HOURS ) );
+				change( TextControl, START_LABELS.value, '2' );
+				change( SelectControl, END_LABELS.mode, 'relative' );
+			}
+
+			it( 'should hold a new error back until the admin stops typing for the settle delay', () => {
+				renderValidWindow( newClientId() );
+				jest.useFakeTimers();
+
+				change( TextControl, START_LABELS.value, '1' );
+				act( () => {
+					jest.advanceTimersByTime( TYPING_SETTLE_DELAY - 1 );
+				} );
+
+				expect( findError() ).toBeUndefined();
+				expect( findControl( SelectControl, END_LABELS.mode ).props[ 'aria-invalid' ] ).toBeUndefined();
+
+				act( () => {
+					jest.advanceTimersByTime( 1 );
+				} );
+
+				expect( findError().props.children ).toBe( ERROR );
+				expect( findControl( SelectControl, END_LABELS.mode ).props[ 'aria-invalid' ] ).toBe( true );
+			} );
+
+			it( 'should show a new error at once when an option is picked', () => {
+				renderValidWindow( newClientId() );
+
+				change( TextControl, START_LABELS.value, '1' );
+				change( SelectControl, END_LABELS.anchor, 'start' );
+
+				expect( findError().props.children ).toBe( ERROR );
+			} );
+
+			it( 'should clear an error already shown on the keystroke that fixes the window', () => {
+				renderValidWindow( newClientId() );
+				jest.useFakeTimers();
+				change( TextControl, START_LABELS.value, '1' );
+				pause();
+
+				change( TextControl, START_LABELS.value, '3' );
+
+				expect( findError() ).toBeUndefined();
+				expect( findControl( SelectControl, END_LABELS.mode ).props[ 'aria-invalid' ] ).toBeUndefined();
+			} );
 		} );
 	} );
 
