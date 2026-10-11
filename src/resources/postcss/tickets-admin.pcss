@@ -931,3 +931,18 @@ p.description {
 	bottom: var(--tec-spacer-0);
 	position: relative;
 }
+
+/* The mode selects keep the width of the Name field, so both ends line up whatever option they show. */
+.tec-tickets-relative-sale-dates select[id$="_mode"] {
+	max-width: 100%;
+	width: 280px;
+}
+
+.tec-tickets-relative-sale-dates__relative,
+.tec-tickets-relative-sale-dates__specific {
+	margin-top: 8px;
+}
+
+.tec-tickets-relative-sale-dates__relative input[type="number"] {
+	width: 64px;
+}
