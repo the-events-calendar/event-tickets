@@ -4,10 +4,12 @@ import { SelectControl, TextControl } from '@wordpress/components';
 import { resetLocaleData, setLocaleData } from '@wordpress/i18n';
 import * as legacyActions from '@moderntribe/tickets/data/blocks/ticket/actions';
 import { STORE_NAME } from '@tec/tickets/relative-sale-dates/block-editor/store/constants';
+import { TYPING_SETTLE_DELAY } from '@tec/tickets/relative-sale-dates/live-error';
 import { SALES_WINDOW, SALE_PRICE_WINDOW } from '@tec/tickets/relative-sale-dates/window-kinds';
 import { DEFAULT_EVENT, setTicketFormDates } from './block-editor-event-state';
 import {
 	EndPicker,
+	SALES_LABELS,
 	SALE_PRICE_LABELS,
 	StartPicker,
 	change,
@@ -15,6 +17,7 @@ import {
 	getOptionValues,
 	getRoot,
 	newClientId,
+	pause,
 	renderSalePriceWindow,
 	renderSalesWindow,
 	salePriceCase,
@@ -43,6 +46,7 @@ beforeEach( () => {
 } );
 
 afterEach( () => {
+	jest.useRealTimers();
 	tearDownBlockEditor();
 } );
 
@@ -755,9 +759,71 @@ describe( 'the Ticket block sale price window options', () => {
 				end: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
 			} );
 
-			change( TextControl, END_LABELS.value, '3' );
+			change( SelectControl, START_LABELS.unit, String( UNIT_DAYS ) );
 
 			expect( getErrors() ).toStrictEqual( [ ENDS_BEFORE_START ] );
+		} );
+
+		describe( 'while the admin types', () => {
+			const validRule = {
+				start: { mode: 'relative', value: 2, unit: UNIT_WEEKS },
+				end: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+			};
+
+			it( 'should hold a new error back until the admin stops typing for the settle delay', () => {
+				renderWithSalesWindow( validRule );
+				jest.useFakeTimers();
+
+				change( TextControl, END_LABELS.value, '3' );
+				act( () => {
+					jest.advanceTimersByTime( TYPING_SETTLE_DELAY - 1 );
+				} );
+
+				expect( getErrors() ).toStrictEqual( [] );
+				expect( findControl( SelectControl, END_LABELS.mode ).props[ 'aria-invalid' ] ).toBeUndefined();
+
+				act( () => {
+					jest.advanceTimersByTime( 1 );
+				} );
+
+				expect( getErrors() ).toStrictEqual( [ ENDS_BEFORE_START ] );
+				expect( findControl( SelectControl, END_LABELS.mode ).props[ 'aria-invalid' ] ).toBe( true );
+			} );
+
+			it( 'should clear an error already shown on the keystroke that fixes the window', () => {
+				renderWithSalesWindow( validRule );
+				jest.useFakeTimers();
+				change( TextControl, END_LABELS.value, '3' );
+				pause();
+
+				change( TextControl, END_LABELS.value, '1' );
+
+				expect( getErrors() ).toStrictEqual( [] );
+			} );
+
+			// The admin is typing in the same ticket, so a sales window number half typed does not call the sale price out.
+			it( 'should hold a sale price error back while the admin types in the sales window', () => {
+				const clientId = renderWithSalesWindow( {
+					start: { mode: 'relative', value: 3, unit: UNIT_WEEKS },
+					end: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+				} );
+				const salePriceRoot = getRoot();
+				const salePriceErrors = () =>
+					salePriceRoot
+						.findAll( ( node ) => 'span' === node.type && 'alert' === node.props.role )
+						.map( ( node ) => node.props.children );
+				renderSalesWindow( clientId );
+				jest.useFakeTimers();
+
+				// Sales now open 2 weeks before the event, after the sale price starts 3 weeks before it.
+				change( TextControl, SALES_LABELS.start.value, '2' );
+
+				expect( salePriceErrors() ).toStrictEqual( [] );
+
+				pause();
+
+				expect( salePriceErrors() ).toStrictEqual( [ OUTSIDE_SALES_WINDOW ] );
+			} );
 		} );
 
 		it( 'should check again when the sales window changes', () => {
@@ -786,7 +852,9 @@ describe( 'the Ticket block sale price window options', () => {
 				end: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
 			} );
 
+			jest.useFakeTimers();
 			change( TextControl, END_LABELS.value, '' );
+			pause();
 
 			const endValue = findControl( TextControl, END_LABELS.value );
 			const endMode = findControl( SelectControl, END_LABELS.mode );
