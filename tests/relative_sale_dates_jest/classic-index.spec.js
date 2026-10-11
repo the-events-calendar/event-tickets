@@ -1,3 +1,5 @@
+import { TYPING_SETTLE_DELAY } from '@tec/tickets/relative-sale-dates/live-error';
+
 global.DateFormatter = require( 'php-date-formatter' );
 
 const UNIT_DAYS = 86400;
@@ -150,6 +152,7 @@ describe( 'classic editor script', () => {
 	} );
 
 	afterEach( () => {
+		jest.useRealTimers();
 		jQuery( document ).off();
 		document.body.innerHTML = '';
 	} );
@@ -372,28 +375,82 @@ describe( 'classic editor script', () => {
 		expect( isEndMarkedInvalid() ).toBe( false );
 	} );
 
-	it( 'should show the error as soon as a change makes the window end before it starts, leaving the focus where it is', async () => {
+	it( 'should hold a new error back while the admin types, and show it once they stop, leaving the focus where it is', async () => {
 		renderEventForm( { value: 3, unit: 3600, anchor: 'start' }, { mode: 'relative', value: 2, unit: 3600, anchor: 'start' } );
 		await loadScript();
+		jest.useFakeTimers();
 		const startValue = document.getElementById( 'ticket_sales_start_value' );
 		startValue.focus();
 
 		jQuery( startValue ).val( '1' ).trigger( 'input' );
+
+		expect( getWindowError() ).toBe( '' );
+		expect( isEndMarkedInvalid() ).toBe( false );
+
+		jest.advanceTimersByTime( TYPING_SETTLE_DELAY );
 
 		expect( getWindowError() ).toBe( INVALID_WINDOW );
 		expect( isEndMarkedInvalid() ).toBe( true );
 		expect( document.activeElement ).toBe( startValue );
 	} );
 
-	it( 'should name a number out of range as soon as it is typed', async () => {
+	it( 'should show a new error as soon as an option is picked', async () => {
 		renderEventForm();
 		await loadScript();
+		jest.useFakeTimers();
+		const endValue = document.getElementById( 'ticket_sales_end_value' );
+
+		jQuery( endValue ).val( '61' ).trigger( 'input' );
+		document.getElementById( 'ticket_sales_end_unit' ).dispatchEvent( new Event( 'change', { bubbles: true } ) );
+
+		expect( getWindowError() ).toBe( OUT_OF_RANGE );
+		expect( endValue.getAttribute( 'aria-invalid' ) ).toBe( 'true' );
+	} );
+
+	it( 'should show a new error as soon as a date is picked from the calendar', async () => {
+		renderEventForm();
+		await loadScript();
+		jest.useFakeTimers();
+
+		jQuery( '#ticket_sales_end_value' ).val( '61' ).trigger( 'input' );
+		jQuery( '#ticket_end_date' ).trigger( 'change.tecRelativeSaleDates' );
+
+		expect( getWindowError() ).toBe( OUT_OF_RANGE );
+	} );
+
+	// A new error shown as the number loses the focus would move the form under the click that took the focus away.
+	it( 'should hold a new error back when the typed field loses the focus', async () => {
+		renderEventForm();
+		await loadScript();
+		jest.useFakeTimers();
+		const endValue = document.getElementById( 'ticket_sales_end_value' );
+
+		jQuery( endValue ).val( '61' ).trigger( 'input' );
+		endValue.dispatchEvent( new Event( 'change', { bubbles: true } ) );
+
+		expect( getWindowError() ).toBe( '' );
+
+		jest.advanceTimersByTime( TYPING_SETTLE_DELAY );
+
+		expect( getWindowError() ).toBe( OUT_OF_RANGE );
+	} );
+
+	it( 'should follow an error already shown on every keystroke', async () => {
+		renderEventForm( { value: 1, unit: 3600, anchor: 'start' }, { mode: 'relative', value: 2, unit: 3600, anchor: 'start' } );
+		await loadScript();
+		jest.useFakeTimers();
+		validateTicket();
 		const endValue = document.getElementById( 'ticket_sales_end_value' );
 
 		jQuery( endValue ).val( '61' ).trigger( 'input' );
 
 		expect( getWindowError() ).toBe( OUT_OF_RANGE );
 		expect( endValue.getAttribute( 'aria-invalid' ) ).toBe( 'true' );
+
+		jQuery( endValue ).val( '2' ).trigger( 'input' );
+
+		expect( getWindowError() ).toBe( INVALID_WINDOW );
+		expect( isEndMarkedInvalid() ).toBe( true );
 	} );
 
 	it( 'should check the window again when the event dates change', async () => {

@@ -14,6 +14,7 @@ import { addAction } from '@wordpress/hooks';
  * Internal dependencies
  */
 import '../zone-data';
+import { createTypingTracker, getShownError } from '../live-error';
 import { resolveSaleWindow } from '../sale-window';
 import { updateDateLimit } from './date-limits';
 import { readDateTime, readEventDates } from './event-dates';
@@ -332,6 +333,32 @@ function showServerError( response ) {
 }
 
 /**
+ * Whether the admin is typing in a sales window field, checking the window again once they stop.
+ *
+ * @since TBD
+ *
+ * @type {{type: function(): void, settle: function(): void, isTyping: function(): boolean}}
+ */
+const typing = createTypingTracker( onWindowChange );
+
+/**
+ * Whether a change of a window field ends the admin's edit: an option picked, or a date or time picked, which the
+ * pickers fire themselves.
+ *
+ * A typed field fires its own change once it loses the focus, which does not: a new error shown then moves the form
+ * under the click that took the focus away, and the click misses.
+ *
+ * @since TBD
+ *
+ * @param {jQuery.Event} event The change event.
+ *
+ * @return {boolean} Whether the change ends the edit.
+ */
+function endsEdit( event ) {
+	return ! event.originalEvent || ! [ 'text', 'number' ].includes( event.target.type );
+}
+
+/**
  * Updates the helper text and checks the sales window again once a field the window depends on changes, so an error
  * shows as the admin makes it rather than on the save click.
  *
@@ -342,9 +369,13 @@ function showServerError( response ) {
  * @return {void}
  */
 function onWindowChange() {
-	const error = readSaleWindowError();
+	const shown = getShownError(
+		document.getElementById( 'ticket_sales_window_error' )?.textContent,
+		readSaleWindowError(),
+		typing.isTyping()
+	);
 
-	showWindowError( error ? error.message : '', error?.fieldId );
+	showWindowError( shown ? shown.message : '', shown?.fieldId );
 	updateHelperText();
 }
 
@@ -362,12 +393,18 @@ jQuery( () => {
 } );
 
 jQuery( document ).on( 'change', EVENT_FIELDS, onWindowChange );
+jQuery( document ).on( 'input', `${ RULE_FIELDS }, ${ SPECIFIC_DATE_FIELDS }`, () => {
+	typing.type();
+	onWindowChange();
+} );
 // `tickets.js` tells this script of a date picked from the calendar with the namespaced event, which a plain change fires too.
-jQuery( document ).on(
-	'change.tecRelativeSaleDates input',
-	`${ RULE_FIELDS }, ${ SPECIFIC_DATE_FIELDS }`,
-	onWindowChange
-);
+jQuery( document ).on( 'change.tecRelativeSaleDates', `${ RULE_FIELDS }, ${ SPECIFIC_DATE_FIELDS }`, ( event ) => {
+	if ( endsEdit( event ) ) {
+		typing.settle();
+	}
+
+	onWindowChange();
+} );
 
 addAction( 'tec.tickets.admin.panels.refreshed', 'tec.tickets.relativeSaleDates', updateHelperText );
 addAction( 'tec.tickets.admin.ticketSaveFailed', 'tec.tickets.relativeSaleDates', showServerError );
