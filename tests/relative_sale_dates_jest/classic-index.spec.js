@@ -958,15 +958,14 @@ describe( 'classic editor script', () => {
 		} );
 
 		// The picker fires no change of its own once a date is picked.
-		it( 'should clear the sale price error once a date is picked for it from the calendar', async () => {
+		it( 'should check the sale price again once a date is picked for it from the calendar', async () => {
 			renderEventForm();
 			appendSalePriceFields( { mode: 'specific' }, { mode: 'relative', value: 1 }, 'not a date' );
 			const hooks = await loadScript();
-			validateTicket();
 
 			hooks.doAction( 'tec.tickets.admin.ticketDatePicked', document.getElementById( 'ticket_sale_start_date' ) );
 
-			expect( readSalePriceError() ).toBe( '' );
+			expect( readSalePriceError() ).toBe( SALE_PRICE_ENDS_BEFORE_START );
 		} );
 
 		it( 'should leave a sale price that is not added unjudged', async () => {
@@ -1002,15 +1001,47 @@ describe( 'classic editor script', () => {
 			expect( readSalePriceError() ).toBe( '' );
 		} );
 
-		it( 'should clear the sale price error once the event date changes', async () => {
+		it( 'should show the sale price error as soon as a change makes it end before it starts, leaving the focus where it is', async () => {
 			renderEventForm();
-			appendSalePriceFields( { mode: 'relative', value: 1 }, { mode: 'relative', value: 2 } );
+			appendSalePriceFields( { mode: 'relative', value: 2 }, { mode: 'relative', value: 1 } );
 			await loadScript();
-			validateTicket();
+			const endValue = document.getElementById( 'ticket_sale_end_value' );
+			endValue.focus();
 
-			jQuery( '#EventStartDate' ).val( '6/25/2099' ).trigger( 'change' );
+			jQuery( endValue ).val( '3' ).trigger( 'input' );
+
+			expect( readSalePriceError() ).toBe( SALE_PRICE_ENDS_BEFORE_START );
+			expect( isMarkedInvalid( 'ticket_sale_end_mode', 'ticket_sale_price_error' ) ).toBe( true );
+			expect( endValue.ownerDocument.activeElement ).toBe( endValue );
+		} );
+
+		it( 'should show the sale price error once the admin stops typing a sales window change that leaves it starting before sales open', async () => {
+			// Sales open ten days before the event, ahead of the sale price a week before.
+			renderEventForm( { value: 10, unit: UNIT_DAYS, anchor: 'start' } );
+			appendSalePriceFields( { mode: 'relative', value: 1 }, { mode: 'relative', value: 2, unit: UNIT_DAYS } );
+			await loadScript();
+			jest.useFakeTimers();
+
+			jQuery( '#ticket_sales_start_value' ).val( '2' ).trigger( 'input' );
 
 			expect( readSalePriceError() ).toBe( '' );
+
+			jest.advanceTimersByTime( TYPING_SETTLE_DELAY );
+
+			expect( getWindowError() ).toBe( '' );
+			expect( readSalePriceError() ).toBe( SALE_PRICE_OUTSIDE_WINDOW );
+		} );
+
+		it( 'should check the sale price window again when the event dates change', async () => {
+			// Sales open two weeks before the event, on 2099-06-10, ahead of the specific sale price start on 2099-06-14.
+			renderEventForm();
+			appendSalePriceFields( { mode: 'specific' }, { mode: 'relative', value: 2, unit: UNIT_DAYS }, '6/14/2099' );
+			await loadScript();
+
+			jQuery( '#EventEndDate' ).val( '7/24/2099' );
+			jQuery( '#EventStartDate' ).val( '7/24/2099' ).trigger( 'change' );
+
+			expect( readSalePriceError() ).toBe( SALE_PRICE_OUTSIDE_WINDOW );
 		} );
 
 		it( 'should clear the sale price error once the sale price is removed', async () => {

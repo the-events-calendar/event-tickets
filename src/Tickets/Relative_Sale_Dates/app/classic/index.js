@@ -103,14 +103,6 @@ const SERVER_ERROR_KEYS = [ 'endsBeforeStart', 'outsideParent' ];
  */
 const LENGTH_KINDS = WINDOW_KINDS.filter( ( kind ) => kind.lengthId );
 
-/**
- * The kinds whose window is judged on save only, so a change clears its error rather than checking it again.
- *
- * @since TBD
- *
- * @type {import( '../window-kinds' ).WindowKind[]}
- */
-const JUDGED_KINDS = WINDOW_KINDS.filter( ( kind ) => SALES_WINDOW !== kind );
 
 /**
  * Gets the selector of every field a window of a kind is read from: the mode and relative fields of each boundary, the
@@ -478,21 +470,6 @@ function showError( kind, message, fieldId = null ) {
 }
 
 /**
- * Clears the error of a window of a kind, and of every window judged against it.
- *
- * @since TBD
- *
- * @param {import( '../window-kinds' ).WindowKind} kind The kind of the window.
- *
- * @return {void}
- */
-function clearErrors( kind ) {
-	WINDOW_KINDS.filter( ( other ) => other === kind || other.parent === kind ).forEach( ( other ) =>
-		showError( other, '' )
-	);
-}
-
-/**
  * Gets the parent window of a window of a kind as the form gives it.
  *
  * @since TBD
@@ -604,7 +581,7 @@ function validateWindow( kind, event, valid ) {
  *
  * @type {{type: function(): void, settle: function(): void, isTyping: function(): boolean}}
  */
-const typing = createTypingTracker( () => checkWindow( SALES_WINDOW ) );
+const typing = createTypingTracker( () => checkWindows( SALES_WINDOW ) );
 
 /**
  * Whether a change of a window field ends the admin's edit: an option picked, or a date or time picked, which the
@@ -636,9 +613,10 @@ function endsEdit( event ) {
  * @return {void}
  */
 function checkWindow( kind ) {
+	// As on the save click, a window judged against its parent is not judged while the parent is invalid.
 	const error = getShownError(
 		document.getElementById( kind.errorId )?.textContent,
-		readWindowError( kind ),
+		kind.parent && readWindowError( kind.parent ) ? null : readWindowError( kind ),
 		typing.isTyping()
 	);
 
@@ -646,17 +624,16 @@ function checkWindow( kind ) {
 }
 
 /**
- * Checks the sales window again once one of its fields changes, clearing the errors of the windows judged against it,
- * and updates its helper text.
+ * Checks a window of a kind again, and every window judged against it, once a field they depend on changes.
  *
  * @since TBD
  *
+ * @param {import( '../window-kinds' ).WindowKind} kind The kind of the window.
+ *
  * @return {void}
  */
-function onSalesWindowChange() {
-	WINDOW_KINDS.filter( ( kind ) => SALES_WINDOW === kind.parent ).forEach( ( kind ) => showError( kind, '' ) );
-	checkWindow( SALES_WINDOW );
-	updateHelperText();
+function checkWindows( kind ) {
+	WINDOW_KINDS.filter( ( other ) => other === kind || other.parent === kind ).forEach( checkWindow );
 }
 
 /**
@@ -702,8 +679,7 @@ function showServerError( response ) {
  * @return {void}
  */
 function onEventChange() {
-	WINDOW_KINDS.forEach( clearErrors );
-	checkWindow( SALES_WINDOW );
+	WINDOW_KINDS.forEach( checkWindow );
 	updateHelperText();
 	updateWindowLengths();
 	updateTicketsList();
@@ -740,20 +716,21 @@ jQuery( () => {
 } );
 
 jQuery( document ).on( 'change', EVENT_FIELDS, onEventChange );
-JUDGED_KINDS.forEach( ( kind ) =>
-	jQuery( document ).on( 'change input', getFieldSelector( kind ), () => clearErrors( kind ) )
+WINDOW_KINDS.filter( ( kind ) => SALES_WINDOW !== kind ).forEach( ( kind ) =>
+	jQuery( document ).on( 'change input', getFieldSelector( kind ), () => checkWindows( kind ) )
 );
 jQuery( document ).on( 'input', getFieldSelector( SALES_WINDOW ), () => {
 	typing.type();
-	onSalesWindowChange();
+	checkWindows( SALES_WINDOW );
 } );
 jQuery( document ).on( 'change', getFieldSelector( SALES_WINDOW ), ( event ) => {
 	if ( endsEdit( event ) ) {
 		typing.settle();
 	}
 
-	onSalesWindowChange();
+	checkWindows( SALES_WINDOW );
 } );
+jQuery( document ).on( 'change input', getFieldSelector( SALES_WINDOW ), updateHelperText );
 LENGTH_KINDS.forEach( ( kind ) =>
 	jQuery( document ).on( 'change input', getFieldSelector( kind ), () => updateWindowLength( kind ) )
 );
@@ -765,9 +742,9 @@ addAction( 'tec.tickets.admin.ticketSaveFailed', 'tec.tickets.relativeSaleDates'
 addAction( 'tec.tickets.admin.ticketDatePicked', 'tec.tickets.relativeSaleDates', ( input ) => {
 	if ( input?.matches?.( getFieldSelector( SALES_WINDOW ) ) ) {
 		typing.settle();
-		onSalesWindowChange();
+		updateHelperText();
 	}
 
-	JUDGED_KINDS.filter( ( kind ) => input?.matches?.( getFieldSelector( kind ) ) ).forEach( clearErrors );
+	WINDOW_KINDS.filter( ( kind ) => input?.matches?.( getFieldSelector( kind ) ) ).forEach( checkWindows );
 	LENGTH_KINDS.filter( ( kind ) => input?.matches?.( getFieldSelector( kind ) ) ).forEach( updateWindowLength );
 } );
