@@ -77,6 +77,26 @@ select[aria-invalid="true"] ~ .components-input-control__backdrop {
 	color: #cc1818;
 }
 
+/*
+ * An error stays the help of the control it is about, which points `aria-describedby` at it, but shows last in its
+ * end, under the options: the controls' own wrappers are left out of the layout so their help can be reordered.
+ */
+.editor-styles-wrapper .tec-tickets-relative-sale-dates__end > .components-select-control,
+.editor-styles-wrapper .tec-tickets-relative-sale-dates__relative > .components-base-control {
+	display: contents;
+}
+
+.editor-styles-wrapper .tec-tickets-relative-sale-dates__end > .components-select-control > .components-base-control__help {
+	margin: 0 0 0 calc(var(--tec-tickets-relative-sale-dates-label-width) + 8px);
+	order: 1;
+}
+
+.editor-styles-wrapper .tec-tickets-relative-sale-dates__relative > .components-base-control > .components-base-control__help {
+	flex-basis: 100%;
+	margin: 0;
+	order: 1;
+}
+
 /* Each end shows only its own half of the picker it is handed. */
 .editor-styles-wrapper
 .tec-tickets-relative-sale-dates__picker--start
