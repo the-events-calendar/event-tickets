@@ -97,6 +97,22 @@ select[aria-invalid="true"] ~ .components-input-control__backdrop {
 	order: 1;
 }
 
+/*
+ * The sale price boundaries line up with the Sale Price field above them: their labels take its label's column and
+ * type, so each select starts where its input does.
+ */
+.editor-styles-wrapper .tribe-editor__ticket__sale-price-wrapper .tec-tickets-relative-sale-dates {
+	--tec-tickets-relative-sale-dates-label-width: 92px;
+
+	.tec-tickets-relative-sale-dates__end > .components-select-control .components-input-control__label {
+		font-size: 15px;
+	}
+
+	.tec-tickets-relative-sale-dates__relative > span {
+		font-size: 13px;
+	}
+}
+
 /* Each end shows only its own half of the picker it is handed. */
 .editor-styles-wrapper
 .tec-tickets-relative-sale-dates__picker--start
