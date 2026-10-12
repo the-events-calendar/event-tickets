@@ -4,6 +4,14 @@
 
 const $ = require( 'jquery' );
 
+const mockDoAction = jest.fn();
+
+// `tickets.js` is loaded in an isolated module registry, so the spec reads its actions through a shared mock.
+jest.mock( '@wordpress/hooks', () => ( {
+	...jest.requireActual( '@wordpress/hooks' ),
+	doAction: ( ...args ) => mockDoAction( ...args ),
+} ) );
+
 /**
  * Sets the ticket panel up the way `tickets.js` does, with a datepicker that records the options it is given.
  *
@@ -69,4 +77,47 @@ describe( 'tickets.js date pickers', () => {
 			expect( onChange ).not.toHaveBeenCalled();
 		}
 	);
+} );
+
+describe( 'tickets.js ticket save', () => {
+	/**
+	 * Sets the ticket panel up with a save button, and answers the save request with the given response.
+	 *
+	 * @param {Object} response The response of the save request.
+	 */
+	function setUpSave( response ) {
+		setUpPanel();
+		document.body.insertAdjacentHTML(
+			'beforeend',
+			`<input id="post_ID" value="1" />
+			<div id="ticket_form_table"><button name="ticket_form_save">Save ticket</button></div>`
+		);
+		global.tribe.validation.hasErrors = () => false;
+		global.TribeTickets.add_ticket_nonce = 'nonce';
+		$.post = ( url, params, callback ) => callback( response );
+		window.tribe.tickets.editor.refreshPanels = () => {};
+	}
+
+	beforeEach( () => {
+		// Each load of `tickets.js` binds its save handler on the document again.
+		$( document ).off( '.tribe' );
+		mockDoAction.mockClear();
+	} );
+
+	it( 'should tell other scripts the server rejected the save', () => {
+		const response = { success: false, data: { message: 'Ticket sales cannot end before they start.' } };
+		setUpSave( response );
+
+		$( '[name="ticket_form_save"]' ).trigger( 'click' );
+
+		expect( mockDoAction ).toHaveBeenCalledWith( 'tec.tickets.admin.ticketSaveFailed', response );
+	} );
+
+	it( 'should not tell other scripts about a save the server accepted', () => {
+		setUpSave( { success: true, data: {} } );
+
+		$( '[name="ticket_form_save"]' ).trigger( 'click' );
+
+		expect( mockDoAction ).not.toHaveBeenCalledWith( 'tec.tickets.admin.ticketSaveFailed', expect.anything() );
+	} );
 } );
