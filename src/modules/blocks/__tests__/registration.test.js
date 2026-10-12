@@ -18,10 +18,14 @@ import rsvp from '@moderntribe/tickets/blocks/rsvp';
 import rsvpV2 from '@moderntribe/tickets/blocks/rsvp-v2';
 import rsvpDisabled from '@moderntribe/tickets/blocks/rsvp-disabled';
 
-jest.mock( '@wordpress/blocks', () => ( { registerBlockType: jest.fn() } ) );
+/* Both packages are WordPress scripts the build externalizes, so they are not installed. */
+jest.mock( '@wordpress/blocks', () => ( { registerBlockType: jest.fn() } ), { virtual: true } );
+jest.mock( '@wordpress/block-editor', () => ( { useBlockProps: () => ( { className: 'wp-block' } ) } ), { virtual: true } );
 /* The store and the Tickets block filters need a running editor; neither affects registration. */
 jest.mock( '../../data', () => ( { initStore: jest.fn() } ) );
 jest.mock( '../../data/blocks/rsvp-v2/tickets-block-filters', () => ( { initTicketsBlockFilters: jest.fn() } ) );
+
+const ThirdPartyEdit = () => null;
 
 const thirdPartyBlock = {
 	id: 'third-party-static',
@@ -34,19 +38,17 @@ const thirdPartyBlock = {
 /**
  * Loads the registration module with a fresh hooks instance and editor config.
  *
- * @param {Object} ticketsConfig The `tribe_editor_config.tickets` value to load with.
+ * @param {Object}   ticketsConfig The `tribe_editor_config.tickets` value to load with.
+ * @param {Function} filter        A `tec.tickets.blocks.beforeRegistration` callback a third party adds.
  *
  * @return {Object<string, Object>} The settings each block was registered with, keyed by block name.
  */
-const register = ( ticketsConfig ) => {
+const register = ( ticketsConfig, filter = ( blocks ) => blocks ) => {
 	global.wp.hooks = createHooks();
 	window.tribe_editor_config = { tickets: ticketsConfig };
 	registerBlockType.mockClear();
 
-	global.wp.hooks.addFilter( 'tec.tickets.blocks.beforeRegistration', 'test/third-party', ( blocks ) => [
-		...blocks,
-		thirdPartyBlock,
-	] );
+	global.wp.hooks.addFilter( 'tec.tickets.blocks.beforeRegistration', 'test/third-party', filter );
 
 	jest.isolateModules( () => {
 		require( '@moderntribe/tickets/blocks' );
@@ -76,8 +78,18 @@ describe( 'Block registration', () => {
 	} );
 
 	it( 'Should leave a block added through the registration filter at the version it declares', () => {
-		const registered = register( {} );
+		const registered = register( {}, ( blocks ) => [ ...blocks, thirdPartyBlock ] );
 
 		expect( registered[ `tribe/${ thirdPartyBlock.id }` ] ).toBe( thirdPartyBlock );
+	} );
+
+	it( 'Should leave one of our blocks a filter callback changes at the version it declares', () => {
+		const registered = register( {}, ( blocks ) =>
+			blocks.map( ( block ) => ( block.id === 'attendees' ? { ...block, edit: ThirdPartyEdit } : block ) )
+		);
+
+		expect( registered[ 'tribe/attendees' ].apiVersion ).toBeUndefined();
+		expect( registered[ 'tribe/attendees' ].edit ).toBe( ThirdPartyEdit );
+		expect( registered[ 'tribe/rsvp' ].apiVersion ).toBe( BLOCK_API_VERSION );
 	} );
 } );

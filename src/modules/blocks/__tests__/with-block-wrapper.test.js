@@ -19,8 +19,11 @@ import rsvpV2 from '@moderntribe/tickets/blocks/rsvp-v2';
 import rsvpDisabled from '@moderntribe/tickets/blocks/rsvp-disabled';
 import attendees from '@moderntribe/tickets/blocks/attendees';
 
-/* Mirrors the className the `useBlockProps` mock in jest.setup.js returns. */
+/* Mirrors the className the `useBlockProps` mock below returns. */
 const WRAPPER_CLASS_NAME = 'wp-block';
+
+/* The package is a WordPress script the build externalizes, so it is not installed. */
+jest.mock( '@wordpress/block-editor', () => ( { useBlockProps: () => ( { className: 'wp-block' } ) } ), { virtual: true } );
 
 const Edit = ( { title } ) => <span>{ title }</span>;
 

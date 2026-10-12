@@ -38,7 +38,7 @@ const isRsvpDisabled = () => Boolean( window.tribe_editor_config?.tickets?.rsvpD
  */
 const maybeSwapRsvpBlock = ( blocks ) => {
 	if ( isRsvpDisabled() ) {
-		return blocks.map( ( block ) => ( block.id === 'rsvp' ? withBlockWrapper( rsvpDisabled ) : block ) );
+		return blocks.map( ( block ) => ( block.id === 'rsvp' ? rsvpDisabled : block ) );
 	}
 
 	if ( ! isV2Enabled() ) {
@@ -46,7 +46,7 @@ const maybeSwapRsvpBlock = ( blocks ) => {
 	}
 
 	// Replace V1 RSVP block with V2.
-	return blocks.map( ( block ) => ( block.id === 'rsvp' ? withBlockWrapper( rsvpV2 ) : block ) );
+	return blocks.map( ( block ) => ( block.id === 'rsvp' ? rsvpV2 : block ) );
 };
 
 // Register the filter to swap RSVP blocks.
@@ -56,21 +56,25 @@ addFilter( 'tec.tickets.blocks.beforeRegistration', 'tec.tickets.rsvp-v2', maybe
 initTicketsBlockFilters();
 
 /*
- * Only this plugin's blocks are wrapped: they are dynamic, so their saved markup is the same at
- * every Block API version. A static block added through the filter below would lose the classes
- * WordPress adds to saved markup at version 1, so upgrading it is left to whoever registers it.
+ * Only definitions that are still exactly ours are upgraded: they are dynamic, so their saved markup
+ * is the same at every Block API version. A block a filter callback adds or changes may save static
+ * markup that would lose the classes WordPress adds at version 1, so its version is left to its author.
  */
-let blocks = [ rsvp, attendees ].map( withBlockWrapper );
+const ownBlocks = new Set( [ rsvp, rsvpV2, rsvpDisabled, attendees ] );
 
 /**
  * Allows filtering the list of blocks registered by Event Tickets.
  *
- * the
+ * Callbacks receive the block definitions as written, before they are adapted to the current
+ * Block API version. Only Event Tickets' own definitions, returned unchanged, are adapted.
  *
  * @since 5.8.0
+ * @since TBD Event Tickets' own block definitions are adapted to Block API version 3 after this filter.
  * @param {Object[]} blocks The blocks that will be registered.
  */
-blocks = applyFilters( 'tec.tickets.blocks.beforeRegistration', blocks );
+let blocks = applyFilters( 'tec.tickets.blocks.beforeRegistration', [ rsvp, attendees ] );
+
+blocks = blocks.map( ( block ) => ( ownBlocks.has( block ) ? withBlockWrapper( block ) : block ) );
 
 blocks.forEach( ( block ) => registerBlockType( `tribe/${ block.id }`, block ) );
 

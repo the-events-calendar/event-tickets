@@ -3,7 +3,10 @@
  */
 import React from 'react';
 
-const { useBlockProps } = wp.blockEditor;
+/**
+ * WordPress dependencies
+ */
+import { useBlockProps } from '@wordpress/block-editor';
 
 /**
  * The Block API version the blocks of this plugin register with.
