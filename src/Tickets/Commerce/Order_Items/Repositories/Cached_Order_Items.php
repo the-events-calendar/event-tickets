@@ -82,12 +82,13 @@ final class Cached_Order_Items implements Order_Items_Repository {
 		$cached = wp_cache_get( $key, self::GROUP, false, $found );
 
 		if ( $found && is_array( $cached ) ) {
-			return $cached;
+			return array_map( [ Order_Item::class, 'fromData' ], $cached );
 		}
 
 		$rows = $this->repository->get_by_order( $order_id );
 
-		wp_cache_set( $key, $rows, self::GROUP );
+		// Models hold closures, which a persistent object cache cannot serialize: cache their values instead.
+		wp_cache_set( $key, array_map( static fn( Order_Item $row ) => $row->toArray(), $rows ), self::GROUP );
 
 		return $rows;
 	}
