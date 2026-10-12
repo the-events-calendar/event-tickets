@@ -283,11 +283,13 @@ final class Editor {
 
 		$rule   = Rule::from_raw( $context[ $kind->get_rule_keys()['data'] ] ?? null, $kind );
 		$ticket = $context['ticket'] ?? null;
+		// Tickets Commerce caches a ticket with the ID it was first loaded with, which can be a numeric string.
+		$ticket_id = $ticket instanceof Ticket_Object ? absint( $ticket->ID ) : 0;
 		// A saved ticket without the window, such as one without a sale price, has no dates of its own for it.
-		$keeps_dates = $ticket instanceof Ticket_Object && $kind->is_enabled_for_ticket( $ticket->ID );
+		$keeps_dates = $ticket_id && $kind->is_enabled_for_ticket( $ticket_id );
 		// Only a missing ticket sales date was saved as the event start; a sale price keeps opening on its own dates.
 		$has_date = fn( string $end ): bool => $keeps_dates
-			&& ( ! $kind->owns_ticket_sales_dates() || $this->has_own_date( absint( $ticket->ID ), $kind, $end ) );
+			&& ( ! $kind->owns_ticket_sales_dates() || $this->has_own_date( $ticket_id, $kind, $end ) );
 
 		$context['window_kind']   = $kind;
 		$context['window_fields'] = [

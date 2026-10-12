@@ -141,3 +141,81 @@ describe( 'the rule of a form read without a kind', () => {
 		expect( getWrittenRule( SALES_WINDOW ) ).toStrictEqual( { start, end } );
 	} );
 } );
+
+describe( 'the rule of a sale price saved before relative dates', () => {
+	const specific = { mode: 'specific', value: 1, unit: UNIT_WEEKS };
+
+	/**
+	 * Renders the sale price fields as the form opens them, with the sale price box and the rule field as rendered.
+	 *
+	 * @param {Object}  start      The start fields.
+	 * @param {Object}  end        The end fields.
+	 * @param {boolean} hadPrice   Whether the ticket was saved with a sale price, which checks the box as it renders.
+	 * @param {string}  storedRule The rule field as rendered: the stored rule's JSON, or empty without one.
+	 */
+	function renderSalePrice( start, end, hadPrice, storedRule = '' ) {
+		renderForm( SALE_PRICE_WINDOW, start, end );
+		document.getElementById( SALE_PRICE_WINDOW.ruleFieldId ).setAttribute( 'value', storedRule );
+		document
+			.getElementById( 'tribe_panel_edit' )
+			.insertAdjacentHTML(
+				'afterbegin',
+				`<input type="checkbox" id="ticket_add_sale_price" ${ hadPrice ? 'checked' : '' } />`
+			);
+	}
+
+	it( 'should write no rule while both ends stay on the dates it was saved with', () => {
+		renderSalePrice( specific, specific, true );
+
+		writeRule( document, SALE_PRICE_WINDOW );
+
+		expect( document.getElementById( SALE_PRICE_WINDOW.ruleFieldId ).value ).toBe( '' );
+	} );
+
+	it( 'should write the rule once an end leaves its specific date', () => {
+		const relative = { mode: 'relative', value: 1, unit: UNIT_WEEKS };
+		renderSalePrice( specific, relative, true );
+
+		writeRule( document, SALE_PRICE_WINDOW );
+
+		expect( getWrittenRule( SALE_PRICE_WINDOW ) ).toStrictEqual( {
+			start: { mode: 'specific' },
+			end: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+		} );
+	} );
+
+	it( 'should write the rule of a sale price the admin is adding now', () => {
+		renderSalePrice( specific, specific, false );
+		document.getElementById( 'ticket_add_sale_price' ).checked = true;
+
+		writeRule( document, SALE_PRICE_WINDOW );
+
+		expect( getWrittenRule( SALE_PRICE_WINDOW ) ).toStrictEqual( {
+			start: { mode: 'specific' },
+			end: { mode: 'specific' },
+		} );
+	} );
+
+	it( 'should write the rule of a sale price saved with one', () => {
+		const stored = JSON.stringify( { start: { mode: 'specific' }, end: { mode: 'specific' } } );
+		renderSalePrice( specific, specific, true, stored );
+
+		writeRule( document, SALE_PRICE_WINDOW );
+
+		expect( getWrittenRule( SALE_PRICE_WINDOW ) ).toStrictEqual( JSON.parse( stored ) );
+	} );
+
+	it( 'should still write the sales window rule of the same ticket', () => {
+		renderForm( SALES_WINDOW, specific, specific );
+		document
+			.getElementById( 'tribe_panel_edit' )
+			.insertAdjacentHTML( 'afterbegin', '<input type="checkbox" id="ticket_add_sale_price" checked />' );
+
+		writeRule( document, SALES_WINDOW );
+
+		expect( getWrittenRule( SALES_WINDOW ) ).toStrictEqual( {
+			start: { mode: 'specific' },
+			end: { mode: 'specific' },
+		} );
+	} );
+} );

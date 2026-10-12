@@ -821,6 +821,26 @@ describe( 'classic date picker limits', () => {
 		] );
 	} );
 
+	it( 'should lift the limit a relative sale price end leaves on the sale price start picker', async () => {
+		renderDatePickers();
+		document.getElementById( 'tribetickets' ).insertAdjacentHTML(
+			'beforeend',
+			`<select id="ticket_sale_start_mode"><option value="specific" selected>On a specific date</option></select>
+			<input type="text" id="ticket_sale_start_date" class="hasDatepicker" value="2027-05-01" />
+			<select id="ticket_sale_end_mode">
+				<option value="specific" selected>On a specific date</option>
+				<option value="relative">Relative</option>
+			</select>
+			<input type="text" id="ticket_sale_end_date" class="hasDatepicker" value="2027-06-01" />`
+		);
+		await loadScript();
+
+		changeMode( 'ticket_sale_end_mode', 'relative' );
+
+		expect( datepickerCalls ).toContainEqual( [ 'ticket_sale_start_date', 'option', 'maxDate', null ] );
+		expect( datepickerCalls ).not.toContainEqual( [ 'ticket_start_date', 'option', 'maxDate', null ] );
+	} );
+
 	it( 'should lift the limit a relative start leaves on the end picker', async () => {
 		renderDatePickers();
 		await loadScript();

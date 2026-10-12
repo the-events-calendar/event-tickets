@@ -332,6 +332,22 @@ class Editor_Test extends Controller_Test_Case {
 	}
 
 	/**
+	 * @test
+	 */
+	public function should_render_the_form_of_a_ticket_first_loaded_with_a_numeric_string_id(): void {
+		$this->make_controller()->register();
+		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
+		$ticket_id = $this->create_tc_ticket( $event_id );
+		wp_cache_delete( $ticket_id, 'tec_tickets' );
+		tribe( Ticket::class )->get_ticket( (string) $ticket_id );
+
+		$form = $this->render_ticket_form( $event_id, $ticket_id );
+
+		$this->assertSame( 'specific', $this->get_selected_value( $form, 'ticket_sales_start_mode' ) );
+		$this->assertSame( 'specific', $this->get_selected_value( $form, 'ticket_sales_end_mode' ) );
+	}
+
+	/**
 	 * Third parties may compare the row markup byte for byte.
 	 *
 	 * @test

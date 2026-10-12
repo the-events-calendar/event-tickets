@@ -1,5 +1,5 @@
 /**
- * Keeps the limits `tickets.js` puts on the classic sales date pickers in step with the sales window modes.
+ * Keeps the limits `tickets.js` puts on the classic date pickers in step with the modes of each window.
  *
  * @since TBD
  */
@@ -17,6 +17,10 @@ const DATE_PAIRS = [
 	{
 		start: { mode: 'ticket_sales_start_mode', date: 'ticket_start_date' },
 		end: { mode: 'ticket_sales_end_mode', date: 'ticket_end_date' },
+	},
+	{
+		start: { mode: 'ticket_sale_start_mode', date: 'ticket_sale_start_date' },
+		end: { mode: 'ticket_sale_end_mode', date: 'ticket_sale_end_date' },
 	},
 ];
 
