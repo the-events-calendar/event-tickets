@@ -66,7 +66,7 @@ final class Rule_Store {
 	 *
 	 * @param int $ticket_id The ticket post ID.
 	 *
-	 * @return array<string,mixed> The stored rules, keyed by their top-level key, or an empty array.
+	 * @return array{start?: array<string,mixed>, end?: array<string,mixed>} The stored rules, keyed by their top-level key, or an empty array.
 	 */
 	public function get( int $ticket_id ): array {
 		$json = get_post_meta( $ticket_id, self::META_KEY, true );
@@ -95,15 +95,32 @@ final class Rule_Store {
 			return [];
 		}
 
-		return array_map(
+		$ticket_ids = array_map(
 			'absint',
 			tec_tc_tickets()
 				->where( 'event', $event_id )
 				->where( 'meta_exists', self::META_KEY )
 				->where( 'post_status', 'any' )
+				->order_by( 'ID', 'ASC' )
 				->per_page( self::TICKETS_QUERY_LIMIT )
 				->get_ids()
 		);
+
+		// A full page may leave tickets out; the oldest ones are kept, and the cut is logged so it can be found.
+		if ( count( $ticket_ids ) >= self::TICKETS_QUERY_LIMIT ) {
+			do_action(
+				'tribe_log',
+				'warning',
+				__CLASS__,
+				[
+					'message'  => 'Only the first ruled tickets of the event were read; the others keep their dates.',
+					'event_id' => $event_id,
+					'limit'    => self::TICKETS_QUERY_LIMIT,
+				]
+			);
+		}
+
+		return $ticket_ids;
 	}
 
 	/**
@@ -111,8 +128,8 @@ final class Rule_Store {
 	 *
 	 * @since TBD
 	 *
-	 * @param int                 $ticket_id The ticket post ID.
-	 * @param array<string,mixed> $values    The values to write, keyed by their top-level key.
+	 * @param int                                                                             $ticket_id The ticket post ID.
+	 * @param array{start?: Boundary|array<string,mixed>, end?: Boundary|array<string,mixed>} $values    The values to write, keyed by their top-level key.
 	 *
 	 * @return void
 	 */
@@ -205,8 +222,8 @@ final class Rule_Store {
 	 *
 	 * @since TBD
 	 *
-	 * @param int                 $ticket_id The ticket post ID.
-	 * @param array<string,mixed> $data      The rules to write, keyed by their top-level key.
+	 * @param int                                                                             $ticket_id The ticket post ID.
+	 * @param array{start?: Boundary|array<string,mixed>, end?: Boundary|array<string,mixed>} $data    The rules to write, keyed by their top-level key.
 	 *
 	 * @return void
 	 */

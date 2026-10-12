@@ -99,13 +99,7 @@ final class Event_Listener {
 	 * @return void
 	 */
 	public function update_ticket_dates( int $post_id ): void {
-		$ticket_ids = $this->rule_store->get_ticket_ids_for_event( $post_id );
-		// The query returns IDs only, which leaves the meta of each ticket to a query of its own.
-		update_meta_cache( 'post', $ticket_ids );
-
-		foreach ( $ticket_ids as $ticket_id ) {
-			$this->update_ticket( $ticket_id, $post_id );
-		}
+		$this->update_tickets( $post_id, $this->rule_store->get_ticket_ids_for_event( $post_id ) );
 	}
 
 	/**
@@ -245,10 +239,30 @@ final class Event_Listener {
 	 */
 	public function update_duplicated_tickets( $duplicated_ticket_ids, int $new_post_id ): void {
 		$duplicate_ids = is_array( $duplicated_ticket_ids ) ? array_filter( array_map( 'absint', $duplicated_ticket_ids ) ) : [];
+		$ticket_ids    = $this->rule_store->get_ticket_ids_for_event( $new_post_id );
 
-		// Only when a duplicate got rules, as before: the event's other ruled tickets are already resolved.
-		if ( array_intersect( $duplicate_ids, $this->rule_store->get_ticket_ids_for_event( $new_post_id ) ) ) {
-			$this->update_ticket_dates( $new_post_id );
+		// Only when a duplicate got rules: the event's other ruled tickets are already resolved.
+		if ( array_intersect( $duplicate_ids, $ticket_ids ) ) {
+			$this->update_tickets( $new_post_id, $ticket_ids );
+		}
+	}
+
+	/**
+	 * Rewrites the resolved dates of the given ruled tickets of an event.
+	 *
+	 * @since TBD
+	 *
+	 * @param int   $post_id    The event post ID.
+	 * @param int[] $ticket_ids The ruled ticket post IDs.
+	 *
+	 * @return void
+	 */
+	private function update_tickets( int $post_id, array $ticket_ids ): void {
+		// The query returns IDs only, which leaves the meta of each ticket to a query of its own.
+		update_meta_cache( 'post', $ticket_ids );
+
+		foreach ( $ticket_ids as $ticket_id ) {
+			$this->update_ticket( $ticket_id, $post_id );
 		}
 	}
 
@@ -282,6 +296,47 @@ final class Event_Listener {
 		as_unschedule_all_actions( Ticket_Actions::TICKET_START_SALES_HOOK, [ $ticket_id ], Ticket_Actions::AS_TICKET_ACTIONS_GROUP );
 		as_unschedule_all_actions( Ticket_Actions::TICKET_END_SALES_HOOK, [ $ticket_id ], Ticket_Actions::AS_TICKET_ACTIONS_GROUP );
 		$this->ticket_actions->sync_ticket_dates_actions( $ticket_id );
+
+		if ( $this->ticket_dates->ends_before_it_starts( $ticket_id ) ) {
+			$this->announce_inverted_window( $ticket_id, $post_id );
+		}
+	}
+
+	/**
+	 * Logs and announces a ticket whose window an event move left ending before it starts, which puts it off sale.
+	 *
+	 * The save of the ticket rejects such a window, but nothing rejects an event move.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket post ID.
+	 * @param int $post_id   The event post ID.
+	 *
+	 * @return void
+	 */
+	private function announce_inverted_window( int $ticket_id, int $post_id ): void {
+		do_action(
+			'tribe_log',
+			'warning',
+			__CLASS__,
+			[
+				'message'   => 'An event move left the sales window of a ticket ending before it starts.',
+				'ticket_id' => $ticket_id,
+				'event_id'  => $post_id,
+			]
+		);
+
+		/**
+		 * Fires when an event move leaves the window of a ticket with relative sale dates ending before it starts.
+		 *
+		 * The dates are written as the rule resolves them, so the ticket is off sale until they are fixed.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $ticket_id The ticket post ID.
+		 * @param int $post_id   The event post ID.
+		 */
+		do_action( 'tec_tickets_relative_sale_dates_window_inverted', $ticket_id, $post_id );
 	}
 
 	/**

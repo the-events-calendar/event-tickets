@@ -68,14 +68,13 @@ final class Ticket_Dates {
 	 * @return bool Whether any of the ticket's sale dates, or the timezone they are in, changed.
 	 */
 	public function write( int $ticket_id, int $post_id, Rule $rule ): bool {
-		$window      = $this->sale_window->resolve_for_event( $rule, $post_id );
-		$event_dates = $this->sale_window->get_event_dates( $post_id );
+		$window = $this->sale_window->resolve_for_event( $rule, $post_id );
 
-		if ( ! $window || ! $event_dates ) {
+		if ( ! $window ) {
 			return false;
 		}
 
-		$values = [ self::TIMEZONE_META_KEY => $event_dates[0]->getTimezone()->getName() ];
+		$values = [ self::TIMEZONE_META_KEY => $window->get_timezone()->getName() ];
 		$start  = $window->get_start();
 		if ( $start ) {
 			$values[ Ticket::START_DATE_META_KEY ] = $start->format( Dates::DBDATEFORMAT );
@@ -98,5 +97,34 @@ final class Ticket_Dates {
 		}
 
 		return $changed;
+	}
+
+	/**
+	 * Returns whether the ticket's sales window, as written, ends before or when it starts.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket post ID.
+	 *
+	 * @return bool Whether both dates are set and the end is not after the start.
+	 */
+	public function ends_before_it_starts( int $ticket_id ): bool {
+		$start_date = get_post_meta( $ticket_id, Ticket::START_DATE_META_KEY, true );
+		$end_date   = get_post_meta( $ticket_id, Ticket::END_DATE_META_KEY, true );
+
+		if ( ! is_string( $start_date ) || '' === $start_date || ! is_string( $end_date ) || '' === $end_date ) {
+			return false;
+		}
+
+		$start_time = get_post_meta( $ticket_id, Ticket::START_TIME_META_KEY, true );
+		$end_time   = get_post_meta( $ticket_id, Ticket::END_TIME_META_KEY, true );
+
+		// Without both times only the days can be told apart.
+		if ( ! is_string( $start_time ) || '' === $start_time || ! is_string( $end_time ) || '' === $end_time ) {
+			return $end_date < $start_date;
+		}
+
+		// Both are `Y-m-d H:i:s` in the same timezone, so they compare as strings.
+		return "{$end_date} {$end_time}" <= "{$start_date} {$start_time}";
 	}
 }

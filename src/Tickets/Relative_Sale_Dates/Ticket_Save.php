@@ -242,7 +242,7 @@ final class Ticket_Save {
 			return $this->get_invalid_window_error();
 		}
 
-		return ( new Resolved_Window( $start, $end ) )->is_valid() ? $valid : $this->get_invalid_window_error();
+		return ( new Resolved_Window( $start, $end, $timezone ) )->is_valid() ? $valid : $this->get_invalid_window_error();
 	}
 
 	/**

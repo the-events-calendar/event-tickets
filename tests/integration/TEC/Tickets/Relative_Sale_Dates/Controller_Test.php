@@ -85,6 +85,35 @@ class Controller_Test extends Controller_Test_Case {
 	}
 
 	/**
+	 * The Tickets provider registers the controller on `tec_events_fully_loaded`: the rules resolve against event
+	 * dates, so the feature exists only alongside The Events Calendar.
+	 *
+	 * @test
+	 */
+	public function should_register_only_once_the_events_calendar_has_fully_loaded(): void {
+		global $wp_actions, $wp_filter;
+		$fired = $wp_actions['tec_events_fully_loaded'] ?? 0;
+		unset( $wp_actions['tec_events_fully_loaded'] );
+		$callbacks_before = isset( $wp_filter['tec_events_fully_loaded'] ) ? $wp_filter['tec_events_fully_loaded']->callbacks : [];
+
+		$this->test_services->register_on_action( 'tec_events_fully_loaded', Controller::class );
+
+		$this->assertFalse( Controller::is_registered() );
+
+		// Run only the registration the call added, not every callback of the action.
+		foreach ( $wp_filter['tec_events_fully_loaded']->callbacks as $priority => $callbacks ) {
+			foreach ( array_diff_key( $callbacks, $callbacks_before[ $priority ] ?? [] ) as $callback ) {
+				call_user_func( $callback['function'] );
+			}
+		}
+		$wp_actions['tec_events_fully_loaded'] = $fired;
+
+		$this->assertTrue( Controller::is_registered() );
+
+		$this->test_services->get( Controller::class )->unregister();
+	}
+
+	/**
 	 * @return Generator<string,array{0: string, 1: string, 2: string, 3: int}>
 	 */
 	public function hook_provider(): Generator {

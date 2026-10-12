@@ -56,6 +56,10 @@ final class Controller extends Controller_Contract {
 	/**
 	 * Determines whether the feature is active.
 	 *
+	 * Switching it off registers nothing: stored rules stay on their tickets without being read, and event moves no
+	 * longer resolve them, so the tickets keep the dates last written. Switched back on, the next save or event move
+	 * resolves them again from those stored rules.
+	 *
 	 * @since TBD
 	 *
 	 * @return bool Whether the feature is active.
@@ -116,7 +120,6 @@ final class Controller extends Controller_Contract {
 		add_action( 'tribe_tickets_ticket_type_moved', $this->container->callback( Event_Listener::class, 'update_moved_ticket' ), 10, 2 );
 		add_filter( 'tec_tickets_ticket_end_date_follows_event_start', $this->container->callback( Event_Listener::class, 'filter_end_date_follows_event_start' ), 10, 2 );
 		add_action( 'tec_tickets_tickets_duplicated', $this->container->callback( Event_Listener::class, 'copy_rules_to_duplicates' ) );
-		// After the rules are copied to the duplicates.
 		add_action( 'tec_tickets_tickets_duplicated', $this->container->callback( Event_Listener::class, 'update_duplicated_tickets' ), 20, 2 );
 	}
 }

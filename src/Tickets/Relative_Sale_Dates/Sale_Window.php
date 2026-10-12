@@ -59,7 +59,7 @@ final class Sale_Window {
 
 		$now_start = $this->get_now_start( $ticket_start, $event_dates[0]->getTimezone() );
 
-		return $now_start ? new Resolved_Window( $now_start, $window->get_end() ) : $window;
+		return $now_start ? new Resolved_Window( $now_start, $window->get_end(), $window->get_timezone() ) : $window;
 	}
 
 	/**
@@ -107,7 +107,8 @@ final class Sale_Window {
 
 		return new Resolved_Window(
 			$this->resolve_boundary( $rule->get_start(), $anchors, null ),
-			$this->resolve_boundary( $rule->get_end(), $anchors, $anchors[ Rule::ANCHOR_START ] )
+			$this->resolve_boundary( $rule->get_end(), $anchors, $anchors[ Rule::ANCHOR_START ] ),
+			$event_start->getTimezone()
 		);
 	}
 

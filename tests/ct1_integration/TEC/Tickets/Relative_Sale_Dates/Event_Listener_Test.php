@@ -279,7 +279,16 @@ class Event_Listener_Test extends WPTestCase {
 			$this->assertCount( 2, $this->get_scheduled_timestamps( $hook, $ticket_id ) );
 		}
 		// A month later, two weeks before the event is past the specific end.
-		$moved = $event_start->modify( '+1 month' );
+		$moved    = $event_start->modify( '+1 month' );
+		$inverted = [];
+		add_action(
+			'tec_tickets_relative_sale_dates_window_inverted',
+			static function ( int $inverted_ticket_id, int $post_id ) use ( &$inverted ) {
+				$inverted[] = [ $inverted_ticket_id, $post_id ];
+			},
+			10,
+			2
+		);
 
 		$this->send_classic_event_save( $event_id, $moved );
 
@@ -288,6 +297,7 @@ class Event_Listener_Test extends WPTestCase {
 		$this->assertSame( [ $specific_end->format( 'Y-m-d' ), $specific_end->format( 'H:i:s' ) ], $this->get_ticket_end( $ticket_id ) );
 		$this->assertSame( [], $this->get_scheduled_timestamps( Ticket_Actions::TICKET_START_SALES_HOOK, $ticket_id ) );
 		$this->assertSame( [], $this->get_scheduled_timestamps( Ticket_Actions::TICKET_END_SALES_HOOK, $ticket_id ) );
+		$this->assertSame( [ [ $ticket_id, $event_id ] ], $inverted );
 	}
 
 	/**

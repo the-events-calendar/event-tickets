@@ -4,6 +4,8 @@ namespace TEC\Tickets\Relative_Sale_Dates;
 
 use Codeception\TestCase\WPTestCase;
 use DateTimeImmutable;
+use Generator;
+use TEC\Tickets\Commerce\Ticket;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Relative_Sale_Dates_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
@@ -76,5 +78,36 @@ class Ticket_Dates_Test extends WPTestCase {
 
 		$this->assertTrue( tribe( Ticket_Dates::class )->write( $ticket_id, $event_id, $rule ) );
 		$this->assertFalse( tribe( Ticket_Dates::class )->write( $ticket_id, $event_id, $rule ) );
+	}
+
+	/**
+	 * @return Generator<string,array{0: array{0: string, 1: string}, 1: array{0: string, 1: string}, 2: bool}>
+	 */
+	public function written_window_provider(): Generator {
+		yield 'an end after the start' => [ [ '2027-06-10', '19:00:00' ], [ '2027-06-11', '09:00:00' ], false ];
+		yield 'an end equal to the start' => [ [ '2027-06-10', '19:00:00' ], [ '2027-06-10', '19:00:00' ], true ];
+		yield 'an end before the start' => [ [ '2027-06-10', '19:00:00' ], [ '2027-06-10', '18:59:59' ], true ];
+		yield 'an end day without a time after the start day' => [ [ '2027-06-10', '' ], [ '2027-06-11', '' ], false ];
+		yield 'an end day without a time on the start day' => [ [ '2027-06-10', '19:00:00' ], [ '2027-06-10', '' ], false ];
+		yield 'an end day without a time before the start day' => [ [ '2027-06-10', '' ], [ '2027-06-09', '' ], true ];
+		yield 'no end' => [ [ '2027-06-10', '19:00:00' ], [ '', '' ], false ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider written_window_provider
+	 *
+	 * @param array{0: string, 1: string} $start         The written start date and time.
+	 * @param array{0: string, 1: string} $end           The written end date and time.
+	 * @param bool                        $ends_before   Whether the window ends before or when it starts.
+	 */
+	public function should_tell_whether_the_written_window_ends_before_it_starts( array $start, array $end, bool $ends_before ): void {
+		$ticket_id = $this->create_tc_ticket( $this->create_event( '2027-06-24 19:00:00' ) );
+		update_post_meta( $ticket_id, Ticket::START_DATE_META_KEY, $start[0] );
+		update_post_meta( $ticket_id, Ticket::START_TIME_META_KEY, $start[1] );
+		update_post_meta( $ticket_id, Ticket::END_DATE_META_KEY, $end[0] );
+		update_post_meta( $ticket_id, Ticket::END_TIME_META_KEY, $end[1] );
+
+		$this->assertSame( $ends_before, tribe( Ticket_Dates::class )->ends_before_it_starts( $ticket_id ) );
 	}
 }
