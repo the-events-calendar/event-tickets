@@ -61,19 +61,18 @@ function setUpPanel() {
 
 describe( 'tickets.js date pickers', () => {
 	it.each( [ [ 'ticket_start_date' ], [ 'ticket_end_date' ], [ 'ticket_sale_start_date' ], [ 'ticket_sale_end_date' ] ] )(
-		'should tell the Relative Sale Dates script, and only it, that a date was picked on %s',
+		'should tell other scripts through an action, and not a change event, that a date was picked on %s',
 		( id ) => {
 			const [ options ] = setUpPanel();
 			const input = document.getElementById( id );
-			const onRelativeSaleDatesChange = jest.fn();
 			const onChange = jest.fn();
-			$( input ).on( 'change.tecRelativeSaleDates', onRelativeSaleDatesChange );
 			$( input ).on( 'change', onChange );
+			mockDoAction.mockClear();
 
 			options.onSelect.call( input, '6/1/2099', { id } );
 
-			expect( onRelativeSaleDatesChange ).toHaveBeenCalledTimes( 1 );
-			// Other scripts listening for `change` see no new event, with or without the feature.
+			expect( mockDoAction ).toHaveBeenCalledWith( 'tec.tickets.admin.ticketDatePicked', input );
+			// Scripts listening for `change` see no new event.
 			expect( onChange ).not.toHaveBeenCalled();
 		}
 	);

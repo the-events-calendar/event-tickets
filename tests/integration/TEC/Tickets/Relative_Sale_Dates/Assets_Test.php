@@ -148,6 +148,7 @@ class Assets_Test extends Controller_Test_Case {
 		$this->assertSame( 'Sales end %1$s at %2$s', $data['text']['end'] );
 		$this->assertSame( 'Ticket sales cannot end before they start. Please adjust the sales window.', $data['text']['invalidWindow'] );
 		$this->assertSame( sprintf( 'Enter a number from %d to %d.', Boundary::MIN_VALUE, Boundary::MAX_VALUE ), $data['text']['relativeValueOutOfRange'] );
+		$this->assertSame( Ticket_Save::INVALID_WINDOW_ERROR_CODE, $data['errorCodes']['invalidWindow'] );
 	}
 
 	/**

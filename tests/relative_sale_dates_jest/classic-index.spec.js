@@ -143,6 +143,7 @@ describe( 'classic editor script', () => {
 				invalidWindow: 'Ticket sales cannot end before they start. Please adjust the sales window.',
 				relativeValueOutOfRange: OUT_OF_RANGE,
 			},
+			errorCodes: { invalidWindow: 'tec_tickets_relative_sale_dates_invalid_window' },
 		};
 		window.tribe_dynamic_help_text = {
 			date_with_year: 'F j, Y',
@@ -409,11 +410,11 @@ describe( 'classic editor script', () => {
 
 	it( 'should show a new error as soon as a date is picked from the calendar', async () => {
 		renderEventForm();
-		await loadScript();
+		const hooks = await loadScript();
 		jest.useFakeTimers();
 
 		jQuery( '#ticket_sales_end_value' ).val( '61' ).trigger( 'input' );
-		jQuery( '#ticket_end_date' ).trigger( 'change.tecRelativeSaleDates' );
+		hooks.doAction( 'tec.tickets.admin.ticketDatePicked', document.getElementById( 'ticket_end_date' ) );
 
 		expect( getWindowError() ).toBe( OUT_OF_RANGE );
 	} );
@@ -471,11 +472,25 @@ describe( 'classic editor script', () => {
 
 		hooks.doAction( 'tec.tickets.admin.ticketSaveFailed', {
 			success: false,
-			data: { message: INVALID_WINDOW },
+			data: { message: INVALID_WINDOW, code: 'tec_tickets_relative_sale_dates_invalid_window' },
 		} );
 
 		expect( getWindowError() ).toBe( INVALID_WINDOW );
 		expect( isEndMarkedInvalid() ).toBe( true );
+	} );
+
+	// A translation the server escapes differently, or another validator's message, cannot be matched by its text.
+	it( 'should tell the sales window error by its code, not by its message', async () => {
+		renderEventForm();
+		const hooks = await loadScript();
+
+		hooks.doAction( 'tec.tickets.admin.ticketSaveFailed', {
+			success: false,
+			data: { message: INVALID_WINDOW, code: 'another_validator' },
+		} );
+
+		expect( getWindowError() ).toBe( INVALID_WINDOW );
+		expect( isEndMarkedInvalid() ).toBe( false );
 	} );
 
 	it( 'should show another error the server rejected the save with without marking the sales window', async () => {

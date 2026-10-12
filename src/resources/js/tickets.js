@@ -474,11 +474,17 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 						break;
 				}
 
-				/*
-				 * jQuery UI fires no `change` after a pick when there is an `onSelect`. The namespaced event tells the
-				 * Relative Sale Dates script without firing `change` for every other script that listens for it.
+				/**
+				 * Fires when a date is picked from the calendar of a ticket date field.
+				 *
+				 * jQuery UI fires no `change` after a pick when there is an `onSelect`, and firing one here would reach
+				 * every other script that listens for it.
+				 *
+				 * @since TBD
+				 *
+				 * @param {HTMLInputElement} input The date field the date was picked for.
 				 */
-				$( this ).trigger( 'change.tecRelativeSaleDates' );
+				doAction( 'tec.tickets.admin.ticketDatePicked', this );
 			},
 		};
 

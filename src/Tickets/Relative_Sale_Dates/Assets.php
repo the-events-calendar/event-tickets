@@ -155,7 +155,7 @@ final class Assets extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, invalidWindow: string, relativeValueOutOfRange: string}} The script data.
+	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, invalidWindow: string, relativeValueOutOfRange: string}, errorCodes: array{invalidWindow: string}} The script data.
 	 */
 	private function get_classic_script_data(): array {
 		return [
@@ -172,6 +172,9 @@ final class Assets extends Controller_Contract {
 				'invalidWindow'           => __( 'Ticket sales cannot end before they start. Please adjust the sales window.', 'event-tickets' ),
 				// Translators: %1$d is the smallest number a relative sale date takes, %2$d the largest.
 				'relativeValueOutOfRange' => sprintf( __( 'Enter a number from %1$d to %2$d.', 'event-tickets' ), Boundary::MIN_VALUE, Boundary::MAX_VALUE ),
+			],
+			'errorCodes'   => [
+				'invalidWindow' => Ticket_Save::INVALID_WINDOW_ERROR_CODE,
 			],
 		];
 	}

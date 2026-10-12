@@ -56,6 +56,10 @@ const SPECIFIC_DATE_FIELDS = '#ticket_start_date, #ticket_start_time, #ticket_en
 /**
  * Reads the event dates from the TEC event fields.
  *
+ * The fields hold the dates as the admin last set them, saved or not, so the window is judged against the event the
+ * form shows. The server judges a ticket save against the event as saved: a ticket saved before the event's new dates
+ * can be accepted here and rejected there, which shows the server's message.
+ *
  * @since TBD
  *
  * @param {Object} settings The data this script is localized with.
@@ -329,7 +333,9 @@ function showServerError( response ) {
 	const settings = window.tec?.tickets?.relativeSaleDates?.classicData;
 
 	// Only the sales window error is about the window; another reason is shown without marking the window invalid.
-	showWindowError( text, text === settings?.text?.invalidWindow ? 'ticket_sales_end_mode' : null );
+	const isWindowError = Boolean( response?.data?.code ) && response.data.code === settings?.errorCodes?.invalidWindow;
+
+	showWindowError( text, isWindowError ? 'ticket_sales_end_mode' : null );
 }
 
 /**
@@ -342,8 +348,8 @@ function showServerError( response ) {
 const typing = createTypingTracker( onWindowChange );
 
 /**
- * Whether a change of a window field ends the admin's edit: an option picked, or a date or time picked, which the
- * pickers fire themselves.
+ * Whether a change of a window field ends the admin's edit: an option picked, or a time picked, which the picker fires
+ * itself.
  *
  * A typed field fires its own change once it loses the focus, which does not: a new error shown then moves the form
  * under the click that took the focus away, and the click misses.
@@ -397,8 +403,7 @@ jQuery( document ).on( 'input', `${ RULE_FIELDS }, ${ SPECIFIC_DATE_FIELDS }`, (
 	typing.type();
 	onWindowChange();
 } );
-// `tickets.js` tells this script of a date picked from the calendar with the namespaced event, which a plain change fires too.
-jQuery( document ).on( 'change.tecRelativeSaleDates', `${ RULE_FIELDS }, ${ SPECIFIC_DATE_FIELDS }`, ( event ) => {
+jQuery( document ).on( 'change', `${ RULE_FIELDS }, ${ SPECIFIC_DATE_FIELDS }`, ( event ) => {
 	if ( endsEdit( event ) ) {
 		typing.settle();
 	}
@@ -408,3 +413,10 @@ jQuery( document ).on( 'change.tecRelativeSaleDates', `${ RULE_FIELDS }, ${ SPEC
 
 addAction( 'tec.tickets.admin.panels.refreshed', 'tec.tickets.relativeSaleDates', updateHelperText );
 addAction( 'tec.tickets.admin.ticketSaveFailed', 'tec.tickets.relativeSaleDates', showServerError );
+// A date picked from the calendar ends the edit of its field.
+addAction( 'tec.tickets.admin.ticketDatePicked', 'tec.tickets.relativeSaleDates', ( input ) => {
+	if ( input?.matches?.( SPECIFIC_DATE_FIELDS ) ) {
+		typing.settle();
+		onWindowChange();
+	}
+} );
