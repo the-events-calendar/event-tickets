@@ -516,6 +516,27 @@ class Writer_Test extends Controller_Test_Case {
 		}
 	}
 
+	public function test_a_kept_line_takes_its_new_display_name_and_its_new_event(): void {
+		$this->register_controller( true );
+		[ , [ $vip ] ] = $this->make_tickets();
+		$other_event   = static::factory()->post->create( [ 'post_type' => 'page' ] );
+		$this->create_fee_for_ticket( $vip, [ 'raw_amount' => 2.5 ] );
+		$order                    = $this->create_order( [ $vip => 1 ], [ 'order_status' => Pending::SLUG ] );
+		$items                    = array_values( get_post_meta( $order->ID, Order::$items_meta_key, true ) );
+		$fee                      = $this->identity( $items[1] );
+		$before                   = $this->get_rows( $order->ID );
+		$items[0]['event_id']     = $other_event;
+		$items[1]['display_name'] = 'Renamed fee';
+
+		$this->save_items( $order->ID, $items );
+
+		$after = $this->get_rows( $order->ID );
+		$this->assertSame( $before[ "{$vip}:0:0" ]['id'], $after[ "{$vip}:0:0" ]['id'] );
+		$this->assertSame( get_post_field( 'post_title', $other_event ), $after[ "{$vip}:0:0" ]['event_title'] );
+		$this->assertSame( $before[ $fee ]['id'], $after[ $fee ]['id'] );
+		$this->assertSame( 'Renamed fee', $after[ $fee ]['name'] );
+	}
+
 	public function test_items_changed_during_a_sync_leave_the_order_unmarked_and_reading_them(): void {
 		$this->register_controller( true );
 		[ $order_id, , $items ] = $this->make_order_and_new_items();
