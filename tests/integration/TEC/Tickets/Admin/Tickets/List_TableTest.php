@@ -344,6 +344,83 @@ class List_TableTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
+	 * `is_on_sale()` reads an empty sale price start as started and an empty end as open-ended.
+	 */
+	public function test_counts_a_sale_price_without_a_start_or_end_date_as_discounted() {
+		$_GET['status-filter'] = 'discounted';
+
+		$clauses = array_filter( $this->list_table->modify_filter_args( [] )['meta_query'], 'is_array' );
+		$by_key  = [];
+		foreach ( $clauses as $clause ) {
+			$by_key[ $clause['key'] ?? $clause[0]['key'] ] = $clause;
+		}
+
+		foreach ( [ '_sale_price_start_date', '_sale_price_end_date' ] as $key ) {
+			$this->assertSame( 'OR', $by_key[ $key ]['relation'] ?? null, $key );
+			$this->assertContains( 'NOT EXISTS', array_column( array_filter( $by_key[ $key ], 'is_array' ), 'compare' ), $key );
+		}
+	}
+
+	/**
+	 * A sale price that starts now is saved without a start date.
+	 */
+	public function test_lists_an_active_sale_price_that_starts_now_as_discounted() {
+		$event_id  = tribe_events()->set_args(
+			[
+				'title'      => 'Discounted event',
+				'status'     => 'publish',
+				'start_date' => gmdate( 'Y-m-d H:i:s', strtotime( '+10 days' ) ),
+				'duration'   => HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+		$ticket_id = $this->create_tc_ticket( $event_id, 20 );
+		update_post_meta( $ticket_id, TicketsCommerce\Ticket::$sale_price_checked_key, '1' );
+		update_post_meta( $ticket_id, TicketsCommerce\Ticket::$sale_price_key, '10' );
+		update_post_meta( $ticket_id, TicketsCommerce\Ticket::$sale_price_start_date_key, '' );
+		update_post_meta( $ticket_id, TicketsCommerce\Ticket::$sale_price_end_date_key, gmdate( 'Y-m-d', strtotime( '+5 days' ) ) );
+		$this->ticket_ids[]      = $ticket_id;
+		$this->event_ids[]       = $event_id;
+		$_GET['status-filter']   = 'discounted';
+		$_GET['provider-filter'] = addslashes( TicketsCommerce\Module::class );
+
+		$this->list_table->prepare_items();
+
+		$this->assertContains( $ticket_id, array_map( static fn( $item ) => absint( $item->ID ), $this->list_table->items ?: [] ) );
+	}
+
+	/**
+	 * A sale price without an end date stays on sale, and only a sale price the ticket has checked counts: other
+	 * providers, such as WooCommerce, keep a `_sale_price` without the Tickets Commerce dates.
+	 */
+	public function test_lists_only_checked_sale_prices_as_discounted_whatever_their_dates() {
+		$event_id  = tribe_events()->set_args(
+			[
+				'title'      => 'Discounted event',
+				'status'     => 'publish',
+				'start_date' => gmdate( 'Y-m-d H:i:s', strtotime( '+10 days' ) ),
+				'duration'   => HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+		$open_ended = $this->create_tc_ticket( $event_id, 20 );
+		update_post_meta( $open_ended, TicketsCommerce\Ticket::$sale_price_checked_key, '1' );
+		update_post_meta( $open_ended, TicketsCommerce\Ticket::$sale_price_key, '10' );
+		update_post_meta( $open_ended, TicketsCommerce\Ticket::$sale_price_start_date_key, gmdate( 'Y-m-d', strtotime( '-1 day' ) ) );
+		update_post_meta( $open_ended, TicketsCommerce\Ticket::$sale_price_end_date_key, '' );
+		$unchecked = $this->create_tc_ticket( $event_id, 20 );
+		update_post_meta( $unchecked, TicketsCommerce\Ticket::$sale_price_key, '10' );
+		array_push( $this->ticket_ids, $open_ended, $unchecked );
+		$this->event_ids[]       = $event_id;
+		$_GET['status-filter']   = 'discounted';
+		$_GET['provider-filter'] = addslashes( TicketsCommerce\Module::class );
+
+		$this->list_table->prepare_items();
+		$listed = array_map( static fn( $item ) => absint( $item->ID ), $this->list_table->items ?: [] );
+
+		$this->assertContains( $open_ended, $listed );
+		$this->assertNotContains( $unchecked, $listed );
+	}
+
+	/**
 	 * Regression: tickets with no end date must not fatal in column_days_left().
 	 *
 	 * On PHP 8.3.9+ / 8.4, DateTime::diff() rejects null and throws TypeError. Before
