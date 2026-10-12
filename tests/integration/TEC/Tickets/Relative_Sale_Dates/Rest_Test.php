@@ -341,7 +341,7 @@ class Rest_Test extends Controller_Test_Case {
 	/**
 	 * @param string $filter The definition filter.
 	 *
-	 * @return array<string,array{type: string, properties?: array<string,array<string,mixed>>}> The properties the feature adds to the definition, by name.
+	 * @return array<string,array{type: string, description?: string, nullable?: bool, properties?: array<string,array{type: string, description?: string, enum?: string[], example?: int|string}>}> The properties the feature adds to the definition, by name.
 	 */
 	private function get_documented_properties( string $filter ): array {
 		$definition = json_decode( wp_json_encode( apply_filters( $filter, [] ) ), true );
@@ -355,8 +355,8 @@ class Rest_Test extends Controller_Test_Case {
 	 * The endpoint's routes are only registered when Tickets Commerce is on as the plugin loads, which this suite
 	 * turns on later, so the endpoint methods are called directly.
 	 *
-	 * @param array<string,mixed> $params    The ticket parameters.
-	 * @param string              $operation The operation, `create` or `update`.
+	 * @param array{event?: int, id?: int, title?: string, price?: int|string, start_date?: string, end_date?: string, relative_sale_dates?: array{start: array<string,int|string>, end: array<string,int|string>}|null} $params    The ticket parameters.
+	 * @param string $operation The operation, `create` or `update`.
 	 *
 	 * @return WP_REST_Response The endpoint's response.
 	 */

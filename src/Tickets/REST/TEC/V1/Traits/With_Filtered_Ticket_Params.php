@@ -15,7 +15,6 @@ use TEC\Common\REST\TEC\V1\Exceptions\InvalidRestArgumentException;
 use Tribe__Tickets__Global_Stock as Global_Stock;
 use stdClass;
 use TEC\Tickets\Commerce\Utils\Value;
-use TEC\Tickets\Relative_Sale_Dates\Ticket_Save;
 
 /**
  * Trait With_Filtered_Ticket_Params.
@@ -30,7 +29,7 @@ trait With_Filtered_Ticket_Params {
 	 *
 	 * @since 5.26.0
 	 * @since 5.29.3 Hardened sale price handling.
-	 * @since TBD Saves the Relative Sale Dates rule sent with the ticket.
+	 * @since TBD Moves the params the `tec_tickets_rest_ticket_data_params` filter names into the ticket data.
 	 *
 	 * @param array $params The params to filter.
 	 *
@@ -153,9 +152,29 @@ trait With_Filtered_Ticket_Params {
 			'ticket_sale_start_date'       => $params['sale_price_start_date'] ?? $ticket_data[ $orm->get_update_fields_aliases()['sale_price_start_date'] ]['0'] ?? null,
 			'ticket_sale_end_date'         => $params['sale_price_end_date'] ?? $ticket_data[ $orm->get_update_fields_aliases()['sale_price_end_date'] ]['0'] ?? null,
 			'ticket_rsvp_enable_cannot_go' => $params['show_not_going'] ?? null,
-			// An update that leaves the rule out keeps the stored one; one that sends `null` removes it.
-			Ticket_Save::DATA_KEY          => array_key_exists( Ticket_Save::DATA_KEY, $params ) ? ( $params[ Ticket_Save::DATA_KEY ] ?? '' ) : null,
 		];
+
+		/**
+		 * Filters the REST params that are saved as ticket data under a key of their own, keyed by the REST param.
+		 *
+		 * A param sent as `null` is passed on as `''` and one left out is not passed on, so the save can tell a removal
+		 * from a field the update does not touch. The params are taken out of the post params.
+		 *
+		 * @since TBD
+		 *
+		 * @param array<string,string> $ticket_data_keys The ticket data keys, keyed by the REST param they are sent in.
+		 * @param array<string,mixed>  $params           The REST params.
+		 */
+		$ticket_data_keys = apply_filters( 'tec_tickets_rest_ticket_data_params', [], $params );
+
+		foreach ( is_array( $ticket_data_keys ) ? $ticket_data_keys : [] as $param => $data_key ) {
+			if ( ! is_string( $param ) || ! is_string( $data_key ) || ! array_key_exists( $param, $params ) ) {
+				continue;
+			}
+
+			$new_params[ $data_key ] = $params[ $param ] ?? '';
+			unset( $params[ $param ] );
+		}
 
 		$sale_price = $new_params['ticket_sale_price'];
 		if ( is_string( $sale_price ) && is_serialized( $sale_price ) ) {
@@ -197,7 +216,6 @@ trait With_Filtered_Ticket_Params {
 			$params['price'],
 			$params['event'],
 			$params['title'],
-			$params[ Ticket_Save::DATA_KEY ],
 		);
 
 		$post_params = $params;

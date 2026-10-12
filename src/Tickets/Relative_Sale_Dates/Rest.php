@@ -70,6 +70,21 @@ final class Rest {
 	}
 
 	/**
+	 * Names the TEC REST API param the rule is sent in, so the ticket upsert passes it on as ticket data.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,string> $ticket_data_keys The ticket data keys, keyed by the REST param they are sent in.
+	 *
+	 * @return array<string,string> The keys, with the rule's.
+	 */
+	public function add_rule_to_ticket_data_params( array $ticket_data_keys ): array {
+		$ticket_data_keys[ Ticket_Save::DATA_KEY ] = Ticket_Save::DATA_KEY;
+
+		return $ticket_data_keys;
+	}
+
+	/**
 	 * Adds the ticket's stored rule, or `null`, to the ticket data the block editor reads.
 	 *
 	 * The ticket ID comes from the data: the filter also passes the caller's argument, which can be a post or a ticket

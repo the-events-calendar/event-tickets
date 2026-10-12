@@ -37,7 +37,7 @@ final class Rule_Parameter extends Parameter {
 	 */
 	public function __construct() {
 		$this->name                 = Ticket_Save::DATA_KEY;
-		$this->description_provider = static fn(): string => __( 'The sales window relative to the event, or null when the ticket has fixed sale dates. Sending null removes the rule.', 'event-tickets' );
+		$this->description_provider = static fn(): string => __( 'The sales window relative to the event, or null when the ticket has fixed sale dates. Sending null removes the rule. While the rule keeps a relative or default boundary, a date sent for that boundary is replaced by the one the rule resolves to.', 'event-tickets' );
 		$this->required             = false;
 		$this->nullable             = true;
 		$this->properties           = new PropertiesCollection();
@@ -91,14 +91,10 @@ final class Rule_Parameter extends Parameter {
 	public function get_validator(): Closure {
 		return $this->validator ?? function ( $value ): bool {
 			if ( null !== $value && ! is_array( $value ) ) {
-				throw InvalidRestArgumentException::create(
-					// translators: 1) is the name of the parameter.
-					sprintf( __( 'The argument `{%1$s}` must be an object or null.', 'event-tickets' ), $this->get_name() ),
-					$this->get_name(),
-					'tec_rest_invalid_relative_sale_dates_argument',
-					// translators: 1) is the name of the parameter.
-					sprintf( __( 'The argument `{%1$s}` must be an object or null.', 'event-tickets' ), $this->get_name() )
-				);
+				// translators: 1) is the name of the parameter.
+				$message = sprintf( __( 'The argument `{%1$s}` must be an object or null.', 'event-tickets' ), $this->get_name() );
+
+				throw InvalidRestArgumentException::create( $message, $this->get_name(), "tec_rest_invalid_{$this->get_name()}_argument", $message );
 			}
 
 			return true;
