@@ -1295,7 +1295,7 @@ class Tribe__Tickets__Tickets_View {
 	 * Gets the RSVP block template "out of context" and makes it usable for Classic views.
 	 *
 	 * @since 4.12.3
-	 * @since TBD Filters `$include_tickets` without Event Tickets Plus and computes the active and all-past RSVP state from the included tickets only.
+	 * @since 5.30.1 Filters `$include_tickets` without Event Tickets Plus and computes the active and all-past RSVP state from the included tickets only.
 	 *
 	 * @param WP_Post|int $post The post object or ID.
 	 * @param boolean     $echo Whether to echo the output or not.
