@@ -612,6 +612,17 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 			expect( select( STORE_NAME ).getDraftRule( clientId ) ).toStrictEqual( laterRule );
 		} );
 
+		it( 'should not send the defaults over a ticket saved without its form, once the server answers', () => {
+			const clientId = newClientId();
+			// What ETP's preset Add ticket does: the ticket is saved before its sales window options ever render.
+			buildBody( clientId );
+
+			doAction( hook, clientId, 23, {}, { id: 23, provider: 'tc', relative_sale_dates: null } );
+
+			expect( select( STORE_NAME ).getDraftRule( clientId ) ).toBeNull();
+			expect( buildBody( clientId ).get( BODY_FIELD ) ).toBe( '' );
+		} );
+
 		it( 'should keep the sent rule as saved for an answer without the rule', () => {
 			const clientId = newClientId();
 			dispatch( STORE_NAME ).setRule( clientId, storedRule );

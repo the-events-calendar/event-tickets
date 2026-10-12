@@ -57,8 +57,9 @@ export default function reducer( state = {}, action ) {
 
 			return withRules( state, action.clientId, { ...current, saved: current.sent, sent: undefined } );
 		case 'SAVE_CONFIRMED_RULE':
+			// A ticket saved before its form rendered, as ETP's preset Add ticket saves one, opens on what the server kept.
 			if ( ! current ) {
-				return state;
+				return withRules( state, action.clientId, { saved: action.rule, draft: action.rule } );
 			}
 
 			return withRules( state, action.clientId, { ...current, saved: action.rule, sent: undefined } );
