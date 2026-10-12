@@ -516,6 +516,33 @@ class Writer_Test extends Controller_Test_Case {
 		}
 	}
 
+	public function test_items_changed_during_a_sync_leave_the_order_unmarked_and_reading_them(): void {
+		$this->register_controller( true );
+		[ $order_id, , $items ] = $this->make_order_and_new_items();
+		$newer                  = $items;
+		$newer[0]['quantity']   = 5;
+		$table                  = Order_Items_Table::table_name();
+		$changed                = false;
+		// The newer items are saved between two statements of the first sync, as an unlocked save in another request would.
+		add_filter(
+			'query',
+			function ( $query ) use ( &$changed, $table, $order_id, $newer ) {
+				if ( ! $changed && 0 === strpos( ltrim( $query ), 'DELETE' ) && false !== strpos( $query, "`{$table}`" ) ) {
+					$changed = true;
+					$this->save_items( $order_id, $newer );
+				}
+
+				return $query;
+			}
+		);
+
+		$this->save_items( $order_id, $items );
+
+		$this->assertTrue( $changed );
+		$this->assertSame( '', get_post_meta( $order_id, Writer::VERSION_META_KEY, true ) );
+		$this->assertEquals( $newer, tec_tc_get_order( $order_id )->items );
+	}
+
 	public function test_a_line_added_in_the_middle_is_inserted_there_and_moves_the_lines_after_it(): void {
 		$this->register_controller( true );
 		[ , [ $vip, $ga ] ] = $this->make_tickets();

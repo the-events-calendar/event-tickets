@@ -49,6 +49,15 @@ final class Writer {
 	public const VERSION = 2;
 
 	/**
+	 * The prefix of the version meta value of an order whose rows are being synced.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const SYNCING = 'syncing:';
+
+	/**
 	 * The line item types that turn order items into rows.
 	 *
 	 * @since TBD
@@ -221,9 +230,10 @@ final class Writer {
 	 * Syncs the rows of an order stored in the table with its new items, matching lines by identity so kept lines
 	 * keep their row IDs and take their new place in the list.
 	 *
-	 * Orders not stored in the table are left alone. The order is unmarked first and marked again only once every
-	 * statement succeeded, so a sync that fails or dies half way leaves it reading the new items from the order meta.
-	 * Runs on the payment path, so any failure is logged, never thrown.
+	 * Orders not stored in the table are left alone. The order's mark is swapped for a syncing token first and set
+	 * back only once every statement succeeded, so a sync that fails or dies half way leaves it reading the new items
+	 * from the order meta. A sync that finds another's token unmarks the order: the items changed while the other
+	 * sync ran, and its rows no longer match them. Runs on the payment path, so any failure is logged, never thrown.
 	 *
 	 * @since TBD
 	 *
@@ -233,11 +243,22 @@ final class Writer {
 	 * @return void
 	 */
 	public function sync_updated_order( int $order_id, array $items ): void {
-		if ( self::VERSION !== absint( get_post_meta( $order_id, self::VERSION_META_KEY, true ) ) ) {
+		$mark = get_post_meta( $order_id, self::VERSION_META_KEY, true );
+
+		if ( is_string( $mark ) && str_starts_with( $mark, self::SYNCING ) ) {
+			// Updated, not deleted: the other sync re-marks the order only if its token is still there.
+			update_post_meta( $order_id, self::VERSION_META_KEY, '' );
+			clean_post_cache( $order_id );
+
 			return;
 		}
 
-		delete_post_meta( $order_id, self::VERSION_META_KEY );
+		if ( self::VERSION !== absint( $mark ) ) {
+			return;
+		}
+
+		$token = self::SYNCING . wp_generate_uuid4();
+		update_post_meta( $order_id, self::VERSION_META_KEY, $token );
 
 		try {
 			$rows    = $this->to_rows( $order_id, $items );
@@ -273,8 +294,11 @@ final class Writer {
 			$this->repository->update_rows( $updates );
 			$this->repository->insert_many( $inserts );
 
-			update_post_meta( $order_id, self::VERSION_META_KEY, self::VERSION );
+			// Compare and set: a newer sync that replaced the token leaves the order unmarked.
+			update_post_meta( $order_id, self::VERSION_META_KEY, self::VERSION, $token );
 		} catch ( Throwable $e ) {
+			delete_post_meta( $order_id, self::VERSION_META_KEY );
+
 			try {
 				$this->repository->delete_by_order( $order_id );
 			} catch ( Throwable $ignored ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch -- The order is unmarked, so rows left behind are never read.
