@@ -77,16 +77,27 @@ function getUnitOptions( value ) {
  * @param {{label: string, value: string}[]} props.modeOptions   The mode options.
  * @param {{label: string, value: string}[]} props.anchorOptions The anchor options.
  * @param {Object}                           props.picker        The date and time range picker element.
+ * @param {boolean}                          props.disabled      Whether the options are disabled.
  * @param {Function}                         props.onChange      Called with the changed values of the end.
  *
  * @return {Object} The end's options.
  */
-export default function SalesWindowEnd( { name, end, labels, modeOptions, anchorOptions, picker, onChange } ) {
+export default function SalesWindowEnd( {
+	name,
+	end,
+	labels,
+	modeOptions,
+	anchorOptions,
+	picker,
+	disabled,
+	onChange,
+} ) {
 	return (
 		<div className={ `tec-tickets-relative-sale-dates__end tec-tickets-relative-sale-dates__end--${ name }` }>
 			<SelectControl
 				__next40pxDefaultSize
 				__nextHasNoMarginBottom
+				disabled={ disabled }
 				label={ labels.mode }
 				labelPosition="side"
 				value={ end.mode }
@@ -98,6 +109,7 @@ export default function SalesWindowEnd( { name, end, labels, modeOptions, anchor
 					<TextControl
 						__next40pxDefaultSize
 						__nextHasNoMarginBottom
+						disabled={ disabled }
 						label={ labels.value }
 						hideLabelFromVision
 						type="number"
@@ -110,6 +122,7 @@ export default function SalesWindowEnd( { name, end, labels, modeOptions, anchor
 					<SelectControl
 						__next40pxDefaultSize
 						__nextHasNoMarginBottom
+						disabled={ disabled }
 						label={ labels.unit }
 						hideLabelFromVision
 						value={ String( end.unit ) }
@@ -119,6 +132,7 @@ export default function SalesWindowEnd( { name, end, labels, modeOptions, anchor
 					<SelectControl
 						__next40pxDefaultSize
 						__nextHasNoMarginBottom
+						disabled={ disabled }
 						label={ labels.anchor }
 						hideLabelFromVision
 						value={ end.anchor }

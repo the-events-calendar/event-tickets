@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { useDispatch, useSelect } from '@wordpress/data';
-import { useEffect } from '@wordpress/element';
+import { cloneElement, useEffect } from '@wordpress/element';
 import { __, _x } from '@wordpress/i18n';
 
 /**
@@ -83,6 +83,30 @@ function getEndSettings() {
 }
 
 /**
+ * Clears from the range picker one end shows the date of the other end, when that end is not on a specific date.
+ *
+ * The range picker bounds each half's calendar by the other half's date, which stays hidden, and goes stale, once its
+ * end is relative or the default.
+ *
+ * @since TBD
+ *
+ * @param {Object} picker   The date and time range picker element.
+ * @param {Object} formRule The rule the options show.
+ * @param {string} name     The end of the window the picker is for, `start` or `end`.
+ *
+ * @return {Object} The picker for the end.
+ */
+function getEndPicker( picker, formRule, name ) {
+	const otherName = 'start' === name ? 'end' : 'start';
+
+	if ( MODE_SPECIFIC === formRule[ otherName ].mode ) {
+		return picker;
+	}
+
+	return cloneElement( picker, { [ 'start' === name ? 'toDate' : 'fromDate' ]: undefined } );
+}
+
+/**
  * Renders the sales window options of a ticket block in place of its date and time range picker.
  *
  * A new ticket's defaults are kept as its draft at once, so the ticket is saved with them as the classic editor saves
@@ -113,6 +137,8 @@ export default function SalesWindow( { clientId, picker } ) {
 	};
 
 	const settings = getEndSettings();
+	// The legacy duration section disables its picker while the ticket saves or another ticket is selected.
+	const isDisabled = Boolean( picker.props.fromDateDisabled );
 
 	return (
 		<div className="tec-tickets-relative-sale-dates">
@@ -121,7 +147,8 @@ export default function SalesWindow( { clientId, picker } ) {
 					key={ name }
 					name={ name }
 					end={ formRule[ name ] }
-					picker={ picker }
+					picker={ getEndPicker( picker, formRule, name ) }
+					disabled={ isDisabled }
 					onChange={ ( changes ) => onChange( name, changes ) }
 					{ ...settings[ name ] }
 				/>

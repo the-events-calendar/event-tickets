@@ -80,18 +80,26 @@ function newClientId() {
 /**
  * Renders the sales window options of a ticket block.
  *
- * @param {string} clientId The client ID of the ticket block.
+ * @param {string} clientId    The client ID of the ticket block.
+ * @param {Object} pickerProps More props of the range picker, as the legacy duration section sets them.
  *
  * @return {void}
  */
-function renderSalesWindow( clientId ) {
+function renderSalesWindow( clientId, pickerProps = {} ) {
 	let rendered;
 
 	act( () => {
 		rendered = global.renderer.create(
 			<SalesWindow
 				clientId={ clientId }
-				picker={ <Picker className="tribe-editor__ticket__duration-picker" fromTime="10:00" toTime="18:00" /> }
+				picker={
+					<Picker
+						className="tribe-editor__ticket__duration-picker"
+						fromTime="10:00"
+						toTime="18:00"
+						{ ...pickerProps }
+					/>
+				}
 			/>
 		);
 	} );
@@ -380,5 +388,82 @@ describe( 'the Ticket block sales window options', () => {
 		change( SelectControl, START_LABELS.mode, 'relative' );
 
 		expect( findControl( TextControl, START_LABELS.value ).props.value ).toBe( 10 );
+	} );
+
+	describe( 'while the ticket cannot be edited', () => {
+		it( 'should disable every option, as the legacy section disables its picker', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setRule( clientId, {
+				start: { mode: 'relative', value: 2, unit: UNIT_WEEKS, anchor: 'start' },
+				end: { mode: 'relative', value: 1, unit: UNIT_HOURS, anchor: 'start' },
+			} );
+
+			renderSalesWindow( clientId, { fromDateDisabled: true } );
+
+			const controls = [ ...root.findAllByType( SelectControl ), ...root.findAllByType( TextControl ) ];
+			expect( controls ).toHaveLength( 8 );
+			controls.forEach( ( control ) => expect( control.props.disabled ).toBe( true ) );
+		} );
+
+		it( 'should leave the options enabled otherwise', () => {
+			renderSalesWindow( newClientId(), { fromDateDisabled: false } );
+
+			root.findAllByType( SelectControl ).forEach( ( control ) =>
+				expect( control.props.disabled ).toBe( false )
+			);
+		} );
+	} );
+
+	describe( 'the range picker bounds', () => {
+		const fromDate = new Date( 2027, 4, 1 );
+		const toDate = new Date( 2027, 5, 1 );
+
+		/**
+		 * Finds the picker rendered for one end of the window.
+		 *
+		 * @param {string} name The end of the window, `start` or `end`.
+		 *
+		 * @return {Object} The picker's test instance.
+		 */
+		function findPicker( name ) {
+			return root
+				.findAllByType( Picker )
+				.find( ( picker ) => picker.props.className.includes( `__picker--${ name }` ) );
+		}
+
+		it( 'should not bound a specific start by the hidden date of an end that is not specific', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setRule( clientId, { start: { mode: 'specific' }, end: { mode: 'default' } } );
+
+			renderSalesWindow( clientId, { fromDate, toDate } );
+
+			expect( findPicker( 'start' ).props.toDate ).toBeUndefined();
+			expect( findPicker( 'start' ).props.fromDate ).toBe( fromDate );
+		} );
+
+		it( 'should not bound a specific end by the hidden date of a start that is not specific', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setRule( clientId, {
+				start: { mode: 'relative', value: 2, unit: UNIT_WEEKS, anchor: 'start' },
+				end: { mode: 'specific' },
+			} );
+
+			renderSalesWindow( clientId, { fromDate, toDate } );
+
+			expect( findPicker( 'end' ).props.fromDate ).toBeUndefined();
+			expect( findPicker( 'end' ).props.toDate ).toBe( toDate );
+		} );
+
+		it( 'should keep both bounds while both ends are specific', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setRule( clientId, { start: { mode: 'specific' }, end: { mode: 'specific' } } );
+
+			renderSalesWindow( clientId, { fromDate, toDate } );
+
+			[ 'start', 'end' ].forEach( ( name ) => {
+				expect( findPicker( name ).props.fromDate ).toBe( fromDate );
+				expect( findPicker( name ).props.toDate ).toBe( toDate );
+			} );
+		} );
 	} );
 } );
