@@ -535,6 +535,19 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 			expect( filterDates( clientId ) ).toStrictEqual( { fromDate: ticketDates.fromDate, toDate: 'October 20, 2040' } );
 		} );
 
+		it( 'should keep the ticket date of a relative end whose number is cleared', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setDraftRule( clientId, {
+				start: { ...storedRule.start, value: '' },
+				end: storedRule.end,
+			} );
+
+			expect( filterDates( clientId ) ).toStrictEqual( {
+				fromDate: ticketDates.fromDate,
+				toDate: 'October 20, 2040',
+			} );
+		} );
+
 		it( 'should leave the dates of a ticket without a rule alone', () => {
 			const clientId = newClientId();
 			dispatch( STORE_NAME ).setRule( clientId, null );
@@ -842,6 +855,17 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 
 				expect( getSavedRule( clientId, kind ) ).toStrictEqual( edited );
 				expect( select( STORE_NAME ).getDraftRule( clientId, kind ) ).toStrictEqual( later );
+			} );
+
+			it( 'should not send the defaults over a ticket saved before its options rendered, once the server answers', () => {
+				// What ETP's preset Add ticket does: the ticket is saved before its window options ever render.
+				const clientId = newTicket();
+				buildBody( clientId );
+
+				doAction( hook, clientId, 23, {}, kindCase.fetched( null ) );
+
+				expect( select( STORE_NAME ).getDraftRule( clientId, kind ) ).toBeNull();
+				expect( buildBody( clientId ).get( kindCase.field ) ).toBe( kindCase.sentWithoutRule );
 			} );
 
 			it( 'should keep the sent rule as saved for an answer without the rule', () => {

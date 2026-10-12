@@ -146,6 +146,22 @@ export function isTicketReadyBesidesDuration( state, clientId ) {
 }
 
 /**
+ * Returns whether the legacy ticket code keeps a ticket's fields disabled: while the ticket saves, while another ticket
+ * is selected, or while the tickets settings are open.
+ *
+ * @since TBD
+ *
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {boolean} Whether the ticket's fields are disabled.
+ */
+export function isTicketDisabled( clientId ) {
+	return Boolean(
+		getTicketData().selectors.isTicketDisabled( window.__tribe_common_store__.getState(), { clientId } )
+	);
+}
+
+/**
  * Subscribes to the common store, which holds the event dates The Events Calendar edits.
  *
  * @since TBD

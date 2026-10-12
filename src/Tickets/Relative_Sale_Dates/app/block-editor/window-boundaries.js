@@ -17,13 +17,14 @@ import WindowBoundary from './window-boundary';
  * @param {SaleWindowRule}                               props.formRule         The rule the options show.
  * @param {function( string, Object ): void}             props.onChange         Called with the boundary, `start` or
  *                                                                              `end`, and its changed values.
+ * @param {boolean}                                      props.disabled         Whether the options are disabled.
  * @param {function( string, BoundarySettings ): Object} props.getBoundaryProps Builds what the window adds to a
  *                                                                              boundary's options: its picker, helper
  *                                                                              text and error messages.
  *
  * @return {Object} The options of both boundaries.
  */
-export default function WindowBoundaries( { kind, formRule, onChange, getBoundaryProps } ) {
+export default function WindowBoundaries( { kind, formRule, onChange, disabled, getBoundaryProps } ) {
 	const settings = kind.getBoundarySettings();
 
 	return (
@@ -34,6 +35,7 @@ export default function WindowBoundaries( { kind, formRule, onChange, getBoundar
 					kind={ kind }
 					name={ name }
 					boundary={ formRule[ name ] }
+					disabled={ disabled }
 					{ ...getBoundaryProps( name, settings[ name ] ) }
 					onChange={ ( changes ) => onChange( name, changes ) }
 					{ ...settings[ name ] }

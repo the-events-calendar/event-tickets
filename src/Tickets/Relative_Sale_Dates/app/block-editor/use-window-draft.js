@@ -2,12 +2,12 @@
  * External dependencies
  */
 import { useDispatch, useSelect } from '@wordpress/data';
-import { useEffect } from '@wordpress/element';
+import { useEffect, useSyncExternalStore } from '@wordpress/element';
 
 /**
  * Internal dependencies
  */
-import { markTicketChanged } from './common-store-bridge';
+import { isTicketDisabled, markTicketChanged, subscribeToCommonStore } from './common-store-bridge';
 import { getFormRule } from './rule';
 import { STORE_NAME } from './store/constants';
 import { useTicketTyping } from './use-ticket-typing';
@@ -18,11 +18,13 @@ import { useTicketTyping } from './use-ticket-typing';
 /**
  * @typedef {Object} WindowDraft
  *
- * @property {SaleWindowRule|null|undefined}    rule     The ticket's draft rule of the window.
- * @property {SaleWindowRule}                   formRule The rule the options show.
- * @property {function( string, Object ): void} onChange Called with the boundary, `start` or `end`, and its changed
- *                                                       values.
- * @property {boolean}                          isTyping Whether the admin is typing in a window field of the ticket.
+ * @property {SaleWindowRule|null|undefined}    rule       The ticket's draft rule of the window.
+ * @property {SaleWindowRule}                   formRule   The rule the options show.
+ * @property {function( string, Object ): void} onChange   Called with the boundary, `start` or `end`, and its changed
+ *                                                         values.
+ * @property {boolean}                          isTyping   Whether the admin is typing in a window field of the ticket.
+ * @property {boolean}                          isDisabled Whether the options are disabled, as the legacy ticket
+ *                                                         fields are while the ticket saves.
  */
 
 /**
@@ -36,13 +38,16 @@ import { useTicketTyping } from './use-ticket-typing';
  * @param {string}          clientId The client ID of the ticket block.
  * @param {BlockWindowKind} kind     The window kind.
  *
- * @return {WindowDraft} The draft, the rule the options show, the change handlers and whether the admin is typing.
+ * @return {WindowDraft} The draft, the rule the options show, the change handlers, whether the admin is typing and
+ *                       whether the options are disabled.
  */
 export function useWindowDraft( clientId, kind ) {
 	const rule = useSelect( ( select ) => select( STORE_NAME ).getDraftRule( clientId, kind ), [ clientId, kind ] );
 	const { setDraftRule } = useDispatch( STORE_NAME );
 	const formRule = getFormRule( rule, kind );
 	const typing = useTicketTyping( clientId );
+	// A change made while the ticket saves would stay in the draft, unsaved, until the next post save sends it.
+	const isDisabled = useSyncExternalStore( subscribeToCommonStore, () => isTicketDisabled( clientId ) );
 
 	useEffect( () => {
 		if ( undefined !== rule ) {
@@ -70,5 +75,5 @@ export function useWindowDraft( clientId, kind ) {
 		markTicketChanged( clientId );
 	};
 
-	return { rule, formRule, onChange, isTyping: typing.isTyping };
+	return { rule, formRule, onChange, isTyping: typing.isTyping, isDisabled };
 }

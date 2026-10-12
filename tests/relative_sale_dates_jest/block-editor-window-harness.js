@@ -86,15 +86,23 @@ function render( element ) {
 /**
  * Renders the sales window options of a ticket block, around the Sale Duration picker.
  *
- * @param {string} clientId The client ID of the ticket block.
+ * @param {string} clientId    The client ID of the ticket block.
+ * @param {Object} pickerProps More props of the range picker, as the legacy duration section sets them.
  *
  * @return {void}
  */
-export function renderSalesWindow( clientId ) {
+export function renderSalesWindow( clientId, pickerProps = {} ) {
 	render(
 		<SalesWindow
 			clientId={ clientId }
-			picker={ <Picker className="tribe-editor__ticket__duration-picker" fromTime="10:00" toTime="18:00" /> }
+			picker={
+				<Picker
+					className="tribe-editor__ticket__duration-picker"
+					fromTime="10:00"
+					toTime="18:00"
+					{ ...pickerProps }
+				/>
+			}
 		/>
 	);
 }

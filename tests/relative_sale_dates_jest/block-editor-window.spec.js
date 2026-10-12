@@ -1,3 +1,4 @@
+import { act } from 'react-test-renderer';
 import { dispatch, select } from '@wordpress/data';
 import { SelectControl, TextControl } from '@wordpress/components';
 import { resetLocaleData, setLocaleData } from '@wordpress/i18n';
@@ -14,6 +15,7 @@ import {
 	getRoot,
 	newClientId,
 	renderSalePriceWindow,
+	renderSalesWindow,
 	salePriceCase,
 	salesWindowCase,
 	setUpBlockEditor,
@@ -247,6 +249,21 @@ describe.each( [
 		expect( unitLabels ).toContain( 'semana' );
 	} );
 
+	it( 'should disable every option while the legacy code disables the ticket fields, as when it saves', () => {
+		const commonStore = window.__tribe_common_store__;
+		const clientId = renderRelativeStart();
+		const controls = () => [ ...getRoot().findAllByType( SelectControl ), ...getRoot().findAllByType( TextControl ) ];
+
+		act( () => commonStore.dispatch( legacyActions.setTicketIsLoading( clientId, true ) ) );
+
+		expect( controls().length ).toBeGreaterThan( 1 );
+		controls().forEach( ( control ) => expect( control.props.disabled ).toBe( true ) );
+
+		act( () => commonStore.dispatch( legacyActions.setTicketIsLoading( clientId, false ) ) );
+
+		controls().forEach( ( control ) => expect( control.props.disabled ).toBe( false ) );
+	} );
+
 	it( 'should label every relative control for screen readers only, and not the mode', () => {
 		renderRelativeStart();
 
@@ -366,5 +383,59 @@ describe( 'the Ticket block sale price window options', () => {
 		change( SelectControl, START_LABELS.mode, 'specific' );
 
 		expect( select( STORE_NAME ).getDraftRule( clientId, SALES_WINDOW ) ).toStrictEqual( salesWindowRule );
+	} );
+} );
+
+describe( 'the Ticket block sales window range picker bounds', () => {
+	const fromDate = new Date( 2040, 8, 1 );
+	const toDate = new Date( 2040, 9, 1 );
+
+	/**
+	 * Finds the range picker one end of the sales window shows.
+	 *
+	 * @param {string} name The end, `start` or `end`.
+	 *
+	 * @return {Object} The picker's test instance.
+	 */
+	function findPicker( name ) {
+		return getRoot()
+			.findAll( ( node ) => 'string' === typeof node.props.className && node.props.toTime )
+			.find( ( node ) => node.props.className.includes( `__picker--${ name }` ) );
+	}
+
+	it( 'should not bound a specific start by the hidden date of an end that is not specific', () => {
+		const clientId = newClientId();
+		dispatch( STORE_NAME ).setRule( clientId, { start: { mode: 'specific' }, end: { mode: 'default' } }, SALES_WINDOW );
+
+		renderSalesWindow( clientId, { fromDate, toDate } );
+
+		expect( findPicker( 'start' ).props.toDate ).toBeUndefined();
+		expect( findPicker( 'start' ).props.fromDate ).toBe( fromDate );
+	} );
+
+	it( 'should not bound a specific end by the hidden date of a start that is not specific', () => {
+		const clientId = newClientId();
+		dispatch( STORE_NAME ).setRule(
+			clientId,
+			{ start: { mode: 'relative', value: 2, unit: UNIT_WEEKS, anchor: 'start' }, end: { mode: 'specific' } },
+			SALES_WINDOW
+		);
+
+		renderSalesWindow( clientId, { fromDate, toDate } );
+
+		expect( findPicker( 'end' ).props.fromDate ).toBeUndefined();
+		expect( findPicker( 'end' ).props.toDate ).toBe( toDate );
+	} );
+
+	it( 'should keep both bounds while both ends are specific', () => {
+		const clientId = newClientId();
+		dispatch( STORE_NAME ).setRule( clientId, { start: { mode: 'specific' }, end: { mode: 'specific' } }, SALES_WINDOW );
+
+		renderSalesWindow( clientId, { fromDate, toDate } );
+
+		[ 'start', 'end' ].forEach( ( name ) => {
+			expect( findPicker( name ).props.fromDate ).toBe( fromDate );
+			expect( findPicker( name ).props.toDate ).toBe( toDate );
+		} );
 	} );
 } );

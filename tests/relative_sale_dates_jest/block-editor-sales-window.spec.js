@@ -467,6 +467,15 @@ describe( 'the Ticket block sales window options', () => {
 			expect( getHelperRegions() ).toStrictEqual( [ '' ] );
 		} );
 
+		it( 'should show no helper text for a relative end whose number is cleared', () => {
+			renderSalesWindow( newClientId() );
+			change( SelectControl, START_LABELS.mode, 'relative' );
+
+			change( TextControl, START_LABELS.value, '' );
+
+			expect( getHelperTexts() ).toStrictEqual( [] );
+		} );
+
 		it( 'should show no helper text for an end that is not relative', () => {
 			renderSalesWindow( newClientId() );
 

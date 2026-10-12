@@ -125,9 +125,18 @@ export default function reducer( state = {}, action ) {
 		case 'SAVE_SENT_RULE':
 			return withEveryWindow( state, action.clientId, withSentSaved );
 		case 'SAVE_CONFIRMED_RULE':
-			// A ticket saved before its form rendered, as ETP's preset Add ticket saves one, opens on what the server kept.
 			if ( ! current ) {
-				return withWindowRules( state, action.clientId, action.kindId, { saved: action.rule, draft: action.rule } );
+				/*
+				 * A ticket saved before its options rendered, as ETP's preset Add ticket saves one, opens on what the
+				 * server kept, as after a reload. A window of a known ticket that never showed it stays out, so it still
+				 * opens on its defaults.
+				 */
+				return state[ action.clientId ] || undefined === action.rule
+					? state
+					: withWindowRules( state, action.clientId, action.kindId, {
+							saved: action.rule,
+							draft: action.rule,
+					  } );
 			}
 
 			return withWindowRules( state, action.clientId, action.kindId, {

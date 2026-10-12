@@ -75,12 +75,13 @@ function preparePicker( picker, name, label, formRule ) {
  * @return {Object} The sale price window options.
  */
 export default function SalePriceWindow( { clientId, pickers } ) {
-	const { formRule, onChange } = useWindowDraft( clientId, BLOCK_SALE_PRICE_WINDOW );
+	const { formRule, onChange, isDisabled } = useWindowDraft( clientId, BLOCK_SALE_PRICE_WINDOW );
 	return (
 		<WindowBoundaries
 			kind={ BLOCK_SALE_PRICE_WINDOW }
 			formRule={ formRule }
 			onChange={ onChange }
+			disabled={ isDisabled }
 			getBoundaryProps={ ( name, settings ) => ( {
 				picker: preparePicker( pickers[ name ], name, settings.labels.date, formRule ),
 			} ) }

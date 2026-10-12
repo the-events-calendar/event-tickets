@@ -105,6 +105,7 @@ function getAnchorOptions( anchors ) {
  *                                                                     or an empty string.
  * @param {string}                           [props.valueErrorMessage] The range error of the relative number, or an
  *                                                                     empty string.
+ * @param {boolean}                          [props.disabled]          Whether the controls are disabled.
  * @param {Function}                         props.onChange            Called with the changed values of the boundary.
  *
  * @return {Object} The boundary's options.
@@ -119,6 +120,7 @@ export default function WindowBoundary( {
 	helperText,
 	errorMessage = '',
 	valueErrorMessage = '',
+	disabled = false,
 	onChange,
 } ) {
 	const anchorOptions = getAnchorOptions( kind.anchors );
@@ -128,6 +130,7 @@ export default function WindowBoundary( {
 			<SelectControl
 				__next40pxDefaultSize
 				__nextHasNoMarginBottom
+				disabled={ disabled }
 				label={ labels.mode }
 				labelPosition="side"
 				aria-invalid={ errorMessage ? true : undefined }
@@ -148,6 +151,7 @@ export default function WindowBoundary( {
 					<TextControl
 						__next40pxDefaultSize
 						__nextHasNoMarginBottom
+						disabled={ disabled }
 						label={ labels.value }
 						hideLabelFromVision
 						type="number"
@@ -168,6 +172,7 @@ export default function WindowBoundary( {
 					<SelectControl
 						__next40pxDefaultSize
 						__nextHasNoMarginBottom
+						disabled={ disabled }
 						label={ labels.unit }
 						hideLabelFromVision
 						value={ String( boundary.unit ) }
@@ -178,6 +183,7 @@ export default function WindowBoundary( {
 						<SelectControl
 							__next40pxDefaultSize
 							__nextHasNoMarginBottom
+							disabled={ disabled }
 							label={ labels.anchor }
 							hideLabelFromVision
 							value={ boundary.anchor }

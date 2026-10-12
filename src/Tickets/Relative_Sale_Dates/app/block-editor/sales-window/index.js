@@ -9,7 +9,7 @@ import { __, sprintf } from '@wordpress/i18n';
  */
 import { clearTicketDurationError, hasTicketDurationError, subscribeToCommonStore } from '../common-store-bridge';
 import { useEventDates } from '../event-dates';
-import { MAX_VALUE, MIN_VALUE, MODE_RELATIVE } from '../../rule-constants';
+import { MAX_VALUE, MIN_VALUE, MODE_RELATIVE, MODE_SPECIFIC } from '../../rule-constants';
 import { resolveWindow } from '../../sale-window';
 import { getFormRule, isSpecificWindow } from '../rule';
 import { getHelperText } from '../sale-dates';
@@ -32,7 +32,7 @@ import './style.pcss';
  * @return {Object} The sales window options.
  */
 export default function SalesWindow( { clientId, picker } ) {
-	const { rule, formRule, onChange, isTyping } = useWindowDraft( clientId, BLOCK_SALES_WINDOW );
+	const { rule, formRule, onChange, isTyping, isDisabled } = useWindowDraft( clientId, BLOCK_SALES_WINDOW );
 	const eventDates = useEventDates();
 	const saleWindow = useMemo(
 		() => resolveWindow( getFormRule( rule, BLOCK_SALES_WINDOW ), eventDates, BLOCK_SALES_WINDOW ),
@@ -55,12 +55,17 @@ export default function SalesWindow( { clientId, picker } ) {
 			kind={ BLOCK_SALES_WINDOW }
 			formRule={ formRule }
 			onChange={ onChange }
+			disabled={ isDisabled }
 			getBoundaryProps={ ( name ) => ( {
 				// Each end shows its own half of the range picker.
 				picker: cloneElement( picker, {
 					className: [ picker.props.className, `tec-tickets-relative-sale-dates__picker--${ name }` ]
 						.filter( Boolean )
 						.join( ' ' ),
+					// Each half is bounded by the other's date, hidden and left stale once that end is not specific.
+					...( MODE_SPECIFIC !== formRule[ 'start' === name ? 'end' : 'start' ].mode && {
+						[ 'start' === name ? 'toDate' : 'fromDate' ]: undefined,
+					} ),
 				} ),
 				helperText: MODE_RELATIVE === formRule[ name ].mode ? getHelperText( name, saleWindow?.[ name ] ) : '',
 				errorMessage:
