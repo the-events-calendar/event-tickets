@@ -318,7 +318,7 @@ class Orders extends WP_List_Table {
 	 * Handler for the purchased column.
 	 *
 	 * @since 5.2.0
-	 * @since TBD Line items whose ticket no longer exists fall back to a generic label.
+	 * @since 5.30.1 Line items whose ticket no longer exists fall back to a generic label.
 	 *
 	 * @param WP_Post $item The current item.
 	 *
