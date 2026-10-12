@@ -932,17 +932,22 @@ p.description {
 	position: relative;
 }
 
-/* The mode selects keep the width of the Name field, so both ends line up whatever option they show. */
+.tec-tickets-relative-sale-dates {
+	/* The width of the Name field, so both ends line up whatever option their mode select shows. */
+	--tec-tickets-relative-sale-dates-select-width: 280px;
+}
+
 .tec-tickets-relative-sale-dates select[id$="_mode"] {
 	max-width: 100%;
-	width: 280px;
+	width: var(--tec-tickets-relative-sale-dates-select-width);
 }
 
 .tec-tickets-relative-sale-dates__relative,
 .tec-tickets-relative-sale-dates__specific {
-	margin-top: 8px;
+	margin-top: var(--tec-spacer-1);
 }
 
+/* Room for three digits and the spinner. */
 .tec-tickets-relative-sale-dates__relative input[type="number"] {
-	width: 64px;
+	width: var(--tec-spacer-11);
 }

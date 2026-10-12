@@ -88,6 +88,10 @@ final class Editor {
 	/**
 	 * Returns whether the sales window options apply to the ticket the panel is for.
 	 *
+	 * A front-end form, such as Community Events', loads its panels through admin-ajax, where `is_admin()` is true, so it
+	 * says it is not in wp-admin with an `is_admin` request var, which the ticket controls read the same way
+	 * (`Tribe__Tickets__Metabox::get_ticket_controls()`).
+	 *
 	 * @since TBD
 	 *
 	 * @param array<string,mixed> $context The ticket panel data.

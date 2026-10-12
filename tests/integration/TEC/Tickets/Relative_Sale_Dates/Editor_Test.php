@@ -234,6 +234,9 @@ class Editor_Test extends Controller_Test_Case {
 		$this->assertSame( $expected, $actual );
 	}
 
+	/**
+	 * @return Generator<string,array{0: Closure(): array{0: int, 1: int|null, 2: string|null}}>
+	 */
 	public function unchanged_form_provider(): Generator {
 		yield 'ticket on a page' => [
 			function (): array {
