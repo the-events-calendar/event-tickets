@@ -7,12 +7,13 @@
 /**
  * External dependencies
  */
-import moment from 'moment-timezone';
+import moment from 'moment';
 import { addAction } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
  */
+import '../zone-data';
 import { resolveSaleWindow } from '../sale-window';
 import { updateDateLimit } from './date-limits';
 import { readEventDates } from './event-dates';
@@ -72,6 +73,24 @@ function getEventDates( settings, dynamic ) {
 }
 
 /**
+ * Returns whether the number of a relative end is one the save accepts, within the range its field allows.
+ *
+ * @since TBD
+ *
+ * @param {string} key   The end of the window, `start` or `end`.
+ * @param {number} value The number the rule holds.
+ *
+ * @return {boolean} Whether the number is a whole number within the field's `min` and `max`.
+ */
+function isInRange( key, value ) {
+	const field = document.getElementById( `ticket_sales_${ key }_value` );
+
+	return (
+		Number.isInteger( value ) && Boolean( field ) && value >= Number( field.min ) && value <= Number( field.max )
+	);
+}
+
+/**
  * Writes, under each relative end of the sales window, the date it works out to for the event dates in the form.
  *
  * @since TBD
@@ -106,12 +125,20 @@ function updateHelperText() {
 	[ 'start', 'end' ].forEach( ( key ) => {
 		const end = rule[ key ];
 		const date = saleWindow ? saleWindow[ key ] : null;
-		const isRelative = MODE_RELATIVE === end.mode && Number.isInteger( end.value );
+		// A number the save rejects has no date to show.
+		const isRelative = MODE_RELATIVE === end.mode && isInRange( key, end.value );
 
-		document.getElementById( `ticket_sales_${ key }_helper` ).textContent =
+		// The year is now's in the event timezone, as the block editor reads it.
+		const text =
 			isRelative && date && date.isValid()
-				? formatHelperText( settings.text[ key ], date, formats, moment().year() )
+				? formatHelperText( settings.text[ key ], date, formats, moment().utcOffset( date.utcOffset() ).year() )
 				: '';
+		const helper = document.getElementById( `ticket_sales_${ key }_helper` );
+
+		// The helper is a live region: writing the same text again can announce it again.
+		if ( helper.textContent !== text ) {
+			helper.textContent = text;
+		}
 	} );
 }
 

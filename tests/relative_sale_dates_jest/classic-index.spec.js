@@ -11,11 +11,11 @@ function renderMetabox() {
 		<div id="tribetickets">
 			<div id="tribe_panel_edit">
 				<select id="ticket_sales_start_mode"><option value="relative" selected>Relative</option></select>
-				<input type="number" id="ticket_sales_start_value" value="2" />
+				<input type="number" min="1" max="60" id="ticket_sales_start_value" value="2" />
 				<select id="ticket_sales_start_unit"><option value="${ UNIT_WEEKS }" selected>weeks</option></select>
 				<select id="ticket_sales_start_anchor"><option value="start" selected>starts</option></select>
 				<select id="ticket_sales_end_mode"><option value="default" selected>Default</option></select>
-				<input type="number" id="ticket_sales_end_value" value="1" />
+				<input type="number" min="1" max="60" id="ticket_sales_end_value" value="1" />
 				<select id="ticket_sales_end_unit"><option value="3600" selected>hours</option></select>
 				<select id="ticket_sales_end_anchor"><option value="start" selected>starts</option></select>
 				<input type="hidden" name="relative_sale_dates" id="ticket_relative_sale_dates" value="" />
@@ -32,6 +32,8 @@ async function loadScript() {
 	let hooks;
 
 	jest.isolateModules( () => {
+		// WordPress's `wp-date` sets up `moment.tz` before the script loads.
+		require( 'moment-timezone' );
 		require( '@tec/tickets/relative-sale-dates/classic/index' );
 		hooks = require( '@wordpress/hooks' );
 	} );
@@ -67,12 +69,12 @@ function renderPanel( { value, unit, anchor } ) {
 		<div id="tribetickets">
 			<div id="tribe_panel_edit">
 				<select id="ticket_sales_start_mode"><option value="relative" selected>Relative</option></select>
-				<input type="number" id="ticket_sales_start_value" value="${ value }" />
+				<input type="number" min="1" max="60" id="ticket_sales_start_value" value="${ value }" />
 				<select id="ticket_sales_start_unit"><option value="${ unit }" selected>unit</option></select>
 				<select id="ticket_sales_start_anchor"><option value="${ anchor }" selected>anchor</option></select>
 				<span id="ticket_sales_start_helper"></span>
 				<select id="ticket_sales_end_mode"><option value="relative" selected>Relative</option></select>
-				<input type="number" id="ticket_sales_end_value" value="1" />
+				<input type="number" min="1" max="60" id="ticket_sales_end_value" value="1" />
 				<select id="ticket_sales_end_unit"><option value="3600" selected>hours</option></select>
 				<select id="ticket_sales_end_anchor"><option value="start" selected>starts</option></select>
 				<span id="ticket_sales_end_helper"></span>
@@ -165,6 +167,18 @@ describe( 'classic editor script', () => {
 
 		expect( getHelperText( 'start' ) ).toBe( '' );
 	} );
+
+	it.each( [ [ 'above the range', '100' ], [ 'below the range', '-5' ] ] )(
+		'should leave the helper text of a number %s empty',
+		async ( name, value ) => {
+			renderEventForm();
+			await loadScript();
+
+			jQuery( '#ticket_sales_start_value' ).val( value ).trigger( 'input' );
+
+			expect( getHelperText( 'start' ) ).toBe( '' );
+		}
+	);
 
 	it( 'should write the rule before the ticket is saved', async () => {
 		renderMetabox();

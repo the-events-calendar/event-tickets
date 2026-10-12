@@ -7,7 +7,7 @@
 /**
  * External dependencies
  */
-import moment from 'moment-timezone';
+import moment from 'moment';
 
 const MODE_DEFAULT = 'default';
 const MODE_RELATIVE = 'relative';

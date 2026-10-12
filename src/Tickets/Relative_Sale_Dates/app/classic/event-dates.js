@@ -7,7 +7,7 @@
 /**
  * External dependencies
  */
-import moment from 'moment-timezone';
+import moment from 'moment';
 
 /**
  * The formats the event timepickers show a time in: 12-hour, as `7:00pm`, or 24-hour, as `08:30`.
@@ -76,7 +76,8 @@ function readDate( value, format ) {
  * @return {string|null} The time, `HH:mm:ss`, or `null` when it cannot be read.
  */
 function readTime( value ) {
-	const time = moment( ( value || '' ).trim(), TIME_FORMATS, true );
+	// The timepicker writes English am/pm whatever the locale WordPress sets on moment.
+	const time = moment( ( value || '' ).trim(), TIME_FORMATS, 'en', true );
 
 	return time.isValid() ? time.format( 'HH:mm:ss' ) : null;
 }

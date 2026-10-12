@@ -40,7 +40,7 @@ final class Assets extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @var float[]
+	 * @var array<int|float>
 	 */
 	private const MANUAL_OFFSETS = [
 		-12,
@@ -123,7 +123,8 @@ final class Assets extends Controller_Contract {
 			Tickets_Plugin::instance(),
 			self::CLASSIC_SCRIPT,
 			'RelativeSaleDates/classic.js',
-			[ 'jquery', 'event-tickets-admin-js', 'tribe-events-dynamic', 'tec-common-php-date-formatter' ],
+			// `wp-date` sets up the `moment.tz` the script loads its zone data onto.
+			[ 'jquery', 'moment', 'wp-date', 'event-tickets-admin-js', 'tribe-events-dynamic', 'tec-common-php-date-formatter' ],
 			'admin_enqueue_scripts',
 			[
 				'group_path'   => Tickets_Plugin::class . '-packages',
@@ -140,8 +141,6 @@ final class Assets extends Controller_Contract {
 	/**
 	 * Returns whether the current admin screen edits an event in the classic editor, where the classic ticket form shows
 	 * the sales window options: only for Tickets Commerce tickets, so only with Tickets Commerce on.
-	 *
-	 * The script bundles its own copy of moment-timezone, which would replace the one the block editor's dates rely on.
 	 *
 	 * @since TBD
 	 *
