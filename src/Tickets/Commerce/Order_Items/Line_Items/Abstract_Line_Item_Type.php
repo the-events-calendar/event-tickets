@@ -344,7 +344,8 @@ abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 			throw new InvalidArgumentException( sprintf( 'Item field "%s" holds a %s, which cannot be stored exactly.', $name, get_class( $value ) ) );
 		}
 
-		if ( is_array( $value ) || $value instanceof stdClass ) {
+		// Dates are walked too: a property added to one can hold any class.
+		if ( is_array( $value ) || is_object( $value ) ) {
 			foreach ( (array) $value as $nested ) {
 				static::assert_serializable( $name, $nested, $depth + 1 );
 			}

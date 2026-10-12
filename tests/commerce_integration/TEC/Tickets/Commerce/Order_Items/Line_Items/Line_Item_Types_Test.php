@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce\Order_Items\Line_Items;
 
 use Codeception\TestCase\WPTestCase;
 use ArrayObject;
+use DateTime;
 use Generator;
 use InvalidArgumentException;
 use stdClass;
@@ -292,6 +293,17 @@ class Line_Item_Types_Test extends WPTestCase {
 	public function test_a_field_holding_an_unsupported_object_is_rejected(): void {
 		$item            = $this->fixture( 'tickets' )[0];
 		$item['nested']  = [ 'list' => new ArrayObject( [ 1 ] ) ];
+
+		$this->expectException( InvalidArgumentException::class );
+
+		tribe( Line_Item_Types::class )->get_for_item( $item )::to_row( 0, $item, 1, 'USD' );
+	}
+
+	public function test_an_unsupported_object_attached_to_a_date_is_rejected(): void {
+		$item           = $this->fixture( 'tickets' )[0];
+		$date           = new DateTime();
+		$date->list     = new ArrayObject( [ 1 ] );
+		$item['nested'] = $date;
 
 		$this->expectException( InvalidArgumentException::class );
 
