@@ -257,6 +257,19 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 			expect( filterDates( clientId ) ).toStrictEqual( { fromDate: ticketDates.fromDate, toDate: 'October 20, 2040' } );
 		} );
 
+		it( 'should keep the ticket date of a relative end whose number is cleared', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setDraftRule( clientId, {
+				start: { ...storedRule.start, value: '' },
+				end: storedRule.end,
+			} );
+
+			expect( filterDates( clientId ) ).toStrictEqual( {
+				fromDate: ticketDates.fromDate,
+				toDate: 'October 20, 2040',
+			} );
+		} );
+
 		it( 'should leave the dates of a ticket without a rule alone', () => {
 			const clientId = newClientId();
 			dispatch( STORE_NAME ).setRule( clientId, null );

@@ -15,6 +15,7 @@ import { __, sprintf } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { getHelperDateFormat } from '../helper-date-format';
+import { MODE_RELATIVE } from '../rule-constants';
 import { resolveSaleWindow } from '../sale-window';
 import { getLocalizedData } from './localized-data';
 
@@ -25,6 +26,9 @@ import { getLocalizedData } from './localized-data';
 
 /**
  * Works out the sales window a rule gives for the event dates.
+ *
+ * A relative end whose number is cleared or not whole has no date: the shared resolver would count it as zero units,
+ * which is the event date itself.
  *
  * @since TBD
  *
@@ -38,7 +42,14 @@ export function resolveTicketWindow( rule, eventDates ) {
 		return null;
 	}
 
-	return resolveSaleWindow( rule, eventDates.start, eventDates.end, eventDates.timezone );
+	const saleWindow = resolveSaleWindow( rule, eventDates.start, eventDates.end, eventDates.timezone );
+	const hasNoDate = ( end ) => MODE_RELATIVE === end.mode && ! Number.isInteger( end.value );
+
+	return {
+		...saleWindow,
+		start: hasNoDate( rule.start ) ? null : saleWindow.start,
+		end: hasNoDate( rule.end ) ? null : saleWindow.end,
+	};
 }
 
 /**
