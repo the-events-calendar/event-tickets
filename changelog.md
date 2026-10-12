@@ -1,5 +1,15 @@
 # Changelog
 
+### [5.30.1] 2026-10-12
+
+* Fix - Avoided a fatal error and a PHP warning on the Tickets Commerce Orders report when an order carried a fee or coupon for a ticket that was no longer part of the event's sales data.
+* Fix - Resolved a fatal error on pages with an RSVP shortcode limited to RSVPs that are no longer available.
+* Fix - Resolved an issue where the country selector on the Tickets Commerce PayPal connection screen did not update the Connect button.
+* Fix - Resolved an issue where the Tickets Commerce PayPal "Connect Automatically" button linked to a 404 when the connection link could not be generated. An error notice is shown in its place.
+* Language - 2 new strings added, 57 updated, 0 fuzzied, and 0 obsoleted.
+* Security - Hardened the attendees REST endpoint to reject an invalid API key with a 401 response instead of returning an empty result.
+* Tweak - Improved the unified licensing page experience.
+
 ### [5.30.0.2] 2026-10-05
 
 * Fix - Corrected the ticket sale duration date picker so it closes when clicking elsewhere in the editor, and gave new tickets a one day sale window when the event has no dates saved yet, instead of an invalid end date.
