@@ -901,6 +901,20 @@ describe( 'classic editor script', () => {
 			expect( endValue.ownerDocument.activeElement ).toBe( endValue );
 		} );
 
+		it.each( [ '0', '' ] )(
+			'should name a relative number of "%s" out of the range of the window',
+			async ( value ) => {
+				form.render( true );
+				await loadScript();
+				const endValue = document.getElementById( `${ form.valuePrefix }_end_value` );
+				endValue.value = value;
+
+				expect( validateTicket() ).toBe( false );
+				expect( document.getElementById( form.errorId ).textContent ).toBe( form.outOfRange );
+				expect( isMarkedInvalid( endValue.id, form.errorId ) ).toBe( true );
+			}
+		);
+
 		it( 'should let a valid window be saved', async () => {
 			form.render( true );
 			await loadScript();
@@ -966,6 +980,42 @@ describe( 'classic editor script', () => {
 			hooks.doAction( 'tec.tickets.admin.ticketDatePicked', document.getElementById( 'ticket_sale_start_date' ) );
 
 			expect( readSalePriceError() ).toBe( SALE_PRICE_ENDS_BEFORE_START );
+		} );
+
+		describe( 'saved before relative dates', () => {
+			/**
+			 * Renders a one-day sale price that starts before sales open, on 2099-06-10, with the rule field empty as
+			 * the form renders it for a ticket saved without a sale price rule.
+			 *
+			 * @param {boolean} checked Whether the ticket was saved with a sale price.
+			 */
+			function renderSalePriceWithoutRule( checked ) {
+				renderEventForm();
+				appendSalePriceFields( { mode: 'specific' }, { mode: 'specific' }, '6/1/2099', checked );
+				document.getElementById( 'ticket_sale_end_date' ).value = '6/1/2099';
+				document
+					.getElementById( 'tribe_panel_edit' )
+					.insertAdjacentHTML(
+						'beforeend',
+						'<input type="hidden" id="ticket_sale_price_relative" value="" />'
+					);
+			}
+
+			it( 'should leave a sale price kept on its own dates unjudged, as the server leaves it', async () => {
+				renderSalePriceWithoutRule( true );
+				await loadScript();
+
+				expect( validateTicket() ).toBe( true );
+				expect( readSalePriceError() ).toBe( '' );
+			} );
+
+			it( 'should judge the same dates on a sale price the admin is adding', async () => {
+				renderSalePriceWithoutRule( false );
+				await loadScript();
+				document.getElementById( 'ticket_add_sale_price' ).checked = true;
+
+				expect( validateTicket() ).toBe( false );
+			} );
 		} );
 
 		it( 'should leave a sale price that is not added unjudged', async () => {

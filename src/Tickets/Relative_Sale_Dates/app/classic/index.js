@@ -31,7 +31,7 @@ import { getWindowLengthText } from '../window-length';
 import { updateDateLimit } from './date-limits';
 import { readDateTime, readEventDates } from './event-dates';
 import { formatHelperText } from './helper-text';
-import { readRule, writeRule } from './rule';
+import { keepsSalePriceWithoutRule, readRule, writeRule } from './rule';
 import { getListText } from './tickets-list';
 
 /**
@@ -499,14 +499,19 @@ function getParentWindow( kind, eventDates, dynamic ) {
  * @param {import( '../window-kinds' ).WindowKind} kind The kind of the window.
  *
  * @return {{message: string, fieldId: string}|null} The error and the id of the field it is about, or `null` for a
- *                                                   window that can be saved, is not kept by the save, or cannot be
- *                                                   judged here.
+ *                                                   window that can be saved, is not kept by the save, is saved
+ *                                                   without a rule, or cannot be judged here.
  */
 function readWindowError( kind ) {
 	const settings = window.tec?.tickets?.relativeSaleDates?.classicData;
 	const dynamic = window.tribe_dynamic_help_text;
 
 	if ( ! settings || ! dynamic || ! document.getElementById( kind.errorId ) || ! kind.isEnabled( document ) ) {
+		return null;
+	}
+
+	// The server judges a sale price saved before relative dates as it did then, without a rule.
+	if ( keepsSalePriceWithoutRule( document, kind ) ) {
 		return null;
 	}
 
