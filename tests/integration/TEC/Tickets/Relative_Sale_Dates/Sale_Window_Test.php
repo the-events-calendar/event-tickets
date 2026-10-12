@@ -3,7 +3,6 @@
 namespace TEC\Tickets\Relative_Sale_Dates;
 
 use Codeception\TestCase\WPTestCase;
-use DateTime;
 use DateTimeImmutable;
 use DateTimeZone;
 use Generator;
@@ -29,17 +28,15 @@ class Sale_Window_Test extends WPTestCase {
 	 * @dataProvider fixtures_provider
 	 */
 	public function should_resolve_the_shared_fixture_case( array $case ): void {
-		$timezone    = new DateTimeZone( $case['timezone'] );
-		$event_start = new DateTimeImmutable( $case['event_start'], $timezone );
-		$event_end   = new DateTimeImmutable( $case['event_end'], $timezone );
+		$event_id = $this->create_event_with_dates( $case['event_start'], $case['event_end'], $case['timezone'] );
 
-		$window = tribe( Sale_Window::class )->resolve( Rule::from_array( $case['rule'] ), $event_start, $event_end );
+		$window = tribe( Sale_Window::class )->resolve_for_event( Rule::from_array( $case['rule'] ), $event_id );
 
 		$expected = $case['expected'];
-		$this->assert_date( $expected['start_local'], $timezone->getName(), $window->get_start() );
-		$this->assert_date( $expected['start_utc'], 'UTC', $window->get_start_utc() );
-		$this->assert_date( $expected['end_local'], $timezone->getName(), $window->get_end() );
-		$this->assert_date( $expected['end_utc'], 'UTC', $window->get_end_utc() );
+		$this->assert_date( $expected['start_local'], $case['timezone'], $window->get_start() );
+		$this->assert_date( $expected['start_utc'], 'UTC', $this->to_utc( $window->get_start() ) );
+		$this->assert_date( $expected['end_local'], $case['timezone'], $window->get_end() );
+		$this->assert_date( $expected['end_utc'], 'UTC', $this->to_utc( $window->get_end() ) );
 
 		if ( null === $expected['valid'] ) {
 			$this->expectException( RuntimeException::class );
@@ -71,9 +68,10 @@ class Sale_Window_Test extends WPTestCase {
 			'start' => new DateTimeImmutable( $case['event_start'], $timezone ),
 			'end'   => new DateTimeImmutable( $case['event_end'], $timezone ),
 		];
+		$event_id = $this->create_event_with_dates( $case['event_start'], $case['event_end'], $case['timezone'] );
 
-		$window   = tribe( Sale_Window::class )->resolve( Rule::from_array( $case['rule'] ), $anchors['start'], $anchors['end'] );
-		$resolved = 'start' === $key ? $window->get_start_utc() : $window->get_end_utc();
+		$window   = tribe( Sale_Window::class )->resolve_for_event( Rule::from_array( $case['rule'] ), $event_id );
+		$resolved = 'start' === $key ? $window->get_start() : $window->get_end();
 
 		$this->assertLessThan(
 			$anchors[ $case['rule'][ $key ]['anchor'] ]->getTimestamp(),
@@ -84,8 +82,8 @@ class Sale_Window_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function should_resolve_in_the_timezone_of_the_event_start(): void {
-		$rule        = Rule::from_array(
+	public function should_resolve_in_the_timezone_of_the_event(): void {
+		$rule     = Rule::from_array(
 			[
 				'start' => [ 'mode' => 'default' ],
 				'end'   => [
@@ -96,13 +94,12 @@ class Sale_Window_Test extends WPTestCase {
 				],
 			]
 		);
-		$event_start = new DateTimeImmutable( '2027-06-10 19:00:00', new DateTimeZone( 'America/New_York' ) );
-		$event_end   = new DateTime( '2027-06-11 01:00:00', new DateTimeZone( 'UTC' ) );
+		$event_id = $this->create_event_with_dates( '2027-06-10 19:00:00', '2027-06-10 21:00:00', 'America/New_York' );
 
-		$window = tribe( Sale_Window::class )->resolve( $rule, $event_start, $event_end );
+		$window = tribe( Sale_Window::class )->resolve_for_event( $rule, $event_id );
 
 		$this->assert_date( '2027-06-10 20:00:00', 'America/New_York', $window->get_end() );
-		$this->assert_date( '2027-06-11 00:00:00', 'UTC', $window->get_end_utc() );
+		$this->assert_date( '2027-06-11 00:00:00', 'UTC', $this->to_utc( $window->get_end() ) );
 	}
 
 	/**
@@ -133,6 +130,29 @@ class Sale_Window_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function should_resolve_an_end_anchor_at_the_last_second_of_an_all_day_event(): void {
+		$event_end = new DateTimeImmutable( '2027-06-10 23:59:59', new DateTimeZone( 'America/New_York' ) );
+		$event_id  = $this->create_event_with_dates( '2027-06-10 00:00:00', $event_end->format( 'Y-m-d H:i:s' ), 'America/New_York' );
+		$rule      = Rule::from_array(
+			[
+				'start' => [ 'mode' => 'default' ],
+				'end'   => [
+					'mode'   => 'relative',
+					'value'  => 1,
+					'unit'   => DAY_IN_SECONDS,
+					'anchor' => 'end',
+				],
+			]
+		);
+
+		$window = tribe( Sale_Window::class )->resolve_for_event( $rule, $event_id );
+
+		$this->assert_date( $event_end->modify( '-1 day' )->format( 'Y-m-d H:i:s' ), 'America/New_York', $window->get_end() );
+	}
+
+	/**
+	 * @test
+	 */
 	public function should_not_resolve_a_rule_for_a_post_without_event_dates(): void {
 		$rule = Rule::from_array( [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ] );
 
@@ -140,10 +160,49 @@ class Sale_Window_Test extends WPTestCase {
 	}
 
 	/**
+	 * @return Generator<string,array{0: mixed, 1: mixed}>
+	 */
+	public function unreadable_event_dates_provider(): Generator {
+		yield 'a start that is not a date' => [ 'not a date', '2027-06-10 21:00:00' ];
+		yield 'an empty end' => [ '2027-06-10 19:00:00', '' ];
+		yield 'a start stored as an array' => [ [ '2027-06-10 19:00:00' ], '2027-06-10 21:00:00' ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider unreadable_event_dates_provider
+	 *
+	 * @param mixed $start The stored event start.
+	 * @param mixed $end   The stored event end.
+	 */
+	public function should_not_resolve_a_rule_for_unreadable_event_dates( $start, $end ): void {
+		$event_id = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		update_post_meta( $event_id, '_EventStartDate', $start );
+		update_post_meta( $event_id, '_EventEndDate', $end );
+		$rule = Rule::from_array( [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ] );
+
+		$this->assertNull( tribe( Sale_Window::class )->resolve_for_event( $rule, $event_id ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_read_an_event_without_a_timezone_in_the_site_timezone(): void {
+		update_option( 'timezone_string', 'Europe/Lisbon' );
+		$event_id = $this->create_event_with_dates( '2027-06-10 19:00:00', '2027-06-10 21:00:00', '' );
+		$rule     = Rule::from_array( [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ] );
+
+		$window = tribe( Sale_Window::class )->resolve_for_event( $rule, $event_id );
+
+		$this->assert_date( '2027-06-10 19:00:00', 'Europe/Lisbon', $window->get_end() );
+	}
+
+	/**
 	 * @return Generator<string,array{0: string, 1: bool}>
 	 */
 	public function now_start_provider(): Generator {
 		yield 'a ticket start later than now' => [ '+1 week', true ];
+		yield 'a ticket start equal to now' => [ '+0 seconds', false ];
 		yield 'a ticket start already past' => [ '-1 week', false ];
 		yield 'no ticket start' => [ '', false ];
 	}
@@ -182,6 +241,37 @@ class Sale_Window_Test extends WPTestCase {
 				'duration'   => 3 * HOUR_IN_SECONDS,
 			]
 		)->create()->ID;
+	}
+
+	/**
+	 * Creates an event post whose date metas hold the given wall-clock values as they are.
+	 *
+	 * The fixture dates fall on clock changes, which the events repository would move; the resolver reads the metas.
+	 *
+	 * @param string $start    The event start, in `Y-m-d H:i:s` format.
+	 * @param string $end      The event end, in `Y-m-d H:i:s` format.
+	 * @param string $timezone The event timezone, or `''` for none.
+	 *
+	 * @return int The event post ID.
+	 */
+	private function create_event_with_dates( string $start, string $end, string $timezone ): int {
+		$event_id = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		update_post_meta( $event_id, '_EventStartDate', $start );
+		update_post_meta( $event_id, '_EventEndDate', $end );
+		update_post_meta( $event_id, '_EventTimezone', $timezone );
+
+		return $event_id;
+	}
+
+	/**
+	 * Returns a resolved date in UTC.
+	 *
+	 * @param DateTimeImmutable|null $date The resolved date.
+	 *
+	 * @return DateTimeImmutable|null The same instant in UTC, or `null` for no date.
+	 */
+	private function to_utc( ?DateTimeImmutable $date ): ?DateTimeImmutable {
+		return $date ? $date->setTimezone( new DateTimeZone( 'UTC' ) ) : null;
 	}
 
 	/**

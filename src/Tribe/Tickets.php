@@ -4304,7 +4304,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Returns whether ticket data can be saved, before an editor or REST request saves it with `ticket_add()`.
 		 *
 		 * `ticket_add()` can only return `false`, so the entry points ask here first, where a callback can reject the data
-		 * with a message they show.
+		 * with a message they show. The classic editor's ajax save, the block editor's REST V1 save and the TEC REST API
+		 * call it; other callers of `ticket_add()`, such as imports and the RSVP V2 editor, save without it.
 		 *
 		 * @since TBD
 		 *
@@ -4317,7 +4318,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Filters whether ticket data can be saved, before an editor or REST request saves it.
 			 *
-			 * Return a `WP_Error` to reject the save: its message is shown to the user, and nothing is saved.
+			 * Return a `WP_Error` to reject the save: its message is shown to the user, and nothing is saved. Only the
+			 * classic editor's ajax save, the block editor's REST V1 save and the TEC REST API apply it.
 			 *
 			 * @since TBD
 			 *
@@ -4332,7 +4334,20 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				array_merge( $data, [ 'ticket_provider' => $this->class_name ] )
 			);
 
-			return is_wp_error( $valid ) ? $valid : true;
+			if ( is_wp_error( $valid ) ) {
+				return $valid;
+			}
+
+			// A callback that rejects the data without saying why still rejects it.
+			if ( false === $valid ) {
+				return new WP_Error(
+					'tec_tickets_ticket_data_invalid',
+					__( 'The ticket could not be saved.', 'event-tickets' ),
+					[ 'status' => 400 ]
+				);
+			}
+
+			return true;
 		}
 
 		/**

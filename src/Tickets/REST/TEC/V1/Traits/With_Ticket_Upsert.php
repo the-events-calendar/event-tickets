@@ -26,10 +26,13 @@ trait With_Ticket_Upsert {
 	 * Creates a ticket.
 	 *
 	 * @since 5.26.0
+	 * @since TBD Throws when `validate_ticket_data()` rejects the ticket data.
 	 *
 	 * @param array $params The parameters for the ticket.
 	 *
 	 * @return WP_REST_Response The response object.
+	 *
+	 * @throws InvalidRestArgumentException When the ticket data fails validation.
 	 */
 	public function create( array $params = [] ): WP_REST_Response {
 		return $this->upsert( $params, _x( 'create', 'This is being used as a verb.', 'event-tickets' ) );
@@ -39,10 +42,13 @@ trait With_Ticket_Upsert {
 	 * Updates a ticket.
 	 *
 	 * @since 5.26.0
+	 * @since TBD Throws when `validate_ticket_data()` rejects the ticket data.
 	 *
 	 * @param array $params The parameters for the ticket.
 	 *
 	 * @return WP_REST_Response The response object.
+	 *
+	 * @throws InvalidRestArgumentException When the ticket data fails validation.
 	 */
 	public function update( array $params = [] ): WP_REST_Response {
 		$post_params   = $params['post_params'] ?? [];
@@ -98,7 +104,10 @@ trait With_Ticket_Upsert {
 		$valid = $tickets->validate_ticket_data( $event, $ticket_params );
 
 		if ( is_wp_error( $valid ) ) {
-			throw InvalidRestArgumentException::create( $valid->get_error_message(), '', $valid->get_error_code(), $valid->get_error_message() );
+			$error_data = $valid->get_error_data();
+			$argument   = is_array( $error_data ) && is_string( $error_data['argument'] ?? null ) ? $error_data['argument'] : '';
+
+			throw InvalidRestArgumentException::create( $valid->get_error_message(), $argument, $valid->get_error_code(), $valid->get_error_message() );
 		}
 
 		$ticket_id = $tickets->ticket_add( $event, $ticket_params );

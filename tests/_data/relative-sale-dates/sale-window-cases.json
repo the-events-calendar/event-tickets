@@ -273,6 +273,23 @@
 			}
 		},
 		{
+			"name": "minutes before start land in the autumn overlap",
+			"rule": {
+				"start": { "mode": "relative", "value": 30, "unit": 60, "anchor": "start" },
+				"end": { "mode": "default" }
+			},
+			"timezone": "America/New_York",
+			"event_start": "2027-11-07 01:40:00",
+			"event_end": "2027-11-07 03:00:00",
+			"expected": {
+				"start_local": "2027-11-07 01:10:00",
+				"start_utc": "2027-11-07 05:10:00",
+				"end_local": "2027-11-07 01:40:00",
+				"end_utc": "2027-11-07 05:40:00",
+				"valid": true
+			}
+		},
+		{
 			"name": "2 weeks before start in Europe/Berlin in summer",
 			"rule": {
 				"start": { "mode": "relative", "value": 2, "unit": 604800, "anchor": "start" },

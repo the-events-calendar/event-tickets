@@ -664,7 +664,10 @@ class Ticket_Save_Test extends Controller_Test_Case {
 		$this->assertSame(
 			[
 				'success' => false,
-				'data'    => [ 'message' => self::INVALID_WINDOW_MESSAGE ],
+				'data'    => [
+					'message' => self::INVALID_WINDOW_MESSAGE,
+					'code'    => 'tec_tickets_relative_sale_dates_invalid_window',
+				],
 			],
 			$response
 		);

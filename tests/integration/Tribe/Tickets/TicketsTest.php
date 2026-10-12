@@ -298,9 +298,22 @@ class TicketsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 */
-	public function should_treat_a_value_that_is_not_an_error_as_valid(): void {
+	public function should_reject_the_data_a_validation_callback_returns_false_for(): void {
 		$post_id = static::factory()->post->create();
 		add_filter( 'tec_tickets_ticket_data_validation', '__return_false' );
+
+		$valid = tribe( Module::class )->validate_ticket_data( $post_id, [] );
+
+		$this->assertInstanceOf( WP_Error::class, $valid );
+		$this->assertSame( 'tec_tickets_ticket_data_invalid', $valid->get_error_code() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_treat_any_other_value_that_is_not_an_error_as_valid(): void {
+		$post_id = static::factory()->post->create();
+		add_filter( 'tec_tickets_ticket_data_validation', '__return_null' );
 
 		$this->assertTrue( tribe( Module::class )->validate_ticket_data( $post_id, [] ) );
 	}

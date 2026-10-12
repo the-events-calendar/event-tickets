@@ -12,7 +12,6 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Relative_Sale_Dates;
 
 use DateTimeImmutable;
-use DateTimeZone;
 use RuntimeException;
 
 /**
@@ -66,17 +65,6 @@ final class Resolved_Window {
 	}
 
 	/**
-	 * Gets the sales start in UTC.
-	 *
-	 * @since TBD
-	 *
-	 * @return DateTimeImmutable|null The sales start, or `null` when sales open at once or keep the ticket's own date.
-	 */
-	public function get_start_utc(): ?DateTimeImmutable {
-		return $this->start ? $this->start->setTimezone( new DateTimeZone( 'UTC' ) ) : null;
-	}
-
-	/**
 	 * Gets the sales end in the event timezone.
 	 *
 	 * @since TBD
@@ -85,17 +73,6 @@ final class Resolved_Window {
 	 */
 	public function get_end(): ?DateTimeImmutable {
 		return $this->end;
-	}
-
-	/**
-	 * Gets the sales end in UTC.
-	 *
-	 * @since TBD
-	 *
-	 * @return DateTimeImmutable|null The sales end, or `null` when the ticket keeps its own date.
-	 */
-	public function get_end_utc(): ?DateTimeImmutable {
-		return $this->end ? $this->end->setTimezone( new DateTimeZone( 'UTC' ) ) : null;
 	}
 
 	/**

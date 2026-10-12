@@ -369,13 +369,19 @@ class Tribe__Tickets__Metabox {
 			$failed_ticket_output = esc_html( $valid->get_error_message() );
 			if ( $return_value ) {
 				return new WP_Error(
-					'bad_request',
+					$valid->get_error_code(),
 					$failed_ticket_output,
 					[ 'status' => 400 ]
 				);
 			}
 
-			wp_send_json_error( [ 'message' => $failed_ticket_output ] );
+			// The code lets the editor tell which part of the form the message is about.
+			wp_send_json_error(
+				[
+					'message' => $failed_ticket_output,
+					'code'    => $valid->get_error_code(),
+				]
+			);
 		}
 
 		// Do the actual adding
