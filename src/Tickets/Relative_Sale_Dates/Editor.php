@@ -13,6 +13,7 @@ namespace TEC\Tickets\Relative_Sale_Dates;
 
 use TEC\Tickets\Commerce\Module;
 use Tribe__Template as Template;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
  * Replaces the sale dates fields of the classic ticket form with the sales window options.
@@ -73,11 +74,11 @@ final class Editor {
 
 		$stored = $context[ Ticket_Save::DATA_KEY ] ?? null;
 		$rule   = is_array( $stored ) ? Rule::from_stored( $stored ) : null;
-		$is_new = empty( $context['ticket'] );
+		$ticket = $context['ticket'] ?? null;
 
 		$context['sales_window'] = [
-			'start' => $this->get_boundary_fields( $rule ? $rule->get_start() : null, $is_new, self::DEFAULT_RELATIVE_START ),
-			'end'   => $this->get_boundary_fields( $rule ? $rule->get_end() : null, $is_new, self::DEFAULT_RELATIVE_END ),
+			'start' => $this->get_boundary_fields( $rule ? $rule->get_start() : null, $this->has_own_date( $ticket, 'start_date' ), self::DEFAULT_RELATIVE_START ),
+			'end'   => $this->get_boundary_fields( $rule ? $rule->get_end() : null, $this->has_own_date( $ticket, 'end_date' ), self::DEFAULT_RELATIVE_END ),
 		];
 		$context['rule_json']    = $rule ? $rule->to_json() : '';
 
@@ -105,6 +106,23 @@ final class Editor {
 	}
 
 	/**
+	 * Returns whether a saved ticket has a date of its own for one boundary of the sales window.
+	 *
+	 * A ticket created on a page and moved to an event, or created by code, can have no end date. Saving it without one
+	 * gave it the event start, which is what the default end resolves to.
+	 *
+	 * @since TBD
+	 *
+	 * @param Ticket_Object|null $ticket   The ticket the panel is for, or `null` for a new ticket.
+	 * @param string             $property The ticket property that holds the boundary date, `start_date` or `end_date`.
+	 *
+	 * @return bool Whether the ticket is saved and has a date for the boundary.
+	 */
+	private function has_own_date( $ticket, string $property ): bool {
+		return $ticket instanceof Ticket_Object && ! empty( $ticket->{$property} );
+	}
+
+	/**
 	 * Gets the values the form shows for one boundary of the sales window.
 	 *
 	 * A ticket saved without a rule has dates of its own, so it opens on them rather than on the defaults of a new ticket.
@@ -112,14 +130,14 @@ final class Editor {
 	 * @since TBD
 	 *
 	 * @param Boundary|null                                              $boundary         The boundary in the stored rule, or `null` when there is none.
-	 * @param bool                                                       $is_new           Whether the ticket is new.
+	 * @param bool                                                       $has_own_date     Whether the ticket has a date of its own for the boundary.
 	 * @param array{mode: string, value: int, unit: int, anchor: string} $default_relative The relative boundary offered when the rule has none.
 	 *
 	 * @return array{mode: string, value: int, unit: int, anchor: string} The mode, and the relative values the form offers.
 	 */
-	private function get_boundary_fields( ?Boundary $boundary, bool $is_new, array $default_relative ): array {
+	private function get_boundary_fields( ?Boundary $boundary, bool $has_own_date, array $default_relative ): array {
 		if ( ! $boundary ) {
-			return array_merge( $default_relative, [ 'mode' => $is_new ? Rule::MODE_DEFAULT : Rule::MODE_SPECIFIC ] );
+			return array_merge( $default_relative, [ 'mode' => $has_own_date ? Rule::MODE_SPECIFIC : Rule::MODE_DEFAULT ] );
 		}
 
 		if ( Rule::MODE_RELATIVE === $boundary->get_mode() ) {

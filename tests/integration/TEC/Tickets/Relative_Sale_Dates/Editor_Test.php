@@ -146,6 +146,38 @@ class Editor_Test extends Controller_Test_Case {
 	}
 
 	/**
+	 * A ticket created on a page and moved to an event, or created by code, can have no end date. Saving it without one
+	 * gave it the event start, which the default end still does.
+	 *
+	 * @test
+	 */
+	public function should_open_a_saved_ticket_without_an_end_date_on_when_the_event_starts(): void {
+		$this->make_controller()->register();
+		$event_start = new DateTimeImmutable( '2027-06-24 19:00:00' );
+		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
+		$ticket_id   = $this->create_tc_ticket( $event_id );
+		delete_post_meta( $ticket_id, '_ticket_end_date' );
+		delete_post_meta( $ticket_id, '_ticket_end_time' );
+		clean_post_cache( $ticket_id );
+
+		$form = $this->render_ticket_form( $event_id, $ticket_id );
+
+		$this->assertSame( 'specific', $this->get_selected_value( $form, 'ticket_sales_start_mode' ) );
+		$this->assertSame( 'default', $this->get_selected_value( $form, 'ticket_sales_end_mode' ) );
+
+		$fields      = $this->serialize_form( $form );
+		$rule        = [ 'start' => [ 'mode' => 'specific' ], 'end' => [ 'mode' => 'default' ] ];
+		$rule_fields = array_keys( array_filter( $fields, static fn( array $field ): bool => Ticket_Save::DATA_KEY === $field[0] ) );
+		// What the script writes from the selects the form opened on.
+		$fields[ reset( $rule_fields ) ][1] = wp_json_encode( $rule );
+
+		$response = $this->send_classic_ticket_form( $event_id, $this->to_query_string( $fields ) );
+
+		$this->assertTrue( $response['success'] );
+		$this->assertSame( [ $event_start->format( 'Y-m-d' ), $event_start->format( 'H:i:s' ) ], $this->get_ticket_end( $ticket_id ) );
+	}
+
+	/**
 	 * @test
 	 */
 	public function should_show_the_date_inputs_only_for_a_specific_date(): void {

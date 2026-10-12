@@ -7,6 +7,7 @@
 /**
  * Internal dependencies
  */
+import { updateDateLimit } from './date-limits';
 import { writeRule } from './rule';
 
 /*
@@ -15,5 +16,8 @@ import { writeRule } from './rule';
  * and the element itself is not replaced when the panels are.
  */
 jQuery( () => {
-	jQuery( '#tribetickets' ).on( 'pre-save-ticket.tribe', () => writeRule( document ) );
+	const $metabox = jQuery( '#tribetickets' );
+
+	$metabox.on( 'pre-save-ticket.tribe', () => writeRule( document ) );
+	$metabox.on( 'change.tribe', 'select', ( event ) => updateDateLimit( document, event.target.id ) );
 } );

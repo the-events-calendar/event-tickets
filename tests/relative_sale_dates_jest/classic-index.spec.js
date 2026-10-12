@@ -62,3 +62,84 @@ describe( 'classic editor script', () => {
 		expect( document.getElementById( 'ticket_relative_sale_dates' ).value ).not.toBe( '' );
 	} );
 } );
+
+describe( 'classic date picker limits', () => {
+	const endDate = new Date( 2027, 5, 1 );
+	let datepickerCalls;
+
+	/**
+	 * Renders the sales date inputs as `tickets.js` leaves them, with jQuery UI's marker class, and a specific end.
+	 */
+	function renderDatePickers() {
+		document.body.innerHTML = `
+			<div id="tribetickets">
+				<select id="ticket_sales_start_mode">
+					<option value="specific" selected>On a specific date</option>
+					<option value="relative">Relative</option>
+				</select>
+				<input type="text" id="ticket_start_date" class="hasDatepicker" value="2027-05-01" />
+				<select id="ticket_sales_end_mode">
+					<option value="specific" selected>On a specific date</option>
+					<option value="relative">Relative</option>
+				</select>
+				<input type="text" id="ticket_end_date" class="hasDatepicker" value="2027-06-01" />
+			</div>`;
+	}
+
+	/**
+	 * Changes a mode select the way the admin does.
+	 *
+	 * @param {string} id    The mode select id.
+	 * @param {string} value The mode to pick.
+	 */
+	function changeMode( id, value ) {
+		jQuery( `#${ id }` ).val( value ).trigger( 'change' );
+	}
+
+	beforeEach( () => {
+		datepickerCalls = [];
+		jQuery.fn.datepicker = function ( ...args ) {
+			datepickerCalls.push( [ this.attr( 'id' ), ...args ] );
+
+			return 'getDate' === args[ 0 ] ? endDate : this;
+		};
+	} );
+
+	afterEach( () => {
+		delete jQuery.fn.datepicker;
+		document.body.innerHTML = '';
+	} );
+
+	it( 'should lift the limit a relative end leaves on the start picker', async () => {
+		renderDatePickers();
+		await loadScript();
+
+		changeMode( 'ticket_sales_end_mode', 'relative' );
+
+		expect( datepickerCalls ).toContainEqual( [ 'ticket_start_date', 'option', 'maxDate', null ] );
+	} );
+
+	it( 'should give the limit back when the end returns to a specific date', async () => {
+		renderDatePickers();
+		await loadScript();
+
+		changeMode( 'ticket_sales_end_mode', 'relative' );
+		changeMode( 'ticket_sales_end_mode', 'specific' );
+
+		expect( datepickerCalls[ datepickerCalls.length - 1 ] ).toStrictEqual( [
+			'ticket_start_date',
+			'option',
+			'maxDate',
+			endDate,
+		] );
+	} );
+
+	it( 'should lift the limit a relative start leaves on the end picker', async () => {
+		renderDatePickers();
+		await loadScript();
+
+		changeMode( 'ticket_sales_start_mode', 'relative' );
+
+		expect( datepickerCalls ).toContainEqual( [ 'ticket_end_date', 'option', 'minDate', null ] );
+	} );
+} );
