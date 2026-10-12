@@ -9,11 +9,6 @@
  */
 import moment from 'moment-timezone';
 
-/**
- * Internal dependencies
- */
-import { getSaleWindowError } from './validation';
-
 const MODE_DEFAULT = 'default';
 const MODE_RELATIVE = 'relative';
 const ANCHOR_START = 'start';
@@ -50,14 +45,9 @@ const FIXED_OFFSET = /^[+-]\d{2}:\d{2}$/;
 /**
  * @typedef {Object} ResolvedSaleWindow
  *
- * @property {moment.Moment|null} start    The sales start in the event timezone, or `null` when sales open at once or
- *                                         keep the ticket's own date.
- * @property {moment.Moment|null} startUtc The sales start in UTC, or `null` as for `start`.
- * @property {moment.Moment|null} end      The sales end in the event timezone, or `null` when the ticket keeps its own
- *                                         date.
- * @property {moment.Moment|null} endUtc   The sales end in UTC, or `null` as for `end`.
- * @property {boolean|null}       valid    Whether the sales start is before the sales end, or `null` when either is
- *                                         `null`: the window cannot be judged without both.
+ * @property {moment.Moment|null} start The sales start in the event timezone, or `null` when sales open at once or keep
+ *                                      the ticket's own date.
+ * @property {moment.Moment|null} end   The sales end in the event timezone, or `null` when the ticket keeps its own date.
  */
 
 /**
@@ -86,13 +76,7 @@ export function resolveSaleWindow( rule, eventStart, eventEnd, timezone ) {
 			? anchors[ ANCHOR_START ].clone()
 			: resolveRelative( rule.end, anchors, timezone );
 
-	return {
-		start,
-		startUtc: toUtc( start ),
-		end,
-		endUtc: toUtc( end ),
-		valid: start && end ? null === getSaleWindowError( start, end ) : null,
-	};
+	return { start, end };
 }
 
 /**
@@ -196,17 +180,4 @@ function fromLocal( dateTime, timezone ) {
 	}
 
 	return moment.tz( dateTime, DATE_TIME_FORMAT, true, timezone );
-}
-
-/**
- * Converts a date to UTC.
- *
- * @since TBD
- *
- * @param {moment.Moment|null} date The date to convert, or `null`.
- *
- * @return {moment.Moment|null} The same instant in UTC, or `null` when there is no date.
- */
-function toUtc( date ) {
-	return date ? date.clone().utc() : null;
 }
