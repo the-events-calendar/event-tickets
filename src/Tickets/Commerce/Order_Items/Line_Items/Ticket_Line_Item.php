@@ -48,7 +48,7 @@ class Ticket_Line_Item extends Abstract_Line_Item_Type {
 		$ticket    = $ticket_id ? tribe( Ticket::class )->get_ticket( $ticket_id ) : null;
 
 		return [
-			'name'        => $columns['name'] ?? ( $ticket->name ?? '' ),
+			'name'        => $ticket->name ?? '',
 			'sku'         => $ticket ? ( $ticket->sku ?: null ) : null,
 			'ticket_type' => $ticket ? $ticket->type() : null,
 		];
