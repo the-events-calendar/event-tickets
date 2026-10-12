@@ -86,7 +86,8 @@ final class Editor {
 	 */
 	public function filter_available_dates_context( array $context ): array {
 		$ticket = $context['ticket'] ?? null;
-		$rule   = $ticket instanceof Ticket_Object ? Rule::from_stored( $this->rule_store->get( $ticket->ID ) ) : null;
+		// Tickets Commerce caches a ticket with the ID it was first loaded with, which can be a numeric string.
+		$rule = $ticket instanceof Ticket_Object ? Rule::from_stored( $this->rule_store->get( absint( $ticket->ID ) ) ) : null;
 
 		$context['relative_sale_dates_attributes'] = $rule
 			? [

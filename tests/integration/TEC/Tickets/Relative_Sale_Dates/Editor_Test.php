@@ -10,6 +10,7 @@ use DOMXPath;
 use Generator;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
 use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
@@ -247,6 +248,23 @@ class Editor_Test extends Controller_Test_Case {
 		$this->assertSame( $this->get_ticket_end( $ruled )[0], $dates->getAttribute( 'data-sale-end' ) );
 		// Each row's template context is merged into the next one, so the rule must not carry over.
 		$this->assertFalse( $this->get_available_dates( $list, $plain )->hasAttribute( 'data-relative-sale-dates' ) );
+	}
+
+	/**
+	 * Tickets Commerce caches a ticket with the ID it was loaded with, and an attendee's `product_id` meta is a string.
+	 *
+	 * @test
+	 */
+	public function should_list_a_ruled_ticket_first_loaded_with_a_numeric_string_id(): void {
+		$this->make_controller()->register();
+		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
+		$ticket_id = $this->create_ruled_ticket( $event_id );
+		wp_cache_delete( $ticket_id, 'tec_tickets' );
+		tribe( Ticket::class )->get_ticket( (string) $ticket_id );
+
+		$dates = $this->get_available_dates( $this->render_tickets_list( $event_id ), $ticket_id );
+
+		$this->assertSame( tribe( Rule_Store::class )->get( $ticket_id ), json_decode( $dates->getAttribute( 'data-relative-sale-dates' ), true ) );
 	}
 
 	/**
