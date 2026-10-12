@@ -93,6 +93,11 @@ class Controller_Test extends Controller_Test_Case {
 		yield 'resolved dates written after the save' => [ 'tec_tickets_ticket_upserted', Ticket_Save::class, 'write_resolved_dates', 20 ];
 		yield 'ticket data validated' => [ 'tec_tickets_ticket_data_validation', Ticket_Save::class, 'validate_ticket_data', 10 ];
 		yield 'tickets updated once the event occurrences are saved' => [ 'tec_events_custom_tables_v1_after_save_occurrences', Event_Listener::class, 'update_ticket_dates', 10 ];
+		yield 'event marked when a date meta is added' => [ 'added_post_meta', Event_Listener::class, 'mark_moved_event', 10 ];
+		yield 'event marked when a date meta is updated' => [ 'updated_postmeta', Event_Listener::class, 'mark_moved_event', 10 ];
+		yield 'tickets updated once the event save is done' => [ 'wp_after_insert_post', Event_Listener::class, 'update_saved_event_tickets', 10 ];
+		yield 'tickets updated on shutdown' => [ 'tec_shutdown', Event_Listener::class, 'update_moved_event_tickets', 10 ];
+		yield 'moved ticket updated' => [ 'tribe_tickets_ticket_type_moved', Event_Listener::class, 'update_moved_ticket', 10 ];
 		yield 'legacy end date sync filtered' => [ 'tec_tickets_ticket_end_date_follows_event_start', Event_Listener::class, 'filter_end_date_follows_event_start', 10 ];
 		yield 'rules copied to duplicates' => [ 'tec_tickets_tickets_duplicated', Event_Listener::class, 'copy_rules_to_duplicates', 10 ];
 		yield 'duplicated tickets updated' => [ 'tec_tickets_tickets_duplicated', Event_Listener::class, 'update_duplicated_tickets', 20 ];

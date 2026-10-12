@@ -2,9 +2,11 @@
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
+use DateTimeImmutable;
 use Generator;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Module;
+use Tribe__Tickets__Main as Tickets_Main;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Relative_Sale_Dates_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
@@ -122,6 +124,124 @@ class Event_Listener_Test extends Controller_Test_Case {
 	}
 
 	/**
+	 * This suite runs with The Events Calendar's custom tables off, so nothing saves the event occurrences.
+	 *
+	 * @test
+	 */
+	public function should_move_the_resolved_dates_when_the_classic_editor_moves_the_event_without_custom_tables(): void {
+		$event_start = $this->get_future_event_start();
+		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
+		$ticket_id   = $this->create_ruled_ticket( $event_id );
+		$moved       = $event_start->modify( '+3 days' );
+
+		$this->send_classic_event_save( $event_id, $moved );
+
+		$this->assert_resolved_from( $moved, $ticket_id );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_resolve_each_ticket_once_when_a_save_without_custom_tables_changes_every_event_date(): void {
+		$event_start = $this->get_future_event_start();
+		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
+		$ticket_id   = $this->create_ruled_ticket( $event_id );
+		$resolved    = [];
+		add_action(
+			'tec_tickets_ticket_dates_updated',
+			static function ( int $id ) use ( &$resolved ): void {
+				$resolved[] = $id;
+			}
+		);
+
+		$this->send_classic_event_save( $event_id, $event_start->modify( '+3 days' ) );
+		do_action( 'tec_shutdown' );
+
+		$this->assertSame( [ $ticket_id ], $resolved );
+	}
+
+	/**
+	 * `tribe_update_event()` writes the event dates after the post is saved, so only the shutdown sees them.
+	 *
+	 * @test
+	 */
+	public function should_resolve_a_programmatic_move_of_the_event_on_shutdown_without_custom_tables(): void {
+		$event_start = $this->get_future_event_start();
+		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
+		$ticket_id   = $this->create_ruled_ticket( $event_id );
+		$moved       = $event_start->modify( '+3 days' );
+
+		tribe_update_event(
+			$event_id,
+			[
+				'EventStartDate' => $moved->format( 'Y-m-d' ),
+				'EventStartTime' => $moved->format( 'H:i:s' ),
+				'EventEndDate'   => $moved->modify( '+3 hours' )->format( 'Y-m-d' ),
+				'EventEndTime'   => $moved->modify( '+3 hours' )->format( 'H:i:s' ),
+				'EventTimezone'  => 'UTC',
+			]
+		);
+		do_action( 'tec_shutdown' );
+
+		$this->assert_resolved_from( $moved, $ticket_id );
+	}
+
+	/**
+	 * With the custom tables on, The Events Calendar saves the occurrences and the tickets are resolved then.
+	 *
+	 * @test
+	 */
+	public function should_leave_the_tickets_to_the_occurrences_save_while_the_custom_tables_are_active(): void {
+		$event_start = $this->get_future_event_start();
+		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
+		$ticket_id   = $this->create_ruled_ticket( $event_id );
+		$dates       = [ $this->get_ticket_start( $ticket_id ), $this->get_ticket_end( $ticket_id ) ];
+		$was_active  = tribe()->getVar( 'ct1_fully_activated' );
+		tribe()->setVar( 'ct1_fully_activated', true );
+
+		update_post_meta( $event_id, '_EventStartDate', $event_start->modify( '+3 days' )->format( 'Y-m-d H:i:s' ) );
+		do_action( 'tec_shutdown' );
+		tribe()->setVar( 'ct1_fully_activated', $was_active );
+
+		$this->assertSame( $dates, [ $this->get_ticket_start( $ticket_id ), $this->get_ticket_end( $ticket_id ) ] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_resolve_a_ticket_moved_to_another_event_against_that_event(): void {
+		$event_start     = $this->get_future_event_start();
+		$event_id        = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
+		$ticket_id       = $this->create_ruled_ticket( $event_id );
+		$new_event_start = $event_start->modify( '+1 month' );
+		$new_event_id    = $this->create_event( $new_event_start->format( 'Y-m-d H:i:s' ) );
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+
+		$this->assertTrue( Tickets_Main::instance()->move_ticket_types()->move_ticket_type( $ticket_id, $new_event_id ) );
+
+		$this->assert_resolved_from( $new_event_start, $ticket_id );
+	}
+
+	/**
+	 * Off an event the rule has no event dates to count from, so the dates it resolved stay as the ticket's own.
+	 *
+	 * @test
+	 */
+	public function should_drop_the_rule_of_a_ticket_moved_to_a_post_that_is_not_an_event(): void {
+		$event_start = $this->get_future_event_start();
+		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
+		$ticket_id   = $this->create_ruled_ticket( $event_id );
+		$dates       = [ $this->get_ticket_start( $ticket_id ), $this->get_ticket_end( $ticket_id ) ];
+		$page_id     = static::factory()->post->create( [ 'post_type' => 'page' ] );
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+
+		$this->assertTrue( Tickets_Main::instance()->move_ticket_types()->move_ticket_type( $ticket_id, $page_id ) );
+
+		$this->assertSame( [], tribe( Rule_Store::class )->get( $ticket_id ) );
+		$this->assertSame( $dates, [ $this->get_ticket_start( $ticket_id ), $this->get_ticket_end( $ticket_id ) ] );
+	}
+
+	/**
 	 * @test
 	 */
 	public function should_carry_the_rule_to_a_ticket_duplicated_to_another_event(): void {
@@ -156,5 +276,31 @@ class Event_Listener_Test extends Controller_Test_Case {
 
 		$this->assertSame( '', get_post_meta( $plain_duplicate, Rule_Store::META_KEY, true ) );
 		$this->assertSame( $plain_dates, [ $this->get_ticket_start( $plain_duplicate ), $this->get_ticket_end( $plain_duplicate ) ] );
+	}
+
+	/**
+	 * Saves the event from the classic editor, moving it to a new start for three hours.
+	 *
+	 * @param int               $event_id The event post ID.
+	 * @param DateTimeImmutable $start    The new event start, in the new event timezone.
+	 *
+	 * @return void
+	 */
+	private function send_classic_event_save( int $event_id, DateTimeImmutable $start ): void {
+		$end = $start->modify( '+3 hours' );
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$_POST = [
+			'ecp_nonce'      => wp_create_nonce( 'tribe_events' ),
+			'post_ID'        => $event_id,
+			'EventStartDate' => $start->format( 'Y-m-d' ),
+			'EventStartTime' => $start->format( 'H:i:s' ),
+			'EventEndDate'   => $end->format( 'Y-m-d' ),
+			'EventEndTime'   => $end->format( 'H:i:s' ),
+			'EventTimezone'  => $start->getTimezone()->getName(),
+		];
+
+		wp_update_post( [ 'ID' => $event_id ] );
+
+		$_POST = [];
 	}
 }
