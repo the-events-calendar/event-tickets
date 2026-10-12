@@ -282,6 +282,25 @@ class Reader_Test extends Controller_Test_Case {
 	}
 
 	/**
+	 * @dataProvider disabled_provider
+	 */
+	public function test_an_order_whose_items_change_with_the_switch_off_is_unmarked( Closure $switch_off ): void {
+		$switch_off->call( $this );
+		$this->make_controller()->register();
+		[ , $ticket_ids ] = $this->make_tickets();
+		$order            = $this->create_order( [ $ticket_ids[0] => 1 ] );
+		$items            = get_post_meta( $order->ID, Order::$items_meta_key, true );
+		// Stores the order the way it would have been with the switch on.
+		tribe( Writer::class )->write_created_order( $order->ID, $items );
+		$items[ array_key_first( $items ) ]['quantity'] = 4;
+
+		update_post_meta( $order->ID, Order::$items_meta_key, $items );
+
+		$this->assertSame( '', get_post_meta( $order->ID, Writer::VERSION_META_KEY, true ) );
+		$this->assertSame( $items, $this->load( $order->ID )->items );
+	}
+
+	/**
 	 * Loads an order past both caches of the order model, which a meta or table write does not invalidate.
 	 */
 	private function load( int $order_id ): WP_Post {
