@@ -31,6 +31,7 @@ class Controller extends Controller_Contract {
 		remove_filter( 'update_post_metadata', $this->container->callback( Order_Actions::class, 'remember_previous_items' ), 10 );
 		remove_action( 'updated_post_meta', $this->container->callback( Order_Actions::class, 'fire_order_updated' ), 10 );
 		remove_action( 'deleted_post', $this->container->callback( Order_Actions::class, 'fire_order_deleted' ), 10 );
+		remove_action( 'tec_tickets_commerce_order_updated', $this->container->callback( Order_Actions::class, 'unmark_order_items_version' ), 10 );
 	}
 
 	/**
@@ -49,5 +50,7 @@ class Controller extends Controller_Contract {
 		add_filter( 'update_post_metadata', $this->container->callback( Order_Actions::class, 'remember_previous_items' ), 10, 3 );
 		add_action( 'updated_post_meta', $this->container->callback( Order_Actions::class, 'fire_order_updated' ), 10, 4 );
 		add_action( 'deleted_post', $this->container->callback( Order_Actions::class, 'fire_order_deleted' ), 10, 2 );
+		// Hooked here, not by the Order Items controller, so it runs while that feature is off.
+		add_action( 'tec_tickets_commerce_order_updated', $this->container->callback( Order_Actions::class, 'unmark_order_items_version' ) );
 	}
 }

@@ -9,6 +9,8 @@
 
 namespace TEC\Tickets\Commerce;
 
+use TEC\Tickets\Commerce\Order_Items\Controller as Order_Items_Controller;
+use TEC\Tickets\Commerce\Order_Items\Writer;
 use WP_Post;
 
 /**
@@ -88,6 +90,27 @@ final class Order_Actions {
 		 * @param array $items    The order's new items, as saved to the order meta.
 		 */
 		do_action( 'tec_tickets_commerce_order_updated', absint( $object_id ), $items );
+	}
+
+	/**
+	 * Unmarks an order stored in the Order Items table when its items change while that feature is off.
+	 *
+	 * Nothing syncs the order's rows then, so it would load its old lines once the feature is back on.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_id The order ID.
+	 *
+	 * @return void
+	 */
+	public function unmark_order_items_version( $order_id ): void {
+		if ( Order_Items_Controller::is_registered() ) {
+			return;
+		}
+
+		if ( delete_post_meta( $order_id, Writer::VERSION_META_KEY ) ) {
+			clean_post_cache( $order_id );
+		}
 	}
 
 	/**
