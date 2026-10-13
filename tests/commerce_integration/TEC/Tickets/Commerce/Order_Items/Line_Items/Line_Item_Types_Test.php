@@ -410,7 +410,7 @@ class Line_Item_Types_Test extends WPTestCase {
 	/**
 	 * @dataProvider unconvertible_types_provider
 	 */
-	public function test_a_type_without_a_valid_class_throws( string $type, $entry ): void {
+	public function test_a_type_without_a_valid_class_is_converted_generically( string $type, $entry ): void {
 		if ( null !== $entry ) {
 			add_filter(
 				'tec_tickets_commerce_order_items_line_item_types',
@@ -418,17 +418,29 @@ class Line_Item_Types_Test extends WPTestCase {
 			);
 		}
 
-		$this->expectException( InvalidArgumentException::class );
-
-		tribe( Line_Item_Types::class )->get( $type );
+		$this->assertSame( Generic_Line_Item::class, tribe( Line_Item_Types::class )->get( $type ) );
 	}
 
-	public function test_a_filter_returning_no_list_throws(): void {
+	public function test_an_unknown_type_round_trips_through_the_generic_line_item(): void {
+		$item = [
+			'id'           => 'membership_1',
+			'type'         => 'membership',
+			'price'        => 5.5,
+			'sub_total'    => 5.5,
+			'quantity'     => 1,
+			'display_name' => 'Membership',
+			'custom'       => [ 'tier' => 'gold' ],
+		];
+
+		[ , $rebuilt ] = $this->round_trip( [ $item ], 'USD' );
+
+		$this->assert_identical( [ $item ], $rebuilt );
+	}
+
+	public function test_a_filter_returning_no_list_keeps_the_default_types(): void {
 		add_filter( 'tec_tickets_commerce_order_items_line_item_types', '__return_null' );
 
-		$this->expectException( InvalidArgumentException::class );
-
-		tribe( Line_Item_Types::class )->get( 'ticket' );
+		$this->assertSame( Ticket_Line_Item::class, tribe( Line_Item_Types::class )->get( 'ticket' ) );
 	}
 
 	public function test_an_item_with_a_non_string_type_throws(): void {

@@ -43,15 +43,13 @@ class Line_Item_Types {
 	 * @param string $type The item type, as found in the item's or the row's `type`.
 	 *
 	 * @return class-string<Line_Item_Type> The type's class.
-	 *
-	 * @throws InvalidArgumentException When no line item type class is registered for the type.
 	 */
 	public function get( string $type ): string {
 		/**
 		 * Filters the class that converts each type of order item to an Order Items table row and back.
 		 *
-		 * An order holding an item of a type with no class, or with a class that does not implement
-		 * Line_Item_Type, is not stored in the table and keeps its items in the order meta only.
+		 * An item of a type with no class, or with a class that does not implement Line_Item_Type, is converted
+		 * by Generic_Line_Item.
 		 *
 		 * @since TBD
 		 *
@@ -59,13 +57,10 @@ class Line_Item_Types {
 		 */
 		$types = apply_filters( 'tec_tickets_commerce_order_items_line_item_types', self::TYPES );
 		// An item without a type is a ticket, as in Order::create_from_cart(), and its row stores the type empty.
-		$class = is_array( $types ) ? ( $types[ '' === $type ? 'ticket' : $type ] ?? null ) : null;
+		$types = is_array( $types ) ? $types : self::TYPES;
+		$class = $types[ '' === $type ? 'ticket' : $type ] ?? null;
 
-		if ( ! is_string( $class ) || ! is_subclass_of( $class, Line_Item_Type::class ) ) {
-			throw new InvalidArgumentException( sprintf( 'No line item type class is registered for the "%s" item type.', $type ) );
-		}
-
-		return $class;
+		return is_string( $class ) && is_subclass_of( $class, Line_Item_Type::class ) ? $class : Generic_Line_Item::class;
 	}
 
 	/**
@@ -77,7 +72,7 @@ class Line_Item_Types {
 	 *
 	 * @return class-string<Line_Item_Type> The class for the item's `type`.
 	 *
-	 * @throws InvalidArgumentException When the item's type is not a string, or no line item type class is registered for it.
+	 * @throws InvalidArgumentException When the item's type is not a string.
 	 */
 	public function get_for_item( array $item ): string {
 		$type = $item['type'] ?? '';
