@@ -10,7 +10,9 @@
 namespace TEC\Tickets\Commerce\Order_Items;
 
 use TEC\Tickets\Commerce\Order_Items\Repositories\Order_Items_Repository;
+use TEC\Tickets\Commerce\Order_Items\Traits\With_Logger;
 use Throwable;
+use Tribe__Log as Log;
 use WP_Post;
 
 /**
@@ -22,7 +24,9 @@ use WP_Post;
  *
  * @package TEC\Tickets\Commerce\Order_Items
  */
-class Fallbacks {
+final class Fallbacks {
+	use With_Logger;
+
 	/**
 	 * The Order Items repository.
 	 *
@@ -128,6 +132,15 @@ class Fallbacks {
 				];
 			}
 		} catch ( Throwable $e ) {
+			$this->log(
+				Log::WARNING,
+				'The stored order items could not be read; the missing ticket falls back to its ID.',
+				[
+					'order_id' => $order_id,
+					'error'    => $e->getMessage(),
+				]
+			);
+
 			return [];
 		}
 
