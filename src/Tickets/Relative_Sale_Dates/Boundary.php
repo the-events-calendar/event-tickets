@@ -44,6 +44,24 @@ final class Boundary implements JsonSerializable {
 	public const MAX_VALUE = 60;
 
 	/**
+	 * The edge of the window that opens it.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const EDGE_START = 'start';
+
+	/**
+	 * The edge of the window that closes it.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const EDGE_END = 'end';
+
+	/**
 	 * The `DateInterval` format of each unit a relative boundary accepts, keyed by the unit's length in seconds.
 	 *
 	 * @since TBD
@@ -113,22 +131,20 @@ final class Boundary implements JsonSerializable {
 	 * @since TBD
 	 *
 	 * @param array{mode?: mixed, value?: mixed, unit?: mixed, anchor?: mixed} $data The boundary, not yet validated.
-	 * @param Window_Kind|null                                                 $kind The kind of window, or `null` for the sales window.
-	 * @param string                                                           $end  The end of the window the boundary is, `start` or `end`.
+	 * @param Window_Kind                                                      $kind The kind of window.
+	 * @param string                                                           $edge The edge of the window the boundary is, `EDGE_START` or `EDGE_END`.
 	 *
 	 * @return self The boundary.
 	 *
 	 * @throws InvalidArgumentException If the boundary is not valid.
 	 */
-	public static function from_array( array $data, ?Window_Kind $kind = null, string $end = 'start' ): self {
-		$kind ??= Window_Kind::sales();
-
+	public static function from_array( array $data, Window_Kind $kind, string $edge = self::EDGE_START ): self {
 		$mode  = $data['mode'] ?? null;
-		$modes = $kind->get_modes( $end );
+		$modes = $kind->get_modes( $edge );
 
 		if ( ! in_array( $mode, $modes, true ) ) {
 			throw new InvalidArgumentException(
-				sprintf( "The window's %s mode must be one of: %s.", $end, implode( ', ', $modes ) )
+				sprintf( "The window's %s mode must be one of: %s.", $edge, implode( ', ', $modes ) )
 			);
 		}
 

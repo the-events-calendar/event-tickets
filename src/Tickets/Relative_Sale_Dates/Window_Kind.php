@@ -40,6 +40,17 @@ final class Window_Kind {
 	public const SALE_PRICE = 'sale_price';
 
 	/**
+	 * The highest number of days or weeks a relative boundary of the sale price window accepts.
+	 *
+	 * The sales window takes up to `Boundary::MAX_VALUE`.
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	public const SALE_PRICE_MAX_VALUE = 30;
+
+	/**
 	 * The kinds built so far, keyed by their ID, so each kind has a single instance.
 	 *
 	 * @since TBD
@@ -177,7 +188,7 @@ final class Window_Kind {
 					'end'   => [ Rule::MODE_RELATIVE, Rule::MODE_SPECIFIC ],
 				],
 				Rule::MODE_NOW,
-				30,
+				self::SALE_PRICE_MAX_VALUE,
 				[ DAY_IN_SECONDS, WEEK_IN_SECONDS ],
 				[ Rule::ANCHOR_START ],
 				'sale_price',
@@ -212,16 +223,16 @@ final class Window_Kind {
 	}
 
 	/**
-	 * Gets the modes one end of the window accepts.
+	 * Gets the modes one edge of the window accepts.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $end The end of the window, `start` or `end`.
+	 * @param string $edge The edge of the window, `Boundary::EDGE_START` or `Boundary::EDGE_END`.
 	 *
-	 * @return string[] The modes, `Rule::MODE_*` constants, or none for an unknown end.
+	 * @return string[] The modes, `Rule::MODE_*` constants, or none for an unknown edge.
 	 */
-	public function get_modes( string $end ): array {
-		return $this->modes[ $end ] ?? [];
+	public function get_modes( string $edge ): array {
+		return $this->modes[ $edge ] ?? [];
 	}
 
 	/**

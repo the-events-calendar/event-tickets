@@ -193,7 +193,7 @@ final class Ticket_Save {
 			return;
 		}
 
-		$rule = Rule::from_stored( $this->rule_store->get( $ticket_id ) );
+		$rule = Rule::from_stored( $this->rule_store->get( $ticket_id ), Window_Kind::sales() );
 
 		if ( $rule ) {
 			$this->ticket_dates->write( $ticket_id, $post_id, $rule );
@@ -227,7 +227,7 @@ final class Ticket_Save {
 		}
 
 		// The save would keep the stored rule, but the admin who sent this one expects it to apply.
-		if ( isset( $data[ self::DATA_KEY ] ) && ! Rule::from_raw( $data[ self::DATA_KEY ] ) ) {
+		if ( isset( $data[ self::DATA_KEY ] ) && ! Rule::from_raw( $data[ self::DATA_KEY ], Window_Kind::sales() ) ) {
 			return $this->get_invalid_window_error();
 		}
 
@@ -325,13 +325,13 @@ final class Ticket_Save {
 			return null;
 		}
 
-		$rule = Rule::from_raw( $data[ self::DATA_KEY ] ?? null );
+		$rule = Rule::from_raw( $data[ self::DATA_KEY ] ?? null, Window_Kind::sales() );
 
 		if ( $rule || ! $ticket_id ) {
 			return $rule;
 		}
 
-		return Rule::from_stored( $this->rule_store->get( $ticket_id ) );
+		return Rule::from_stored( $this->rule_store->get( $ticket_id ), Window_Kind::sales() );
 	}
 
 	/**

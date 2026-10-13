@@ -181,7 +181,7 @@ final class Rule_Store {
 	 * @return void
 	 */
 	public function save_sales_window( int $ticket_id, Rule $rule ): void {
-		$previous = Rule::from_stored( $this->get( $ticket_id ) );
+		$previous = Rule::from_stored( $this->get( $ticket_id ), Window_Kind::sales() );
 
 		$this->save(
 			$ticket_id,

@@ -111,15 +111,13 @@ final class Rule implements JsonSerializable {
 	 * @since TBD
 	 *
 	 * @param array{start?: mixed, end?: mixed} $data The rule, in the shape `['start' => [...], 'end' => [...]]`.
-	 * @param Window_Kind|null                  $kind The kind of window, or `null` for the sales window.
+	 * @param Window_Kind                       $kind The kind of window.
 	 *
 	 * @return self The rule.
 	 *
 	 * @throws InvalidArgumentException If the rule is not valid.
 	 */
-	public static function from_array( array $data, ?Window_Kind $kind = null ): self {
-		$kind ??= Window_Kind::sales();
-
+	public static function from_array( array $data, Window_Kind $kind ): self {
 		foreach ( [ 'start', 'end' ] as $key ) {
 			if ( ! isset( $data[ $key ] ) || ! is_array( $data[ $key ] ) ) {
 				throw new InvalidArgumentException( "The rule's {$key} is missing or is not an object." );
@@ -128,31 +126,9 @@ final class Rule implements JsonSerializable {
 
 		return new self(
 			$kind,
-			Boundary::from_array( $data['start'], $kind, 'start' ),
-			Boundary::from_array( $data['end'], $kind, 'end' )
+			Boundary::from_array( $data['start'], $kind, Boundary::EDGE_START ),
+			Boundary::from_array( $data['end'], $kind, Boundary::EDGE_END )
 		);
-	}
-
-	/**
-	 * Builds a rule from its JSON form.
-	 *
-	 * @since TBD
-	 *
-	 * @param string           $json The rule, as JSON.
-	 * @param Window_Kind|null $kind The kind of window, or `null` for the sales window.
-	 *
-	 * @return self The rule.
-	 *
-	 * @throws InvalidArgumentException If the JSON cannot be decoded or the rule is not valid.
-	 */
-	public static function from_json( string $json, ?Window_Kind $kind = null ): self {
-		$data = json_decode( $json, true );
-
-		if ( ! is_array( $data ) ) {
-			throw new InvalidArgumentException( 'The rule is not a JSON object.' );
-		}
-
-		return self::from_array( $data, $kind );
 	}
 
 	/**
@@ -162,12 +138,12 @@ final class Rule implements JsonSerializable {
 	 *
 	 * @since TBD
 	 *
-	 * @param mixed            $raw  The rule as sent, a JSON string or an array.
-	 * @param Window_Kind|null $kind The kind of window, or `null` for the sales window.
+	 * @param mixed       $raw  The rule as sent, a JSON string or an array.
+	 * @param Window_Kind $kind The kind of window.
 	 *
 	 * @return self|null The rule, or `null` when nothing valid was sent.
 	 */
-	public static function from_raw( $raw, ?Window_Kind $kind = null ): ?self {
+	public static function from_raw( $raw, Window_Kind $kind ): ?self {
 		try {
 			if ( is_array( $raw ) ) {
 				return self::from_array( $raw, $kind );
@@ -191,12 +167,11 @@ final class Rule implements JsonSerializable {
 	 * @since TBD
 	 *
 	 * @param array<string,mixed> $stored The stored rules, keyed by their top-level key.
-	 * @param Window_Kind|null    $kind   The kind of window, or `null` for the sales window.
+	 * @param Window_Kind         $kind   The kind of window.
 	 *
 	 * @return self|null The rule, or `null` when there is no valid rule of the kind in the stored data.
 	 */
-	public static function from_stored( array $stored, ?Window_Kind $kind = null ): ?self {
-		$kind ??= Window_Kind::sales();
+	public static function from_stored( array $stored, Window_Kind $kind ): ?self {
 
 		$key = $kind->get_store_key();
 
@@ -318,5 +293,27 @@ final class Rule implements JsonSerializable {
 		$this->kind  = $kind;
 		$this->start = $start;
 		$this->end   = $end;
+	}
+
+	/**
+	 * Builds a rule from its JSON form.
+	 *
+	 * @since TBD
+	 *
+	 * @param string      $json The rule, as JSON.
+	 * @param Window_Kind $kind The kind of window.
+	 *
+	 * @return self The rule.
+	 *
+	 * @throws InvalidArgumentException If the JSON cannot be decoded or the rule is not valid.
+	 */
+	private static function from_json( string $json, Window_Kind $kind ): self {
+		$data = json_decode( $json, true );
+
+		if ( ! is_array( $data ) ) {
+			throw new InvalidArgumentException( 'The rule is not a JSON object.' );
+		}
+
+		return self::from_array( $data, $kind );
 	}
 }

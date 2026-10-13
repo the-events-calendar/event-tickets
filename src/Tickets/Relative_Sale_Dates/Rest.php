@@ -224,7 +224,7 @@ final class Rest {
 	 * @return array{start: array{mode: string, value?: int, unit?: int, anchor?: string}, end: array{mode: string, value?: int, unit?: int, anchor?: string}}|null The rule, or `null` when the ticket has no valid rule.
 	 */
 	private function get_stored_rule( int $ticket_id ): ?array {
-		$rule = Rule::from_stored( $this->rule_store->get( $ticket_id ) );
+		$rule = Rule::from_stored( $this->rule_store->get( $ticket_id ), Window_Kind::sales() );
 
 		return $rule ? $rule->to_array() : null;
 	}

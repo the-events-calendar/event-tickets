@@ -175,7 +175,7 @@ class Boundary_Test extends WPTestCase {
 			'anchor' => Rule::ANCHOR_END,
 		];
 
-		$boundary = Boundary::from_array( $data );
+		$boundary = Boundary::from_array( $data, Window_Kind::sales() );
 
 		$this->assertSame( Window_Kind::sales(), $boundary->get_kind() );
 		$this->assertSame( $data, $boundary->to_array() );

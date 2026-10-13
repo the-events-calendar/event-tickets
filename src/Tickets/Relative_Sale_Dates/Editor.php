@@ -96,7 +96,7 @@ final class Editor {
 
 		$ticket = $context['ticket'] ?? null;
 		// Tickets Commerce caches a ticket with the ID it was first loaded with, which can be a numeric string.
-		$rule = $ticket instanceof Ticket_Object ? Rule::from_stored( $this->rule_store->get( absint( $ticket->ID ) ) ) : null;
+		$rule = $ticket instanceof Ticket_Object ? Rule::from_stored( $this->rule_store->get( absint( $ticket->ID ) ), Window_Kind::sales() ) : null;
 
 		$context['relative_sale_dates_attributes'] = $rule
 			? [
@@ -131,7 +131,7 @@ final class Editor {
 		}
 
 		$stored = $context[ Ticket_Save::DATA_KEY ] ?? null;
-		$rule   = is_array( $stored ) ? Rule::from_stored( $stored ) : null;
+		$rule   = is_array( $stored ) ? Rule::from_stored( $stored, Window_Kind::sales() ) : null;
 		$ticket = $context['ticket'] ?? null;
 
 		$context['sales_window'] = [

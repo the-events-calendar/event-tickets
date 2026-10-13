@@ -23,7 +23,7 @@ class Ticket_Dates_Test extends WPTestCase {
 		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
 		$ticket_id   = $this->create_tc_ticket( $event_id );
 		$ticket_end  = $this->get_ticket_end( $ticket_id );
-		$rule        = Rule::from_array( [ 'start' => $this->relative( 3, DAY_IN_SECONDS ), 'end' => [ 'mode' => 'specific' ] ] );
+		$rule        = Rule::from_array( [ 'start' => $this->relative( 3, DAY_IN_SECONDS ), 'end' => [ 'mode' => 'specific' ] ], Window_Kind::sales() );
 
 		tribe( Ticket_Dates::class )->write( $ticket_id, $event_id, $rule );
 
@@ -40,7 +40,7 @@ class Ticket_Dates_Test extends WPTestCase {
 		$ticket_id    = $this->create_tc_ticket( $post_id );
 		$ticket_start = $this->get_ticket_start( $ticket_id );
 		$ticket_end   = $this->get_ticket_end( $ticket_id );
-		$rule         = Rule::from_array( [ 'start' => $this->relative( 3, DAY_IN_SECONDS ), 'end' => $this->relative( 1, DAY_IN_SECONDS ) ] );
+		$rule         = Rule::from_array( [ 'start' => $this->relative( 3, DAY_IN_SECONDS ), 'end' => $this->relative( 1, DAY_IN_SECONDS ) ], Window_Kind::sales() );
 
 		$changed = tribe( Ticket_Dates::class )->write( $ticket_id, $post_id, $rule );
 
@@ -55,7 +55,7 @@ class Ticket_Dates_Test extends WPTestCase {
 	public function should_report_whether_the_write_changed_a_date(): void {
 		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
 		$ticket_id = $this->create_tc_ticket( $event_id );
-		$rule      = Rule::from_array( [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => $this->relative( 1, DAY_IN_SECONDS ) ] );
+		$rule      = Rule::from_array( [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => $this->relative( 1, DAY_IN_SECONDS ) ], Window_Kind::sales() );
 
 		$first  = tribe( Ticket_Dates::class )->write( $ticket_id, $event_id, $rule );
 		$second = tribe( Ticket_Dates::class )->write( $ticket_id, $event_id, $rule );
@@ -72,7 +72,7 @@ class Ticket_Dates_Test extends WPTestCase {
 	public function should_report_a_change_when_only_the_event_timezone_changes(): void {
 		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
 		$ticket_id = $this->create_tc_ticket( $event_id );
-		$rule      = Rule::from_array( [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => $this->relative( 1, DAY_IN_SECONDS ) ] );
+		$rule      = Rule::from_array( [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => $this->relative( 1, DAY_IN_SECONDS ) ], Window_Kind::sales() );
 		tribe( Ticket_Dates::class )->write( $ticket_id, $event_id, $rule );
 		update_post_meta( $event_id, '_EventTimezone', 'America/New_York' );
 

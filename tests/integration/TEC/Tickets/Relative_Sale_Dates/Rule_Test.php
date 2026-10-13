@@ -152,7 +152,7 @@ class Rule_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_build_a_sales_window_rule_without_a_kind(): void {
-		$rule = Rule::from_array( [ 'start' => [ 'mode' => Rule::MODE_DEFAULT ], 'end' => [ 'mode' => Rule::MODE_DEFAULT ] ] );
+		$rule = Rule::from_array( [ 'start' => [ 'mode' => Rule::MODE_DEFAULT ], 'end' => [ 'mode' => Rule::MODE_DEFAULT ] ], Window_Kind::sales() );
 
 		$this->assertSame( Window_Kind::sales(), $rule->get_kind() );
 	}
@@ -264,7 +264,7 @@ class Rule_Test extends WPTestCase {
 		$rule = Rule::from_array( $data, $kind );
 		$json = $rule->to_json();
 
-		$read_back = Rule::from_json( $json, $kind );
+		$read_back = Rule::from_raw( $json, $kind );
 
 		$this->assertEquals( $rule, $read_back );
 		$this->assertSame( $json, $read_back->to_json() );
@@ -290,7 +290,8 @@ class Rule_Test extends WPTestCase {
 					'anchor' => 'end',
 					'extra'  => 'dropped',
 				],
-			]
+			],
+			Window_Kind::sales()
 		);
 
 		$this->assertSame(
@@ -305,7 +306,7 @@ class Rule_Test extends WPTestCase {
 	public function should_ignore_other_top_level_keys(): void {
 		$json = '{"sale_price":{"mode":"relative"},"start":{"mode":"default"},"end":{"mode":"default"}}';
 
-		$rule = Rule::from_json( $json );
+		$rule = Rule::from_raw( $json, Window_Kind::sales() );
 
 		$this->assertSame( '{"start":{"mode":"default"},"end":{"mode":"default"}}', $rule->to_json() );
 	}
@@ -357,10 +358,8 @@ class Rule_Test extends WPTestCase {
 	 * @test
 	 * @dataProvider invalid_json_provider
 	 */
-	public function should_reject_invalid_json( string $json ): void {
-		$this->expectException( InvalidArgumentException::class );
-
-		Rule::from_json( $json );
+	public function should_build_no_rule_from_invalid_json( string $json ): void {
+		$this->assertNull( Rule::from_raw( $json, Window_Kind::sales() ) );
 	}
 
 	/**

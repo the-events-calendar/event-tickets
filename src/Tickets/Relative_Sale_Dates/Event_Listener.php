@@ -193,7 +193,7 @@ final class Event_Listener {
 	 * @return bool Whether the ticket's sale end date follows the event start.
 	 */
 	public function filter_end_date_follows_event_start( $follows, int $ticket_id ): bool {
-		$rule = Rule::from_stored( $this->rule_store->get( $ticket_id ) );
+		$rule = Rule::from_stored( $this->rule_store->get( $ticket_id ), Window_Kind::sales() );
 
 		return tribe_is_truthy( $follows ) && ( ! $rule || $rule->lets_end_follow_event_start() );
 	}
@@ -277,7 +277,7 @@ final class Event_Listener {
 	 * @return void
 	 */
 	private function update_ticket( int $ticket_id, int $post_id ): void {
-		$rule = Rule::from_stored( $this->rule_store->get( $ticket_id ) );
+		$rule = Rule::from_stored( $this->rule_store->get( $ticket_id ), Window_Kind::sales() );
 
 		if ( ! $rule ) {
 			return;

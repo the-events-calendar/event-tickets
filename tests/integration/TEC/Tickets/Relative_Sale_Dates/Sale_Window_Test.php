@@ -32,7 +32,7 @@ class Sale_Window_Test extends WPTestCase {
 	public function should_resolve_the_shared_fixture_case( array $case ): void {
 		$event_id = $this->create_event_with_dates( $case['event_start'], $case['event_end'], $case['timezone'] );
 
-		$window = tribe( Sale_Window::class )->resolve_for_event( Rule::from_array( $case['rule'] ), $event_id );
+		$window = tribe( Sale_Window::class )->resolve_for_event( Rule::from_array( $case['rule'], Window_Kind::sales() ), $event_id );
 
 		$expected = $case['expected'];
 		$this->assert_date( $expected['start_local'], $case['timezone'], $window->get_start() );
@@ -233,7 +233,8 @@ class Sale_Window_Test extends WPTestCase {
 					'anchor' => 'start',
 				],
 				'end'   => [ 'mode' => 'default' ],
-			]
+			],
+			Window_Kind::sales()
 		);
 
 		$window = tribe( Sale_Window::class )->resolve_for_event( $rule, $event_id );
@@ -246,7 +247,7 @@ class Sale_Window_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_not_resolve_a_rule_for_a_post_without_event_dates(): void {
-		$rule = Rule::from_array( [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ] );
+		$rule = Rule::from_array( [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ], Window_Kind::sales() );
 
 		$this->assertNull( tribe( Sale_Window::class )->resolve_for_event( $rule, static::factory()->post->create() ) );
 	}
@@ -266,7 +267,8 @@ class Sale_Window_Test extends WPTestCase {
 					'unit'   => DAY_IN_SECONDS,
 					'anchor' => 'end',
 				],
-			]
+			],
+			Window_Kind::sales()
 		);
 
 		$window = tribe( Sale_Window::class )->resolve_for_event( $rule, $event_id );
@@ -294,7 +296,7 @@ class Sale_Window_Test extends WPTestCase {
 		$event_id = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
 		update_post_meta( $event_id, '_EventStartDate', $start );
 		update_post_meta( $event_id, '_EventEndDate', $end );
-		$rule = Rule::from_array( [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ] );
+		$rule = Rule::from_array( [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ], Window_Kind::sales() );
 
 		$this->assertNull( tribe( Sale_Window::class )->resolve_for_event( $rule, $event_id ) );
 	}
@@ -305,7 +307,7 @@ class Sale_Window_Test extends WPTestCase {
 	public function should_read_an_event_without_a_timezone_in_the_site_timezone(): void {
 		update_option( 'timezone_string', 'Europe/Lisbon' );
 		$event_id = $this->create_event_with_dates( '2027-06-10 19:00:00', '2027-06-10 21:00:00', '' );
-		$rule     = Rule::from_array( [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ] );
+		$rule     = Rule::from_array( [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ], Window_Kind::sales() );
 
 		$window = tribe( Sale_Window::class )->resolve_for_event( $rule, $event_id );
 
