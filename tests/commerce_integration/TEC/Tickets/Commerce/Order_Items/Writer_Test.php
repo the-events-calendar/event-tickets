@@ -224,7 +224,28 @@ class Writer_Test extends Controller_Test_Case {
 		$this->assert_logged( 'error', 'could not be written' );
 	}
 
-	public function test_a_failed_write_keeps_the_ticket_names_on_the_old_items(): void {
+	/**
+	 * @dataProvider failed_write_provider
+	 */
+	public function test_a_failed_write_keeps_the_ticket_names_on_the_old_items( Closure $break_the_write ): void {
+		$this->register_controller( true );
+		[ $event_id, $ticket_ids ] = $this->make_tickets();
+		$break_the_write->call( $this );
+
+		$order = $this->create_order( [ $ticket_ids[0] => 1, $ticket_ids[1] => 2 ] );
+		$items = get_post_meta( $order->ID, Order::$items_meta_key, true );
+
+		$this->assertNotEmpty( $items );
+
+		foreach ( $items as $item ) {
+			$ticket = tribe( Ticket::class )->get_ticket( $item['ticket_id'] );
+
+			$this->assertSame( $ticket->name, $item['snapshot']['name'] );
+			$this->assertSame( $ticket->type(), $item['snapshot']['ticket_type'] );
+		}
+	}
+
+	public function test_a_failed_write_keeps_no_snapshot_on_lines_that_are_not_tickets(): void {
 		$this->register_controller( true );
 		[ $event_id, $ticket_ids ] = $this->make_tickets();
 		$this->set_class_fn_return(
@@ -235,14 +256,34 @@ class Writer_Test extends Controller_Test_Case {
 			},
 			true
 		);
+		add_filter(
+			'tec_tickets_commerce_create_order_from_cart_items',
+			static function ( $items ) use ( $ticket_ids ) {
+				$items[] = [
+					'id'           => 'fee_1',
+					'type'         => 'fee',
+					'ticket_id'    => $ticket_ids[0],
+					'fee_id'       => 1,
+					'display_name' => 'Booking fee',
+					'quantity'     => 1,
+					'price'        => 1.5,
+					'sub_total'    => 1.5,
+					'event_id'     => '0',
+				];
 
-		$order = $this->create_order( [ $ticket_ids[0] => 1, $ticket_ids[1] => 2 ] );
+				return $items;
+			}
+		);
 
-		foreach ( get_post_meta( $order->ID, Order::$items_meta_key, true ) as $item ) {
-			$ticket = tribe( Ticket::class )->get_ticket( $item['ticket_id'] );
+		$order = $this->create_order( [ $ticket_ids[0] => 1 ] );
+		$items = get_post_meta( $order->ID, Order::$items_meta_key, true );
 
-			$this->assertSame( $ticket->name, $item['snapshot']['name'] );
-			$this->assertSame( $ticket->type(), $item['snapshot']['ticket_type'] );
+		$this->assertContains( 'fee', array_column( $items, 'type' ) );
+
+		foreach ( $items as $item ) {
+			'fee' === $item['type']
+				? $this->assertArrayNotHasKey( 'snapshot', $item )
+				: $this->assertArrayHasKey( 'snapshot', $item );
 		}
 	}
 
