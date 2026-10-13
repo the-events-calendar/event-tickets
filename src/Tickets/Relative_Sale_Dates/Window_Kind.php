@@ -655,14 +655,22 @@ final class Window_Kind {
 	 * @param string $key The error, as the editors key it: `invalidRule`, `invalidDate`, `endsBeforeStart` or
 	 *                    `outsideParent`.
 	 *
-	 * @return WP_Error|null The error, with a 400 status for REST responses, or `null` for one the kind does not have.
+	 * @return WP_Error|null The error, with a 400 status and the rule key as the argument for REST responses, or `null` for one the kind does not have.
 	 */
 	public function get_error( string $key ): ?WP_Error {
 		if ( ! isset( $this->errors[ $key ] ) ) {
 			return null;
 		}
 
-		return new WP_Error( $this->errors[ $key ]['code'], $this->errors[ $key ]['message'](), [ 'status' => 400 ] );
+		// The TEC REST API names the argument the error is about.
+		return new WP_Error(
+			$this->errors[ $key ]['code'],
+			$this->errors[ $key ]['message'](),
+			[
+				'status'   => 400,
+				'argument' => $this->rule_keys['data'],
+			]
+		);
 	}
 
 	/**

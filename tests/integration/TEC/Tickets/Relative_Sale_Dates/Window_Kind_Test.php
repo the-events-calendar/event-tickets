@@ -149,7 +149,14 @@ class Window_Kind_Test extends WPTestCase {
 			}
 
 			$this->assertSame( $errors[ $key ], [ $error->get_error_code(), $error->get_error_message() ], $key );
-			$this->assertSame( [ 'status' => 400 ], $error->get_error_data(), $key );
+			$this->assertSame(
+				[
+					'status'   => 400,
+					'argument' => $kind->get_rule_keys()['data'],
+				],
+				$error->get_error_data(),
+				$key
+			);
 		}
 	}
 
