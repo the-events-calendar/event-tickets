@@ -7,17 +7,17 @@
 	display: flex;
 	flex: 1;
 	flex-direction: column;
-	gap: 16px;
+	gap: var(--tec-spacer-3);
 	min-width: 0;
 }
 
 .tec-tickets-relative-sale-dates__end {
 	display: flex;
 	flex-direction: column;
-	gap: 8px;
+	gap: var(--tec-spacer-1);
 
 	> :not(.components-select-control) {
-		margin-left: calc(var(--tec-tickets-relative-sale-dates-label-width) + 8px);
+		margin-left: calc(var(--tec-tickets-relative-sale-dates-label-width) + var(--tec-spacer-1));
 	}
 
 	> .components-select-control {
@@ -46,7 +46,7 @@
 	align-items: center;
 	display: flex;
 	flex-wrap: wrap;
-	gap: 8px;
+	gap: var(--tec-spacer-1);
 
 	.components-text-control__input {
 		width: 64px;
