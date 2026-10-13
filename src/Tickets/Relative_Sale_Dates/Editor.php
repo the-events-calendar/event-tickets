@@ -130,7 +130,7 @@ final class Editor {
 			return $html;
 		}
 
-		$stored = $context[ Ticket_Save::DATA_KEY ] ?? null;
+		$stored = $context[ Window_Kind::sales()->get_rule_keys()['data'] ] ?? null;
 		$rule   = is_array( $stored ) ? Rule::from_stored( $stored, Window_Kind::sales() ) : null;
 		$ticket = $context['ticket'] ?? null;
 

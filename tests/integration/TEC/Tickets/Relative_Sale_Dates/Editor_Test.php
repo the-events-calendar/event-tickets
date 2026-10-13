@@ -135,7 +135,7 @@ class Editor_Test extends Controller_Test_Case {
 		}
 		$hidden = $this->get_element( $form, 'ticket_relative_sale_dates' );
 		$this->assertSame( 'hidden', $hidden->getAttribute( 'type' ) );
-		$this->assertSame( Ticket_Save::DATA_KEY, $hidden->getAttribute( 'name' ) );
+		$this->assertSame( 'relative_sale_dates', $hidden->getAttribute( 'name' ) );
 	}
 
 	/**
@@ -205,7 +205,7 @@ class Editor_Test extends Controller_Test_Case {
 
 		$fields      = $this->serialize_form( $form );
 		$rule        = [ 'start' => [ 'mode' => 'specific' ], 'end' => [ 'mode' => 'default' ] ];
-		$rule_fields = array_keys( array_filter( $fields, static fn( array $field ): bool => Ticket_Save::DATA_KEY === $field[0] ) );
+		$rule_fields = array_keys( array_filter( $fields, static fn( array $field ): bool => 'relative_sale_dates' === $field[0] ) );
 		// What the script writes from the selects the form opened on.
 		$fields[ reset( $rule_fields ) ][1] = wp_json_encode( $rule );
 
@@ -458,7 +458,7 @@ class Editor_Test extends Controller_Test_Case {
 		$fields      = $this->serialize_form( $this->render_ticket_form( $event_id, $ticket_id ) );
 
 		// The script writes the rule into the form's own field before `tickets.js` serializes the form.
-		$rule_fields = array_keys( array_filter( $fields, static fn( array $field ): bool => Ticket_Save::DATA_KEY === $field[0] ) );
+		$rule_fields = array_keys( array_filter( $fields, static fn( array $field ): bool => 'relative_sale_dates' === $field[0] ) );
 		$this->assertCount( 1, $rule_fields );
 		$fields[ reset( $rule_fields ) ][1] = wp_json_encode( $rule );
 

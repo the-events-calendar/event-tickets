@@ -32,16 +32,6 @@ use WP_Error;
  */
 final class Ticket_Save {
 	/**
-	 * The ticket data key that carries the sales window rule; its value is a JSON string, an array, or `null` or `''` to
-	 * remove it.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public const DATA_KEY = 'relative_sale_dates';
-
-	/**
 	 * The ticket types relative sale dates never apply to: Series Passes, and RSVPs stored as Tickets Commerce tickets.
 	 *
 	 * @since TBD

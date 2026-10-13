@@ -12,6 +12,7 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Relative_Sale_Dates;
 
 use Closure;
+use InvalidArgumentException;
 use TEC\Common\REST\TEC\V1\Abstracts\Parameter;
 use TEC\Common\REST\TEC\V1\Collections\PropertiesCollection;
 use TEC\Common\REST\TEC\V1\Exceptions\InvalidRestArgumentException;
@@ -178,6 +179,8 @@ final class Rule_Parameter extends Parameter {
 	 * @param Window_Kind $kind The kind of the rule.
 	 *
 	 * @return array{rule: Closure(): string, start: Closure(): string, end: Closure(): string, start_mode: Closure(): string, end_mode: Closure(): string, value: Closure(int, int): string, unit: Closure(int ...): string} The descriptions.
+	 *
+	 * @throws InvalidArgumentException If the kind has no copy here, so a new kind cannot ship with another kind's text.
 	 */
 	private function get_descriptions( Window_Kind $kind ): array {
 		if ( Window_Kind::SALE_PRICE === $kind->get_id() ) {
@@ -199,6 +202,10 @@ final class Rule_Parameter extends Parameter {
 					...$units
 				),
 			];
+		}
+
+		if ( Window_Kind::SALES !== $kind->get_id() ) {
+			throw new InvalidArgumentException( "The TEC REST API has no copy for the {$kind->get_id()} window kind." );
 		}
 
 		$sales_mode = static fn(): string => __( 'How this end of the window is set: `default` (sales open at once, or close when the event starts), `relative` (before the event) or `specific` (the date sent with the ticket).', 'event-tickets' );

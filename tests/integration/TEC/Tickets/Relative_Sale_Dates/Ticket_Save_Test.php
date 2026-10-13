@@ -1217,7 +1217,7 @@ class Ticket_Save_Test extends Controller_Test_Case {
 		$rule        = fn( array $start, array $end ): string => wp_json_encode( $this->get_sale_price_rule( $start, $end ) );
 		// Sales open a week before the event starts.
 		$sales_open_a_week_before = [
-			Ticket_Save::DATA_KEY => wp_json_encode(
+			'relative_sale_dates' => wp_json_encode(
 				[
 					'start' => $this->relative( 1, WEEK_IN_SECONDS ),
 					'end'   => [ 'mode' => Rule::MODE_DEFAULT ],

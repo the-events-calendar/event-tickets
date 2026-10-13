@@ -25,7 +25,7 @@
 
 use TEC\Tickets\Relative_Sale_Dates\Boundary;
 use TEC\Tickets\Relative_Sale_Dates\Rule;
-use TEC\Tickets\Relative_Sale_Dates\Ticket_Save;
+use TEC\Tickets\Relative_Sale_Dates\Window_Kind;
 use Tribe__Date_Utils as Date_Utils;
 
 defined( 'ABSPATH' ) || die();
@@ -208,7 +208,7 @@ $labels = [
 <p class="tec-tickets-relative-sale-dates__error ticket_form_right" id="ticket_sales_window_error" role="alert"></p>
 <input
 	type="hidden"
-	name="<?php echo esc_attr( Ticket_Save::DATA_KEY ); ?>"
+	name="<?php echo esc_attr( Window_Kind::sales()->get_rule_keys()['data'] ); ?>"
 	id="ticket_relative_sale_dates"
 	value="<?php echo esc_attr( $rule_json ); ?>"
 />

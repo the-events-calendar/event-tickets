@@ -32,7 +32,7 @@ class Window_Kind_Test extends WPTestCase {
 		$this->assertTrue( $kind->owns_ticket_sales_dates() );
 		$this->assertSame(
 			[
-				'data'                  => Ticket_Save::DATA_KEY,
+				'data'                  => 'relative_sale_dates',
 				'tec_rest'              => 'relative_sale_dates',
 				'block_editor_request'  => [ 'relative_sale_dates' ],
 				'block_editor_response' => [ 'relative_sale_dates' ],

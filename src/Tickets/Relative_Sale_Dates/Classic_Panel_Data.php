@@ -57,7 +57,7 @@ final class Classic_Panel_Data {
 
 		$rule = $ticket_id ? Rule::from_stored( $this->rule_store->get( $ticket_id ), Window_Kind::sales() ) : null;
 
-		$data[ Ticket_Save::DATA_KEY ] = $rule ? $rule->to_array() : null;
+		$data[ Window_Kind::sales()->get_rule_keys()['data'] ] = $rule ? $rule->to_array() : null;
 
 		return $data;
 	}
