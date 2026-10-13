@@ -51,6 +51,15 @@ final class Cached_Order_Items implements Order_Items_Repository {
 	private Order_Items_Repository $repository;
 
 	/**
+	 * Whether the cache is already set to be invalidated again when the request ends.
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
+	 */
+	private bool $flush_scheduled = false;
+
+	/**
 	 * Cached_Order_Items constructor.
 	 *
 	 * @since TBD
@@ -162,13 +171,42 @@ final class Cached_Order_Items implements Order_Items_Repository {
 	}
 
 	/**
-	 * Invalidates every cached read.
+	 * Invalidates every cached read, and again when the request ends.
+	 *
+	 * A write may run inside a caller's transaction, which commits or rolls back after this call. A read of another
+	 * request in between would cache the rows as they were or as they would have been, so the cache is invalidated
+	 * once more at shutdown, when every transaction of the request is over.
 	 *
 	 * @since TBD
 	 *
 	 * @return void
 	 */
 	private function flush(): void {
+		$this->bump_token();
+
+		if ( $this->flush_scheduled ) {
+			return;
+		}
+
+		$this->flush_scheduled = true;
+
+		add_action(
+			'shutdown',
+			function (): void {
+				$this->flush_scheduled = false;
+				$this->bump_token();
+			}
+		);
+	}
+
+	/**
+	 * Replaces the token every cached read is keyed with.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	private function bump_token(): void {
 		wp_cache_set( self::TOKEN_KEY, uniqid( '', true ), self::GROUP );
 	}
 }
