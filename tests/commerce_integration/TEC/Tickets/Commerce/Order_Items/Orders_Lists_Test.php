@@ -8,7 +8,7 @@ use TEC\Tickets\Commerce\Admin_Tables\Orders;
 use TEC\Tickets\Commerce\Admin_Tables\Orders_Table;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
-use TEC\Tickets\Commerce\Order_Items\Repositories\Order_Items as Order_Items_Repository;
+use TEC\Tickets\Commerce\Order_Items\Repositories\Order_Items_Repository;
 use TEC\Tickets\Commerce\Order_Items\Tables\Order_Items as Order_Items_Table;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
