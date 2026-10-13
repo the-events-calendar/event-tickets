@@ -15,6 +15,7 @@ use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Order_Items\Repositories\Order_Items as Order_Items_Repository;
 use TEC\Tickets\Commerce\Order_Items\Tables\Order_Items as Order_Items_Table;
 use TEC\Tickets\Commerce\Status\Completed;
+use TEC\Tickets\Commerce\Ticket;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -221,6 +222,28 @@ class Writer_Test extends Controller_Test_Case {
 		$this->assertNotEmpty( get_post_meta( $order->ID, Order::$items_meta_key, true ) );
 		$this->assertSame( tribe( Completed::class )->get_wp_slug(), get_post_status( $order->ID ) );
 		$this->assert_logged( 'error', 'could not be written' );
+	}
+
+	public function test_a_failed_write_keeps_the_ticket_names_on_the_old_items(): void {
+		$this->register_controller( true );
+		[ $event_id, $ticket_ids ] = $this->make_tickets();
+		$this->set_class_fn_return(
+			Order_Items_Repository::class,
+			'insert_many',
+			static function () {
+				throw new RuntimeException( 'Insert failed.' );
+			},
+			true
+		);
+
+		$order = $this->create_order( [ $ticket_ids[0] => 1, $ticket_ids[1] => 2 ] );
+
+		foreach ( get_post_meta( $order->ID, Order::$items_meta_key, true ) as $item ) {
+			$ticket = tribe( Ticket::class )->get_ticket( $item['ticket_id'] );
+
+			$this->assertSame( $ticket->name, $item['snapshot']['name'] );
+			$this->assertSame( $ticket->type(), $item['snapshot']['ticket_type'] );
+		}
 	}
 
 	public function test_it_does_not_commit_a_transaction_open_around_the_order_creation(): void {

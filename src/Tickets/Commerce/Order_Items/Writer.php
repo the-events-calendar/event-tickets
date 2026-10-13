@@ -13,7 +13,9 @@ use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Order_Items\Line_Items\Line_Item_Types;
 use TEC\Tickets\Commerce\Order_Items\Repositories\Order_Items;
 use TEC\Tickets\Commerce\Order_Items\Traits\With_Logger;
+use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Commerce\Utils\Currency;
+use TEC\Tickets\RSVP\V2\Constants;
 use Throwable;
 use Tribe__Log as Log;
 
@@ -125,11 +127,67 @@ final class Writer {
 				]
 			);
 
+			$this->snapshot_tickets( $order_id, $items );
+
 			return;
 		}
 
 		update_post_meta( $order_id, self::VERSION_META_KEY, self::VERSION );
 		// The order model is cached until the post is modified, and a meta write does not modify it.
 		clean_post_cache( $order_id );
+	}
+
+	/**
+	 * Keeps the name and type of each ticket on the items of an order that stays in the order meta.
+	 *
+	 * Without a row to read them from, a ticket deleted later would leave the order screens only its ID. The
+	 * `snapshot` entry is where the order screens look next.
+	 *
+	 * @since TBD
+	 *
+	 * @param int   $order_id The order ID.
+	 * @param array $items    The order's items, as saved to the order meta.
+	 *
+	 * @return void
+	 */
+	private function snapshot_tickets( int $order_id, array $items ): void {
+		try {
+			foreach ( $items as $key => $item ) {
+				$ticket = is_array( $item ) && ! empty( $item['ticket_id'] ) && $this->is_ticket_item( $item )
+					? tribe( Ticket::class )->get_ticket( $item['ticket_id'] )
+					: null;
+
+				if ( $ticket ) {
+					$items[ $key ]['snapshot'] = [
+						'name'        => $ticket->name,
+						'ticket_type' => $ticket->type(),
+					];
+				}
+			}
+
+			update_post_meta( $order_id, Order::$items_meta_key, $items );
+		} catch ( Throwable $e ) {
+			$this->log(
+				Log::DEBUG,
+				'The ticket names could not be kept on the order items.',
+				[
+					'order_id' => $order_id,
+					'error'    => $e->getMessage(),
+				]
+			);
+		}
+	}
+
+	/**
+	 * Whether an order item is a ticket line, as opposed to a fee, a coupon or a discount.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $item The order item.
+	 *
+	 * @return bool
+	 */
+	private function is_ticket_item( array $item ): bool {
+		return in_array( $item['type'] ?? '', [ '', 'ticket', Constants::TC_RSVP_TYPE ], true );
 	}
 }
