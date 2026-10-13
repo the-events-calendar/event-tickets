@@ -108,9 +108,13 @@ final class Order_Actions {
 			return;
 		}
 
-		if ( delete_post_meta( $order_id, Writer::VERSION_META_KEY ) ) {
-			clean_post_cache( $order_id );
+		if ( '' === get_post_meta( $order_id, Writer::VERSION_META_KEY, true ) ) {
+			return;
 		}
+
+		// Updated, not deleted: a sync running elsewhere re-marks the order only if its token is still there.
+		update_post_meta( $order_id, Writer::VERSION_META_KEY, '' );
+		clean_post_cache( $order_id );
 	}
 
 	/**
