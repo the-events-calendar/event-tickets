@@ -80,11 +80,16 @@ final class Editor {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string,mixed> $context The context of the ticket row's sale dates template.
+	 * @param array<string,mixed>|mixed $context The context of the ticket row's sale dates template.
 	 *
-	 * @return array<string,mixed> The context, with `relative_sale_dates_attributes`.
+	 * @return array<string,mixed>|mixed The context, with `relative_sale_dates_attributes`, or what was passed in when it
+	 *                                   is not an array.
 	 */
-	public function filter_available_dates_context( array $context ): array {
+	public function filter_available_dates_context( $context ) {
+		if ( ! is_array( $context ) ) {
+			return $context;
+		}
+
 		$ticket = $context['ticket'] ?? null;
 		// Tickets Commerce caches a ticket with the ID it was first loaded with, which can be a numeric string.
 		$rule = $ticket instanceof Ticket_Object ? Rule::from_stored( $this->rule_store->get( absint( $ticket->ID ) ) ) : null;

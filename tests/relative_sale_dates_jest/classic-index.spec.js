@@ -155,7 +155,6 @@ describe( 'classic editor script', () => {
 			timeFormat: 'g:i a',
 			dateWithYear: 'F j, Y',
 			dateNoYear: 'F j',
-			listDateFormat: 'F j, Y',
 			timezones: {},
 			allDay: { start: '00:00:00', end: '23:59:59', endDays: 0 },
 			text: {
@@ -277,6 +276,14 @@ describe( 'classic editor script', () => {
 		await loadScript();
 
 		expect( getListRowText() ).toBe( 'June 10, 2099 - June 24, 2099' );
+	} );
+
+	it( 'should write the sale dates of a listed ticket in the TEC date format with the year', async () => {
+		window.tec.tickets.relativeSaleDates.classicData.dateWithYear = 'j F Y';
+		renderEventForm();
+		await loadScript();
+
+		expect( getListRowText() ).toBe( '10 June 2099 - 24 June 2099' );
 	} );
 
 	it( 'should update the sale dates of a listed ticket when the event date changes', async () => {

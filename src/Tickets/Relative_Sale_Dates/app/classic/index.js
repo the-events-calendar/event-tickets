@@ -210,7 +210,8 @@ function updateTicketsList() {
 	}
 
 	const eventDates = getEventDates( settings, dynamic );
-	const listSettings = { format: settings.listDateFormat, dateSettings: getDateSettings( dynamic ) };
+	// The tickets list always shows the year, so it takes the with-year format, never the no-year one.
+	const listSettings = { format: settings.dateWithYear, dateSettings: getDateSettings( dynamic ) };
 
 	rows.forEach( ( row ) => {
 		const rule = parseRule( row.dataset.relativeSaleDates );

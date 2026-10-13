@@ -260,11 +260,22 @@ class Editor_Test extends Controller_Test_Case {
 		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
 		$ticket_id = $this->create_ruled_ticket( $event_id );
 		wp_cache_delete( $ticket_id, 'tec_tickets' );
-		tribe( Ticket::class )->get_ticket( (string) $ticket_id );
+		tribe( Ticket::class )->get_ticket( "{$ticket_id}" );
 
 		$dates = $this->get_available_dates( $this->render_tickets_list( $event_id ), $ticket_id );
 
 		$this->assertSame( tribe( Rule_Store::class )->get( $ticket_id ), json_decode( $dates->getAttribute( 'data-relative-sale-dates' ), true ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_hand_on_a_tickets_list_context_an_earlier_callback_left_without_an_array(): void {
+		$this->make_controller()->register();
+		$hook = 'tribe_template_context:tickets/admin-views/editor/list-row/available-dates';
+		add_filter( $hook, '__return_null', 5 );
+
+		$this->assertNull( apply_filters( $hook, [] ) );
 	}
 
 	/**
