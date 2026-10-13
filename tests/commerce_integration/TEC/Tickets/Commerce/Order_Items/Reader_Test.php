@@ -301,6 +301,27 @@ class Reader_Test extends Controller_Test_Case {
 	}
 
 	/**
+	 * @dataProvider disabled_provider
+	 */
+	public function test_a_sync_running_elsewhere_does_not_re_mark_an_order_unmarked_with_the_switch_off( Closure $switch_off ): void {
+		$switch_off->call( $this );
+		$this->make_controller()->register();
+		[ , $ticket_ids ] = $this->make_tickets();
+		$order            = $this->create_order( [ $ticket_ids[0] => 1 ] );
+		$items            = get_post_meta( $order->ID, Order::$items_meta_key, true );
+		// A request with the switch on is syncing the order: its token replaced the mark.
+		update_post_meta( $order->ID, Writer::VERSION_META_KEY, 'syncing:token' );
+		$items[ array_key_first( $items ) ]['quantity'] = 4;
+
+		update_post_meta( $order->ID, Order::$items_meta_key, $items );
+		// That sync finishes and re-marks the order only if its token is still there.
+		update_post_meta( $order->ID, Writer::VERSION_META_KEY, Writer::VERSION, 'syncing:token' );
+
+		$this->assertSame( '', get_post_meta( $order->ID, Writer::VERSION_META_KEY, true ) );
+		$this->assertSame( $items, $this->load( $order->ID )->items );
+	}
+
+	/**
 	 * Loads an order past both caches of the order model, which a meta or table write does not invalidate.
 	 */
 	private function load( int $order_id ): WP_Post {
