@@ -1,0 +1,6 @@
+significance: patch
+type: fix
+entry: Kept the Ticket block working for a ticket saved without an end date,
+  whose form showed an invalid date and stopped the block from creating or
+  updating any ticket on that post.
+timestamp: 2026-10-13T20:21:13.776Z

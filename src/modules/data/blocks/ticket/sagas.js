@@ -436,46 +436,66 @@ export function* removeTicketBlock( clientId ) {
 }
 
 /**
+ * Gets a sale date a ticket was stored with, in each form the ticket details hold it.
+ *
+ * @since TBD
+ *
+ * @param {string} value            The date, `YYYY-MM-DD HH:mm:ss`.
+ * @param {string} datePickerFormat The date picker format the date input shows, or an empty string for the default.
+ *
+ * @return {{date: string, input: string, moment: Object, time: string, timeInput: string}} The date in each form.
+ */
+const toSaleDateDetails = ( value, datePickerFormat ) => {
+	const dateMoment = momentUtil.toMoment( value );
+
+	return {
+		date: momentUtil.toDatabaseDate( dateMoment ),
+		input: datePickerFormat ? momentUtil.toDate( dateMoment, datePickerFormat ) : momentUtil.toDate( dateMoment ),
+		moment: dateMoment,
+		time: momentUtil.toDatabaseTime( dateMoment ),
+		timeInput: momentUtil.toTime( dateMoment ),
+	};
+};
+
+/**
+ * A sale date a ticket was stored without, as the ticket details hold it.
+ *
+ * Parsing an empty date gives an invalid moment, whose "Invalid date" time the duration check cannot read: it throws,
+ * and the uncaught error stops every ticket saga of the block.
+ *
+ * @since TBD
+ *
+ * @type {{date: string, input: string, moment: null, time: string, timeInput: string}}
+ */
+const NO_SALE_DATE = Object.freeze( { date: '', input: '', moment: null, time: '', timeInput: '' } );
+
+/**
  * Gets the sale dates a ticket was stored with, in each form the ticket details hold them.
  *
  * @since TBD
  *
  * @param {Object} ticket The ticket, as the tickets REST API returns it.
  *
- * @return {Object} The start and end dates, times and moments.
+ * @return {Object} The start and end dates, times and moments, empty for a date the ticket was stored without.
  */
 export function* getTicketSaleDates( ticket ) {
 	const { available_from, available_until } = ticket; // eslint-disable-line camelcase
-
 	const datePickerFormat = tecDateSettings().datepickerFormat;
 
-	const startMoment = yield call( momentUtil.toMoment, available_from );
-	const startDate = yield call( momentUtil.toDatabaseDate, startMoment );
-	const startDateInput = yield datePickerFormat
-		? call( momentUtil.toDate, startMoment, datePickerFormat )
-		: call( momentUtil.toDate, startMoment );
-	const startTime = yield call( momentUtil.toDatabaseTime, startMoment );
-	const startTimeInput = yield call( momentUtil.toTime, startMoment );
-
-	const endMoment = yield call( momentUtil.toMoment, available_until );
-	const endDate = yield call( momentUtil.toDatabaseDate, endMoment );
-	const endDateInput = yield datePickerFormat
-		? call( momentUtil.toDate, endMoment, datePickerFormat )
-		: call( momentUtil.toDate, endMoment );
-	const endTime = yield call( momentUtil.toDatabaseTime, endMoment );
-	const endTimeInput = yield call( momentUtil.toTime, endMoment );
+	const start = available_from ? yield call( toSaleDateDetails, available_from, datePickerFormat ) : NO_SALE_DATE; // eslint-disable-line camelcase
+	const end = available_until ? yield call( toSaleDateDetails, available_until, datePickerFormat ) : NO_SALE_DATE; // eslint-disable-line camelcase
 
 	return {
-		startDate,
-		startDateInput,
-		startDateMoment: startMoment,
-		endDate,
-		endDateInput,
-		endDateMoment: endMoment,
-		startTime,
-		endTime,
-		startTimeInput,
-		endTimeInput,
+		startDate: start.date,
+		startDateInput: start.input,
+		startDateMoment: start.moment,
+		endDate: end.date,
+		endDateInput: end.input,
+		endDateMoment: end.moment,
+		startTime: start.time,
+		endTime: end.time,
+		startTimeInput: start.timeInput,
+		endTimeInput: end.timeInput,
 	};
 }
 
@@ -511,7 +531,7 @@ export function* getTicketSalePriceDates( ticket ) {
 /**
  * Gets the sale dates the server stored for a ticket it just created or updated, to put back in the form.
  *
- * A ticket stored without an end gives no end to read, which would put an invalid date in the form and send it with
+ * A ticket stored without an end gives no end to read, which would empty the end the form holds and send it empty with
  * the next update, so the end is taken from the form instead.
  *
  * @since TBD
