@@ -963,30 +963,35 @@ class List_Table extends WP_List_Table {
 				break;
 			case 'discounted':
 				$args['meta_query'][] = [
-					'key'     => '_sale_price',
+					'key'     => TicketsCommerce\Ticket::$sale_price_key,
 					'compare' => 'EXISTS',
 				];
 				// Other providers, such as WooCommerce, keep a `_sale_price` without the dates the clauses below read.
 				$args['meta_query'][] = [
-					'key'   => '_sale_price_checked',
+					'key'   => TicketsCommerce\Ticket::$sale_price_checked_key,
 					'value' => '1',
 				];
-				// Casting an empty date matches no row on MySQL, and `is_on_sale()` reads an empty start as started.
+
+				/*
+				 * The sale price dates are days, which `is_on_sale()` compares with today's, both ends included. Casting an
+				 * empty date matches no row on MySQL, and `is_on_sale()` reads an empty start as started.
+				 */
+				$today                = current_time( 'Y-m-d' );
 				$args['meta_query'][] = [
 					'relation' => 'OR',
 					[
-						'key'     => '_sale_price_start_date',
-						'value'   => current_time( 'mysql' ),
-						'compare' => '<',
-						'type'    => 'DATETIME',
+						'key'     => TicketsCommerce\Ticket::$sale_price_start_date_key,
+						'value'   => $today,
+						'compare' => '<=',
+						'type'    => 'DATE',
 					],
 					[
-						'key'     => '_sale_price_start_date',
+						'key'     => TicketsCommerce\Ticket::$sale_price_start_date_key,
 						'value'   => '',
 						'compare' => '=',
 					],
 					[
-						'key'     => '_sale_price_start_date',
+						'key'     => TicketsCommerce\Ticket::$sale_price_start_date_key,
 						'compare' => 'NOT EXISTS',
 					],
 				];
@@ -994,18 +999,18 @@ class List_Table extends WP_List_Table {
 				$args['meta_query'][] = [
 					'relation' => 'OR',
 					[
-						'key'     => '_sale_price_end_date',
-						'value'   => current_time( 'mysql' ),
-						'compare' => '>',
-						'type'    => 'DATETIME',
+						'key'     => TicketsCommerce\Ticket::$sale_price_end_date_key,
+						'value'   => $today,
+						'compare' => '>=',
+						'type'    => 'DATE',
 					],
 					[
-						'key'     => '_sale_price_end_date',
+						'key'     => TicketsCommerce\Ticket::$sale_price_end_date_key,
 						'value'   => '',
 						'compare' => '=',
 					],
 					[
-						'key'     => '_sale_price_end_date',
+						'key'     => TicketsCommerce\Ticket::$sale_price_end_date_key,
 						'compare' => 'NOT EXISTS',
 					],
 				];

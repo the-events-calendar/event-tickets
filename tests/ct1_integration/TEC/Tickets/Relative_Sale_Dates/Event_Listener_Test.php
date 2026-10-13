@@ -285,11 +285,11 @@ class Event_Listener_Test extends WPTestCase {
 		$inverted = [];
 		add_action(
 			'tec_tickets_relative_sale_dates_window_inverted',
-			static function ( int $inverted_ticket_id, int $post_id ) use ( &$inverted ) {
-				$inverted[] = [ $inverted_ticket_id, $post_id ];
+			static function ( int $inverted_ticket_id, int $post_id, string $window ) use ( &$inverted ) {
+				$inverted[] = [ $inverted_ticket_id, $post_id, $window ];
 			},
 			10,
-			2
+			3
 		);
 
 		$this->send_classic_event_save( $event_id, $moved );
@@ -299,7 +299,7 @@ class Event_Listener_Test extends WPTestCase {
 		$this->assertSame( [ $specific_end->format( 'Y-m-d' ), $specific_end->format( 'H:i:s' ) ], $this->get_ticket_end( $ticket_id ) );
 		$this->assertSame( [], $this->get_scheduled_timestamps( Ticket_Actions::TICKET_START_SALES_HOOK, $ticket_id ) );
 		$this->assertSame( [], $this->get_scheduled_timestamps( Ticket_Actions::TICKET_END_SALES_HOOK, $ticket_id ) );
-		$this->assertSame( [ [ $ticket_id, $event_id ] ], $inverted );
+		$this->assertSame( [ [ $ticket_id, $event_id, Window_Kind::SALES ] ], $inverted );
 	}
 
 	/**
@@ -332,6 +332,7 @@ class Event_Listener_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_not_leave_a_cached_on_sale_behind_when_a_programmatic_move_ends_the_sale(): void {
+		$this->set_site_timezone_to_utc();
 		$today     = new DateTimeImmutable( 'today', new DateTimeZone( 'UTC' ) );
 		$event_id  = $this->create_event( $today->modify( '+10 days' )->format( 'Y-m-d 19:00:00' ) );
 		// From 10 days before the event, today, to 2 days before it.

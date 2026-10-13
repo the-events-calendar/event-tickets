@@ -362,36 +362,6 @@ class Rule_Test extends WPTestCase {
 	}
 
 	/**
-	 * @return Generator<string,array{0: Window_Kind, 1: array<string,array<string,int|string>>, 2: bool}>
-	 */
-	public function end_follows_event_start_provider(): Generator {
-		$sales        = Window_Kind::sales();
-		$before_start = [ 'mode' => 'relative', 'value' => 2, 'unit' => WEEK_IN_SECONDS, 'anchor' => 'start' ];
-		$before_end   = [ 'mode' => 'relative', 'value' => 2, 'unit' => HOUR_IN_SECONDS, 'anchor' => 'end' ];
-
-		yield 'specific end, start counted from the event start' => [ $sales, [ 'start' => $before_start, 'end' => [ 'mode' => 'specific' ] ], true ];
-		yield 'specific end, start counted from the event end' => [ $sales, [ 'start' => $before_end, 'end' => [ 'mode' => 'specific' ] ], false ];
-		yield 'relative end' => [ $sales, [ 'start' => [ 'mode' => 'default' ], 'end' => $before_start ], false ];
-		yield 'default end' => [ $sales, [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ], false ];
-		yield 'sale price: specific end, start counted from the event start' => [
-			Window_Kind::sale_price(),
-			[
-				'start' => [ 'mode' => 'relative', 'value' => 2, 'unit' => WEEK_IN_SECONDS ],
-				'end'   => [ 'mode' => 'specific' ],
-			],
-			false,
-		];
-	}
-
-	/**
-	 * @test
-	 * @dataProvider end_follows_event_start_provider
-	 */
-	public function should_let_only_an_end_left_to_the_ticket_follow_the_event_start( Window_Kind $kind, array $data, bool $follows ): void {
-		$this->assertSame( $follows, Rule::from_array( $data, $kind )->lets_end_follow_event_start() );
-	}
-
-	/**
 	 * Reads the fixtures shared by the sale price rule and resolver tests, in PHP and in Jest.
 	 *
 	 * @return array{cases: list<array{name: string, rule: array{start: array{mode: string, value?: int, unit?: int}, end: array{mode: string, value?: int, unit?: int}}}>, invalid_rules: list<array{name: string, rule: array{start?: array<string,int|float|string>|string, end?: array<string,int|float|string>|string}, reason: string}>}

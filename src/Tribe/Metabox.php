@@ -283,7 +283,8 @@ class Tribe__Tickets__Metabox {
 	 * @since 4.6.2
 	 * @since 4.10.9 Use customizable ticket name functions.
 	 * @since 5.5.7 Added optional parameter to return values instead of echoing directly.
-	 * @since TBD Rejects ticket data that `validate_ticket_data()` rejects.
+	 * @since TBD Rejects ticket data that `validate_ticket_data()` rejects, and passes on in the ticket data whether the
+	 *            form is the wp-admin one.
 	 *
 	 * @param bool $return_value Optional, flags whether to JSON output directly or return results.
 	 *
@@ -362,6 +363,9 @@ class Tribe__Tickets__Metabox {
 
 		// If we have a ticket type, set it.
 		$data['ticket_type'] = $ticket_type;
+
+		// A front-end form, such as Community Events', sends `is_admin` as false, as `get_ticket_controls()` reads it.
+		$data['is_admin'] = tribe_is_truthy( tribe_get_request_var( 'is_admin', true ) );
 
 		$valid = $module->validate_ticket_data( $post_id, $data );
 

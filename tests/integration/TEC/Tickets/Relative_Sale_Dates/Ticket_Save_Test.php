@@ -928,12 +928,36 @@ class Ticket_Save_Test extends Controller_Test_Case {
 				self::SALE_PRICE_DATA_KEY => wp_json_encode( $sale_price_rule ),
 			]
 		);
-		// What `tickets.js` sends outside wp-admin.
-		$_POST['is_admin'] = 'false';
+		// What the classic editor save passes on from `tickets.js` outside wp-admin.
+		$this->update_sale_price_ticket( $ticket_id, [ 'is_admin' => false ] );
+
+		$this->assertSame( [ self::SALE_PRICE_STORE_KEY => $sale_price_rule ], $this->get_stored( $ticket_id ) );
+	}
+
+	/**
+	 * Only the classic editor save passes the flag on: a REST request that leaves the rule out keeps it whatever its query
+	 * string says.
+	 *
+	 * @test
+	 */
+	public function should_keep_the_rules_of_a_save_that_carries_is_admin_only_in_the_request(): void {
+		$event_id        = $this->create_event( self::EVENT_START );
+		$sales_rule      = [ 'start' => $this->relative( 3, WEEK_IN_SECONDS ), 'end' => [ 'mode' => Rule::MODE_DEFAULT ] ];
+		$sale_price_rule = $this->get_sale_price_rule( [ 'mode' => Rule::MODE_NOW ], $this->sale_price_relative( 1, WEEK_IN_SECONDS ) );
+		$ticket_id       = $this->create_sale_price_ticket(
+			$event_id,
+			[
+				'relative_sale_dates'     => wp_json_encode( $sales_rule ),
+				self::SALE_PRICE_DATA_KEY => wp_json_encode( $sale_price_rule ),
+			]
+		);
+		$_GET['is_admin']     = '0';
+		$_REQUEST['is_admin'] = '0';
 
 		$this->update_sale_price_ticket( $ticket_id, [] );
 
-		$this->assertSame( [ self::SALE_PRICE_STORE_KEY => $sale_price_rule ], $this->get_stored( $ticket_id ) );
+		unset( $_GET['is_admin'], $_REQUEST['is_admin'] );
+		$this->assertSame( $sales_rule + [ self::SALE_PRICE_STORE_KEY => $sale_price_rule ], $this->get_stored( $ticket_id ) );
 	}
 
 	/**
@@ -1258,18 +1282,5 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	 */
 	private function get_ticket( int $event_id, int $ticket_id ): ?Ticket_Object {
 		return tribe( Module::class )->get_ticket( $event_id, $ticket_id );
-	}
-
-	/**
-	 * Makes the ticket read "today" in UTC, the timezone the test computes its dates in.
-	 *
-	 * The ticket checks its sale price window against "today" in the site timezone. A site with no timezone string falls
-	 * back to its UTC offset, and an offset of 0 resolves to Europe/London, which is an hour ahead of UTC in summer: the
-	 * ticket's "today" is then a day ahead of the test's from 23:00 UTC.
-	 *
-	 * @return void
-	 */
-	private function set_site_timezone_to_utc(): void {
-		update_option( 'timezone_string', 'UTC' );
 	}
 }

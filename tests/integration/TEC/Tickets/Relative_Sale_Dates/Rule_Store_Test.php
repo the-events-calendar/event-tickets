@@ -85,147 +85,10 @@ class Rule_Store_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function should_release_the_end_marker_when_removing_the_sales_window_without_an_end(): void {
-		$ticket_id       = static::factory()->post->create();
-		$tickets_handler = tribe( 'tickets.handler' );
-		tribe( Rule_Store::class )->save( $ticket_id, [ 'start' => [ 'mode' => Rule::MODE_DEFAULT ], 'end' => [ 'mode' => Rule::MODE_DEFAULT ] ] );
-		add_post_meta( $ticket_id, $tickets_handler->key_manual_updated, $tickets_handler->key_end_date );
-
-		tribe( Rule_Store::class )->remove_rule( $ticket_id, Window_Kind::sales(), false );
-
-		$this->assertSame( [], tribe( Rule_Store::class )->get( $ticket_id ) );
-		$this->assertFalse( $tickets_handler->has_manual_update( $ticket_id, $tickets_handler->key_end_date ) );
-	}
-
-	/**
-	 * @test
-	 */
-	public function should_keep_the_end_marker_when_removing_the_sales_window_with_an_end(): void {
-		$ticket_id       = static::factory()->post->create();
-		$tickets_handler = tribe( 'tickets.handler' );
-		tribe( Rule_Store::class )->save( $ticket_id, [ 'start' => [ 'mode' => Rule::MODE_DEFAULT ], 'end' => [ 'mode' => Rule::MODE_DEFAULT ] ] );
-		add_post_meta( $ticket_id, $tickets_handler->key_manual_updated, $tickets_handler->key_end_date );
-
-		tribe( Rule_Store::class )->remove_rule( $ticket_id, Window_Kind::sales(), true );
-
-		$this->assertSame( [], tribe( Rule_Store::class )->get( $ticket_id ) );
-		$this->assertTrue( $tickets_handler->has_manual_update( $ticket_id, $tickets_handler->key_end_date ) );
-	}
-
-	/**
-	 * @test
-	 */
-	public function should_keep_the_end_marker_of_a_ticket_without_a_sales_window(): void {
-		$ticket_id       = static::factory()->post->create();
-		$tickets_handler = tribe( 'tickets.handler' );
-		add_post_meta( $ticket_id, $tickets_handler->key_manual_updated, $tickets_handler->key_end_date );
-
-		tribe( Rule_Store::class )->remove_rule( $ticket_id, Window_Kind::sales(), false );
-
-		$this->assertTrue( $tickets_handler->has_manual_update( $ticket_id, $tickets_handler->key_end_date ) );
-	}
-
-	/**
-	 * @return Generator<string,array{0: bool}>
-	 */
-	public function sales_window_removal_provider(): Generator {
-		yield 'save without an end' => [ false ];
-		yield 'save with an end' => [ true ];
-	}
-
-	/**
-	 * @test
-	 * @dataProvider sales_window_removal_provider
-	 */
-	public function should_delete_the_timezone_of_the_dates_when_removing_the_sales_window( bool $keeps_end ): void {
-		$ticket_id = static::factory()->post->create();
-		tribe( Rule_Store::class )->save( $ticket_id, [ 'start' => [ 'mode' => Rule::MODE_DEFAULT ], 'end' => [ 'mode' => Rule::MODE_DEFAULT ] ] );
-		update_post_meta( $ticket_id, Ticket_Dates::TIMEZONE_META_KEY, 'Europe/Lisbon' );
-
-		tribe( Rule_Store::class )->remove_sales_window( $ticket_id, $keeps_end );
-
-		$this->assertFalse( metadata_exists( 'post', $ticket_id, Ticket_Dates::TIMEZONE_META_KEY ) );
-	}
-
-	/**
-	 * @test
-	 */
-	public function should_keep_the_timezone_of_the_dates_when_removing_a_key_that_leaves_the_sales_window(): void {
-		$ticket_id = static::factory()->post->create();
-		$timezone  = 'Europe/Lisbon';
-		tribe( Rule_Store::class )->save(
-			$ticket_id,
-			[
-				'sale_price' => [ 'start' => [ 'mode' => Rule::MODE_DEFAULT ] ],
-				'start'      => [ 'mode' => Rule::MODE_DEFAULT ],
-				'end'        => [ 'mode' => Rule::MODE_DEFAULT ],
-			]
-		);
-		update_post_meta( $ticket_id, Ticket_Dates::TIMEZONE_META_KEY, $timezone );
-
-		tribe( Rule_Store::class )->remove( $ticket_id, [ 'sale_price' ] );
-
-		$this->assertSame( $timezone, get_post_meta( $ticket_id, Ticket_Dates::TIMEZONE_META_KEY, true ) );
-	}
-
-	/**
-	 * @return Generator<string,array{0: array{mode: string, value?: int, unit?: int, anchor?: string}|null, 1: array{mode: string, value?: int, unit?: int, anchor?: string}, 2: bool}>
-	 */
-	public function sales_window_end_switch_provider(): Generator {
-		$relative = [
-			'mode'   => Rule::MODE_RELATIVE,
-			'value'  => 1,
-			'unit'   => DAY_IN_SECONDS,
-			'anchor' => 'start',
-		];
-
-		yield 'relative end switched to specific' => [ $relative, [ 'mode' => Rule::MODE_SPECIFIC ], true ];
-		yield 'default end switched to specific' => [ [ 'mode' => Rule::MODE_DEFAULT ], [ 'mode' => Rule::MODE_SPECIFIC ], true ];
-		// The legacy save flags an end the admin types on a new ticket, when it is not the event start.
-		yield 'first rule with a specific end' => [ null, [ 'mode' => Rule::MODE_SPECIFIC ], false ];
-		yield 'specific end kept' => [ [ 'mode' => Rule::MODE_SPECIFIC ], [ 'mode' => Rule::MODE_SPECIFIC ], false ];
-		yield 'specific end switched to relative' => [ [ 'mode' => Rule::MODE_SPECIFIC ], $relative, false ];
-	}
-
-	/**
-	 * @test
-	 * @dataProvider sales_window_end_switch_provider
-	 */
-	public function should_flag_an_end_switched_to_specific_as_set_by_hand( ?array $previous_end, array $end, bool $flagged ): void {
-		$ticket_id       = static::factory()->post->create();
-		$tickets_handler = tribe( 'tickets.handler' );
-		$start           = [ 'mode' => Rule::MODE_DEFAULT ];
-		if ( $previous_end ) {
-			tribe( Rule_Store::class )->save( $ticket_id, [ 'start' => $start, 'end' => $previous_end ] );
-		}
-
-		tribe( Rule_Store::class )->save_rule( $ticket_id, Rule::from_array( [ 'start' => $start, 'end' => $end ], Window_Kind::sales() ) );
-
-		$this->assertSame( [ 'start' => $start, 'end' => $end ], tribe( Rule_Store::class )->get( $ticket_id ) );
-		$this->assertSame( $flagged, $tickets_handler->has_manual_update( $ticket_id, $tickets_handler->key_end_date ) );
-	}
-
-	/**
-	 * @test
-	 */
-	public function should_not_flag_an_end_already_set_by_hand_twice(): void {
-		$ticket_id       = static::factory()->post->create();
-		$tickets_handler = tribe( 'tickets.handler' );
-		tribe( Rule_Store::class )->save( $ticket_id, [ 'start' => [ 'mode' => Rule::MODE_DEFAULT ], 'end' => [ 'mode' => Rule::MODE_DEFAULT ] ] );
-		add_post_meta( $ticket_id, $tickets_handler->key_manual_updated, $tickets_handler->key_end_date );
-
-		tribe( Rule_Store::class )->save_rule( $ticket_id, Rule::from_array( [ 'start' => [ 'mode' => Rule::MODE_DEFAULT ], 'end' => [ 'mode' => Rule::MODE_SPECIFIC ] ], Window_Kind::sales() ) );
-
-		$this->assertSame( [ $tickets_handler->key_end_date ], get_post_meta( $ticket_id, $tickets_handler->key_manual_updated ) );
-	}
-
-	/**
-	 * @test
-	 */
 	public function should_save_the_sale_price_rule_under_its_key_next_to_the_sales_window(): void {
 		$ticket_id    = static::factory()->post->create();
-		$sales_window = [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ];
-		$sale_price   = [ 'start' => [ 'mode' => 'now' ], 'end' => [ 'mode' => 'specific' ] ];
+		$sales_window = [ 'start' => [ 'mode' => Rule::MODE_DEFAULT ], 'end' => [ 'mode' => Rule::MODE_DEFAULT ] ];
+		$sale_price   = [ 'start' => [ 'mode' => Rule::MODE_NOW ], 'end' => [ 'mode' => Rule::MODE_SPECIFIC ] ];
 		tribe( Rule_Store::class )->save( $ticket_id, $sales_window );
 
 		tribe( Rule_Store::class )->save_rule( $ticket_id, Rule::from_array( $sale_price, Window_Kind::sale_price() ) );
@@ -236,33 +99,27 @@ class Rule_Store_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function should_remove_only_the_sale_price_rule_and_leave_the_end_marker(): void {
-		$ticket_id       = static::factory()->post->create();
-		$tickets_handler = tribe( 'tickets.handler' );
-		$sales_window    = [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ];
-		tribe( Rule_Store::class )->save( $ticket_id, array_merge( $sales_window, [ 'sale_price' => [ 'start' => [ 'mode' => 'now' ] ] ] ) );
-		add_post_meta( $ticket_id, $tickets_handler->key_manual_updated, $tickets_handler->key_end_date );
+	public function should_remove_only_the_sale_price_rule(): void {
+		$ticket_id    = static::factory()->post->create();
+		$sales_window = [ 'start' => [ 'mode' => Rule::MODE_DEFAULT ], 'end' => [ 'mode' => Rule::MODE_DEFAULT ] ];
+		tribe( Rule_Store::class )->save( $ticket_id, array_merge( $sales_window, [ 'sale_price' => [ 'start' => [ 'mode' => Rule::MODE_NOW ] ] ] ) );
 
 		$removed = tribe( Rule_Store::class )->remove_rule( $ticket_id, Window_Kind::sale_price() );
 
 		$this->assertTrue( $removed );
 		$this->assertSame( $sales_window, tribe( Rule_Store::class )->get( $ticket_id ) );
-		$this->assertTrue( $tickets_handler->has_manual_update( $ticket_id, $tickets_handler->key_end_date ) );
 	}
 
 	/**
 	 * @test
 	 */
-	public function should_not_flag_a_sale_price_end_switched_to_specific_as_set_by_hand(): void {
-		$ticket_id       = static::factory()->post->create();
-		$tickets_handler = tribe( 'tickets.handler' );
-		$kind            = Window_Kind::sale_price();
-		$start           = [ 'mode' => Rule::MODE_NOW ];
-		tribe( Rule_Store::class )->save_rule( $ticket_id, Rule::from_array( [ 'start' => $start, 'end' => [ 'mode' => Rule::MODE_RELATIVE, 'value' => 1, 'unit' => DAY_IN_SECONDS ] ], $kind ) );
+	public function should_remove_the_sales_window_rule_and_leave_the_sale_price_one(): void {
+		$ticket_id  = static::factory()->post->create();
+		$sale_price = [ 'start' => [ 'mode' => Rule::MODE_NOW ], 'end' => [ 'mode' => Rule::MODE_SPECIFIC ] ];
+		tribe( Rule_Store::class )->save( $ticket_id, [ 'start' => [ 'mode' => Rule::MODE_DEFAULT ], 'end' => [ 'mode' => Rule::MODE_DEFAULT ], 'sale_price' => $sale_price ] );
 
-		tribe( Rule_Store::class )->save_rule( $ticket_id, Rule::from_array( [ 'start' => $start, 'end' => [ 'mode' => Rule::MODE_SPECIFIC ] ], $kind ) );
-
-		$this->assertFalse( $tickets_handler->has_manual_update( $ticket_id, $tickets_handler->key_end_date ) );
+		$this->assertTrue( tribe( Rule_Store::class )->remove_rule( $ticket_id, Window_Kind::sales() ) );
+		$this->assertSame( [ 'sale_price' => $sale_price ], tribe( Rule_Store::class )->get( $ticket_id ) );
 	}
 
 	/**

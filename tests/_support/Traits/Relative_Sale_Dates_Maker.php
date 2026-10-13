@@ -226,6 +226,19 @@ trait Relative_Sale_Dates_Maker {
 	}
 
 	/**
+	 * Makes the ticket read "today" in UTC, the timezone the test computes its dates in.
+	 *
+	 * The ticket checks its sale price window against "today" in the site timezone. A site with no timezone string falls
+	 * back to its UTC offset, and an offset of 0 resolves to Europe/London, which is an hour ahead of UTC in summer: the
+	 * ticket's "today" is then a day ahead of the test's from 23:00 UTC.
+	 *
+	 * @return void
+	 */
+	protected function set_site_timezone_to_utc(): void {
+		update_option( 'timezone_string', 'UTC' );
+	}
+
+	/**
 	 * Ticket_Actions schedules nothing for a sales window that has already ended, so the events are a year away.
 	 *
 	 * @return DateTimeImmutable An event start at 19:00 UTC, a year from now.

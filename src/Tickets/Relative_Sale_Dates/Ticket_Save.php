@@ -92,18 +92,29 @@ final class Ticket_Save {
 	private Sale_Window $sale_window;
 
 	/**
+	 * The effects only the sales window has.
+	 *
+	 * @since TBD
+	 *
+	 * @var Sales_Window_Effects
+	 */
+	private Sales_Window_Effects $sales_window_effects;
+
+	/**
 	 * Ticket_Save constructor.
 	 *
 	 * @since TBD
 	 *
-	 * @param Rule_Store   $rule_store   The store of the ticket rules.
-	 * @param Sale_Window  $sale_window  The sales window resolver.
-	 * @param Ticket_Dates $ticket_dates The writer of the ticket dates.
+	 * @param Rule_Store           $rule_store           The store of the ticket rules.
+	 * @param Sale_Window          $sale_window          The resolver of every kind of window.
+	 * @param Ticket_Dates         $ticket_dates         The writer of the ticket dates.
+	 * @param Sales_Window_Effects $sales_window_effects The effects only the sales window has.
 	 */
-	public function __construct( Rule_Store $rule_store, Sale_Window $sale_window, Ticket_Dates $ticket_dates ) {
-		$this->rule_store   = $rule_store;
-		$this->sale_window  = $sale_window;
-		$this->ticket_dates = $ticket_dates;
+	public function __construct( Rule_Store $rule_store, Sale_Window $sale_window, Ticket_Dates $ticket_dates, Sales_Window_Effects $sales_window_effects ) {
+		$this->rule_store           = $rule_store;
+		$this->sale_window          = $sale_window;
+		$this->ticket_dates         = $ticket_dates;
+		$this->sales_window_effects = $sales_window_effects;
 	}
 
 	/**
@@ -128,11 +139,13 @@ final class Ticket_Save {
 		// Only the sales window dates are the ticket's own, which the provider saves with the ticket.
 		$rule         = $this->get_rule_to_apply( $ticket->ID ?? 0, $data, Window_Kind::sales() );
 		$ticket_start = $ticket->start_date ? trim( $ticket->start_date . ' ' . $ticket->start_time ) : '';
-		$window       = $rule ? $this->sale_window->resolve_for_event( $rule, $post_id, $ticket_start ) : null;
+		$window       = $rule ? $this->sale_window->resolve_for_event( $rule, $post_id ) : null;
 
 		if ( ! $window ) {
 			return;
 		}
+
+		$window = $this->sales_window_effects->apply_now_start( $window, $rule, $ticket_start );
 
 		$start = $window->get_start();
 		if ( $start ) {
@@ -166,9 +179,13 @@ final class Ticket_Save {
 			return;
 		}
 
+		$stored = $this->rule_store->get( $ticket_id );
+
 		foreach ( Window_Kind::all() as $kind ) {
 			if ( ! $kind->is_enabled_for_ticket( $ticket_id ) || $this->removes_rule( $data, $kind ) ) {
-				$this->rule_store->remove_rule( $ticket_id, $kind, ! empty( $data[ $kind->get_submitted_fields()['end']['date'] ] ) );
+				if ( $this->rule_store->remove_rule( $ticket_id, $kind ) ) {
+					$this->sales_window_effects->release_end( $ticket_id, $kind, ! empty( $data[ $kind->get_submitted_fields()['end']['date'] ] ) );
+				}
 
 				continue;
 			}
@@ -177,6 +194,7 @@ final class Ticket_Save {
 
 			if ( $rule ) {
 				$this->rule_store->save_rule( $ticket_id, $rule );
+				$this->sales_window_effects->flag_end_left_to_ticket( $ticket_id, Rule::from_stored( $stored, $kind ), $rule );
 			}
 		}
 	}
@@ -253,7 +271,8 @@ final class Ticket_Save {
 
 		$timezone  = $event_dates[0]->getTimezone();
 		$submitted = $this->get_submitted_date( $data, 'start', $timezone );
-		$window    = $this->sale_window->resolve_for_event( $rule, $post_id, $submitted ? $submitted->format( 'Y-m-d H:i:s' ) : '' );
+		$window    = $this->sale_window->resolve_for_event( $rule, $post_id );
+		$window    = $window ? $this->sales_window_effects->apply_now_start( $window, $rule, $submitted ? $submitted->format( 'Y-m-d H:i:s' ) : '' ) : null;
 		$start     = ( $window ? $window->get_start() : null ) ?? $submitted;
 		$end       = ( $window ? $window->get_end() : null ) ?? $this->get_submitted_date( $data, 'end', $timezone );
 
@@ -302,8 +321,8 @@ final class Ticket_Save {
 	 *
 	 * A front-end ticket form, such as Community Events', offers no sales window options, so the dates it sends are the
 	 * ones the person set: for a kind such a form removes, a save from it that does not send the rule removes the stored
-	 * one. `tickets.js` tells such a form apart by sending `is_admin` as false; a REST request sends no `is_admin`, and
-	 * leaving the rule out keeps it.
+	 * one. The classic editor save passes on the `is_admin` that `tickets.js` sends, false for such a form, in the ticket
+	 * data; a REST request carries none, so leaving the rule out keeps it, whatever its query string holds.
 	 *
 	 * @since TBD
 	 *
@@ -323,9 +342,7 @@ final class Ticket_Save {
 			return false;
 		}
 
-		$is_admin = tec_get_request_var( 'is_admin' );
-
-		return null !== $is_admin && ! tribe_is_truthy( $is_admin );
+		return array_key_exists( 'is_admin', $data ) && ! tribe_is_truthy( $data['is_admin'] );
 	}
 
 	/**

@@ -213,7 +213,30 @@ class Ticket_Dates_Test extends WPTestCase {
 		update_post_meta( $ticket_id, Ticket::END_DATE_META_KEY, $end[0] );
 		update_post_meta( $ticket_id, Ticket::END_TIME_META_KEY, $end[1] );
 
-		$this->assertSame( $ends_before, tribe( Ticket_Dates::class )->ends_before_it_starts( $ticket_id ) );
+		$this->assertSame( $ends_before, tribe( Ticket_Dates::class )->ends_before_it_starts( $ticket_id, Window_Kind::sales() ) );
+	}
+
+	/**
+	 * @return Generator<string,array{0: string, 1: string, 2: bool}>
+	 */
+	public function written_sale_price_window_provider(): Generator {
+		yield 'an end day after the start day' => [ '2027-06-10', '2027-06-11', false ];
+		// The sale price is on all of its end day, so a single day is a valid window.
+		yield 'an end day equal to the start day' => [ '2027-06-10', '2027-06-10', false ];
+		yield 'an end day before the start day' => [ '2027-06-10', '2027-06-09', true ];
+		yield 'a start of now, written empty' => [ '', '2027-06-09', false ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider written_sale_price_window_provider
+	 */
+	public function should_tell_whether_the_written_sale_price_window_ends_before_it_starts( string $start, string $end, bool $ends_before ): void {
+		$ticket_id = $this->create_sale_price_ticket( $this->create_event( '2027-06-24 19:00:00' ) );
+		update_post_meta( $ticket_id, Ticket::$sale_price_start_date_key, $start );
+		update_post_meta( $ticket_id, Ticket::$sale_price_end_date_key, $end );
+
+		$this->assertSame( $ends_before, tribe( Ticket_Dates::class )->ends_before_it_starts( $ticket_id, Window_Kind::sale_price() ) );
 	}
 
 	/**

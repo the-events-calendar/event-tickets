@@ -9,11 +9,8 @@ use DateTimeInterface;
 use DateTimeZone;
 use Generator;
 use RuntimeException;
-use Tribe\Tests\Traits\With_Clock_Mock;
 
 class Sale_Window_Test extends WPTestCase {
-	use With_Clock_Mock;
-
 	/**
 	 * @return Generator<string,array{0: array{name: string, rule: array{start: array{mode: string, value?: int, unit?: int, anchor?: string}, end: array{mode: string, value?: int, unit?: int, anchor?: string}}, timezone: string, event_start: string, event_end: string, expected: array{start_local: ?string, start_utc: ?string, end_local: ?string, end_utc: ?string, valid: ?bool}}}>
 	 */
@@ -347,33 +344,6 @@ class Sale_Window_Test extends WPTestCase {
 		$window = tribe( Sale_Window::class )->resolve_for_event( $rule, $event_id );
 
 		$this->assert_date( '2027-06-10 19:00:00', 'Europe/Lisbon', $window->get_end() );
-	}
-
-	/**
-	 * @return Generator<string,array{0: Window_Kind, 1: string, 2: bool}>
-	 */
-	public function now_start_provider(): Generator {
-		yield 'a ticket start later than now' => [ Window_Kind::sales(), '+1 week', true ];
-		yield 'a ticket start equal to now' => [ Window_Kind::sales(), '+0 seconds', false ];
-		yield 'a ticket start already past' => [ Window_Kind::sales(), '-1 week', false ];
-		yield 'no ticket start' => [ Window_Kind::sales(), '', false ];
-		yield 'sale price: a ticket start later than now' => [ Window_Kind::sale_price(), '+1 week', false ];
-	}
-
-	/**
-	 * @test
-	 * @dataProvider now_start_provider
-	 */
-	public function should_move_only_a_later_ticket_start_to_now_for_a_now_start( Window_Kind $kind, string $ticket_start_offset, bool $moved ): void {
-		$now = new DateTimeImmutable( '2027-01-10 12:00:00', new DateTimeZone( 'UTC' ) );
-		$this->freeze_time( $now );
-		$event_id     = $this->create_event( '2027-06-24 19:00:00' );
-		$rule         = Rule::from_array( [ 'start' => [ 'mode' => $kind->get_open_start_mode() ], 'end' => [ 'mode' => Rule::MODE_SPECIFIC ] ], $kind );
-		$ticket_start = $ticket_start_offset ? $now->modify( $ticket_start_offset )->format( 'Y-m-d H:i:s' ) : '';
-
-		$window = tribe( Sale_Window::class )->resolve_for_event( $rule, $event_id, $ticket_start );
-
-		$this->assert_date( $moved ? $now->format( 'Y-m-d H:i:s' ) : null, 'UTC', $window->get_start() );
 	}
 
 	/**

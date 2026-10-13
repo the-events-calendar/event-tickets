@@ -163,12 +163,12 @@ class Controller_Test extends Controller_Test_Case {
 	 *
 	 * @test
 	 */
-	public function should_build_the_rule_store_with_the_tickets_handler_already_in_use(): void {
+	public function should_build_the_sales_window_effects_with_the_tickets_handler_already_in_use(): void {
 		$controller = $this->make_controller();
 		$controller->register();
 		$tickets_handler = tribe( 'tickets.handler' );
 
-		$this->test_services->get( Rule_Store::class );
+		$this->test_services->get( Sales_Window_Effects::class );
 
 		$this->assertSame( [ spl_object_id( $tickets_handler ) ], $this->get_hooked_tickets_handlers() );
 	}

@@ -389,6 +389,33 @@ class List_TableTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
+	 * The sale price is on sale all of its first and last day, as `is_on_sale()` reads them.
+	 */
+	public function test_lists_a_sale_price_on_its_first_and_last_day_as_discounted() {
+		$event_id  = tribe_events()->set_args(
+			[
+				'title'      => 'Discounted event',
+				'status'     => 'publish',
+				'start_date' => gmdate( 'Y-m-d H:i:s', strtotime( '+10 days' ) ),
+				'duration'   => HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+		$ticket_id = $this->create_tc_ticket( $event_id, 20 );
+		update_post_meta( $ticket_id, TicketsCommerce\Ticket::$sale_price_checked_key, '1' );
+		update_post_meta( $ticket_id, TicketsCommerce\Ticket::$sale_price_key, '10' );
+		update_post_meta( $ticket_id, TicketsCommerce\Ticket::$sale_price_start_date_key, current_time( 'Y-m-d' ) );
+		update_post_meta( $ticket_id, TicketsCommerce\Ticket::$sale_price_end_date_key, current_time( 'Y-m-d' ) );
+		$this->ticket_ids[]      = $ticket_id;
+		$this->event_ids[]       = $event_id;
+		$_GET['status-filter']   = 'discounted';
+		$_GET['provider-filter'] = addslashes( TicketsCommerce\Module::class );
+
+		$this->list_table->prepare_items();
+
+		$this->assertContains( $ticket_id, array_map( static fn( $item ) => absint( $item->ID ), $this->list_table->items ?: [] ) );
+	}
+
+	/**
 	 * A sale price without an end date stays on sale, and only a sale price the ticket has checked counts: other
 	 * providers, such as WooCommerce, keep a `_sale_price` without the Tickets Commerce dates.
 	 */
