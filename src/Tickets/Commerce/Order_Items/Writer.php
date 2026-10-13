@@ -12,6 +12,7 @@ namespace TEC\Tickets\Commerce\Order_Items;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Order_Items\Line_Items\Line_Item_Types;
 use TEC\Tickets\Commerce\Order_Items\Repositories\Order_Items;
+use TEC\Tickets\Commerce\Order_Items\Traits\With_Logger;
 use TEC\Tickets\Commerce\Utils\Currency;
 use Throwable;
 use Tribe__Log as Log;
@@ -24,6 +25,8 @@ use Tribe__Log as Log;
  * @package TEC\Tickets\Commerce\Order_Items
  */
 final class Writer {
+	use With_Logger;
+
 	/**
 	 * The meta key that marks an order whose lines are stored in the table.
 	 *
@@ -128,20 +131,5 @@ final class Writer {
 		update_post_meta( $order_id, self::VERSION_META_KEY, self::VERSION );
 		// The order model is cached until the post is modified, and a meta write does not modify it.
 		clean_post_cache( $order_id );
-	}
-
-	/**
-	 * Logs a message.
-	 *
-	 * @since TBD
-	 *
-	 * @param string              $level   The log level.
-	 * @param string              $message The message to log.
-	 * @param array<string,mixed> $context The context to log with the message.
-	 *
-	 * @return void
-	 */
-	private function log( string $level, string $message, array $context ): void {
-		do_action( 'tribe_log', $level, $message, [ 'controller' => Controller::class ] + $context );
 	}
 }
