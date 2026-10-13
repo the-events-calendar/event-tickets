@@ -66,8 +66,8 @@ export default function SalesWindow( { clientId, picker } ) {
 						[ 'start' === name ? 'toDate' : 'fromDate' ]: undefined,
 					} ),
 				} ),
-				helperText:
-					MODE_RELATIVE === formRule[ name ].mode ? getHelperText( name, saleWindow?.[ name ] ) : undefined,
+				// Mounted empty, so the date is announced once a relative mode gives the end one.
+				helperText: MODE_RELATIVE === formRule[ name ].mode ? getHelperText( name, saleWindow?.[ name ] ) : '',
 				errorMessage:
 					'end' === name && error && ! outOfRange
 						? __(

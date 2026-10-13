@@ -66,6 +66,18 @@
 	margin: 0;
 }
 
+/* An empty live region stays mounted, out of the layout, so the text written into it later is announced. */
+.editor-styles-wrapper .tec-tickets-relative-sale-dates__helper:empty {
+	border: 0;
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
 /* How long the sale price lasts, under the sale end. */
 .editor-styles-wrapper
 .tribe-editor__ticket__sale-price-wrapper

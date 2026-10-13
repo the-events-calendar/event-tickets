@@ -464,7 +464,18 @@ describe( 'the Ticket block sales window options', () => {
 
 			change( SelectControl, START_LABELS.mode, 'relative' );
 
-			expect( getHelperRegions() ).toStrictEqual( [ '' ] );
+			expect( getHelperRegions() ).toStrictEqual( [ '', '' ] );
+		} );
+
+		// A live region that mounts with its text in it is not announced.
+		it( 'should mount the helper region of each end before a relative mode is picked', () => {
+			renderSalesWindow( newClientId() );
+
+			expect( getHelperRegions() ).toStrictEqual( [ '', '' ] );
+
+			change( SelectControl, START_LABELS.mode, 'relative' );
+
+			expect( getHelperRegions() ).toStrictEqual( [ 'Sales start October 6, 2040 at 7:00 pm', '' ] );
 		} );
 
 		it( 'should show no helper text for a relative end whose number is cleared', () => {
