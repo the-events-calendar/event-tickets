@@ -1,5 +1,5 @@
 import { readRule, writeRule } from '@tec/tickets/relative-sale-dates/classic/rule';
-import { SALES_WINDOW, SALE_PRICE_WINDOW } from '@tec/tickets/relative-sale-dates/window-kinds';
+import { CLASSIC_SALE_PRICE_WINDOW, CLASSIC_SALES_WINDOW } from '@tec/tickets/relative-sale-dates/classic/window-kinds';
 
 const UNIT_HOURS = 3600;
 const UNIT_DAYS = 86400;
@@ -78,8 +78,8 @@ function asWritten( kind, boundary ) {
 }
 
 describe.each( [
-	[ 'sales window', SALES_WINDOW, 'default' ],
-	[ 'sale price window', SALE_PRICE_WINDOW, 'now' ],
+	[ 'sales window', CLASSIC_SALES_WINDOW, 'default' ],
+	[ 'sale price window', CLASSIC_SALE_PRICE_WINDOW, 'now' ],
 ] )( 'the rule of the %s', ( name, kind, openStartMode ) => {
 	const relativeStart = { mode: 'relative', value: 2, unit: UNIT_WEEKS, anchor: 'start' };
 	const relativeEnd = { mode: 'relative', value: 3, unit: UNIT_DAYS, anchor: 'start' };
@@ -133,12 +133,12 @@ describe( 'the rule of a form read without a kind', () => {
 	it( 'should be the sales window rule', () => {
 		const start = { mode: 'relative', value: 2, unit: UNIT_WEEKS, anchor: 'end' };
 		const end = { mode: 'relative', value: 1, unit: UNIT_HOURS, anchor: 'start' };
-		renderForm( SALES_WINDOW, start, end );
+		renderForm( CLASSIC_SALES_WINDOW, start, end );
 
 		writeRule( document );
 
 		expect( readRule( document ) ).toStrictEqual( { start, end } );
-		expect( getWrittenRule( SALES_WINDOW ) ).toStrictEqual( { start, end } );
+		expect( getWrittenRule( CLASSIC_SALES_WINDOW ) ).toStrictEqual( { start, end } );
 	} );
 } );
 
@@ -154,8 +154,8 @@ describe( 'the rule of a sale price saved before relative dates', () => {
 	 * @param {string}  storedRule The rule field as rendered: the stored rule's JSON, or empty without one.
 	 */
 	function renderSalePrice( start, end, hadPrice, storedRule = '' ) {
-		renderForm( SALE_PRICE_WINDOW, start, end );
-		document.getElementById( SALE_PRICE_WINDOW.ruleFieldId ).setAttribute( 'value', storedRule );
+		renderForm( CLASSIC_SALE_PRICE_WINDOW, start, end );
+		document.getElementById( CLASSIC_SALE_PRICE_WINDOW.ruleFieldId ).setAttribute( 'value', storedRule );
 		document
 			.getElementById( 'tribe_panel_edit' )
 			.insertAdjacentHTML(
@@ -167,18 +167,18 @@ describe( 'the rule of a sale price saved before relative dates', () => {
 	it( 'should write no rule while both ends stay on the dates it was saved with', () => {
 		renderSalePrice( specific, specific, true );
 
-		writeRule( document, SALE_PRICE_WINDOW );
+		writeRule( document, CLASSIC_SALE_PRICE_WINDOW );
 
-		expect( document.getElementById( SALE_PRICE_WINDOW.ruleFieldId ).value ).toBe( '' );
+		expect( document.getElementById( CLASSIC_SALE_PRICE_WINDOW.ruleFieldId ).value ).toBe( '' );
 	} );
 
 	it( 'should write the rule once an end leaves its specific date', () => {
 		const relative = { mode: 'relative', value: 1, unit: UNIT_WEEKS };
 		renderSalePrice( specific, relative, true );
 
-		writeRule( document, SALE_PRICE_WINDOW );
+		writeRule( document, CLASSIC_SALE_PRICE_WINDOW );
 
-		expect( getWrittenRule( SALE_PRICE_WINDOW ) ).toStrictEqual( {
+		expect( getWrittenRule( CLASSIC_SALE_PRICE_WINDOW ) ).toStrictEqual( {
 			start: { mode: 'specific' },
 			end: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
 		} );
@@ -188,9 +188,9 @@ describe( 'the rule of a sale price saved before relative dates', () => {
 		renderSalePrice( specific, specific, false );
 		document.getElementById( 'ticket_add_sale_price' ).checked = true;
 
-		writeRule( document, SALE_PRICE_WINDOW );
+		writeRule( document, CLASSIC_SALE_PRICE_WINDOW );
 
-		expect( getWrittenRule( SALE_PRICE_WINDOW ) ).toStrictEqual( {
+		expect( getWrittenRule( CLASSIC_SALE_PRICE_WINDOW ) ).toStrictEqual( {
 			start: { mode: 'specific' },
 			end: { mode: 'specific' },
 		} );
@@ -200,20 +200,20 @@ describe( 'the rule of a sale price saved before relative dates', () => {
 		const stored = JSON.stringify( { start: { mode: 'specific' }, end: { mode: 'specific' } } );
 		renderSalePrice( specific, specific, true, stored );
 
-		writeRule( document, SALE_PRICE_WINDOW );
+		writeRule( document, CLASSIC_SALE_PRICE_WINDOW );
 
-		expect( getWrittenRule( SALE_PRICE_WINDOW ) ).toStrictEqual( JSON.parse( stored ) );
+		expect( getWrittenRule( CLASSIC_SALE_PRICE_WINDOW ) ).toStrictEqual( JSON.parse( stored ) );
 	} );
 
 	it( 'should still write the sales window rule of the same ticket', () => {
-		renderForm( SALES_WINDOW, specific, specific );
+		renderForm( CLASSIC_SALES_WINDOW, specific, specific );
 		document
 			.getElementById( 'tribe_panel_edit' )
 			.insertAdjacentHTML( 'afterbegin', '<input type="checkbox" id="ticket_add_sale_price" checked />' );
 
-		writeRule( document, SALES_WINDOW );
+		writeRule( document, CLASSIC_SALES_WINDOW );
 
-		expect( getWrittenRule( SALES_WINDOW ) ).toStrictEqual( {
+		expect( getWrittenRule( CLASSIC_SALES_WINDOW ) ).toStrictEqual( {
 			start: { mode: 'specific' },
 			end: { mode: 'specific' },
 		} );

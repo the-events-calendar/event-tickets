@@ -4,7 +4,11 @@
  * @since TBD
  */
 
-const MODE_SPECIFIC = 'specific';
+/**
+ * Internal dependencies
+ */
+import { MODE_SPECIFIC } from '../rule-constants';
+import { CLASSIC_WINDOW_KINDS } from './window-kinds';
 
 /**
  * The pairs of date pickers that limit each other, with the mode select of the window end each picker belongs to.
@@ -13,16 +17,11 @@ const MODE_SPECIFIC = 'specific';
  *
  * @type {Array<{start: {mode: string, date: string}, end: {mode: string, date: string}}>}
  */
-const DATE_PAIRS = [
-	{
-		start: { mode: 'ticket_sales_start_mode', date: 'ticket_start_date' },
-		end: { mode: 'ticket_sales_end_mode', date: 'ticket_end_date' },
-	},
-	{
-		start: { mode: 'ticket_sale_start_mode', date: 'ticket_sale_start_date' },
-		end: { mode: 'ticket_sale_end_mode', date: 'ticket_sale_end_date' },
-	},
-];
+const DATE_PAIRS = CLASSIC_WINDOW_KINDS.map( ( kind ) => {
+	const getEnd = ( key ) => ( { mode: `${ kind.fieldPrefix }_${ key }_mode`, date: kind.dateFields[ key ].date } );
+
+	return { start: getEnd( 'start' ), end: getEnd( 'end' ) };
+} );
 
 /**
  * Sets a limit of a date picker to the date of the other end of its window, or clears it when that end is not specific.

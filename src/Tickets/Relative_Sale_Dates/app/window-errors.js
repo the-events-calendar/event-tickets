@@ -5,11 +5,6 @@
  */
 
 /**
- * Internal dependencies
- */
-import { SALES_END_BEFORE_START } from './validation';
-
-/**
  * The window does not end after it starts, at the precision its kind is kept at, or its rule is not one the server
  * takes.
  *
@@ -19,7 +14,7 @@ import { SALES_END_BEFORE_START } from './validation';
  *
  * @type {string}
  */
-export const ENDS_BEFORE_START = SALES_END_BEFORE_START;
+export const ENDS_BEFORE_START = 'sales_end_before_start';
 
 /**
  * A relative boundary's number is out of the range its kind takes.

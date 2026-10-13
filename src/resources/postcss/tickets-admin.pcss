@@ -937,6 +937,11 @@ p.description {
 	--tec-tickets-relative-sale-dates-select-width: 280px;
 }
 
+.ticket_sale_price_wrapper {
+	/* The label column of the sale price fields, as wide as the Sale Price label. */
+	--tec-tickets-relative-sale-dates-label-width: 100px;
+}
+
 .tec-tickets-relative-sale-dates select[id$="_mode"] {
 	max-width: 100%;
 	width: var(--tec-tickets-relative-sale-dates-select-width);
@@ -970,13 +975,28 @@ p.description {
 .tec-tickets-relative-sale-dates__error {
 	color: var(--tec-color-wp-error, #d63638);
 
+	/*
+	 * An empty alert stays rendered, out of sight: several screen readers do not announce text written into an alert
+	 * that shows in the same step.
+	 */
 	&:empty {
-		display: none;
+		border: 0;
+		clip-path: inset(50%);
+		height: 1px;
+		margin: -1px;
+		overflow: hidden;
+		padding: 0;
+		position: absolute;
+		white-space: nowrap;
+		width: 1px;
 	}
 }
 
-/* The sales window error sits outside the `.input_block` of each end, so it lines up with their fields itself. */
-#ticket_sales_window_error {
+/*
+ * The sales window error sits outside the `.input_block` of each end, so it lines up with their fields itself, past the
+ * form's label column.
+ */
+.tec-tickets-relative-sale-dates__error--sales-window {
 	margin-top: 0;
 
 	@media (min-width: 782px) {
@@ -990,9 +1010,9 @@ p.description {
  */
 .ticket_sale_price_wrapper .ticket_sale_price:has(.tec-tickets-relative-sale-dates) div.ticket_sale_price-field {
 	align-items: center;
-	column-gap: 8px;
+	column-gap: var(--tec-spacer-1);
 	display: grid;
-	grid-template-columns: 100px minmax(0, 1fr);
+	grid-template-columns: var(--tec-tickets-relative-sale-dates-label-width) minmax(0, 1fr);
 
 	> :not(label) {
 		grid-column: 2;
@@ -1011,6 +1031,6 @@ p.description {
 }
 
 /* The sale price error lines up with the sale price controls, past the label column and its gap. */
-#ticket_sale_price_error {
-	margin-left: calc(100px + 8px);
+.tec-tickets-relative-sale-dates__error--sale-price {
+	margin-left: calc(var(--tec-tickets-relative-sale-dates-label-width) + var(--tec-spacer-1));
 }

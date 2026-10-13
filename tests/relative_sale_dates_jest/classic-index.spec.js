@@ -809,7 +809,20 @@ describe( 'classic editor script', () => {
 		jQuery( '#EventStartDate' ).val( '7/24/2099' ).trigger( 'change' );
 
 		expect( getWindowError() ).toBe( INVALID_WINDOW );
-		expect( isEndMarkedInvalid() ).toBe( true );
+		expect( isMarkedInvalid( 'ticket_end_date', 'ticket_sales_window_error' ) ).toBe( true );
+	} );
+
+	// The date is what the admin typed, and what a keyboard user has to reach to fix it.
+	it( 'should mark and focus the date of a specific end that comes before the start, not its mode', async () => {
+		renderEventForm( undefined, { mode: 'specific', date: '6/1/2099', time: '10:00' } );
+		await loadScript();
+
+		expect( validateTicket() ).toBe( false );
+
+		const endDate = document.getElementById( 'ticket_end_date' );
+		expect( isMarkedInvalid( endDate.id, 'ticket_sales_window_error' ) ).toBe( true );
+		expect( isEndMarkedInvalid() ).toBe( false );
+		expect( endDate.ownerDocument.activeElement ).toBe( endDate );
 	} );
 
 	it( 'should show the sales window error the server rejected the save with on the end of the window', async () => {

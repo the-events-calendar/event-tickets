@@ -7,46 +7,32 @@
 /**
  * Internal dependencies
  */
-import { MODE_RELATIVE, MODE_SPECIFIC } from '../rule-constants';
-import { SALE_PRICE_WINDOW, SALES_WINDOW } from '../window-kinds';
+import { MODE_SPECIFIC } from '../rule-constants';
+import { toRequestEnd } from '../rule-end';
+import { CLASSIC_SALE_PRICE_WINDOW, CLASSIC_SALES_WINDOW } from './window-kinds';
 
 /** @typedef {import( '../sale-window' ).SaleWindowEnd} SaleWindowEnd */
 /** @typedef {import( '../sale-window' ).SaleWindowRule} SaleWindowRule */
-/** @typedef {import( '../window-kinds' ).WindowKind} WindowKind */
+/** @typedef {import( './window-kinds' ).ClassicWindowKind} ClassicWindowKind */
 
 /**
  * Reads one end of a window from its fields.
  *
- * The fields hold strings; the server only accepts a relative `value` and `unit` that are integers. A kind that takes no
- * anchor counts every relative end from the event start, so its end carries none.
- *
  * @since TBD
  *
- * @param {Document}   root The document holding the form.
- * @param {WindowKind} kind The kind of the window.
- * @param {string}     key  The end of the window, `start` or `end`.
+ * @param {Document}          root The document holding the form.
+ * @param {ClassicWindowKind} kind The kind of the window.
+ * @param {string}            key  The end of the window, `start` or `end`.
  *
  * @return {SaleWindowEnd} The end of the window.
  */
 function readEnd( root, kind, key ) {
-	const field = ( name ) => root.getElementById( `${ kind.fieldPrefix }_${ key }_${ name }` ).value;
-	const mode = field( 'mode' );
+	const field = ( name ) => root.getElementById( `${ kind.fieldPrefix }_${ key }_${ name }` )?.value;
 
-	if ( MODE_RELATIVE !== mode ) {
-		return { mode };
-	}
-
-	const end = {
-		mode,
-		value: parseInt( field( 'value' ), 10 ),
-		unit: parseInt( field( 'unit' ), 10 ),
-	};
-
-	if ( kind.takesAnchor ) {
-		end.anchor = field( 'anchor' );
-	}
-
-	return end;
+	return toRequestEnd(
+		{ mode: field( 'mode' ), value: field( 'value' ), unit: field( 'unit' ), anchor: field( 'anchor' ) },
+		kind
+	);
 }
 
 /**
@@ -54,12 +40,12 @@ function readEnd( root, kind, key ) {
  *
  * @since TBD
  *
- * @param {Document}   root                The document holding the form.
- * @param {WindowKind} [kind=SALES_WINDOW] The kind of the window.
+ * @param {Document}          root                        The document holding the form.
+ * @param {ClassicWindowKind} [kind=CLASSIC_SALES_WINDOW] The kind of the window.
  *
  * @return {SaleWindowRule} The rule.
  */
-export function readRule( root, kind = SALES_WINDOW ) {
+export function readRule( root, kind = CLASSIC_SALES_WINDOW ) {
 	return {
 		start: readEnd( root, kind, 'start' ),
 		end: readEnd( root, kind, 'end' ),
@@ -75,8 +61,8 @@ export function readRule( root, kind = SALES_WINDOW ) {
  *
  * @since TBD
  *
- * @param {Document}   root The document holding the form.
- * @param {WindowKind} kind The kind of the window.
+ * @param {Document}          root The document holding the form.
+ * @param {ClassicWindowKind} kind The kind of the window.
  *
  * @return {boolean} Whether the window keeps the sale price's own dates, without a rule.
  */
@@ -84,10 +70,10 @@ export function keepsSalePriceWithoutRule( root, kind ) {
 	const ruleField = root.getElementById( kind.ruleFieldId );
 
 	if (
-		SALE_PRICE_WINDOW.id !== kind.id ||
+		CLASSIC_SALE_PRICE_WINDOW.id !== kind.id ||
 		! ruleField ||
 		'' !== ruleField.defaultValue ||
-		! root.getElementById( 'ticket_add_sale_price' )?.defaultChecked
+		! root.getElementById( kind.enabledFieldId )?.defaultChecked
 	) {
 		return false;
 	}
@@ -105,12 +91,12 @@ export function keepsSalePriceWithoutRule( root, kind ) {
  *
  * @since TBD
  *
- * @param {Document}   root                The document holding the form.
- * @param {WindowKind} [kind=SALES_WINDOW] The kind of the window.
+ * @param {Document}          root                        The document holding the form.
+ * @param {ClassicWindowKind} [kind=CLASSIC_SALES_WINDOW] The kind of the window.
  *
  * @return {void}
  */
-export function writeRule( root, kind = SALES_WINDOW ) {
+export function writeRule( root, kind = CLASSIC_SALES_WINDOW ) {
 	const ruleField = root.getElementById( kind.ruleFieldId );
 
 	if ( ! ruleField ) {

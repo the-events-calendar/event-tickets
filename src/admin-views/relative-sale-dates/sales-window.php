@@ -168,7 +168,7 @@ $render_date_inputs = static function ( string $sales_end ) use (
 	</div>
 </div>
 <?php endforeach; ?>
-<p class="tec-tickets-relative-sale-dates__error ticket_form_right" id="ticket_sales_window_error" role="alert"></p>
+<p class="tec-tickets-relative-sale-dates__error tec-tickets-relative-sale-dates__error--sales-window ticket_form_right" id="ticket_sales_window_error" role="alert"></p>
 <input
 	type="hidden"
 	name="<?php echo esc_attr( $window_kind->get_rule_keys()['data'] ); ?>"

@@ -7,7 +7,6 @@ import {
 	OUTSIDE_PARENT,
 	RELATIVE_VALUE_OUT_OF_RANGE,
 } from '@tec/tickets/relative-sale-dates/window-check';
-import { SALES_END_BEFORE_START } from '@tec/tickets/relative-sale-dates/validation';
 import { SALE_PRICE_WINDOW, SALES_WINDOW } from '@tec/tickets/relative-sale-dates/window-kinds';
 
 const UNIT_DAYS = 86400;
@@ -36,7 +35,7 @@ describe( 'getWindowError', () => {
 		const pastEvent = { start: '2020-06-24 19:00:00', end: '2020-06-24 22:00:00', timezone: 'America/New_York' };
 
 		expect( getWindowError( DEFAULT_START_RULE, pastEvent, { start: '2020-06-20 00:00:00', end: null } ) ).toBe(
-			SALES_END_BEFORE_START
+			ENDS_BEFORE_START
 		);
 	} );
 
@@ -49,7 +48,7 @@ describe( 'getWindowError', () => {
 		const rule = { start: { mode: 'specific' }, end: { mode: 'default' } };
 		const event = { start: '2099-10-25 02:45:00', end: '2099-10-25 05:00:00', timezone: 'Europe/Berlin' };
 
-		expect( getWindowError( rule, event, { start: '2099-10-25 02:50:00', end: null } ) ).toBe( SALES_END_BEFORE_START );
+		expect( getWindowError( rule, event, { start: '2099-10-25 02:50:00', end: null } ) ).toBe( ENDS_BEFORE_START );
 	} );
 
 	it( 'should leave a default start sent without a date unjudged', () => {
@@ -59,7 +58,7 @@ describe( 'getWindowError', () => {
 	it( 'should reject a specific boundary sent without its date', () => {
 		const rule = { start: { mode: 'specific' }, end: { mode: 'default' } };
 
-		expect( getWindowError( rule, EVENT_DATES, { start: null, end: null } ) ).toBe( SALES_END_BEFORE_START );
+		expect( getWindowError( rule, EVENT_DATES, { start: null, end: null } ) ).toBe( ENDS_BEFORE_START );
 	} );
 
 	it.each( [
@@ -77,8 +76,9 @@ describe( 'getWindowError', () => {
 		expect( getOutOfRangeBoundary( rule ) ).toBe( key );
 	} );
 
+	// The key the editors map a sales window that ends before it starts to, before there were kinds of window.
 	it( 'should give the error a sales window that ends before it starts has always had', () => {
-		expect( ENDS_BEFORE_START ).toBe( SALES_END_BEFORE_START );
+		expect( ENDS_BEFORE_START ).toBe( 'sales_end_before_start' );
 	} );
 
 	/**
