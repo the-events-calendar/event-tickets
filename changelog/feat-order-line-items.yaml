@@ -1,0 +1,4 @@
+significance: minor
+type: feature
+entry: Stored what each Tickets Commerce order line was at purchase, so the order screen and the Orders lists keep showing a line, with its name and price, after its ticket is deleted.
+timestamp: 2026-10-12T22:30:00.000Z
