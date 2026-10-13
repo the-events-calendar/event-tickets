@@ -2,7 +2,9 @@
 
 namespace TEC\Tickets\Commerce\Order_Items\Repositories;
 
+use Closure;
 use Codeception\TestCase\WPTestCase;
+use ReflectionFunction;
 use TEC\Tickets\Commerce\Order_Items\Tables\Order_Items as Order_Items_Table;
 
 class Cached_Order_Items_Test extends WPTestCase {
@@ -45,6 +47,50 @@ class Cached_Order_Items_Test extends WPTestCase {
 			array_map( static fn( $row ) => $row->toArray(), $read ),
 			array_map( static fn( $row ) => $row->toArray(), $cached->get_by_order( $order_id ) )
 		);
+	}
+
+	public function test_it_invalidates_the_cache_again_when_the_request_ends(): void {
+		// A new decorator: the shared one may have scheduled its shutdown flush on hooks a previous test removed.
+		$cached   = new Cached_Order_Items( tribe( Order_Items::class ) );
+		$order_id = static::factory()->post->create();
+
+		$cached->delete_by_order( $order_id );
+		$this->assertSame( [], $cached->get_by_order( $order_id ) );
+
+		// A transaction around the write committed after the read above cached the rows as they were.
+		Order_Items_Table::insert( [ 'order_id' => $order_id, 'type' => 'ticket', 'position' => 0, 'ticket_id' => 0, 'modifier_id' => 0, 'purchase_rule_id' => 0, 'name' => 'GA', 'currency' => 'USD', 'quantity' => 1, 'price' => 1050, 'sub_total' => 1050 ] );
+		$this->assertSame( [], $cached->get_by_order( $order_id ), 'The cache still holds the rows as they were.' );
+
+		foreach ( $this->get_shutdown_callbacks_of( $cached ) as $callback ) {
+			$callback();
+		}
+
+		$this->assertCount( 1, $cached->get_by_order( $order_id ) );
+	}
+
+	/**
+	 * Returns the shutdown callbacks the decorator added.
+	 *
+	 * The shutdown action itself is not run: other callbacks on it end the test runner's output buffers.
+	 *
+	 * @param Order_Items_Repository $cached The decorator.
+	 *
+	 * @return Closure[] The callbacks.
+	 */
+	private function get_shutdown_callbacks_of( Order_Items_Repository $cached ): array {
+		$found = [];
+
+		foreach ( $GLOBALS['wp_filter']['shutdown']->callbacks as $callbacks ) {
+			foreach ( $callbacks as $callback ) {
+				$function = $callback['function'];
+
+				if ( $function instanceof Closure && ( new ReflectionFunction( $function ) )->getClosureThis() === $cached ) {
+					$found[] = $function;
+				}
+			}
+		}
+
+		return $found;
 	}
 
 	private function count_queries_against_the_table(): callable {
