@@ -28,3 +28,13 @@ export const UNIT_WEEKS = WEEK_IN_SECONDS;
 
 export const MIN_VALUE = 1;
 export const MAX_VALUE = 60;
+
+/**
+ * The highest number of days or weeks a relative boundary of the sale price window accepts, as the server's
+ * `Window_Kind::SALE_PRICE_MAX_VALUE` defines it.
+ *
+ * @since TBD
+ *
+ * @type {number}
+ */
+export const SALE_PRICE_MAX_VALUE = 30;

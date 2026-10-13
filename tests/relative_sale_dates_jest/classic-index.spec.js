@@ -1,3 +1,4 @@
+import moment from 'moment-timezone';
 import { TYPING_SETTLE_DELAY } from '@tec/tickets/relative-sale-dates/live-error';
 
 global.DateFormatter = require( 'php-date-formatter' );
@@ -412,6 +413,23 @@ describe( 'classic editor script', () => {
 		jQuery( '#ticket_sale_start_value' ).val( '10' ).trigger( 'input' );
 
 		expect( getSaleLengthText() ).toBe( 'Tickets on sale for 3 days' );
+	} );
+
+	// 02:00 UTC on June 3 is still June 2 in New York, the event timezone.
+	it( 'should count the sale length of a now start from today in the event timezone', async () => {
+		const now = new Date( '2099-06-03T02:00:00Z' );
+		jest.useFakeTimers( { now, doNotFake: [ 'setTimeout' ] } );
+		renderEventForm();
+		appendSalePriceFields( { mode: 'now' }, { mode: 'relative', value: 1, unit: UNIT_WEEKS } );
+		await loadScript();
+
+		const timezone = document.getElementById( 'event-timezone' ).value;
+		const today = moment.tz( now, timezone ).format( 'YYYY-MM-DD' );
+		const eventDay = moment( document.getElementById( 'EventStartDate' ).value, 'M/D/YYYY' );
+		const saleEnd = eventDay.subtract( 1, 'week' ).format( 'YYYY-MM-DD' );
+		const days = moment.utc( saleEnd ).diff( moment.utc( today ), 'days' );
+
+		expect( getSaleLengthText() ).toBe( `Tickets on sale for ${ days } days` );
 	} );
 
 	it( 'should clear the sale length when the relative sale price end is cleared', async () => {
