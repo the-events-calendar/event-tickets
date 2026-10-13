@@ -1724,8 +1724,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Deletes a ticket
 	 *
+	 * @since TBD Deleting an attendee removes it through the attendee repository and returns false when nothing was deleted.
+	 *
 	 * @param int $event_id The event ID.
-	 * @param int $ticket_id The ticket ID.
+	 * @param int $ticket_id The ticket ID, or the ID of an attendee to delete.
 	 *
 	 * @return bool
 	 */
@@ -1736,9 +1738,14 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$ticket_repository   = tribe_tickets( 'rsvp' );
 		$attendee_repository = tribe_attendees( 'rsvp' );
 
+		// Are we dealing with a Ticket or an Attendee?
+		$deleting_rsvp_ticket = get_post_type( $ticket_id ) === $this->ticket_object;
+
 		// Ensure we know the event and product IDs (the event ID may not have been passed in).
 		if ( empty( $event_id ) ) {
-			$event_id = $ticket_repository->get_event_id( $ticket_id );
+			$event_id = $deleting_rsvp_ticket
+				? $ticket_repository->get_event_id( $ticket_id )
+				: get_post_meta( $ticket_id, self::ATTENDEE_EVENT_KEY, true );
 		}
 
 		// Additional check (in case we were passed an invalid ticket ID and still can't determine the event).
@@ -1755,9 +1762,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		// Set permissions on the attendee repository to read Attendees in any status.
 		$attendee_repository->by( 'status', 'any' );
-
-		// Are we dealing with a Ticket or an Attendee?
-		$deleting_rsvp_ticket = get_post_type( $ticket_id ) === $this->ticket_object;
 
 		// Get ticket for name and type before deletion.
 		if ( $deleting_rsvp_ticket ) {
@@ -1794,9 +1798,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		// Try to kill the actual ticket/attendee post via repository.
-		$result = $ticket_repository->by( 'id', $ticket_id )->delete( ! $deleting_rsvp_ticket );
+		$deleted = $deleting_rsvp_ticket
+			? $ticket_repository->by( 'id', $ticket_id )->delete()
+			: $attendee_repository->delete_attendee( $ticket_id )['success'];
 
-		if ( false === $result ) {
+		if ( ! $deleted ) {
 			return false;
 		}
 
