@@ -174,6 +174,27 @@ class Sales_Window_Effects_Test extends WPTestCase {
 	}
 
 	/**
+	 * @return Generator<string,array{0: Window_Kind, 1: bool}>
+	 */
+	public function forgotten_timezone_provider(): Generator {
+		yield 'sales window removed' => [ Window_Kind::sales(), false ];
+		yield 'sale price removed' => [ Window_Kind::sale_price(), true ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider forgotten_timezone_provider
+	 */
+	public function should_delete_the_timezone_of_the_dates_only_for_a_removed_sales_window( Window_Kind $kind, bool $kept ): void {
+		$ticket_id = static::factory()->post->create();
+		update_post_meta( $ticket_id, Ticket_Dates::TIMEZONE_META_KEY, 'Europe/Lisbon' );
+
+		$this->get_effects()->forget_timezone( $ticket_id, $kind );
+
+		$this->assertSame( $kept, metadata_exists( 'post', $ticket_id, Ticket_Dates::TIMEZONE_META_KEY ) );
+	}
+
+	/**
 	 * @return Sales_Window_Effects The effects the controller binds.
 	 */
 	private function get_effects(): Sales_Window_Effects {

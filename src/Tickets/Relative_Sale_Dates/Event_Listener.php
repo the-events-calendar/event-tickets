@@ -198,6 +198,7 @@ final class Event_Listener {
 
 		if ( 'tribe_events' !== get_post_type( $destination_post_id ) ) {
 			$this->rule_store->remove( $ticket_id, array_keys( $stored ) );
+			$this->sales_window_effects->forget_timezone( $ticket_id, Window_Kind::sales() );
 
 			return;
 		}

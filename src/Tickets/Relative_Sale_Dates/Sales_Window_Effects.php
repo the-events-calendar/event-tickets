@@ -199,6 +199,25 @@ final class Sales_Window_Effects {
 	}
 
 	/**
+	 * Deletes the timezone the sales window dates were written in once the sales window rule is removed, as nothing
+	 * reads it without the rule.
+	 *
+	 * @since TBD
+	 *
+	 * @param int         $ticket_id The ticket post ID.
+	 * @param Window_Kind $kind      The kind of the removed rule.
+	 *
+	 * @return void
+	 */
+	public function forget_timezone( int $ticket_id, Window_Kind $kind ): void {
+		if ( ! $kind->owns_ticket_sales_dates() ) {
+			return;
+		}
+
+		delete_post_meta( $ticket_id, Ticket_Dates::TIMEZONE_META_KEY );
+	}
+
+	/**
 	 * Gets the start a Now boundary moves the ticket to: now, when the ticket start is later.
 	 *
 	 * @since TBD

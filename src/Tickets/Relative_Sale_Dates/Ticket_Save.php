@@ -185,6 +185,7 @@ final class Ticket_Save {
 			if ( ! $kind->is_enabled_for_ticket( $ticket_id ) || $this->removes_rule( $data, $kind ) ) {
 				if ( $this->rule_store->remove_rule( $ticket_id, $kind ) ) {
 					$this->sales_window_effects->release_end( $ticket_id, $kind, ! empty( $data[ $kind->get_submitted_fields()['end']['date'] ] ) );
+					$this->sales_window_effects->forget_timezone( $ticket_id, $kind );
 				}
 
 				continue;
