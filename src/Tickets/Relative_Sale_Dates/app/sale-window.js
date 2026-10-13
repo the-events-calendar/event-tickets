@@ -16,7 +16,7 @@ import moment from 'moment';
 /**
  * Internal dependencies
  */
-import { ANCHOR_END, ANCHOR_START, MODE_DEFAULT, MODE_RELATIVE, UNIT_DAYS } from './rule-constants';
+import { ANCHOR_END, ANCHOR_START, MIN_VALUE, MODE_DEFAULT, MODE_RELATIVE, UNIT_DAYS } from './rule-constants';
 
 const MINUTE_IN_MILLISECONDS = 60000;
 
@@ -86,19 +86,20 @@ export function resolveSaleWindow( rule, eventStart, eventEnd, timezone ) {
 /**
  * Resolves the rule of a window of a kind against an event's dates.
  *
- * A relative boundary that names no anchor is counted from the kind's implied one. A relative boundary without a whole
- * number, as a cleared field reads, has no date: subtracting it would put the boundary on its anchor.
+ * A relative boundary that names no anchor is counted from the kind's implied one. A relative boundary whose number the
+ * save rejects, as a cleared field reads, has no date: subtracting it would put the boundary on its anchor, or on a date
+ * the ticket is never saved with.
  *
  * @since TBD
  *
- * @param {SaleWindowRule}                              rule       The rule of the window.
+ * @param {SaleWindowRule|null}                         rule       The rule of the window, or `null` for none.
  * @param {import( './server-event-dates' ).EventDates} eventDates The event dates, or `null` when they are not known.
  * @param {import( './window-kinds' ).WindowKind}       kind       The kind of the window.
  *
- * @return {ResolvedSaleWindow|null} The resolved window, or `null` without event dates.
+ * @return {ResolvedSaleWindow|null} The resolved window, or `null` without a rule or event dates.
  */
 export function resolveWindow( rule, eventDates, kind ) {
-	if ( ! eventDates ) {
+	if ( ! rule || ! eventDates ) {
 		return null;
 	}
 
@@ -111,12 +112,26 @@ export function resolveWindow( rule, eventDates, kind ) {
 	);
 
 	[ 'start', 'end' ]
-		.filter( ( key ) => MODE_RELATIVE === rule[ key ].mode && ! Number.isInteger( rule[ key ].value ) )
+		.filter( ( key ) => MODE_RELATIVE === rule[ key ].mode && ! isRelativeValueInRange( rule[ key ].value, kind ) )
 		.forEach( ( key ) => {
 			resolved[ key ] = null;
 		} );
 
 	return resolved;
+}
+
+/**
+ * Returns whether a relative boundary's number is one the server takes for a kind of window.
+ *
+ * @since TBD
+ *
+ * @param {number}                                value The number, `NaN` for a cleared field.
+ * @param {import( './window-kinds' ).WindowKind} kind  The kind of the window.
+ *
+ * @return {boolean} Whether the number is a whole number from `MIN_VALUE` to the kind's `maxValue`.
+ */
+export function isRelativeValueInRange( value, kind ) {
+	return Number.isInteger( value ) && value >= MIN_VALUE && value <= kind.maxValue;
 }
 
 /**

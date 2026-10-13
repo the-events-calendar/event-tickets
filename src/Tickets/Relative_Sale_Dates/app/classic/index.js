@@ -17,7 +17,7 @@ import { _nx } from '@wordpress/i18n';
 import '../zone-data';
 import { createTypingTracker, getShownError } from '../live-error';
 import { MODE_RELATIVE, UNIT_DAYS, UNIT_HOURS, UNIT_MINUTES, UNIT_WEEKS } from '../rule-constants';
-import { resolveSaleWindow } from '../sale-window';
+import { resolveWindow } from '../sale-window';
 import { getFormWindow, getOutOfRangeBoundary, getWindowError, RELATIVE_VALUE_OUT_OF_RANGE } from '../window-check';
 import { SALES_WINDOW, WINDOW_KINDS } from '../window-kinds';
 import { getWindowLengthText } from '../window-length';
@@ -161,24 +161,6 @@ function getEventDates( settings, dynamic ) {
 }
 
 /**
- * Returns whether the number of a relative end is one the save accepts, within the range its field allows.
- *
- * @since TBD
- *
- * @param {string} key   The end of the window, `start` or `end`.
- * @param {number} value The number the rule holds.
- *
- * @return {boolean} Whether the number is a whole number within the field's `min` and `max`.
- */
-function isInRange( key, value ) {
-	const field = document.getElementById( `ticket_sales_${ key }_value` );
-
-	return (
-		Number.isInteger( value ) && Boolean( field ) && value >= Number( field.min ) && value <= Number( field.max )
-	);
-}
-
-/**
  * Gets the translated day and month names TEC localizes, for `DateFormatter`.
  *
  * @since TBD
@@ -213,9 +195,7 @@ function updateHelperText() {
 
 	const rule = readRule( document );
 	const eventDates = getEventDates( settings, dynamic );
-	const saleWindow = eventDates
-		? resolveSaleWindow( rule, eventDates.start, eventDates.end, eventDates.timezone )
-		: null;
+	const saleWindow = resolveWindow( rule, eventDates, SALES_WINDOW );
 	const formats = {
 		dateWithYear: settings.dateWithYear,
 		dateNoYear: settings.dateNoYear,
@@ -226,8 +206,7 @@ function updateHelperText() {
 	[ 'start', 'end' ].forEach( ( key ) => {
 		const end = rule[ key ];
 		const date = saleWindow ? saleWindow[ key ] : null;
-		// A number the save rejects has no date to show.
-		const isRelative = MODE_RELATIVE === end.mode && isInRange( key, end.value );
+		const isRelative = MODE_RELATIVE === end.mode;
 
 		// The year is now's in the event timezone, as the block editor reads it.
 		const text =
@@ -362,9 +341,7 @@ function updateTicketsList() {
 			return;
 		}
 
-		const saleWindow = eventDates
-			? resolveSaleWindow( rule, eventDates.start, eventDates.end, eventDates.timezone )
-			: null;
+		const saleWindow = resolveWindow( rule, eventDates, SALES_WINDOW );
 
 		row.textContent = getListText(
 			rule,

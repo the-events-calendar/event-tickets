@@ -73,9 +73,33 @@ describe( 'resolveWindow', () => {
 		expect( window.end.format( FORMAT ) ).toBe( '2099-06-23 01:00:00' );
 	} );
 
+	it.each( [
+		[ 'the sales window', SALES_WINDOW, { mode: 'relative', value: 1, unit: UNIT_DAYS, anchor: 'start' } ],
+		[ 'the sale price window', SALE_PRICE_WINDOW, { mode: 'relative', value: 1, unit: UNIT_DAYS } ],
+	] )( 'should give a relative boundary of %s whose number is past its range no date', ( label, kind, end ) => {
+		const window = resolveWindow( { start: { ...end, value: kind.maxValue + 1 }, end }, EVENT_DATES, kind );
+
+		expect( window.start ).toBeNull();
+		expect( window.end.format( FORMAT ) ).toBe( '2099-06-23 01:00:00' );
+	} );
+
+	it( 'should date the highest number the kind of window takes', () => {
+		const end = { mode: 'relative', value: 1, unit: UNIT_DAYS };
+
+		const window = resolveWindow( { start: { ...end, value: SALE_PRICE_WINDOW.maxValue }, end }, EVENT_DATES, SALE_PRICE_WINDOW );
+
+		expect( window.start.format( FORMAT ) ).toBe(
+			moment( '2099-06-24 01:00:00' ).subtract( SALE_PRICE_WINDOW.maxValue, 'days' ).format( FORMAT )
+		);
+	} );
+
 	it( 'should give no window without the event dates', () => {
 		const rule = { start: { mode: 'now' }, end: { mode: 'relative', value: 1, unit: UNIT_DAYS } };
 
 		expect( resolveWindow( rule, null, SALE_PRICE_WINDOW ) ).toBeNull();
+	} );
+
+	it( 'should give no window without a rule', () => {
+		expect( resolveWindow( null, EVENT_DATES, SALES_WINDOW ) ).toBeNull();
 	} );
 } );

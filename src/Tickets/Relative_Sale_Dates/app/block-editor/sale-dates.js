@@ -15,43 +15,9 @@ import { __, sprintf } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { getHelperDateFormat } from '../helper-date-format';
-import { MODE_RELATIVE } from '../rule-constants';
-import { resolveSaleWindow } from '../sale-window';
-import { isRelativeValueInRange } from '../window-check';
 import { getLocalizedData } from './localized-data';
 
 /** @typedef {import( 'moment' ).Moment} Moment */
-/** @typedef {import( '../sale-window' ).ResolvedSaleWindow} ResolvedSaleWindow */
-/** @typedef {import( '../sale-window' ).SaleWindowRule} SaleWindowRule */
-/** @typedef {import( '../server-event-dates' ).EventDates} EventDates */
-
-/**
- * Works out the sales window a rule gives for the event dates.
- *
- * A relative end whose number is cleared, not whole or out of range has no date, as the save rejects it: the shared
- * resolver would count a cleared one as zero units, which is the event date itself.
- *
- * @since TBD
- *
- * @param {SaleWindowRule|null} rule       The ticket's rule, or `null` when it has none.
- * @param {EventDates|null}     eventDates The event dates, or `null` when they cannot be read.
- *
- * @return {ResolvedSaleWindow|null} The sales window, or `null` without a rule or the event dates.
- */
-export function resolveTicketWindow( rule, eventDates ) {
-	if ( ! rule || ! eventDates ) {
-		return null;
-	}
-
-	const saleWindow = resolveSaleWindow( rule, eventDates.start, eventDates.end, eventDates.timezone );
-	const hasNoDate = ( end ) => MODE_RELATIVE === end.mode && ! isRelativeValueInRange( end.value );
-
-	return {
-		...saleWindow,
-		start: hasNoDate( rule.start ) ? null : saleWindow.start,
-		end: hasNoDate( rule.end ) ? null : saleWindow.end,
-	};
-}
 
 /**
  * Formats a sales date in its own timezone, which is the event's.

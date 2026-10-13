@@ -12,8 +12,8 @@ import moment from 'moment';
 /**
  * Internal dependencies
  */
-import { MAX_VALUE, MIN_VALUE, MODE_RELATIVE, MODE_SPECIFIC } from './rule-constants';
-import { fromEventLocal, resolveWindow, toZone } from './sale-window';
+import { MODE_RELATIVE, MODE_SPECIFIC } from './rule-constants';
+import { fromEventLocal, isRelativeValueInRange, resolveWindow, toZone } from './sale-window';
 import { getSaleWindowError, SALES_END_BEFORE_START } from './validation';
 import { SALES_WINDOW } from './window-kinds';
 
@@ -22,7 +22,8 @@ import { SALES_WINDOW } from './window-kinds';
 /**
  * Gets the window a save of the form would store, as far as the form knows it.
  *
- * A relative boundary, or a default end, takes the date it resolves to; a relative one without a whole number has none.
+ * A relative boundary, or a default end, takes the date it resolves to; a relative one whose number the save rejects
+ * has none.
  * A specific boundary takes the date the form sends for it, read as the server reads it, or none.
  *
  * An open start takes what the server stores for it. A kind that leaves the ticket's own start, the sales window, takes
@@ -86,19 +87,6 @@ export function getFormWindow( rule, eventDates, formDates, kind = SALES_WINDOW 
 export const RELATIVE_VALUE_OUT_OF_RANGE = 'relative_value_out_of_range';
 
 /**
- * Returns whether a relative boundary's number is one the server takes.
- *
- * @since TBD
- *
- * @param {number} value The number, `NaN` for a cleared field.
- *
- * @return {boolean} Whether the number is a whole number in the range.
- */
-export function isRelativeValueInRange( value ) {
-	return Number.isInteger( value ) && value >= MIN_VALUE && value <= MAX_VALUE;
-}
-
-/**
  * Returns the boundary whose relative number is out of range, the start first.
  *
  * @since TBD
@@ -110,7 +98,7 @@ export function isRelativeValueInRange( value ) {
 export function getOutOfRangeBoundary( rule ) {
 	return (
 		[ 'start', 'end' ].find(
-			( key ) => MODE_RELATIVE === rule[ key ].mode && ! isRelativeValueInRange( rule[ key ].value )
+			( key ) => MODE_RELATIVE === rule[ key ].mode && ! isRelativeValueInRange( rule[ key ].value, SALES_WINDOW )
 		) || null
 	);
 }

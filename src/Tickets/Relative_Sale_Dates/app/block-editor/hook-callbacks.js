@@ -16,8 +16,10 @@ import {
 } from './common-store-bridge';
 import { readEventDates } from './event-dates';
 import { ANCHOR_END, MODE_DEFAULT, MODE_RELATIVE, MODE_SPECIFIC } from '../rule-constants';
+import { resolveWindow } from '../sale-window';
+import { SALES_WINDOW } from '../window-kinds';
 import { getFormRule, isSpecificWindow } from './rule';
-import { formatSaleDate, resolveTicketWindow } from './sale-dates';
+import { formatSaleDate } from './sale-dates';
 import SalesWindow from './sales-window';
 import { STORE_NAME } from './store/constants';
 import { getTicketWindowError } from './window-error';
@@ -197,7 +199,7 @@ export function filterSaleWindowDates( dates, clientId ) {
 		return dates;
 	}
 
-	const saleWindow = resolveTicketWindow( rule, readEventDates() );
+	const saleWindow = resolveWindow( rule, readEventDates(), SALES_WINDOW );
 
 	if ( ! saleWindow ) {
 		return dates;

@@ -24,8 +24,10 @@ import {
 	MODE_RELATIVE,
 	MODE_SPECIFIC,
 } from '../../rule-constants';
+import { resolveWindow } from '../../sale-window';
+import { SALES_WINDOW } from '../../window-kinds';
 import { getFormRule, isSpecificWindow } from '../rule';
-import { getHelperText, resolveTicketWindow } from '../sale-dates';
+import { getHelperText } from '../sale-dates';
 import { STORE_NAME } from '../store/constants';
 import { useTicketTyping } from '../use-ticket-typing';
 import { useShownError, useTicketWindowError } from '../window-error';
@@ -143,7 +145,10 @@ export default function SalesWindow( { clientId, picker } ) {
 	const { setDraftRule } = useDispatch( STORE_NAME );
 	const formRule = getFormRule( rule );
 	const eventDates = useEventDates();
-	const saleWindow = useMemo( () => resolveTicketWindow( getFormRule( rule ), eventDates ), [ rule, eventDates ] );
+	const saleWindow = useMemo(
+		() => resolveWindow( getFormRule( rule ), eventDates, SALES_WINDOW ),
+		[ rule, eventDates ]
+	);
 	const typing = useTicketTyping( clientId );
 	const error = useShownError( useTicketWindowError( clientId, rule, eventDates ), typing.isTyping );
 	const outOfRange = RELATIVE_VALUE_OUT_OF_RANGE === error ? getOutOfRangeBoundary( formRule ) : null;
