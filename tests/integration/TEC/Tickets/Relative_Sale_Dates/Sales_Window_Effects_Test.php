@@ -50,6 +50,35 @@ class Sales_Window_Effects_Test extends WPTestCase {
 	}
 
 	/**
+	 * @return Generator<string,array{0: Window_Kind, 1: ?array{start: array{mode: string}, end: array{mode: string}}, 2: bool, 3: bool}>
+	 */
+	public function saved_ends_provider(): Generator {
+		$open_and_specific = [ 'start' => [ 'mode' => Rule::MODE_DEFAULT ], 'end' => [ 'mode' => Rule::MODE_SPECIFIC ] ];
+		$both_specific     = [ 'start' => [ 'mode' => Rule::MODE_SPECIFIC ], 'end' => [ 'mode' => Rule::MODE_SPECIFIC ] ];
+
+		yield 'sales window without a rule' => [ Window_Kind::sales(), null, true, true ];
+		yield 'sales window opening at once, specific end' => [ Window_Kind::sales(), $open_and_specific, true, false ];
+		yield 'sales window with both ends specific' => [ Window_Kind::sales(), $both_specific, false, false ];
+		yield 'sale price without a rule' => [ Window_Kind::sale_price(), null, false, false ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider saved_ends_provider
+	 */
+	public function should_fill_in_the_sales_dates_ticket_add_gives_a_ticket_saved_without_them( Window_Kind $kind, ?array $data, bool $filled_start, bool $filled_end ): void {
+		$event_start = new DateTimeImmutable( '2027-06-24 19:00:00', new DateTimeZone( 'America/New_York' ) );
+		$post_id     = static::factory()->post->create( [ 'post_date' => '2027-01-15 10:30:00' ] );
+		$rule        = $data ? Rule::from_array( $data, $kind ) : null;
+
+		[ $start, $end ] = $this->get_effects()->fill_saved_ends( $kind, $rule, null, null, $post_id, $event_start );
+
+		// The day the event was published, at midnight in the event timezone.
+		$this->assertSame( $filled_start ? '2027-01-15 00:00:00' : null, $start ? $start->format( 'Y-m-d H:i:s' ) : null );
+		$this->assertSame( $filled_end ? $event_start : null, $end );
+	}
+
+	/**
 	 * @return Generator<string,array{0: Window_Kind, 1: array<string,array<string,int|string>>, 2: bool}>
 	 */
 	public function end_follows_event_start_provider(): Generator {

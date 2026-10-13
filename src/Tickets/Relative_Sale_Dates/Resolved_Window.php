@@ -13,7 +13,6 @@ namespace TEC\Tickets\Relative_Sale_Dates;
 
 use DateTimeImmutable;
 use DateTimeZone;
-use RuntimeException;
 
 /**
  * An immutable resolved sales window. A `null` start or end means the resolver has no date for it.
@@ -96,24 +95,5 @@ final class Resolved_Window {
 	 */
 	public function get_timezone(): DateTimeZone {
 		return $this->timezone;
-	}
-
-	/**
-	 * Returns whether the window is valid.
-	 *
-	 * Without both dates the window cannot be judged here: the caller fills in the ticket's own dates and checks them.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool Whether the sales start is before the sales end.
-	 *
-	 * @throws RuntimeException If the window is missing its start or its end.
-	 */
-	public function is_valid(): bool {
-		if ( ! $this->start || ! $this->end ) {
-			throw new RuntimeException( 'The sales window cannot be judged without both a start and an end.' );
-		}
-
-		return $this->start < $this->end;
 	}
 }

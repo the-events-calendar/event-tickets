@@ -165,12 +165,11 @@ final class Window_Kind {
 
 	/**
 	 * The keys of the sale the window belongs to, or `null` for a window every ticket has: `enabled_meta`, the ticket
-	 * meta that turns the sale on; `enabled_data`, the ticket data field that keeps it when the ticket is saved; and
-	 * `price` and `regular_price`, the ticket data fields of the sale price and of the price it must be lower than.
+	 * meta that turns the sale on.
 	 *
 	 * @since TBD
 	 *
-	 * @var array{enabled_meta: string, enabled_data: string, price: string, regular_price: string}|null
+	 * @var array{enabled_meta: string}|null
 	 */
 	private ?array $sale_keys;
 
@@ -212,8 +211,9 @@ final class Window_Kind {
 	private bool $specific_needs_date;
 
 	/**
-	 * The errors that reject the window, keyed as the editors key them: `endsBeforeStart` for an invalid rule or a window
-	 * that ends before it starts, and `outsideParent` for a window that starts outside its parent window.
+	 * The errors that reject the window, keyed as the editors key them: `invalidRule` for a rule that cannot be read,
+	 * such as a relative number out of range, `endsBeforeStart` for a window that ends before it starts, and
+	 * `outsideParent` for a window that starts outside its parent window.
 	 *
 	 * Each message is a closure, translated when the error is built: a kind can be built before the text domain loads,
 	 * and it lasts the whole request.
@@ -277,6 +277,15 @@ final class Window_Kind {
 		];
 		$kind->specific_needs_date          = true;
 		$kind->errors                       = [
+			'invalidRule'     => [
+				'code'    => 'tec_tickets_relative_sale_dates_invalid_rule',
+				'message' => static fn(): string => sprintf(
+					// translators: 1) the lowest number a relative sale date takes, 2) the highest.
+					__( 'The relative sales dates cannot be read. Enter a whole number from %1$d to %2$d for each relative date.', 'event-tickets' ),
+					Boundary::MIN_VALUE,
+					Boundary::MAX_VALUE
+				),
+			],
 			'endsBeforeStart' => [
 				'code'    => 'tec_tickets_relative_sale_dates_invalid_window',
 				'message' => static fn(): string => __( 'Ticket sales cannot end before they start. Please adjust the sales window.', 'event-tickets' ),
@@ -328,12 +337,7 @@ final class Window_Kind {
 			],
 		];
 		$kind->open_start_value             = '';
-		$kind->sale_keys                    = [
-			'enabled_meta'  => Ticket::$sale_price_checked_key,
-			'enabled_data'  => 'ticket_add_sale_price',
-			'price'         => 'ticket_sale_price',
-			'regular_price' => 'ticket_price',
-		];
+		$kind->sale_keys                    = [ 'enabled_meta' => Ticket::$sale_price_checked_key ];
 		$kind->owns_ticket_sales_dates      = false;
 		$kind->is_removed_by_front_end_form = false;
 		$kind->submitted_fields             = [
@@ -348,6 +352,15 @@ final class Window_Kind {
 		];
 		$kind->specific_needs_date          = false;
 		$kind->errors                       = [
+			'invalidRule'     => [
+				'code'    => 'tec_tickets_relative_sale_dates_sale_price_invalid_rule',
+				'message' => static fn(): string => sprintf(
+					// translators: 1) the lowest number a relative sale price date takes, 2) the highest.
+					__( 'The relative sale price dates cannot be read. Enter a whole number from %1$d to %2$d for each relative date.', 'event-tickets' ),
+					Boundary::MIN_VALUE,
+					self::SALE_PRICE_MAX_VALUE
+				),
+			],
 			'endsBeforeStart' => [
 				'code'    => 'tec_tickets_relative_sale_dates_sale_price_ends_before_start',
 				'message' => static fn(): string => __( 'The sale price cannot end before it starts. Please adjust the sale price window.', 'event-tickets' ),
@@ -599,10 +612,8 @@ final class Window_Kind {
 	}
 
 	/**
-	 * Returns whether a save of the ticket data keeps the window.
-	 *
-	 * Tickets Commerce drops a sale price that is unchecked or not lower than the price, with this same `>=` comparison
-	 * on the raw values.
+	 * Returns whether a save of the ticket data keeps the window: Tickets Commerce drops a sale price that is unchecked
+	 * or not lower than the price.
 	 *
 	 * @since TBD
 	 *
@@ -611,15 +622,20 @@ final class Window_Kind {
 	 * @return bool Whether the ticket will have the window once saved.
 	 */
 	public function is_saved_with( array $data ): bool {
-		if ( null === $this->sale_keys ) {
-			return true;
-		}
+		return null === $this->sale_keys || Ticket::keeps_sale_price( $data );
+	}
 
-		if ( ! tribe_is_truthy( $data[ $this->sale_keys['enabled_data'] ] ?? false ) ) {
-			return false;
-		}
-
-		return ! ( ( $data[ $this->sale_keys['price'] ] ?? false ) >= ( $data[ $this->sale_keys['regular_price'] ] ?? false ) );
+	/**
+	 * Gets the code of an error that rejects the window, which the editors tell the errors apart by.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $key The error, as the editors key it: `invalidRule`, `endsBeforeStart` or `outsideParent`.
+	 *
+	 * @return string|null The code, or `null` for an error the kind does not have.
+	 */
+	public function get_error_code( string $key ): ?string {
+		return $this->errors[ $key ]['code'] ?? null;
 	}
 
 	/**
@@ -627,7 +643,7 @@ final class Window_Kind {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $key The error, as the editors key it: `endsBeforeStart` or `outsideParent`.
+	 * @param string $key The error, as the editors key it: `invalidRule`, `endsBeforeStart` or `outsideParent`.
 	 *
 	 * @return WP_Error|null The error, with a 400 status for REST responses, or `null` for one the kind does not have.
 	 */

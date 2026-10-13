@@ -244,7 +244,7 @@ final class Assets extends Controller_Contract {
 				'relativeValueOutOfRange' => sprintf( __( 'Enter a number from %1$d to %2$d.', 'event-tickets' ), Boundary::MIN_VALUE, Boundary::MAX_VALUE ),
 			],
 			'errorCodes'   => [
-				'invalidWindow' => Ticket_Save::INVALID_WINDOW_ERROR_CODE,
+				'invalidWindow' => Window_Kind::sales()->get_error_code( 'endsBeforeStart' ),
 			],
 		];
 	}

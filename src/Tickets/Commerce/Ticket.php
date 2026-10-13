@@ -1180,9 +1180,26 @@ class Ticket extends Ticket_Data {
 	}
 
 	/**
+	 * Returns whether a save of the ticket data keeps its sale price: the sale price is checked and lower than the price.
+	 *
+	 * The raw values are compared as `process_sale_price_data()` compares them before it saves the sale price.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $raw_data The raw data from the request.
+	 *
+	 * @return bool Whether the ticket has a sale price once the data is saved.
+	 */
+	public static function keeps_sale_price( array $raw_data ): bool {
+		return tribe_is_truthy( Arr::get( $raw_data, 'ticket_add_sale_price', false ) )
+			&& Arr::get( $raw_data, 'ticket_sale_price', false ) < Arr::get( $raw_data, 'ticket_price', false );
+	}
+
+	/**
 	 * Process the sale price data.
 	 *
 	 * @since 5.9.0
+	 * @since TBD Reads whether the sale price is kept from `keeps_sale_price()`.
 	 *
 	 * @param Ticket_Object       $ticket   The ticket post object.
 	 * @param array<string,mixed> $raw_data The raw data from the request.
@@ -1193,20 +1210,12 @@ class Ticket extends Ticket_Data {
 		$sale_price_enabled = tribe_is_truthy( Arr::get( $raw_data, 'ticket_add_sale_price', false ) );
 		update_post_meta( $ticket->ID, static::$sale_price_checked_key, $sale_price_enabled );
 
-		if ( ! $sale_price_enabled ) {
+		if ( ! static::keeps_sale_price( $raw_data ) ) {
 			$this->remove_sale_price_data( $ticket );
 			return;
 		}
 
-		$sale_price    = Arr::get( $raw_data, 'ticket_sale_price', false );
-		$regular_price = Arr::get( $raw_data, 'ticket_price', false );
-
-		if ( $sale_price >= $regular_price ) {
-			$this->remove_sale_price_data( $ticket );
-			return;
-		}
-
-		update_post_meta( $ticket->ID, static::$sale_price_key, Value::create( $sale_price ) );
+		update_post_meta( $ticket->ID, static::$sale_price_key, Value::create( Arr::get( $raw_data, 'ticket_sale_price', false ) ) );
 
 		$this->process_sale_price_dates( $ticket, $raw_data );
 	}

@@ -482,10 +482,6 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	 * @return Generator<string,array{0: array<string,string>}>
 	 */
 	public function invalid_sales_window_provider(): Generator {
-		yield 'invalid rule' => [
-			[ 'relative_sale_dates' => '{"start":{"mode":"relative","value":2,"unit":7,"anchor":"start"},"end":{"mode":"default"}}' ],
-		];
-
 		yield 'end before start' => [
 			[ 'relative_sale_dates' => wp_json_encode( [ 'start' => $this->relative( 1, HOUR_IN_SECONDS ), 'end' => $this->relative( 2, HOUR_IN_SECONDS ) ] ) ],
 		];
@@ -570,6 +566,27 @@ class Ticket_Save_Test extends Controller_Test_Case {
 			],
 			$result->get_error_data()
 		);
+	}
+
+	/**
+	 * A rule that cannot be read is named as such, with its own code, not as a window that ends before it starts.
+	 *
+	 * @test
+	 */
+	public function should_reject_a_rule_that_cannot_be_read_with_its_own_error(): void {
+		$event_id = $this->create_event( '2027-06-24 19:00:00' );
+		// 7 seconds is no unit the sales window takes.
+		$data = [ 'relative_sale_dates' => '{"start":{"mode":"relative","value":2,"unit":7,"anchor":"start"},"end":{"mode":"default"}}' ];
+
+		$result = apply_filters( 'tec_tickets_ticket_data_validation', true, $event_id, $data );
+
+		$this->assertWPError( $result );
+		$this->assertSame( 'tec_tickets_relative_sale_dates_invalid_rule', $result->get_error_code() );
+		$this->assertSame(
+			sprintf( 'The relative sales dates cannot be read. Enter a whole number from %d to %d for each relative date.', Boundary::MIN_VALUE, Boundary::MAX_VALUE ),
+			$result->get_error_message()
+		);
+		$this->assertSame( 400, $result->get_error_data()['status'] );
 	}
 
 	/**
@@ -1274,7 +1291,7 @@ class Ticket_Save_Test extends Controller_Test_Case {
 		];
 		yield 'an invalid rule' => [
 			[ self::SALE_PRICE_DATA_KEY => $rule( $relative( Window_Kind::sale_price()->get_max_value() + 1 ), $relative( 3 ) ) ],
-			self::SALE_PRICE_ENDS_BEFORE_START_MESSAGE,
+			Window_Kind::sale_price()->get_error( 'invalidRule' )->get_error_message(),
 		];
 		yield 'a rule sent to be removed' => [ [ self::SALE_PRICE_DATA_KEY => null ], true ];
 		yield 'no sale price' => [
@@ -1429,7 +1446,10 @@ class Ticket_Save_Test extends Controller_Test_Case {
 		$this->assertSame(
 			[
 				'success' => false,
-				'data'    => [ 'message' => self::SALE_PRICE_ENDS_BEFORE_START_MESSAGE ],
+				'data'    => [
+					'message' => self::SALE_PRICE_ENDS_BEFORE_START_MESSAGE,
+					'code'    => 'tec_tickets_relative_sale_dates_sale_price_ends_before_start',
+				],
 			],
 			$response
 		);
