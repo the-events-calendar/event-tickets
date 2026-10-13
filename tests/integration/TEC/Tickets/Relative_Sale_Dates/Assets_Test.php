@@ -196,11 +196,13 @@ class Assets_Test extends Controller_Test_Case {
 			[
 				Window_Kind::SALES      => [
 					'endsBeforeStart' => 'Ticket sales cannot end before they start. Please adjust the sales window.',
+					'invalidDate'     => 'The sales dates cannot be read. Enter a valid date for each specific date.',
 					'valueOutOfRange' => $range( Window_Kind::sales() ),
 				],
 				Window_Kind::SALE_PRICE => [
 					'endsBeforeStart' => 'The sale price cannot end before it starts. Please adjust the sale price window.',
 					'outsideParent'   => 'The sale price window falls outside the ticket sales window. Please adjust the dates.',
+					'invalidDate'     => 'The sale price dates cannot be read. Enter a valid date for each specific date.',
 					'valueOutOfRange' => $range( Window_Kind::sale_price() ),
 				],
 			],

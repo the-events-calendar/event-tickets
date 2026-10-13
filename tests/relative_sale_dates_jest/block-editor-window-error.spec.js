@@ -6,6 +6,7 @@ import {
 } from '@tec/tickets/relative-sale-dates/block-editor/window-kinds';
 import {
 	ENDS_BEFORE_START,
+	INVALID_DATE,
 	OUTSIDE_PARENT,
 	RELATIVE_VALUE_OUT_OF_RANGE,
 } from '@tec/tickets/relative-sale-dates/window-errors';
@@ -35,6 +36,8 @@ describe( 'getBoundaryErrors', () => {
 		[ ENDS_BEFORE_START, 'the sales window', BLOCK_SALES_WINDOW, 'endsBeforeStart' ],
 		[ ENDS_BEFORE_START, 'the sale price window', BLOCK_SALE_PRICE_WINDOW, 'endsBeforeStart' ],
 		[ OUTSIDE_PARENT, 'the sale price window', BLOCK_SALE_PRICE_WINDOW, 'outsideParent' ],
+		[ INVALID_DATE, 'the sales window', BLOCK_SALES_WINDOW, 'invalidDate' ],
+		[ INVALID_DATE, 'the sale price window', BLOCK_SALE_PRICE_WINDOW, 'invalidDate' ],
 	] )(
 		'should word the %s error of %s under its end with the text the server localizes for the kind',
 		( key, title, kind, textKey ) => {

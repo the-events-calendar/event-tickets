@@ -162,6 +162,8 @@ const SALE_PRICE_OUTSIDE_WINDOW =
 
 const SALE_PRICE_OUT_OF_RANGE = 'Enter a number from 1 to 30.';
 
+const SALE_PRICE_INVALID_DATE = 'The sale price dates cannot be read. Enter a valid date for each specific date.';
+
 /**
  * @param {string} fieldId The id of the field.
  * @param {string} errorId The id of the element that shows the error.
@@ -330,6 +332,7 @@ describe( 'classic editor script', () => {
 					sale_price: {
 						endsBeforeStart: SALE_PRICE_ENDS_BEFORE_START,
 						outsideParent: SALE_PRICE_OUTSIDE_WINDOW,
+						invalidDate: SALE_PRICE_INVALID_DATE,
 						valueOutOfRange: SALE_PRICE_OUT_OF_RANGE,
 					},
 				},
@@ -1039,7 +1042,8 @@ describe( 'classic editor script', () => {
 			await loadScript();
 
 			expect( validateTicket() ).toBe( false );
-			expect( readSalePriceError() ).toBe( SALE_PRICE_ENDS_BEFORE_START );
+			expect( readSalePriceError() ).toBe( SALE_PRICE_INVALID_DATE );
+			expect( document.getElementById( 'ticket_sale_start_date' ).getAttribute( 'aria-invalid' ) ).toBe( 'true' );
 		} );
 
 		// The picker fires no change of its own once a date is picked.
@@ -1050,7 +1054,7 @@ describe( 'classic editor script', () => {
 
 			hooks.doAction( 'tec.tickets.admin.ticketDatePicked', document.getElementById( 'ticket_sale_start_date' ) );
 
-			expect( readSalePriceError() ).toBe( SALE_PRICE_ENDS_BEFORE_START );
+			expect( readSalePriceError() ).toBe( SALE_PRICE_INVALID_DATE );
 		} );
 
 		describe( 'saved before relative dates', () => {

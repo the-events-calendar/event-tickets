@@ -40,11 +40,13 @@ const DEFAULT_DATA = {
 	windowErrorTexts: {
 		sales: {
 			endsBeforeStart: 'Ticket sales cannot end before they start. Please adjust the sales window.',
+			invalidDate: 'The sales dates cannot be read. Enter a valid date for each specific date.',
 			valueOutOfRange: 'Enter a number from 1 to 60.',
 		},
 		sale_price: {
 			endsBeforeStart: 'The sale price cannot end before it starts. Please adjust the sale price window.',
 			outsideParent: 'The sale price window falls outside the ticket sales window. Please adjust the dates.',
+			invalidDate: 'The sale price dates cannot be read. Enter a valid date for each specific date.',
 			valueOutOfRange: 'Enter a number from 1 to 30.',
 		},
 	},

@@ -14,10 +14,10 @@ import moment from 'moment';
  */
 import { MODE_RELATIVE, MODE_SPECIFIC } from './rule-constants';
 import { fromEventLocal, isRelativeValueInRange, isStoredOpenStart, resolveWindow, toZone } from './sale-window';
-import { ENDS_BEFORE_START, OUTSIDE_PARENT, RELATIVE_VALUE_OUT_OF_RANGE } from './window-errors';
+import { ENDS_BEFORE_START, INVALID_DATE, OUTSIDE_PARENT, RELATIVE_VALUE_OUT_OF_RANGE } from './window-errors';
 import { SALES_WINDOW } from './window-kinds';
 
-export { ENDS_BEFORE_START, OUTSIDE_PARENT, RELATIVE_VALUE_OUT_OF_RANGE };
+export { ENDS_BEFORE_START, INVALID_DATE, OUTSIDE_PARENT, RELATIVE_VALUE_OUT_OF_RANGE };
 
 /** @typedef {import( 'moment' ).Moment} Moment */
 
@@ -191,8 +191,9 @@ function isBefore( date, other, kind ) {
  * - a relative number out of the kind's range is named, as the server's error for such a rule names neither the
  *   field nor the range;
  * - a rule the server does not take is rejected, as the save would keep the stored one;
- * - a specific boundary sent with a date that cannot be read is rejected, and so is one sent without a date for a
- *   kind that needs one;
+ * - a specific boundary sent with a date that cannot be read is rejected as an unreadable date, as the server would
+ *   store it as 1970 or as no date, and one sent without a date, for a kind that needs one, as a window that does not
+ *   end after it starts;
  * - the window must end after it starts, at the precision the kind is kept at. A start with no date of its own, such
  *   as an open start the kind stores itself, opens with the parent window, so the end is judged against the parent's
  *   start, and only with both of the parent's ends, as the server judges it;
@@ -215,8 +216,8 @@ function isBefore( date, other, kind ) {
  * @param {FormWindow|null}                                    [parentWindow=null] The parent window the form gives,
  *                                                                                 or `null` for a kind without one.
  *
- * @return {string|null} The error key, `ENDS_BEFORE_START`, `RELATIVE_VALUE_OUT_OF_RANGE` or `OUTSIDE_PARENT`, or
- *                       `null` when the window is valid.
+ * @return {string|null} The error key, `ENDS_BEFORE_START`, `RELATIVE_VALUE_OUT_OF_RANGE`, `INVALID_DATE` or
+ *                       `OUTSIDE_PARENT`, or `null` when the window is valid.
  */
 export function getWindowError( rule, eventDates, formDates, kind = SALES_WINDOW, parentWindow = null ) {
 	if ( getOutOfRangeBoundary( rule, kind ) ) {
@@ -227,9 +228,13 @@ export function getWindowError( rule, eventDates, formDates, kind = SALES_WINDOW
 		return ENDS_BEFORE_START;
 	}
 
-	const hasNoUsableDate = ( key ) => false === formDates[ key ] || ( kind.specificNeedsDate && ! formDates[ key ] );
+	const specificKeys = [ 'start', 'end' ].filter( ( key ) => MODE_SPECIFIC === rule[ key ].mode );
 
-	if ( [ 'start', 'end' ].some( ( key ) => MODE_SPECIFIC === rule[ key ].mode && hasNoUsableDate( key ) ) ) {
+	if ( specificKeys.some( ( key ) => false === formDates[ key ] ) ) {
+		return INVALID_DATE;
+	}
+
+	if ( kind.specificNeedsDate && specificKeys.some( ( key ) => ! formDates[ key ] ) ) {
 		return ENDS_BEFORE_START;
 	}
 

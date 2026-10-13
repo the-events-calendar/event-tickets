@@ -35,6 +35,15 @@ export const RELATIVE_VALUE_OUT_OF_RANGE = 'relative_value_out_of_range';
 export const OUTSIDE_PARENT = 'outside_parent';
 
 /**
+ * A specific boundary is sent with a date that cannot be read.
+ *
+ * @since TBD
+ *
+ * @type {string}
+ */
+export const INVALID_DATE = 'invalid_date';
+
+/**
  * The key of each error's text among the texts the server localizes for a kind: the server's own key for an error it
  * rejects a save with.
  *
@@ -46,4 +55,5 @@ export const ERROR_TEXT_KEYS = Object.freeze( {
 	[ ENDS_BEFORE_START ]: 'endsBeforeStart',
 	[ OUTSIDE_PARENT ]: 'outsideParent',
 	[ RELATIVE_VALUE_OUT_OF_RANGE ]: 'valueOutOfRange',
+	[ INVALID_DATE ]: 'invalidDate',
 } );

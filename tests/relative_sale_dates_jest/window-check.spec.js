@@ -4,6 +4,7 @@ import {
 	getFormWindow,
 	getOutOfRangeBoundary,
 	getWindowError,
+	INVALID_DATE,
 	judgeWindow,
 	OUTSIDE_PARENT,
 	RELATIVE_VALUE_OUT_OF_RANGE,
@@ -135,8 +136,16 @@ describe( 'getWindowError', () => {
 			const rule = { start: { mode: 'specific' }, end: relative( kind, 1, UNIT_WEEKS ) };
 
 			expect( getWindowError( rule, EVENT_DATES, { start: false, end: null }, kind, parent ) ).toBe(
-				ENDS_BEFORE_START
+				INVALID_DATE
 			);
+		} );
+
+		it( 'should name a date that cannot be read before a window that ends before it starts', () => {
+			const rule = { start: { mode: 'specific' }, end: { mode: 'specific' } };
+
+			expect(
+				getWindowError( rule, EVENT_DATES, { start: '2099-06-20 00:00:00', end: false }, kind, parent )
+			).toBe( INVALID_DATE );
 		} );
 
 		it( 'should leave a date that cannot be read alone when its boundary is not specific', () => {

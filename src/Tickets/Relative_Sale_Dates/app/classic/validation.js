@@ -10,7 +10,13 @@
  */
 import { createTypingTracker, getShownError } from '../live-error';
 import { MODE_SPECIFIC } from '../rule-constants';
-import { ENDS_BEFORE_START, getOutOfRangeBoundary, judgeWindow, RELATIVE_VALUE_OUT_OF_RANGE } from '../window-check';
+import {
+	ENDS_BEFORE_START,
+	getOutOfRangeBoundary,
+	INVALID_DATE,
+	judgeWindow,
+	RELATIVE_VALUE_OUT_OF_RANGE,
+} from '../window-check';
 import { ERROR_TEXT_KEYS } from '../window-errors';
 import { showError } from './error-display';
 import { getContext, getEventDates, readFormDates } from './form-context';
@@ -24,20 +30,27 @@ import { CLASSIC_SALES_WINDOW, CLASSIC_WINDOW_KINDS } from './window-kinds';
 /**
  * Gets the id of the field an error of a window is about.
  *
- * A number out of range is about that number. An order or a start outside the parent window is about the end: its date
- * when the end is specific, where the admin typed the date that does not fit, and its mode otherwise.
+ * A number out of range is about that number, and a date that cannot be read about that date. An order or a start
+ * outside the parent window is about the end: its date when the end is specific, where the admin typed the date that
+ * does not fit, and its mode otherwise.
  *
  * @since TBD
  *
- * @param {ClassicWindowKind} kind  The kind of the window.
- * @param {SaleWindowRule}    rule  The rule the form expresses.
- * @param {string}            error The error.
+ * @param {ClassicWindowKind}                                  kind        The kind of the window.
+ * @param {SaleWindowRule}                                     rule        The rule the form expresses.
+ * @param {string}                                             error       The error.
+ * @param {{start: string|null|false, end: string|null|false}} [formDates] The dates the form sends, `false` for one
+ *                                                                         that cannot be read.
  *
  * @return {string} The id of the field.
  */
-function getErrorFieldId( kind, rule, error ) {
+function getErrorFieldId( kind, rule, error, formDates = { start: null, end: null } ) {
 	if ( RELATIVE_VALUE_OUT_OF_RANGE === error ) {
 		return `${ kind.fieldPrefix }_${ getOutOfRangeBoundary( rule, kind ) }_value`;
+	}
+
+	if ( INVALID_DATE === error ) {
+		return kind.dateFields[ MODE_SPECIFIC === rule.start.mode && false === formDates.start ? 'start' : 'end' ].date;
 	}
 
 	return MODE_SPECIFIC === rule.end.mode ? kind.dateFields.end.date : `${ kind.fieldPrefix }_end_mode`;
@@ -72,8 +85,8 @@ function readWindow( kind, context ) {
 }
 
 /**
- * Reads why a window of a kind in the form cannot be saved: its relative number is out of range, it does not end after
- * it starts, or it starts outside its parent window.
+ * Reads why a window of a kind in the form cannot be saved: its relative number is out of range, a specific date cannot
+ * be read, it does not end after it starts, or it starts outside its parent window.
  *
  * @since TBD
  *
@@ -98,7 +111,7 @@ function readWindowError( kind ) {
 
 	return {
 		message: context.settings.text.windows[ kind.id ][ ERROR_TEXT_KEYS[ error ] ],
-		fieldId: getErrorFieldId( kind, readRule( document, kind ), error ),
+		fieldId: getErrorFieldId( kind, readRule( document, kind ), error, readFormDates( kind, context ) ),
 	};
 }
 

@@ -30,8 +30,8 @@ export function isAtLeast( value, other ) {
 }
 
 /**
- * Returns whether a save keeps the sale price, as the server's `Ticket::keeps_sale_price()` judges it: added, and lower
- * than the price.
+ * Returns whether a save keeps the sale price, as the server's `Window_Kind::is_saved_with()` judges it, the way
+ * `Ticket::process_sale_price_data()` keeps it: added, and lower than the price.
  *
  * @since TBD
  *

@@ -225,7 +225,7 @@ final class Assets extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, windows: array<string,array{endsBeforeStart: string, outsideParent?: string, valueOutOfRange: string}>}, errorCodes: array<string,array{endsBeforeStart: string, outsideParent?: string, invalidRule: string, invalidDate: string}>} The script data.
+	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, windows: array<string,array{endsBeforeStart: string, outsideParent?: string, invalidDate: string, valueOutOfRange: string}>}, errorCodes: array<string,array{endsBeforeStart: string, outsideParent?: string, invalidRule: string, invalidDate: string}>} The script data.
 	 */
 	private function get_classic_script_data(): array {
 		return [
@@ -252,7 +252,7 @@ final class Assets extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @return array<string,array{endsBeforeStart: string, outsideParent?: string, valueOutOfRange: string}> The texts of
+	 * @return array<string,array{endsBeforeStart: string, outsideParent?: string, invalidDate: string, valueOutOfRange: string}> The texts of
 	 *         each kind, keyed by the error as the editors key it; `outsideParent` only for a kind with a parent window.
 	 */
 	private function get_window_error_texts(): array {
@@ -261,7 +261,7 @@ final class Assets extends Controller_Contract {
 		foreach ( Window_Kind::all() as $kind ) {
 			$kind_texts = [];
 
-			foreach ( [ 'endsBeforeStart', 'outsideParent' ] as $key ) {
+			foreach ( [ 'endsBeforeStart', 'outsideParent', 'invalidDate' ] as $key ) {
 				$error = $kind->get_error( $key );
 
 				if ( $error ) {
@@ -317,7 +317,7 @@ final class Assets extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @return array{windowDefaults: array<string,array{start: array{mode: string, value: int, unit: int, anchor?: string}, end: array{mode: string, value: int, unit: int, anchor?: string}}>, windowErrorTexts: array<string,array{endsBeforeStart: string, outsideParent?: string, valueOutOfRange: string}>, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, dateNoYear: string, time: string}} The script data, with the defaults and the error texts keyed by the kind's ID.
+	 * @return array{windowDefaults: array<string,array{start: array{mode: string, value: int, unit: int, anchor?: string}, end: array{mode: string, value: int, unit: int, anchor?: string}}>, windowErrorTexts: array<string,array{endsBeforeStart: string, outsideParent?: string, invalidDate: string, valueOutOfRange: string}>, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, dateNoYear: string, time: string}} The script data, with the defaults and the error texts keyed by the kind's ID.
 	 */
 	private function get_block_editor_script_data(): array {
 		$editor          = $this->container->get( Editor::class );
