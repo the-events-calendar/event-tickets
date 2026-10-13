@@ -852,6 +852,23 @@ describe( 'classic editor script', () => {
 		expect( isEndMarkedInvalid() ).toBe( false );
 	} );
 
+	// The server localizes only the codes it rejects a save with, so any code of a kind names that kind's window.
+	it( 'should tell the window of a server error by any code localized for its kind', async () => {
+		const code = 'tec_tickets_relative_sale_dates_sale_price_new_error';
+		window.tec.tickets.relativeSaleDates.classicData.errorCodes.sale_price.newError = code;
+		renderEventForm();
+		appendSalePriceFields( { mode: 'relative', value: 2 }, { mode: 'relative', value: 1 } );
+		const hooks = await loadScript();
+
+		hooks.doAction( 'tec.tickets.admin.ticketSaveFailed', {
+			success: false,
+			data: { message: SALE_PRICE_ENDS_BEFORE_START, code },
+		} );
+
+		expect( readSalePriceError() ).toBe( SALE_PRICE_ENDS_BEFORE_START );
+		expect( getWindowError() ).toBe( '' );
+	} );
+
 	it( 'should show another error the server rejected the save with without marking the sales window', async () => {
 		renderEventForm();
 		const hooks = await loadScript();

@@ -42,15 +42,6 @@ const TEXT_KEYS = Object.freeze( {
 } );
 
 /**
- * The keys of the errors the server rejects a save with.
- *
- * @since TBD
- *
- * @type {string[]}
- */
-const SERVER_ERROR_KEYS = [ 'endsBeforeStart', 'outsideParent' ];
-
-/**
  * Gets the id of the field an error of a window is about.
  *
  * A number out of range is about that number. An order or a start outside the parent window is about the end: its date
@@ -262,7 +253,7 @@ export function showServerError( response ) {
 	const code = response?.data?.code;
 	// The code the server rejects the save with tells the window the error is about.
 	const kind = CLASSIC_WINDOW_KINDS.find(
-		( candidate ) => Boolean( code ) && SERVER_ERROR_KEYS.some( ( key ) => codes[ candidate.id ]?.[ key ] === code )
+		( candidate ) => Boolean( code ) && Object.values( codes[ candidate.id ] ?? {} ).includes( code )
 	);
 
 	if ( kind ) {
