@@ -86,7 +86,7 @@ final class Reader {
 			}
 		} catch ( Throwable $e ) {
 			$this->log(
-				Log::DEBUG,
+				Log::WARNING,
 				'The order items could not be read from the table; the order reads them from its meta.',
 				[
 					'order_id' => $post_id,
