@@ -151,15 +151,6 @@ class Rule_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function should_build_a_sales_window_rule_without_a_kind(): void {
-		$rule = Rule::from_array( [ 'start' => [ 'mode' => Rule::MODE_DEFAULT ], 'end' => [ 'mode' => Rule::MODE_DEFAULT ] ], Window_Kind::sales() );
-
-		$this->assertSame( Window_Kind::sales(), $rule->get_kind() );
-	}
-
-	/**
-	 * @test
-	 */
 	public function should_name_the_now_end_a_sale_price_rule_rejects(): void {
 		$this->expectException( InvalidArgumentException::class );
 		$this->expectExceptionMessage( "The window's end mode must be one of: relative, specific." );

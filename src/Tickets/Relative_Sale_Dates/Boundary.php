@@ -138,7 +138,7 @@ final class Boundary implements JsonSerializable {
 	 *
 	 * @throws InvalidArgumentException If the boundary is not valid.
 	 */
-	public static function from_array( array $data, Window_Kind $kind, string $edge = self::EDGE_START ): self {
+	public static function from_array( array $data, Window_Kind $kind, string $edge ): self {
 		$mode  = $data['mode'] ?? null;
 		$modes = $kind->get_modes( $edge );
 

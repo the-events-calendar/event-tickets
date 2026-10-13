@@ -165,23 +165,6 @@ class Boundary_Test extends WPTestCase {
 	}
 
 	/**
-	 * @test
-	 */
-	public function should_build_a_sales_window_boundary_without_a_kind(): void {
-		$data = [
-			'mode'   => Rule::MODE_RELATIVE,
-			'value'  => 2,
-			'unit'   => HOUR_IN_SECONDS,
-			'anchor' => Rule::ANCHOR_END,
-		];
-
-		$boundary = Boundary::from_array( $data, Window_Kind::sales() );
-
-		$this->assertSame( Window_Kind::sales(), $boundary->get_kind() );
-		$this->assertSame( $data, $boundary->to_array() );
-	}
-
-	/**
 	 * @return Generator<string,array{0: Window_Kind, 1: array{mode: string, value: int, unit: int, anchor?: string}}>
 	 */
 	public function relative_boundaries_provider(): Generator {
@@ -209,8 +192,8 @@ class Boundary_Test extends WPTestCase {
 	 * @dataProvider relative_boundaries_provider
 	 */
 	public function should_not_keep_keys_the_mode_does_not_use( Window_Kind $kind, array $relative ): void {
-		$specific = Boundary::from_array( array_merge( $relative, [ 'mode' => Rule::MODE_SPECIFIC, 'anchor' => Rule::ANCHOR_START ] ), $kind );
-		$extra    = Boundary::from_array( array_merge( $relative, [ 'extra' => 'dropped' ] ), $kind );
+		$specific = Boundary::from_array( array_merge( $relative, [ 'mode' => Rule::MODE_SPECIFIC, 'anchor' => Rule::ANCHOR_START ] ), $kind, Boundary::EDGE_START );
+		$extra    = Boundary::from_array( array_merge( $relative, [ 'extra' => 'dropped' ] ), $kind, Boundary::EDGE_START );
 
 		$this->assertSame( [ 'mode' => Rule::MODE_SPECIFIC ], $specific->jsonSerialize() );
 		$this->assertSame( $relative, $extra->jsonSerialize() );

@@ -172,7 +172,6 @@ final class Rule implements JsonSerializable {
 	 * @return self|null The rule, or `null` when there is no valid rule of the kind in the stored data.
 	 */
 	public static function from_stored( array $stored, Window_Kind $kind ): ?self {
-
 		$key = $kind->get_store_key();
 
 		if ( null !== $key ) {
