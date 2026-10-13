@@ -8,13 +8,9 @@
  */
 
 /**
- * The provider class the tickets block holds when it sells its tickets through Tickets Commerce.
- *
- * @since TBD
- *
- * @type {string}
+ * Internal dependencies
  */
-const TICKETS_COMMERCE = 'TEC\\Tickets\\Commerce\\Module';
+import { TICKETS_COMMERCE_MODULE_CLASS } from '../../../../modules/data/blocks/ticket/constants';
 
 /**
  * The provider slug the block editor tickets REST API gives a Tickets Commerce ticket, which a fetched ticket keeps.
@@ -24,6 +20,17 @@ const TICKETS_COMMERCE = 'TEC\\Tickets\\Commerce\\Module';
  * @type {string}
  */
 export const TICKETS_COMMERCE_PROVIDER = 'tc';
+
+/**
+ * Returns the state of common's shared store, which holds the legacy ticket data.
+ *
+ * @since TBD
+ *
+ * @return {Object} The state.
+ */
+function getLegacyState() {
+	return window.__tribe_common_store__.getState();
+}
 
 /**
  * Returns the legacy ticket actions and selectors.
@@ -51,14 +58,14 @@ function getTicketData() {
  */
 export function isTicketsCommerce( clientId ) {
 	const { selectors } = getTicketData();
-	const state = window.__tribe_common_store__.getState();
+	const state = getLegacyState();
 	const ticketProvider = selectors.getTicketProvider( state, { clientId } );
 
 	if ( ticketProvider ) {
 		return TICKETS_COMMERCE_PROVIDER === ticketProvider;
 	}
 
-	return TICKETS_COMMERCE === selectors.getTicketsProvider( state );
+	return TICKETS_COMMERCE_MODULE_CLASS === selectors.getTicketsProvider( state );
 }
 
 /**
