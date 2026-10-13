@@ -51,7 +51,7 @@ final class Rule_Parameter extends Parameter {
 	 * @param Window_Kind $kind The kind of the rule.
 	 */
 	private function __construct( Window_Kind $kind ) {
-		$descriptions = $kind->get_rest_descriptions();
+		$descriptions = $this->get_descriptions( $kind );
 
 		$this->name                 = $kind->get_rule_keys()['tec_rest'];
 		$this->description_provider = $descriptions['rule'];
@@ -137,7 +137,7 @@ final class Rule_Parameter extends Parameter {
 	 *
 	 * @param Window_Kind           $kind         The kind of the rule.
 	 * @param string                $name         The boundary, `start` or `end`.
-	 * @param array<string,Closure> $descriptions The kind's descriptions, from `Window_Kind::get_rest_descriptions()`.
+	 * @param array<string,Closure> $descriptions The kind's descriptions, from `get_descriptions()`.
 	 *
 	 * @return Entity The boundary's documentation.
 	 */
@@ -167,5 +167,59 @@ final class Rule_Parameter extends Parameter {
 		}
 
 		return new Entity( $name, $descriptions[ $name ], $properties, false );
+	}
+
+	/**
+	 * Gets the copy the TEC REST API documents a kind's rule with, each a closure translated when it is read: the rule,
+	 * its `start` and `end` boundaries and their modes, and the value and unit, which take the kind's range and units.
+	 *
+	 * @since TBD
+	 *
+	 * @param Window_Kind $kind The kind of the rule.
+	 *
+	 * @return array{rule: Closure(): string, start: Closure(): string, end: Closure(): string, start_mode: Closure(): string, end_mode: Closure(): string, value: Closure(int, int): string, unit: Closure(int ...): string} The descriptions.
+	 */
+	private function get_descriptions( Window_Kind $kind ): array {
+		if ( Window_Kind::SALE_PRICE === $kind->get_id() ) {
+			return [
+				'rule'       => static fn(): string => __( 'The sale price window relative to the event start, or null when the sale price has fixed dates. Sending null removes the rule. While the rule keeps a relative or now boundary, a date sent for that boundary is replaced by the one the rule resolves to.', 'event-tickets' ),
+				'start'      => static fn(): string => __( 'When the sale price starts.', 'event-tickets' ),
+				'end'        => static fn(): string => __( 'When the sale price ends.', 'event-tickets' ),
+				'start_mode' => static fn(): string => __( 'How the start is set: `now` (as soon as ticket sales open), `relative` (before the event start) or `specific` (the date sent in `sale_price_start_date`).', 'event-tickets' ),
+				'end_mode'   => static fn(): string => __( 'How the end is set: `relative` (before the event start) or `specific` (the date sent in `sale_price_end_date`).', 'event-tickets' ),
+				'value'      => static fn( int $min, int $max ): string => sprintf(
+					// translators: 1) the lowest number of units, 2) the highest number of units.
+					__( 'For a relative boundary, the number of units before the event start, from %1$d to %2$d.', 'event-tickets' ),
+					$min,
+					$max
+				),
+				'unit'       => static fn( int ...$units ): string => sprintf(
+					// translators: 1) a day and 2) a week, each in seconds.
+					__( 'For a relative boundary, the unit in seconds: %1$d (days) or %2$d (weeks).', 'event-tickets' ),
+					...$units
+				),
+			];
+		}
+
+		$sales_mode = static fn(): string => __( 'How this end of the window is set: `default` (sales open at once, or close when the event starts), `relative` (before the event) or `specific` (the date sent with the ticket).', 'event-tickets' );
+
+		return [
+			'rule'       => static fn(): string => __( 'The sales window relative to the event, or null when the ticket has fixed sale dates. Sending null removes the rule. While the rule keeps a relative or default boundary, a date sent for that boundary is replaced by the one the rule resolves to.', 'event-tickets' ),
+			'start'      => static fn(): string => __( 'When sales start.', 'event-tickets' ),
+			'end'        => static fn(): string => __( 'When sales end.', 'event-tickets' ),
+			'start_mode' => $sales_mode,
+			'end_mode'   => $sales_mode,
+			'value'      => static fn( int $min, int $max ): string => sprintf(
+				// translators: 1) the lowest number of units, 2) the highest number of units.
+				__( 'For a relative boundary, the number of units before the anchor, from %1$d to %2$d.', 'event-tickets' ),
+				$min,
+				$max
+			),
+			'unit'       => static fn( int ...$units ): string => sprintf(
+				// translators: 1) a minute, 2) an hour, 3) a day and 4) a week, each in seconds.
+				__( 'For a relative boundary, the unit in seconds: %1$d (minutes), %2$d (hours), %3$d (days) or %4$d (weeks).', 'event-tickets' ),
+				...$units
+			),
+		];
 	}
 }

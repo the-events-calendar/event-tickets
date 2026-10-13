@@ -117,8 +117,9 @@ final class Rest {
 	 * Adds the ticket's stored rules, or `null`, to the ticket data the block editor reads.
 	 *
 	 * The ticket ID comes from the data: the filter also passes the caller's argument, which can be a post or a ticket
-	 * object. A kind's rule is added to the tickets of every provider, or only to Tickets Commerce tickets, as the kind
-	 * says, and only where the data its response path goes through is an array.
+	 * object. A rule at the top level of the data, as `relative_sale_dates`, is added for a ticket of every provider; one
+	 * nested in the provider's own data, as `sale_price_data.relative`, only for a Tickets Commerce ticket, and only
+	 * where that data is an array.
 	 *
 	 * @since TBD
 	 *
@@ -139,7 +140,7 @@ final class Rest {
 
 			// `Arr::set()` would create the levels the path goes through, which the data must already have.
 			if (
-				( ! $is_commerce_ticket && ! $kind->returns_block_editor_rule_for_every_provider() )
+				( ! $is_commerce_ticket && count( $path ) > 1 )
 				|| ! is_array( Arr::get( $data, array_slice( $path, 0, -1 ) ) )
 			) {
 				continue;

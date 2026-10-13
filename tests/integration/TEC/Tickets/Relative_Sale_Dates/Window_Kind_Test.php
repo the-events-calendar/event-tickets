@@ -69,7 +69,6 @@ class Window_Kind_Test extends WPTestCase {
 		);
 		$this->assertTrue( $kind->specific_needs_date() );
 		$this->assertFalse( $kind->compares_days() );
-		$this->assertTrue( $kind->returns_block_editor_rule_for_every_provider() );
 	}
 
 	/**
@@ -128,7 +127,6 @@ class Window_Kind_Test extends WPTestCase {
 		);
 		$this->assertFalse( $kind->specific_needs_date() );
 		$this->assertTrue( $kind->compares_days() );
-		$this->assertFalse( $kind->returns_block_editor_rule_for_every_provider() );
 	}
 
 	/**
@@ -138,6 +136,7 @@ class Window_Kind_Test extends WPTestCase {
 		yield 'sales' => [
 			Window_Kind::sales(),
 			[
+				'invalidRule'     => [ 'tec_tickets_relative_sale_dates_invalid_rule', sprintf( 'The relative sales dates cannot be read. Enter a whole number from %d to %d for each relative date.', Boundary::MIN_VALUE, Boundary::MAX_VALUE ) ],
 				'invalidDate'     => [ 'tec_tickets_relative_sale_dates_invalid_date', 'The sales dates cannot be read. Enter a valid date for each specific date.' ],
 				'endsBeforeStart' => [ 'tec_tickets_relative_sale_dates_invalid_window', 'Ticket sales cannot end before they start. Please adjust the sales window.' ],
 			],
@@ -145,6 +144,7 @@ class Window_Kind_Test extends WPTestCase {
 		yield 'sale price' => [
 			Window_Kind::sale_price(),
 			[
+				'invalidRule'     => [ 'tec_tickets_relative_sale_dates_sale_price_invalid_rule', sprintf( 'The relative sale price dates cannot be read. Enter a whole number from %d to %d for each relative date.', Boundary::MIN_VALUE, Window_Kind::SALE_PRICE_MAX_VALUE ) ],
 				'invalidDate'     => [ 'tec_tickets_relative_sale_dates_sale_price_invalid_date', 'The sale price dates cannot be read. Enter a valid date for each specific date.' ],
 				'endsBeforeStart' => [ 'tec_tickets_relative_sale_dates_sale_price_ends_before_start', 'The sale price cannot end before it starts. Please adjust the sale price window.' ],
 				'outsideParent'   => [ 'tec_tickets_relative_sale_dates_sale_price_outside_sales_window', 'The sale price window falls outside the ticket sales window. Please adjust the dates.' ],
@@ -157,7 +157,7 @@ class Window_Kind_Test extends WPTestCase {
 	 * @dataProvider errors_provider
 	 */
 	public function should_reject_with_the_errors_of_the_kind( Window_Kind $kind, array $errors ): void {
-		foreach ( [ 'invalidDate', 'endsBeforeStart', 'outsideParent', 'valueOutOfRange' ] as $key ) {
+		foreach ( [ 'invalidRule', 'invalidDate', 'endsBeforeStart', 'outsideParent', 'valueOutOfRange' ] as $key ) {
 			$error = $kind->get_error( $key );
 
 			if ( ! isset( $errors[ $key ] ) ) {
@@ -170,7 +170,7 @@ class Window_Kind_Test extends WPTestCase {
 			$this->assertSame(
 				[
 					'status'   => 400,
-					'argument' => $kind->get_rule_keys()['data'],
+					'argument' => $kind->get_rule_keys()['tec_rest'],
 				],
 				$error->get_error_data(),
 				$key

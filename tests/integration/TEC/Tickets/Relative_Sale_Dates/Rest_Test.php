@@ -335,6 +335,7 @@ class Rest_Test extends Controller_Test_Case {
 		} catch ( InvalidRestArgumentException $e ) {
 			$this->assertSame( 400, $e->to_wp_error()->get_error_data()['status'] );
 			$this->assertSame( 'Ticket sales cannot end before they start. Please adjust the sales window.', $e->getMessage() );
+			$this->assertSame( 'relative_sale_dates', $e->get_argument() );
 		}
 
 		$this->assertSame( [], tribe( Module::class )->get_tickets_ids( $event_id ) );
