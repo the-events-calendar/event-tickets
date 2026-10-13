@@ -554,6 +554,17 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 		const followsEventStart = ( clientId, value = true ) =>
 			applyFilters( 'tec.tickets.blocks.syncSaleEndWithEventStart', value, clientId );
 
+		beforeEach( () => {
+			window.tribe = { tickets: { data: { blocks: { selectors: legacySelectors } } } };
+			setBlockEditorData();
+			setEventState( DEFAULT_EVENT ).dispatch( legacyActions.setTicketsProvider( TICKETS_COMMERCE ) );
+		} );
+
+		afterEach( () => {
+			delete window.tribe;
+			clearBlockEditorGlobals();
+		} );
+
 		it( 'should keep a relative sale end off the event start', () => {
 			const clientId = newClientId();
 			dispatch( STORE_NAME ).setRule( clientId, storedRule );
@@ -561,16 +572,46 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 			expect( followsEventStart( clientId ) ).toBe( false );
 		} );
 
-		it( 'should keep a specific sale end off the event start', () => {
+		// As `Rule::lets_end_follow_event_start()` decides on the server, which syncs only an end never edited by hand.
+		it( 'should let a specific sale end follow the event start, as a ticket without a rule does', () => {
 			const clientId = newClientId();
 			dispatch( STORE_NAME ).setRule( clientId, { start: storedRule.start, end: { mode: 'specific' } } );
 
+			expect( followsEventStart( clientId ) ).toBe( true );
+			expect( followsEventStart( clientId, false ) ).toBe( false );
+		} );
+
+		it( 'should keep a specific sale end off the event start when the start counts back from the event end', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setRule( clientId, {
+				start: { ...storedRule.start, anchor: 'end' },
+				end: { mode: 'specific' },
+			} );
+
 			expect( followsEventStart( clientId ) ).toBe( false );
+		} );
+
+		it( 'should read the anchor of a relative start only', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setDraftRule( clientId, {
+				start: { mode: 'default', value: 2, unit: UNIT_WEEKS, anchor: 'end' },
+				end: { mode: 'specific' },
+			} );
+
+			expect( followsEventStart( clientId ) ).toBe( true );
 		} );
 
 		it( 'should let a sale end that ends when the event starts follow it', () => {
 			const clientId = newClientId();
 			dispatch( STORE_NAME ).setDraftRule( clientId, { start: { mode: 'default' }, end: { mode: 'default' } } );
+
+			expect( followsEventStart( clientId ) ).toBe( true );
+		} );
+
+		it( 'should leave the sync of a ticket not sold through Tickets Commerce alone', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setRule( clientId, storedRule );
+			setEventState( DEFAULT_EVENT ).dispatch( legacyActions.setTicketsProvider( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' ) );
 
 			expect( followsEventStart( clientId ) ).toBe( true );
 		} );

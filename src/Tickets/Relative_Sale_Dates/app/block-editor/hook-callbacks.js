@@ -15,7 +15,7 @@ import {
 	TICKETS_COMMERCE_PROVIDER,
 } from './common-store-bridge';
 import { readEventDates } from './event-dates';
-import { MODE_DEFAULT, MODE_RELATIVE } from '../rule-constants';
+import { ANCHOR_END, MODE_DEFAULT, MODE_RELATIVE, MODE_SPECIFIC } from '../rule-constants';
 import { getFormRule, isSpecificWindow } from './rule';
 import { formatSaleDate, resolveTicketWindow } from './sale-dates';
 import SalesWindow from './sales-window';
@@ -249,9 +249,13 @@ export function filterConfirmDisabled( isDisabled, state, { clientId } ) {
 }
 
 /**
- * Stops the legacy sync from moving a ticket's sale end to the event start when its rule sets another end: a relative
- * one, or the ticket's own specific date. An end of *When the event starts* follows the event start, as the server
- * resolves it.
+ * Stops the legacy sync from moving a ticket's sale end to the event start when its rule sets another end, as the
+ * server's `Rule::lets_end_follow_event_start()` decides.
+ *
+ * A relative end resolves to its own date. A specific end is the ticket's own, which the legacy sync moves only while it
+ * was never edited by hand, as it does for a ticket without a rule, unless the start counts back from the event end,
+ * which could fall after an end moved to the event start. An end of *When the event starts* follows the event start, as
+ * the server resolves it.
  *
  * @since TBD
  *
@@ -261,7 +265,18 @@ export function filterConfirmDisabled( isDisabled, state, { clientId } ) {
  * @return {boolean} Whether the sale end follows the event start.
  */
 export function filterSyncSaleEndWithEventStart( followsEventStart, clientId ) {
+	if ( ! isTicketsCommerce( clientId ) ) {
+		return followsEventStart;
+	}
+
 	const rule = select( STORE_NAME ).getDraftRule( clientId );
 
-	return rule && MODE_DEFAULT !== rule.end.mode ? false : followsEventStart;
+	if ( ! rule || MODE_DEFAULT === rule.end.mode ) {
+		return followsEventStart;
+	}
+
+	// The form keeps an anchor on a start that is not relative, which the server does not store.
+	const startCountsFromEventEnd = MODE_RELATIVE === rule.start.mode && ANCHOR_END === rule.start.anchor;
+
+	return MODE_SPECIFIC === rule.end.mode && ! startCountsFromEventEnd ? followsEventStart : false;
 }
