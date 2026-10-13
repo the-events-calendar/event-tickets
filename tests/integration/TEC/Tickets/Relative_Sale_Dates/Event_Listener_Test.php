@@ -231,14 +231,16 @@ class Event_Listener_Test extends Controller_Test_Case {
 		$event_start = $this->get_future_event_start();
 		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
 		$ticket_id   = $this->create_ruled_ticket( $event_id );
-		$dates       = [ $this->get_ticket_start( $ticket_id ), $this->get_ticket_end( $ticket_id ) ];
-		$page_id     = static::factory()->post->create( [ 'post_type' => 'page' ] );
+		tribe( Ticket_Dates::class )->write( $ticket_id, $event_id, Rule::from_stored( tribe( Rule_Store::class )->get( $ticket_id ) ) );
+		$dates   = [ $this->get_ticket_start( $ticket_id ), $this->get_ticket_end( $ticket_id ) ];
+		$page_id = static::factory()->post->create( [ 'post_type' => 'page' ] );
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 
 		$this->assertTrue( Tickets_Main::instance()->move_ticket_types()->move_ticket_type( $ticket_id, $page_id ) );
 
 		$this->assertSame( [], tribe( Rule_Store::class )->get( $ticket_id ) );
 		$this->assertSame( $dates, [ $this->get_ticket_start( $ticket_id ), $this->get_ticket_end( $ticket_id ) ] );
+		$this->assertFalse( metadata_exists( 'post', $ticket_id, Ticket_Dates::TIMEZONE_META_KEY ) );
 	}
 
 	/**

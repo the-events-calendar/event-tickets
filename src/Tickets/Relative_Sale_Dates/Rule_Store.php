@@ -140,6 +140,8 @@ final class Rule_Store {
 	/**
 	 * Removes the given top-level keys, and the meta once nothing is left in it.
 	 *
+	 * The timezone the sales window dates were written in goes once that rule is no longer stored.
+	 *
 	 * @since TBD
 	 *
 	 * @param int      $ticket_id The ticket post ID.
@@ -154,7 +156,12 @@ final class Rule_Store {
 			return false;
 		}
 
-		$this->write( $ticket_id, array_diff_key( $stored, array_flip( $keys ) ) );
+		$remaining = array_diff_key( $stored, array_flip( $keys ) );
+		$this->write( $ticket_id, $remaining );
+
+		if ( ! Rule::from_stored( $remaining ) ) {
+			delete_post_meta( $ticket_id, Ticket_Dates::TIMEZONE_META_KEY );
+		}
 
 		return true;
 	}

@@ -272,10 +272,12 @@ class Ticket_Save_Test extends Controller_Test_Case {
 		$rule      = [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => [ 'mode' => 'default' ] ];
 		$ticket_id = $this->create_tc_ticket( $event_id, 1, [ 'relative_sale_dates' => wp_json_encode( $rule ) ] );
 		$this->assertSame( $rule, $this->get_stored_rule( $ticket_id ) );
+		$this->assertTrue( metadata_exists( 'post', $ticket_id, Ticket_Dates::TIMEZONE_META_KEY ) );
 
 		$this->update_ticket( $ticket_id, [ 'relative_sale_dates' => $removed ] );
 
 		$this->assertSame( '', get_post_meta( $ticket_id, Rule_Store::META_KEY, true ) );
+		$this->assertFalse( metadata_exists( 'post', $ticket_id, Ticket_Dates::TIMEZONE_META_KEY ) );
 	}
 
 	/**

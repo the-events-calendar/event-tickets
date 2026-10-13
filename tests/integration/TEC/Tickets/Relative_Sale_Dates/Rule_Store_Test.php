@@ -126,6 +126,49 @@ class Rule_Store_Test extends WPTestCase {
 	}
 
 	/**
+	 * @return Generator<string,array{0: bool}>
+	 */
+	public function sales_window_removal_provider(): Generator {
+		yield 'save without an end' => [ false ];
+		yield 'save with an end' => [ true ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider sales_window_removal_provider
+	 */
+	public function should_delete_the_timezone_of_the_dates_when_removing_the_sales_window( bool $keeps_end ): void {
+		$ticket_id = static::factory()->post->create();
+		tribe( Rule_Store::class )->save( $ticket_id, [ 'start' => [ 'mode' => Rule::MODE_DEFAULT ], 'end' => [ 'mode' => Rule::MODE_DEFAULT ] ] );
+		update_post_meta( $ticket_id, Ticket_Dates::TIMEZONE_META_KEY, 'Europe/Lisbon' );
+
+		tribe( Rule_Store::class )->remove_sales_window( $ticket_id, $keeps_end );
+
+		$this->assertFalse( metadata_exists( 'post', $ticket_id, Ticket_Dates::TIMEZONE_META_KEY ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_keep_the_timezone_of_the_dates_when_removing_a_key_that_leaves_the_sales_window(): void {
+		$ticket_id = static::factory()->post->create();
+		$timezone  = 'Europe/Lisbon';
+		tribe( Rule_Store::class )->save(
+			$ticket_id,
+			[
+				'sale_price' => [ 'start' => [ 'mode' => Rule::MODE_DEFAULT ] ],
+				'start'      => [ 'mode' => Rule::MODE_DEFAULT ],
+				'end'        => [ 'mode' => Rule::MODE_DEFAULT ],
+			]
+		);
+		update_post_meta( $ticket_id, Ticket_Dates::TIMEZONE_META_KEY, $timezone );
+
+		tribe( Rule_Store::class )->remove( $ticket_id, [ 'sale_price' ] );
+
+		$this->assertSame( $timezone, get_post_meta( $ticket_id, Ticket_Dates::TIMEZONE_META_KEY, true ) );
+	}
+
+	/**
 	 * @return Generator<string,array{0: array{mode: string, value?: int, unit?: int, anchor?: string}|null, 1: array{mode: string, value?: int, unit?: int, anchor?: string}, 2: bool}>
 	 */
 	public function sales_window_end_switch_provider(): Generator {
