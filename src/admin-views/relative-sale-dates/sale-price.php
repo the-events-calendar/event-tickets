@@ -129,7 +129,7 @@ $render_date_inputs = static function ( string $sale_end ) use ( $sale_start_dat
 				class="ticket_field"
 				size="7"
 				value="<?php echo esc_attr( $sale_price ); ?>"
-				<?php echo implode( ' ', $sale_price_validation_attrs ); // phpcs:ignore ?>
+				<?php echo implode( ' ', $sale_price_validation_attrs ); // phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscaped -- Each attribute is escaped where it is built above. ?>
 			/>
 		</div>
 		<?php foreach ( [ 'start', 'end' ] as $sale_end ) : ?>
