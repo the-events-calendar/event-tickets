@@ -172,7 +172,29 @@ function updateHelperText() {
 }
 
 /**
+ * Reads the rule a tickets list row carries.
+ *
+ * @since TBD
+ *
+ * @param {string} json The rule, as JSON.
+ *
+ * @return {import( '../sale-window' ).SaleWindowRule|null} The rule, or `null` when it cannot be read.
+ */
+function parseRule( json ) {
+	try {
+		const rule = JSON.parse( json );
+
+		return rule?.start && rule?.end ? rule : null;
+	} catch ( error ) {
+		return null;
+	}
+}
+
+/**
  * Rewrites the sale dates of each listed ticket with a rule for the event dates in the form.
+ *
+ * Only the text follows the form: the row's icon, which tells an upcoming, on-sale or past ticket apart, is the one the
+ * server drew, and changes once the event and ticket are saved.
  *
  * @since TBD
  *
@@ -191,7 +213,13 @@ function updateTicketsList() {
 	const listSettings = { format: settings.listDateFormat, dateSettings: getDateSettings( dynamic ) };
 
 	rows.forEach( ( row ) => {
-		const rule = JSON.parse( row.dataset.relativeSaleDates );
+		const rule = parseRule( row.dataset.relativeSaleDates );
+
+		// A row whose rule cannot be read keeps the dates the server wrote, and the other rows are still updated.
+		if ( ! rule ) {
+			return;
+		}
+
 		const saleWindow = eventDates
 			? resolveSaleWindow( rule, eventDates.start, eventDates.end, eventDates.timezone )
 			: null;

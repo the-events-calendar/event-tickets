@@ -297,6 +297,15 @@ describe( 'classic editor script', () => {
 		expect( getListRowText() ).toBe( 'June 10, 2099 - June 24, 2099' );
 	} );
 
+	it( 'should keep the server text of a row whose rule cannot be read, and still update the other rows', async () => {
+		renderEventForm();
+		jQuery( '#list-row-dates' ).before( '<div id="broken-row" data-relative-sale-dates="{not json">Server text</div>' );
+		await loadScript();
+
+		expect( document.getElementById( 'broken-row' ).textContent ).toBe( 'Server text' );
+		expect( getListRowText() ).toBe( 'June 10, 2099 - June 24, 2099' );
+	} );
+
 	it( 'should write the sale dates of a list the editor replaced', async () => {
 		renderEventForm();
 		const hooks = await loadScript();
