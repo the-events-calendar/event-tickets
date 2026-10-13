@@ -1,8 +1,8 @@
 import * as legacyActions from '@moderntribe/tickets/data/blocks/ticket/actions';
 import * as legacySelectors from '@moderntribe/tickets/data/blocks/ticket/selectors';
 import {
+	getTicketFormDates,
 	isSalePriceKept,
-	readTicketFormWindowDates,
 } from '@tec/tickets/relative-sale-dates/block-editor/common-store-bridge';
 import {
 	BLOCK_SALES_WINDOW,
@@ -41,11 +41,11 @@ afterEach( () => {
 	clearBlockEditorGlobals();
 } );
 
-describe( 'readTicketFormWindowDates', () => {
+describe( 'the form dates of each window kind', () => {
 	it( 'should read the sale start and end the form sends for the sales window', () => {
 		setTicketFormDates( store, CLIENT_ID, '2040-10-01 10:00:00', '2040-10-13 18:30:00' );
 
-		expect( readTicketFormWindowDates( CLIENT_ID, BLOCK_SALES_WINDOW ) ).toStrictEqual( {
+		expect( BLOCK_SALES_WINDOW.readFormDates( store.getState(), CLIENT_ID ) ).toStrictEqual( {
 			start: '2040-10-01 10:00:00',
 			end: '2040-10-13 18:30:00',
 		} );
@@ -54,7 +54,7 @@ describe( 'readTicketFormWindowDates', () => {
 	it( 'should read the sale price dates the form sends as the start of their days', () => {
 		setSalePriceDates( '2040-10-06', '2040-10-13' );
 
-		expect( readTicketFormWindowDates( CLIENT_ID, BLOCK_SALE_PRICE_WINDOW ) ).toStrictEqual( {
+		expect( BLOCK_SALE_PRICE_WINDOW.readFormDates( store.getState(), CLIENT_ID ) ).toStrictEqual( {
 			start: '2040-10-06 00:00:00',
 			end: '2040-10-13 00:00:00',
 		} );
@@ -67,7 +67,7 @@ describe( 'readTicketFormWindowDates', () => {
 	] )( 'should read a sale price date %s as no date', ( label, date ) => {
 		setSalePriceDates( date, '2040-10-13' );
 
-		expect( readTicketFormWindowDates( CLIENT_ID, BLOCK_SALE_PRICE_WINDOW ) ).toStrictEqual( {
+		expect( BLOCK_SALE_PRICE_WINDOW.readFormDates( store.getState(), CLIENT_ID ) ).toStrictEqual( {
 			start: null,
 			end: '2040-10-13 00:00:00',
 		} );
@@ -78,14 +78,14 @@ describe( 'readTicketFormWindowDates', () => {
 		const state = store.getState();
 		setTicketFormDates( store, CLIENT_ID, '2040-10-02 10:00:00', '2040-10-14 18:30:00' );
 
-		expect( readTicketFormWindowDates( CLIENT_ID, BLOCK_SALES_WINDOW, state ) ).toStrictEqual( {
+		expect( getTicketFormDates( state, CLIENT_ID ) ).toStrictEqual( {
 			start: '2040-10-01 10:00:00',
 			end: '2040-10-13 18:30:00',
 		} );
 	} );
 
 	it( 'should read no sale price dates for a ticket the legacy store does not hold', () => {
-		expect( readTicketFormWindowDates( CLIENT_ID, BLOCK_SALE_PRICE_WINDOW ) ).toStrictEqual( {
+		expect( BLOCK_SALE_PRICE_WINDOW.readFormDates( store.getState(), CLIENT_ID ) ).toStrictEqual( {
 			start: null,
 			end: null,
 		} );

@@ -11,7 +11,7 @@ import { useEventDates } from '../event-dates';
 import { useWindowDraft } from '../use-window-draft';
 import { useWindowLengthText } from '../use-window-length-text';
 import WindowBoundaries from '../window-boundaries';
-import { getBoundaryErrors, useShownError, useWindowError } from '../window-error';
+import { useBoundaryErrors } from '../window-error';
 import { BLOCK_SALE_PRICE_WINDOW } from '../window-kinds';
 
 /** @typedef {import( '../../sale-window' ).SaleWindowRule} SaleWindowRule */
@@ -82,11 +82,7 @@ export default function SalePriceWindow( { clientId, pickers } ) {
 	const { formRule, onChange, isTyping, isDisabled } = useWindowDraft( clientId, BLOCK_SALE_PRICE_WINDOW );
 	const eventDates = useEventDates();
 	const lengthText = useWindowLengthText( clientId, formRule, eventDates, BLOCK_SALE_PRICE_WINDOW );
-	const errors = getBoundaryErrors(
-		useShownError( useWindowError( clientId, BLOCK_SALE_PRICE_WINDOW ), isTyping ),
-		formRule,
-		BLOCK_SALE_PRICE_WINDOW
-	);
+	const errors = useBoundaryErrors( clientId, BLOCK_SALE_PRICE_WINDOW, formRule, isTyping );
 
 	return (
 		<WindowBoundaries

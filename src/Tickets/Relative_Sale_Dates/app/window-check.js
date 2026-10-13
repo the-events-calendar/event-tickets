@@ -24,6 +24,24 @@ export { ENDS_BEFORE_START, OUTSIDE_PARENT, RELATIVE_VALUE_OUT_OF_RANGE };
 /** @typedef {import( './window-kinds' ).WindowKind} WindowKind */
 
 /**
+ * @typedef {Object} WindowReading
+ *
+ * @property {import( './sale-window' ).SaleWindowRule|null|undefined} rule      The rule a save of the form sends for
+ *                                                                               the window, as the request carries it,
+ *                                                                               or `null` or `undefined` for none.
+ * @property {import( './sale-window' ).SaleWindowRule|null}           formRule  The rule the form shows for the
+ *                                                                               window, which a window inside it is
+ *                                                                               judged against, or `null` for a form
+ *                                                                               without the window.
+ * @property {{start: (string|null|false), end: (string|null|false)}}  formDates The dates the form sends for the
+ *                                                                               window's specific boundaries.
+ * @property {boolean}                                                 isKept    Whether a save of the form keeps the
+ *                                                                               window, so the server judges it.
+ */
+
+/** @typedef {function( WindowKind ): WindowReading} WindowReader */
+
+/**
  * @typedef {Object} FormWindow
  *
  * @property {Moment|null} start The start, in the event timezone, or `null` when it has no date.
@@ -240,4 +258,48 @@ export function getWindowError( rule, eventDates, formDates, kind = SALES_WINDOW
 	}
 
 	return null;
+}
+
+/**
+ * Returns the error of a window of a kind a save of the form would be rejected for, judged as the server judges it.
+ *
+ * A window is judged only when the save sends a rule for it and keeps it. A window with a parent is judged only once
+ * its parent is valid, as the server rejects the save for the parent first, and against the parent window the form
+ * shows. Without the event dates, only what the server rejects whatever the dates is judged: a relative number out of
+ * range, or a rule it does not take.
+ *
+ * @since TBD
+ *
+ * @param {WindowKind}                                  kind       The kind of the window.
+ * @param {WindowReader}                                readWindow Reads what the form holds for a window of a kind.
+ * @param {import( './server-event-dates' ).EventDates} eventDates The event dates, or `null` when they cannot be read.
+ *
+ * @return {string|null} The error, or `null` for a window that can be saved or is not judged.
+ */
+export function judgeWindow( kind, readWindow, eventDates ) {
+	const { rule, formDates, isKept } = readWindow( kind );
+	const { parent } = kind;
+
+	if ( ! rule || ! isKept ) {
+		return null;
+	}
+
+	if ( parent && null !== judgeWindow( parent, readWindow, eventDates ) ) {
+		return null;
+	}
+
+	if ( ! eventDates ) {
+		if ( getOutOfRangeBoundary( rule, kind ) ) {
+			return RELATIVE_VALUE_OUT_OF_RANGE;
+		}
+
+		return isValidRule( rule, kind ) ? null : ENDS_BEFORE_START;
+	}
+
+	const parentForm = parent ? readWindow( parent ) : null;
+	const parentWindow = parentForm?.formRule
+		? getFormWindow( parentForm.formRule, eventDates, parentForm.formDates, parent )
+		: null;
+
+	return getWindowError( rule, eventDates, formDates, kind, parentWindow );
 }

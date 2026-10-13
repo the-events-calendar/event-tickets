@@ -10,7 +10,7 @@
 /**
  * Internal dependencies
  */
-import { TICKETS_COMMERCE_MODULE_CLASS } from '../../../../modules/data/blocks/ticket/constants';
+import { SALE_DATE_PATTERN, TICKETS_COMMERCE_MODULE_CLASS } from '../../../../modules/data/blocks/ticket/constants';
 import { isSalePriceKept as keepsSalePrice } from '../php-compare';
 
 /**
@@ -29,7 +29,7 @@ export const TICKETS_COMMERCE_PROVIDER = 'tc';
  *
  * @return {Object} The state.
  */
-function getLegacyState() {
+export function getLegacyState() {
 	return window.__tribe_common_store__.getState();
 }
 
@@ -79,9 +79,7 @@ export function isTicketsCommerce( clientId ) {
  * @return {boolean} Whether the sale price is checked.
  */
 export function isSalePriceChecked( clientId ) {
-	return Boolean(
-		getTicketData().selectors.getTempSalePriceChecked( window.__tribe_common_store__.getState(), { clientId } )
-	);
+	return Boolean( getTicketData().selectors.getTempSalePriceChecked( getLegacyState(), { clientId } ) );
 }
 
 /**
@@ -144,9 +142,7 @@ export function clearTicketDurationError( clientId ) {
  * @return {boolean} Whether the ticket has the error.
  */
 export function hasTicketDurationError( clientId ) {
-	return Boolean(
-		getTicketData().selectors.getTicketHasDurationError( window.__tribe_common_store__.getState(), { clientId } )
-	);
+	return Boolean( getTicketData().selectors.getTicketHasDurationError( getLegacyState(), { clientId } ) );
 }
 
 /**
@@ -181,9 +177,7 @@ export function isTicketReadyBesidesDuration( state, clientId ) {
  * @return {boolean} Whether the ticket's fields are disabled.
  */
 export function isTicketDisabled( clientId ) {
-	return Boolean(
-		getTicketData().selectors.isTicketDisabled( window.__tribe_common_store__.getState(), { clientId } )
-	);
+	return Boolean( getTicketData().selectors.isTicketDisabled( getLegacyState(), { clientId } ) );
 }
 
 /**
@@ -217,7 +211,7 @@ export function getEventDateFields() {
 		return null;
 	}
 
-	const state = window.__tribe_common_store__.getState();
+	const state = getLegacyState();
 
 	return {
 		start: selectors.getStart( state ),
@@ -264,7 +258,7 @@ export function getTicketFormDates( state, clientId ) {
  * @return {string|null} The start of the day, `YYYY-MM-DD HH:mm:ss`, or `null`.
  */
 function toSalePriceFormDate( date ) {
-	return 'string' === typeof date && /^\d{4}-\d{2}-\d{2}$/.test( date ) ? `${ date } 00:00:00` : null;
+	return 'string' === typeof date && SALE_DATE_PATTERN.test( date ) ? `${ date } 00:00:00` : null;
 }
 
 /**
@@ -288,37 +282,4 @@ export function getTicketSalePriceFormDates( state, clientId ) {
 		start: toSalePriceFormDate( selectors.getTicketTempSaleStartDate( state, props ) ),
 		end: toSalePriceFormDate( selectors.getTicketTempSaleEndDate( state, props ) ),
 	};
-}
-
-/**
- * Reads the start and end dates a ticket's form sends for a window, from the legacy ticket state.
- *
- * @since TBD
- *
- * @param {string}                                     clientId The client ID of the ticket block.
- * @param {import( './window-kinds' ).BlockWindowKind} kind     The window kind, which names the legacy dates it reads.
- * @param {Object}                                     [state]  The legacy ticket state; the common store's when left
- *                                                              out.
- *
- * @return {{start: string|null, end: string|null}} The start and end, `YYYY-MM-DD HH:mm:ss` in the event timezone, or
- *                                                 `null` for one the form sends no date for.
- */
-export function readTicketFormWindowDates( clientId, kind, state = window.__tribe_common_store__.getState() ) {
-	return kind.readFormDates( state, clientId );
-}
-
-/**
- * Returns whether a save of a ticket's form keeps a window, so the server judges it, from the legacy ticket state.
- *
- * @since TBD
- *
- * @param {string}                                     clientId The client ID of the ticket block.
- * @param {import( './window-kinds' ).BlockWindowKind} kind     The window kind, which names what keeps it.
- * @param {Object}                                     [state]  The legacy ticket state; the common store's when left
- *                                                              out.
- *
- * @return {boolean} Whether the save keeps the window.
- */
-export function readTicketWindowKept( clientId, kind, state = window.__tribe_common_store__.getState() ) {
-	return kind.isKept( state, clientId );
 }

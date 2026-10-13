@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { useDispatch, useSelect } from '@wordpress/data';
-import { useEffect, useSyncExternalStore } from '@wordpress/element';
+import { useEffect, useMemo, useSyncExternalStore } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -44,7 +44,7 @@ import { useTicketTyping } from './use-ticket-typing';
 export function useWindowDraft( clientId, kind ) {
 	const rule = useSelect( ( select ) => select( STORE_NAME ).getDraftRule( clientId, kind ), [ clientId, kind ] );
 	const { setDraftRule } = useDispatch( STORE_NAME );
-	const formRule = getFormRule( rule, kind );
+	const formRule = useMemo( () => getFormRule( rule, kind ), [ rule, kind ] );
 	const typing = useTicketTyping( clientId );
 	// A change made while the ticket saves would stay in the draft, unsaved, until the next post save sends it.
 	const isDisabled = useSyncExternalStore( subscribeToCommonStore, () => isTicketDisabled( clientId ) );

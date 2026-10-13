@@ -11,22 +11,20 @@ import { isTicketReadyBesidesDuration, isTicketsCommerce, TICKETS_COMMERCE_PROVI
 import { readEventDates } from './event-dates';
 import { ANCHOR_END, MODE_DEFAULT, MODE_RELATIVE, MODE_SPECIFIC } from '../rule-constants';
 import { resolveWindow } from '../sale-window';
+import { judgeWindow } from '../window-check';
 import { SALES_WINDOW } from '../window-kinds';
 import { getFormRule, isSpecificWindow, toRequestRule } from './rule';
 import { formatSaleDate } from './sale-dates';
 import SalePriceWindow from './sale-price-window';
 import SalesWindow from './sales-window';
 import { STORE_NAME } from './store/constants';
-import {
-	getTicketWindowError,
-	getTicketWindowReader,
-	hasTicketWindowSaveError,
-	readTicketWindowForm,
-} from './window-error';
+import { getTicketWindowReader, hasTicketWindowSaveError, readTicketWindowForm } from './window-error';
 import { BLOCK_WINDOW_KINDS } from './window-kinds';
 
 /** @typedef {import( '../sale-window' ).SaleWindowRule} SaleWindowRule */
 /** @typedef {import( './window-kinds' ).BlockWindowKind} BlockWindowKind */
+/** @typedef {import( '../server-event-dates' ).EventDates} EventDates */
+/** @typedef {import( '../window-check' ).WindowReader} TicketWindowReader */
 
 /**
  * Loads the rules of a Tickets Commerce ticket fetched from the server.
@@ -93,8 +91,7 @@ export function resetTicketRule( clientId ) {
 }
 
 /**
- * Adds one window's draft rule to the body of the request that creates or updates a ticket, and records what it
- * carried.
+ * Gets what the request that creates or updates a ticket carries for one window's draft rule.
  *
  * A ticket the store knows nothing of sends no rule, so the server keeps the one stored; one whose draft has no rule
  * sends the kind's `emptyValue`. A draft the editor judges the server would reject sends no rule either, nor does one
@@ -103,34 +100,33 @@ export function resetTicketRule( clientId ) {
  *
  * @since TBD
  *
- * @param {FormData}                      body     The request body.
- * @param {string}                        clientId The client ID of the ticket block.
- * @param {BlockWindowKind}               kind     The window kind.
- * @param {SaleWindowRule|null|undefined} rule     The ticket's draft rule of the window.
+ * @param {string}                        clientId   The client ID of the ticket block.
+ * @param {BlockWindowKind}               kind       The window kind.
+ * @param {SaleWindowRule|null|undefined} rule       The ticket's draft rule of the window.
+ * @param {TicketWindowReader}            readWindow Reads the draft rule and form of a window of the ticket.
+ * @param {EventDates|null}               eventDates The event dates, or `null` when they cannot be read.
  *
- * @return {void}
+ * @return {string|undefined} The value the request carries, or `undefined` for one that carries none.
  */
-export function appendRule( body, clientId, kind, rule ) {
-	if ( undefined === rule ) {
-		return;
-	}
-
+function getSentValue( clientId, kind, rule, readWindow, eventDates ) {
 	const value = rule ? JSON.stringify( toRequestRule( rule, kind ) ) : kind.emptyValue;
-	const readWindow = getTicketWindowReader( clientId, select, ( each ) => readTicketWindowForm( clientId, each ) );
-	const isSent =
-		undefined !== value &&
-		kind.isAdded( clientId ) &&
-		! hasTicketWindowSaveError( kind, readWindow, readEventDates() );
 
-	if ( isSent ) {
-		body.append( kind.requestKey, value );
+	if (
+		undefined === value ||
+		! kind.isAdded( clientId ) ||
+		hasTicketWindowSaveError( kind, readWindow, eventDates )
+	) {
+		return undefined;
 	}
 
-	dispatch( STORE_NAME ).setSentRule( clientId, isSent ? rule : undefined, kind );
+	return value;
 }
 
 /**
- * Adds the ticket's draft rules to the body of the request that creates or updates it, the sales window first.
+ * Adds the ticket's draft rules to the body of the request that creates or updates it, the sales window first, and
+ * records each one the request carries, so the answer to it can keep it as saved.
+ *
+ * The rules are recorded here, as the body is built: no later step of the save sees the body.
  *
  * @since TBD
  *
@@ -145,9 +141,24 @@ export function filterSetBodyDetails( body, clientId ) {
 		return body;
 	}
 
-	BLOCK_WINDOW_KINDS.forEach( ( kind ) =>
-		appendRule( body, clientId, kind, select( STORE_NAME ).getDraftRule( clientId, kind ) )
-	);
+	const eventDates = readEventDates();
+	const readWindow = getTicketWindowReader( clientId, select, ( kind ) => readTicketWindowForm( clientId, kind ) );
+
+	BLOCK_WINDOW_KINDS.forEach( ( kind ) => {
+		const rule = select( STORE_NAME ).getDraftRule( clientId, kind );
+
+		if ( undefined === rule ) {
+			return;
+		}
+
+		const value = getSentValue( clientId, kind, rule, readWindow, eventDates );
+
+		if ( undefined !== value ) {
+			body.append( kind.requestKey, value );
+		}
+
+		dispatch( STORE_NAME ).setSentRule( clientId, undefined === value ? undefined : rule, kind );
+	} );
 
 	return body;
 }
@@ -261,7 +272,7 @@ export function filterConfirmDisabled( isDisabled, state, { clientId } ) {
 		readTicketWindowForm( clientId, kind, state )
 	);
 
-	return BLOCK_WINDOW_KINDS.some( ( kind ) => null !== getTicketWindowError( kind, readWindow, eventDates ) );
+	return BLOCK_WINDOW_KINDS.some( ( kind ) => null !== judgeWindow( kind, readWindow, eventDates ) );
 }
 
 /**

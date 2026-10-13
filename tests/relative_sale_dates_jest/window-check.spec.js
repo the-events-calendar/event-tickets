@@ -4,6 +4,7 @@ import {
 	getFormWindow,
 	getOutOfRangeBoundary,
 	getWindowError,
+	judgeWindow,
 	OUTSIDE_PARENT,
 	RELATIVE_VALUE_OUT_OF_RANGE,
 } from '@tec/tickets/relative-sale-dates/window-check';
@@ -416,5 +417,58 @@ describe( 'getFormWindow', () => {
 				'2099-06-03T12:00:00.000Z'
 			);
 		} );
+	} );
+} );
+
+describe( 'judgeWindow', () => {
+	const DAYS = ( value ) => ( { mode: 'relative', value, unit: UNIT_DAYS } );
+	// Sales open 4 weeks before the event, on 2099-05-27 at 19:00, and close when it starts.
+	const SALES_RULE = { start: { ...DAYS( 4 ), unit: UNIT_WEEKS, anchor: 'start' }, end: { mode: 'default' } };
+
+	/**
+	 * Builds a reader of a form whose windows hold the given rules, every one kept.
+	 *
+	 * @param {Object<string, Object|null>} rules  The rule of each window, keyed by the kind's ID.
+	 * @param {Object<string, boolean>}     [kept] Whether a save keeps each window, keyed by the kind's ID.
+	 *
+	 * @return {Function} The reader.
+	 */
+	const readerOf = ( rules, kept = {} ) => ( kind ) => ( {
+		rule: rules[ kind.id ],
+		formRule: rules[ kind.id ],
+		formDates: NO_FORM_DATES,
+		isKept: kept[ kind.id ] ?? true,
+	} );
+
+	it( 'should judge a sale price that starts before the sales window as outside it', () => {
+		const read = readerOf( { sales: SALES_RULE, sale_price: { start: DAYS( 30 ), end: DAYS( 1 ) } } );
+
+		expect( judgeWindow( SALE_PRICE_WINDOW, read, EVENT_DATES ) ).toBe( OUTSIDE_PARENT );
+	} );
+
+	// The server rejects the save for the sales window first.
+	it( 'should leave a sale price unjudged while its sales window is invalid', () => {
+		const read = readerOf( {
+			sales: { start: DAYS( 1 ), end: { ...DAYS( 2 ), anchor: 'start' } },
+			sale_price: { start: DAYS( 30 ), end: DAYS( 1 ) },
+		} );
+
+		expect( judgeWindow( SALES_WINDOW, read, EVENT_DATES ) ).toBe( ENDS_BEFORE_START );
+		expect( judgeWindow( SALE_PRICE_WINDOW, read, EVENT_DATES ) ).toBeNull();
+	} );
+
+	it( 'should leave a window the save does not keep, or sends no rule for, unjudged', () => {
+		const invalid = { start: DAYS( 1 ), end: DAYS( 2 ) };
+
+		expect( judgeWindow( SALE_PRICE_WINDOW, readerOf( { sales: SALES_RULE, sale_price: invalid }, { sale_price: false } ), EVENT_DATES ) ).toBeNull();
+		expect( judgeWindow( SALE_PRICE_WINDOW, readerOf( { sales: SALES_RULE, sale_price: null } ), EVENT_DATES ) ).toBeNull();
+	} );
+
+	// The server rejects a number out of range, or a rule it does not take, whatever the event dates.
+	it( 'should judge only the numbers and the rule without the event dates', () => {
+		const read = readerOf( { sales: SALES_RULE, sale_price: { start: DAYS( 31 ), end: DAYS( 1 ) } } );
+
+		expect( judgeWindow( SALE_PRICE_WINDOW, read, null ) ).toBe( RELATIVE_VALUE_OUT_OF_RANGE );
+		expect( judgeWindow( SALE_PRICE_WINDOW, readerOf( { sales: SALES_RULE, sale_price: { start: DAYS( 1 ), end: DAYS( 2 ) } } ), null ) ).toBeNull();
 	} );
 } );

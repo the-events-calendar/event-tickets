@@ -267,6 +267,8 @@ const VALIDATION_CASES = [
 		valid: { start: relative( 2, UNIT_WEEKS ), end: relative( 1, UNIT_HOURS ) },
 		endsBeforeStart: { start: relative( 1, UNIT_HOURS ), end: relative( 2, UNIT_HOURS ) },
 		cleared: { start: relative( '', UNIT_WEEKS ), end: { mode: 'default' } },
+		// One past the 60 the sales window takes.
+		aboveRange: { start: relative( 61, UNIT_WEEKS ), end: relative( 1, UNIT_HOURS ) },
 		// The fields a request holding this window back still carries.
 		stillSent: [],
 	},
@@ -284,6 +286,8 @@ const VALIDATION_CASES = [
 		valid: { start: salePriceBoundary( 2, UNIT_WEEKS ), end: salePriceBoundary( 1, UNIT_WEEKS ) },
 		endsBeforeStart: { start: salePriceBoundary( 1, UNIT_WEEKS ), end: salePriceBoundary( 2, UNIT_WEEKS ) },
 		cleared: { start: salePriceBoundary( 2, UNIT_WEEKS ), end: salePriceBoundary( '', UNIT_WEEKS ) },
+		// One past the 30 the sale price takes, which the editor keeps as typed.
+		aboveRange: { start: salePriceBoundary( 31, UNIT_DAYS ), end: salePriceBoundary( 1, UNIT_DAYS ) },
 		stillSent: [ BODY_FIELD ],
 	},
 ];
@@ -863,6 +867,10 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 
 			it( 'should disable Create and Update while a relative start or end has no number', () => {
 				expect( isDisabledWith( kindCase.cleared ) ).toBe( true );
+			} );
+
+			it( 'should disable Create and Update while a relative number is past the range of the window', () => {
+				expect( isDisabledWith( kindCase.aboveRange ) ).toBe( true );
 			} );
 
 			it( 'should leave the button alone for a ticket another provider sells', () => {

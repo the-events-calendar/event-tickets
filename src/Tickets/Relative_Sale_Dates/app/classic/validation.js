@@ -12,9 +12,8 @@ import { createTypingTracker, getShownError } from '../live-error';
 import { MODE_SPECIFIC } from '../rule-constants';
 import {
 	ENDS_BEFORE_START,
-	getFormWindow,
 	getOutOfRangeBoundary,
-	getWindowError,
+	judgeWindow,
 	OUTSIDE_PARENT,
 	RELATIVE_VALUE_OUT_OF_RANGE,
 } from '../window-check';
@@ -64,25 +63,31 @@ function getErrorFieldId( kind, rule, error ) {
 }
 
 /**
- * Gets the parent window of a window of a kind as the form gives it.
+ * Reads what the form holds for a window of a kind.
+ *
+ * A sale price saved before relative dates, still on its own dates, is saved without a rule, so the server judges it
+ * as it did then.
  *
  * @since TBD
  *
- * @param {ClassicWindowKind}                            kind       The kind of the window.
- * @param {import( '../server-event-dates' ).EventDates} eventDates The event dates.
- * @param {FormContext}                                  context    The data this script is localized with.
+ * @param {ClassicWindowKind} kind    The kind of the window.
+ * @param {FormContext}       context The data this script is localized with.
  *
- * @return {import( '../window-check' ).FormWindow|null} The parent window, or `null` for a kind without one or a form
- *                                                       without its fields.
+ * @return {import( '../window-check' ).WindowReading} What the form holds for the window.
  */
-function getParentWindow( kind, eventDates, context ) {
-	const { parent } = kind;
-
-	if ( ! parent || ! document.getElementById( `${ parent.fieldPrefix }_start_mode` ) ) {
-		return null;
+function readWindow( kind, context ) {
+	if ( ! document.getElementById( `${ kind.fieldPrefix }_start_mode` ) ) {
+		return { rule: null, formRule: null, formDates: { start: null, end: null }, isKept: false };
 	}
 
-	return getFormWindow( readRule( document, parent ), eventDates, readFormDates( parent, context ), parent );
+	const formRule = readRule( document, kind );
+
+	return {
+		rule: keepsSalePriceWithoutRule( document, kind ) ? null : formRule,
+		formRule,
+		formDates: readFormDates( kind, context ),
+		isKept: kind.isEnabled( document ),
+	};
 }
 
 /**
@@ -95,35 +100,16 @@ function getParentWindow( kind, eventDates, context ) {
  *
  * @return {{message: string, fieldId: string}|null} The error and the id of the field it is about, or `null` for a
  *                                                   window that can be saved, is not kept by the save, is saved
- *                                                   without a rule, or cannot be judged here.
+ *                                                   without a rule, or waits on its parent window.
  */
 function readWindowError( kind ) {
 	const context = getContext();
 
-	if ( ! context || ! document.getElementById( kind.errorId ) || ! kind.isEnabled( document ) ) {
+	if ( ! context || ! document.getElementById( kind.errorId ) ) {
 		return null;
 	}
 
-	// The server judges a sale price saved before relative dates as it did then, without a rule.
-	if ( keepsSalePriceWithoutRule( document, kind ) ) {
-		return null;
-	}
-
-	const eventDates = getEventDates( context );
-
-	// Without event dates the window cannot be judged here; the server still checks it.
-	if ( ! eventDates ) {
-		return null;
-	}
-
-	const rule = readRule( document, kind );
-	const error = getWindowError(
-		rule,
-		eventDates,
-		readFormDates( kind, context ),
-		kind,
-		getParentWindow( kind, eventDates, context )
-	);
+	const error = judgeWindow( kind, ( each ) => readWindow( each, context ), getEventDates( context ) );
 
 	if ( ! error ) {
 		return null;
@@ -131,7 +117,7 @@ function readWindowError( kind ) {
 
 	return {
 		message: context.settings.text.windows[ kind.id ][ TEXT_KEYS[ error ] ],
-		fieldId: getErrorFieldId( kind, rule, error ),
+		fieldId: getErrorFieldId( kind, readRule( document, kind ), error ),
 	};
 }
 
@@ -182,10 +168,9 @@ export function validateWindow( kind, event, valid ) {
  * @return {void}
  */
 export function checkWindow( kind ) {
-	// As on the save click, a window judged against its parent is not judged while the parent is invalid.
 	const error = getShownError(
 		document.getElementById( kind.errorId )?.textContent,
-		kind.parent && readWindowError( kind.parent ) ? null : readWindowError( kind ),
+		readWindowError( kind ),
 		typing.isTyping()
 	);
 

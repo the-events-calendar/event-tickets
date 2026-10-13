@@ -2,7 +2,7 @@
  * Internal dependencies
  */
 import { getFormWindowLengthText } from '../window-length';
-import { readTicketFormWindowDates } from './common-store-bridge';
+import { getLegacyState } from './common-store-bridge';
 import { useCommonStoreValue } from './use-common-store-value';
 
 /** @typedef {import( '../sale-window' ).SaleWindowRule} SaleWindowRule */
@@ -23,7 +23,7 @@ import { useCommonStoreValue } from './use-common-store-value';
  * @return {string} The text, or an empty string when the length cannot be worked out.
  */
 export function useWindowLengthText( clientId, rule, eventDates, kind ) {
-	const formDates = useCommonStoreValue( () => readTicketFormWindowDates( clientId, kind ) );
+	const formDates = useCommonStoreValue( () => kind.readFormDates( getLegacyState(), clientId ) );
 
 	return getFormWindowLengthText( rule, eventDates, formDates, kind );
 }

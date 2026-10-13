@@ -14,15 +14,8 @@ import { useMemo, useState } from '@wordpress/element';
  * Internal dependencies
  */
 import { getShownError } from '../live-error';
-import {
-	ENDS_BEFORE_START,
-	RELATIVE_VALUE_OUT_OF_RANGE,
-	getFormWindow,
-	getOutOfRangeBoundary,
-	getWindowError,
-	isValidRule,
-} from '../window-check';
-import { readTicketFormWindowDates, readTicketWindowKept } from './common-store-bridge';
+import { RELATIVE_VALUE_OUT_OF_RANGE, getOutOfRangeBoundary, judgeWindow } from '../window-check';
+import { getLegacyState } from './common-store-bridge';
 import { useEventDates } from './event-dates';
 import { getFormRule, toRequestRule } from './rule';
 import { STORE_NAME } from './store/constants';
@@ -41,9 +34,7 @@ import { useCommonStoreValue } from './use-common-store-value';
  * @property {boolean}                                isKept    Whether a save of the form keeps the window.
  */
 
-/** @typedef {TicketWindowForm & {rule: SaleWindowRule|null|undefined}} TicketWindow */
-
-/** @typedef {function( BlockWindowKind ): TicketWindow} TicketWindowReader */
+/** @typedef {import( '../window-check' ).WindowReader} TicketWindowReader */
 
 /**
  * @typedef {Object} BoundaryErrors
@@ -66,62 +57,6 @@ function getKindLineage( kind ) {
 }
 
 /**
- * Returns the error of a ticket's window of a kind, or `null` when it is valid or is not judged.
- *
- * A window is judged only when the ticket has a rule for it and a save of its form keeps it. A window with a parent is
- * judged only once its parent is valid, as the server rejects the save for the parent first, and against the parent
- * window the form gives. The rule is judged as the request carries it. Without the event dates, only what the server
- * rejects whatever the dates is judged: a relative number out of range, or a rule it does not take.
- *
- * @since TBD
- *
- * @param {BlockWindowKind}    kind       The window kind.
- * @param {TicketWindowReader} readWindow Reads the draft rule and form of a window of the ticket.
- * @param {EventDates|null}    eventDates The event dates, or `null` when they cannot be read.
- *
- * @return {string|null} The error key, or `null`.
- */
-export function getTicketWindowError( kind, readWindow, eventDates ) {
-	const { rule, formDates, isKept } = readWindow( kind );
-	const { parent } = kind;
-
-	if ( ! rule || ! isKept ) {
-		return null;
-	}
-
-	if ( parent && null !== getTicketWindowError( parent, readWindow, eventDates ) ) {
-		return null;
-	}
-
-	// The rule is judged as the request carries it, with integer numbers, or `NaN` for a cleared one.
-	const sentRule = toRequestRule( rule, kind );
-
-	// The server rejects a rule it does not take, such as one with a cleared number, before it reads any date.
-	if ( ! eventDates ) {
-		if ( getOutOfRangeBoundary( sentRule, kind ) ) {
-			return RELATIVE_VALUE_OUT_OF_RANGE;
-		}
-
-		return isValidRule( sentRule, kind ) ? null : ENDS_BEFORE_START;
-	}
-
-	let parentWindow = null;
-
-	if ( parent ) {
-		const parentForm = readWindow( parent );
-
-		parentWindow = getFormWindow(
-			getFormRule( parentForm.rule, parent ),
-			eventDates,
-			parentForm.formDates,
-			parent
-		);
-	}
-
-	return getWindowError( sentRule, eventDates, formDates, kind, parentWindow );
-}
-
-/**
  * Returns whether the server would reject a save of a ticket's window of a kind: the window or one it must start
  * inside has an error.
  *
@@ -134,11 +69,12 @@ export function getTicketWindowError( kind, readWindow, eventDates ) {
  * @return {boolean} Whether the save would be rejected.
  */
 export function hasTicketWindowSaveError( kind, readWindow, eventDates ) {
-	return getKindLineage( kind ).some( ( each ) => null !== getTicketWindowError( each, readWindow, eventDates ) );
+	return getKindLineage( kind ).some( ( each ) => null !== judgeWindow( each, readWindow, eventDates ) );
 }
 
 /**
- * Builds the reader of a ticket's windows: each one's draft rule, with its form as another reader gives it.
+ * Builds the reader of a ticket's windows: each one's draft rule, as the request carries it and as the options show it,
+ * with its form as another reader gives it.
  *
  * @since TBD
  *
@@ -150,7 +86,19 @@ export function hasTicketWindowSaveError( kind, readWindow, eventDates ) {
  * @return {TicketWindowReader} The reader.
  */
 export function getTicketWindowReader( clientId, selectStore, readForm ) {
-	return ( kind ) => ( { rule: selectStore( STORE_NAME ).getDraftRule( clientId, kind ), ...readForm( kind ) } );
+	return ( kind ) => {
+		const draft = selectStore( STORE_NAME ).getDraftRule( clientId, kind );
+
+		return {
+			// The rule is judged as the request carries it, with integer numbers, or `NaN` for a cleared one.
+			rule: draft ? toRequestRule( draft, kind ) : draft,
+			// Read only for a parent window, as the rule a window inside it is judged against.
+			get formRule() {
+				return getFormRule( draft, kind );
+			},
+			...readForm( kind ),
+		};
+	};
 }
 
 /**
@@ -165,11 +113,8 @@ export function getTicketWindowReader( clientId, selectStore, readForm ) {
  *
  * @return {TicketWindowForm} The form.
  */
-export function readTicketWindowForm( clientId, kind, state ) {
-	return {
-		formDates: readTicketFormWindowDates( clientId, kind, state ),
-		isKept: readTicketWindowKept( clientId, kind, state ),
-	};
+export function readTicketWindowForm( clientId, kind, state = getLegacyState() ) {
+	return { formDates: kind.readFormDates( state, clientId ), isKept: kind.isKept( state, clientId ) };
 }
 
 /**
@@ -190,7 +135,7 @@ export function useWindowError( clientId, kind ) {
 
 	return useSelect(
 		( select ) =>
-			getTicketWindowError(
+			judgeWindow(
 				kind,
 				getTicketWindowReader( clientId, select, ( each ) => forms[ lineage.indexOf( each ) ] ),
 				eventDates
@@ -209,7 +154,7 @@ export function useWindowError( clientId, kind ) {
  *
  * @return {string} The message, or an empty string without an error the kind can have.
  */
-export function getWindowErrorMessage( key, kind ) {
+function getWindowErrorMessage( key, kind ) {
 	const text = key ? kind.errorTexts[ key ] : null;
 
 	return text ? text( kind ) : '';
@@ -258,4 +203,21 @@ export function useShownError( error, isTyping ) {
 	}
 
 	return next;
+}
+
+/**
+ * Returns the messages each boundary of a ticket block's window shows for its error, checked again as the form
+ * changes, a new error held back while the admin types.
+ *
+ * @since TBD
+ *
+ * @param {string}          clientId The client ID of the ticket block.
+ * @param {BlockWindowKind} kind     The window kind.
+ * @param {SaleWindowRule}  formRule The rule the options show.
+ * @param {boolean}         isTyping Whether the admin is typing in a window field of the ticket.
+ *
+ * @return {{start: BoundaryErrors, end: BoundaryErrors}} The messages, keyed by boundary.
+ */
+export function useBoundaryErrors( clientId, kind, formRule, isTyping ) {
+	return getBoundaryErrors( useShownError( useWindowError( clientId, kind ), isTyping ), formRule, kind );
 }

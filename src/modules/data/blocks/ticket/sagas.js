@@ -358,7 +358,7 @@ export function* setTicketInitialState( action ) {
  * @return {string} The date, `YYYY-MM-DD`, or an empty string.
  */
 export function toRequestSaleDate( date ) {
-	return 'string' === typeof date && /^\d{4}-\d{2}-\d{2}$/.test( date ) ? date : '';
+	return 'string' === typeof date && constants.SALE_DATE_PATTERN.test( date ) ? date : '';
 }
 
 export function* setBodyDetails( clientId ) {

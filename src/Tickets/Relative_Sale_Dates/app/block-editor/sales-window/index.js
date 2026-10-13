@@ -10,11 +10,11 @@ import { clearTicketDurationError, hasTicketDurationError, subscribeToCommonStor
 import { useEventDates } from '../event-dates';
 import { MODE_RELATIVE, MODE_SPECIFIC } from '../../rule-constants';
 import { resolveWindow } from '../../sale-window';
-import { getFormRule, isSpecificWindow } from '../rule';
+import { isSpecificWindow } from '../rule';
 import { getHelperText } from '../sale-dates';
 import { useWindowDraft } from '../use-window-draft';
 import WindowBoundaries from '../window-boundaries';
-import { getBoundaryErrors, useShownError, useWindowError } from '../window-error';
+import { useBoundaryErrors } from '../window-error';
 import { BLOCK_SALES_WINDOW } from '../window-kinds';
 
 /**
@@ -29,17 +29,13 @@ import { BLOCK_SALES_WINDOW } from '../window-kinds';
  * @return {Object} The sales window options.
  */
 export default function SalesWindow( { clientId, picker } ) {
-	const { rule, formRule, onChange, isTyping, isDisabled } = useWindowDraft( clientId, BLOCK_SALES_WINDOW );
+	const { formRule, onChange, isTyping, isDisabled } = useWindowDraft( clientId, BLOCK_SALES_WINDOW );
 	const eventDates = useEventDates();
 	const saleWindow = useMemo(
-		() => resolveWindow( getFormRule( rule, BLOCK_SALES_WINDOW ), eventDates, BLOCK_SALES_WINDOW ),
-		[ rule, eventDates ]
+		() => resolveWindow( formRule, eventDates, BLOCK_SALES_WINDOW ),
+		[ formRule, eventDates ]
 	);
-	const errors = getBoundaryErrors(
-		useShownError( useWindowError( clientId, BLOCK_SALES_WINDOW ), isTyping ),
-		formRule,
-		BLOCK_SALES_WINDOW
-	);
+	const errors = useBoundaryErrors( clientId, BLOCK_SALES_WINDOW, formRule, isTyping );
 	const isSpecific = isSpecificWindow( formRule );
 	const hasDurationError = useSyncExternalStore( subscribeToCommonStore, () => hasTicketDurationError( clientId ) );
 
