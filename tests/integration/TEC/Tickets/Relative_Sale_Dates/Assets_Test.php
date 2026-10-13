@@ -367,9 +367,18 @@ class Assets_Test extends Controller_Test_Case {
 					'start' => [ 'mode' => Rule::MODE_DEFAULT ] + Editor::DEFAULT_RELATIVE_START,
 					'end'   => [ 'mode' => Rule::MODE_DEFAULT ] + Editor::DEFAULT_RELATIVE_END,
 				],
+				// A new sale price starts now, with 2 weeks before the event offered next to it, and ends a week before the event.
 				Window_Kind::SALE_PRICE => [
-					'start' => [ 'mode' => Rule::MODE_NOW ] + Editor::SALE_PRICE_DEFAULT_RELATIVE_START,
-					'end'   => Editor::SALE_PRICE_DEFAULT_RELATIVE_END,
+					'start' => [
+						'mode'  => Rule::MODE_NOW,
+						'value' => 2,
+						'unit'  => WEEK_IN_SECONDS,
+					],
+					'end'   => [
+						'mode'  => Rule::MODE_RELATIVE,
+						'value' => 1,
+						'unit'  => WEEK_IN_SECONDS,
+					],
 				],
 			],
 			$data['windowDefaults'] ?? null
