@@ -320,11 +320,12 @@ final class Assets extends Controller_Contract {
 	 * @return array{windowDefaults: array<string,array{start: array{mode: string, value: int, unit: int, anchor?: string}, end: array{mode: string, value: int, unit: int, anchor?: string}}>, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, dateNoYear: string, time: string}} The script data, with the defaults keyed by the kind's ID.
 	 */
 	private function get_block_editor_script_data(): array {
+		$editor          = $this->container->get( Editor::class );
 		$window_defaults = [];
 
 		// The classic form's, so both editors open a new window on the same boundaries.
 		foreach ( Window_Kind::all() as $kind ) {
-			$window_defaults[ $kind->get_id() ] = $kind->get_form_defaults();
+			$window_defaults[ $kind->get_id() ] = $editor->get_form_defaults( $kind );
 		}
 
 		return [

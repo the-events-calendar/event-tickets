@@ -51,7 +51,7 @@ const UNIT_NAMES = {
  *
  * @return {{label: string, value: string}[]} The unit options.
  */
-export function getUnitOptions( units, value ) {
+function getUnitOptions( units, value ) {
 	const count = parseInt( value, 10 );
 
 	return units.map( ( unit ) => ( { value: String( unit ), label: UNIT_NAMES[ unit ]( count ) } ) );

@@ -18,7 +18,6 @@ import WindowBoundaries from '../window-boundaries';
 import { useShownError, useTicketWindowError } from '../window-error';
 import { BLOCK_SALES_WINDOW } from '../window-kinds';
 import { RELATIVE_VALUE_OUT_OF_RANGE, getOutOfRangeBoundary } from '../../window-check';
-import './style.pcss';
 
 /**
  * Renders the sales window options of a ticket block in place of its date and time range picker.

@@ -172,6 +172,35 @@ final class Editor {
 	}
 
 	/**
+	 * Gets the boundaries the classic form opens a ticket without a rule on: the mode, and the relative values each end
+	 * offers next to a boundary shown in another mode.
+	 *
+	 * The Ticket block opens a new window on the same boundaries.
+	 *
+	 * @since TBD
+	 *
+	 * @param Window_Kind $kind The kind of the window.
+	 *
+	 * @return array{start: array{mode: string, value: int, unit: int, anchor?: string}, end: array{mode: string, value: int, unit: int, anchor?: string}} The
+	 *         mode and relative values of each end; the anchor only for a kind that takes one.
+	 */
+	public function get_form_defaults( Window_Kind $kind ): array {
+		// A new ticket's sale price starts now and ends a week before the event starts.
+		if ( Window_Kind::SALE_PRICE === $kind->get_id() ) {
+			return [
+				'start' => [ 'mode' => Rule::MODE_NOW ] + self::SALE_PRICE_DEFAULT_RELATIVE_START,
+				'end'   => self::SALE_PRICE_DEFAULT_RELATIVE_END,
+			];
+		}
+
+		// A new ticket opens on the default modes; the relative values are the ones the Ticket block offers too.
+		return [
+			'start' => [ 'mode' => Rule::MODE_DEFAULT ] + self::DEFAULT_RELATIVE_START,
+			'end'   => [ 'mode' => Rule::MODE_DEFAULT ] + self::DEFAULT_RELATIVE_END,
+		];
+	}
+
+	/**
 	 * Returns whether the relative options apply to the fields a template renders.
 	 *
 	 * The template's `provider` is the one whose fields it renders: the ticket's for the panel's own fields, and the
@@ -295,33 +324,6 @@ final class Editor {
 		$context['rule_json']     = $rule ? $rule->to_json() : '';
 
 		return $template->template( $this->get_template( $kind ), $context, false );
-	}
-
-	/**
-	 * Gets the boundaries the classic form opens a ticket without a rule on: the mode, and the relative values each end
-	 * offers next to a boundary shown in another mode.
-	 *
-	 * @since TBD
-	 *
-	 * @param Window_Kind $kind The kind of the window.
-	 *
-	 * @return array{start: array{mode: string, value: int, unit: int, anchor?: string}, end: array{mode: string, value: int, unit: int, anchor?: string}} The
-	 *         mode and relative values of each end; the anchor only for a kind that takes one.
-	 */
-	private function get_form_defaults( Window_Kind $kind ): array {
-		// A new ticket's sale price starts now and ends a week before the event starts.
-		if ( Window_Kind::SALE_PRICE === $kind->get_id() ) {
-			return [
-				'start' => [ 'mode' => Rule::MODE_NOW ] + self::SALE_PRICE_DEFAULT_RELATIVE_START,
-				'end'   => self::SALE_PRICE_DEFAULT_RELATIVE_END,
-			];
-		}
-
-		// A new ticket opens on the default modes; the relative values are the ones the Ticket block offers too.
-		return [
-			'start' => [ 'mode' => Rule::MODE_DEFAULT ] + self::DEFAULT_RELATIVE_START,
-			'end'   => [ 'mode' => Rule::MODE_DEFAULT ] + self::DEFAULT_RELATIVE_END,
-		];
 	}
 
 	/**

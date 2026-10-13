@@ -358,14 +358,22 @@ class Assets_Test extends Controller_Test_Case {
 	 * @test
 	 */
 	public function should_localize_the_window_each_kind_offers_by_default_to_the_block_editor(): void {
-		$data     = $this->get_block_editor_localized_data();
-		$expected = [];
+		$data = $this->get_block_editor_localized_data();
 
-		foreach ( Window_Kind::all() as $kind ) {
-			$expected[ $kind->get_id() ] = $kind->get_form_defaults();
-		}
-
-		$this->assertSame( $expected, $data['windowDefaults'] ?? null );
+		// The classic form's own, so both editors open a new window on the same boundaries.
+		$this->assertSame(
+			[
+				Window_Kind::SALES      => [
+					'start' => [ 'mode' => Rule::MODE_DEFAULT ] + Editor::DEFAULT_RELATIVE_START,
+					'end'   => [ 'mode' => Rule::MODE_DEFAULT ] + Editor::DEFAULT_RELATIVE_END,
+				],
+				Window_Kind::SALE_PRICE => [
+					'start' => [ 'mode' => Rule::MODE_NOW ] + Editor::SALE_PRICE_DEFAULT_RELATIVE_START,
+					'end'   => Editor::SALE_PRICE_DEFAULT_RELATIVE_END,
+				],
+			],
+			$data['windowDefaults'] ?? null
+		);
 		$this->assertSame(
 			[
 				'start' => [ 'mode' => Rule::MODE_DEFAULT ] + Editor::DEFAULT_RELATIVE_START,
