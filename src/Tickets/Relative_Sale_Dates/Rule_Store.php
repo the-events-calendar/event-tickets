@@ -159,7 +159,7 @@ final class Rule_Store {
 		$remaining = array_diff_key( $stored, array_flip( $keys ) );
 		$this->write( $ticket_id, $remaining );
 
-		if ( ! Rule::from_stored( $remaining ) ) {
+		if ( ! Rule::from_stored( $remaining, Window_Kind::sales() ) ) {
 			delete_post_meta( $ticket_id, Ticket_Dates::TIMEZONE_META_KEY );
 		}
 
