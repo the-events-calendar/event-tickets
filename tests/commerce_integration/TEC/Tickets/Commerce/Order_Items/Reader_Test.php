@@ -243,7 +243,7 @@ class Reader_Test extends Controller_Test_Case {
 		$loaded = $this->load( $order->ID );
 
 		$this->assertSame( get_post_meta( $order->ID, Order::$items_meta_key, true ), $loaded->items );
-		$this->assert_logged( 'debug', 'could not be read' );
+		$this->assert_logged( 'warning', 'could not be read' );
 	}
 
 	public function disabled_provider(): Generator {
