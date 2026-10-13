@@ -35,11 +35,25 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	private const INVALID_WINDOW_MESSAGE = 'Ticket sales cannot end before they start. Please adjust the sales window.';
 
 	/**
+	 * The error shown for a sales date that cannot be read.
+	 *
+	 * @var string
+	 */
+	private const INVALID_DATE_MESSAGE = 'The sales dates cannot be read. Enter a valid date for each specific date.';
+
+	/**
 	 * The error shown for an invalid sale price rule or a sale price window that does not end after the day it starts.
 	 *
 	 * @var string
 	 */
 	private const SALE_PRICE_ENDS_BEFORE_START_MESSAGE = 'The sale price cannot end before it starts. Please adjust the sale price window.';
+
+	/**
+	 * The error shown for a sale price date that cannot be read.
+	 *
+	 * @var string
+	 */
+	private const SALE_PRICE_INVALID_DATE_MESSAGE = 'The sale price dates cannot be read. Enter a valid date for each specific date.';
 
 	/**
 	 * The error shown for a sale price that starts outside the ticket sales window.
@@ -605,7 +619,8 @@ class Ticket_Save_Test extends Controller_Test_Case {
 		$result = apply_filters( 'tec_tickets_ticket_data_validation', true, $event_id, $data );
 
 		$this->assertWPError( $result );
-		$this->assertSame( self::INVALID_WINDOW_MESSAGE, $result->get_error_message() );
+		$this->assertSame( 'tec_tickets_relative_sale_dates_invalid_date', $result->get_error_code() );
+		$this->assertSame( self::INVALID_DATE_MESSAGE, $result->get_error_message() );
 	}
 
 	/**
@@ -1341,14 +1356,14 @@ class Ticket_Save_Test extends Controller_Test_Case {
 				self::SALE_PRICE_DATA_KEY => $rule( [ 'mode' => Rule::MODE_SPECIFIC ], $this->sale_price_relative( 3, DAY_IN_SECONDS ) ),
 				'ticket_sale_start_date'  => $unreadable,
 			],
-			self::SALE_PRICE_ENDS_BEFORE_START_MESSAGE,
+			self::SALE_PRICE_INVALID_DATE_MESSAGE,
 		];
 		yield 'a specific end' => [
 			[
 				self::SALE_PRICE_DATA_KEY => $rule( $this->sale_price_relative( 14, DAY_IN_SECONDS ), [ 'mode' => Rule::MODE_SPECIFIC ] ),
 				'ticket_sale_end_date'    => $unreadable,
 			],
-			self::SALE_PRICE_ENDS_BEFORE_START_MESSAGE,
+			self::SALE_PRICE_INVALID_DATE_MESSAGE,
 		];
 		yield 'a now start, which does not read the date' => [
 			[
@@ -1356,6 +1371,14 @@ class Ticket_Save_Test extends Controller_Test_Case {
 				'ticket_sale_start_date'  => $unreadable,
 			],
 			true,
+		];
+		// Without a sales window rule, the sales start that cannot be read leaves no sales window to judge the start by.
+		yield 'a sales start, under a sale price window that ends before it starts' => [
+			[
+				self::SALE_PRICE_DATA_KEY => $rule( $this->sale_price_relative( 7, DAY_IN_SECONDS ), $this->sale_price_relative( 14, DAY_IN_SECONDS ) ),
+				'ticket_start_date'       => $unreadable,
+			],
+			self::SALE_PRICE_ENDS_BEFORE_START_MESSAGE,
 		];
 	}
 

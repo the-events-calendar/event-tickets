@@ -4,9 +4,15 @@ namespace TEC\Tickets\Relative_Sale_Dates;
 
 use Codeception\TestCase\WPTestCase;
 use Generator;
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 
 class Window_Kind_Test extends WPTestCase {
+	use Ticket_Maker;
+	use With_Tickets_Commerce;
+
 	/**
 	 * @test
 	 */
@@ -114,12 +120,14 @@ class Window_Kind_Test extends WPTestCase {
 		yield 'sales' => [
 			Window_Kind::sales(),
 			[
+				'invalidDate'     => [ 'tec_tickets_relative_sale_dates_invalid_date', 'The sales dates cannot be read. Enter a valid date for each specific date.' ],
 				'endsBeforeStart' => [ 'tec_tickets_relative_sale_dates_invalid_window', 'Ticket sales cannot end before they start. Please adjust the sales window.' ],
 			],
 		];
 		yield 'sale price' => [
 			Window_Kind::sale_price(),
 			[
+				'invalidDate'     => [ 'tec_tickets_relative_sale_dates_sale_price_invalid_date', 'The sale price dates cannot be read. Enter a valid date for each specific date.' ],
 				'endsBeforeStart' => [ 'tec_tickets_relative_sale_dates_sale_price_ends_before_start', 'The sale price cannot end before it starts. Please adjust the sale price window.' ],
 				'outsideParent'   => [ 'tec_tickets_relative_sale_dates_sale_price_outside_sales_window', 'The sale price window falls outside the ticket sales window. Please adjust the dates.' ],
 			],
@@ -131,7 +139,7 @@ class Window_Kind_Test extends WPTestCase {
 	 * @dataProvider errors_provider
 	 */
 	public function should_reject_with_the_errors_of_the_kind( Window_Kind $kind, array $errors ): void {
-		foreach ( [ 'endsBeforeStart', 'outsideParent', 'valueOutOfRange' ] as $key ) {
+		foreach ( [ 'invalidDate', 'endsBeforeStart', 'outsideParent', 'valueOutOfRange' ] as $key ) {
 			$error = $kind->get_error( $key );
 
 			if ( ! isset( $errors[ $key ] ) ) {
@@ -165,6 +173,33 @@ class Window_Kind_Test extends WPTestCase {
 	 */
 	public function should_tell_whether_a_save_of_the_ticket_data_keeps_the_window( Window_Kind $kind, array $data, bool $saved ): void {
 		$this->assertSame( $saved, $kind->is_saved_with( $data ) );
+	}
+
+	/**
+	 * The prices are sent as an editor sends them, as strings, which Tickets Commerce compares as numbers.
+	 *
+	 * @return Generator<string,array{0: array<string,string|bool>}>
+	 */
+	public function sale_price_data_provider(): Generator {
+		yield 'checked and lower' => [ [ 'ticket_add_sale_price' => 'on', 'ticket_sale_price' => '5', 'ticket_price' => '10' ] ];
+		yield 'checked and lower in decimals' => [ [ 'ticket_add_sale_price' => 'on', 'ticket_sale_price' => '9.99', 'ticket_price' => '10' ] ];
+		yield 'unchecked' => [ [ 'ticket_add_sale_price' => false, 'ticket_sale_price' => '5', 'ticket_price' => '10' ] ];
+		yield 'not sent as checked' => [ [ 'ticket_sale_price' => '5', 'ticket_price' => '10' ] ];
+		yield 'equal to the price' => [ [ 'ticket_add_sale_price' => 'on', 'ticket_sale_price' => '10', 'ticket_price' => '10' ] ];
+		yield 'higher than the price' => [ [ 'ticket_add_sale_price' => 'on', 'ticket_sale_price' => '15', 'ticket_price' => '10' ] ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider sale_price_data_provider
+	 */
+	public function should_keep_the_sale_price_window_only_when_tickets_commerce_keeps_the_sale_price( array $data ): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+
+		tribe( Ticket::class )->process_sale_price_data( tribe( Module::class )->get_ticket( $post_id, $ticket_id ), $data );
+
+		$this->assertSame( '' !== get_post_meta( $ticket_id, Ticket::$sale_price_key, true ), Window_Kind::sale_price()->is_saved_with( $data ) );
 	}
 
 	/**

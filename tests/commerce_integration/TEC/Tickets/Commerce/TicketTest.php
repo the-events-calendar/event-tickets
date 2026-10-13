@@ -373,29 +373,4 @@ class TicketTest extends WPTestCase {
 		$this->assertEquals( $expected_start_date, get_post_meta( $ticket_id, Ticket::$sale_price_start_date_key, true ) );
 		$this->assertEquals( $expected_end_date, get_post_meta( $ticket_id, Ticket::$sale_price_end_date_key, true ) );
 	}
-
-	/**
-	 * @return \Generator<string,array{0: array<string,string|bool>, 1: bool}>
-	 */
-	public function kept_sale_price_provider(): \Generator {
-		yield 'unchecked' => [ [ 'ticket_add_sale_price' => false, 'ticket_sale_price' => '5', 'ticket_price' => '10' ], false ];
-		yield 'equal to the price' => [ [ 'ticket_add_sale_price' => 'on', 'ticket_sale_price' => '10', 'ticket_price' => '10' ], false ];
-		yield 'above the price' => [ [ 'ticket_add_sale_price' => 'on', 'ticket_sale_price' => '15', 'ticket_price' => '10' ], false ];
-		yield 'below the price' => [ [ 'ticket_add_sale_price' => 'on', 'ticket_sale_price' => '5', 'ticket_price' => '10' ], true ];
-	}
-
-	/**
-	 * @test
-	 * @dataProvider kept_sale_price_provider
-	 */
-	public function should_keep_only_a_checked_sale_price_lower_than_the_price( array $raw_data, bool $kept ): void {
-		$post_id   = static::factory()->post->create();
-		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
-		$ticket    = tribe( Module::class )->get_ticket( $post_id, $ticket_id );
-
-		tribe( Ticket::class )->process_sale_price_data( $ticket, $raw_data );
-
-		$this->assertSame( $kept, Ticket::keeps_sale_price( $raw_data ) );
-		$this->assertSame( $kept, '' !== get_post_meta( $ticket_id, Ticket::$sale_price_key, true ) );
-	}
 }

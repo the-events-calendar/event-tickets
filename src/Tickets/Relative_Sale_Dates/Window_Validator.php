@@ -19,7 +19,7 @@ use WP_Error;
 
 /**
  * Builds the window a save of the ticket data would store, from the rule applied and the dates submitted, and rejects
- * one that ends before it starts or starts outside its parent window.
+ * one with a date that cannot be read, or that ends before it starts or starts outside its parent window.
  *
  * Every kind is judged alike, at the precision of its dates; what only the sales window does is
  * `Sales_Window_Effects`'.
@@ -63,10 +63,10 @@ final class Window_Validator {
 	/**
 	 * Judges the window of one kind the ticket data would save.
 	 *
-	 * Without a rule, or without event dates, there is nothing to judge. The order of the window's ends is judged at the
-	 * kind's precision; a start without a date of its own counts as the start of the parent window. A start with its own
-	 * date must fall within the parent window, and without both ends of the parent window there is nothing to judge the
-	 * window against.
+	 * Without a rule, or without event dates, there is nothing to judge. A date the window reads from the ticket data
+	 * that cannot be read rejects it as such. The order of the window's ends is judged at the kind's precision; a start
+	 * without a date of its own counts as the start of the parent window. A start with its own date must fall within
+	 * the parent window, which is judged only once both ends of the parent window are known.
 	 *
 	 * @since TBD
 	 *
@@ -87,18 +87,18 @@ final class Window_Validator {
 
 		$window = $this->get_window( $post_id, $data, $kind, $rule, $event_dates );
 
+		if ( $window instanceof WP_Error ) {
+			return $window;
+		}
+
 		if ( ! $window ) {
 			return $kind->get_error( 'endsBeforeStart' );
 		}
 
 		$parent        = $kind->get_parent();
 		$parent_window = $parent ? $this->get_window( $post_id, $data, $parent, $parent_rule, $event_dates ) : null;
-		$parent_start  = $parent_window ? $parent_window->get_start() : null;
-		$parent_end    = $parent_window ? $parent_window->get_end() : null;
-
-		if ( $parent && ! ( $parent_start && $parent_end ) ) {
-			return null;
-		}
+		$parent_start  = $parent_window instanceof Resolved_Window ? $parent_window->get_start() : null;
+		$parent_end    = $parent_window instanceof Resolved_Window ? $parent_window->get_end() : null;
 
 		$own_start = $window->get_start();
 		$start     = $own_start ?? $parent_start;
@@ -135,10 +135,11 @@ final class Window_Validator {
 	 * @param array{0: DateTimeImmutable, 1: DateTimeImmutable} $event_dates The event start and end, in the event
 	 *                                                                       timezone.
 	 *
-	 * @return Resolved_Window|null The window, whose ends are `null` where it has no date; `null` when a submitted date
-	 *                              cannot be read, or a boundary of a kind that needs a date has none.
+	 * @return Resolved_Window|WP_Error|null The window, whose ends are `null` where it has no date; the kind's
+	 *                                       `invalidDate` error when a submitted date it reads cannot be read; `null`
+	 *                                       when a boundary of a kind that needs a date has none.
 	 */
-	private function get_window( int $post_id, array $data, Window_Kind $kind, ?Rule $rule, array $event_dates ): ?Resolved_Window {
+	private function get_window( int $post_id, array $data, Window_Kind $kind, ?Rule $rule, array $event_dates ) {
 		$timezone = $event_dates[0]->getTimezone();
 		$fields   = $kind->get_submitted_fields();
 		$is_open  = $rule && $rule->opens_at_once() && null !== $kind->get_open_start_value();
@@ -154,7 +155,7 @@ final class Window_Validator {
 			( ! $start && ! $is_open && $this->sends_an_unreadable_date( $data, $fields['start'], $timezone ) )
 			|| ( ! $end && $this->sends_an_unreadable_date( $data, $fields['end'], $timezone ) )
 		) {
-			return null;
+			return $kind->get_error( 'invalidDate' );
 		}
 
 		$start ??= $is_open ? null : $submitted_start;
