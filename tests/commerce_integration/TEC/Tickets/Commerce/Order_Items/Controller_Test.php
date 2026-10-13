@@ -64,6 +64,21 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertFalse( $controller::is_registered() );
 	}
 
+	public function falsy_environment_variable_provider(): Generator {
+		yield 'false' => [ 'false' ];
+		yield 'zero' => [ '0' ];
+		yield 'empty' => [ '' ];
+	}
+
+	/**
+	 * @dataProvider falsy_environment_variable_provider
+	 */
+	public function test_a_falsy_environment_variable_does_not_switch_it_off( string $value ): void {
+		putenv( Controller::DISABLED . '=' . $value );
+
+		$this->assertTrue( $this->make_controller()->is_active() );
+	}
+
 	public function test_unregister_keeps_the_table_and_its_rows(): void {
 		$controller = $this->make_controller();
 		$controller->register();
