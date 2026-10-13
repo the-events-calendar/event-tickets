@@ -298,6 +298,15 @@ describe( 'classic editor script', () => {
 		expect( getUnitLabel( 'end' ) ).toBe( 'hour' );
 	} );
 
+	it( 'should name the unit of a zero in the plural', async () => {
+		renderEventForm();
+		await loadScript();
+
+		jQuery( '#ticket_sales_start_value' ).val( '0' ).trigger( 'input' );
+
+		expect( getUnitLabel( 'start' ) ).toBe( 'weeks' );
+	} );
+
 	it( 'should change the unit name when the number changes', async () => {
 		renderEventForm();
 		await loadScript();
