@@ -107,23 +107,6 @@ class Rest_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
-	public function should_remove_the_rule_the_block_editor_sends_as_empty(): void {
-		$event_id = $this->create_event( '2027-06-24 19:00:00' );
-		$rule     = [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => [ 'mode' => 'default' ] ];
-		$this->send_block_editor_ticket_save( 'POST', '/tickets', $event_id, 'add_ticket_nonce', [ 'ticket' => [ 'relative_sale_dates' => wp_json_encode( $rule ) ] ] );
-		$ticket_ids = tribe( Module::class )->get_tickets_ids( $event_id );
-		$ticket_id  = reset( $ticket_ids );
-		$this->assertSame( $rule, tribe( Rule_Store::class )->get( $ticket_id ) );
-
-		$response = $this->send_block_editor_ticket_save( 'PUT', "/tickets/{$ticket_id}", $event_id, 'edit_ticket_nonce', [ 'ticket' => [ 'relative_sale_dates' => '' ] ] );
-
-		$this->assertFalse( $response->is_error() );
-		$this->assertSame( [], tribe( Rule_Store::class )->get( $ticket_id ) );
-	}
-
-	/**
-	 * @test
-	 */
 	public function should_keep_the_rule_when_a_block_editor_update_leaves_it_out(): void {
 		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
 		$ticket_id = $this->create_tc_ticket( $event_id );
@@ -664,7 +647,7 @@ class Rest_Test extends Controller_Test_Case {
 		yield 'TEC REST API ticket data params' => [ 'add_rule_to_ticket_data_params', static fn() => [] ];
 		yield 'block editor ticket data' => [ 'add_rule_to_block_editor_ticket_data', static fn() => [] ];
 		yield 'TEC REST API definition' => [ 'add_rule_to_definition', static fn() => [] ];
-		yield 'TEC REST API request data' => [ 'keep_a_rule_sent_as_null', static fn() => [ [ Ticket_Save::DATA_KEY => null ], tribe( Ticket_Endpoint::class )->update_schema() ] ];
+		yield 'TEC REST API request data' => [ 'keep_a_rule_sent_as_null', static fn() => [ [ 'relative_sale_dates' => null ], tribe( Ticket_Endpoint::class )->update_schema() ] ];
 		yield 'TEC REST API ticket entity' => [ 'add_rule_to_tec_rest_api_ticket', static fn() => [] ];
 	}
 

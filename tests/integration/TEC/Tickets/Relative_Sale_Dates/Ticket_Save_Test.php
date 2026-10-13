@@ -576,7 +576,7 @@ class Ticket_Save_Test extends Controller_Test_Case {
 		$this->assertSame(
 			[
 				'status'   => 400,
-				'argument' => Ticket_Save::DATA_KEY,
+				'argument' => 'relative_sale_dates',
 			],
 			$result->get_error_data()
 		);
