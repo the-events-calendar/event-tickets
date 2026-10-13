@@ -17,6 +17,13 @@ use Closure;
 class Ticket_Test extends Post_Entity_REST_Test_Case {
 	use Ticket_Maker;
 
+	/**
+	 * The request argument the validation rejection names.
+	 *
+	 * @var string
+	 */
+	private const REJECTED_ARGUMENT = 'tec_tests_rejected_argument';
+
 	protected $endpoint_class = Ticket::class;
 
 	/**
@@ -280,6 +287,7 @@ class Ticket_Test extends Post_Entity_REST_Test_Case {
 		$response = $this->assert_endpoint( $this->endpoint->get_base_path(), 'POST', 400, $example );
 
 		$this->assertSame( 'The ticket data is not valid.', $response['message'] );
+		$this->assertSame( self::REJECTED_ARGUMENT, $response['data']['argument'] );
 		$this->assertSame( [], $this->get_ticket_ids_of( $example['event'] ) );
 	}
 
@@ -299,6 +307,7 @@ class Ticket_Test extends Post_Entity_REST_Test_Case {
 		$response = $this->assert_endpoint( sprintf( $this->endpoint->get_base_path(), $entity_id ), 'PUT', 400, [ 'title' => "{$title} updated" ] );
 
 		$this->assertSame( 'The ticket data is not valid.', $response['message'] );
+		$this->assertSame( self::REJECTED_ARGUMENT, $response['data']['argument'] );
 		$this->assertSame( $title, get_post( $entity_id )->post_title );
 	}
 
@@ -435,7 +444,14 @@ class Ticket_Test extends Post_Entity_REST_Test_Case {
 	 * @return void
 	 */
 	private function reject_ticket_data(): void {
-		$this->ticket_data_rejection = static fn() => new WP_Error( 'tec_tests_invalid_ticket_data', 'The ticket data is not valid.', [ 'status' => 400 ] );
+		$this->ticket_data_rejection = static fn() => new WP_Error(
+			'tec_tests_invalid_ticket_data',
+			'The ticket data is not valid.',
+			[
+				'status'   => 400,
+				'argument' => self::REJECTED_ARGUMENT,
+			]
+		);
 		add_filter( 'tec_tickets_ticket_data_validation', $this->ticket_data_rejection );
 	}
 

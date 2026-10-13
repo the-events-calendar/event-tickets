@@ -401,13 +401,16 @@ final class Ticket_Save {
 	 *
 	 * @since TBD
 	 *
-	 * @return WP_Error The error, with a 400 status for REST responses.
+	 * @return WP_Error The error, with a 400 status for REST responses and the rule key as the argument the TEC REST API names.
 	 */
 	private function get_invalid_window_error(): WP_Error {
 		return new WP_Error(
 			'tec_tickets_relative_sale_dates_invalid_window',
 			__( 'Ticket sales cannot end before they start. Please adjust the sales window.', 'event-tickets' ),
-			[ 'status' => 400 ]
+			[
+				'status'   => 400,
+				'argument' => self::DATA_KEY,
+			]
 		);
 	}
 }

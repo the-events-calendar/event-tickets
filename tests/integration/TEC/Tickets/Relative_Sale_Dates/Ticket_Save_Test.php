@@ -522,7 +522,13 @@ class Ticket_Save_Test extends Controller_Test_Case {
 
 		$this->assertWPError( $result );
 		$this->assertSame( self::INVALID_WINDOW_MESSAGE, $result->get_error_message() );
-		$this->assertSame( 400, $result->get_error_data()['status'] );
+		$this->assertSame(
+			[
+				'status'   => 400,
+				'argument' => Ticket_Save::DATA_KEY,
+			],
+			$result->get_error_data()
+		);
 	}
 
 	/**
@@ -677,6 +683,25 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
+	public function should_return_the_invalid_window_error_to_a_classic_editor_save_asked_for_its_result(): void {
+		$event_id = $this->create_event( '2027-06-24 19:00:00' );
+		$this->set_classic_ticket_request(
+			$event_id,
+			[ 'relative_sale_dates' => wp_json_encode( [ 'start' => $this->relative( 1, HOUR_IN_SECONDS ), 'end' => $this->relative( 2, HOUR_IN_SECONDS ) ] ) ]
+		);
+
+		$result = tribe( 'tickets.metabox' )->ajax_ticket_add( true );
+
+		$this->assertWPError( $result );
+		$this->assertSame( 'tec_tickets_relative_sale_dates_invalid_window', $result->get_error_code() );
+		$this->assertSame( self::INVALID_WINDOW_MESSAGE, $result->get_error_message() );
+		$this->assertSame( [ 'status' => 400 ], $result->get_error_data() );
+		$this->assertSame( [], tribe( Module::class )->get_tickets_ids( $event_id ) );
+	}
+
+	/**
+	 * @test
+	 */
 	public function should_not_change_a_ticket_the_classic_editor_saves_with_an_invalid_rule(): void {
 		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
 		$ticket_id = $this->create_tc_ticket( $event_id );
@@ -734,6 +759,35 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	 * @return array{success: bool, data: mixed} The decoded JSON response.
 	 */
 	private function send_classic_ticket_add( int $event_id, array $data ): array {
+		$this->set_classic_ticket_request( $event_id, $data );
+
+		add_filter( 'wp_doing_ajax', '__return_true' );
+		add_filter(
+			'wp_die_ajax_handler',
+			static fn() => static function () {
+				throw new RuntimeException( 'The AJAX response was sent.' );
+			}
+		);
+
+		ob_start();
+		try {
+			tribe( 'tickets.metabox' )->ajax_ticket_add();
+		} catch ( RuntimeException $e ) {
+			// wp_send_json_*() ends the request through the die handler.
+		}
+
+		return json_decode( ob_get_clean(), true );
+	}
+
+	/**
+	 * Fills the request with a ticket save from the classic editor, sent by an administrator.
+	 *
+	 * @param int                      $event_id The event post ID.
+	 * @param array<string,int|string> $data     The ticket form data, merged over a Tickets Commerce ticket.
+	 *
+	 * @return void
+	 */
+	private function set_classic_ticket_request( int $event_id, array $data ): void {
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 
 		// The classic editor posts its form as one URL-encoded string, which WordPress then slashes.
@@ -757,23 +811,6 @@ class Ticket_Save_Test extends Controller_Test_Case {
 				),
 			]
 		);
-
-		add_filter( 'wp_doing_ajax', '__return_true' );
-		add_filter(
-			'wp_die_ajax_handler',
-			static fn() => static function () {
-				throw new RuntimeException( 'The AJAX response was sent.' );
-			}
-		);
-
-		ob_start();
-		try {
-			tribe( 'tickets.metabox' )->ajax_ticket_add();
-		} catch ( RuntimeException $e ) {
-			// wp_send_json_*() ends the request through the die handler.
-		}
-
-		return json_decode( ob_get_clean(), true );
 	}
 
 	/**
