@@ -5,6 +5,7 @@ import { STORE_NAME } from '@tec/tickets/relative-sale-dates/block-editor/store/
 import SalesWindow from '@tec/tickets/relative-sale-dates/block-editor/sales-window';
 import * as legacySelectors from '@moderntribe/tickets/data/blocks/ticket/selectors';
 import { DEFAULT_EVENT, clearBlockEditorGlobals, setBlockEditorData, setEventState } from './block-editor-event-state';
+import * as eventDates from '@tec/tickets/relative-sale-dates/block-editor/event-dates';
 import '@tec/tickets/relative-sale-dates/block-editor';
 
 jest.mock( '@wordpress/data', () => require( './wordpress-data-registry' ) );
@@ -276,6 +277,16 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 
 			expect( filterDates( clientId ) ).toStrictEqual( ticketDates );
 			expect( filterDates( newClientId() ) ).toStrictEqual( ticketDates );
+		} );
+
+		// The header filters its dates on every change of the legacy store, once per ticket.
+		it( 'should not read the event dates for a ticket without a rule', () => {
+			const readEventDates = jest.spyOn( eventDates, 'readEventDates' );
+
+			filterDates( newClientId() );
+
+			expect( readEventDates ).not.toHaveBeenCalled();
+			readEventDates.mockRestore();
 		} );
 
 		it( 'should leave the dates alone while the event dates cannot be read', () => {

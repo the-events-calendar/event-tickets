@@ -1300,133 +1300,39 @@ describe( 'Ticket Block sagas', () => {
 				},
 			};
 
-			// First convert the dates
-			expect( gen.next( apiResponse ).value ).toEqual(
-				call( momentUtil.toMoment, apiResponse.data.available_from )
-			);
+			expect( gen.next( apiResponse ).value ).toEqual( call( sagas.getTicketSaleDates, apiResponse.data ) );
 
 			const startMoment = momentUtil.toMoment( apiResponse.data.available_from );
-
-			expect( gen.next( startMoment ).value ).toEqual(
-				call( momentUtil.toDatabaseDate, startMoment )
-			);
-
-			const startDate = momentUtil.toDatabaseDate( startMoment );
-
-			expect( gen.next( startDate ).value ).toEqual(
-				call( momentUtil.toDate, startMoment, datePickerFormat )
-			);
-
-			const startDateInput = momentUtil.toDate( startMoment );
-
-			expect( gen.next( startDateInput ).value ).toEqual(
-				call( momentUtil.toDatabaseTime, startMoment )
-			);
-
-			const startTime = momentUtil.toDatabaseTime( startMoment );
-
-			expect( gen.next( startTime ).value ).toEqual(
-				call( momentUtil.toTime, startMoment )
-			);
-
-			const startTimeInput = momentUtil.toTime( startMoment );
-
-			expect( gen.next( startTimeInput ).value ).toEqual(
-				call( momentUtil.toMoment, apiResponse.data.available_until )
-			);
-
 			const endMoment = momentUtil.toMoment( apiResponse.data.available_until );
+			const saleDates = {
+				startDate: momentUtil.toDatabaseDate( startMoment ),
+				startDateInput: momentUtil.toDate( startMoment ),
+				startDateMoment: startMoment,
+				endDate: momentUtil.toDatabaseDate( endMoment ),
+				endDateInput: momentUtil.toDate( endMoment ),
+				endDateMoment: endMoment,
+				startTime: momentUtil.toDatabaseTime( startMoment ),
+				endTime: momentUtil.toDatabaseTime( endMoment ),
+				startTimeInput: momentUtil.toTime( startMoment ),
+				endTimeInput: momentUtil.toTime( endMoment ),
+			};
+			const { startDate, startDateInput, endDate, endDateInput, startTime, endTime, startTimeInput, endTimeInput } =
+				saleDates;
 
-			expect( gen.next( endMoment ).value ).toEqual(
-				call( momentUtil.toDatabaseDate, endMoment )
-			);
-
-			const endDate = momentUtil.toDatabaseDate( endMoment );
-
-			expect( gen.next( endDate ).value ).toEqual(
-				call( momentUtil.toDate, endMoment, datePickerFormat )
-			);
-
-			const endDateInput = momentUtil.toDate( endMoment );
-
-			expect( gen.next( endDateInput ).value ).toEqual(
-				call( momentUtil.toDatabaseTime, endMoment )
-			);
-
-			const endTime = momentUtil.toDatabaseTime( endMoment );
-
-			expect( gen.next( endTime ).value ).toEqual(
-				call( momentUtil.toTime, endMoment )
-			);
-
-			const endTimeInput = momentUtil.toTime( endMoment );
-
-			// The saga processes available_until a second time if it exists
-			expect( gen.next( endTimeInput ).value ).toEqual(
-				call( momentUtil.toMoment, apiResponse.data.available_until )
-			);
-
-			const endMoment2 = momentUtil.toMoment( apiResponse.data.available_until );
-
-			expect( gen.next( endMoment2 ).value ).toEqual(
-				call( momentUtil.toDatabaseDate, endMoment2 )
-			);
-
-			const endDate2 = momentUtil.toDatabaseDate( endMoment2 );
-
-			expect( gen.next( endDate2 ).value ).toEqual(
-				call( momentUtil.toDate, endMoment2, datePickerFormat )
-			);
-
-			const endDateInput2 = momentUtil.toDate( endMoment2 );
-
-			expect( gen.next( endDateInput2 ).value ).toEqual(
-				call( momentUtil.toDatabaseTime, endMoment2 )
-			);
-
-			const endTime2 = momentUtil.toDatabaseTime( endMoment2 );
-
-			expect( gen.next( endTime2 ).value ).toEqual(
-				call( momentUtil.toTime, endMoment2 )
-			);
-
-			const endTimeInput2 = momentUtil.toTime( endMoment2 );
-
-			expect( gen.next( endTimeInput2 ).value ).toEqual(
-				call( momentUtil.toMoment, apiResponse.data.sale_price_data.start_date )
-			);
+			// The sale price dates take the date picker format, as they do after a create or update.
+			expect( gen.next( saleDates ).value ).toEqual( call( sagas.getTicketSalePriceDates, apiResponse.data ) );
 
 			const saleStartDateMoment = momentUtil.toMoment( apiResponse.data.sale_price_data.start_date );
-
-			expect( gen.next( saleStartDateMoment ).value ).toEqual(
-				call( momentUtil.toDatabaseDate, saleStartDateMoment )
-			);
-
-			const saleStartDate = momentUtil.toDatabaseDate( saleStartDateMoment );
-
-			expect( gen.next( saleStartDate ).value ).toEqual(
-				call( momentUtil.toDate, saleStartDateMoment )
-			);
-
-			const saleStartDateInput = momentUtil.toDate( saleStartDateMoment );
-
-			expect( gen.next( saleStartDateInput ).value ).toEqual(
-				call( momentUtil.toMoment, apiResponse.data.sale_price_data.end_date )
-			);
-
 			const saleEndDateMoment = momentUtil.toMoment( apiResponse.data.sale_price_data.end_date );
-
-			expect( gen.next( saleEndDateMoment ).value ).toEqual(
-				call( momentUtil.toDatabaseDate, saleEndDateMoment )
-			);
-
-			const saleEndDate = momentUtil.toDatabaseDate( saleEndDateMoment );
-
-			expect( gen.next( saleEndDate ).value ).toEqual(
-				call( momentUtil.toDate, saleEndDateMoment )
-			);
-
-			const saleEndDateInput = momentUtil.toDate( saleEndDateMoment );
+			const salePriceDates = {
+				saleStartDate: momentUtil.toDatabaseDate( saleStartDateMoment ),
+				saleStartDateInput: momentUtil.toDate( saleStartDateMoment, datePickerFormat ),
+				saleStartDateMoment,
+				saleEndDate: momentUtil.toDatabaseDate( saleEndDateMoment ),
+				saleEndDateInput: momentUtil.toDate( saleEndDateMoment, datePickerFormat ),
+				saleEndDateMoment,
+			};
+			const { saleStartDate, saleStartDateInput, saleEndDate, saleEndDateInput } = salePriceDates;
 
 			const details = {
 				title: apiResponse.data.title,
@@ -1459,7 +1365,7 @@ describe( 'Ticket Block sagas', () => {
 				saleEndDateMoment,
 			};
 
-			expect( gen.next( saleEndDateInput ).value ).toEqual(
+			expect( gen.next( salePriceDates ).value ).toEqual(
 				all( [
 					put( actions.setTicketDetails( CLIENT_ID, details ) ),
 					put( actions.setTicketTempDetails( CLIENT_ID, details ) ),
@@ -1605,7 +1511,7 @@ describe( 'Ticket Block sagas', () => {
 			);
 
 			expect( gen.next( 0 ).value ).toEqual(
-				call( sagas.getTicketSaleDates, response.data ),
+				call( sagas.getSavedTicketSaleDates, response.data ),
 			);
 
 			const saleDates = {
@@ -1824,6 +1730,39 @@ describe( 'Ticket Block sagas', () => {
 				} ),
 			);
 			expect( clone2.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'getSavedTicketSaleDates', () => {
+		const saleDates = {
+			startDate: '2018-11-09',
+			startTime: '19:48:42',
+			endDate: 'Invalid date',
+			endDateInput: 'Invalid date',
+			endDateMoment: {},
+			endTime: 'Invalid date',
+			endTimeInput: 'Invalid date',
+		};
+
+		it( 'should leave out the end of a ticket the server stored without one', () => {
+			const ticket = { available_from: '2018-11-09 19:48:42', available_until: '' };
+			const gen = sagas.getSavedTicketSaleDates( ticket );
+
+			expect( gen.next().value ).toEqual( call( sagas.getTicketSaleDates, ticket ) );
+
+			const result = gen.next( saleDates );
+
+			expect( result.done ).toBe( true );
+			expect( result.value ).toEqual( { startDate: '2018-11-09', startTime: '19:48:42' } );
+		} );
+
+		it( 'should keep the end of a ticket the server stored with one', () => {
+			const ticket = { available_from: '2018-11-09 19:48:42', available_until: '2018-11-12 19:48:42' };
+			const gen = sagas.getSavedTicketSaleDates( ticket );
+
+			gen.next();
+
+			expect( gen.next( saleDates ).value ).toBe( saleDates );
 		} );
 	} );
 

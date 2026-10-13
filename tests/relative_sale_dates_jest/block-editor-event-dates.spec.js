@@ -50,6 +50,20 @@ describe( 'readEventDates', () => {
 		expect( readEventDates() ).toBeNull();
 	} );
 
+	// moment.tz() would read an unknown zone as UTC and judge the window at other instants than the server.
+	it( 'should read nothing for a timezone the browser does not know', () => {
+		setEventState( { ...DEFAULT_EVENT, timeZone: 'Mars/Olympus_Mons' } );
+
+		expect( readEventDates() ).toBeNull();
+	} );
+
+	it( 'should read a fixed UTC offset the server resolves a manual offset to', () => {
+		setBlockEditorData( { timezones: { 'UTC+5.5': '+05:30' } } );
+		setEventState( { ...DEFAULT_EVENT, timeZone: 'UTC+5.5' } );
+
+		expect( readEventDates().timezone ).toBe( '+05:30' );
+	} );
+
 	it( 'should read nothing while the event has no timezone', () => {
 		setEventState( { ...DEFAULT_EVENT, timeZone: '' } );
 

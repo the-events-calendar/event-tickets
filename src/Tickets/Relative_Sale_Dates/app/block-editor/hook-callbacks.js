@@ -145,7 +145,14 @@ export function filterTicketDuration( picker, clientId ) {
  * @return {{fromDate: string, toDate: string}} The sale dates to show.
  */
 export function filterSaleWindowDates( dates, clientId ) {
-	const saleWindow = resolveTicketWindow( select( STORE_NAME ).getDraftRule( clientId ), readEventDates() );
+	const rule = select( STORE_NAME ).getDraftRule( clientId );
+
+	// The header reads its dates on every change of the legacy store, so a ticket without a rule skips the event dates.
+	if ( ! rule ) {
+		return dates;
+	}
+
+	const saleWindow = resolveTicketWindow( rule, readEventDates() );
 
 	if ( ! saleWindow ) {
 		return dates;

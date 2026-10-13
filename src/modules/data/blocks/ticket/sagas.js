@@ -435,24 +435,13 @@ export function* getTicketSaleDates( ticket ) {
 	const startTime = yield call( momentUtil.toDatabaseTime, startMoment );
 	const startTimeInput = yield call( momentUtil.toTime, startMoment );
 
-	let endMoment = yield call( momentUtil.toMoment, available_until );
-	let endDate = yield call( momentUtil.toDatabaseDate, endMoment );
-	let endDateInput = yield datePickerFormat
+	const endMoment = yield call( momentUtil.toMoment, available_until );
+	const endDate = yield call( momentUtil.toDatabaseDate, endMoment );
+	const endDateInput = yield datePickerFormat
 		? call( momentUtil.toDate, endMoment, datePickerFormat )
 		: call( momentUtil.toDate, endMoment );
-	let endTime = yield call( momentUtil.toDatabaseTime, endMoment );
-	let endTimeInput = yield call( momentUtil.toTime, endMoment );
-
-	if ( available_until ) {
-		// eslint-disable-line camelcase
-		endMoment = yield call( momentUtil.toMoment, available_until );
-		endDate = yield call( momentUtil.toDatabaseDate, endMoment );
-		endDateInput = yield datePickerFormat
-			? call( momentUtil.toDate, endMoment, datePickerFormat )
-			: call( momentUtil.toDate, endMoment );
-		endTime = yield call( momentUtil.toDatabaseTime, endMoment );
-		endTimeInput = yield call( momentUtil.toTime, endMoment );
-	}
+	const endTime = yield call( momentUtil.toDatabaseTime, endMoment );
+	const endTimeInput = yield call( momentUtil.toTime, endMoment );
 
 	return {
 		startDate,
@@ -495,6 +484,39 @@ export function* getTicketSalePriceDates( ticket ) {
 		: call( momentUtil.toDate, saleEndDateMoment );
 
 	return { saleStartDate, saleStartDateInput, saleStartDateMoment, saleEndDate, saleEndDateInput, saleEndDateMoment };
+}
+
+/**
+ * The ticket details that hold a ticket's sales end.
+ *
+ * @since TBD
+ *
+ * @type {string[]}
+ */
+const END_DATE_DETAILS = [ 'endDate', 'endDateInput', 'endDateMoment', 'endTime', 'endTimeInput' ];
+
+/**
+ * Gets the sale dates the server stored for a ticket it just created or updated, to put back in the form.
+ *
+ * A ticket stored without an end gives no end to read, which would put an invalid date in the form and send it with
+ * the next update, so the form keeps the end it holds.
+ *
+ * @since TBD
+ *
+ * @param {Object} ticket The ticket, as the tickets REST API returns it.
+ *
+ * @return {Object} The start and end dates, times and moments, without the end for a ticket stored without one.
+ */
+export function* getSavedTicketSaleDates( ticket ) {
+	const saleDates = yield call( getTicketSaleDates, ticket );
+
+	if ( ticket.available_until ) {
+		return saleDates;
+	}
+
+	return Object.fromEntries(
+		Object.entries( saleDates ).filter( ( [ key ] ) => ! END_DATE_DETAILS.includes( key ) )
+	);
 }
 
 export function* fetchTicket( action ) {
@@ -566,18 +588,20 @@ export function* fetchTicket( action ) {
 				endTime,
 				startTimeInput,
 				endTimeInput,
-			} = yield* getTicketSaleDates( ticket );
+			} = yield call( getTicketSaleDates, ticket );
 
 			const salePriceChecked = sale_price_data?.enabled || false;
 			const salePrice = sale_price_data?.sale_price || '';
 
-			const saleStartDateMoment = yield call( momentUtil.toMoment, sale_price_data?.start_date || '' );
-			const saleStartDate = yield call( momentUtil.toDatabaseDate, saleStartDateMoment );
-			const saleStartDateInput = yield call( momentUtil.toDate, saleStartDateMoment );
-
-			const saleEndDateMoment = yield call( momentUtil.toMoment, sale_price_data?.end_date || '' );
-			const saleEndDate = yield call( momentUtil.toDatabaseDate, saleEndDateMoment );
-			const saleEndDateInput = yield call( momentUtil.toDate, saleEndDateMoment );
+			// The same date picker format as after a create or update, so the inputs read the same after a reload.
+			const {
+				saleStartDate,
+				saleStartDateInput,
+				saleStartDateMoment,
+				saleEndDate,
+				saleEndDateInput,
+				saleEndDateMoment,
+			} = yield call( getTicketSalePriceDates, ticket );
 
 			const details = {
 				attendeeInfoFields: attendee_information_fields,
@@ -675,7 +699,7 @@ export function* createNewTicket( action ) {
 			const salePrice = sale_price_data?.sale_price || '';
 
 			// The server can store other sale dates than the form sent, such as those a relative sales window resolves to.
-			const saleDates = yield call( getTicketSaleDates, ticket );
+			const saleDates = yield call( getSavedTicketSaleDates, ticket );
 			const salePriceDates = yield call( getTicketSalePriceDates, ticket );
 
 			const [ title, description, price, sku, iac, capacityType, capacity ] = yield all( [
@@ -775,7 +799,7 @@ export function* updateTicket( action ) {
 			const salePrice = sale_price_data?.sale_price || '';
 
 			// The server can store other sale dates than the form sent, such as those a relative sales window resolves to.
-			const saleDates = yield call( getTicketSaleDates, ticket );
+			const saleDates = yield call( getSavedTicketSaleDates, ticket );
 			const salePriceDates = yield call( getTicketSalePriceDates, ticket );
 
 			const [ title, description, price, sku, iac, capacityType, capacity ] = yield all( [

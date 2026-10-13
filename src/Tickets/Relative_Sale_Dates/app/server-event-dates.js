@@ -9,6 +9,11 @@
  */
 import moment from 'moment';
 
+/*
+ * moment.tz() does not take a fixed offset as a zone; the resolver applies one with utcOffset() instead.
+ */
+const FIXED_OFFSET = /^[+-]\d{2}:\d{2}$/;
+
 /**
  * @typedef {Object} EventDateSettings
  *
@@ -43,10 +48,15 @@ import moment from 'moment';
  * @param {string}            dates.timezone  The event timezone, as the editor holds it.
  * @param {EventDateSettings} settings        The settings the script is localized with.
  *
- * @return {EventDates|null} The event dates, or `null` when a timed event's time cannot be read.
+ * @return {EventDates|null} The event dates, or `null` when a timed event's time or the timezone cannot be read.
  */
 export function toServerEventDates( { startDate, startTime, endDate, endTime, allDay, timezone }, settings ) {
 	const zone = settings.timezones[ timezone ] || timezone;
+
+	// moment.tz() reads a zone it does not know as UTC, which would judge the window at other instants than the server.
+	if ( ! FIXED_OFFSET.test( zone ) && ! moment.tz.zone( zone || '' ) ) {
+		return null;
+	}
 
 	if ( allDay ) {
 		const lastDay = moment.utc( endDate ).add( settings.allDay.endDays, 'days' ).format( 'YYYY-MM-DD' );
