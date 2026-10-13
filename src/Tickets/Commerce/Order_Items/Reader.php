@@ -11,6 +11,7 @@ namespace TEC\Tickets\Commerce\Order_Items;
 
 use TEC\Tickets\Commerce\Order_Items\Line_Items\Line_Item_Types;
 use TEC\Tickets\Commerce\Order_Items\Repositories\Order_Items;
+use TEC\Tickets\Commerce\Order_Items\Traits\With_Logger;
 use Throwable;
 use Tribe__Log as Log;
 
@@ -22,6 +23,8 @@ use Tribe__Log as Log;
  * @package TEC\Tickets\Commerce\Order_Items
  */
 final class Reader {
+	use With_Logger;
+
 	/**
 	 * The line item types that turn rows back into order items.
 	 *
@@ -82,14 +85,12 @@ final class Reader {
 				$list[ $key ] = $item;
 			}
 		} catch ( Throwable $e ) {
-			do_action(
-				'tribe_log',
+			$this->log(
 				Log::DEBUG,
 				'The order items could not be read from the table; the order reads them from its meta.',
 				[
-					'controller' => Controller::class,
-					'order_id'   => $post_id,
-					'error'      => $e->getMessage(),
+					'order_id' => $post_id,
+					'error'    => $e->getMessage(),
 				]
 			);
 
