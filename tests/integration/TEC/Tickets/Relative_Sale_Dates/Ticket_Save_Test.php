@@ -1130,6 +1130,30 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	}
 
 	/**
+	 * The event cost lists the price each ticket sells at today, so it must read the resolved sale price dates, not the
+	 * empty ones submitted, which put the sale price on sale at once.
+	 *
+	 * @test
+	 */
+	public function should_store_the_event_cost_with_the_resolved_sale_price_dates(): void {
+		/*
+		 * `is_on_sale()` reads today through `Date_I18n`, which the clock mock does not freeze, so the event is placed
+		 * from the real date: the sale price starts in a week, and the ticket sells at its regular price today.
+		 */
+		$event_start      = ( new DateTimeImmutable( 'now', new DateTimeZone( 'UTC' ) ) )->setTime( 19, 0 )->modify( '+3 weeks' );
+		$sale_price_start = $event_start->modify( '-2 weeks' );
+		$event_id         = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
+
+		$ticket_id = $this->create_sale_price_ticket(
+			$event_id,
+			[ self::SALE_PRICE_DATA_KEY => wp_json_encode( $this->get_sale_price_rule( $this->sale_price_relative( 2, WEEK_IN_SECONDS ), $this->sale_price_relative( 1, WEEK_IN_SECONDS ) ) ) ]
+		);
+
+		$this->assertSame( [ $sale_price_start->format( 'Y-m-d' ), $event_start->modify( '-1 week' )->format( 'Y-m-d' ) ], $this->get_sale_price_dates( $ticket_id ) );
+		$this->assertSame( [ '20' ], get_post_meta( $event_id, '_EventCost' ) );
+	}
+
+	/**
 	 * Sends a ticket save from the classic editor, by an administrator, and returns its JSON response.
 	 *
 	 * @param int                      $event_id The event post ID.
