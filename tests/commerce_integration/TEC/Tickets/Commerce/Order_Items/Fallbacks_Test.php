@@ -5,12 +5,17 @@ namespace TEC\Tickets\Commerce\Order_Items;
 use Closure;
 use Generator;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
+use RuntimeException;
+use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Order_Items\Repositories\Order_Items as Order_Items_Repository;
 use TEC\Tickets\Commerce\Order_Items\Tables\Order_Items as Order_Items_Table;
+use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 
 class Fallbacks_Test extends Controller_Test_Case {
 	use Order_Maker;
+	use With_Uopz;
 	use Ticket_Maker;
 
 	protected string $controller_class = Controller::class;
@@ -101,6 +106,50 @@ class Fallbacks_Test extends Controller_Test_Case {
 		tribe( Fallbacks::class )->get_missing_ticket( $order, $key, $order->items[ $key ] );
 
 		$this->assertSame( 0, $count() );
+	}
+
+	public function test_a_failed_read_of_the_rows_is_logged_and_the_ticket_id_shown(): void {
+		$event_id  = static::factory()->post->create( [ 'post_type' => 'page' ] );
+		$ticket_id = $this->create_tc_ticket( $event_id, 10, [ 'ticket_name' => 'Early bird' ] );
+		$this->register_controller();
+		$order = tec_tc_get_order( $this->create_order( [ $ticket_id => 1 ] )->ID );
+		wp_cache_flush();
+		$this->set_class_fn_return(
+			Order_Items_Repository::class,
+			'get_by_order',
+			static function () {
+				throw new RuntimeException( 'Query failed.' );
+			},
+			true
+		);
+		$key = array_key_first( $order->items );
+
+		$name = tribe( Fallbacks::class )->get_missing_ticket( $order, $key, $order->items[ $key ] )['name'];
+
+		$this->assertSame( "Ticket #{$ticket_id} (no longer exists)", $name );
+		$this->assert_logged( 'warning', 'could not be read' );
+	}
+
+	public function test_an_order_whose_table_write_failed_names_a_deleted_ticket(): void {
+		$event_id  = static::factory()->post->create( [ 'post_type' => 'page' ] );
+		$ticket_id = $this->create_tc_ticket( $event_id, 10, [ 'ticket_name' => 'Early bird' ] );
+		$this->register_controller();
+		$this->set_class_fn_return(
+			Order_Items_Repository::class,
+			'insert_many',
+			static function () {
+				throw new RuntimeException( 'Insert failed.' );
+			},
+			true
+		);
+		$order = $this->create_order( [ $ticket_id => 1 ] );
+		tribe( Module::class )->delete_ticket( $event_id, $ticket_id );
+		$order = tec_tc_get_order( $order->ID );
+		$key   = array_key_first( $order->items );
+
+		$name = tribe( Fallbacks::class )->get_missing_ticket( $order, $key, $order->items[ $key ] )['name'];
+
+		$this->assertSame( 'Early bird (no longer exists)', $name );
 	}
 
 	private function register_controller(): void {
