@@ -17,6 +17,7 @@ import { __, sprintf } from '@wordpress/i18n';
 import { getHelperDateFormat } from '../helper-date-format';
 import { MODE_RELATIVE } from '../rule-constants';
 import { resolveSaleWindow } from '../sale-window';
+import { isRelativeValueInRange } from '../window-check';
 import { getLocalizedData } from './localized-data';
 
 /** @typedef {import( 'moment' ).Moment} Moment */
@@ -27,8 +28,8 @@ import { getLocalizedData } from './localized-data';
 /**
  * Works out the sales window a rule gives for the event dates.
  *
- * A relative end whose number is cleared or not whole has no date: the shared resolver would count it as zero units,
- * which is the event date itself.
+ * A relative end whose number is cleared, not whole or out of range has no date, as the save rejects it: the shared
+ * resolver would count a cleared one as zero units, which is the event date itself.
  *
  * @since TBD
  *
@@ -43,7 +44,7 @@ export function resolveTicketWindow( rule, eventDates ) {
 	}
 
 	const saleWindow = resolveSaleWindow( rule, eventDates.start, eventDates.end, eventDates.timezone );
-	const hasNoDate = ( end ) => MODE_RELATIVE === end.mode && ! Number.isInteger( end.value );
+	const hasNoDate = ( end ) => MODE_RELATIVE === end.mode && ! isRelativeValueInRange( end.value );
 
 	return {
 		...saleWindow,

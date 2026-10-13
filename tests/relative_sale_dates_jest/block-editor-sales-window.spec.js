@@ -433,10 +433,10 @@ describe( 'the Ticket block sales window options', () => {
 	} );
 
 	it.each( [
-		[ '75', 60 ],
-		[ '0', 1 ],
-		[ '-3', 1 ],
-	] )( 'should keep a typed number of %s within 1 to 60, as %d', ( typed, kept ) => {
+		[ '75', 75 ],
+		[ '0', 0 ],
+		[ '-3', -3 ],
+	] )( 'should keep a typed number of %s as it is, for the window check to name', ( typed, kept ) => {
 		const clientId = newClientId();
 		renderSalesWindow( clientId );
 		change( SelectControl, END_LABELS.mode, 'relative' );
@@ -644,7 +644,17 @@ describe( 'the Ticket block sales window options', () => {
 			expect( findControl( SelectControl, END_LABELS.mode ).props[ 'aria-invalid' ] ).toBeUndefined();
 		} );
 
-		// The field keeps a typed number within 1 to 60, so only a cleared one is out of range.
+		it.each( [ [ '61' ], [ '0' ] ] )( 'should name an end number of %s out of range, as the classic editor does', ( typed ) => {
+			renderTicket( newClientId() );
+			jest.useFakeTimers();
+			change( SelectControl, END_LABELS.mode, 'relative' );
+			change( TextControl, END_LABELS.value, typed );
+			pause();
+
+			expect( findControl( TextControl, END_LABELS.value ).props.help.props.children ).toBe( OUT_OF_RANGE );
+			expect( findControl( TextControl, END_LABELS.value ).props[ 'aria-invalid' ] ).toBe( true );
+		} );
+
 		it( 'should name a cleared end number on the end number', () => {
 			renderTicket( newClientId() );
 			jest.useFakeTimers();

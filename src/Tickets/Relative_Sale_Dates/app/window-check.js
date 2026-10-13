@@ -34,7 +34,7 @@ export const RELATIVE_VALUE_OUT_OF_RANGE = 'relative_value_out_of_range';
  *
  * @return {boolean} Whether the number is a whole number in the range.
  */
-function isInRange( value ) {
+export function isRelativeValueInRange( value ) {
 	return Number.isInteger( value ) && value >= MIN_VALUE && value <= MAX_VALUE;
 }
 
@@ -49,8 +49,9 @@ function isInRange( value ) {
  */
 export function getOutOfRangeBoundary( rule ) {
 	return (
-		[ 'start', 'end' ].find( ( key ) => MODE_RELATIVE === rule[ key ].mode && ! isInRange( rule[ key ].value ) ) ||
-		null
+		[ 'start', 'end' ].find(
+			( key ) => MODE_RELATIVE === rule[ key ].mode && ! isRelativeValueInRange( rule[ key ].value )
+		) || null
 	);
 }
 

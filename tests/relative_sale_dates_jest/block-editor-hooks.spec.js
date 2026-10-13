@@ -383,6 +383,13 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 			expect( isConfirmDisabled( clientId, true ) ).toBe( true );
 		} );
 
+		it( 'should disable Create and Update while a relative number is out of range', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setDraftRule( clientId, { start: relative( 61, UNIT_WEEKS ), end: relative( 1, UNIT_HOURS ) } );
+
+			expect( isConfirmDisabled( clientId, false ) ).toBe( true );
+		} );
+
 		it( 'should disable Create and Update while a relative start or end has no number', () => {
 			const clientId = newClientId();
 			dispatch( STORE_NAME ).setDraftRule( clientId, { start: relative( '', UNIT_WEEKS ), end: relative( 1, UNIT_HOURS ) } );

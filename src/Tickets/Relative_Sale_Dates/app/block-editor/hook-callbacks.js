@@ -178,6 +178,9 @@ export function filterSaleWindowDates( dates, clientId ) {
  * The legacy sales duration error alone does not keep the button disabled once an end is relative or the default, since
  * the dates it checks are hidden then.
  *
+ * The button follows the window at once, while the window holds a new error back until the admin stops typing: a
+ * click in that pause would send a window the server rejects. The error shows within the settle delay.
+ *
  * @since TBD
  *
  * @param {boolean} isDisabled        Whether the Create or Update button is disabled already.

@@ -51,7 +51,15 @@ function getTicketTyping( clientId ) {
 			subscribe( listener ) {
 				listeners.add( listener );
 
-				return () => listeners.delete( listener );
+				return () => {
+					listeners.delete( listener );
+
+					// The ticket's last window unmounted: nothing reads its typing, and a pending settle must not fire.
+					if ( ! listeners.size ) {
+						tracker.settle();
+						typings.delete( clientId );
+					}
+				};
 			},
 			isTyping: tracker.isTyping,
 			type() {
