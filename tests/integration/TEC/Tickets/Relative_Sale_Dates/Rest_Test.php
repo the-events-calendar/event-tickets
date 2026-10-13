@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Relative_Sale_Dates;
 
 use DateTimeImmutable;
+use Generator;
 use TEC\Common\REST\TEC\V1\Exceptions\InvalidRestArgumentException;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Events\REST\TEC\V1\Endpoints\Event as Event_Endpoint;
@@ -11,6 +12,7 @@ use TEC\Tickets\REST\TEC\V1\Endpoints\Ticket as Ticket_Endpoint;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Relative_Sale_Dates_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
+use WP_REST_Request;
 use WP_REST_Response;
 
 class Rest_Test extends Controller_Test_Case {
@@ -60,6 +62,38 @@ class Rest_Test extends Controller_Test_Case {
 		$rule      = [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => $this->relative( 1, DAY_IN_SECONDS ) ];
 
 		$response = $this->send_block_editor_ticket_save( 'PUT', "/tickets/{$ticket_id}", $event_id, 'edit_ticket_nonce', [ 'ticket' => [ 'relative_sale_dates' => wp_json_encode( $rule ) ] ] );
+
+		$this->assertFalse( $response->is_error() );
+		$this->assertSame( $rule, tribe( Rule_Store::class )->get( $ticket_id ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_remove_the_rule_the_block_editor_sends_as_empty(): void {
+		$event_id = $this->create_event( '2027-06-24 19:00:00' );
+		$rule     = [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => [ 'mode' => 'default' ] ];
+		$this->send_block_editor_ticket_save( 'POST', '/tickets', $event_id, 'add_ticket_nonce', [ 'ticket' => [ 'relative_sale_dates' => wp_json_encode( $rule ) ] ] );
+		$ticket_ids = tribe( Module::class )->get_tickets_ids( $event_id );
+		$ticket_id  = reset( $ticket_ids );
+		$this->assertSame( $rule, tribe( Rule_Store::class )->get( $ticket_id ) );
+
+		$response = $this->send_block_editor_ticket_save( 'PUT', "/tickets/{$ticket_id}", $event_id, 'edit_ticket_nonce', [ 'ticket' => [ 'relative_sale_dates' => '' ] ] );
+
+		$this->assertFalse( $response->is_error() );
+		$this->assertSame( [], tribe( Rule_Store::class )->get( $ticket_id ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_keep_the_rule_when_a_block_editor_update_leaves_it_out(): void {
+		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
+		$ticket_id = $this->create_tc_ticket( $event_id );
+		$rule      = [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => $this->relative( 1, DAY_IN_SECONDS ) ];
+		tribe( Rule_Store::class )->save( $ticket_id, $rule );
+
+		$response = $this->send_block_editor_ticket_save( 'PUT', "/tickets/{$ticket_id}", $event_id, 'edit_ticket_nonce' );
 
 		$this->assertFalse( $response->is_error() );
 		$this->assertSame( $rule, tribe( Rule_Store::class )->get( $ticket_id ) );
@@ -336,6 +370,65 @@ class Rest_Test extends Controller_Test_Case {
 			'request body definition' => [ 'tec_rest_swagger_ticket_request_body_definition' ],
 			'ticket definition'       => [ 'tec_rest_swagger_ticket_definition' ],
 		];
+	}
+
+	/**
+	 * @return Generator<string,array{0: mixed, 1: array<int|string,string>, 2: int|string}>
+	 */
+	public function unmapped_ticket_data_param_provider(): Generator {
+		yield 'filter returns a non-array' => [ 'tec_tests_data_key', [ 'tec_tests_param' => 'sent' ], 'tec_tests_data_key' ];
+		yield 'param named by an integer key' => [ [ 0 => 'tec_tests_data_key' ], [ 0 => 'sent' ], 'tec_tests_data_key' ];
+		yield 'data key that is not a string' => [ [ 'tec_tests_param' => 7 ], [ 'tec_tests_param' => 'sent' ], 7 ];
+		yield 'param not sent' => [ [ 'tec_tests_param' => 'tec_tests_data_key' ], [], 'tec_tests_data_key' ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider unmapped_ticket_data_param_provider
+	 *
+	 * @param mixed                    $ticket_data_keys What the filter returns.
+	 * @param array<int|string,string> $sent             The params sent besides the ticket's own.
+	 * @param int|string               $data_key         The ticket data key the filter names.
+	 */
+	public function should_leave_out_of_the_ticket_data_a_param_the_filter_does_not_name_properly( $ticket_data_keys, array $sent, $data_key ): void {
+		add_filter( 'tec_tickets_rest_ticket_data_params', static fn() => $ticket_data_keys, 20 );
+		$ticket_params = [
+			'event' => $this->create_event( '2027-06-24 19:00:00' ),
+			'title' => 'TEC REST ticket',
+			'price' => 10,
+		];
+
+		$params = tribe( Ticket_Endpoint::class )->filter_upsert_params( $ticket_params + $sent );
+
+		$this->assertArrayNotHasKey( $data_key, $params['ticket_params'] );
+		$this->assertSame( $sent, array_intersect_key( $params['post_params'], $sent ) );
+	}
+
+	/**
+	 * @return Generator<string,array{0: string, 1: callable(): array<int,mixed>}>
+	 */
+	public function filter_callback_provider(): Generator {
+		yield 'block editor rule mapping' => [ 'map_block_editor_rule', static fn() => [ new WP_REST_Request(), tribe( Module::class ) ] ];
+		yield 'TEC REST API ticket data params' => [ 'add_rule_to_ticket_data_params', static fn() => [] ];
+		yield 'block editor ticket data' => [ 'add_rule_to_block_editor_ticket_data', static fn() => [] ];
+		yield 'TEC REST API definition' => [ 'add_rule_to_definition', static fn() => [] ];
+		yield 'TEC REST API request data' => [ 'keep_a_rule_sent_as_null', static fn() => [ [ Ticket_Save::DATA_KEY => null ], tribe( Ticket_Endpoint::class )->update_schema() ] ];
+		yield 'TEC REST API ticket entity' => [ 'add_rule_to_tec_rest_api_ticket', static fn() => [] ];
+	}
+
+	/**
+	 * Another callback on the same filter can return anything, and the value is handed on as it came.
+	 *
+	 * @test
+	 * @dataProvider filter_callback_provider
+	 *
+	 * @param string                       $method     The filter callback.
+	 * @param callable(): array<int,mixed> $other_args Builds the arguments the filter passes after the filtered value.
+	 */
+	public function should_return_a_filtered_value_that_is_not_an_array_unchanged( string $method, callable $other_args ): void {
+		$value = false;
+
+		$this->assertSame( $value, tribe( Rest::class )->{$method}( $value, ...$other_args() ) );
 	}
 
 	/**
