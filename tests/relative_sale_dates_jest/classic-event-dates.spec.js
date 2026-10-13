@@ -79,6 +79,12 @@ describe( 'readEventDates', () => {
 
 	it( 'should return null when a date cannot be read', () => {
 		expect( readEventDates( fields( { startDate: '' } ), settings() ) ).toBeNull();
+		expect( readEventDates( fields( { endDate: 'soon' } ), settings() ) ).toBeNull();
+	} );
+
+	it( 'should return null when a time cannot be read', () => {
+		expect( readEventDates( fields( { startTime: '' } ), settings() ) ).toBeNull();
 		expect( readEventDates( fields( { endTime: 'soon' } ), settings() ) ).toBeNull();
+		expect( readEventDates( fields( { startTime: '25:00' } ), settings() ) ).toBeNull();
 	} );
 } );

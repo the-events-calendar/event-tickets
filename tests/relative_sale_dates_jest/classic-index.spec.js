@@ -141,6 +141,34 @@ describe( 'classic editor script', () => {
 		expect( getHelperText( 'start' ) ).toBe( 'Sales start June 11, 2099 at 7:00 pm' );
 	} );
 
+	it( 'should update the helper text when the event becomes all-day', async () => {
+		window.tec.tickets.relativeSaleDates.classicData.allDay = { start: '06:00:00', end: '05:59:59', endDays: 1 };
+		renderEventForm();
+		await loadScript();
+
+		jQuery( '#allDayCheckbox' ).prop( 'checked', true ).trigger( 'change' );
+
+		expect( getHelperText( 'start' ) ).toBe( 'Sales start June 10, 2099 at 6:00 am' );
+	} );
+
+	it( 'should update the helper text when the event timezone changes', async () => {
+		// A day before 02:30 on 11 March 2030 is a time New York skips as its clocks go forward on the 10th.
+		renderEventForm( { value: 1, unit: UNIT_DAYS, anchor: 'start' } );
+		jQuery( '#EventStartDate, #EventEndDate' ).val( '3/11/2030' );
+		jQuery( '#EventStartTime' ).val( '2:30am' );
+		jQuery( '#EventEndTime' ).val( '5:00am' );
+		jQuery( '#event-timezone' ).html(
+			'<option value="UTC" selected>UTC</option><option value="America/New_York">New York</option>'
+		);
+		await loadScript();
+		const utcText = getHelperText( 'start' );
+
+		jQuery( '#event-timezone' ).val( 'America/New_York' ).trigger( 'change' );
+
+		expect( utcText ).toBe( 'Sales start March 10, 2030 at 2:30 am' );
+		expect( getHelperText( 'start' ) ).toBe( 'Sales start March 10, 2030 at 3:30 am' );
+	} );
+
 	it( 'should update the helper text when a relative field changes', async () => {
 		renderEventForm();
 		await loadScript();
