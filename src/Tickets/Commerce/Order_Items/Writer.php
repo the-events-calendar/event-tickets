@@ -80,7 +80,7 @@ final class Writer {
 	 *
 	 * @since TBD
 	 *
-	 * @param Line_Item_Types $types      The line item types that turn order items into rows.
+	 * @param Line_Item_Types        $types      The line item types that turn order items into rows.
 	 * @param Order_Items_Repository $repository The Order Items repository.
 	 */
 	public function __construct( Line_Item_Types $types, Order_Items_Repository $repository ) {

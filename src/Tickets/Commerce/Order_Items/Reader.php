@@ -48,7 +48,7 @@ final class Reader {
 	 *
 	 * @since TBD
 	 *
-	 * @param Line_Item_Types $types      The line item types that turn rows back into order items.
+	 * @param Line_Item_Types        $types      The line item types that turn rows back into order items.
 	 * @param Order_Items_Repository $repository The Order Items repository.
 	 */
 	public function __construct( Line_Item_Types $types, Order_Items_Repository $repository ) {
