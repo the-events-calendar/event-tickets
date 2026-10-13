@@ -1,5 +1,5 @@
 /**
- * The errors a window of any kind can have, as message keys each editor maps to its own translated text.
+ * The errors a window of any kind can have, as message keys each editor maps to the text the server localizes.
  *
  * @since TBD
  */
@@ -33,3 +33,17 @@ export const RELATIVE_VALUE_OUT_OF_RANGE = 'relative_value_out_of_range';
  * @type {string}
  */
 export const OUTSIDE_PARENT = 'outside_parent';
+
+/**
+ * The key of each error's text among the texts the server localizes for a kind: the server's own key for an error it
+ * rejects a save with.
+ *
+ * @since TBD
+ *
+ * @type {Object<string, string>}
+ */
+export const ERROR_TEXT_KEYS = Object.freeze( {
+	[ ENDS_BEFORE_START ]: 'endsBeforeStart',
+	[ OUTSIDE_PARENT ]: 'outsideParent',
+	[ RELATIVE_VALUE_OUT_OF_RANGE ]: 'valueOutOfRange',
+} );

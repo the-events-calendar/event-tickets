@@ -17,14 +17,17 @@
 /**
  * @typedef {Object} BlockEditorData
  *
- * @property {Object<string,SaleWindowRule>} windowDefaults The `start` and `end` a new window of each kind opens on,
- *                                                          with the relative values each offers when the rule has
- *                                                          none, keyed by the kind's ID.
- * @property {Object<string,string>}         timezones      The zone the server resolves each manual UTC offset option
- *                                                          to.
- * @property {Object}                        allDay         The times the server saves for an all-day event: `start`
- *                                                          and `end`, `HH:mm:ss`, and `endDays`.
- * @property {HelperTextFormats}             formats        The date and time formats of the helper text.
+ * @property {Object<string,SaleWindowRule>}        windowDefaults   The `start` and `end` a new window of each kind
+ *                                                                   opens on, with the relative values each offers when
+ *                                                                   the rule has none, keyed by the kind's ID.
+ * @property {Object<string,Object<string,string>>} windowErrorTexts The text of each error a window of each kind can
+ *                                                                   have, keyed by the kind's ID, then by the error as
+ *                                                                   `ERROR_TEXT_KEYS` keys it.
+ * @property {Object<string,string>}                timezones        The zone the server resolves each manual UTC offset
+ *                                                                   option to.
+ * @property {Object}                               allDay           The times the server saves for an all-day event:
+ *                                                                   `start` and `end`, `HH:mm:ss`, and `endDays`.
+ * @property {HelperTextFormats}                    formats          The date and time formats of the helper text.
  */
 
 /**

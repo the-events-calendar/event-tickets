@@ -10,13 +10,8 @@
  */
 import { createTypingTracker, getShownError } from '../live-error';
 import { MODE_SPECIFIC } from '../rule-constants';
-import {
-	ENDS_BEFORE_START,
-	getOutOfRangeBoundary,
-	judgeWindow,
-	OUTSIDE_PARENT,
-	RELATIVE_VALUE_OUT_OF_RANGE,
-} from '../window-check';
+import { ENDS_BEFORE_START, getOutOfRangeBoundary, judgeWindow, RELATIVE_VALUE_OUT_OF_RANGE } from '../window-check';
+import { ERROR_TEXT_KEYS } from '../window-errors';
 import { showError } from './error-display';
 import { getContext, getEventDates, readFormDates } from './form-context';
 import { keepsSalePriceWithoutRule, readRule } from './rule';
@@ -25,20 +20,6 @@ import { CLASSIC_SALES_WINDOW, CLASSIC_WINDOW_KINDS } from './window-kinds';
 /** @typedef {import( './window-kinds' ).ClassicWindowKind} ClassicWindowKind */
 /** @typedef {import( './form-context' ).FormContext} FormContext */
 /** @typedef {import( '../sale-window' ).SaleWindowRule} SaleWindowRule */
-
-/**
- * The key of each error's text among a kind's localized texts: the server's own key for an error it rejects a save
- * with.
- *
- * @since TBD
- *
- * @type {Object<string, string>}
- */
-const TEXT_KEYS = Object.freeze( {
-	[ ENDS_BEFORE_START ]: 'endsBeforeStart',
-	[ OUTSIDE_PARENT ]: 'outsideParent',
-	[ RELATIVE_VALUE_OUT_OF_RANGE ]: 'valueOutOfRange',
-} );
 
 /**
  * Gets the id of the field an error of a window is about.
@@ -116,7 +97,7 @@ function readWindowError( kind ) {
 	}
 
 	return {
-		message: context.settings.text.windows[ kind.id ][ TEXT_KEYS[ error ] ],
+		message: context.settings.text.windows[ kind.id ][ ERROR_TEXT_KEYS[ error ] ],
 		fieldId: getErrorFieldId( kind, readRule( document, kind ), error ),
 	};
 }

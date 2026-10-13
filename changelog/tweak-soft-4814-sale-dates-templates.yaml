@@ -1,0 +1,6 @@
+significance: patch
+type: tweak
+entry: Rendered the sale dates and sale price fields of Tickets Commerce tickets
+  on events from new templates that add the relative date options, so theme
+  overrides of the original templates no longer change those fields on events.
+timestamp: 2026-10-13T18:28:08.208Z

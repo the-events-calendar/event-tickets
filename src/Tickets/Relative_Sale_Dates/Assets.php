@@ -312,12 +312,12 @@ final class Assets extends Controller_Contract {
 	}
 
 	/**
-	 * Gets the data the Ticket block script reads the defaults of each window kind, the event date settings and the
-	 * helper text formats from.
+	 * Gets the data the Ticket block script reads the defaults and the error texts of each window kind, the event date
+	 * settings and the helper text formats from.
 	 *
 	 * @since TBD
 	 *
-	 * @return array{windowDefaults: array<string,array{start: array{mode: string, value: int, unit: int, anchor?: string}, end: array{mode: string, value: int, unit: int, anchor?: string}}>, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, dateNoYear: string, time: string}} The script data, with the defaults keyed by the kind's ID.
+	 * @return array{windowDefaults: array<string,array{start: array{mode: string, value: int, unit: int, anchor?: string}, end: array{mode: string, value: int, unit: int, anchor?: string}}>, windowErrorTexts: array<string,array{endsBeforeStart: string, outsideParent?: string, valueOutOfRange: string}>, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, dateNoYear: string, time: string}} The script data, with the defaults and the error texts keyed by the kind's ID.
 	 */
 	private function get_block_editor_script_data(): array {
 		$editor          = $this->container->get( Editor::class );
@@ -329,10 +329,12 @@ final class Assets extends Controller_Contract {
 		}
 
 		return [
-			'windowDefaults' => $window_defaults,
-			'timezones'      => $this->get_manual_offset_zones(),
-			'allDay'         => $this->get_all_day_times(),
-			'formats'        => [
+			'windowDefaults'   => $window_defaults,
+			// The classic script's, so both editors word an error the same way.
+			'windowErrorTexts' => $this->get_window_error_texts(),
+			'timezones'        => $this->get_manual_offset_zones(),
+			'allDay'           => $this->get_all_day_times(),
+			'formats'          => [
 				'dateWithYear' => $this->get_date_format( true ),
 				'dateNoYear'   => $this->get_date_format( false ),
 				'time'         => $this->get_time_format(),

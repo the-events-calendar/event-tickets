@@ -192,6 +192,13 @@ function renderSalesEndingBeforeStart() {
 }
 
 /**
+ * Removes the event date fields, as on a form the script cannot read the event dates from.
+ */
+function removeEventDates() {
+	[ 'EventStartDate', 'EventEndDate' ].forEach( ( id ) => document.getElementById( id ).remove() );
+}
+
+/**
  * @typedef {Object} KindForm
  *
  * @property {function( boolean ): void} render          Renders the form with the window valid, or ending before it
@@ -964,6 +971,28 @@ describe( 'classic editor script', () => {
 			expect( validateTicket() ).toBe( true );
 			expect( document.getElementById( form.errorId ).textContent ).toBe( '' );
 			expect( isMarkedInvalid( form.endModeId, form.errorId ) ).toBe( false );
+		} );
+
+		// The server rejects a rule it cannot take whatever the event dates are.
+		it( 'should name a number above the range of the window when the event dates cannot be read', async () => {
+			form.render( true );
+			removeEventDates();
+			await loadScript();
+			const endValue = document.getElementById( `${ form.valuePrefix }_end_value` );
+			endValue.value = form.aboveRange;
+
+			expect( validateTicket() ).toBe( false );
+			expect( document.getElementById( form.errorId ).textContent ).toBe( form.outOfRange );
+			expect( isMarkedInvalid( endValue.id, form.errorId ) ).toBe( true );
+		} );
+
+		it( 'should let a valid window be saved when the event dates cannot be read', async () => {
+			form.render( true );
+			removeEventDates();
+			await loadScript();
+
+			expect( validateTicket() ).toBe( true );
+			expect( document.getElementById( form.errorId ).textContent ).toBe( '' );
 		} );
 
 		it( 'should clear the error once a change fixes the window', async () => {

@@ -1,3 +1,4 @@
+import { getLocalizedData } from '@tec/tickets/relative-sale-dates/block-editor/localized-data';
 import { getBoundaryErrors } from '@tec/tickets/relative-sale-dates/block-editor/window-error';
 import {
 	BLOCK_SALES_WINDOW,
@@ -8,6 +9,7 @@ import {
 	OUTSIDE_PARENT,
 	RELATIVE_VALUE_OUT_OF_RANGE,
 } from '@tec/tickets/relative-sale-dates/window-errors';
+import { clearBlockEditorGlobals, setBlockEditorData } from './block-editor-event-state';
 
 jest.mock( '@wordpress/data', () => require( './wordpress-data-registry' ) );
 
@@ -21,36 +23,36 @@ jest.mock( '@wordpress/i18n', () => jest.requireActual( '@wordpress/i18n' ) );
 const RULE = { start: { mode: 'relative', value: 99, unit: 86400 }, end: { mode: 'relative', value: 1, unit: 86400 } };
 
 describe( 'getBoundaryErrors', () => {
-	it.each( [
-		[
-			ENDS_BEFORE_START,
-			'the sales window',
-			BLOCK_SALES_WINDOW,
-			'Ticket sales cannot end before they start. Please adjust the sales window.',
-		],
-		[
-			ENDS_BEFORE_START,
-			'the sale price window',
-			BLOCK_SALE_PRICE_WINDOW,
-			'The sale price cannot end before it starts. Please adjust the sale price window.',
-		],
-		[
-			OUTSIDE_PARENT,
-			'the sale price window',
-			BLOCK_SALE_PRICE_WINDOW,
-			'The sale price window falls outside the ticket sales window. Please adjust the dates.',
-		],
-	] )( 'should word the %s error of %s under its end, as the kind words it', ( key, title, kind, expected ) => {
-		expect( getBoundaryErrors( key, RULE, kind ) ).toStrictEqual( {
-			start: { errorMessage: '', valueErrorMessage: '' },
-			end: { errorMessage: expected, valueErrorMessage: '' },
-		} );
+	beforeEach( () => {
+		setBlockEditorData();
+	} );
+
+	afterEach( () => {
+		clearBlockEditorGlobals();
 	} );
 
 	it.each( [
-		[ 'the sales window', BLOCK_SALES_WINDOW, 'Enter a number from 1 to 60.' ],
-		[ 'the sale price window', BLOCK_SALE_PRICE_WINDOW, 'Enter a number from 1 to 30.' ],
-	] )( 'should word the range error of %s on the number out of range', ( title, kind, expected ) => {
+		[ ENDS_BEFORE_START, 'the sales window', BLOCK_SALES_WINDOW, 'endsBeforeStart' ],
+		[ ENDS_BEFORE_START, 'the sale price window', BLOCK_SALE_PRICE_WINDOW, 'endsBeforeStart' ],
+		[ OUTSIDE_PARENT, 'the sale price window', BLOCK_SALE_PRICE_WINDOW, 'outsideParent' ],
+	] )(
+		'should word the %s error of %s under its end with the text the server localizes for the kind',
+		( key, title, kind, textKey ) => {
+			const expected = getLocalizedData().windowErrorTexts[ kind.id ][ textKey ];
+
+			expect( getBoundaryErrors( key, RULE, kind ) ).toStrictEqual( {
+				start: { errorMessage: '', valueErrorMessage: '' },
+				end: { errorMessage: expected, valueErrorMessage: '' },
+			} );
+		}
+	);
+
+	it.each( [
+		[ 'the sales window', BLOCK_SALES_WINDOW ],
+		[ 'the sale price window', BLOCK_SALE_PRICE_WINDOW ],
+	] )( 'should word the range error of %s on the number out of range', ( title, kind ) => {
+		const expected = getLocalizedData().windowErrorTexts[ kind.id ].valueOutOfRange;
+
 		expect( getBoundaryErrors( RELATIVE_VALUE_OUT_OF_RANGE, RULE, kind ) ).toStrictEqual( {
 			start: { errorMessage: '', valueErrorMessage: expected },
 			end: { errorMessage: '', valueErrorMessage: '' },

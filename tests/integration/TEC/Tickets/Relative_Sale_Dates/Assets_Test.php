@@ -409,6 +409,19 @@ class Assets_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
+	public function should_localize_the_error_texts_of_the_classic_script_to_the_block_editor(): void {
+		$this->make_controller()->register();
+
+		$classic = $this->read_localized_data( Assets::CLASSIC_SCRIPT, 'tec.tickets.relativeSaleDates.classicData' );
+		$block   = $this->read_localized_data( Assets::BLOCK_EDITOR_SCRIPT, 'tec.tickets.relativeSaleDates.blockEditorData' );
+
+		$this->assertNotEmpty( $classic['text']['windows'] );
+		$this->assertSame( $classic['text']['windows'], $block['windowErrorTexts'] );
+	}
+
+	/**
+	 * @test
+	 */
 	public function should_localize_the_helper_text_formats_to_the_block_editor(): void {
 		tribe_update_option( 'dateWithYearFormat', 'd/m/Y' );
 		tribe_update_option( 'dateWithoutYearFormat', 'd/m' );
@@ -462,7 +475,7 @@ class Assets_Test extends Controller_Test_Case {
 	/**
 	 * Builds the data the Ticket block script is localized with, as the browser receives it.
 	 *
-	 * @return array{windowDefaults: array<string,array{start: array{mode: string, value: int, unit: int, anchor?: string}, end: array{mode: string, value: int, unit: int, anchor?: string}}>, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, dateNoYear: string, time: string}} The localized data.
+	 * @return array{windowDefaults: array<string,array{start: array{mode: string, value: int, unit: int, anchor?: string}, end: array{mode: string, value: int, unit: int, anchor?: string}}>, windowErrorTexts: array<string,array{endsBeforeStart: string, outsideParent?: string, valueOutOfRange: string}>, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, dateNoYear: string, time: string}} The localized data.
 	 */
 	private function get_block_editor_localized_data(): array {
 		$this->make_controller()->register();
@@ -476,7 +489,7 @@ class Assets_Test extends Controller_Test_Case {
 	 * @param string $handle      The script handle.
 	 * @param string $object_name The name of the localized object.
 	 *
-	 * @return array{timeFormat: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, windows: array<string,array{endsBeforeStart: string, outsideParent?: string, valueOutOfRange: string}>}}|array{windowDefaults: array<string,array{start: array{mode: string, value: int, unit: int, anchor?: string}, end: array{mode: string, value: int, unit: int, anchor?: string}}>, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, dateNoYear: string, time: string}} The localized data of the classic or the Ticket block script.
+	 * @return array{timeFormat: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, windows: array<string,array{endsBeforeStart: string, outsideParent?: string, valueOutOfRange: string}>}}|array{windowDefaults: array<string,array{start: array{mode: string, value: int, unit: int, anchor?: string}, end: array{mode: string, value: int, unit: int, anchor?: string}}>, windowErrorTexts: array<string,array{endsBeforeStart: string, outsideParent?: string, valueOutOfRange: string}>, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, dateNoYear: string, time: string}} The localized data of the classic or the Ticket block script.
 	 */
 	private function read_localized_data( string $handle, string $object_name ): array {
 		$asset     = Asset_Registry::init()->get( $handle );

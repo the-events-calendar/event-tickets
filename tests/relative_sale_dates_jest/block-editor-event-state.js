@@ -21,7 +21,8 @@ const DEFAULT_EVENT = {
 };
 
 /**
- * The data the server localizes the Ticket block script with, with the site's default formats and all-day times.
+ * The data the server localizes the Ticket block script with, with the site's default formats, all-day times and
+ * untranslated error texts.
  *
  * @type {Object}
  */
@@ -34,6 +35,17 @@ const DEFAULT_DATA = {
 		sale_price: {
 			start: { mode: 'now', value: 2, unit: UNIT_WEEKS },
 			end: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+		},
+	},
+	windowErrorTexts: {
+		sales: {
+			endsBeforeStart: 'Ticket sales cannot end before they start. Please adjust the sales window.',
+			valueOutOfRange: 'Enter a number from 1 to 60.',
+		},
+		sale_price: {
+			endsBeforeStart: 'The sale price cannot end before it starts. Please adjust the sale price window.',
+			outsideParent: 'The sale price window falls outside the ticket sales window. Please adjust the dates.',
+			valueOutOfRange: 'Enter a number from 1 to 30.',
 		},
 	},
 	timezones: {},

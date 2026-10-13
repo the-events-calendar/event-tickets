@@ -15,8 +15,10 @@ import { useMemo, useState } from '@wordpress/element';
  */
 import { getShownError } from '../live-error';
 import { RELATIVE_VALUE_OUT_OF_RANGE, getOutOfRangeBoundary, judgeWindow } from '../window-check';
+import { ERROR_TEXT_KEYS } from '../window-errors';
 import { getLegacyState } from './common-store-bridge';
 import { useEventDates } from './event-dates';
+import { getLocalizedData } from './localized-data';
 import { getFormRule, toRequestRule } from './rule';
 import { STORE_NAME } from './store/constants';
 import { useCommonStoreValue } from './use-common-store-value';
@@ -145,7 +147,7 @@ export function useWindowError( clientId, kind ) {
 }
 
 /**
- * Gets the message of a window error, as the kind words it.
+ * Gets the message of a window error, as the server words it for the kind.
  *
  * @since TBD
  *
@@ -155,9 +157,7 @@ export function useWindowError( clientId, kind ) {
  * @return {string} The message, or an empty string without an error the kind can have.
  */
 function getWindowErrorMessage( key, kind ) {
-	const text = key ? kind.errorTexts[ key ] : null;
-
-	return text ? text( kind ) : '';
+	return ( key && getLocalizedData().windowErrorTexts[ kind.id ]?.[ ERROR_TEXT_KEYS[ key ] ] ) || '';
 }
 
 /**
