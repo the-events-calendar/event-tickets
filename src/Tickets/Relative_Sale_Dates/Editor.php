@@ -58,12 +58,12 @@ final class Editor {
 	 *
 	 * @since TBD
 	 *
-	 * @param mixed    $html     The HTML of the sale dates fields, as an earlier callback may have filtered it.
-	 * @param string   $file     The path of the sale dates fields template.
-	 * @param string[] $name     The template name.
-	 * @param Template $template The admin views template, holding the ticket panel data.
+	 * @param string|mixed $html     The HTML of the sale dates fields, as an earlier callback may have filtered it.
+	 * @param string       $file     The path of the sale dates fields template.
+	 * @param string[]     $name     The template name.
+	 * @param Template     $template The admin views template, holding the ticket panel data.
 	 *
-	 * @return mixed The sales window options, or the HTML passed in when they do not apply.
+	 * @return string|mixed The sales window options, or the HTML passed in when they do not apply.
 	 */
 	public function render_sales_window_fields( $html, string $file, array $name, Template $template ) {
 		$context = $template->get_values();
@@ -123,7 +123,7 @@ final class Editor {
 	 * @return bool Whether the ticket is saved and has a date for the boundary.
 	 */
 	private function has_own_date( $ticket, string $property ): bool {
-		return $ticket instanceof Ticket_Object && ! empty( $ticket->{$property} );
+		return $ticket instanceof Ticket_Object && $ticket->{$property};
 	}
 
 	/**
