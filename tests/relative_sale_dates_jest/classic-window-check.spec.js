@@ -16,8 +16,18 @@ const DEFAULT_START_RULE = {
 };
 
 describe( 'getWindowError', () => {
-	it( 'should judge a default start by the start date the form sends, as the server does', () => {
-		expect( getWindowError( DEFAULT_START_RULE, EVENT_DATES, { start: '2099-06-20 00:00:00', end: null } ) ).toBe(
+	// A ticket switched to Now from a specific date keeps that date in the form; the server sells it from now on.
+	it( 'should judge a default start the form dates later than now as now, as the server does', () => {
+		expect(
+			getWindowError( DEFAULT_START_RULE, EVENT_DATES, { start: '2099-06-20 00:00:00', end: null } )
+		).toBeNull();
+	} );
+
+	it( 'should judge a default start the form dates before now by that date, as the server does', () => {
+		// Sales closed a week before the event, on 2020-06-17 at 19:00; the past start the form sends is later.
+		const pastEvent = { start: '2020-06-24 19:00:00', end: '2020-06-24 22:00:00', timezone: 'America/New_York' };
+
+		expect( getWindowError( DEFAULT_START_RULE, pastEvent, { start: '2020-06-20 00:00:00', end: null } ) ).toBe(
 			SALES_END_BEFORE_START
 		);
 	} );
