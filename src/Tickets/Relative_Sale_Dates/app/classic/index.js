@@ -227,6 +227,7 @@ function updateUnitNames() {
 			const name = UNIT_NAMES[ option.value ];
 
 			if ( name ) {
+				// A cleared number shows the plural names.
 				option.textContent = name( Number.isNaN( number ) ? 2 : number );
 			}
 		} );
