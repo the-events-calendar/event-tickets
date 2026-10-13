@@ -487,36 +487,35 @@ export function* getTicketSalePriceDates( ticket ) {
 }
 
 /**
- * The ticket details that hold a ticket's sales end.
- *
- * @since TBD
- *
- * @type {string[]}
- */
-const END_DATE_DETAILS = [ 'endDate', 'endDateInput', 'endDateMoment', 'endTime', 'endTimeInput' ];
-
-/**
  * Gets the sale dates the server stored for a ticket it just created or updated, to put back in the form.
  *
  * A ticket stored without an end gives no end to read, which would put an invalid date in the form and send it with
- * the next update, so the form keeps the end it holds.
+ * the next update, so the end is taken from the form instead.
  *
  * @since TBD
  *
- * @param {Object} ticket The ticket, as the tickets REST API returns it.
+ * @param {Object} ticket   The ticket, as the tickets REST API returns it.
+ * @param {string} clientId The ticket's client ID.
  *
- * @return {Object} The start and end dates, times and moments, without the end for a ticket stored without one.
+ * @return {Object} The start and end dates, times and moments, with the form's end for a ticket stored without one.
  */
-export function* getSavedTicketSaleDates( ticket ) {
+export function* getSavedTicketSaleDates( ticket, clientId ) {
 	const saleDates = yield call( getTicketSaleDates, ticket );
 
 	if ( ticket.available_until ) {
 		return saleDates;
 	}
 
-	return Object.fromEntries(
-		Object.entries( saleDates ).filter( ( [ key ] ) => ! END_DATE_DETAILS.includes( key ) )
-	);
+	const props = { clientId };
+	const [ endDate, endDateInput, endDateMoment, endTime, endTimeInput ] = yield all( [
+		select( selectors.getTicketTempEndDate, props ),
+		select( selectors.getTicketTempEndDateInput, props ),
+		select( selectors.getTicketTempEndDateMoment, props ),
+		select( selectors.getTicketTempEndTime, props ),
+		select( selectors.getTicketTempEndTimeInput, props ),
+	] );
+
+	return { ...saleDates, endDate, endDateInput, endDateMoment, endTime, endTimeInput };
 }
 
 export function* fetchTicket( action ) {
@@ -699,7 +698,7 @@ export function* createNewTicket( action ) {
 			const salePrice = sale_price_data?.sale_price || '';
 
 			// The server can store other sale dates than the form sent, such as those a relative sales window resolves to.
-			const saleDates = yield call( getSavedTicketSaleDates, ticket );
+			const saleDates = yield call( getSavedTicketSaleDates, ticket, clientId );
 			const salePriceDates = yield call( getTicketSalePriceDates, ticket );
 
 			const [ title, description, price, sku, iac, capacityType, capacity ] = yield all( [
@@ -799,7 +798,7 @@ export function* updateTicket( action ) {
 			const salePrice = sale_price_data?.sale_price || '';
 
 			// The server can store other sale dates than the form sent, such as those a relative sales window resolves to.
-			const saleDates = yield call( getSavedTicketSaleDates, ticket );
+			const saleDates = yield call( getSavedTicketSaleDates, ticket, clientId );
 			const salePriceDates = yield call( getTicketSalePriceDates, ticket );
 
 			const [ title, description, price, sku, iac, capacityType, capacity ] = yield all( [

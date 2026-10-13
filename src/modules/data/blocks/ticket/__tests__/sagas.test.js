@@ -1445,6 +1445,113 @@ describe( 'Ticket Block sagas', () => {
 		} );
 	} );
 
+	/*
+	 * A ticket the server stored without an end, the dates parsed from it, and the end the form holds, for the sagas
+	 * that put a saved ticket back in the form.
+	 */
+	const ticketStoredWithoutEnd = {
+		id: 123,
+		available_from: '2018-11-09 19:48:42',
+		available_until: '',
+		capacity_details: { available: 100, sold: 0 },
+		provider_class: WOO_CLASS,
+		sale_price_data: { enabled: false, sale_price: '' },
+		on_sale: false,
+	};
+	const parsedSaleDatesWithoutEnd = {
+		startDate: '2018-11-09',
+		startDateInput: 'November 9, 2018',
+		startDateMoment: moment( '2018-11-09 19:48:42' ),
+		endDate: 'Invalid date',
+		endDateInput: 'Invalid date',
+		endDateMoment: moment( '' ),
+		startTime: '19:48:42',
+		endTime: 'Invalid date',
+		startTimeInput: '7:48 pm',
+		endTimeInput: 'Invalid date',
+	};
+	const tempEnd = {
+		endDate: '2018-11-12',
+		endDateInput: 'November 12, 2018',
+		endDateMoment: moment( '2018-11-12 18:00:00' ),
+		endTime: '18:00:00',
+		endTimeInput: '6:00 pm',
+	};
+	const salePriceDatesWithoutDates = {
+		saleStartDate: '',
+		saleStartDateInput: '',
+		saleStartDateMoment: undefined,
+		saleEndDate: '',
+		saleEndDateInput: '',
+		saleEndDateMoment: undefined,
+	};
+	const tempFields = {
+		title: 'title',
+		description: 'description',
+		price: 10,
+		sku: 'sku',
+		iac: undefined,
+		capacityType: 'unlimited',
+		capacity: 100,
+	};
+
+	/**
+	 * Steps the saga that reads the sale dates a ticket was saved with, answering its reads with the given parsed
+	 * dates and form end.
+	 *
+	 * @param {Object} ticket      The ticket, as the tickets REST API returns it.
+	 * @param {string} clientId    The ticket's client ID.
+	 * @param {Object} parsedDates The dates parsed from the ticket.
+	 * @param {Object} formEnd     The end the form holds.
+	 *
+	 * @return {Object} What the saga returns.
+	 */
+	const stepSavedTicketSaleDates = ( ticket, clientId, parsedDates, formEnd ) => {
+		const props = { clientId };
+		const gen = sagas.getSavedTicketSaleDates( ticket, clientId );
+
+		expect( gen.next().value ).toEqual( call( sagas.getTicketSaleDates, ticket ) );
+		expect( gen.next( parsedDates ).value ).toEqual(
+			all( [
+				select( selectors.getTicketTempEndDate, props ),
+				select( selectors.getTicketTempEndDateInput, props ),
+				select( selectors.getTicketTempEndDateMoment, props ),
+				select( selectors.getTicketTempEndTime, props ),
+				select( selectors.getTicketTempEndTimeInput, props ),
+			] )
+		);
+
+		const result = gen.next( [
+			formEnd.endDate,
+			formEnd.endDateInput,
+			formEnd.endDateMoment,
+			formEnd.endTime,
+			formEnd.endTimeInput,
+		] );
+
+		expect( result.done ).toBe( true );
+
+		return result.value;
+	};
+
+	/**
+	 * Gets the selects a saved ticket's form fields are read with.
+	 *
+	 * @param {Object} props The props holding the ticket's client ID.
+	 *
+	 * @return {Object} The all effect of the selects.
+	 */
+	const selectTempFields = ( props ) =>
+		all( [
+			select( selectors.getTicketTempTitle, props ),
+			select( selectors.getTicketTempDescription, props ),
+			select( selectors.getTicketTempPrice, props ),
+			select( selectors.getTicketTempSku, props ),
+			select( selectors.getTicketTempIACSetting, props ),
+			select( selectors.getTicketTempCapacityType, props ),
+			select( selectors.getTicketTempCapacity, props ),
+		] );
+
 	describe( 'createNewTicket', () => {
 		it( 'should create a new ticket', () => {
 			const action = {
@@ -1511,7 +1618,7 @@ describe( 'Ticket Block sagas', () => {
 			);
 
 			expect( gen.next( 0 ).value ).toEqual(
-				call( sagas.getSavedTicketSaleDates, response.data ),
+				call( sagas.getSavedTicketSaleDates, response.data, action.payload.clientId )
 			);
 
 			const saleDates = {
@@ -1596,6 +1703,49 @@ describe( 'Ticket Block sagas', () => {
 
 			expect( gen.next().done ).toEqual( true );
 		} );
+
+		it( 'should put back the end the form holds for a ticket the server stored without one', () => {
+			const clientId = 'tribe';
+			const props = { clientId };
+			const gen = sagas.createNewTicket( { payload: { clientId } } );
+
+			gen.next();
+			gen.next( { append: jest.fn() } );
+			gen.next();
+
+			expect( gen.next( { response: { ok: true }, data: ticketStoredWithoutEnd } ).value ).toEqual(
+				select( selectors.getTicketsSharedCapacity )
+			);
+			expect( gen.next( '' ).value ).toEqual( select( selectors.getTicketsTempSharedCapacity ) );
+			expect( gen.next( 0 ).value ).toEqual(
+				call( sagas.getSavedTicketSaleDates, ticketStoredWithoutEnd, clientId )
+			);
+			expect(
+				gen.next(
+					stepSavedTicketSaleDates( ticketStoredWithoutEnd, clientId, parsedSaleDatesWithoutEnd, tempEnd )
+				).value
+			).toEqual( call( sagas.getTicketSalePriceDates, ticketStoredWithoutEnd ) );
+			expect( gen.next( salePriceDatesWithoutDates ).value ).toEqual( selectTempFields( props ) );
+
+			const ticketDetails = {
+				...tempFields,
+				...parsedSaleDatesWithoutEnd,
+				...tempEnd,
+				salePriceChecked: ticketStoredWithoutEnd.sale_price_data.enabled,
+				salePrice: ticketStoredWithoutEnd.sale_price_data.sale_price,
+				...salePriceDatesWithoutDates,
+			};
+
+			const puts = gen.next( Object.values( tempFields ) ).value;
+
+			expect( puts.ALL ).toEqual(
+				expect.arrayContaining( [
+					put( actions.setTicketDetails( clientId, ticketDetails ) ),
+					put( actions.setTicketTempDetails( clientId, ticketDetails ) ),
+				] )
+			);
+			expect( gen.next().value ).toEqual( fork( sagas.saveTicketWithPostSave, clientId ) );
+		} );
 	} );
 
 	describe( 'updateTicket', () => {
@@ -1658,6 +1808,46 @@ describe( 'Ticket Block sagas', () => {
 				put( actions.setTicketIsLoading( action.payload.clientId, false ) ),
 			);
 			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should put back the end the form holds for a ticket the server stored without one', () => {
+			const clientId = 'tribe';
+			const props = { clientId };
+			const gen = sagas.updateTicket( { payload: { clientId } } );
+
+			gen.next();
+			gen.next( { append: jest.fn(), entries: () => [] } );
+			gen.next( ticketStoredWithoutEnd.id );
+			gen.next();
+
+			expect( gen.next( { response: { ok: true }, data: ticketStoredWithoutEnd } ).value ).toEqual(
+				call( sagas.getSavedTicketSaleDates, ticketStoredWithoutEnd, clientId )
+			);
+			expect(
+				gen.next(
+					stepSavedTicketSaleDates( ticketStoredWithoutEnd, clientId, parsedSaleDatesWithoutEnd, tempEnd )
+				).value
+			).toEqual( call( sagas.getTicketSalePriceDates, ticketStoredWithoutEnd ) );
+			expect( gen.next( salePriceDatesWithoutDates ).value ).toEqual( selectTempFields( props ) );
+
+			const ticketDetails = {
+				...tempFields,
+				on_sale: ticketStoredWithoutEnd.on_sale,
+				...parsedSaleDatesWithoutEnd,
+				...tempEnd,
+				salePriceChecked: ticketStoredWithoutEnd.sale_price_data.enabled,
+				salePrice: ticketStoredWithoutEnd.sale_price_data.sale_price,
+				...salePriceDatesWithoutDates,
+			};
+
+			const puts = gen.next( Object.values( tempFields ) ).value;
+
+			expect( puts.ALL ).toEqual(
+				expect.arrayContaining( [
+					put( actions.setTicketDetails( clientId, ticketDetails ) ),
+					put( actions.setTicketTempDetails( clientId, ticketDetails ) ),
+				] )
+			);
 		} );
 	} );
 
@@ -1734,35 +1924,22 @@ describe( 'Ticket Block sagas', () => {
 	} );
 
 	describe( 'getSavedTicketSaleDates', () => {
-		const saleDates = {
-			startDate: '2018-11-09',
-			startTime: '19:48:42',
-			endDate: 'Invalid date',
-			endDateInput: 'Invalid date',
-			endDateMoment: {},
-			endTime: 'Invalid date',
-			endTimeInput: 'Invalid date',
-		};
-
-		it( 'should leave out the end of a ticket the server stored without one', () => {
-			const ticket = { available_from: '2018-11-09 19:48:42', available_until: '' };
-			const gen = sagas.getSavedTicketSaleDates( ticket );
-
-			expect( gen.next().value ).toEqual( call( sagas.getTicketSaleDates, ticket ) );
-
-			const result = gen.next( saleDates );
-
-			expect( result.done ).toBe( true );
-			expect( result.value ).toEqual( { startDate: '2018-11-09', startTime: '19:48:42' } );
+		it( 'should fill the end from the form for a ticket the server stored without one', () => {
+			expect(
+				stepSavedTicketSaleDates( ticketStoredWithoutEnd, 'tribe', parsedSaleDatesWithoutEnd, tempEnd )
+			).toEqual( { ...parsedSaleDatesWithoutEnd, ...tempEnd } );
 		} );
 
 		it( 'should keep the end of a ticket the server stored with one', () => {
-			const ticket = { available_from: '2018-11-09 19:48:42', available_until: '2018-11-12 19:48:42' };
-			const gen = sagas.getSavedTicketSaleDates( ticket );
+			const ticket = { ...ticketStoredWithoutEnd, available_until: '2018-11-12 19:48:42' };
+			const gen = sagas.getSavedTicketSaleDates( ticket, 'tribe' );
 
 			gen.next();
 
-			expect( gen.next( saleDates ).value ).toBe( saleDates );
+			const result = gen.next( parsedSaleDatesWithoutEnd );
+
+			expect( result.done ).toBe( true );
+			expect( result.value ).toBe( parsedSaleDatesWithoutEnd );
 		} );
 	} );
 
