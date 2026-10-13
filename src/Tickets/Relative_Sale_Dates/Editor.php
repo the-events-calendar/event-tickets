@@ -63,7 +63,7 @@ final class Editor {
 	 *
 	 * @var array{mode: string, value: int, unit: int}
 	 */
-	public const SALE_PRICE_DEFAULT_RELATIVE_START = [
+	private const SALE_PRICE_DEFAULT_RELATIVE_START = [
 		'mode'  => Rule::MODE_RELATIVE,
 		'value' => 2,
 		'unit'  => WEEK_IN_SECONDS,
@@ -76,7 +76,7 @@ final class Editor {
 	 *
 	 * @var array{mode: string, value: int, unit: int}
 	 */
-	public const SALE_PRICE_DEFAULT_RELATIVE_END = [
+	private const SALE_PRICE_DEFAULT_RELATIVE_END = [
 		'mode'  => Rule::MODE_RELATIVE,
 		'value' => 1,
 		'unit'  => WEEK_IN_SECONDS,
@@ -158,18 +158,14 @@ final class Editor {
 	 *
 	 * Only the fields template's own output is replaced, so what other code renders before and after it stays.
 	 *
-	 * A front-end form, such as Community Events', loads its panels through admin-ajax, where `is_admin()` is true, so it
-	 * says it is not in wp-admin with an `is_admin` request var, which the ticket controls read the same way
-	 * (`Tribe__Tickets__Metabox::get_ticket_controls()`).
-	 *
 	 * @since TBD
 	 *
-	 * @param mixed    $html     The HTML of the sale price fields, as an earlier callback may have filtered it.
-	 * @param string   $file     The path of the sale price fields template.
-	 * @param string[] $name     The template name.
-	 * @param Template $template The admin views template, holding the ticket panel data.
+	 * @param string|mixed $html     The HTML of the sale price fields, as an earlier callback may have filtered it.
+	 * @param string       $file     The path of the sale price fields template.
+	 * @param string[]     $name     The template name.
+	 * @param Template     $template The admin views template, holding the ticket panel data.
 	 *
-	 * @return mixed The sale price window options, or the HTML passed in when they do not apply.
+	 * @return string|mixed The sale price window options, or the HTML passed in when they do not apply.
 	 */
 	public function render_sale_price_fields( $html, string $file, array $name, Template $template ) {
 		return $this->render_fields( $html, $template, Window_Kind::sale_price() );
@@ -268,11 +264,11 @@ final class Editor {
 	 *
 	 * @since TBD
 	 *
-	 * @param mixed       $html     The HTML of the fields, as an earlier callback may have filtered it.
-	 * @param Template    $template The admin views template, holding the ticket panel data.
-	 * @param Window_Kind $kind     The kind of the window.
+	 * @param string|mixed $html     The HTML of the fields, as an earlier callback may have filtered it.
+	 * @param Template     $template The admin views template, holding the ticket panel data.
+	 * @param Window_Kind  $kind     The kind of the window.
 	 *
-	 * @return mixed The window options, or the HTML passed in when they do not apply.
+	 * @return string|mixed The window options, or the HTML passed in when they do not apply.
 	 */
 	private function render_fields( $html, Template $template, Window_Kind $kind ) {
 		$context = $template->get_values();

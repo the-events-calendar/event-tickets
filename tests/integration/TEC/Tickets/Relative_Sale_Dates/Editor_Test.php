@@ -339,7 +339,7 @@ class Editor_Test extends Controller_Test_Case {
 		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
 		$ticket_id = $this->create_tc_ticket( $event_id );
 		wp_cache_delete( $ticket_id, 'tec_tickets' );
-		tribe( Ticket::class )->get_ticket( (string) $ticket_id );
+		tribe( Ticket::class )->get_ticket( "{$ticket_id}" );
 
 		$form = $this->render_ticket_form( $event_id, $ticket_id );
 
