@@ -225,7 +225,7 @@ final class Assets extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, windows: array<string,array{endsBeforeStart: string, outsideParent?: string, valueOutOfRange: string}>}, errorCodes: array<string,array{endsBeforeStart: string, outsideParent?: string}>} The script data.
+	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, windows: array<string,array{endsBeforeStart: string, outsideParent?: string, valueOutOfRange: string}>}, errorCodes: array<string,array{endsBeforeStart: string, outsideParent?: string, invalidRule: string, invalidDate: string}>} The script data.
 	 */
 	private function get_classic_script_data(): array {
 		return [
@@ -241,7 +241,7 @@ final class Assets extends Controller_Contract {
 				'end'     => __( 'Sales end %1$s at %2$s', 'event-tickets' ),
 				'windows' => $this->get_window_error_texts(),
 			],
-			'errorCodes'     => $this->get_window_error_codes(),
+			'errorCodes'   => $this->get_window_error_codes(),
 		];
 	}
 
@@ -290,8 +290,9 @@ final class Assets extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @return array<string,array{endsBeforeStart: string, outsideParent?: string}> The codes of each kind, keyed by the
-	 *         error as the editors key it; `outsideParent` only for a kind with a parent window.
+	 * @return array<string,array{endsBeforeStart: string, outsideParent?: string, invalidRule: string, invalidDate: string}> The
+	 *         codes of each kind, keyed by the error as the editors key it; `outsideParent` only for a kind with a parent
+	 *         window.
 	 */
 	private function get_window_error_codes(): array {
 		$codes = [];
@@ -301,6 +302,8 @@ final class Assets extends Controller_Contract {
 				[
 					'endsBeforeStart' => $kind->get_error_code( 'endsBeforeStart' ),
 					'outsideParent'   => $kind->get_error_code( 'outsideParent' ),
+					'invalidRule'     => $kind->get_error_code( 'invalidRule' ),
+					'invalidDate'     => $kind->get_error_code( 'invalidDate' ),
 				]
 			);
 		}

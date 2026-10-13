@@ -218,8 +218,8 @@ class Assets_Test extends Controller_Test_Case {
 
 		$this->assertSame(
 			[
-				Window_Kind::SALES      => $codes( Window_Kind::sales(), [ 'endsBeforeStart' ] ),
-				Window_Kind::SALE_PRICE => $codes( Window_Kind::sale_price(), [ 'endsBeforeStart', 'outsideParent' ] ),
+				Window_Kind::SALES      => $codes( Window_Kind::sales(), [ 'endsBeforeStart', 'invalidRule', 'invalidDate' ] ),
+				Window_Kind::SALE_PRICE => $codes( Window_Kind::sale_price(), [ 'endsBeforeStart', 'outsideParent', 'invalidRule', 'invalidDate' ] ),
 			],
 			$this->get_localized_data()['errorCodes']
 		);
