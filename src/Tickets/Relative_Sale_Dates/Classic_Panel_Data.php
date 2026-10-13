@@ -44,13 +44,17 @@ final class Classic_Panel_Data {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string,mixed> $data      The data the ticket panel is built from.
-	 * @param int                 $post_id   The ID of the post being edited.
-	 * @param int|null            $ticket_id The ID of the ticket being edited, or `null` for a new ticket.
+	 * @param array<string,mixed>|mixed $data      The data the ticket panel is built from.
+	 * @param int                       $post_id   The ID of the post being edited.
+	 * @param int|null                  $ticket_id The ID of the ticket being edited, or `null` for a new ticket.
 	 *
-	 * @return array<string,mixed> The panel data, with `relative_sale_dates`.
+	 * @return array<string,mixed>|mixed The panel data, with `relative_sale_dates`.
 	 */
-	public function add_rule_to_panel_data( array $data, int $post_id, ?int $ticket_id ): array {
+	public function add_rule_to_panel_data( $data, int $post_id, ?int $ticket_id ) {
+		if ( ! is_array( $data ) ) {
+			return $data;
+		}
+
 		$rule = $ticket_id ? Rule::from_stored( $this->rule_store->get( $ticket_id ) ) : null;
 
 		$data[ Ticket_Save::DATA_KEY ] = $rule ? $rule->to_array() : null;

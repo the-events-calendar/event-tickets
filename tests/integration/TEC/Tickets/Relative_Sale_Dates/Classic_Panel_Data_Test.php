@@ -58,4 +58,17 @@ class Classic_Panel_Data_Test extends Controller_Test_Case {
 		$this->assertArrayHasKey( 'relative_sale_dates', $data );
 		$this->assertNull( $data['relative_sale_dates'] );
 	}
+
+	/**
+	 * Another callback on the same filter can return anything, and the value is handed on as it came.
+	 *
+	 * @test
+	 */
+	public function should_return_panel_data_that_is_not_an_array_unchanged(): void {
+		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
+		$ticket_id = $this->create_tc_ticket( $event_id );
+		$data      = false;
+
+		$this->assertSame( $data, tribe( Classic_Panel_Data::class )->add_rule_to_panel_data( $data, $event_id, $ticket_id ) );
+	}
 }
