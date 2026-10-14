@@ -11,8 +11,8 @@
  *
  * @var WP_Post                                $order          The current post object.
  * @var array                                  $item           The current order item.
- * @var Tribe__Tickets__Ticket_Object|null     $ticket         The ticket object, null when the ticket no longer exists.
- * @var array{name: string, type: string}|null $missing_ticket The stored name and type, when the ticket no longer exists.
+ * @var Tribe__Tickets__Ticket_Object          $ticket         The ticket object; a stand-in with the stored name and type when the ticket no longer exists.
+ * @var array{name: string, type: string}|null $missing_ticket The stored name and type, set only when the ticket no longer exists.
  * @var array                                  $attendee       The attendee object.
  */
 

@@ -46,6 +46,12 @@ class Fallbacks_Test extends Controller_Test_Case {
 			static fn( int $ticket_id ) => [ 'name' => 'From the snapshot (no longer exists)', 'type' => 'series_pass' ],
 		];
 
+		yield 'old order: an RSVP item keeps its own type' => [
+			false,
+			static fn( array $item ) => array_merge( $item, [ 'type' => 'tc-rsvp' ] ),
+			static fn( int $ticket_id ) => [ 'name' => "Ticket #{$ticket_id} (no longer exists)", 'type' => 'tc-rsvp' ],
+		];
+
 		yield 'old order: the ticket ID' => [
 			false,
 			static fn( array $item ) => $item,
