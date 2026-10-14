@@ -53,6 +53,17 @@ final class Ticket_Save {
 	public const EXCLUDED_TICKET_TYPES = [ Series_Passes::TICKET_TYPE, RSVP_V2_Constants::TC_RSVP_TYPE ];
 
 	/**
+	 * The code of the error a save is rejected with when its sales window ends before it starts.
+	 *
+	 * The classic editor tells this error from any other by it, whatever language its message is in.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const INVALID_WINDOW_ERROR_CODE = 'tec_tickets_relative_sale_dates_invalid_window';
+
+	/**
 	 * The store of the ticket rules.
 	 *
 	 * @since TBD
@@ -407,7 +418,7 @@ final class Ticket_Save {
 	 */
 	private function get_invalid_window_error(): WP_Error {
 		return new WP_Error(
-			'tec_tickets_relative_sale_dates_invalid_window',
+			self::INVALID_WINDOW_ERROR_CODE,
 			__( 'Ticket sales cannot end before they start. Please adjust the sales window.', 'event-tickets' ),
 			[
 				'status'   => 400,

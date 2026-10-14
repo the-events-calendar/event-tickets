@@ -7,13 +7,17 @@
 /**
  * External dependencies
  */
+/*
+ * `moment` carries no zone data of its own: both editors read the `moment.tz` WordPress's `wp-date` sets up, with the
+ * current zone data `zone-data` loads onto it.
+ */
 import moment from 'moment';
 
-const MODE_DEFAULT = 'default';
-const MODE_RELATIVE = 'relative';
-const ANCHOR_START = 'start';
-const ANCHOR_END = 'end';
-const DAY_IN_SECONDS = 86400;
+/**
+ * Internal dependencies
+ */
+import { ANCHOR_END, ANCHOR_START, MODE_DEFAULT, MODE_RELATIVE, UNIT_DAYS } from './rule-constants';
+
 const MINUTE_IN_MILLISECONDS = 60000;
 
 const DATE_FORMAT = 'YYYY-MM-DD';
@@ -128,7 +132,7 @@ function before( anchor, value, unit, timezone ) {
 	const date = fromLocal( wallClock, timezone );
 
 	// Days and weeks keep their wall-clock time: a skipped time a day or more back still lands well before the anchor.
-	if ( unit >= DAY_IN_SECONDS || date.format( DATE_TIME_FORMAT ) === wallClock ) {
+	if ( unit >= UNIT_DAYS || date.format( DATE_TIME_FORMAT ) === wallClock ) {
 		return date;
 	}
 
@@ -149,7 +153,7 @@ function before( anchor, value, unit, timezone ) {
  *
  * @return {moment.Moment} The date, in the event timezone.
  */
-function fromEventLocal( dateTime, timezone ) {
+export function fromEventLocal( dateTime, timezone ) {
 	const date = fromLocal( dateTime, timezone );
 	const zone = FIXED_OFFSET.test( timezone ) ? null : moment.tz.zone( timezone );
 
@@ -174,7 +178,7 @@ function fromEventLocal( dateTime, timezone ) {
  *
  * @return {moment.Moment} The date, in the event timezone.
  */
-function fromLocal( dateTime, timezone ) {
+export function fromLocal( dateTime, timezone ) {
 	if ( FIXED_OFFSET.test( timezone ) ) {
 		return moment.utc( dateTime, DATE_TIME_FORMAT, true ).utcOffset( timezone, true );
 	}

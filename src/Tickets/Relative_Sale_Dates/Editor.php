@@ -12,6 +12,7 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Relative_Sale_Dates;
 
 use TEC\Tickets\Commerce\Module;
+use Tribe__Date_Utils as Dates;
 use Tribe__Template as Template;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
@@ -26,11 +27,13 @@ final class Editor {
 	/**
 	 * The relative start the form offers when the ticket has none: 2 weeks before the event starts.
 	 *
+	 * The Ticket block offers it too, from the data its script is localized with.
+	 *
 	 * @since TBD
 	 *
 	 * @var array{mode: string, value: int, unit: int, anchor: string}
 	 */
-	private const DEFAULT_RELATIVE_START = [
+	public const DEFAULT_RELATIVE_START = [
 		'mode'   => Rule::MODE_RELATIVE,
 		'value'  => 2,
 		'unit'   => WEEK_IN_SECONDS,
@@ -40,16 +43,71 @@ final class Editor {
 	/**
 	 * The relative end the form offers when the ticket has none: 1 hour before the event starts.
 	 *
+	 * The Ticket block offers it too, from the data its script is localized with.
+	 *
 	 * @since TBD
 	 *
 	 * @var array{mode: string, value: int, unit: int, anchor: string}
 	 */
-	private const DEFAULT_RELATIVE_END = [
+	public const DEFAULT_RELATIVE_END = [
 		'mode'   => Rule::MODE_RELATIVE,
 		'value'  => 1,
 		'unit'   => HOUR_IN_SECONDS,
 		'anchor' => Rule::ANCHOR_START,
 	];
+
+	/**
+	 * The store of the ticket rules.
+	 *
+	 * @since TBD
+	 *
+	 * @var Rule_Store
+	 */
+	private Rule_Store $rule_store;
+
+	/**
+	 * Editor constructor.
+	 *
+	 * @since TBD
+	 *
+	 * @param Rule_Store $rule_store The store of the ticket rules.
+	 */
+	public function __construct( Rule_Store $rule_store ) {
+		$this->rule_store = $rule_store;
+	}
+
+	/**
+	 * Adds to a ticket row of the tickets list the attributes the classic script rewrites its sale dates from.
+	 *
+	 * The attributes are set on every row, empty for a ticket without a rule: the template merges each row's context
+	 * into the values the next row inherits.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed>|mixed $context The context of the ticket row's sale dates template.
+	 *
+	 * @return array<string,mixed>|mixed The context, with `relative_sale_dates_attributes`, or what was passed in when it
+	 *                                   is not an array.
+	 */
+	public function filter_available_dates_context( $context ) {
+		if ( ! is_array( $context ) ) {
+			return $context;
+		}
+
+		$ticket = $context['ticket'] ?? null;
+		// Tickets Commerce caches a ticket with the ID it was first loaded with, which can be a numeric string.
+		$rule = $ticket instanceof Ticket_Object ? Rule::from_stored( $this->rule_store->get( absint( $ticket->ID ) ) ) : null;
+
+		$context['relative_sale_dates_attributes'] = $rule
+			? [
+				'data-relative-sale-dates' => $rule->to_json(),
+				'data-sale-start'          => $this->get_sale_date( $ticket->start_date ),
+				'data-sale-end'            => $this->get_sale_date( $ticket->end_date ),
+			]
+			: [];
+
+		return $context;
+	}
 
 	/**
 	 * Renders the sales window options in place of the sale dates fields of a Tickets Commerce ticket on an event.
@@ -124,6 +182,19 @@ final class Editor {
 	 */
 	private function has_own_date( $ticket, string $property ): bool {
 		return $ticket instanceof Ticket_Object && $ticket->{$property};
+	}
+
+	/**
+	 * Gets a ticket sale date as the classic script reads it.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|null $date The ticket sale date.
+	 *
+	 * @return string The date, `Y-m-d`, or an empty string when the ticket has none.
+	 */
+	private function get_sale_date( ?string $date ): string {
+		return $date ? Dates::date_only( $date, false, Dates::DBDATEFORMAT ) : '';
 	}
 
 	/**

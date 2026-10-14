@@ -19,7 +19,8 @@ use Tribe__Timezones as Timezones;
 use WP_Screen;
 
 /**
- * Registers the script of the sales window options in the classic ticket editor.
+ * Registers the scripts of the sales window options in the classic ticket editor and in the Ticket block, and the
+ * Ticket block's style.
  *
  * @since TBD
  *
@@ -34,6 +35,24 @@ final class Assets extends Controller_Contract {
 	 * @var string
 	 */
 	public const CLASSIC_SCRIPT = 'tec-tickets-relative-sale-dates-classic';
+
+	/**
+	 * The handle of the Ticket block script.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const BLOCK_EDITOR_SCRIPT = 'tec-tickets-relative-sale-dates-block-editor';
+
+	/**
+	 * The handle of the Ticket block style.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const BLOCK_EDITOR_STYLE = 'tec-tickets-relative-sale-dates-block-editor-style';
 
 	/**
 	 * The manual UTC offsets the WordPress timezone field offers, in hours, as `wp_timezone_choice()` lists them.
@@ -109,6 +128,8 @@ final class Assets extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		Asset_Registry::init()->remove( self::CLASSIC_SCRIPT );
+		Asset_Registry::init()->remove( self::BLOCK_EDITOR_SCRIPT );
+		Asset_Registry::init()->remove( self::BLOCK_EDITOR_STYLE );
 	}
 
 	/**
@@ -134,6 +155,43 @@ final class Assets extends Controller_Contract {
 					'name' => 'tec.tickets.relativeSaleDates.classicData',
 					'data' => fn(): array => $this->get_classic_script_data(),
 				],
+				'translations' => [
+					'domain' => 'event-tickets',
+					'path'   => Tickets_Plugin::instance()->plugin_path . 'lang',
+				],
+			]
+		);
+
+		tec_asset(
+			Tickets_Plugin::instance(),
+			self::BLOCK_EDITOR_SCRIPT,
+			'RelativeSaleDates/block-editor.js',
+			// `wp-date` sets up the `moment.tz` the script loads current zone data onto.
+			[ 'wp-data', 'wp-date', 'wp-hooks' ],
+			'enqueue_block_editor_assets',
+			[
+				'group_path'   => Tickets_Plugin::class . '-packages',
+				'conditionals' => fn(): bool => $this->is_block_event_edit_screen(),
+				'localize'     => [
+					'name' => 'tec.tickets.relativeSaleDates.blockEditorData',
+					'data' => fn(): array => $this->get_block_editor_script_data(),
+				],
+				'translations' => [
+					'domain' => 'event-tickets',
+					'path'   => Tickets_Plugin::instance()->plugin_path . 'lang',
+				],
+			]
+		);
+
+		tec_asset(
+			Tickets_Plugin::instance(),
+			self::BLOCK_EDITOR_STYLE,
+			'RelativeSaleDates/style-block-editor.css',
+			[],
+			'enqueue_block_editor_assets',
+			[
+				'group_path'   => Tickets_Plugin::class . '-packages',
+				'conditionals' => fn(): bool => $this->is_block_event_edit_screen(),
 			]
 		);
 	}
@@ -151,11 +209,23 @@ final class Assets extends Controller_Contract {
 	}
 
 	/**
+	 * Returns whether the current admin screen edits an event in the block editor, where the Ticket block shows the sales
+	 * window options: only for Tickets Commerce tickets, so only with Tickets Commerce on.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the current screen is the block editor event edit screen, with Tickets Commerce on.
+	 */
+	private function is_block_event_edit_screen(): bool {
+		return $this->is_event_edit_screen() && get_current_screen()->is_block_editor() && tec_tickets_commerce_is_enabled();
+	}
+
+	/**
 	 * Gets the data the classic ticket editor script reads the event dates and writes the helper text with.
 	 *
 	 * @since TBD
 	 *
-	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string}} The script data.
+	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, invalidWindow: string, relativeValueOutOfRange: string}, errorCodes: array{invalidWindow: string}} The script data.
 	 */
 	private function get_classic_script_data(): array {
 		return [
@@ -166,9 +236,38 @@ final class Assets extends Controller_Contract {
 			'allDay'       => $this->get_all_day_times(),
 			'text'         => [
 				// Translators: %1$s is the date sales start on, %2$s the time.
-				'start' => __( 'Sales start %1$s at %2$s', 'event-tickets' ),
+				'start'                   => __( 'Sales start %1$s at %2$s', 'event-tickets' ),
 				// Translators: %1$s is the date sales end on, %2$s the time.
-				'end'   => __( 'Sales end %1$s at %2$s', 'event-tickets' ),
+				'end'                     => __( 'Sales end %1$s at %2$s', 'event-tickets' ),
+				'invalidWindow'           => __( 'Ticket sales cannot end before they start. Please adjust the sales window.', 'event-tickets' ),
+				// Translators: %1$d is the smallest number a relative sale date takes, %2$d the largest.
+				'relativeValueOutOfRange' => sprintf( __( 'Enter a number from %1$d to %2$d.', 'event-tickets' ), Boundary::MIN_VALUE, Boundary::MAX_VALUE ),
+			],
+			'errorCodes'   => [
+				'invalidWindow' => Ticket_Save::INVALID_WINDOW_ERROR_CODE,
+			],
+		];
+	}
+
+	/**
+	 * Gets the data the Ticket block script reads its defaults, the event date settings and the helper text formats from.
+	 *
+	 * @since TBD
+	 *
+	 * @return array{defaults: array{start: array{mode: string, value: int, unit: int, anchor: string}, end: array{mode: string, value: int, unit: int, anchor: string}}, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, dateNoYear: string, time: string}} The script data.
+	 */
+	private function get_block_editor_script_data(): array {
+		return [
+			'defaults'  => [
+				'start' => Editor::DEFAULT_RELATIVE_START,
+				'end'   => Editor::DEFAULT_RELATIVE_END,
+			],
+			'timezones' => $this->get_manual_offset_zones(),
+			'allDay'    => $this->get_all_day_times(),
+			'formats'   => [
+				'dateWithYear' => $this->get_date_format( true ),
+				'dateNoYear'   => $this->get_date_format( false ),
+				'time'         => $this->get_time_format(),
 			],
 		];
 	}
@@ -217,7 +316,7 @@ final class Assets extends Controller_Contract {
 	/**
 	 * Gets the TEC date format of a date in another year, or in the current one.
 	 *
-	 * The classic editor reads it from here rather than from `tribe_dynamic_help_text`, which leaves a blank setting blank.
+	 * Both editors read it from here; the classic editor's `tribe_dynamic_help_text` leaves a blank setting blank.
 	 *
 	 * @since TBD
 	 *
@@ -249,7 +348,7 @@ final class Assets extends Controller_Contract {
 	}
 
 	/**
-	 * Returns whether the current admin screen edits an event, where the classic ticket form can show.
+	 * Returns whether the current admin screen edits an event, where the classic ticket form or the Ticket block can show.
 	 *
 	 * @since TBD
 	 *

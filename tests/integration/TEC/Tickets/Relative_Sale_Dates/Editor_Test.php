@@ -10,6 +10,7 @@ use DOMXPath;
 use Generator;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
 use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
@@ -79,6 +80,43 @@ class Editor_Test extends Controller_Test_Case {
 		$this->assertSame( HOUR_IN_SECONDS, absint( $this->get_selected_value( $form, 'ticket_sales_end_unit' ) ) );
 		$this->assertSame( 'start', $this->get_selected_value( $form, 'ticket_sales_end_anchor' ) );
 		$this->assertSame( $rule, json_decode( $this->get_element( $form, 'ticket_relative_sale_dates' )->getAttribute( 'value' ), true ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_name_each_unit_in_the_plural_form_of_the_number(): void {
+		$this->make_controller()->register();
+		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
+		$ticket_id = $this->create_tc_ticket( $event_id );
+		tribe( Rule_Store::class )->save( $ticket_id, [ 'start' => $this->relative( 1, DAY_IN_SECONDS ), 'end' => $this->relative( 3, HOUR_IN_SECONDS ) ] );
+
+		$form = $this->render_ticket_form( $event_id, $ticket_id );
+
+		$this->assertSame( [ 'minute', 'hour', 'day', 'week' ], $this->get_option_labels( $form, 'ticket_sales_start_unit' ) );
+		$this->assertSame( [ 'minutes', 'hours', 'days', 'weeks' ], $this->get_option_labels( $form, 'ticket_sales_end_unit' ) );
+	}
+
+	/**
+	 * The script names the units again as the number changes, with this msgid and context.
+	 *
+	 * @test
+	 */
+	public function should_name_each_unit_with_the_translation_the_script_uses(): void {
+		$this->make_controller()->register();
+		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
+		$ticket_id = $this->create_tc_ticket( $event_id );
+		tribe( Rule_Store::class )->save( $ticket_id, [ 'start' => $this->relative( 1, WEEK_IN_SECONDS ), 'end' => [ 'mode' => 'default' ] ] );
+		add_filter(
+			'ngettext_with_context_event-tickets',
+			static fn( $translation, $single, $plural, $number, $context ) => 'week' === $single && 'Unit of a relative ticket sale date.' === $context ? 'semana' : $translation,
+			10,
+			5
+		);
+
+		$form = $this->render_ticket_form( $event_id, $ticket_id );
+
+		$this->assertContains( 'semana', $this->get_option_labels( $form, 'ticket_sales_start_unit' ) );
 	}
 
 	/**
@@ -215,6 +253,81 @@ class Editor_Test extends Controller_Test_Case {
 				$this->assertSame( "ticket_sales_{$end}_helper", $this->get_element( $form, "ticket_sales_{$end}_{$field}" )->getAttribute( 'aria-describedby' ) );
 			}
 		}
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_hold_an_alert_for_an_invalid_sales_window(): void {
+		$this->make_controller()->register();
+
+		$error = $this->get_element( $this->render_ticket_form( $this->create_event( '2027-06-24 19:00:00' ) ), 'ticket_sales_window_error' );
+
+		$this->assertSame( 'alert', $error->getAttribute( 'role' ) );
+		$this->assertSame( '', trim( $error->textContent ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_hand_the_rule_and_the_stored_dates_to_the_tickets_list(): void {
+		$this->make_controller()->register();
+		$event_id = $this->create_event( '2027-06-24 19:00:00' );
+		$rule     = [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => [ 'mode' => 'default' ] ];
+		$ruled    = $this->create_tc_ticket( $event_id, 1, [ 'relative_sale_dates' => wp_json_encode( $rule ) ] );
+		$plain    = $this->create_tc_ticket( $event_id );
+
+		$list = $this->render_tickets_list( $event_id );
+
+		$dates = $this->get_available_dates( $list, $ruled );
+		$this->assertSame( $rule, json_decode( $dates->getAttribute( 'data-relative-sale-dates' ), true ) );
+		$this->assertSame( $this->get_ticket_start( $ruled )[0], $dates->getAttribute( 'data-sale-start' ) );
+		$this->assertSame( $this->get_ticket_end( $ruled )[0], $dates->getAttribute( 'data-sale-end' ) );
+		// Each row's template context is merged into the next one, so the rule must not carry over.
+		$this->assertFalse( $this->get_available_dates( $list, $plain )->hasAttribute( 'data-relative-sale-dates' ) );
+	}
+
+	/**
+	 * Tickets Commerce caches a ticket with the ID it was loaded with, and an attendee's `product_id` meta is a string.
+	 *
+	 * @test
+	 */
+	public function should_list_a_ruled_ticket_first_loaded_with_a_numeric_string_id(): void {
+		$this->make_controller()->register();
+		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
+		$ticket_id = $this->create_ruled_ticket( $event_id );
+		wp_cache_delete( $ticket_id, 'tec_tickets' );
+		tribe( Ticket::class )->get_ticket( "{$ticket_id}" );
+
+		$dates = $this->get_available_dates( $this->render_tickets_list( $event_id ), $ticket_id );
+
+		$this->assertSame( tribe( Rule_Store::class )->get( $ticket_id ), json_decode( $dates->getAttribute( 'data-relative-sale-dates' ), true ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_hand_on_a_tickets_list_context_an_earlier_callback_left_without_an_array(): void {
+		$this->make_controller()->register();
+		$hook = 'tribe_template_context:tickets/admin-views/editor/list-row/available-dates';
+		add_filter( $hook, '__return_null', 5 );
+
+		$this->assertNull( apply_filters( $hook, [] ) );
+	}
+
+	/**
+	 * Third parties may compare the row markup byte for byte.
+	 *
+	 * @test
+	 */
+	public function should_keep_the_sale_dates_markup_of_a_ticket_without_a_rule(): void {
+		$this->make_controller()->register();
+		$event_id = $this->create_event( '2027-06-24 19:00:00' );
+		$this->create_tc_ticket( $event_id );
+
+		$list = tribe( 'tickets.metabox' )->get_panels( $event_id )['list'];
+
+		$this->assertRegExp( '/<div  class="tribe-tickets__tickets-editor-ticket-available-dates [^"]*" >\n/', $list );
 	}
 
 	/**
@@ -433,6 +546,34 @@ class Editor_Test extends Controller_Test_Case {
 	}
 
 	/**
+	 * @param int $post_id The ticketed post ID.
+	 *
+	 * @return DOMXPath The classic tickets list, ready to query.
+	 */
+	private function render_tickets_list( int $post_id ): DOMXPath {
+		$document = new DOMDocument();
+		// The list is an HTML fragment, which libxml warns about.
+		libxml_use_internal_errors( true );
+		$document->loadHTML( '<?xml encoding="UTF-8">' . tribe( 'tickets.metabox' )->get_panels( $post_id )['list'] );
+		libxml_clear_errors();
+
+		return new DOMXPath( $document );
+	}
+
+	/**
+	 * @param DOMXPath $list      The tickets list.
+	 * @param int      $ticket_id The ticket post ID.
+	 *
+	 * @return DOMElement The element that shows the ticket's sale dates.
+	 */
+	private function get_available_dates( DOMXPath $list, int $ticket_id ): DOMElement {
+		$dates = $list->query( "//*[@data-ticket-type-id='{$ticket_id}']//*[contains(@class, 'tribe-tickets__tickets-editor-ticket-available-dates')]" )->item( 0 );
+		$this->assertInstanceOf( DOMElement::class, $dates, "No sale dates for the ticket {$ticket_id}." );
+
+		return $dates;
+	}
+
+	/**
 	 * @param DOMXPath $form The ticket form.
 	 * @param string   $id   The element id.
 	 *
@@ -456,6 +597,22 @@ class Editor_Test extends Controller_Test_Case {
 		$this->assertInstanceOf( DOMElement::class, $option, "No option selected in {$id}." );
 
 		return $option->getAttribute( 'value' );
+	}
+
+	/**
+	 * @param DOMXPath $form The ticket form.
+	 * @param string   $id   The select id.
+	 *
+	 * @return string[] The labels of the select's options.
+	 */
+	private function get_option_labels( DOMXPath $form, string $id ): array {
+		$labels = [];
+
+		foreach ( $form->query( "//select[@id='{$id}']/option" ) as $option ) {
+			$labels[] = trim( $option->textContent );
+		}
+
+		return $labels;
 	}
 
 	/**

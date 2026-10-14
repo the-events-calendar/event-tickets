@@ -50,11 +50,15 @@ $modes = [
 	],
 ];
 
-$units = [
-	MINUTE_IN_SECONDS => _x( 'minutes', 'Unit of a relative ticket sale date.', 'event-tickets' ),
-	HOUR_IN_SECONDS   => _x( 'hours', 'Unit of a relative ticket sale date.', 'event-tickets' ),
-	DAY_IN_SECONDS    => _x( 'days', 'Unit of a relative ticket sale date.', 'event-tickets' ),
-	WEEK_IN_SECONDS   => _x( 'weeks', 'Unit of a relative ticket sale date.', 'event-tickets' ),
+/*
+ * The unit names follow the number, as the script does when it changes; the msgids and context match the script's so
+ * one translation serves both.
+ */
+$get_units = static fn( int $value ): array => [
+	MINUTE_IN_SECONDS => _nx( 'minute', 'minutes', $value, 'Unit of a relative ticket sale date.', 'event-tickets' ),
+	HOUR_IN_SECONDS   => _nx( 'hour', 'hours', $value, 'Unit of a relative ticket sale date.', 'event-tickets' ),
+	DAY_IN_SECONDS    => _nx( 'day', 'days', $value, 'Unit of a relative ticket sale date.', 'event-tickets' ),
+	WEEK_IN_SECONDS   => _nx( 'week', 'weeks', $value, 'Unit of a relative ticket sale date.', 'event-tickets' ),
 ];
 
 $anchors = [
@@ -118,7 +122,7 @@ $labels = [
 				aria-label="<?php echo esc_attr( $labels[ $sales_end ]['unit'] ); ?>"
 				aria-describedby="ticket_sales_<?php echo esc_attr( $sales_end ); ?>_helper"
 			>
-				<?php foreach ( $units as $unit => $unit_label ) : ?>
+				<?php foreach ( $get_units( $fields['value'] ) as $unit => $unit_label ) : ?>
 					<option value="<?php echo esc_attr( $unit ); ?>" <?php selected( $fields['unit'], $unit ); ?>><?php echo esc_html( $unit_label ); ?></option>
 				<?php endforeach; ?>
 			</select>
@@ -201,6 +205,7 @@ $labels = [
 	</div>
 </div>
 <?php endforeach; ?>
+<p class="tec-tickets-relative-sale-dates__error ticket_form_right" id="ticket_sales_window_error" role="alert"></p>
 <input
 	type="hidden"
 	name="<?php echo esc_attr( Ticket_Save::DATA_KEY ); ?>"

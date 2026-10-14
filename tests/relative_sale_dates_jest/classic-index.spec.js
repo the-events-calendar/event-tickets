@@ -1,4 +1,9 @@
+import { TYPING_SETTLE_DELAY } from '@tec/tickets/relative-sale-dates/live-error';
+
 global.DateFormatter = require( 'php-date-formatter' );
+
+// The real package, not the shared mock, so a test can hand it the translations the template uses.
+jest.unmock( '@wordpress/i18n' );
 
 const UNIT_DAYS = 86400;
 const UNIT_WEEKS = 604800;
@@ -26,14 +31,19 @@ function renderMetabox() {
 /**
  * Loads the classic editor script and waits for its DOM-ready callbacks to run.
  *
+ * @param {Object|null} localeData The `event-tickets` translations to load the script with, or `null` for none.
+ *
  * @return {Promise<Object>} Resolves, once the script is set up, to the hooks module the script was loaded with.
  */
-async function loadScript() {
+async function loadScript( localeData = null ) {
 	let hooks;
 
 	jest.isolateModules( () => {
 		// WordPress's `wp-date` sets up `moment.tz` before the script loads.
 		require( 'moment-timezone' );
+		if ( localeData ) {
+			require( '@wordpress/i18n' ).setLocaleData( localeData, 'event-tickets' );
+		}
 		require( '@tec/tickets/relative-sale-dates/classic/index' );
 		hooks = require( '@wordpress/hooks' );
 	} );
@@ -47,8 +57,9 @@ async function loadScript() {
  * Renders the event fields and the tickets metabox with a relative start and a relative end.
  *
  * @param {Object} start The relative start: `value`, `unit` and `anchor`.
+ * @param {Object} end   The end: `mode`, and `value`, `unit` and `anchor` for a relative one.
  */
-function renderEventForm( start = { value: 2, unit: UNIT_WEEKS, anchor: 'start' } ) {
+function renderEventForm( start = { value: 2, unit: UNIT_WEEKS, anchor: 'start' }, end = undefined ) {
 	document.body.innerHTML = `
 		<input id="EventStartDate" value="6/24/2099" />
 		<input id="EventStartTime" value="7:00pm" />
@@ -56,15 +67,29 @@ function renderEventForm( start = { value: 2, unit: UNIT_WEEKS, anchor: 'start' 
 		<input id="EventEndTime" value="10:00pm" />
 		<input type="checkbox" id="allDayCheckbox" />
 		<select id="event-timezone"><option value="America/New_York" selected>New York</option></select>
-		${ renderPanel( start ) }`;
+		${ renderListRow() }
+		${ renderPanel( start, end ) }`;
+}
+
+/**
+ * @return {string} The sale dates of a saved ticket that starts 2 weeks before the event and ends when it starts.
+ */
+function renderListRow() {
+	const rule = JSON.stringify( {
+		start: { mode: 'relative', value: 2, unit: UNIT_WEEKS, anchor: 'start' },
+		end: { mode: 'default' },
+	} ).replace( /"/g, '&quot;' );
+
+	return `<div id="list-row-dates" data-relative-sale-dates="${ rule }" data-sale-start="2099-06-10" data-sale-end="2099-06-24">stored</div>`;
 }
 
 /**
  * @param {Object} start The relative start: `value`, `unit` and `anchor`.
+ * @param {Object} end   The end: `mode`, and `value`, `unit` and `anchor` for a relative one.
  *
  * @return {string} The tickets metabox with the ticket edit panel.
  */
-function renderPanel( { value, unit, anchor } ) {
+function renderPanel( { value, unit, anchor }, end = { mode: 'relative', value: 1, unit: 3600, anchor: 'start' } ) {
 	return `
 		<div id="tribetickets">
 			<div id="tribe_panel_edit">
@@ -73,14 +98,64 @@ function renderPanel( { value, unit, anchor } ) {
 				<select id="ticket_sales_start_unit"><option value="${ unit }" selected>unit</option></select>
 				<select id="ticket_sales_start_anchor"><option value="${ anchor }" selected>anchor</option></select>
 				<span id="ticket_sales_start_helper"></span>
-				<select id="ticket_sales_end_mode"><option value="relative" selected>Relative</option></select>
-				<input type="number" min="1" max="60" id="ticket_sales_end_value" value="1" />
-				<select id="ticket_sales_end_unit"><option value="3600" selected>hours</option></select>
-				<select id="ticket_sales_end_anchor"><option value="start" selected>starts</option></select>
+				<select id="ticket_sales_end_mode"><option value="${ end.mode }" selected>mode</option></select>
+				<input type="number" min="1" max="60" id="ticket_sales_end_value" value="${ end.value }" />
+				<select id="ticket_sales_end_unit"><option value="${ end.unit }" selected>unit</option></select>
+				<select id="ticket_sales_end_anchor"><option value="${ end.anchor }" selected>anchor</option></select>
 				<span id="ticket_sales_end_helper"></span>
+				<input id="ticket_end_date" value="${ end.date || '' }" />
+				<input id="ticket_end_time" value="${ end.time || '' }" />
+				<p id="ticket_sales_window_error"></p>
 				<input type="hidden" name="relative_sale_dates" id="ticket_relative_sale_dates" value="" />
 			</div>
 		</div>`;
+}
+
+const INVALID_WINDOW = 'Ticket sales cannot end before they start. Please adjust the sales window.';
+
+const OUT_OF_RANGE = 'Enter a number from 1 to 60.';
+
+/**
+ * Asks for the extra validation `tickets.js` runs before it saves a ticket.
+ *
+ * @return {*} What the validation handlers answered; `false` blocks the save.
+ */
+function validateTicket() {
+	return jQuery( '#tribetickets' ).triggerHandler( 'additionalValidation.tribe', [ true ] );
+}
+
+/**
+ * @return {boolean} Whether the end of the window is marked invalid, and points at the error that says why.
+ */
+function isEndMarkedInvalid() {
+	const endMode = document.getElementById( 'ticket_sales_end_mode' );
+
+	return 'true' === endMode.getAttribute( 'aria-invalid' ) && 'ticket_sales_window_error' === endMode.getAttribute( 'aria-describedby' );
+}
+
+/**
+ * @param {string} end The end of the window, `start` or `end`.
+ *
+ * @return {string} The name of the unit selected for that end.
+ */
+function getUnitLabel( end ) {
+	const unit = document.getElementById( `ticket_sales_${ end }_unit` );
+
+	return unit.options[ unit.selectedIndex ].textContent;
+}
+
+/**
+ * @return {string} The sale dates the listed ticket shows.
+ */
+function getListRowText() {
+	return document.getElementById( 'list-row-dates' ).textContent;
+}
+
+/**
+ * @return {string} The sales window error shown in the form.
+ */
+function getWindowError() {
+	return document.getElementById( 'ticket_sales_window_error' ).textContent;
 }
 
 /**
@@ -101,7 +176,13 @@ describe( 'classic editor script', () => {
 			dateNoYear: 'F j',
 			timezones: {},
 			allDay: { start: '00:00:00', end: '23:59:59', endDays: 0 },
-			text: { start: 'Sales start %1$s at %2$s', end: 'Sales end %1$s at %2$s' },
+			text: {
+				start: 'Sales start %1$s at %2$s',
+				end: 'Sales end %1$s at %2$s',
+				invalidWindow: 'Ticket sales cannot end before they start. Please adjust the sales window.',
+				relativeValueOutOfRange: OUT_OF_RANGE,
+			},
+			errorCodes: { invalidWindow: 'tec_tickets_relative_sale_dates_invalid_window' },
 		};
 		window.tribe_dynamic_help_text = {
 			date_with_year: 'F j, Y',
@@ -111,6 +192,7 @@ describe( 'classic editor script', () => {
 	} );
 
 	afterEach( () => {
+		jest.useRealTimers();
 		jQuery( document ).off();
 		document.body.innerHTML = '';
 	} );
@@ -207,6 +289,399 @@ describe( 'classic editor script', () => {
 			expect( getHelperText( 'start' ) ).toBe( '' );
 		}
 	);
+
+	it( 'should name the unit in the plural form of the number', async () => {
+		renderEventForm();
+		await loadScript();
+
+		expect( getUnitLabel( 'start' ) ).toBe( 'weeks' );
+		expect( getUnitLabel( 'end' ) ).toBe( 'hour' );
+	} );
+
+	it( 'should name the unit of a zero in the plural', async () => {
+		renderEventForm();
+		await loadScript();
+
+		jQuery( '#ticket_sales_start_value' ).val( '0' ).trigger( 'input' );
+
+		expect( getUnitLabel( 'start' ) ).toBe( 'weeks' );
+	} );
+
+	it( 'should change the unit name when the number changes', async () => {
+		renderEventForm();
+		await loadScript();
+
+		jQuery( '#ticket_sales_start_value' ).val( '1' ).trigger( 'input' );
+		jQuery( '#ticket_sales_end_value' ).val( '3' ).trigger( 'input' );
+
+		expect( getUnitLabel( 'start' ) ).toBe( 'week' );
+		expect( getUnitLabel( 'end' ) ).toBe( 'hours' );
+	} );
+
+	it( 'should name the unit with the translation the template uses', async () => {
+		renderEventForm();
+		await loadScript( {
+			'': { domain: 'event-tickets', plural_forms: 'nplurals=2; plural=(n != 1);' },
+			'Unit of a relative ticket sale date.\u0004week': [ 'semana', 'semanas' ],
+		} );
+
+		jQuery( '#ticket_sales_start_value' ).val( '1' ).trigger( 'input' );
+
+		expect( getUnitLabel( 'start' ) ).toBe( 'semana' );
+	} );
+
+	it( 'should write the sale dates of a listed ticket from the event dates in the form', async () => {
+		renderEventForm();
+		await loadScript();
+
+		expect( getListRowText() ).toBe( 'June 10, 2099 - June 24, 2099' );
+	} );
+
+	it( 'should write the sale dates of a listed ticket in the TEC date format with the year', async () => {
+		window.tec.tickets.relativeSaleDates.classicData.dateWithYear = 'j F Y';
+		renderEventForm();
+		await loadScript();
+
+		expect( getListRowText() ).toBe( '10 June 2099 - 24 June 2099' );
+	} );
+
+	it( 'should update the sale dates of a listed ticket when the event date changes', async () => {
+		renderEventForm();
+		await loadScript();
+
+		jQuery( '#EventStartDate' ).val( '6/30/2099' ).trigger( 'change' );
+
+		expect( getListRowText() ).toBe( 'June 16, 2099 - June 30, 2099' );
+	} );
+
+	it( 'should keep the sale dates of a listed ticket when a field of the ticket form changes', async () => {
+		renderEventForm();
+		await loadScript();
+
+		jQuery( '#ticket_sales_start_value' ).val( '3' ).trigger( 'change' );
+
+		expect( getListRowText() ).toBe( 'June 10, 2099 - June 24, 2099' );
+	} );
+
+	it( 'should keep the server text of a row whose rule cannot be read, and still update the other rows', async () => {
+		renderEventForm();
+		jQuery( '#list-row-dates' ).before( '<div id="broken-row" data-relative-sale-dates="{not json">Server text</div>' );
+		await loadScript();
+
+		expect( document.getElementById( 'broken-row' ).textContent ).toBe( 'Server text' );
+		expect( getListRowText() ).toBe( 'June 10, 2099 - June 24, 2099' );
+	} );
+
+	it( 'should write the sale dates of a list the editor replaced', async () => {
+		renderEventForm();
+		const hooks = await loadScript();
+
+		jQuery( '#list-row-dates' ).replaceWith( renderListRow() );
+		jQuery( '#EventStartDate' ).val( '6/30/2099' );
+		hooks.doAction( 'tec.tickets.admin.panels.refreshed', {} );
+
+		expect( getListRowText() ).toBe( 'June 16, 2099 - June 30, 2099' );
+	} );
+
+	it( 'should block the save of a window that ends before it starts', async () => {
+		renderEventForm( { value: 1, unit: 3600, anchor: 'start' }, { mode: 'relative', value: 2, unit: 3600, anchor: 'start' } );
+		await loadScript();
+
+		expect( validateTicket() ).toBe( false );
+		expect( getWindowError() ).toBe( INVALID_WINDOW );
+		expect( isEndMarkedInvalid() ).toBe( true );
+	} );
+
+	it( 'should block the save of a window that ends when it starts', async () => {
+		renderEventForm( { value: 1, unit: 3600, anchor: 'start' }, { mode: 'relative', value: 1, unit: 3600, anchor: 'start' } );
+		await loadScript();
+
+		expect( validateTicket() ).toBe( false );
+	} );
+
+	it( 'should block the save of a specific end before a relative start', async () => {
+		renderEventForm( undefined, { mode: 'specific', value: 1, unit: 3600, anchor: 'start', date: '6/1/2099', time: '10:00' } );
+		await loadScript();
+
+		expect( validateTicket() ).toBe( false );
+	} );
+
+	it( 'should keep the end marked invalid when common validation clears its error classes', async () => {
+		renderEventForm( { value: 1, unit: 3600, anchor: 'start' }, { mode: 'relative', value: 2, unit: 3600, anchor: 'start' } );
+		await loadScript();
+		validateTicket();
+
+		// Common's validation runs again after the save click and strips its class from every field.
+		jQuery( '#tribe_panel_edit' ).find( 'input, select, textarea' ).removeClass( 'tribe-validation-error' );
+
+		expect( isEndMarkedInvalid() ).toBe( true );
+	} );
+
+	it( 'should name a number out of range and mark that number, not the end of the window', async () => {
+		renderEventForm( { value: 0, unit: UNIT_WEEKS, anchor: 'start' } );
+		await loadScript();
+
+		expect( validateTicket() ).toBe( false );
+
+		const startValue = document.getElementById( 'ticket_sales_start_value' );
+		expect( getWindowError() ).toBe( OUT_OF_RANGE );
+		expect( startValue.getAttribute( 'aria-invalid' ) ).toBe( 'true' );
+		expect( startValue.getAttribute( 'aria-describedby' ) ).toBe( 'ticket_sales_window_error' );
+		expect( isEndMarkedInvalid() ).toBe( false );
+		expect( document.activeElement ).toBe( startValue );
+	} );
+
+	it( 'should move the focus to the end of a window that ends before it starts', async () => {
+		renderEventForm( { value: 1, unit: 3600, anchor: 'start' }, { mode: 'relative', value: 2, unit: UNIT_DAYS, anchor: 'start' } );
+		await loadScript();
+
+		expect( validateTicket() ).toBe( false );
+
+		expect( document.activeElement ).toBe( document.getElementById( 'ticket_sales_end_mode' ) );
+	} );
+
+	it( 'should clear the mark of a number once it is fixed', async () => {
+		renderEventForm( { value: 0, unit: UNIT_WEEKS, anchor: 'start' } );
+		await loadScript();
+		validateTicket();
+		const startValue = document.getElementById( 'ticket_sales_start_value' );
+
+		startValue.value = '2';
+		jQuery( startValue ).trigger( 'input' );
+
+		expect( startValue.hasAttribute( 'aria-invalid' ) ).toBe( false );
+		expect( getWindowError() ).toBe( '' );
+	} );
+
+	it( 'should keep the helper description of a number it marks, and restore it once the number is fixed', async () => {
+		renderEventForm( { value: 0, unit: UNIT_WEEKS, anchor: 'start' } );
+		const startValue = document.getElementById( 'ticket_sales_start_value' );
+		startValue.setAttribute( 'aria-describedby', 'ticket_sales_start_helper' );
+		await loadScript();
+
+		validateTicket();
+
+		expect( startValue.getAttribute( 'aria-describedby' ).split( ' ' ) ).toEqual(
+			expect.arrayContaining( [ 'ticket_sales_start_helper', 'ticket_sales_window_error' ] )
+		);
+
+		startValue.value = '2';
+		jQuery( startValue ).trigger( 'input' );
+
+		expect( startValue.getAttribute( 'aria-describedby' ) ).toBe( 'ticket_sales_start_helper' );
+	} );
+
+	it( 'should let a valid window be saved', async () => {
+		renderEventForm();
+		await loadScript();
+
+		expect( validateTicket() ).toBe( true );
+		expect( getWindowError() ).toBe( '' );
+		expect( isEndMarkedInvalid() ).toBe( false );
+	} );
+
+	it( 'should keep the save blocked when a handler bound later lets it through', async () => {
+		renderEventForm( { value: 1, unit: 3600, anchor: 'start' }, { mode: 'relative', value: 2, unit: 3600, anchor: 'start' } );
+		await loadScript();
+		// Event Tickets Plus returns the value it was passed when its own check passes.
+		jQuery( '#tribetickets' ).on( 'additionalValidation.tribe', ( event, valid ) => valid );
+
+		expect( validateTicket() ).toBe( false );
+	} );
+
+	it( 'should keep the save blocked by a handler bound earlier', async () => {
+		renderEventForm();
+		jQuery( '#tribetickets' ).on( 'additionalValidation.tribe', () => false );
+		await loadScript();
+
+		expect( validateTicket() ).toBe( false );
+	} );
+
+	it( 'should clear the error once a change fixes the window', async () => {
+		renderEventForm( { value: 1, unit: 3600, anchor: 'start' }, { mode: 'relative', value: 2, unit: 3600, anchor: 'start' } );
+		await loadScript();
+		validateTicket();
+
+		jQuery( '#ticket_sales_start_value' ).val( '3' ).trigger( 'change' );
+
+		expect( getWindowError() ).toBe( '' );
+		expect( isEndMarkedInvalid() ).toBe( false );
+	} );
+
+	it( 'should hold a new error back while the admin types, and show it once they stop, leaving the focus where it is', async () => {
+		renderEventForm( { value: 3, unit: 3600, anchor: 'start' }, { mode: 'relative', value: 2, unit: 3600, anchor: 'start' } );
+		await loadScript();
+		jest.useFakeTimers();
+		const startValue = document.getElementById( 'ticket_sales_start_value' );
+		startValue.focus();
+
+		jQuery( startValue ).val( '1' ).trigger( 'input' );
+
+		expect( getWindowError() ).toBe( '' );
+		expect( isEndMarkedInvalid() ).toBe( false );
+
+		jest.advanceTimersByTime( TYPING_SETTLE_DELAY );
+
+		expect( getWindowError() ).toBe( INVALID_WINDOW );
+		expect( isEndMarkedInvalid() ).toBe( true );
+		expect( document.activeElement ).toBe( startValue );
+	} );
+
+	it( 'should show a new error as soon as an option is picked', async () => {
+		renderEventForm();
+		await loadScript();
+		jest.useFakeTimers();
+		const endValue = document.getElementById( 'ticket_sales_end_value' );
+
+		jQuery( endValue ).val( '61' ).trigger( 'input' );
+		document.getElementById( 'ticket_sales_end_unit' ).dispatchEvent( new Event( 'change', { bubbles: true } ) );
+
+		expect( getWindowError() ).toBe( OUT_OF_RANGE );
+		expect( endValue.getAttribute( 'aria-invalid' ) ).toBe( 'true' );
+	} );
+
+	it( 'should show a new error as soon as a date is picked from the calendar', async () => {
+		renderEventForm();
+		const hooks = await loadScript();
+		jest.useFakeTimers();
+
+		jQuery( '#ticket_sales_end_value' ).val( '61' ).trigger( 'input' );
+		hooks.doAction( 'tec.tickets.admin.ticketDatePicked', document.getElementById( 'ticket_end_date' ) );
+
+		expect( getWindowError() ).toBe( OUT_OF_RANGE );
+	} );
+
+	// A new error shown as the number loses the focus would move the form under the click that took the focus away.
+	it( 'should hold a new error back when the typed field loses the focus', async () => {
+		renderEventForm();
+		await loadScript();
+		jest.useFakeTimers();
+		const endValue = document.getElementById( 'ticket_sales_end_value' );
+
+		jQuery( endValue ).val( '61' ).trigger( 'input' );
+		endValue.dispatchEvent( new Event( 'change', { bubbles: true } ) );
+
+		expect( getWindowError() ).toBe( '' );
+
+		jest.advanceTimersByTime( TYPING_SETTLE_DELAY );
+
+		expect( getWindowError() ).toBe( OUT_OF_RANGE );
+	} );
+
+	it( 'should follow an error already shown on every keystroke', async () => {
+		renderEventForm( { value: 1, unit: 3600, anchor: 'start' }, { mode: 'relative', value: 2, unit: 3600, anchor: 'start' } );
+		await loadScript();
+		jest.useFakeTimers();
+		validateTicket();
+		const endValue = document.getElementById( 'ticket_sales_end_value' );
+
+		jQuery( endValue ).val( '61' ).trigger( 'input' );
+
+		expect( getWindowError() ).toBe( OUT_OF_RANGE );
+		expect( endValue.getAttribute( 'aria-invalid' ) ).toBe( 'true' );
+
+		jQuery( endValue ).val( '2' ).trigger( 'input' );
+
+		expect( getWindowError() ).toBe( INVALID_WINDOW );
+		expect( isEndMarkedInvalid() ).toBe( true );
+	} );
+
+	it( 'should check the window again when the event dates change', async () => {
+		// A start two weeks before the event, on 2099-06-10, and a specific end on 2099-06-23.
+		renderEventForm( undefined, { mode: 'specific', value: 1, unit: 3600, anchor: 'start', date: '6/23/2099', time: '10:00' } );
+		await loadScript();
+
+		jQuery( '#EventEndDate' ).val( '7/24/2099' );
+		jQuery( '#EventStartDate' ).val( '7/24/2099' ).trigger( 'change' );
+
+		expect( getWindowError() ).toBe( INVALID_WINDOW );
+		expect( isEndMarkedInvalid() ).toBe( true );
+	} );
+
+	it( 'should show the sales window error the server rejected the save with on the end of the window', async () => {
+		renderEventForm();
+		const hooks = await loadScript();
+
+		hooks.doAction( 'tec.tickets.admin.ticketSaveFailed', {
+			success: false,
+			data: { message: INVALID_WINDOW, code: 'tec_tickets_relative_sale_dates_invalid_window' },
+		} );
+
+		expect( getWindowError() ).toBe( INVALID_WINDOW );
+		expect( isEndMarkedInvalid() ).toBe( true );
+	} );
+
+	// A translation the server escapes differently, or another validator's message, cannot be matched by its text.
+	it( 'should tell the sales window error by its code, not by its message', async () => {
+		renderEventForm();
+		const hooks = await loadScript();
+
+		hooks.doAction( 'tec.tickets.admin.ticketSaveFailed', {
+			success: false,
+			data: { message: INVALID_WINDOW, code: 'another_validator' },
+		} );
+
+		expect( getWindowError() ).toBe( INVALID_WINDOW );
+		expect( isEndMarkedInvalid() ).toBe( false );
+	} );
+
+	it( 'should show another error the server rejected the save with without marking the sales window', async () => {
+		renderEventForm();
+		const hooks = await loadScript();
+
+		hooks.doAction( 'tec.tickets.admin.ticketSaveFailed', {
+			success: false,
+			data: { message: 'The ticket can&#039;t be saved.' },
+		} );
+
+		expect( getWindowError() ).toBe( "The ticket can't be saved." );
+		expect( isEndMarkedInvalid() ).toBe( false );
+	} );
+
+	// The server's `Boundary` takes 1 to 60: these are just outside that range, and a cleared field.
+	it.each( [
+		[ 'start', '0' ],
+		[ 'start', '61' ],
+		[ 'start', '' ],
+		[ 'end', '0' ],
+		[ 'end', '61' ],
+	] )( 'should block the save of a relative %s number out of the range the server takes: "%s"', async ( end, value ) => {
+		renderEventForm();
+		await loadScript();
+		jQuery( `#ticket_sales_${ end }_value` ).val( value );
+
+		expect( validateTicket() ).toBe( false );
+		expect( getWindowError() ).toBe( OUT_OF_RANGE );
+		expect( document.getElementById( `ticket_sales_${ end }_value` ).getAttribute( 'aria-invalid' ) ).toBe( 'true' );
+	} );
+
+	// The ends of the range the server takes, with an end an hour before the event and a start further back.
+	it.each( [ [ '1', 86400 ], [ '60', 86400 ] ] )( 'should let the save of a relative start of %s go through', async ( value, unit ) => {
+		renderEventForm( { value: Number( value ), unit, anchor: 'start' } );
+		await loadScript();
+
+		expect( validateTicket() ).toBe( true );
+	} );
+
+	it( 'should block a specific start whose date fields are disabled, as the server gets no date for it', async () => {
+		renderEventForm();
+		jQuery( '#ticket_sales_start_mode' ).html( '<option value="specific" selected>Specific</option>' );
+		jQuery( '#tribe_panel_edit' ).append( '<input id="ticket_start_date" value="6/1/2099" disabled /><input id="ticket_start_time" value="10:00" disabled />' );
+		await loadScript();
+
+		expect( validateTicket() ).toBe( false );
+	} );
+
+	it( 'should judge a Now start without the date its hidden, disabled field holds', async () => {
+		// The end falls on 2099-06-24 at 18:00, an hour before the event; the date left in the hidden field is later.
+		renderEventForm();
+		jQuery( '#ticket_sales_start_mode' ).html( '<option value="default" selected>Now</option>' );
+		jQuery( '#tribe_panel_edit' ).append( '<input id="ticket_start_date" value="7/1/2099" disabled /><input id="ticket_start_time" value="10:00" disabled />' );
+		await loadScript();
+
+		expect( validateTicket() ).toBe( true );
+		expect( getWindowError() ).toBe( '' );
+	} );
 
 	it( 'should write the rule before the ticket is saved', async () => {
 		renderMetabox();

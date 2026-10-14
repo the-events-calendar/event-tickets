@@ -1,0 +1,111 @@
+/*
+ * Every rule starts at `.editor-styles-wrapper`: the block editor copies
+ * a stylesheet into its canvas iframe only when one of its selectors
+ * names that class or `.wp-block`.
+ */
+
+/*
+ * The options take the rest of the row beside their section label, as the other fields do, with each end's label
+ * beside its mode select and the rest of the end under that select.
+ */
+.editor-styles-wrapper .tec-tickets-relative-sale-dates {
+	--tec-tickets-relative-sale-dates-label-width: 40px;
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: var(--tec-spacer-3);
+	min-width: 0;
+}
+
+.editor-styles-wrapper .tec-tickets-relative-sale-dates__end {
+	display: flex;
+	flex-direction: column;
+	gap: var(--tec-spacer-1);
+
+	> :not(.components-select-control) {
+		margin-left: calc(var(--tec-tickets-relative-sale-dates-label-width) + var(--tec-spacer-1));
+	}
+
+	> .components-select-control {
+
+		.components-input-base {
+			justify-content: flex-start;
+		}
+
+		.components-input-control__label {
+			font-size: 13px;
+			font-weight: 400;
+			text-transform: none;
+			white-space: normal;
+			width: var(--tec-tickets-relative-sale-dates-label-width);
+		}
+
+		.components-input-control__container {
+			flex: none;
+			max-width: 100%;
+			width: 245px;
+		}
+	}
+}
+
+.editor-styles-wrapper .tec-tickets-relative-sale-dates__relative {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--tec-spacer-1);
+
+	.components-text-control__input {
+		width: 64px;
+	}
+}
+
+.editor-styles-wrapper .tec-tickets-relative-sale-dates__helper {
+	color: #757575;
+	flex-basis: 100%;
+	font-size: var(--tec-font-size-1);
+	margin: 0;
+}
+
+/* The select draws no border: the control's backdrop, its sibling, does. */
+.editor-styles-wrapper
+.tec-tickets-relative-sale-dates
+select[aria-invalid="true"] ~ .components-input-control__backdrop {
+	border-color: #cc1818;
+}
+
+.editor-styles-wrapper .tec-tickets-relative-sale-dates__error {
+	color: #cc1818;
+}
+
+/*
+ * An error stays the help of the control it is about, which points `aria-describedby` at it, but shows last in its
+ * end, under the options: the controls' own wrappers are left out of the layout so their help can be reordered.
+ */
+.editor-styles-wrapper .tec-tickets-relative-sale-dates__end > .components-select-control,
+.editor-styles-wrapper .tec-tickets-relative-sale-dates__relative > .components-base-control {
+	display: contents;
+}
+
+.editor-styles-wrapper .tec-tickets-relative-sale-dates__end > .components-select-control > .components-base-control__help {
+	margin: 0 0 0 calc(var(--tec-tickets-relative-sale-dates-label-width) + 8px);
+	order: 1;
+}
+
+.editor-styles-wrapper .tec-tickets-relative-sale-dates__relative > .components-base-control > .components-base-control__help {
+	flex-basis: 100%;
+	margin: 0;
+	order: 1;
+}
+
+/* Each end shows only its own half of the picker it is handed. */
+.editor-styles-wrapper
+.tec-tickets-relative-sale-dates__picker--start
+.tribe-editor__date-time-range-picker__end,
+.editor-styles-wrapper
+.tec-tickets-relative-sale-dates__picker--end
+.tribe-editor__date-time-range-picker__start,
+.editor-styles-wrapper
+.tec-tickets-relative-sale-dates__picker--end
+.tribe-editor__date-time-range-picker__separator--time-range {
+	display: none;
+}
