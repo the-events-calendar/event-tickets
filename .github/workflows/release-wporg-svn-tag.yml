@@ -24,7 +24,7 @@ permissions:
 jobs:
   tag:
     runs-on: blacksmith-4vcpu-ubuntu-2404
-    # Holds the WPORG secrets, limited to main. Its reviewers decide who may
+    # Holds the WPORG credentials, limited to main. Its reviewers decide who may
     # create a tag, since anyone with write access can dispatch this workflow.
     environment: wordpress-org
     steps:
@@ -34,5 +34,5 @@ jobs:
         with:
           plugin-slug: event-tickets
           zip-url: ${{ inputs.zip-url }}
-          wporg-username: ${{ secrets.WPORG_USERNAME }}
+          wporg-username: ${{ vars.WPORG_USERNAME }}
           wporg-password: ${{ secrets.WPORG_PASSWORD }}

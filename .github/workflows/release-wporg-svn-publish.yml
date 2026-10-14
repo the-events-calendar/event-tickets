@@ -27,7 +27,7 @@ permissions:
 jobs:
   publish:
     runs-on: blacksmith-4vcpu-ubuntu-2404
-    # Holds the WPORG secrets, limited to main. Its reviewers check
+    # Holds the WPORG credentials, limited to main. Its reviewers check
     # tags/<version> at expected-revision before approving this job.
     environment: wordpress-org
     steps:
@@ -38,12 +38,12 @@ jobs:
           plugin-slug: event-tickets
           version: ${{ inputs.version }}
           expected-revision: ${{ inputs.expected-revision }}
-          wporg-username: ${{ secrets.WPORG_USERNAME }}
+          wporg-username: ${{ vars.WPORG_USERNAME }}
           wporg-password: ${{ secrets.WPORG_PASSWORD }}
       - uses: stellarwp/plugin-toolbox/.github/actions/wporg-svn/update-trunk@d78cfb491a1c279898a089396648b972064c49b3
         with:
           plugin-slug: event-tickets
           version: ${{ inputs.version }}
           expected-revision: ${{ inputs.expected-revision }}
-          wporg-username: ${{ secrets.WPORG_USERNAME }}
+          wporg-username: ${{ vars.WPORG_USERNAME }}
           wporg-password: ${{ secrets.WPORG_PASSWORD }}
