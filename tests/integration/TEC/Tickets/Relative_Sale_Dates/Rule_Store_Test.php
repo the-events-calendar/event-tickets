@@ -199,7 +199,7 @@ class Rule_Store_Test extends WPTestCase {
 			tribe( Rule_Store::class )->save( $ticket_id, [ 'start' => $start, 'end' => $previous_end ] );
 		}
 
-		tribe( Rule_Store::class )->save_sales_window( $ticket_id, Rule::from_array( [ 'start' => $start, 'end' => $end ] ) );
+		tribe( Rule_Store::class )->save_sales_window( $ticket_id, Rule::from_array( [ 'start' => $start, 'end' => $end ], Window_Kind::sales() ) );
 
 		$this->assertSame( [ 'start' => $start, 'end' => $end ], tribe( Rule_Store::class )->get( $ticket_id ) );
 		$this->assertSame( $flagged, $tickets_handler->has_manual_update( $ticket_id, $tickets_handler->key_end_date ) );
@@ -214,7 +214,7 @@ class Rule_Store_Test extends WPTestCase {
 		tribe( Rule_Store::class )->save( $ticket_id, [ 'start' => [ 'mode' => Rule::MODE_DEFAULT ], 'end' => [ 'mode' => Rule::MODE_DEFAULT ] ] );
 		add_post_meta( $ticket_id, $tickets_handler->key_manual_updated, $tickets_handler->key_end_date );
 
-		tribe( Rule_Store::class )->save_sales_window( $ticket_id, Rule::from_array( [ 'start' => [ 'mode' => Rule::MODE_DEFAULT ], 'end' => [ 'mode' => Rule::MODE_SPECIFIC ] ] ) );
+		tribe( Rule_Store::class )->save_sales_window( $ticket_id, Rule::from_array( [ 'start' => [ 'mode' => Rule::MODE_DEFAULT ], 'end' => [ 'mode' => Rule::MODE_SPECIFIC ] ], Window_Kind::sales() ) );
 
 		$this->assertSame( [ $tickets_handler->key_end_date ], get_post_meta( $ticket_id, $tickets_handler->key_manual_updated ) );
 	}

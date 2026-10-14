@@ -14,7 +14,6 @@ namespace TEC\Tickets\Relative_Sale_Dates;
 use DateTimeImmutable;
 use DateTimeZone;
 use Exception;
-use InvalidArgumentException;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
@@ -194,7 +193,7 @@ final class Ticket_Save {
 			return;
 		}
 
-		$rule = Rule::from_stored( $this->rule_store->get( $ticket_id ) );
+		$rule = Rule::from_stored( $this->rule_store->get( $ticket_id ), Window_Kind::sales() );
 
 		if ( $rule ) {
 			$this->ticket_dates->write( $ticket_id, $post_id, $rule );
@@ -228,7 +227,7 @@ final class Ticket_Save {
 		}
 
 		// The save would keep the stored rule, but the admin who sent this one expects it to apply.
-		if ( isset( $data[ self::DATA_KEY ] ) && ! $this->parse_rule( $data[ self::DATA_KEY ] ) ) {
+		if ( isset( $data[ self::DATA_KEY ] ) && ! Rule::from_raw( $data[ self::DATA_KEY ], Window_Kind::sales() ) ) {
 			return $this->get_invalid_window_error();
 		}
 
@@ -326,38 +325,13 @@ final class Ticket_Save {
 			return null;
 		}
 
-		$rule = $this->parse_rule( $data[ self::DATA_KEY ] ?? null );
+		$rule = Rule::from_raw( $data[ self::DATA_KEY ] ?? null, Window_Kind::sales() );
 
 		if ( $rule || ! $ticket_id ) {
 			return $rule;
 		}
 
-		return Rule::from_stored( $this->rule_store->get( $ticket_id ) );
-	}
-
-	/**
-	 * Builds a rule from the value the ticket data sends for it.
-	 *
-	 * @since TBD
-	 *
-	 * @param mixed $raw The rule as sent, a JSON string or an array.
-	 *
-	 * @return Rule|null The rule, or `null` when nothing valid was sent.
-	 */
-	private function parse_rule( $raw ): ?Rule {
-		try {
-			if ( is_array( $raw ) ) {
-				return Rule::from_array( $raw );
-			}
-
-			if ( is_string( $raw ) ) {
-				return Rule::from_json( $raw );
-			}
-		} catch ( InvalidArgumentException $e ) {
-			return null;
-		}
-
-		return null;
+		return Rule::from_stored( $this->rule_store->get( $ticket_id ), Window_Kind::sales() );
 	}
 
 	/**

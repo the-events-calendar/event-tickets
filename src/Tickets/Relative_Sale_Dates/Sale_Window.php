@@ -1,6 +1,6 @@
 <?php
 /**
- * Resolves a sales window rule into sale dates for an event.
+ * Resolves a sales or sale price window rule into dates for an event.
  *
  * @since TBD
  *
@@ -18,7 +18,7 @@ use Exception;
 use Tribe__Timezones as Timezones;
 
 /**
- * Turns a rule plus an event into the sales start and end.
+ * Turns a rule plus an event into the start and end of its window.
  *
  * The dates are resolved on the wall clock of the event timezone. In a timezone east of UTC, a time that happens twice
  * when the clocks go back resolves to its first occurrence, as the editors' JavaScript does, while the sales actions
@@ -33,16 +33,17 @@ final class Sale_Window {
 	/**
 	 * Resolves a rule against the dates of an event, read in the event timezone.
 	 *
-	 * A Now start puts the ticket on sale: it moves a ticket start that is later than now to now, and leaves a start
-	 * that has already passed, or no start, to the ticket, so saving a ticket on sale again does not move its start.
+	 * A Now start of the sales window puts the ticket on sale: it moves a ticket start that is later than now to now, and
+	 * leaves a start that has already passed, or no start, to the ticket, so saving a ticket on sale again does not move
+	 * its start.
 	 *
 	 * @since TBD
 	 *
-	 * @param Rule   $rule         The sales window rule.
+	 * @param Rule   $rule         The rule.
 	 * @param int    $event_id     The event post ID.
 	 * @param string $ticket_start The start the ticket is saved with, as `Y-m-d H:i:s` in the event timezone, or `''`.
 	 *
-	 * @return Resolved_Window|null The resolved sales window, or `null` when the event has no valid dates.
+	 * @return Resolved_Window|null The resolved window, or `null` when the event has no valid dates.
 	 */
 	public function resolve_for_event( Rule $rule, int $event_id, string $ticket_start = '' ): ?Resolved_Window {
 		$event_dates = $this->get_event_dates( $event_id );
@@ -52,8 +53,9 @@ final class Sale_Window {
 		}
 
 		$window = $this->resolve( $rule, ...$event_dates );
+		$kind   = $rule->get_kind();
 
-		if ( Rule::MODE_DEFAULT !== $rule->get_start()->get_mode() ) {
+		if ( ! $kind->owns_ticket_sales_dates() || $kind->get_open_start_mode() !== $rule->get_start()->get_mode() ) {
 			return $window;
 		}
 
@@ -91,13 +93,15 @@ final class Sale_Window {
 	/**
 	 * Resolves a rule against an event's start and end, both in the event timezone.
 	 *
+	 * A start that opens the window at once has no date of its own, and a default end closes it when the event starts.
+	 *
 	 * @since TBD
 	 *
-	 * @param Rule              $rule        The sales window rule.
+	 * @param Rule              $rule        The rule.
 	 * @param DateTimeImmutable $event_start The event start, in the event's named timezone: only a named timezone, such as `Europe/Athens`, knows its clock changes.
 	 * @param DateTimeImmutable $event_end   The event end, in the same timezone.
 	 *
-	 * @return Resolved_Window The resolved sales window.
+	 * @return Resolved_Window The resolved window.
 	 */
 	private function resolve( Rule $rule, DateTimeImmutable $event_start, DateTimeImmutable $event_end ): Resolved_Window {
 		$anchors = [
@@ -131,7 +135,7 @@ final class Sale_Window {
 		$anchor   = $boundary->get_anchor();
 		$interval = $boundary->get_interval();
 
-		// Only a relative boundary has an anchor and an interval; a specific one keeps the ticket's own date.
+		// Only a relative boundary has both: a specific one keeps the ticket's own date, and a Now start opens the window.
 		if ( null === $anchor || null === $interval ) {
 			return null;
 		}

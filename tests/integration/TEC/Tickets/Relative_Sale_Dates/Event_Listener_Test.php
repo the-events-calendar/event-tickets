@@ -231,7 +231,7 @@ class Event_Listener_Test extends Controller_Test_Case {
 		$event_start = $this->get_future_event_start();
 		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
 		$ticket_id   = $this->create_ruled_ticket( $event_id );
-		tribe( Ticket_Dates::class )->write( $ticket_id, $event_id, Rule::from_stored( tribe( Rule_Store::class )->get( $ticket_id ) ) );
+		tribe( Ticket_Dates::class )->write( $ticket_id, $event_id, Rule::from_stored( tribe( Rule_Store::class )->get( $ticket_id ), Window_Kind::sales() ) );
 		$dates   = [ $this->get_ticket_start( $ticket_id ), $this->get_ticket_end( $ticket_id ) ];
 		$page_id = static::factory()->post->create( [ 'post_type' => 'page' ] );
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
