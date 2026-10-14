@@ -225,7 +225,7 @@ final class Assets extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, invalidWindow: string, relativeValueOutOfRange: string}, errorCodes: array{invalidWindow: string}} The script data.
+	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, windows: array<string,array{endsBeforeStart: string, outsideParent?: string, invalidDate: string, valueOutOfRange: string}>}, errorCodes: array<string,array{endsBeforeStart: string, outsideParent?: string, invalidRule: string, invalidDate: string}>} The script data.
 	 */
 	private function get_classic_script_data(): array {
 		return [
@@ -236,35 +236,105 @@ final class Assets extends Controller_Contract {
 			'allDay'       => $this->get_all_day_times(),
 			'text'         => [
 				// Translators: %1$s is the date sales start on, %2$s the time.
-				'start'                   => __( 'Sales start %1$s at %2$s', 'event-tickets' ),
+				'start'   => __( 'Sales start %1$s at %2$s', 'event-tickets' ),
 				// Translators: %1$s is the date sales end on, %2$s the time.
-				'end'                     => __( 'Sales end %1$s at %2$s', 'event-tickets' ),
-				'invalidWindow'           => __( 'Ticket sales cannot end before they start. Please adjust the sales window.', 'event-tickets' ),
-				// Translators: %1$d is the smallest number a relative sale date takes, %2$d the largest.
-				'relativeValueOutOfRange' => sprintf( __( 'Enter a number from %1$d to %2$d.', 'event-tickets' ), Boundary::MIN_VALUE, Boundary::MAX_VALUE ),
+				'end'     => __( 'Sales end %1$s at %2$s', 'event-tickets' ),
+				'windows' => $this->get_window_error_texts(),
 			],
-			'errorCodes'   => [
-				'invalidWindow' => Ticket_Save::INVALID_WINDOW_ERROR_CODE,
-			],
+			'errorCodes'   => $this->get_window_error_codes(),
 		];
 	}
 
 	/**
-	 * Gets the data the Ticket block script reads its defaults, the event date settings and the helper text formats from.
+	 * Gets the text of each error a window of each kind can have, keyed by the kind's ID.
+	 *
+	 * The errors the server rejects a save with carry the server's own text.
 	 *
 	 * @since TBD
 	 *
-	 * @return array{defaults: array{start: array{mode: string, value: int, unit: int, anchor: string}, end: array{mode: string, value: int, unit: int, anchor: string}}, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, dateNoYear: string, time: string}} The script data.
+	 * @return array<string,array{endsBeforeStart: string, outsideParent?: string, invalidDate: string, valueOutOfRange: string}> The texts of
+	 *         each kind, keyed by the error as the editors key it; `outsideParent` only for a kind with a parent window.
+	 */
+	private function get_window_error_texts(): array {
+		$texts = [];
+
+		foreach ( Window_Kind::all() as $kind ) {
+			$kind_texts = [];
+
+			foreach ( [ 'endsBeforeStart', 'outsideParent', 'invalidDate' ] as $key ) {
+				$error = $kind->get_error( $key );
+
+				if ( $error ) {
+					$kind_texts[ $key ] = $error->get_error_message();
+				}
+			}
+
+			$kind_texts['valueOutOfRange'] = sprintf(
+				// Translators: %1$d is the smallest number a relative sale date takes, %2$d the largest.
+				__( 'Enter a number from %1$d to %2$d.', 'event-tickets' ),
+				Boundary::MIN_VALUE,
+				$kind->get_max_value()
+			);
+
+			$texts[ $kind->get_id() ] = $kind_texts;
+		}
+
+		return $texts;
+	}
+
+	/**
+	 * Gets the code of each error the server rejects a save of a window of each kind with, keyed by the kind's ID.
+	 *
+	 * The classic script tells the window a rejected save was about by its code: the text can be translated or escaped
+	 * differently, or be another validator's.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string,array{endsBeforeStart: string, outsideParent?: string, invalidRule: string, invalidDate: string}> The
+	 *         codes of each kind, keyed by the error as the editors key it; `outsideParent` only for a kind with a parent
+	 *         window.
+	 */
+	private function get_window_error_codes(): array {
+		$codes = [];
+
+		foreach ( Window_Kind::all() as $kind ) {
+			$codes[ $kind->get_id() ] = array_filter(
+				[
+					'endsBeforeStart' => $kind->get_error_code( 'endsBeforeStart' ),
+					'outsideParent'   => $kind->get_error_code( 'outsideParent' ),
+					'invalidRule'     => $kind->get_error_code( 'invalidRule' ),
+					'invalidDate'     => $kind->get_error_code( 'invalidDate' ),
+				]
+			);
+		}
+
+		return $codes;
+	}
+
+	/**
+	 * Gets the data the Ticket block script reads the defaults and the error texts of each window kind, the event date
+	 * settings and the helper text formats from.
+	 *
+	 * @since TBD
+	 *
+	 * @return array{windowDefaults: array<string,array{start: array{mode: string, value: int, unit: int, anchor?: string}, end: array{mode: string, value: int, unit: int, anchor?: string}}>, windowErrorTexts: array<string,array{endsBeforeStart: string, outsideParent?: string, invalidDate: string, valueOutOfRange: string}>, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, dateNoYear: string, time: string}} The script data, with the defaults and the error texts keyed by the kind's ID.
 	 */
 	private function get_block_editor_script_data(): array {
+		$editor          = $this->container->get( Editor::class );
+		$window_defaults = [];
+
+		// The classic form's, so both editors open a new window on the same boundaries.
+		foreach ( Window_Kind::all() as $kind ) {
+			$window_defaults[ $kind->get_id() ] = $editor->get_form_defaults( $kind );
+		}
+
 		return [
-			'defaults'  => [
-				'start' => Editor::DEFAULT_RELATIVE_START,
-				'end'   => Editor::DEFAULT_RELATIVE_END,
-			],
-			'timezones' => $this->get_manual_offset_zones(),
-			'allDay'    => $this->get_all_day_times(),
-			'formats'   => [
+			'windowDefaults'   => $window_defaults,
+			// The classic script's, so both editors word an error the same way.
+			'windowErrorTexts' => $this->get_window_error_texts(),
+			'timezones'        => $this->get_manual_offset_zones(),
+			'allDay'           => $this->get_all_day_times(),
+			'formats'          => [
 				'dateWithYear' => $this->get_date_format( true ),
 				'dateNoYear'   => $this->get_date_format( false ),
 				'time'         => $this->get_time_format(),

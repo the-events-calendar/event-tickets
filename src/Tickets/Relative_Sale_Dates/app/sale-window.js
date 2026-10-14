@@ -16,11 +16,11 @@ import moment from 'moment';
 /**
  * Internal dependencies
  */
-import { ANCHOR_END, ANCHOR_START, MODE_DEFAULT, MODE_RELATIVE, UNIT_DAYS } from './rule-constants';
+import { ANCHOR_END, ANCHOR_START, MIN_VALUE, MODE_DEFAULT, MODE_RELATIVE, UNIT_DAYS } from './rule-constants';
 
 const MINUTE_IN_MILLISECONDS = 60000;
 
-const DATE_FORMAT = 'YYYY-MM-DD';
+export const DATE_FORMAT = 'YYYY-MM-DD';
 const TIME_FORMAT = 'HH:mm:ss';
 const DATE_TIME_FORMAT = `${ DATE_FORMAT } ${ TIME_FORMAT }`;
 
@@ -81,6 +81,72 @@ export function resolveSaleWindow( rule, eventStart, eventEnd, timezone ) {
 			: resolveRelative( rule.end, anchors, timezone );
 
 	return { start, end };
+}
+
+/**
+ * Resolves the rule of a window of a kind against an event's dates.
+ *
+ * A relative boundary that names no anchor is counted from the kind's implied one. A relative boundary whose number the
+ * save rejects, as a cleared field reads, has no date: subtracting it would put the boundary on its anchor, or on a date
+ * the ticket is never saved with.
+ *
+ * @since TBD
+ *
+ * @param {SaleWindowRule|null}                         rule       The rule of the window, or `null` for none.
+ * @param {import( './server-event-dates' ).EventDates} eventDates The event dates, or `null` when they are not known.
+ * @param {import( './window-kinds' ).WindowKind}       kind       The kind of the window.
+ *
+ * @return {ResolvedSaleWindow|null} The resolved window, or `null` without a rule or event dates.
+ */
+export function resolveWindow( rule, eventDates, kind ) {
+	if ( ! rule || ! eventDates ) {
+		return null;
+	}
+
+	const withAnchor = ( boundary ) => ( { anchor: kind.anchors[ 0 ], ...boundary } );
+	const resolved = resolveSaleWindow(
+		{ start: withAnchor( rule.start ), end: withAnchor( rule.end ) },
+		eventDates.start,
+		eventDates.end,
+		eventDates.timezone
+	);
+
+	[ 'start', 'end' ]
+		.filter( ( key ) => MODE_RELATIVE === rule[ key ].mode && ! isRelativeValueInRange( rule[ key ].value, kind ) )
+		.forEach( ( key ) => {
+			resolved[ key ] = null;
+		} );
+
+	return resolved;
+}
+
+/**
+ * Returns whether a relative boundary's number is one the server takes for a kind of window.
+ *
+ * @since TBD
+ *
+ * @param {number}                                value The number, `NaN` for a cleared field.
+ * @param {import( './window-kinds' ).WindowKind} kind  The kind of the window.
+ *
+ * @return {boolean} Whether the number is a whole number from `MIN_VALUE` to the kind's `maxValue`.
+ */
+export function isRelativeValueInRange( value, kind ) {
+	return Number.isInteger( value ) && value >= MIN_VALUE && value <= kind.maxValue;
+}
+
+/**
+ * Returns whether a rule opens a window of a kind whose open start the server stores as a value of its own, such as
+ * the sale price's Now, rather than as the date the form sends.
+ *
+ * @since TBD
+ *
+ * @param {SaleWindowRule}                        rule The rule of the window.
+ * @param {import( './window-kinds' ).WindowKind} kind The kind of the window.
+ *
+ * @return {boolean} Whether the start is an open start the kind stores itself.
+ */
+export function isStoredOpenStart( rule, kind ) {
+	return kind.openStartMode === rule.start.mode && null !== kind.openStartValue;
 }
 
 /**
@@ -184,4 +250,22 @@ export function fromLocal( dateTime, timezone ) {
 	}
 
 	return moment.tz( dateTime, DATE_TIME_FORMAT, true, timezone );
+}
+
+/**
+ * Gets the wall-clock time of an instant in the event timezone.
+ *
+ * @since TBD
+ *
+ * @param {moment.Moment} instant  The instant, which is left as it is.
+ * @param {string}        timezone The event timezone: an IANA name, or a fixed offset such as `+03:00`.
+ *
+ * @return {moment.Moment} The same instant, in the event timezone.
+ */
+export function toZone( instant, timezone ) {
+	if ( FIXED_OFFSET.test( timezone ) ) {
+		return instant.clone().utcOffset( timezone );
+	}
+
+	return instant.clone().tz( timezone );
 }

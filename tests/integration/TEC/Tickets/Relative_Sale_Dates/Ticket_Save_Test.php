@@ -5,11 +5,12 @@ namespace TEC\Tickets\Relative_Sale_Dates;
 use DateTimeImmutable;
 use DateTimeZone;
 use Generator;
+use TEC\Common\REST\TEC\V1\Exceptions\InvalidRestArgumentException;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Module;
-use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
 use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
+use TEC\Tickets\REST\TEC\V1\Endpoints\Ticket as Ticket_Endpoint;
 use TEC\Tickets\Ticket_Actions;
 use Tribe\Tests\Traits\With_Clock_Mock;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -17,6 +18,7 @@ use Tribe\Tickets\Test\Traits\Relative_Sale_Dates_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
+use WP_Error;
 
 class Ticket_Save_Test extends Controller_Test_Case {
 	use Relative_Sale_Dates_Maker;
@@ -30,6 +32,34 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	 * @var string
 	 */
 	private const INVALID_WINDOW_MESSAGE = 'Ticket sales cannot end before they start. Please adjust the sales window.';
+
+	/**
+	 * The error shown for a sales date that cannot be read.
+	 *
+	 * @var string
+	 */
+	private const INVALID_DATE_MESSAGE = 'The sales dates cannot be read. Enter a valid date for each specific date.';
+
+	/**
+	 * The error shown for an invalid sale price rule or a sale price window that does not end after the day it starts.
+	 *
+	 * @var string
+	 */
+	private const SALE_PRICE_ENDS_BEFORE_START_MESSAGE = 'The sale price cannot end before it starts. Please adjust the sale price window.';
+
+	/**
+	 * The error shown for a sale price date that cannot be read.
+	 *
+	 * @var string
+	 */
+	private const SALE_PRICE_INVALID_DATE_MESSAGE = 'The sale price dates cannot be read. Enter a valid date for each specific date.';
+
+	/**
+	 * The error shown for a sale price that starts outside the ticket sales window.
+	 *
+	 * @var string
+	 */
+	private const SALE_PRICE_OUTSIDE_SALES_WINDOW_MESSAGE = 'The sale price window falls outside the ticket sales window. Please adjust the dates.';
 
 	/**
 	 * The event start the sale price tests use, in UTC.
@@ -465,10 +495,6 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	 * @return Generator<string,array{0: array<string,string>}>
 	 */
 	public function invalid_sales_window_provider(): Generator {
-		yield 'invalid rule' => [
-			[ 'relative_sale_dates' => '{"start":{"mode":"relative","value":2,"unit":7,"anchor":"start"},"end":{"mode":"default"}}' ],
-		];
-
 		yield 'end before start' => [
 			[ 'relative_sale_dates' => wp_json_encode( [ 'start' => $this->relative( 1, HOUR_IN_SECONDS ), 'end' => $this->relative( 2, HOUR_IN_SECONDS ) ] ) ],
 		];
@@ -549,10 +575,31 @@ class Ticket_Save_Test extends Controller_Test_Case {
 		$this->assertSame(
 			[
 				'status'   => 400,
-				'argument' => Ticket_Save::DATA_KEY,
+				'argument' => 'relative_sale_dates',
 			],
 			$result->get_error_data()
 		);
+	}
+
+	/**
+	 * A rule that cannot be read is named as such, with its own code, not as a window that ends before it starts.
+	 *
+	 * @test
+	 */
+	public function should_reject_a_rule_that_cannot_be_read_with_its_own_error(): void {
+		$event_id = $this->create_event( '2027-06-24 19:00:00' );
+		// 7 seconds is no unit the sales window takes.
+		$data = [ 'relative_sale_dates' => '{"start":{"mode":"relative","value":2,"unit":7,"anchor":"start"},"end":{"mode":"default"}}' ];
+
+		$result = apply_filters( 'tec_tickets_ticket_data_validation', true, $event_id, $data );
+
+		$this->assertWPError( $result );
+		$this->assertSame( 'tec_tickets_relative_sale_dates_invalid_rule', $result->get_error_code() );
+		$this->assertSame(
+			sprintf( 'The relative sales dates cannot be read. Enter a whole number from %d to %d for each relative date.', Boundary::MIN_VALUE, Boundary::MAX_VALUE ),
+			$result->get_error_message()
+		);
+		$this->assertSame( 400, $result->get_error_data()['status'] );
 	}
 
 	/**
@@ -571,7 +618,8 @@ class Ticket_Save_Test extends Controller_Test_Case {
 		$result = apply_filters( 'tec_tickets_ticket_data_validation', true, $event_id, $data );
 
 		$this->assertWPError( $result );
-		$this->assertSame( self::INVALID_WINDOW_MESSAGE, $result->get_error_message() );
+		$this->assertSame( 'tec_tickets_relative_sale_dates_invalid_date', $result->get_error_code() );
+		$this->assertSame( self::INVALID_DATE_MESSAGE, $result->get_error_message() );
 	}
 
 	/**
@@ -914,11 +962,12 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	}
 
 	/**
-	 * Only the sales window rule is removed by a front-end form, such as Community Events', that sends no rule.
+	 * A front-end form, such as Community Events', offers neither window's options, so a save from it that sends no
+	 * rule removes both.
 	 *
 	 * @test
 	 */
-	public function should_keep_the_sale_price_rule_when_a_front_end_form_drops_the_sales_window_rule(): void {
+	public function should_drop_both_rules_when_a_front_end_form_saves_without_them(): void {
 		$event_id        = $this->create_event( self::EVENT_START );
 		$sale_price_rule = $this->get_sale_price_rule( [ 'mode' => Rule::MODE_NOW ], $this->sale_price_relative( 1, WEEK_IN_SECONDS ) );
 		$ticket_id       = $this->create_sale_price_ticket(
@@ -931,7 +980,7 @@ class Ticket_Save_Test extends Controller_Test_Case {
 		// What the classic editor save passes on from `tickets.js` outside wp-admin.
 		$this->update_sale_price_ticket( $ticket_id, [ 'is_admin' => false ] );
 
-		$this->assertSame( [ self::SALE_PRICE_STORE_KEY => $sale_price_rule ], $this->get_stored( $ticket_id ) );
+		$this->assertSame( [], $this->get_stored( $ticket_id ) );
 	}
 
 	/**
@@ -1154,6 +1203,345 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	}
 
 	/**
+	 * The event starts on 2027-06-24 at 19:00; without a sales window rule or a submitted date, sales open on the day the
+	 * event was published and end when it starts.
+	 *
+	 * @return Generator<string,array{0: array<string,string|int|bool|null>, 1: true|string}>
+	 */
+	public function validated_sale_price_data_provider(): Generator {
+		$event_start = new DateTimeImmutable( self::EVENT_START );
+		$days_before = static fn( int $days ): string => $event_start->modify( "-{$days} days" )->format( 'Y-m-d' );
+		$relative    = fn( int $days ): array => $this->sale_price_relative( $days, DAY_IN_SECONDS );
+		$now         = [ 'mode' => Rule::MODE_NOW ];
+		$specific    = [ 'mode' => Rule::MODE_SPECIFIC ];
+		$rule        = fn( array $start, array $end ): string => wp_json_encode( $this->get_sale_price_rule( $start, $end ) );
+		// Sales open a week before the event starts.
+		$sales_open_a_week_before = [
+			'relative_sale_dates' => wp_json_encode(
+				[
+					'start' => $this->relative( 1, WEEK_IN_SECONDS ),
+					'end'   => [ 'mode' => Rule::MODE_DEFAULT ],
+				]
+			),
+		];
+
+		yield 'from 2 weeks to 1 week before' => [ [ self::SALE_PRICE_DATA_KEY => $rule( $relative( 14 ), $relative( 7 ) ) ], true ];
+		yield 'an end on the start day' => [ [ self::SALE_PRICE_DATA_KEY => $rule( $relative( 7 ), $relative( 7 ) ) ], self::SALE_PRICE_ENDS_BEFORE_START_MESSAGE ];
+		yield 'an end before the start' => [ [ self::SALE_PRICE_DATA_KEY => $rule( $relative( 7 ), $relative( 14 ) ) ], self::SALE_PRICE_ENDS_BEFORE_START_MESSAGE ];
+		yield 'a specific end on the start day' => [
+			[
+				self::SALE_PRICE_DATA_KEY => $rule( $relative( 7 ), $specific ),
+				'ticket_sale_end_date'    => $days_before( 7 ),
+			],
+			self::SALE_PRICE_ENDS_BEFORE_START_MESSAGE,
+		];
+		yield 'a now start' => [ [ self::SALE_PRICE_DATA_KEY => $rule( $now, $relative( 7 ) ) ], true ];
+		yield 'a now start ending on the day sales open' => [
+			array_merge( $sales_open_a_week_before, [ self::SALE_PRICE_DATA_KEY => $rule( $now, $relative( 7 ) ) ] ),
+			self::SALE_PRICE_ENDS_BEFORE_START_MESSAGE,
+		];
+		yield 'a now start with sales opening a week before' => [
+			array_merge( $sales_open_a_week_before, [ self::SALE_PRICE_DATA_KEY => $rule( $now, $relative( 3 ) ) ] ),
+			true,
+		];
+		yield 'a start before the sales the rule opens' => [
+			array_merge( $sales_open_a_week_before, [ self::SALE_PRICE_DATA_KEY => $rule( $relative( 14 ), $relative( 3 ) ) ] ),
+			self::SALE_PRICE_OUTSIDE_SALES_WINDOW_MESSAGE,
+		];
+		yield 'a start before the submitted sales start' => [
+			[
+				self::SALE_PRICE_DATA_KEY => $rule( $relative( 14 ), $relative( 3 ) ),
+				'ticket_start_date'       => $days_before( 7 ),
+				'ticket_start_time'       => '10:00:00',
+			],
+			self::SALE_PRICE_OUTSIDE_SALES_WINDOW_MESSAGE,
+		];
+		yield 'a start on the day sales open, before their time' => [
+			[
+				self::SALE_PRICE_DATA_KEY => $rule( $relative( 7 ), $relative( 3 ) ),
+				'ticket_start_date'       => $days_before( 7 ),
+				'ticket_start_time'       => '10:00:00',
+			],
+			true,
+		];
+		yield 'a start after the submitted sales end' => [
+			[
+				self::SALE_PRICE_DATA_KEY => $rule( $relative( 3 ), $specific ),
+				'ticket_sale_end_date'    => $days_before( 1 ),
+				'ticket_end_date'         => $days_before( 5 ),
+				'ticket_end_time'         => '10:00:00',
+			],
+			self::SALE_PRICE_OUTSIDE_SALES_WINDOW_MESSAGE,
+		];
+		yield 'a specific start after the event start, when sales end' => [
+			[
+				self::SALE_PRICE_DATA_KEY => $rule( $specific, $specific ),
+				'ticket_sale_start_date'  => $event_start->modify( '+1 day' )->format( 'Y-m-d' ),
+				'ticket_sale_end_date'    => $event_start->modify( '+2 days' )->format( 'Y-m-d' ),
+			],
+			self::SALE_PRICE_OUTSIDE_SALES_WINDOW_MESSAGE,
+		];
+		// The legacy store keeps empty sale price dates, so a specific boundary sent without its date is saved as is.
+		yield 'a specific start sent without a date' => [
+			[
+				self::SALE_PRICE_DATA_KEY => $rule( $specific, $relative( 3 ) ),
+				'ticket_sale_start_date'  => '',
+			],
+			true,
+		];
+		yield 'a specific end sent without a date' => [
+			[
+				self::SALE_PRICE_DATA_KEY => $rule( $relative( 7 ), $specific ),
+				'ticket_sale_end_date'    => '',
+			],
+			true,
+		];
+		yield 'a specific start before the submitted sales start' => [
+			[
+				self::SALE_PRICE_DATA_KEY => $rule( $specific, $relative( 3 ) ),
+				'ticket_sale_start_date'  => $days_before( 14 ),
+				'ticket_start_date'       => $days_before( 7 ),
+			],
+			self::SALE_PRICE_OUTSIDE_SALES_WINDOW_MESSAGE,
+		];
+		yield 'an invalid rule' => [
+			[ self::SALE_PRICE_DATA_KEY => $rule( $relative( Window_Kind::sale_price()->get_max_value() + 1 ), $relative( 3 ) ) ],
+			Window_Kind::sale_price()->get_error( 'invalidRule' )->get_error_message(),
+		];
+		yield 'a rule sent to be removed' => [ [ self::SALE_PRICE_DATA_KEY => null ], true ];
+		yield 'no sale price' => [
+			[
+				self::SALE_PRICE_DATA_KEY => $rule( $relative( 7 ), $relative( 14 ) ),
+				'ticket_add_sale_price'   => false,
+			],
+			true,
+		];
+		// The save drops a sale price that is not lower than the price, 20 in these tests.
+		yield 'a sale price not lower than the price' => [
+			[
+				self::SALE_PRICE_DATA_KEY => $rule( $relative( 7 ), $relative( 14 ) ),
+				'ticket_sale_price'       => 20,
+			],
+			true,
+		];
+		yield 'fixed sale price dates on the same day' => [
+			[
+				'ticket_sale_start_date' => $days_before( 7 ),
+				'ticket_sale_end_date'   => $days_before( 7 ),
+			],
+			true,
+		];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider validated_sale_price_data_provider
+	 */
+	public function should_validate_the_sale_price_window_of_the_ticket_data( array $data, $expected ): void {
+		$valid = apply_filters( 'tec_tickets_ticket_data_validation', true, $this->create_event( self::EVENT_START ), $this->get_sale_price_ticket_data( $data ) );
+
+		$this->assert_validated_as( $expected, $valid );
+	}
+
+	/**
+	 * @return Generator<string,array{0: array<string,string>, 1: true|string}>
+	 */
+	public function unreadable_sale_price_dates_provider(): Generator {
+		$rule = fn( array $start, array $end ): string => wp_json_encode( $this->get_sale_price_rule( $start, $end ) );
+		// 31/02 is not a day the day-first datepicker format can turn into a date.
+		$unreadable = '31/02/2027';
+
+		yield 'a specific start' => [
+			[
+				self::SALE_PRICE_DATA_KEY => $rule( [ 'mode' => Rule::MODE_SPECIFIC ], $this->sale_price_relative( 3, DAY_IN_SECONDS ) ),
+				'ticket_sale_start_date'  => $unreadable,
+			],
+			self::SALE_PRICE_INVALID_DATE_MESSAGE,
+		];
+		yield 'a specific end' => [
+			[
+				self::SALE_PRICE_DATA_KEY => $rule( $this->sale_price_relative( 14, DAY_IN_SECONDS ), [ 'mode' => Rule::MODE_SPECIFIC ] ),
+				'ticket_sale_end_date'    => $unreadable,
+			],
+			self::SALE_PRICE_INVALID_DATE_MESSAGE,
+		];
+		yield 'a now start, which does not read the date' => [
+			[
+				self::SALE_PRICE_DATA_KEY => $rule( [ 'mode' => Rule::MODE_NOW ], $this->sale_price_relative( 3, DAY_IN_SECONDS ) ),
+				'ticket_sale_start_date'  => $unreadable,
+			],
+			true,
+		];
+		// Without a sales window rule, the sales start that cannot be read leaves no sales window to judge the start by.
+		yield 'a sales start, under a sale price window that ends before it starts' => [
+			[
+				self::SALE_PRICE_DATA_KEY => $rule( $this->sale_price_relative( 7, DAY_IN_SECONDS ), $this->sale_price_relative( 14, DAY_IN_SECONDS ) ),
+				'ticket_start_date'       => $unreadable,
+			],
+			self::SALE_PRICE_ENDS_BEFORE_START_MESSAGE,
+		];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider unreadable_sale_price_dates_provider
+	 */
+	public function should_reject_a_specific_sale_price_date_the_datepicker_format_cannot_read( array $data, $expected ): void {
+		// 4 is the day-first `d/m/Y` datepicker format.
+		add_filter( 'tribe_datepicker_format_index', static fn() => 4 );
+
+		$valid = apply_filters( 'tec_tickets_ticket_data_validation', true, $this->create_event( self::EVENT_START ), $this->get_sale_price_ticket_data( $data ) );
+
+		$this->assert_validated_as( $expected, $valid );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_not_validate_the_sale_price_window_of_a_ticket_out_of_scope(): void {
+		$invalid = [
+			self::SALE_PRICE_DATA_KEY => wp_json_encode(
+				$this->get_sale_price_rule( $this->sale_price_relative( 7, DAY_IN_SECONDS ), $this->sale_price_relative( 14, DAY_IN_SECONDS ) )
+			),
+		];
+
+		$this->assertTrue( apply_filters( 'tec_tickets_ticket_data_validation', true, static::factory()->post->create( [ 'post_type' => 'page' ] ), $this->get_sale_price_ticket_data( $invalid ) ) );
+		$this->assertTrue(
+			apply_filters(
+				'tec_tickets_ticket_data_validation',
+				true,
+				$this->create_event( self::EVENT_START ),
+				$this->get_sale_price_ticket_data( array_merge( $invalid, [ 'ticket_type' => Series_Passes::TICKET_TYPE ] ) )
+			)
+		);
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_judge_the_stored_rule_against_a_sales_window_the_update_moves(): void {
+		$event_start = new DateTimeImmutable( self::EVENT_START );
+		$event_id    = $this->create_event( self::EVENT_START );
+		$ticket_id   = $this->create_sale_price_ticket(
+			$event_id,
+			[ self::SALE_PRICE_DATA_KEY => wp_json_encode( $this->get_sale_price_rule( $this->sale_price_relative( 2, WEEK_IN_SECONDS ), $this->sale_price_relative( 1, WEEK_IN_SECONDS ) ) ) ]
+		);
+
+		$valid = apply_filters(
+			'tec_tickets_ticket_data_validation',
+			true,
+			$event_id,
+			$this->get_sale_price_ticket_data(
+				[
+					'ticket_id'         => $ticket_id,
+					'ticket_start_date' => $event_start->modify( '-10 days' )->format( 'Y-m-d' ),
+				]
+			)
+		);
+
+		$this->assertWPError( $valid );
+		$this->assertSame( self::SALE_PRICE_OUTSIDE_SALES_WINDOW_MESSAGE, $valid->get_error_message() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_reject_through_the_classic_editor_a_sale_price_that_ends_before_it_starts(): void {
+		$event_id = $this->create_event( self::EVENT_START );
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+
+		$response = $this->send_classic_ticket_form(
+			$event_id,
+			http_build_query(
+				$this->get_sale_price_ticket_data(
+					[
+						'ticket_name'             => 'Classic editor ticket',
+						'tribe-ticket'            => [
+							'mode'     => 'own',
+							'capacity' => '50',
+						],
+						self::SALE_PRICE_DATA_KEY => wp_json_encode( $this->get_sale_price_rule( $this->sale_price_relative( 7, DAY_IN_SECONDS ), $this->sale_price_relative( 14, DAY_IN_SECONDS ) ) ),
+					]
+				)
+			)
+		);
+
+		$this->assertSame(
+			[
+				'success' => false,
+				'data'    => [
+					'message' => self::SALE_PRICE_ENDS_BEFORE_START_MESSAGE,
+					'code'    => 'tec_tickets_relative_sale_dates_sale_price_ends_before_start',
+				],
+			],
+			$response
+		);
+		$this->assertSame( [], tribe( Module::class )->get_tickets_ids( $event_id ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_reject_through_the_block_editor_a_sales_start_moved_past_the_stored_sale_price_start(): void {
+		$event_start = new DateTimeImmutable( self::EVENT_START );
+		$event_id    = $this->create_event( self::EVENT_START );
+		$ticket_id   = $this->create_sale_price_ticket(
+			$event_id,
+			[ self::SALE_PRICE_DATA_KEY => wp_json_encode( $this->get_sale_price_rule( $this->sale_price_relative( 2, WEEK_IN_SECONDS ), $this->sale_price_relative( 1, WEEK_IN_SECONDS ) ) ) ]
+		);
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+
+		$response = $this->send_block_editor_ticket_save(
+			'PUT',
+			"/tickets/{$ticket_id}",
+			$event_id,
+			'edit_ticket_nonce',
+			[
+				'price'      => '20',
+				'start_date' => $event_start->modify( '-10 days' )->format( 'Y-m-d' ),
+				'start_time' => '10:00:00',
+				'ticket'     => [
+					'sale_price' => [
+						'checked' => true,
+						'price'   => '10',
+					],
+				],
+			]
+		);
+
+		$this->assertSame( 400, $response->get_status() );
+		$this->assertSame( self::SALE_PRICE_OUTSIDE_SALES_WINDOW_MESSAGE, $response->get_data()['message'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_reject_through_the_tec_rest_api_a_sales_start_moved_past_the_stored_sale_price_start(): void {
+		$event_start = new DateTimeImmutable( self::EVENT_START );
+		$event_id    = $this->create_event( self::EVENT_START );
+		$ticket_id   = $this->create_sale_price_ticket(
+			$event_id,
+			[ self::SALE_PRICE_DATA_KEY => wp_json_encode( $this->get_sale_price_rule( $this->sale_price_relative( 2, WEEK_IN_SECONDS ), $this->sale_price_relative( 1, WEEK_IN_SECONDS ) ) ) ]
+		);
+		$endpoint    = tribe( Ticket_Endpoint::class );
+
+		try {
+			$endpoint->upsert(
+				$endpoint->filter_upsert_params(
+					[
+						'id'                => $ticket_id,
+						'ticket_start_date' => $event_start->modify( '-10 days' )->format( 'Y-m-d' ),
+					]
+				),
+				'update'
+			);
+			$this->fail( 'The ticket should have been rejected.' );
+		} catch ( InvalidRestArgumentException $e ) {
+			$this->assertSame( self::SALE_PRICE_OUTSIDE_SALES_WINDOW_MESSAGE, $e->getMessage() );
+		}
+	}
+
+	/**
 	 * Sends a ticket save from the classic editor, by an administrator, and returns its JSON response.
 	 *
 	 * @param int                      $event_id The event post ID.
@@ -1215,18 +1603,6 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	}
 
 	/**
-	 * Creates a Tickets Commerce ticket priced 20 with a sale price of 10.
-	 *
-	 * @param int                                                                                                                                              $post_id   The ticketed post ID.
-	 * @param array<string,string|int|bool|null|array{start: array{mode: string, value?: int, unit?: int}, end: array{mode: string, value?: int, unit?: int}}> $overrides The ticket data to override.
-	 *
-	 * @return int The ticket post ID.
-	 */
-	private function create_sale_price_ticket( int $post_id, array $overrides ): int {
-		return $this->create_tc_ticket( $post_id, 20, array_merge( $this->get_sale_price_data(), $overrides ) );
-	}
-
-	/**
 	 * Saves the ticket again with a sale price of 10, the way an editor sends all of its fields.
 	 *
 	 * @param int                                                                                                                                              $ticket_id The ticket post ID.
@@ -1239,29 +1615,37 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	}
 
 	/**
-	 * @return array{ticket_add_sale_price: string, ticket_sale_price: int, ticket_sale_start_date: string, ticket_sale_end_date: string} The sale price fields of a ticket form with a sale price of 10.
+	 * @param array<string,string|int|bool|null|array<string,string>> $overrides The ticket data to override.
+	 *
+	 * @return array<string,string|int|bool|null|array<string,string>> The data of a Tickets Commerce ticket priced 20 with a sale price of 10, as an editor sends it.
 	 */
-	private function get_sale_price_data(): array {
-		return [
-			'ticket_add_sale_price'  => 'on',
-			'ticket_sale_price'      => 10,
-			'ticket_sale_start_date' => '',
-			'ticket_sale_end_date'   => '',
-		];
+	private function get_sale_price_ticket_data( array $overrides ): array {
+		return array_merge(
+			[
+				'ticket_provider' => Module::class,
+				'ticket_price'    => 20,
+			],
+			$this->get_sale_price_data(),
+			$overrides
+		);
 	}
 
 	/**
-	 * @param int $value The number of units before the event start.
-	 * @param int $unit  `DAY_IN_SECONDS` or `WEEK_IN_SECONDS`.
+	 * @param true|string   $expected `true` for valid data, or the message of the error that rejects it.
+	 * @param true|WP_Error $valid    What the validation returned.
 	 *
-	 * @return array{mode: string, value: int, unit: int} A relative boundary of the sale price window.
+	 * @return void
 	 */
-	private function sale_price_relative( int $value, int $unit ): array {
-		return [
-			'mode'  => Rule::MODE_RELATIVE,
-			'value' => $value,
-			'unit'  => $unit,
-		];
+	private function assert_validated_as( $expected, $valid ): void {
+		if ( true === $expected ) {
+			$this->assertTrue( $valid );
+
+			return;
+		}
+
+		$this->assertWPError( $valid );
+		$this->assertSame( $expected, $valid->get_error_message() );
+		$this->assertSame( 400, $valid->get_error_data()['status'] );
 	}
 
 	/**
@@ -1284,18 +1668,6 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	 */
 	private function get_stored( int $ticket_id ): array {
 		return tribe( Rule_Store::class )->get( $ticket_id );
-	}
-
-	/**
-	 * @param int $ticket_id The ticket post ID.
-	 *
-	 * @return array{0: string, 1: string} The stored sale price start and end dates.
-	 */
-	private function get_sale_price_dates( int $ticket_id ): array {
-		return [
-			get_post_meta( $ticket_id, Ticket::$sale_price_start_date_key, true ),
-			get_post_meta( $ticket_id, Ticket::$sale_price_end_date_key, true ),
-		];
 	}
 
 	/**

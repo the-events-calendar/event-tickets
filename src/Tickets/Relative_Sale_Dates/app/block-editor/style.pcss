@@ -66,6 +66,25 @@
 	margin: 0;
 }
 
+/* An empty live region stays mounted, out of the layout, so the text written into it later is announced. */
+.editor-styles-wrapper .tec-tickets-relative-sale-dates__helper:empty {
+	border: 0;
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* How long the sale price lasts, under the sale end. */
+.editor-styles-wrapper
+.tribe-editor__ticket__sale-price-wrapper
+.tec-tickets-relative-sale-dates__helper {
+	font-style: italic;
+}
+
 /* The select draws no border: the control's backdrop, its sibling, does. */
 .editor-styles-wrapper
 .tec-tickets-relative-sale-dates
@@ -87,7 +106,7 @@ select[aria-invalid="true"] ~ .components-input-control__backdrop {
 }
 
 .editor-styles-wrapper .tec-tickets-relative-sale-dates__end > .components-select-control > .components-base-control__help {
-	margin: 0 0 0 calc(var(--tec-tickets-relative-sale-dates-label-width) + 8px);
+	margin: 0 0 0 calc(var(--tec-tickets-relative-sale-dates-label-width) + var(--tec-spacer-1));
 	order: 1;
 }
 
@@ -95,6 +114,22 @@ select[aria-invalid="true"] ~ .components-input-control__backdrop {
 	flex-basis: 100%;
 	margin: 0;
 	order: 1;
+}
+
+/*
+ * The sale price boundaries line up with the Sale Price field above them: their labels take its label's column and
+ * type, so each select starts where its input does.
+ */
+.editor-styles-wrapper .tribe-editor__ticket__sale-price-wrapper .tec-tickets-relative-sale-dates {
+	--tec-tickets-relative-sale-dates-label-width: 92px;
+
+	.tec-tickets-relative-sale-dates__end > .components-select-control .components-input-control__label {
+		font-size: 15px;
+	}
+
+	.tec-tickets-relative-sale-dates__relative > span {
+		font-size: 13px;
+	}
 }
 
 /* Each end shows only its own half of the picker it is handed. */

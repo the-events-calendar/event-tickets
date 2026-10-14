@@ -1189,6 +1189,14 @@ describe( 'Ticket Block sagas', () => {
 		} );
 	} );
 
+	describe( 'toRequestSaleDate', () => {
+		it( 'should send a sale price date the store keeps as Invalid date empty, as on create', () => {
+			expect( sagas.toRequestSaleDate( 'Invalid date' ) ).toBe( '' );
+			expect( sagas.toRequestSaleDate( '' ) ).toBe( '' );
+			expect( sagas.toRequestSaleDate( '2040-10-01' ) ).toBe( '2040-10-01' );
+		} );
+	} );
+
 	describe( 'setBodyDetails', () => {
 		it( 'should set body details', () => {
 			const postId = 10;
@@ -1266,6 +1274,25 @@ describe( 'Ticket Block sagas', () => {
 			);
 
 			expect( clone2.next().done ).toEqual( true );
+		} );
+
+		it( 'should send a sale price date the store holds as Invalid date empty', () => {
+			const props = { clientId: 'modern-tribe' };
+			const answers = new Map( [
+				[ selectors.getTicketTempCapacityType, TICKET_TYPES[ INDEPENDENT ] ],
+				[ selectors.showSalePrice, true ],
+				[ selectors.getTicketTempSaleStartDate, 'Invalid date' ],
+				[ selectors.getTicketTempSaleEndDate, '2040-10-01' ],
+			] );
+			const gen = sagas.setBodyDetails( props.clientId );
+			let step = gen.next();
+
+			while ( ! step.done ) {
+				step = gen.next( answers.get( step.value?.SELECT?.selector ) );
+			}
+
+			expect( step.value.get( 'ticket[sale_price][start_date]' ) ).toBe( '' );
+			expect( step.value.get( 'ticket[sale_price][end_date]' ) ).toBe( '2040-10-01' );
 		} );
 	} );
 
@@ -1467,6 +1494,33 @@ describe( 'Ticket Block sagas', () => {
 			} );
 		} );
 
+		// Parsing an empty date gives an invalid moment, whose "Invalid date" times the duration check cannot read.
+		it.each( [
+			[ 'end', { available_from: '2040-09-10 19:00:00', available_until: '' }, 'end' ],
+			[ 'start', { available_from: '', available_until: '2040-10-19 18:00:00' }, 'start' ],
+		] )( 'should leave empty the %s a ticket was stored without', ( title, ticket, boundary ) => {
+			const dates = runCalls( sagas.getTicketSaleDates( ticket ) );
+
+			expect( dates ).toMatchObject( {
+				[ `${ boundary }Date` ]: '',
+				[ `${ boundary }DateInput` ]: '',
+				[ `${ boundary }DateMoment` ]: null,
+				[ `${ boundary }Time` ]: '',
+				[ `${ boundary }TimeInput` ]: '',
+			} );
+		} );
+
+		it( 'should mark a ticket loaded without an end as a duration error instead of throwing', () => {
+			const clientId = 'stored-without-end';
+			const gen = sagas.handleTicketDurationError( clientId );
+
+			gen.next();
+			gen.next( moment( '2040-09-10 19:00:00' ) );
+
+			expect( gen.next( null ).value ).toEqual( put( actions.setTicketHasDurationError( clientId, true ) ) );
+			expect( gen.next().done ).toBe( true );
+		} );
+
 		it( 'should map the dates a ticket sale price was stored with', () => {
 			const dates = runCalls(
 				sagas.getTicketSalePriceDates( { sale_price_data: { start_date: '2040-09-01', end_date: '2040-09-30' } } ),
@@ -1493,13 +1547,13 @@ describe( 'Ticket Block sagas', () => {
 		startDate: '2018-11-09',
 		startDateInput: 'November 9, 2018',
 		startDateMoment: moment( '2018-11-09 19:48:42' ),
-		endDate: 'Invalid date',
-		endDateInput: 'Invalid date',
-		endDateMoment: moment( '' ),
+		endDate: '',
+		endDateInput: '',
+		endDateMoment: null,
 		startTime: '19:48:42',
-		endTime: 'Invalid date',
+		endTime: '',
 		startTimeInput: '7:48 pm',
-		endTimeInput: 'Invalid date',
+		endTimeInput: '',
 	};
 	const tempEnd = {
 		endDate: '2018-11-12',

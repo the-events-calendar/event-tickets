@@ -105,6 +105,35 @@ final class Sales_Window_Effects {
 	}
 
 	/**
+	 * Fills in the sales dates `ticket_add()` gives a ticket saved without them.
+	 *
+	 * `ticket_add()` fills an empty start with the day the event was published and an empty end with the event start.
+	 * The start fallback applies to an open start or a ticket without a rule, and the end fallback only to a ticket
+	 * without a rule, so a `specific` boundary sent without its date has none.
+	 *
+	 * @since TBD
+	 *
+	 * @param Window_Kind            $kind        The kind of window.
+	 * @param Rule|null              $rule        The rule of the kind the save applies, or `null` for none.
+	 * @param DateTimeImmutable|null $start       The start the window has so far, or `null` for none.
+	 * @param DateTimeImmutable|null $end         The end the window has so far, or `null` for none.
+	 * @param int                    $post_id     The event post ID.
+	 * @param DateTimeImmutable      $event_start The event start, in the event timezone.
+	 *
+	 * @return array{0: DateTimeImmutable|null, 1: DateTimeImmutable|null} The start and the end the save stores.
+	 */
+	public function fill_saved_ends( Window_Kind $kind, ?Rule $rule, ?DateTimeImmutable $start, ?DateTimeImmutable $end, int $post_id, DateTimeImmutable $event_start ): array {
+		if ( ! $kind->owns_ticket_sales_dates() ) {
+			return [ $start, $end ];
+		}
+
+		$start ??= ! $rule || $rule->opens_at_once() ? $this->get_post_day( $post_id, $event_start->getTimezone() ) : null;
+		$end   ??= $rule ? null : $event_start;
+
+		return [ $start, $end ];
+	}
+
+	/**
 	 * Reschedules the sales actions of a ticket whose window dates an event move changed.
 	 *
 	 * A move can push a relative boundary past a specific one. The inverted window is kept, so the ticket is off sale,
@@ -241,5 +270,21 @@ final class Sales_Window_Effects {
 		$now = new DateTimeImmutable( 'now', $timezone );
 
 		return $start > $now ? $now : null;
+	}
+
+	/**
+	 * Gets the day the event was published, which `ticket_add()` stores as the start of a ticket sent without one.
+	 *
+	 * @since TBD
+	 *
+	 * @param int          $post_id  The event post ID.
+	 * @param DateTimeZone $timezone The event timezone.
+	 *
+	 * @return DateTimeImmutable|null Midnight of the day the event was published, or `null` when its date cannot be read.
+	 */
+	private function get_post_day( int $post_id, DateTimeZone $timezone ): ?DateTimeImmutable {
+		$date = date_create_immutable( get_post_field( 'post_date', $post_id, 'raw' ), $timezone );
+
+		return $date ? $date->setTime( 0, 0 ) : null;
 	}
 }

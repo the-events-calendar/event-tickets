@@ -38,7 +38,8 @@
         "capacity": 100,
         "show_not_going": true,
         "not_going_count": 0,
-        "relative_sale_dates": null
+        "relative_sale_dates": null,
+        "sale_price_relative": null
     },
     {
         "id": {TICKET_ID},
@@ -79,7 +80,8 @@
         "capacity": 100,
         "show_not_going": true,
         "not_going_count": 0,
-        "relative_sale_dates": null
+        "relative_sale_dates": null,
+        "sale_price_relative": null
     },
     {
         "id": {TICKET_ID},
@@ -120,7 +122,8 @@
         "capacity": 100,
         "show_not_going": true,
         "not_going_count": 1,
-        "relative_sale_dates": null
+        "relative_sale_dates": null,
+        "sale_price_relative": null
     },
     {
         "id": {TICKET_ID},
@@ -161,7 +164,8 @@
         "capacity": 100,
         "show_not_going": false,
         "not_going_count": 0,
-        "relative_sale_dates": null
+        "relative_sale_dates": null,
+        "sale_price_relative": null
     },
     {
         "id": {TICKET_ID},
@@ -200,6 +204,7 @@
         "sold": 0,
         "sku": "TEST-TKT-{POST_ID}",
         "capacity": 100,
-        "relative_sale_dates": null
+        "relative_sale_dates": null,
+        "sale_price_relative": null
     }
 ]

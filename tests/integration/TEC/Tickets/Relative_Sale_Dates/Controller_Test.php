@@ -120,7 +120,7 @@ class Controller_Test extends Controller_Test_Case {
 		yield 'ticket dates set before the save' => [ 'tec_tickets_ticket_pre_save', Ticket_Save::class, 'set_ticket_dates', 10 ];
 		yield 'sales window and sale price rules stored after the save' => [ 'tec_tickets_ticket_upserted', Ticket_Save::class, 'save_rule', 8 ];
 		yield 'sales window and sale price dates written after the save' => [ 'tec_tickets_ticket_upserted', Ticket_Save::class, 'write_resolved_dates', 9 ];
-		yield 'ticket data validated' => [ 'tec_tickets_ticket_data_validation', Ticket_Save::class, 'validate_ticket_data', 10 ];
+		yield 'sales window and sale price data validated' => [ 'tec_tickets_ticket_data_validation', Ticket_Save::class, 'validate_ticket_data', 10 ];
 		yield 'tickets updated once the event occurrences are saved' => [ 'tec_events_custom_tables_v1_after_save_occurrences', Event_Listener::class, 'update_ticket_dates', 10 ];
 		yield 'event marked when a date meta is added' => [ 'added_post_meta', Event_Listener::class, 'mark_moved_event', 10 ];
 		yield 'event marked when a date meta is updated' => [ 'updated_postmeta', Event_Listener::class, 'mark_moved_event', 10 ];
@@ -130,8 +130,8 @@ class Controller_Test extends Controller_Test_Case {
 		yield 'legacy end date sync filtered' => [ 'tec_tickets_ticket_end_date_follows_event_start', Event_Listener::class, 'filter_end_date_follows_event_start', 10 ];
 		yield 'rules copied to duplicates' => [ 'tec_tickets_tickets_duplicated', Event_Listener::class, 'copy_rules_to_duplicates', 10 ];
 		yield 'duplicated tickets updated' => [ 'tec_tickets_tickets_duplicated', Event_Listener::class, 'update_duplicated_tickets', 20 ];
-		yield 'block editor rule mapped' => [ 'tec_tickets_rest_single_ticket_add_data', Rest::class, 'map_block_editor_rule', 10 ];
-		yield 'rule added to the block editor ticket' => [ 'tribe_tickets_rest_api_ticket_data', Rest::class, 'add_rule_to_block_editor_ticket_data', 10 ];
+		yield 'block editor sales window and sale price rules mapped' => [ 'tec_tickets_rest_single_ticket_add_data', Rest::class, 'map_block_editor_rule', 10 ];
+		yield 'sales window and sale price rules added to the block editor ticket' => [ 'tribe_tickets_rest_api_ticket_data', Rest::class, 'add_rule_to_block_editor_ticket_data', 10 ];
 		yield 'rule added to the request body definition' => [ 'tec_rest_swagger_ticket_request_body_definition', Rest::class, 'add_rule_to_definition', 10 ];
 		yield 'rule added to the ticket definition' => [ 'tec_rest_swagger_ticket_definition', Rest::class, 'add_rule_to_definition', 10 ];
 		yield 'rule sent as null kept' => [ 'tec_rest_schema_filter', Rest::class, 'keep_a_rule_sent_as_null', 10 ];
@@ -139,6 +139,7 @@ class Controller_Test extends Controller_Test_Case {
 		yield 'rule param passed on as ticket data' => [ 'tec_tickets_rest_ticket_data_params', Rest::class, 'add_rule_to_ticket_data_params', 10 ];
 		yield 'rule added to the classic panel data' => [ 'tec_tickets_ticket_panel_data', Classic_Panel_Data::class, 'add_rule_to_panel_data', 10 ];
 		yield 'sales window fields rendered' => [ 'tribe_template_include_html:tickets/admin-views/editor/panel/fields/dates', Editor::class, 'render_sales_window_fields', 10 ];
+		yield 'sale price fields rendered' => [ 'tribe_template_include_html:tickets/admin-views/commerce/metabox/sale-price', Editor::class, 'render_sale_price_fields', 10 ];
 		yield 'tickets list dates context filtered' => [ 'tribe_template_context:tickets/admin-views/editor/list-row/available-dates', Editor::class, 'filter_available_dates_context', 10 ];
 	}
 

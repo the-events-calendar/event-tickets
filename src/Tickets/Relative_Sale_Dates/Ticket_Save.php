@@ -11,9 +11,6 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
-use DateTimeImmutable;
-use DateTimeZone;
-use Exception;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
@@ -35,16 +32,6 @@ use WP_Error;
  */
 final class Ticket_Save {
 	/**
-	 * The ticket data key that carries the sales window rule; its value is a JSON string, an array, or `null` or `''` to
-	 * remove it.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public const DATA_KEY = 'relative_sale_dates';
-
-	/**
 	 * The ticket types relative sale dates never apply to: Series Passes, and RSVPs stored as Tickets Commerce tickets.
 	 *
 	 * @since TBD
@@ -52,17 +39,6 @@ final class Ticket_Save {
 	 * @var string[]
 	 */
 	public const EXCLUDED_TICKET_TYPES = [ Series_Passes::TICKET_TYPE, RSVP_V2_Constants::TC_RSVP_TYPE ];
-
-	/**
-	 * The code of the error a save is rejected with when its sales window ends before it starts.
-	 *
-	 * The classic editor tells this error from any other by it, whatever language its message is in.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public const INVALID_WINDOW_ERROR_CODE = 'tec_tickets_relative_sale_dates_invalid_window';
 
 	/**
 	 * The store of the ticket rules.
@@ -101,6 +77,15 @@ final class Ticket_Save {
 	private Sales_Window_Effects $sales_window_effects;
 
 	/**
+	 * The judge of the windows a save would store.
+	 *
+	 * @since TBD
+	 *
+	 * @var Window_Validator
+	 */
+	private Window_Validator $window_validator;
+
+	/**
 	 * Ticket_Save constructor.
 	 *
 	 * @since TBD
@@ -109,12 +94,14 @@ final class Ticket_Save {
 	 * @param Sale_Window          $sale_window          The resolver of every kind of window.
 	 * @param Ticket_Dates         $ticket_dates         The writer of the ticket dates.
 	 * @param Sales_Window_Effects $sales_window_effects The effects only the sales window has.
+	 * @param Window_Validator     $window_validator     The judge of the windows a save would store.
 	 */
-	public function __construct( Rule_Store $rule_store, Sale_Window $sale_window, Ticket_Dates $ticket_dates, Sales_Window_Effects $sales_window_effects ) {
+	public function __construct( Rule_Store $rule_store, Sale_Window $sale_window, Ticket_Dates $ticket_dates, Sales_Window_Effects $sales_window_effects, Window_Validator $window_validator ) {
 		$this->rule_store           = $rule_store;
 		$this->sale_window          = $sale_window;
 		$this->ticket_dates         = $ticket_dates;
 		$this->sales_window_effects = $sales_window_effects;
+		$this->window_validator     = $window_validator;
 	}
 
 	/**
@@ -231,12 +218,12 @@ final class Ticket_Save {
 	}
 
 	/**
-	 * Rejects ticket data whose rule is invalid or whose sales window does not start before it ends.
+	 * Rejects ticket data whose rule of any kind is invalid, whose window ends before it starts, or whose window starts
+	 * outside its parent window.
 	 *
-	 * The rule judged is the one the save applies: the one sent, or else the one stored for the ticket. A boundary the
-	 * rule leaves to the ticket is judged with the date the save stores for it: the submitted date, now for a `default`
-	 * start submitted ahead of now, or for a `default` start sent without one, the day the event was published. A
-	 * `specific` boundary sent without its date is rejected.
+	 * Each kind is judged in turn, the parent first, and the first error is returned: a sales window it rejects is not
+	 * judged again as the parent of the sale price. A kind the save drops, such as a sale price that is unchecked or not
+	 * lower than the price, is not judged.
 	 *
 	 * @since TBD
 	 *
@@ -244,48 +231,26 @@ final class Ticket_Save {
 	 * @param int                 $post_id The ticket parent post ID.
 	 * @param array<string,mixed> $data    The ticket data about to be saved.
 	 *
-	 * @return true|WP_Error `true` when the sales window is valid or does not apply, the error otherwise.
+	 * @return true|WP_Error `true` when every window is valid or does not apply, the first error otherwise.
 	 */
 	public function validate_ticket_data( $valid, int $post_id, array $data ) {
-		$kind = Window_Kind::sales();
-
 		if (
 			is_wp_error( $valid )
-			|| $this->removes_rule( $data, $kind )
 			|| Module::class !== ( $data['ticket_provider'] ?? Module::class )
 			|| ! $this->applies_to( $post_id, $data['ticket_type'] ?? 'default' )
 		) {
 			return $valid;
 		}
 
-		// The save would keep the stored rule, but the admin who sent this one expects it to apply.
-		if ( isset( $data[ self::DATA_KEY ] ) && ! Rule::from_raw( $data[ self::DATA_KEY ], $kind ) ) {
-			return $this->get_invalid_window_error();
+		foreach ( Window_Kind::all() as $kind ) {
+			$error = $this->validate_window( $post_id, $data, $kind );
+
+			if ( $error ) {
+				return $error;
+			}
 		}
 
-		$rule        = $this->get_rule_to_apply( absint( $data['ticket_id'] ?? 0 ), $data, $kind );
-		$event_dates = $rule ? $this->sale_window->get_event_dates( $post_id ) : null;
-
-		if ( ! $event_dates ) {
-			return $valid;
-		}
-
-		$timezone  = $event_dates[0]->getTimezone();
-		$submitted = $this->get_submitted_date( $data, 'start', $timezone );
-		$window    = $this->sale_window->resolve_for_event( $rule, $post_id );
-		$window    = $window ? $this->sales_window_effects->apply_now_start( $window, $rule, $submitted ? $submitted->format( 'Y-m-d H:i:s' ) : '' ) : null;
-		$start     = ( $window ? $window->get_start() : null ) ?? $submitted;
-		$end       = ( $window ? $window->get_end() : null ) ?? $this->get_submitted_date( $data, 'end', $timezone );
-
-		if ( ! $start && Rule::MODE_DEFAULT === $rule->get_start()->get_mode() && empty( $data['ticket_start_date'] ) ) {
-			$start = $this->get_post_day( $post_id, $timezone );
-		}
-
-		if ( ! ( $start && $end ) ) {
-			return $this->get_invalid_window_error();
-		}
-
-		return ( new Resolved_Window( $start, $end, $timezone ) )->is_valid() ? $valid : $this->get_invalid_window_error();
+		return $valid;
 	}
 
 	/**
@@ -320,10 +285,10 @@ final class Ticket_Save {
 	/**
 	 * Returns whether the ticket data asks to remove the rule of a kind, sending it as `null` or `''`.
 	 *
-	 * A front-end ticket form, such as Community Events', offers no sales window options, so the dates it sends are the
-	 * ones the person set: for a kind such a form removes, a save from it that does not send the rule removes the stored
-	 * one. The classic editor save passes on the `is_admin` that `tickets.js` sends, false for such a form, in the ticket
-	 * data; a REST request carries none, so leaving the rule out keeps it, whatever its query string holds.
+	 * A front-end ticket form, such as Community Events', offers no relative options for either window, so the dates it
+	 * sends are the ones the person set: a save from it that does not send a rule removes the stored one. The classic
+	 * editor save passes on the `is_admin` that `tickets.js` sends, false for such a form, in the ticket data; a REST
+	 * request carries none, so leaving the rule out keeps it, whatever its query string holds.
 	 *
 	 * @since TBD
 	 *
@@ -337,10 +302,6 @@ final class Ticket_Save {
 
 		if ( array_key_exists( $key, $data ) ) {
 			return in_array( $data[ $key ], [ null, '' ], true );
-		}
-
-		if ( ! $kind->is_removed_by_front_end_form() ) {
-			return false;
 		}
 
 		return array_key_exists( 'is_admin', $data ) && ! tribe_is_truthy( $data['is_admin'] );
@@ -375,69 +336,40 @@ final class Ticket_Save {
 	}
 
 	/**
-	 * Gets the date submitted for one end of the sales window, read the way `ticket_add()` reads it.
+	 * Judges the window of one kind the ticket data would save.
+	 *
+	 * The rule judged is the one the save applies: the one sent, or else the one stored for the ticket. A rule sent that
+	 * cannot be read is rejected, as the save would keep the stored one while the admin who sent it expects it to apply.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string,mixed> $data     The ticket data.
-	 * @param string              $end      The end of the window, `start` or `end`.
-	 * @param DateTimeZone        $timezone The event timezone.
+	 * @param int                 $post_id The ticket parent post ID.
+	 * @param array<string,mixed> $data    The ticket data about to be saved.
+	 * @param Window_Kind         $kind    The kind of window to judge.
 	 *
-	 * @return DateTimeImmutable|null The submitted date, or `null` when none was submitted or it cannot be read.
+	 * @return WP_Error|null The error of the kind that rejects the window, or `null` when it is valid or not judged.
 	 */
-	private function get_submitted_date( array $data, string $end, DateTimeZone $timezone ): ?DateTimeImmutable {
-		$date = $data[ "ticket_{$end}_date" ] ?? '';
-		$time = $data[ "ticket_{$end}_time" ] ?? '';
-
-		if ( ! is_string( $date ) || '' === $date ) {
+	private function validate_window( int $post_id, array $data, Window_Kind $kind ): ?WP_Error {
+		if ( $this->removes_rule( $data, $kind ) || ! $kind->is_saved_with( $data ) ) {
 			return null;
 		}
 
-		// A date the datepicker format cannot read comes back `false`, which `ticket_add()` would save as 1970.
-		$date = Dates::maybe_format_from_datepicker( $date );
+		$key = $kind->get_rule_keys()['data'];
 
-		if ( ! is_string( $date ) || '' === $date ) {
-			return null;
+		if ( isset( $data[ $key ] ) && ! Rule::from_raw( $data[ $key ], $kind ) ) {
+			return $kind->get_error( 'invalidRule' );
 		}
 
-		try {
-			return new DateTimeImmutable( trim( $date . ' ' . ( is_string( $time ) ? $time : '' ) ), $timezone );
-		} catch ( Exception $e ) {
-			return null;
-		}
-	}
+		$ticket_id = absint( $data['ticket_id'] ?? 0 );
+		$parent    = $kind->get_parent();
 
-	/**
-	 * Gets the day the event was published, which `ticket_add()` stores as the start of a ticket sent without one.
-	 *
-	 * @since TBD
-	 *
-	 * @param int          $post_id  The event post ID.
-	 * @param DateTimeZone $timezone The event timezone.
-	 *
-	 * @return DateTimeImmutable|null Midnight of the day the event was published, or `null` when its date cannot be read.
-	 */
-	private function get_post_day( int $post_id, DateTimeZone $timezone ): ?DateTimeImmutable {
-		$date = date_create_immutable( get_post_field( 'post_date', $post_id, 'raw' ), $timezone );
-
-		return $date ? $date->setTime( 0, 0 ) : null;
-	}
-
-	/**
-	 * Gets the error that rejects an invalid rule, or a sales window that does not start before it ends.
-	 *
-	 * @since TBD
-	 *
-	 * @return WP_Error The error, with a 400 status for REST responses and the rule key as the argument the TEC REST API names.
-	 */
-	private function get_invalid_window_error(): WP_Error {
-		return new WP_Error(
-			self::INVALID_WINDOW_ERROR_CODE,
-			__( 'Ticket sales cannot end before they start. Please adjust the sales window.', 'event-tickets' ),
-			[
-				'status'   => 400,
-				'argument' => self::DATA_KEY,
-			]
+		return $this->window_validator->validate(
+			$post_id,
+			$data,
+			$kind,
+			$this->get_rule_to_apply( $ticket_id, $data, $kind ),
+			$parent ? $this->get_rule_to_apply( $ticket_id, $data, $parent ) : null
 		);
 	}
+
 }

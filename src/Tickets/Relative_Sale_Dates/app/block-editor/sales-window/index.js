@@ -1,134 +1,24 @@
 /**
  * External dependencies
  */
-import { useDispatch, useSelect } from '@wordpress/data';
 import { cloneElement, useEffect, useMemo, useSyncExternalStore } from '@wordpress/element';
-import { __, _x, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import {
-	clearTicketDurationError,
-	hasTicketDurationError,
-	markTicketChanged,
-	subscribeToCommonStore,
-} from '../common-store-bridge';
+import { clearTicketDurationError, hasTicketDurationError, subscribeToCommonStore } from '../common-store-bridge';
 import { useEventDates } from '../event-dates';
-import {
-	ANCHOR_END,
-	ANCHOR_START,
-	MAX_VALUE,
-	MIN_VALUE,
-	MODE_DEFAULT,
-	MODE_RELATIVE,
-	MODE_SPECIFIC,
-} from '../../rule-constants';
-import { getFormRule, isSpecificWindow } from '../rule';
-import { getHelperText, resolveTicketWindow } from '../sale-dates';
-import { STORE_NAME } from '../store/constants';
-import { useTicketTyping } from '../use-ticket-typing';
-import { useShownError, useTicketWindowError } from '../window-error';
-import { RELATIVE_VALUE_OUT_OF_RANGE, getOutOfRangeBoundary } from '../../window-check';
-import SalesWindowEnd from './sales-window-end';
-import './style.pcss';
-
-/**
- * Builds the labels and options of each end of the window.
- *
- * Where a msgid is the classic editor's (Now, When the event starts, the anchors and the relative labels), its context
- * is too, so one translation serves both.
- *
- * @since TBD
- *
- * @return {Object} The labels, mode options and anchor options, keyed by end.
- */
-function getEndSettings() {
-	const anchorOptions = [
-		{
-			value: ANCHOR_START,
-			label: _x(
-				'before the event starts',
-				'What a relative ticket sale date is measured from.',
-				'event-tickets'
-			),
-		},
-		{
-			value: ANCHOR_END,
-			label: _x( 'before the event ends', 'What a relative ticket sale date is measured from.', 'event-tickets' ),
-		},
-	];
-
-	return {
-		start: {
-			labels: {
-				mode: _x( 'From', 'When ticket sales start, in the Ticket block.', 'event-tickets' ),
-				// translators: The screen reader label of the number of a relative ticket sales start.
-				value: __( 'Number of units before the event that sales start', 'event-tickets' ),
-				// translators: The screen reader label of the unit of a relative ticket sales start.
-				unit: __( 'Unit of the sales start', 'event-tickets' ),
-				// translators: The screen reader label of what a relative ticket sales start is measured from.
-				anchor: __( 'What the sales start is measured from', 'event-tickets' ),
-			},
-			modeOptions: [
-				{ value: MODE_DEFAULT, label: _x( 'Now', 'When ticket sales start.', 'event-tickets' ) },
-				{ value: MODE_RELATIVE, label: _x( 'A relative date', 'When ticket sales start.', 'event-tickets' ) },
-				{ value: MODE_SPECIFIC, label: _x( 'A specific date', 'When ticket sales start.', 'event-tickets' ) },
-			],
-			anchorOptions,
-		},
-		end: {
-			labels: {
-				mode: _x( 'To', 'When ticket sales end, in the Ticket block.', 'event-tickets' ),
-				// translators: The screen reader label of the number of a relative ticket sales end.
-				value: __( 'Number of units before the event that sales end', 'event-tickets' ),
-				// translators: The screen reader label of the unit of a relative ticket sales end.
-				unit: __( 'Unit of the sales end', 'event-tickets' ),
-				// translators: The screen reader label of what a relative ticket sales end is measured from.
-				anchor: __( 'What the sales end is measured from', 'event-tickets' ),
-			},
-			modeOptions: [
-				{
-					value: MODE_DEFAULT,
-					label: _x( 'When the event starts', 'When ticket sales end.', 'event-tickets' ),
-				},
-				{ value: MODE_RELATIVE, label: _x( 'A relative date', 'When ticket sales end.', 'event-tickets' ) },
-				{ value: MODE_SPECIFIC, label: _x( 'A specific date', 'When ticket sales end.', 'event-tickets' ) },
-			],
-			anchorOptions,
-		},
-	};
-}
-
-/**
- * Clears from the range picker one end shows the date of the other end, when that end is not on a specific date.
- *
- * The range picker bounds each half's calendar by the other half's date, which stays hidden, and goes stale, once its
- * end is relative or the default.
- *
- * @since TBD
- *
- * @param {Object} picker   The date and time range picker element.
- * @param {Object} formRule The rule the options show.
- * @param {string} name     The end of the window the picker is for, `start` or `end`.
- *
- * @return {Object} The picker for the end.
- */
-function getEndPicker( picker, formRule, name ) {
-	const otherName = 'start' === name ? 'end' : 'start';
-
-	if ( MODE_SPECIFIC === formRule[ otherName ].mode ) {
-		return picker;
-	}
-
-	return cloneElement( picker, { [ 'start' === name ? 'toDate' : 'fromDate' ]: undefined } );
-}
+import { MODE_RELATIVE, MODE_SPECIFIC } from '../../rule-constants';
+import { resolveWindow } from '../../sale-window';
+import { isSpecificWindow } from '../rule';
+import { getHelperText } from '../sale-dates';
+import { useWindowDraft } from '../use-window-draft';
+import WindowBoundaries from '../window-boundaries';
+import { useBoundaryErrors } from '../window-error';
+import { BLOCK_SALES_WINDOW } from '../window-kinds';
 
 /**
  * Renders the sales window options of a ticket block in place of its date and time range picker.
- *
- * A new ticket's defaults are kept as its draft at once, so the ticket is saved with them as the classic editor saves
- * its form; a ticket saved without a rule keeps no draft until the admin changes an option.
  *
  * @since TBD
  *
@@ -139,22 +29,15 @@ function getEndPicker( picker, formRule, name ) {
  * @return {Object} The sales window options.
  */
 export default function SalesWindow( { clientId, picker } ) {
-	const rule = useSelect( ( select ) => select( STORE_NAME ).getDraftRule( clientId ), [ clientId ] );
-	const { setDraftRule } = useDispatch( STORE_NAME );
-	const formRule = getFormRule( rule );
+	const { formRule, onChange, isTyping, isDisabled } = useWindowDraft( clientId, BLOCK_SALES_WINDOW );
 	const eventDates = useEventDates();
-	const saleWindow = useMemo( () => resolveTicketWindow( getFormRule( rule ), eventDates ), [ rule, eventDates ] );
-	const typing = useTicketTyping( clientId );
-	const error = useShownError( useTicketWindowError( clientId, rule, eventDates ), typing.isTyping );
-	const outOfRange = RELATIVE_VALUE_OUT_OF_RANGE === error ? getOutOfRangeBoundary( formRule ) : null;
+	const saleWindow = useMemo(
+		() => resolveWindow( formRule, eventDates, BLOCK_SALES_WINDOW ),
+		[ formRule, eventDates ]
+	);
+	const errors = useBoundaryErrors( clientId, BLOCK_SALES_WINDOW, formRule, isTyping );
 	const isSpecific = isSpecificWindow( formRule );
 	const hasDurationError = useSyncExternalStore( subscribeToCommonStore, () => hasTicketDurationError( clientId ) );
-
-	useEffect( () => {
-		if ( undefined === rule ) {
-			setDraftRule( clientId, getFormRule( rule ) );
-		}
-	}, [ clientId, rule, setDraftRule ] );
 
 	// The legacy code checks the picker's dates again on every picker edit, though they are hidden unless both are specific.
 	useEffect( () => {
@@ -163,59 +46,27 @@ export default function SalesWindow( { clientId, picker } ) {
 		}
 	}, [ clientId, hasDurationError, isSpecific ] );
 
-	const onChange = ( name, changes ) => {
-		// Only the relative number is typed; picking an option ends the edit.
-		if ( 'value' in changes ) {
-			typing.type();
-		} else {
-			typing.settle();
-		}
-
-		const changed = { ...formRule, [ name ]: { ...formRule[ name ], ...changes } };
-		setDraftRule( clientId, changed );
-
-		// The legacy dashboard re-checks its Create or Update button, which reads this draft, only on a legacy store change.
-		markTicketChanged( clientId );
-	};
-
-	const settings = getEndSettings();
-	// The legacy duration section disables its picker while the ticket saves or another ticket is selected.
-	const isDisabled = Boolean( picker.props.fromDateDisabled );
-
 	return (
-		<div className="tec-tickets-relative-sale-dates">
-			{ [ 'start', 'end' ].map( ( name ) => (
-				<SalesWindowEnd
-					key={ name }
-					name={ name }
-					end={ formRule[ name ] }
-					picker={ getEndPicker( picker, formRule, name ) }
-					disabled={ isDisabled }
-					helperText={
-						MODE_RELATIVE === formRule[ name ].mode ? getHelperText( name, saleWindow?.[ name ] ) : ''
-					}
-					errorMessage={
-						'end' === name && error && ! outOfRange
-							? __(
-									'Ticket sales cannot end before they start. Please adjust the sales window.',
-									'event-tickets'
-							  )
-							: ''
-					}
-					valueErrorMessage={
-						name === outOfRange
-							? sprintf(
-									// translators: %1$d is the smallest number a relative sale date takes, %2$d the largest.
-									__( 'Enter a number from %1$d to %2$d.', 'event-tickets' ),
-									MIN_VALUE,
-									MAX_VALUE
-							  )
-							: ''
-					}
-					onChange={ ( changes ) => onChange( name, changes ) }
-					{ ...settings[ name ] }
-				/>
-			) ) }
-		</div>
+		<WindowBoundaries
+			kind={ BLOCK_SALES_WINDOW }
+			formRule={ formRule }
+			onChange={ onChange }
+			disabled={ isDisabled }
+			getBoundaryProps={ ( name ) => ( {
+				// Each end shows its own half of the range picker.
+				picker: cloneElement( picker, {
+					className: [ picker.props.className, `tec-tickets-relative-sale-dates__picker--${ name }` ]
+						.filter( Boolean )
+						.join( ' ' ),
+					// Each half is bounded by the other's date, hidden and left stale once that end is not specific.
+					...( MODE_SPECIFIC !== formRule[ 'start' === name ? 'end' : 'start' ].mode && {
+						[ 'start' === name ? 'toDate' : 'fromDate' ]: undefined,
+					} ),
+				} ),
+				// Mounted empty, so the date is announced once a relative mode gives the end one.
+				helperText: MODE_RELATIVE === formRule[ name ].mode ? getHelperText( name, saleWindow?.[ name ] ) : '',
+				...errors[ name ],
+			} ) }
+		/>
 	);
 }

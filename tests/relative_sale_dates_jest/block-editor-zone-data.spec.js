@@ -1,8 +1,7 @@
 import moment from 'moment-timezone';
 import 'moment-timezone/moment-timezone-utils';
 import { resolveSaleWindow } from '@tec/tickets/relative-sale-dates/sale-window';
-import { getWindowError } from '@tec/tickets/relative-sale-dates/window-check';
-import { SALES_END_BEFORE_START } from '@tec/tickets/relative-sale-dates/validation';
+import { ENDS_BEFORE_START, getWindowError } from '@tec/tickets/relative-sale-dates/window-check';
 
 // Sales start 8 hours before an event at 08:30 on 30 April 2027 in Cairo, the night Egypt's clocks go forward.
 const CAIRO_START = '2027-04-30 08:30:00';
@@ -57,7 +56,7 @@ describe( 'the Ticket block zone data', () => {
 
 	it( 'should accept the window the server accepts around the Cairo clock change, so Create and Update stay enabled', () => {
 		// What WordPress 6.9's data gives: the start lands after the specific end.
-		expect( errorOverOlderData ).toBe( SALES_END_BEFORE_START );
+		expect( errorOverOlderData ).toBe( ENDS_BEFORE_START );
 		expect( getWindowError( SPECIFIC_END_RULE, CAIRO_EVENT, FORM_DATES ) ).toBeNull();
 	} );
 
