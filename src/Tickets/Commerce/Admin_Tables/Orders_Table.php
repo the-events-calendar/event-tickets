@@ -14,7 +14,6 @@ use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Gateways\Free\Gateway as Free_Gateway;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Order_Items\Fallbacks;
-use TEC\Tickets\Commerce\Order_Items\Writer;
 use TEC\Tickets\Commerce\Traits\Is_Ticket;
 use Tribe__Date_Utils;
 use WP_Post;
@@ -461,9 +460,11 @@ class Orders_Table extends WP_Posts_List_Table {
 			$ticket   = Tribe__Tickets__Tickets::load_ticket_object( $cart_item['ticket_id'] );
 			$quantity = esc_html( (int) $cart_item['quantity'] );
 
-			// Only version 2 orders stored a name; "Ticket #ID" would add nothing to the generic label here.
-			if ( ! $ticket && Writer::VERSION === absint( get_post_meta( $item->ID, Writer::VERSION_META_KEY, true ) ) ) {
-				$name    = esc_html( tribe( Fallbacks::class )->get_missing_ticket( $item, $key, $cart_item )['name'] );
+			$missing = $ticket ? null : tribe( Fallbacks::class )->get_missing_ticket( $item, $key, $cart_item );
+
+			// Only a stored name is worth showing; "Ticket #ID" would add nothing to the generic label here.
+			if ( $missing && $missing['stored'] ) {
+				$name    = esc_html( $missing['name'] );
 				$output .= "<div class='tribe-line-item'>{$quantity} {$name}</div>";
 				continue;
 			}
