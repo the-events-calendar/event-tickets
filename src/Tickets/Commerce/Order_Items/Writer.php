@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Commerce\Order_Items;
 
+use InvalidArgumentException;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Order_Items\Line_Items\Line_Item_Types;
 use TEC\Tickets\Commerce\Order_Items\Repositories\Order_Items;
@@ -106,6 +107,8 @@ final class Writer {
 				$rows[] = $this->types->get_for_item( $item )::to_row( $key, $item, $order_id, $currency ) + [ 'position' => $position++ ];
 			}
 
+			$this->assert_unique_identities( $rows );
+
 			/*
 			 * A new order owns no rows yet. Any found carry a recycled post ID, e.g. after the posts table was
 			 * truncated by `wp site empty`, and would otherwise be read back as this order's lines.
@@ -165,7 +168,8 @@ final class Writer {
 				}
 			}
 
-			update_post_meta( $order_id, Order::$items_meta_key, $items );
+			// update_post_meta() unslashes its value, which would strip the backslashes of a ticket name.
+			update_post_meta( $order_id, Order::$items_meta_key, wp_slash( $items ) );
 		} catch ( Throwable $e ) {
 			$this->log(
 				Log::DEBUG,
@@ -175,6 +179,34 @@ final class Writer {
 					'error'    => $e->getMessage(),
 				]
 			);
+		}
+	}
+
+	/**
+	 * Rejects rows that share a line identity, which the table's unique key would refuse as a whole.
+	 *
+	 * Lines with no ticket, modifier or rule ID, such as the several taxes of a Square order, all store the same
+	 * identity, so an order holding two of them stays in the order meta, by this decision and not by a failed query.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int,array<string,mixed>> $rows The rows of an order.
+	 *
+	 * @return void
+	 *
+	 * @throws InvalidArgumentException When two rows have the same ticket, modifier and purchase rule IDs.
+	 */
+	private function assert_unique_identities( array $rows ): void {
+		$keys = [];
+
+		foreach ( $rows as $row ) {
+			$identity = $row['ticket_id'] . '-' . $row['modifier_id'] . '-' . $row['purchase_rule_id'];
+
+			if ( isset( $keys[ $identity ] ) ) {
+				throw new InvalidArgumentException( sprintf( 'Items "%s" and "%s" share one line identity (ticket, modifier and rule IDs), which the table cannot tell apart.', $keys[ $identity ], $row['item_key'] ) );
+			}
+
+			$keys[ $identity ] = $row['item_key'];
 		}
 	}
 

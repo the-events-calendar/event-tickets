@@ -179,6 +179,30 @@ class Writer_Test extends Controller_Test_Case {
 			},
 		];
 
+		yield 'two taxes without a numeric ID, as a Square order builds them' => [
+			function () {
+				add_filter(
+					'tec_tickets_commerce_create_order_from_cart_items',
+					static function ( $items ) {
+						foreach ( [ 'a', 'b' ] as $uid ) {
+							$items[] = [
+								'id'           => "square-tax-{$uid}",
+								'type'         => 'fee',
+								'ticket_id'    => 0,
+								'fee_id'       => "square-tax-{$uid}",
+								'display_name' => "Tax {$uid}",
+								'quantity'     => 1,
+								'price'        => 1.0,
+								'sub_total'    => 1.0,
+							];
+						}
+
+						return $items;
+					}
+				);
+			},
+		];
+
 		yield 'insert fails' => [
 			function () {
 				$this->set_class_fn_return(
@@ -237,12 +261,52 @@ class Writer_Test extends Controller_Test_Case {
 
 		$this->assertNotEmpty( $items );
 
-		foreach ( $items as $item ) {
+		foreach ( array_filter( $items, static fn( $item ) => 'fee' !== $item['type'] ) as $item ) {
 			$ticket = tribe( Ticket::class )->get_ticket( $item['ticket_id'] );
 
 			$this->assertSame( $ticket->name, $item['snapshot']['name'] );
 			$this->assertSame( $ticket->type(), $item['snapshot']['ticket_type'] );
 		}
+	}
+
+	public function test_two_lines_with_one_identity_are_rejected_before_the_insert(): void {
+		$this->register_controller( true );
+		[ , $ticket_ids ] = $this->make_tickets();
+		$queries          = $this->count_queries_against_the_table();
+		add_filter(
+			'tec_tickets_commerce_create_order_from_cart_items',
+			static function ( $items ) {
+				foreach ( [ 'a', 'b' ] as $uid ) {
+					$items[] = [ 'type' => 'fee', 'ticket_id' => 0, 'fee_id' => "square-tax-{$uid}", 'quantity' => 1, 'price' => 1.0, 'sub_total' => 1.0 ];
+				}
+
+				return $items;
+			}
+		);
+
+		$this->create_order( [ $ticket_ids[0] => 1 ] );
+
+		$this->assertSame( [], $queries() );
+		$this->assertStringContainsString( 'share one line identity', implode( ' ', array_column( array_column( $this->logs, 'context' ), 'error' ) ) );
+	}
+
+	public function test_a_failed_write_keeps_the_backslashes_of_a_ticket_name(): void {
+		$this->register_controller( true );
+		[ , $ticket_ids ] = $this->make_tickets();
+		wp_update_post( [ 'ID' => $ticket_ids[0], 'post_title' => wp_slash( 'AC\\DC Tribute' ) ] );
+		$this->set_class_fn_return(
+			Order_Items_Repository::class,
+			'insert_many',
+			static function () {
+				throw new RuntimeException( 'Insert failed.' );
+			},
+			true
+		);
+
+		$order = $this->create_order( [ $ticket_ids[0] => 1 ] );
+		$items = get_post_meta( $order->ID, Order::$items_meta_key, true );
+
+		$this->assertSame( 'AC\\DC Tribute', reset( $items )['snapshot']['name'] );
 	}
 
 	public function test_a_failed_write_keeps_no_snapshot_on_lines_that_are_not_tickets(): void {
