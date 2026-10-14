@@ -31,31 +31,31 @@ class Fallbacks_Test extends Controller_Test_Case {
 		yield 'version 2 order: the values stored at purchase' => [
 			true,
 			static fn( array $item ) => $item,
-			static fn( int $ticket_id ) => [ 'name' => 'Early bird (no longer exists)', 'type' => 'series_pass' ],
+			static fn( int $ticket_id ) => [ 'name' => 'Early bird (no longer exists)', 'type' => 'series_pass', 'stored' => true ],
 		];
 
 		yield 'version 2 order: the stored values win over the snapshot entry' => [
 			true,
 			static fn( array $item ) => array_merge( $item, [ 'snapshot' => [ 'name' => 'From the snapshot', 'ticket_type' => 'default' ] ] ),
-			static fn( int $ticket_id ) => [ 'name' => 'Early bird (no longer exists)', 'type' => 'series_pass' ],
+			static fn( int $ticket_id ) => [ 'name' => 'Early bird (no longer exists)', 'type' => 'series_pass', 'stored' => true ],
 		];
 
 		yield 'old order: the snapshot entry' => [
 			false,
 			static fn( array $item ) => array_merge( $item, [ 'snapshot' => [ 'name' => 'From the snapshot', 'ticket_type' => 'series_pass' ] ] ),
-			static fn( int $ticket_id ) => [ 'name' => 'From the snapshot (no longer exists)', 'type' => 'series_pass' ],
+			static fn( int $ticket_id ) => [ 'name' => 'From the snapshot (no longer exists)', 'type' => 'series_pass', 'stored' => true ],
 		];
 
 		yield 'old order: an RSVP item keeps its own type' => [
 			false,
 			static fn( array $item ) => array_merge( $item, [ 'type' => 'tc-rsvp' ] ),
-			static fn( int $ticket_id ) => [ 'name' => "Ticket #{$ticket_id} (no longer exists)", 'type' => 'tc-rsvp' ],
+			static fn( int $ticket_id ) => [ 'name' => "Ticket #{$ticket_id} (no longer exists)", 'type' => 'tc-rsvp', 'stored' => false ],
 		];
 
 		yield 'old order: the ticket ID' => [
 			false,
 			static fn( array $item ) => $item,
-			static fn( int $ticket_id ) => [ 'name' => "Ticket #{$ticket_id} (no longer exists)", 'type' => 'default' ],
+			static fn( int $ticket_id ) => [ 'name' => "Ticket #{$ticket_id} (no longer exists)", 'type' => 'default', 'stored' => false ],
 		];
 	}
 
