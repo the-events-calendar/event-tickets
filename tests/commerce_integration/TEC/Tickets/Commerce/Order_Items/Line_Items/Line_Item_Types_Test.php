@@ -86,7 +86,9 @@ class Line_Item_Types_Test extends WPTestCase {
 		$this->assert_identical( $items, $rebuilt );
 
 		foreach ( array_values( $items ) as $i => $item ) {
-			$this->assertSame( (int) round( $item['price'] * 10 ** $precision ), $rows[ $i ]['price'] );
+			/* A coupon's `price` is its amount, a percent for a percentage coupon, so it has no money column. */
+			$price = 'coupon' === ( $item['type'] ?? '' ) ? 0 : (int) round( $item['price'] * 10 ** $precision );
+			$this->assertSame( $price, $rows[ $i ]['price'] );
 			$this->assertSame( (int) round( $item['sub_total'] * 10 ** $precision ), $rows[ $i ]['sub_total'] );
 		}
 	}
@@ -240,6 +242,18 @@ class Line_Item_Types_Test extends WPTestCase {
 
 		$this->assertSame( -500, $rows[1]['sub_total'] );
 		$this->assertSame( -5.0, $rebuilt['coupon-9688']['sub_total'] );
+	}
+
+	public function test_a_percentage_coupon_keeps_its_percent_out_of_the_money_columns(): void {
+		$coupon = $this->fixture( 'coupon' )['coupon-9688'];
+		/* A 10% coupon on a 40.00 subtotal: `price` is the percent, `sub_total` the money taken off. */
+		$coupon = array_merge( $coupon, [ 'price' => 10.0, 'sub_total' => -4.0 ] );
+
+		[ $rows, $rebuilt ] = $this->round_trip( [ 'coupon-9688' => $coupon ], 'USD' );
+
+		$this->assertSame( 0, $rows[0]['price'] );
+		$this->assertSame( -400, $rows[0]['sub_total'] );
+		$this->assert_identical( [ 'coupon-9688' => $coupon ], $rebuilt );
 	}
 
 	public function test_fee_row_does_not_take_the_details_of_its_ticket(): void {
