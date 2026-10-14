@@ -23,7 +23,7 @@ use TEC\Tickets\Commerce\Ticket;
  */
 class Ticket_Line_Item extends Abstract_Line_Item_Type {
 	/**
-	 * Item keys stored in a column of the same name, and how their value is stored.
+	 * Item keys stored in a column, and how their value is stored.
 	 *
 	 * @since TBD
 	 *
