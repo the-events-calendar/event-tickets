@@ -5,6 +5,7 @@
  */
 
 /** @typedef {import( '../sale-window' ).SaleWindowEnd} SaleWindowEnd */
+/** @typedef {import( '../sale-window' ).SaleWindowRule} SaleWindowRule */
 
 const MODE_RELATIVE = 'relative';
 
@@ -46,6 +47,22 @@ function readEnd( root, key ) {
 }
 
 /**
+ * Reads the rule the sales window fields express.
+ *
+ * @since TBD
+ *
+ * @param {Document} root The document holding the form.
+ *
+ * @return {SaleWindowRule} The rule.
+ */
+export function readRule( root ) {
+	return {
+		start: readEnd( root, 'start' ),
+		end: readEnd( root, 'end' ),
+	};
+}
+
+/**
  * Writes the rule the sales window fields express into the hidden field the form submits.
  *
  * Does nothing when the form has no sales window fields, as on a ticket they do not apply to.
@@ -63,8 +80,5 @@ export function writeRule( root ) {
 		return;
 	}
 
-	ruleField.value = JSON.stringify( {
-		start: readEnd( root, 'start' ),
-		end: readEnd( root, 'end' ),
-	} );
+	ruleField.value = JSON.stringify( readRule( root ) );
 }

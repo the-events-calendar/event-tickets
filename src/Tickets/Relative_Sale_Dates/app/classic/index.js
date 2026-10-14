@@ -5,10 +5,142 @@
  */
 
 /**
+ * External dependencies
+ */
+import moment from 'moment';
+import { addAction } from '@wordpress/hooks';
+
+/**
  * Internal dependencies
  */
+import '../zone-data';
+import { resolveSaleWindow } from '../sale-window';
 import { updateDateLimit } from './date-limits';
-import { writeRule } from './rule';
+import { readEventDates } from './event-dates';
+import { formatHelperText } from './helper-text';
+import { readRule, writeRule } from './rule';
+
+const MODE_RELATIVE = 'relative';
+
+/**
+ * The TEC event fields the event dates are read from.
+ *
+ * @since TBD
+ *
+ * @type {string}
+ */
+const EVENT_FIELDS = '#EventStartDate, #EventStartTime, #EventEndDate, #EventEndTime, #allDayCheckbox, #event-timezone';
+
+/**
+ * The sales window fields a relative end is read from.
+ *
+ * @since TBD
+ *
+ * @type {string}
+ */
+const RULE_FIELDS = [ 'start', 'end' ]
+	.flatMap( ( key ) => [ 'mode', 'value', 'unit', 'anchor' ].map( ( field ) => `#ticket_sales_${ key }_${ field }` ) )
+	.join( ', ' );
+
+/**
+ * Reads the event dates from the TEC event fields.
+ *
+ * @since TBD
+ *
+ * @param {Object} settings The data this script is localized with.
+ * @param {Object} dynamic  The date formats TEC localizes for its own helper text.
+ *
+ * @return {import( './event-dates' ).EventDates|null} The event dates, or `null` when they cannot be read.
+ */
+function getEventDates( settings, dynamic ) {
+	const field = ( id ) => document.getElementById( id );
+
+	return readEventDates(
+		{
+			startDate: field( 'EventStartDate' )?.value,
+			startTime: field( 'EventStartTime' )?.value,
+			endDate: field( 'EventEndDate' )?.value,
+			endTime: field( 'EventEndTime' )?.value,
+			allDay: Boolean( field( 'allDayCheckbox' )?.checked ),
+			timezone: field( 'event-timezone' )?.value,
+		},
+		{
+			datepickerFormat: dynamic.datepicker_format,
+			timezones: settings.timezones,
+			allDay: settings.allDay,
+		}
+	);
+}
+
+/**
+ * Returns whether the number of a relative end is one the save accepts, within the range its field allows.
+ *
+ * @since TBD
+ *
+ * @param {string} key   The end of the window, `start` or `end`.
+ * @param {number} value The number the rule holds.
+ *
+ * @return {boolean} Whether the number is a whole number within the field's `min` and `max`.
+ */
+function isInRange( key, value ) {
+	const field = document.getElementById( `ticket_sales_${ key }_value` );
+
+	return (
+		Number.isInteger( value ) && Boolean( field ) && value >= Number( field.min ) && value <= Number( field.max )
+	);
+}
+
+/**
+ * Writes, under each relative end of the sales window, the date it works out to for the event dates in the form.
+ *
+ * @since TBD
+ *
+ * @return {void}
+ */
+function updateHelperText() {
+	const settings = window.tec?.tickets?.relativeSaleDates?.classicData;
+	const dynamic = window.tribe_dynamic_help_text;
+
+	if ( ! settings || ! dynamic || ! document.getElementById( 'ticket_sales_start_helper' ) ) {
+		return;
+	}
+
+	const rule = readRule( document );
+	const eventDates = getEventDates( settings, dynamic );
+	const saleWindow = eventDates
+		? resolveSaleWindow( rule, eventDates.start, eventDates.end, eventDates.timezone )
+		: null;
+	const formats = {
+		dateWithYear: settings.dateWithYear,
+		dateNoYear: settings.dateNoYear,
+		timeFormat: settings.timeFormat,
+		// A name list left undefined would replace `DateFormatter`'s English default.
+		dateSettings: Object.fromEntries(
+			[ 'days', 'daysShort', 'months', 'monthsShort' ]
+				.filter( ( name ) => Array.isArray( dynamic[ name ] ) )
+				.map( ( name ) => [ name, dynamic[ name ] ] )
+		),
+	};
+
+	[ 'start', 'end' ].forEach( ( key ) => {
+		const end = rule[ key ];
+		const date = saleWindow ? saleWindow[ key ] : null;
+		// A number the save rejects has no date to show.
+		const isRelative = MODE_RELATIVE === end.mode && isInRange( key, end.value );
+
+		// The year is now's in the event timezone, as the block editor reads it.
+		const text =
+			isRelative && date && date.isValid()
+				? formatHelperText( settings.text[ key ], date, formats, moment().utcOffset( date.utcOffset() ).year() )
+				: '';
+		const helper = document.getElementById( `ticket_sales_${ key }_helper` );
+
+		// The helper is a live region: writing the same text again can announce it again.
+		if ( helper.textContent !== text ) {
+			helper.textContent = text;
+		}
+	} );
+}
 
 /*
  * `tickets.js` fires `pre-save-ticket.tribe` on `#tribetickets` right before it serializes the ticket form. The handler
@@ -20,4 +152,10 @@ jQuery( () => {
 
 	$metabox.on( 'pre-save-ticket.tribe', () => writeRule( document ) );
 	$metabox.on( 'change.tribe', 'select', ( event ) => updateDateLimit( document, event.target.id ) );
+	updateHelperText();
 } );
+
+jQuery( document ).on( 'change', EVENT_FIELDS, updateHelperText );
+jQuery( document ).on( 'change input', RULE_FIELDS, updateHelperText );
+
+addAction( 'tec.tickets.admin.panels.refreshed', 'tec.tickets.relativeSaleDates', updateHelperText );

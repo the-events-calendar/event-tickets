@@ -951,3 +951,14 @@ p.description {
 .tec-tickets-relative-sale-dates__relative input[type="number"] {
 	width: var(--tec-spacer-11);
 }
+
+/* The date a relative end works out to goes under its options, in the form's description style. */
+.tec-tickets-relative-sale-dates__relative .tec-tickets-relative-sale-dates__helper {
+	color: var(--tec-admin-core-grey-50);
+	display: block;
+	margin-top: var(--tec-spacer-0);
+
+	&:empty {
+		display: none;
+	}
+}
