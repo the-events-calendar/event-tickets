@@ -118,8 +118,8 @@ class Controller_Test extends Controller_Test_Case {
 	 */
 	public function hook_provider(): Generator {
 		yield 'ticket dates set before the save' => [ 'tec_tickets_ticket_pre_save', Ticket_Save::class, 'set_ticket_dates', 10 ];
-		yield 'rule stored after the save' => [ 'tec_tickets_ticket_upserted', Ticket_Save::class, 'save_rule', 10 ];
-		yield 'resolved dates written after the save' => [ 'tec_tickets_ticket_upserted', Ticket_Save::class, 'write_resolved_dates', 20 ];
+		yield 'sales window and sale price rules stored after the save' => [ 'tec_tickets_ticket_upserted', Ticket_Save::class, 'save_rule', 8 ];
+		yield 'sales window and sale price dates written after the save' => [ 'tec_tickets_ticket_upserted', Ticket_Save::class, 'write_resolved_dates', 9 ];
 		yield 'ticket data validated' => [ 'tec_tickets_ticket_data_validation', Ticket_Save::class, 'validate_ticket_data', 10 ];
 		yield 'tickets updated once the event occurrences are saved' => [ 'tec_events_custom_tables_v1_after_save_occurrences', Event_Listener::class, 'update_ticket_dates', 10 ];
 		yield 'event marked when a date meta is added' => [ 'added_post_meta', Event_Listener::class, 'mark_moved_event', 10 ];
@@ -163,12 +163,12 @@ class Controller_Test extends Controller_Test_Case {
 	 *
 	 * @test
 	 */
-	public function should_build_the_rule_store_with_the_tickets_handler_already_in_use(): void {
+	public function should_build_the_sales_window_effects_with_the_tickets_handler_already_in_use(): void {
 		$controller = $this->make_controller();
 		$controller->register();
 		$tickets_handler = tribe( 'tickets.handler' );
 
-		$this->test_services->get( Rule_Store::class );
+		$this->test_services->get( Sales_Window_Effects::class );
 
 		$this->assertSame( [ spl_object_id( $tickets_handler ) ], $this->get_hooked_tickets_handlers() );
 	}

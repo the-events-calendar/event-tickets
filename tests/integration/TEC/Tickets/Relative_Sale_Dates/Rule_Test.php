@@ -334,53 +334,31 @@ class Rule_Test extends WPTestCase {
 	}
 
 	/**
-	 * @return Generator<string,array{0: string}>
+	 * @return Generator<string,array{0: Window_Kind, 1: string}>
 	 */
 	public function invalid_json_provider(): Generator {
-		yield 'malformed' => [ '{"start":' ];
-		yield 'empty string' => [ '' ];
-		yield 'a list' => [ '[{"mode":"default"},{"mode":"default"}]' ];
-		yield 'a scalar' => [ '"default"' ];
-		yield 'null' => [ 'null' ];
-		yield 'invalid rule' => [ '{"start":{"mode":"default"}}' ];
+		$sales      = Window_Kind::sales();
+		$sale_price = Window_Kind::sale_price();
+
+		yield 'malformed' => [ $sales, '{"start":' ];
+		yield 'empty string' => [ $sales, '' ];
+		yield 'a list' => [ $sales, '[{"mode":"default"},{"mode":"default"}]' ];
+		yield 'a scalar' => [ $sales, '"default"' ];
+		yield 'null' => [ $sales, 'null' ];
+		yield 'invalid rule' => [ $sales, '{"start":{"mode":"default"}}' ];
+		yield 'sale price: malformed' => [ $sale_price, '{"start":' ];
+		yield 'sale price: empty string' => [ $sale_price, '' ];
+		yield 'sale price: a scalar' => [ $sale_price, '"now"' ];
+		yield 'sale price: null' => [ $sale_price, 'null' ];
+		yield 'sale price: invalid rule' => [ $sale_price, '{"start":{"mode":"now"}}' ];
 	}
 
 	/**
 	 * @test
 	 * @dataProvider invalid_json_provider
 	 */
-	public function should_build_no_rule_from_invalid_json( string $json ): void {
-		$this->assertNull( Rule::from_raw( $json, Window_Kind::sales() ) );
-	}
-
-	/**
-	 * @return Generator<string,array{0: Window_Kind, 1: array<string,array<string,int|string>>, 2: bool}>
-	 */
-	public function end_follows_event_start_provider(): Generator {
-		$sales        = Window_Kind::sales();
-		$before_start = [ 'mode' => 'relative', 'value' => 2, 'unit' => WEEK_IN_SECONDS, 'anchor' => 'start' ];
-		$before_end   = [ 'mode' => 'relative', 'value' => 2, 'unit' => HOUR_IN_SECONDS, 'anchor' => 'end' ];
-
-		yield 'specific end, start counted from the event start' => [ $sales, [ 'start' => $before_start, 'end' => [ 'mode' => 'specific' ] ], true ];
-		yield 'specific end, start counted from the event end' => [ $sales, [ 'start' => $before_end, 'end' => [ 'mode' => 'specific' ] ], false ];
-		yield 'relative end' => [ $sales, [ 'start' => [ 'mode' => 'default' ], 'end' => $before_start ], false ];
-		yield 'default end' => [ $sales, [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ], false ];
-		yield 'sale price: specific end, start counted from the event start' => [
-			Window_Kind::sale_price(),
-			[
-				'start' => [ 'mode' => 'relative', 'value' => 2, 'unit' => WEEK_IN_SECONDS ],
-				'end'   => [ 'mode' => 'specific' ],
-			],
-			false,
-		];
-	}
-
-	/**
-	 * @test
-	 * @dataProvider end_follows_event_start_provider
-	 */
-	public function should_let_only_an_end_left_to_the_ticket_follow_the_event_start( Window_Kind $kind, array $data, bool $follows ): void {
-		$this->assertSame( $follows, Rule::from_array( $data, $kind )->lets_end_follow_event_start() );
+	public function should_build_no_rule_from_invalid_json( Window_Kind $kind, string $json ): void {
+		$this->assertNull( Rule::from_raw( $json, $kind ) );
 	}
 
 	/**

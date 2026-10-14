@@ -33,35 +33,20 @@ final class Sale_Window {
 	/**
 	 * Resolves a rule against the dates of an event, read in the event timezone.
 	 *
-	 * A Now start of the sales window puts the ticket on sale: it moves a ticket start that is later than now to now, and
-	 * leaves a start that has already passed, or no start, to the ticket, so saving a ticket on sale again does not move
-	 * its start.
+	 * The resolver works the same for every kind of window; what only the sales window does with its dates, such as
+	 * moving a Now start, is `Sales_Window_Effects`'.
 	 *
 	 * @since TBD
 	 *
-	 * @param Rule   $rule         The rule.
-	 * @param int    $event_id     The event post ID.
-	 * @param string $ticket_start The start the ticket is saved with, as `Y-m-d H:i:s` in the event timezone, or `''`.
+	 * @param Rule $rule     The rule.
+	 * @param int  $event_id The event post ID.
 	 *
 	 * @return Resolved_Window|null The resolved window, or `null` when the event has no valid dates.
 	 */
-	public function resolve_for_event( Rule $rule, int $event_id, string $ticket_start = '' ): ?Resolved_Window {
+	public function resolve_for_event( Rule $rule, int $event_id ): ?Resolved_Window {
 		$event_dates = $this->get_event_dates( $event_id );
 
-		if ( ! $event_dates ) {
-			return null;
-		}
-
-		$window = $this->resolve( $rule, ...$event_dates );
-		$kind   = $rule->get_kind();
-
-		if ( ! $kind->owns_ticket_sales_dates() || $kind->get_open_start_mode() !== $rule->get_start()->get_mode() ) {
-			return $window;
-		}
-
-		$now_start = $this->get_now_start( $ticket_start, $event_dates[0]->getTimezone() );
-
-		return $now_start ? new Resolved_Window( $now_start, $window->get_end(), $window->get_timezone() ) : $window;
+		return $event_dates ? $this->resolve( $rule, ...$event_dates ) : null;
 	}
 
 	/**
@@ -205,31 +190,5 @@ final class Sale_Window {
 		}
 
 		return $date;
-	}
-
-	/**
-	 * Gets the start a Now boundary moves the ticket to: now, when the ticket start is later.
-	 *
-	 * @since TBD
-	 *
-	 * @param string       $ticket_start The start the ticket is saved with, as `Y-m-d H:i:s` in the event timezone, or `''`.
-	 * @param DateTimeZone $timezone     The event timezone.
-	 *
-	 * @return DateTimeImmutable|null Now, in the event timezone, or `null` to leave the start to the ticket.
-	 */
-	private function get_now_start( string $ticket_start, DateTimeZone $timezone ): ?DateTimeImmutable {
-		if ( '' === $ticket_start ) {
-			return null;
-		}
-
-		try {
-			$start = new DateTimeImmutable( $ticket_start, $timezone );
-		} catch ( Exception $e ) {
-			return null;
-		}
-
-		$now = new DateTimeImmutable( 'now', $timezone );
-
-		return $start > $now ? $now : null;
 	}
 }

@@ -11,6 +11,7 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Ticket_Actions;
 
 /**
@@ -45,7 +46,7 @@ final class Event_Listener {
 	private Rule_Store $rule_store;
 
 	/**
-	 * The resolver and writer of the ticket dates.
+	 * The writer of the dates of every kind of window.
 	 *
 	 * @since TBD
 	 *
@@ -54,13 +55,31 @@ final class Event_Listener {
 	private Ticket_Dates $ticket_dates;
 
 	/**
-	 * The scheduler of the "sales started" and "sales ended" actions.
+	 * The writer of the event cost.
 	 *
 	 * @since TBD
 	 *
 	 * @var Ticket_Actions
 	 */
 	private Ticket_Actions $ticket_actions;
+
+	/**
+	 * The effects only the sales window has.
+	 *
+	 * @since TBD
+	 *
+	 * @var Sales_Window_Effects
+	 */
+	private Sales_Window_Effects $sales_window_effects;
+
+	/**
+	 * The Tickets Commerce provider, which every ruled ticket belongs to.
+	 *
+	 * @since TBD
+	 *
+	 * @var Module
+	 */
+	private Module $tickets_commerce;
 
 	/**
 	 * The events whose dates changed in this request and whose tickets are not resolved yet, as keys.
@@ -76,19 +95,23 @@ final class Event_Listener {
 	 *
 	 * @since TBD
 	 *
-	 * @param Rule_Store     $rule_store     The store of the ticket rules.
-	 * @param Ticket_Dates   $ticket_dates   The resolver and writer of the ticket dates.
-	 * @param Ticket_Actions $ticket_actions The scheduler of the sales actions.
+	 * @param Rule_Store           $rule_store           The store of the ticket rules.
+	 * @param Ticket_Dates         $ticket_dates         The writer of the dates of every kind of window.
+	 * @param Ticket_Actions       $ticket_actions       The writer of the event cost.
+	 * @param Module               $tickets_commerce     The Tickets Commerce provider.
+	 * @param Sales_Window_Effects $sales_window_effects The effects only the sales window has.
 	 */
-	public function __construct( Rule_Store $rule_store, Ticket_Dates $ticket_dates, Ticket_Actions $ticket_actions ) {
-		$this->rule_store     = $rule_store;
-		$this->ticket_dates   = $ticket_dates;
-		$this->ticket_actions = $ticket_actions;
+	public function __construct( Rule_Store $rule_store, Ticket_Dates $ticket_dates, Ticket_Actions $ticket_actions, Module $tickets_commerce, Sales_Window_Effects $sales_window_effects ) {
+		$this->rule_store           = $rule_store;
+		$this->ticket_dates         = $ticket_dates;
+		$this->ticket_actions       = $ticket_actions;
+		$this->tickets_commerce     = $tickets_commerce;
+		$this->sales_window_effects = $sales_window_effects;
 	}
 
 	/**
-	 * Rewrites the resolved dates of an event's ruled tickets and reschedules the sales actions of those whose dates
-	 * changed, once the event's occurrences are saved.
+	 * Rewrites the resolved dates of every rule of an event's ruled tickets and reschedules the sales actions of those
+	 * whose sales window dates changed, once the event's occurrences are saved.
 	 *
 	 * A window the move inverts keeps no sales action: the ticket is off sale until its dates are fixed.
 	 *
@@ -175,6 +198,7 @@ final class Event_Listener {
 
 		if ( 'tribe_events' !== get_post_type( $destination_post_id ) ) {
 			$this->rule_store->remove( $ticket_id, array_keys( $stored ) );
+			$this->sales_window_effects->forget_timezone( $ticket_id, Window_Kind::sales() );
 
 			return;
 		}
@@ -195,7 +219,7 @@ final class Event_Listener {
 	public function filter_end_date_follows_event_start( $follows, int $ticket_id ): bool {
 		$rule = Rule::from_stored( $this->rule_store->get( $ticket_id ), Window_Kind::sales() );
 
-		return tribe_is_truthy( $follows ) && ( ! $rule || $rule->lets_end_follow_event_start() );
+		return tribe_is_truthy( $follows ) && ( ! $rule || $this->sales_window_effects->lets_end_follow_event_start( $rule ) );
 	}
 
 	/**
@@ -261,45 +285,54 @@ final class Event_Listener {
 		// The query returns IDs only, which leaves the meta of each ticket to a query of its own.
 		update_meta_cache( 'post', $ticket_ids );
 
+		$changed = false;
+
 		foreach ( $ticket_ids as $ticket_id ) {
-			$this->update_ticket( $ticket_id, $post_id );
+			$changed = $this->update_ticket( $ticket_id, $post_id ) || $changed;
+		}
+
+		/*
+		 * The event cost lists a sale price only while its dates put it on sale, and a move writes those dates without
+		 * the ticket save that stores the cost again.
+		 */
+		if ( $changed ) {
+			$this->tickets_commerce->clear_ticket_cache_for_post( $post_id );
+			$this->ticket_actions->update_event_cost( current( $ticket_ids ), $post_id );
 		}
 	}
 
 	/**
-	 * Rewrites the resolved dates of a ruled ticket and reschedules its sales actions when the dates changed.
+	 * Rewrites the resolved dates of every rule of a ticket and reschedules its sales actions when its sales window
+	 * dates changed.
 	 *
 	 * @since TBD
 	 *
 	 * @param int $ticket_id The ticket post ID.
 	 * @param int $post_id   The event post ID.
 	 *
-	 * @return void
+	 * @return bool Whether the dates of any of the ticket's windows changed.
 	 */
-	private function update_ticket( int $ticket_id, int $post_id ): void {
-		$rule = Rule::from_stored( $this->rule_store->get( $ticket_id ), Window_Kind::sales() );
+	private function update_ticket( int $ticket_id, int $post_id ): bool {
+		$stored  = $this->rule_store->get( $ticket_id );
+		$changed = false;
 
-		if ( ! $rule ) {
-			return;
+		foreach ( Window_Kind::all() as $kind ) {
+			$rule = Rule::from_stored( $stored, $kind );
+
+			// Rescheduling fires the sales actions other plugins listen to, so a window whose dates stay put keeps its own.
+			if ( ! $rule || ! $this->ticket_dates->write( $ticket_id, $post_id, $rule ) ) {
+				continue;
+			}
+
+			$changed = true;
+			$this->sales_window_effects->reschedule_sales_actions( $ticket_id, $kind );
+
+			if ( $this->ticket_dates->ends_before_it_starts( $ticket_id, $kind ) ) {
+				$this->announce_inverted_window( $ticket_id, $post_id, $kind );
+			}
 		}
 
-		// Rescheduling fires the sales actions other plugins listen to, so a ticket whose dates stay put keeps its own.
-		if ( ! $this->ticket_dates->write( $ticket_id, $post_id, $rule ) ) {
-			return;
-		}
-
-		/*
-		 * A move can push a relative boundary past a specific one. The inverted window is kept, so the ticket is off
-		 * sale, but Ticket_Actions skips it before unscheduling, which would leave the old sales actions behind. Every
-		 * pending action goes, not only the next one: overlapping saves can leave two.
-		 */
-		as_unschedule_all_actions( Ticket_Actions::TICKET_START_SALES_HOOK, [ $ticket_id ], Ticket_Actions::AS_TICKET_ACTIONS_GROUP );
-		as_unschedule_all_actions( Ticket_Actions::TICKET_END_SALES_HOOK, [ $ticket_id ], Ticket_Actions::AS_TICKET_ACTIONS_GROUP );
-		$this->ticket_actions->sync_ticket_dates_actions( $ticket_id );
-
-		if ( $this->ticket_dates->ends_before_it_starts( $ticket_id ) ) {
-			$this->announce_inverted_window( $ticket_id, $post_id );
-		}
+		return $changed;
 	}
 
 	/**
@@ -309,34 +342,38 @@ final class Event_Listener {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $ticket_id The ticket post ID.
-	 * @param int $post_id   The event post ID.
+	 * @param int         $ticket_id The ticket post ID.
+	 * @param int         $post_id   The event post ID.
+	 * @param Window_Kind $kind      The kind of the inverted window.
 	 *
 	 * @return void
 	 */
-	private function announce_inverted_window( int $ticket_id, int $post_id ): void {
+	private function announce_inverted_window( int $ticket_id, int $post_id, Window_Kind $kind ): void {
 		do_action(
 			'tribe_log',
 			'warning',
 			__CLASS__,
 			[
-				'message'   => 'An event move left the sales window of a ticket ending before it starts.',
+				'message'   => 'An event move left a window of a ticket ending before it starts.',
 				'ticket_id' => $ticket_id,
 				'event_id'  => $post_id,
+				'window'    => $kind->get_id(),
 			]
 		);
 
 		/**
 		 * Fires when an event move leaves the window of a ticket with relative sale dates ending before it starts.
 		 *
-		 * The dates are written as the rule resolves them, so the ticket is off sale until they are fixed.
+		 * The dates are written as the rule resolves them, so the ticket is off sale, or off its sale price, until they
+		 * are fixed.
 		 *
 		 * @since TBD
 		 *
-		 * @param int $ticket_id The ticket post ID.
-		 * @param int $post_id   The event post ID.
+		 * @param int    $ticket_id The ticket post ID.
+		 * @param int    $post_id   The event post ID.
+		 * @param string $window    The kind of window, `sales` or `sale_price`.
 		 */
-		do_action( 'tec_tickets_relative_sale_dates_window_inverted', $ticket_id, $post_id );
+		do_action( 'tec_tickets_relative_sale_dates_window_inverted', $ticket_id, $post_id, $kind->get_id() );
 	}
 
 	/**

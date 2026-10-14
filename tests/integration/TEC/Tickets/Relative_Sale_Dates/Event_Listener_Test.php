@@ -281,6 +281,55 @@ class Event_Listener_Test extends Controller_Test_Case {
 	}
 
 	/**
+	 * The event cost lists a sale price only while its dates put it on sale, and a move writes those dates without the
+	 * ticket save that stores the cost again.
+	 *
+	 * @test
+	 */
+	public function should_store_the_event_cost_again_when_a_move_takes_the_sale_price_on_or_off_sale(): void {
+		$this->set_site_timezone_to_utc();
+		$today    = new DateTimeImmutable( 'today' );
+		$event_id = $this->create_event( $today->modify( '+20 days 19:00' )->format( 'Y-m-d H:i:s' ) );
+		$ticket_id   = $this->create_tc_ticket(
+			$event_id,
+			20,
+			[
+				'ticket_add_sale_price' => 'on',
+				'ticket_sale_price'     => 10,
+			]
+		);
+		tribe( Rule_Store::class )->save(
+			$ticket_id,
+			[
+				Window_Kind::SALE_PRICE => [
+					'start' => [
+						'mode'  => Rule::MODE_RELATIVE,
+						'value' => 2,
+						'unit'  => DAY_IN_SECONDS,
+					],
+					'end'   => [
+						'mode'  => Rule::MODE_RELATIVE,
+						'value' => 1,
+						'unit'  => DAY_IN_SECONDS,
+					],
+				],
+			]
+		);
+		// Saved without dates, the sale price is on sale, and the event cost lists it.
+		$this->assertEquals( [ 10 ], get_post_meta( $event_id, '_EventCost' ) );
+
+		// Two days before an event in 10 days is still a week away.
+		$this->send_classic_event_save( $event_id, $today->modify( '+10 days 19:00' ) );
+
+		$this->assertEquals( [ 20 ], get_post_meta( $event_id, '_EventCost' ) );
+
+		// Two days before an event tomorrow is yesterday, and one day before it is today.
+		$this->send_classic_event_save( $event_id, $today->modify( '+1 day 19:00' ) );
+
+		$this->assertEquals( [ 10 ], get_post_meta( $event_id, '_EventCost' ) );
+	}
+
+	/**
 	 * Saves the event from the classic editor, moving it to a new start for three hours.
 	 *
 	 * @param int               $event_id The event post ID.
