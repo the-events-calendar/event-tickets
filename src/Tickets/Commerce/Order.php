@@ -729,7 +729,6 @@ class Order extends Abstract_Order {
 			'title'                => $this->generate_order_title( $original_cart_items, $hash ),
 			'total_value'          => $cart_total->get_decimal(),
 			'subtotal'             => $cart_subtotal->get_decimal(),
-			'items'                => $items,
 			'gateway'              => $gateway::get_key(),
 			'hash'                 => $hash,
 			'currency'             => Utils\Currency::get_currency_code(),
@@ -738,6 +737,8 @@ class Order extends Abstract_Order {
 			'purchaser_first_name' => $purchaser['purchaser_first_name'],
 			'purchaser_last_name'  => $purchaser['purchaser_last_name'],
 			'purchaser_email'      => $purchaser['purchaser_email'],
+			// Saved last: the order updated action fires as the items are written, and listeners expect the rest saved by then.
+			'items'                => $items,
 		];
 
 		if ( $hash ) {

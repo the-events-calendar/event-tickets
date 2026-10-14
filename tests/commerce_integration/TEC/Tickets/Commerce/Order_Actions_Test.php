@@ -5,6 +5,7 @@ namespace TEC\Tickets\Commerce;
 use DateTimeImmutable;
 use Generator;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
+use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
@@ -59,6 +60,44 @@ class Order_Actions_Test extends Controller_Test_Case {
 
 		$this->assertSame( tribe( Completed::class )->get_wp_slug(), get_post_status( $order->ID ) );
 		$this->assertSame( [ [ $order->ID, $items ] ], $this->calls );
+	}
+
+	public function test_listeners_see_the_other_fields_when_the_items_are_written_last(): void {
+		$this->make_controller()->register();
+		$event_id = static::factory()->post->create( [ 'post_type' => 'page' ] );
+		$post     = $this->create_order( [ $this->create_tc_ticket( $event_id, 10 ) => 1, $this->create_tc_ticket( $event_id, 20 ) => 2 ], [ 'order_status' => Pending::SLUG ] );
+		$items    = get_post_meta( $post->ID, Order::$items_meta_key, true );
+		unset( $items[ array_key_last( $items ) ] );
+		$seen = [];
+		add_action(
+			'tec_tickets_commerce_order_updated',
+			static function ( $order_id ) use ( &$seen ) {
+				$seen[] = get_post_meta( $order_id, Order::$currency_meta_key, true );
+			}
+		);
+
+		/* Fields are saved in the order given, so a listener sees only those listed before the items. */
+		tec_tc_orders()->by_args( [ 'id' => $post->ID, 'status' => 'any' ] )->set_args( [ 'currency' => 'EUR', 'items' => $items ] )->save();
+
+		$this->assertSame( [ 'EUR' ], $seen );
+	}
+
+	public function test_an_order_built_from_the_cart_saves_its_items_last(): void {
+		$event_id = static::factory()->post->create( [ 'post_type' => 'page' ] );
+		tribe( Cart::class )->get_repository()->upsert_item( $this->create_tc_ticket( $event_id, 10 ), 1 );
+		$keys = [];
+		add_filter(
+			'tec_tickets_commerce_order_upsert_args',
+			static function ( $args ) use ( &$keys ) {
+				$keys = array_keys( $args );
+
+				return $args;
+			}
+		);
+
+		$this->create_order_without_transitions();
+
+		$this->assertSame( 'items', end( $keys ) );
 	}
 
 	public function test_it_does_not_fire_for_equal_items_holding_objects(): void {
