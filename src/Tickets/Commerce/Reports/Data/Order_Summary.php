@@ -334,7 +334,7 @@ class Order_Summary {
 	 * Process the fee item data.
 	 *
 	 * @since 5.21.0
-	 * @since TBD Seed the status row, which previously only ticket items did.
+	 * @since 5.30.1 Seed the status row, which previously only ticket items did.
 	 *
 	 * @param string $status_slug The status slug.
 	 * @param array  $item        The item.
@@ -364,7 +364,7 @@ class Order_Summary {
 	 * Process the coupon item data.
 	 *
 	 * @since 5.21.0
-	 * @since TBD Seed the status row, which previously only ticket items did.
+	 * @since 5.30.1 Seed the status row, which previously only ticket items did.
 	 *
 	 * @param string $status_slug The status slug.
 	 * @param array  $item        The item.
