@@ -9,7 +9,6 @@
 
 namespace TEC\Tickets\Commerce;
 
-use TEC\Tickets\Commerce\Order_Items\Controller as Order_Items_Controller;
 use TEC\Tickets\Commerce\Order_Items\Writer;
 use WP_Post;
 
@@ -95,7 +94,7 @@ final class Order_Actions {
 	/**
 	 * Unmarks an order stored in the Order Items table when its items change while that feature is off.
 	 *
-	 * Nothing syncs the order's rows then, so it would load its old lines once the feature is back on.
+	 * Nothing syncs the order's rows then, whether the feature is off or failed to start, so it would load its old lines once the feature is back on.
 	 *
 	 * @since TBD
 	 *
@@ -104,7 +103,8 @@ final class Order_Actions {
 	 * @return void
 	 */
 	public function unmark_order_items_version( $order_id ): void {
-		if ( Order_Items_Controller::is_registered() ) {
+		// Checks the hook, not the controller: it registers before its table does, and a table that fails to register leaves the writer unhooked.
+		if ( has_action( 'tec_tickets_commerce_order_updated', tribe()->callback( Writer::class, 'sync_updated_order' ) ) ) {
 			return;
 		}
 
