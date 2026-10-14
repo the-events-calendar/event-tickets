@@ -146,6 +146,36 @@ class Orders_Lists_Test extends Controller_Test_Case {
 		$this->assertSame( 0, $count );
 	}
 
+	public function test_the_orders_list_shows_the_snapshot_name_of_an_order_left_in_the_old_format(): void {
+		$event_id  = static::factory()->post->create( [ 'post_type' => 'page' ] );
+		$ticket_id = $this->create_tc_ticket( $event_id, 10, [ 'ticket_name' => 'VIP' ] );
+		$order     = $this->create_order( [ $ticket_id => 2 ] );
+		$items     = get_post_meta( $order->ID, Order::$items_meta_key, true );
+		// A failed table write leaves the order in the meta, with the ticket's name kept on its items.
+		$items[ array_key_first( $items ) ]['snapshot'] = [ 'name' => 'Snapshot VIP', 'ticket_type' => 'default' ];
+		update_post_meta( $order->ID, Order::$items_meta_key, $items );
+		tribe( Module::class )->delete_ticket( $event_id, $ticket_id );
+		$GLOBALS['current_screen'] = WP_Screen::get( 'edit-' . Order::POSTTYPE );
+
+		$html = ( new Orders_Table() )->column_items( tec_tc_get_order( $order->ID ) );
+
+		$this->assertSame( "<div class='tribe-line-item'>2 Snapshot VIP (no longer exists)</div>", $html );
+	}
+
+	public function test_the_orders_list_shows_no_ticket_id_for_a_version_2_order_while_the_feature_is_off(): void {
+		$event_id  = static::factory()->post->create( [ 'post_type' => 'page' ] );
+		$ticket_id = $this->create_tc_ticket( $event_id, 10, [ 'ticket_name' => 'VIP' ] );
+		$order     = $this->create_order( [ $ticket_id => 2 ] );
+		// Marked as stored in the table, as it was before the feature was switched off: nothing can read its rows now.
+		update_post_meta( $order->ID, Writer::VERSION_META_KEY, Writer::VERSION );
+		tribe( Module::class )->delete_ticket( $event_id, $ticket_id );
+		$GLOBALS['current_screen'] = WP_Screen::get( 'edit-' . Order::POSTTYPE );
+
+		$html = ( new Orders_Table() )->column_items( tec_tc_get_order( $order->ID ) );
+
+		$this->assertSame( "<div class='tribe-line-item'>2 Tickets</div>", $html );
+	}
+
 	private function register_controller(): void {
 		add_filter( 'tec_tickets_commerce_order_items_active', '__return_true' );
 		$this->make_controller()->register();
