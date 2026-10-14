@@ -70,10 +70,11 @@ class Controller extends Controller_Contract {
 		remove_action( 'tec_tickets_commerce_order_created', $this->container->callback( Writer::class, 'write_created_order' ), 10 );
 		remove_action( 'tec_tickets_commerce_order_updated', $this->container->callback( Writer::class, 'sync_updated_order' ), 10 );
 		remove_action( 'tec_tickets_commerce_order_deleted', $this->container->callback( Writer::class, 'delete_order_rows' ), 10 );
+		remove_filter( 'tec_tickets_commerce_order_model_items', $this->container->callback( Reader::class, 'read_items' ), 10 );
 	}
 
 	/**
-	 * Registers the table and the writer.
+	 * Registers the table, the writer and the reader.
 	 *
 	 * @since TBD
 	 *
@@ -94,11 +95,14 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
-		// Singleton, so the container returns the same callback to `unregister()`.
+		// Singletons, so the container returns the same callbacks to `unregister()`.
 		$this->container->singleton( Writer::class );
+		$this->container->singleton( Reader::class );
 
 		add_action( 'tec_tickets_commerce_order_created', $this->container->callback( Writer::class, 'write_created_order' ), 10, 1 );
 		add_action( 'tec_tickets_commerce_order_updated', $this->container->callback( Writer::class, 'sync_updated_order' ), 10, 2 );
 		add_action( 'tec_tickets_commerce_order_deleted', $this->container->callback( Writer::class, 'delete_order_rows' ), 10, 1 );
+
+		add_filter( 'tec_tickets_commerce_order_model_items', $this->container->callback( Reader::class, 'read_items' ), 10, 3 );
 	}
 }
