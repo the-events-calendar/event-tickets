@@ -759,6 +759,8 @@ class Writer_Test extends Controller_Test_Case {
 		[ , $ticket_ids ] = $this->make_tickets();
 		$order_id         = $this->create_order( [ $ticket_ids[0] => 1, $ticket_ids[1] => 2 ] )->ID;
 		$rows             = $this->get_rows( $order_id );
+		// With no rows stored, "the rows are kept" would hold whether or not trashing deleted them.
+		$this->assertNotEmpty( $rows );
 
 		wp_trash_post( $order_id );
 
@@ -797,7 +799,7 @@ class Writer_Test extends Controller_Test_Case {
 		wp_delete_post( $order_id, true );
 
 		$this->assertNull( get_post( $order_id ) );
-		$this->assert_logged( 'debug', 'could not be deleted' );
+		$this->assert_logged( 'warning', 'could not be deleted' );
 	}
 
 	/**

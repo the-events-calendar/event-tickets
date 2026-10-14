@@ -242,7 +242,8 @@ final class Writer {
 	/**
 	 * Deletes the rows of a permanently deleted order.
 	 *
-	 * A failure is logged, never thrown, so it cannot stop the order from being deleted.
+	 * A failure is logged, never thrown, so it cannot stop the order from being deleted. It is a warning, not a
+	 * debug entry: nothing cleans these rows up later, so the log is the only trace of them.
 	 *
 	 * @since TBD
 	 *
@@ -255,7 +256,7 @@ final class Writer {
 			$this->repository->delete_by_order( $order_id );
 		} catch ( Throwable $e ) {
 			$this->log(
-				Log::DEBUG,
+				Log::WARNING,
 				'The order items could not be deleted from the table.',
 				[
 					'order_id' => $order_id,
