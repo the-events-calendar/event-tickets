@@ -1,0 +1,130 @@
+<?php
+/**
+ * Writes the dates a ticket's rule resolves to.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Relative_Sale_Dates
+ */
+
+declare( strict_types=1 );
+
+namespace TEC\Tickets\Relative_Sale_Dates;
+
+use TEC\Tickets\Commerce\Ticket;
+use Tribe__Date_Utils as Dates;
+
+/**
+ * Writes the dates a rule resolves to against its event into the ticket's date metas.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Relative_Sale_Dates
+ */
+final class Ticket_Dates {
+	/**
+	 * The meta key of the event timezone the ticket's dates were last written in.
+	 *
+	 * The dates are stored as wall-clock times, so the same times in another timezone fall at other instants.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const TIMEZONE_META_KEY = '_tec_tickets_relative_sale_dates_timezone';
+
+	/**
+	 * The sales window resolver.
+	 *
+	 * @since TBD
+	 *
+	 * @var Sale_Window
+	 */
+	private Sale_Window $sale_window;
+
+	/**
+	 * Ticket_Dates constructor.
+	 *
+	 * @since TBD
+	 *
+	 * @param Sale_Window $sale_window The sales window resolver.
+	 */
+	public function __construct( Sale_Window $sale_window ) {
+		$this->sale_window = $sale_window;
+	}
+
+	/**
+	 * Writes the dates a rule resolves to into the ticket's sale date fields.
+	 *
+	 * A boundary the rule does not resolve, `specific` or a `default` start, keeps the date the ticket has. A new event
+	 * timezone counts as a change even when the dates stay the same: they now fall at other instants.
+	 *
+	 * @since TBD
+	 *
+	 * @param int  $ticket_id The ticket post ID.
+	 * @param int  $post_id   The event post ID.
+	 * @param Rule $rule      The ticket's sales window rule.
+	 *
+	 * @return bool Whether any of the ticket's sale dates, or the timezone they are in, changed.
+	 */
+	public function write( int $ticket_id, int $post_id, Rule $rule ): bool {
+		$window = $this->sale_window->resolve_for_event( $rule, $post_id );
+
+		if ( ! $window ) {
+			return false;
+		}
+
+		$values = [ self::TIMEZONE_META_KEY => $window->get_timezone()->getName() ];
+		$start  = $window->get_start();
+		if ( $start ) {
+			$values[ Ticket::START_DATE_META_KEY ] = $start->format( Dates::DBDATEFORMAT );
+			$values[ Ticket::START_TIME_META_KEY ] = $start->format( Dates::DBTIMEFORMAT );
+		}
+
+		$end = $window->get_end();
+		if ( $end ) {
+			$values[ Ticket::END_DATE_META_KEY ] = $end->format( Dates::DBDATEFORMAT );
+			$values[ Ticket::END_TIME_META_KEY ] = $end->format( Dates::DBTIMEFORMAT );
+		}
+
+		$changed = false;
+		foreach ( $values as $meta_key => $value ) {
+			// `update_post_meta()` returns `false` both for an unchanged value and for a failed write.
+			if ( get_post_meta( $ticket_id, $meta_key, true ) !== $value ) {
+				update_post_meta( $ticket_id, $meta_key, $value );
+				$changed = true;
+			}
+		}
+
+		return $changed;
+	}
+
+	/**
+	 * Returns whether the ticket's sales window, as written, ends before or when it starts.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket post ID.
+	 *
+	 * @return bool Whether both dates are set and the end is not after the start.
+	 */
+	public function ends_before_it_starts( int $ticket_id ): bool {
+		$start_date = get_post_meta( $ticket_id, Ticket::START_DATE_META_KEY, true );
+		$end_date   = get_post_meta( $ticket_id, Ticket::END_DATE_META_KEY, true );
+
+		if ( ! is_string( $start_date ) || '' === $start_date || ! is_string( $end_date ) || '' === $end_date ) {
+			return false;
+		}
+
+		$start_time = get_post_meta( $ticket_id, Ticket::START_TIME_META_KEY, true );
+		$end_time   = get_post_meta( $ticket_id, Ticket::END_TIME_META_KEY, true );
+
+		// Without both times only the days can be told apart.
+		if ( ! is_string( $start_time ) || '' === $start_time || ! is_string( $end_time ) || '' === $end_time ) {
+			return $end_date < $start_date;
+		}
+
+		// Both are `Y-m-d H:i:s` in the same timezone, so they compare as strings.
+		return "{$end_date} {$end_time}" <= "{$start_date} {$start_time}";
+	}
+}

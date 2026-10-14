@@ -12,6 +12,7 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Relative_Sale_Dates;
 
 use DateTimeImmutable;
+use DateTimeZone;
 use RuntimeException;
 
 /**
@@ -41,16 +42,27 @@ final class Resolved_Window {
 	private ?DateTimeImmutable $end;
 
 	/**
+	 * The event timezone the window was resolved in.
+	 *
+	 * @since TBD
+	 *
+	 * @var DateTimeZone
+	 */
+	private DateTimeZone $timezone;
+
+	/**
 	 * Resolved_Window constructor.
 	 *
 	 * @since TBD
 	 *
-	 * @param DateTimeImmutable|null $start The sales start in the event timezone, or `null` when there is no date for it.
-	 * @param DateTimeImmutable|null $end   The sales end in the event timezone, or `null` when there is no date for it.
+	 * @param DateTimeImmutable|null $start    The sales start in the event timezone, or `null` when there is no date for it.
+	 * @param DateTimeImmutable|null $end      The sales end in the event timezone, or `null` when there is no date for it.
+	 * @param DateTimeZone           $timezone The event timezone the window was resolved in.
 	 */
-	public function __construct( ?DateTimeImmutable $start, ?DateTimeImmutable $end ) {
-		$this->start = $start;
-		$this->end   = $end;
+	public function __construct( ?DateTimeImmutable $start, ?DateTimeImmutable $end, DateTimeZone $timezone ) {
+		$this->start    = $start;
+		$this->end      = $end;
+		$this->timezone = $timezone;
 	}
 
 	/**
@@ -73,6 +85,17 @@ final class Resolved_Window {
 	 */
 	public function get_end(): ?DateTimeImmutable {
 		return $this->end;
+	}
+
+	/**
+	 * Gets the event timezone the window was resolved in, which its dates are written in.
+	 *
+	 * @since TBD
+	 *
+	 * @return DateTimeZone The event timezone.
+	 */
+	public function get_timezone(): DateTimeZone {
+		return $this->timezone;
 	}
 
 	/**

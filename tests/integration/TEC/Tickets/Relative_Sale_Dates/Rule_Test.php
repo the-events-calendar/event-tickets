@@ -227,4 +227,25 @@ class Rule_Test extends WPTestCase {
 
 		Rule::from_json( $json );
 	}
+
+	/**
+	 * @return Generator<string,array{0: array<string,array<string,int|string>>, 1: bool}>
+	 */
+	public function end_follows_event_start_provider(): Generator {
+		$before_start = [ 'mode' => 'relative', 'value' => 2, 'unit' => WEEK_IN_SECONDS, 'anchor' => 'start' ];
+		$before_end   = [ 'mode' => 'relative', 'value' => 2, 'unit' => HOUR_IN_SECONDS, 'anchor' => 'end' ];
+
+		yield 'specific end, start counted from the event start' => [ [ 'start' => $before_start, 'end' => [ 'mode' => 'specific' ] ], true ];
+		yield 'specific end, start counted from the event end' => [ [ 'start' => $before_end, 'end' => [ 'mode' => 'specific' ] ], false ];
+		yield 'relative end' => [ [ 'start' => [ 'mode' => 'default' ], 'end' => $before_start ], false ];
+		yield 'default end' => [ [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ], false ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider end_follows_event_start_provider
+	 */
+	public function should_let_only_an_end_left_to_the_ticket_follow_the_event_start( array $data, bool $follows ): void {
+		$this->assertSame( $follows, Rule::from_array( $data )->lets_end_follow_event_start() );
+	}
 }
