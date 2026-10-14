@@ -515,6 +515,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since 4.6.2
 	 * @since 5.5.7 Added optional parameter to return values instead of echoing directly.
+	 * @since TBD   Reject deletions when the ticket does not belong to the given post.
 	 *
 	 * @param bool $return_value Optional, flags whether to JSON output directly or return results.
 	 *
@@ -572,6 +573,23 @@ class Tribe__Tickets__Metabox {
 
 		if ( empty( $provider ) ) {
 			$output = esc_html__( 'Commerce Module invalid', 'event-tickets' );
+			if ( $return_value ) {
+				return new WP_Error(
+					'bad_request',
+					$output,
+					[ 'status' => 400 ]
+				);
+			}
+			wp_send_json_error( $output );
+			return;
+		}
+
+		$ticket_event_ids = array_map( 'absint', tribe_tickets_get_event_ids( $ticket_id ) );
+
+		// The permission check only covers `$post_id`, so the ticket must belong to it.
+		if ( ! in_array( $post_id, $ticket_event_ids, true ) ) {
+			/* Translators: %1$s - singular ticket term */
+			$output = esc_html( sprintf( __( 'Failed to delete the %1$s. Refresh the page to try again.', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_delete_error' ) ) );
 			if ( $return_value ) {
 				return new WP_Error(
 					'bad_request',
