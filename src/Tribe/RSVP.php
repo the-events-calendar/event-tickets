@@ -1724,7 +1724,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Deletes a ticket
 	 *
-	 * @since TBD Deleting an attendee removes it through the attendee repository and returns false when nothing was deleted.
+	 * @since 5.30.1 Deleting an attendee removes it through the attendee repository and returns false when nothing was deleted.
 	 *
 	 * @param int $event_id The event ID.
 	 * @param int $ticket_id The ticket ID, or the ID of an attendee to delete.

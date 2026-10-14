@@ -83,7 +83,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 	 *
 	 * @since 4.12.0 Returns 401 Unauthorized if Event Tickets Plus is not loaded.
 	 * @since 5.29.5 Reindexes the attendees so the response always encodes them as a JSON array.
-	 * @since TBD Rejects a provided-but-invalid api_key with a 401 instead of returning public results.
+	 * @since 5.30.1 Rejects a provided-but-invalid api_key with a 401 instead of returning public results.
 	 *
 	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
 	 */
