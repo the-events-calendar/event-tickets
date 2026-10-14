@@ -27,8 +27,8 @@ permissions:
 jobs:
   publish:
     runs-on: blacksmith-4vcpu-ubuntu-2404
-    # A protected environment: its reviewers check tags/<version> at
-    # expected-revision before approving this job.
+    # Holds the WPORG secrets, limited to main. Its reviewers check
+    # tags/<version> at expected-revision before approving this job.
     environment: wordpress-org
     steps:
       - name: Install Subversion

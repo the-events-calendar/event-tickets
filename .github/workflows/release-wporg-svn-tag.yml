@@ -24,6 +24,9 @@ permissions:
 jobs:
   tag:
     runs-on: blacksmith-4vcpu-ubuntu-2404
+    # Holds the WPORG secrets, limited to main. Its reviewers decide who may
+    # create a tag, since anyone with write access can dispatch this workflow.
+    environment: wordpress-org
     steps:
       - name: Install Subversion
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends subversion
