@@ -5,8 +5,9 @@
  * @since 5.13.3
  * @since 5.21.0 Added the coupons and fees sections.
  * @since 5.24.0 Added the extras section.
+ * @since TBD Shows the lines whose ticket no longer exists.
  *
- * @version 5.24.0
+ * @version TBD
  *
  * @var WP_Post             $order       The current post object.
  * @var Singular_Order_Page $single_page The orders table output.
@@ -15,6 +16,7 @@
 use TEC\Tickets\Commerce\Admin\Singular_Order_Page;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Order_Items\Fallbacks;
 
 ?>
 <div class="tec-tickets-commerce-single-order--items">
@@ -30,7 +32,7 @@ use TEC\Tickets\Commerce\Order;
 		</thead>
 		<tbody>
 			<?php
-			foreach ( $order->items as $item ) {
+			foreach ( $order->items as $key => $item ) {
 				/**
 				 * Filters whether the item should be displayed in the single order items metabox.
 				 *
@@ -48,8 +50,18 @@ use TEC\Tickets\Commerce\Order;
 
 				$ticket = tribe( Module::class )->get_ticket( 0, $ticket_id );
 
-				if ( ! $ticket ) {
-					continue;
+				// The order total still counts a line whose ticket was deleted, so the line is shown too.
+				$missing_ticket = $ticket ? null : tribe( Fallbacks::class )->get_missing_ticket( $order, $key, $item );
+
+				// A stand-in keeps `$ticket` an object, as theme overrides of the item template written before this expect.
+				if ( $missing_ticket ) {
+					$ticket = new Tribe__Tickets__Ticket_Object(
+						[
+							'ID'   => absint( $ticket_id ),
+							'name' => $missing_ticket['name'],
+							'type' => $missing_ticket['type'],
+						]
+					);
 				}
 
 				$attendees = $item['extra']['attendees'] ?? [];
@@ -59,10 +71,11 @@ use TEC\Tickets\Commerce\Order;
 						$this->template(
 							'order-items-metabox-item',
 							[
-								'order'    => $order,
-								'ticket'   => $ticket,
-								'item'     => $item,
-								'attendee' => null,
+								'order'          => $order,
+								'ticket'         => $ticket,
+								'missing_ticket' => $missing_ticket,
+								'item'           => $item,
+								'attendee'       => null,
 							]
 						);
 					}
@@ -71,10 +84,11 @@ use TEC\Tickets\Commerce\Order;
 					$this->template(
 						'order-items-metabox-item',
 						[
-							'order'    => $order,
-							'ticket'   => $ticket,
-							'item'     => $item,
-							'attendee' => $attendee,
+							'order'          => $order,
+							'ticket'         => $ticket,
+							'missing_ticket' => $missing_ticket,
+							'item'           => $item,
+							'attendee'       => $attendee,
 						]
 					);
 				}
