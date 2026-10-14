@@ -7,10 +7,12 @@ use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Admin\Singular_Order_Page;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Order_Items\Repositories\Order_Items as Order_Items_Repository;
 use TEC\Tickets\Commerce\Order_Items\Tables\Order_Items as Order_Items_Table;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe__Tickets__Ticket_Object;
 use WP_Post;
 
 class Order_Items_Metabox_Test extends Controller_Test_Case {
@@ -96,14 +98,45 @@ class Order_Items_Metabox_Test extends Controller_Test_Case {
 				return $items;
 			}
 		);
+		// Reads through the table itself: through the cache, a stray lookup would hit what the load just cached and add no query.
+		tribe()->singleton( Fallbacks::class, new Fallbacks( new Order_Items_Repository() ) );
 		// Creating the order already read its rows through the cache.
 		wp_cache_flush();
 		$count = $this->count_queries_against_the_table();
 
 		$this->render( $order );
 
-		$this->assertGreaterThan( 0, $loads );
-		$this->assertLessThanOrEqual( $loads, $count() );
+		// The order loads twice, and the second load is served by the cache: one query, and none from the lines.
+		$this->assertSame( 2, $loads );
+		$this->assertSame( 1, $count() );
+	}
+
+	public function test_it_gives_the_item_template_a_ticket_object_when_the_ticket_is_gone(): void {
+		$event_id  = static::factory()->post->create( [ 'post_type' => 'page' ] );
+		$ticket_id = $this->create_tc_ticket( $event_id, 10, [ 'ticket_name' => 'VIP' ] );
+		update_post_meta( $ticket_id, '_type', 'series_pass' );
+		$this->register_controller();
+		$order = $this->create_order( [ $ticket_id => 1 ] );
+		tribe( Module::class )->delete_ticket( $event_id, $ticket_id );
+		$tickets = [];
+		add_action(
+			'tribe_template_before_include',
+			static function ( $file, $name, $template ) use ( &$tickets ) {
+				if ( 'order-items-metabox-item' === end( $name ) ) {
+					$tickets[] = $template->get( 'ticket' );
+				}
+			},
+			10,
+			3
+		);
+
+		$this->render( $order );
+
+		$this->assertCount( 1, $tickets );
+		$this->assertInstanceOf( Tribe__Tickets__Ticket_Object::class, $tickets[0] );
+		$this->assertSame( $ticket_id, $tickets[0]->ID );
+		$this->assertSame( 'series_pass', $tickets[0]->type() );
+		$this->assertSame( 'VIP (no longer exists)', $tickets[0]->name );
 	}
 
 	private function render( WP_Post $order ): string {
