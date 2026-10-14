@@ -59,6 +59,7 @@ class Hooks extends Service_Provider {
 	 *
 	 * @since 5.1.6
 	 * @since 5.24.0 Added async webhook process routing action.
+	 * @since TBD Stores the ticket name on a moved attendee.
 	 */
 	protected function add_actions() {
 		add_action( 'init', [ $this, 'register_post_types' ] );
@@ -119,6 +120,7 @@ class Hooks extends Service_Provider {
 	 * Adds the filters required by each Tickets Commerce component.
 	 *
 	 * @since 5.1.6
+	 * @since TBD Stores the ticket name on each new attendee.
 	 */
 	protected function add_filters() {
 		// Hooked here, not by the Order Items controller, so the name is still stored when that feature is switched off.
