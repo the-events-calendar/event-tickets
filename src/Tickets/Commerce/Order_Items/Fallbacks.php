@@ -11,6 +11,7 @@ namespace TEC\Tickets\Commerce\Order_Items;
 
 use TEC\Tickets\Commerce\Order_Items\Repositories\Order_Items_Repository;
 use TEC\Tickets\Commerce\Order_Items\Traits\With_Logger;
+use TEC\Tickets\RSVP\V2\Constants;
 use Throwable;
 use Tribe__Log as Log;
 use WP_Post;
@@ -51,8 +52,8 @@ final class Fallbacks {
 	 * Returns what to show for an order line whose ticket no longer exists.
 	 *
 	 * The name comes from, in order: the order's stored row, the item's `snapshot` entry, then "Ticket #ID"; it ends
-	 * with a text marker saying the ticket no longer exists. The type comes from the same sources and is `default`
-	 * when none is stored. Values are not escaped.
+	 * with a text marker saying the ticket no longer exists. The type comes from the same sources, then from an RSVP
+	 * item's own type, and is `default` when none is stored. Values are not escaped.
 	 *
 	 * @since TBD
 	 *
@@ -66,7 +67,11 @@ final class Fallbacks {
 		$stored   = $this->get_stored_rows( $order->ID )[ (string) $key ] ?? [];
 		$snapshot = is_array( $item['snapshot'] ?? null ) ? $item['snapshot'] : [];
 		$name     = $this->first_string( $stored['name'] ?? null, $snapshot['name'] ?? null );
-		$type     = $this->first_string( $stored['ticket_type'] ?? null, $snapshot['ticket_type'] ?? null );
+		$type     = $this->first_string(
+			$stored['ticket_type'] ?? null,
+			$snapshot['ticket_type'] ?? null,
+			Constants::TC_RSVP_TYPE === ( $item['type'] ?? '' ) ? Constants::TC_RSVP_TYPE : null
+		);
 
 		if ( '' === $name ) {
 			$name = sprintf(
