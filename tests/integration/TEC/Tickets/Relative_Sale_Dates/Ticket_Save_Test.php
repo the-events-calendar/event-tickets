@@ -5,7 +5,6 @@ namespace TEC\Tickets\Relative_Sale_Dates;
 use DateTimeImmutable;
 use DateTimeZone;
 use Generator;
-use RuntimeException;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
@@ -738,7 +737,7 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	}
 
 	/**
-	 * Sends a ticket save from the classic editor and returns its JSON response.
+	 * Sends a ticket save from the classic editor, by an administrator, and returns its JSON response.
 	 *
 	 * @param int                      $event_id The event post ID.
 	 * @param array<string,int|string> $data     The ticket form data, merged over a Tickets Commerce ticket.
@@ -746,24 +745,9 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	 * @return array{success: bool, data: mixed} The decoded JSON response.
 	 */
 	private function send_classic_ticket_add( int $event_id, array $data ): array {
-		$this->set_classic_ticket_request( $event_id, $data );
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 
-		add_filter( 'wp_doing_ajax', '__return_true' );
-		add_filter(
-			'wp_die_ajax_handler',
-			static fn() => static function () {
-				throw new RuntimeException( 'The AJAX response was sent.' );
-			}
-		);
-
-		ob_start();
-		try {
-			tribe( 'tickets.metabox' )->ajax_ticket_add();
-		} catch ( RuntimeException $e ) {
-			// wp_send_json_*() ends the request through the die handler.
-		}
-
-		return json_decode( ob_get_clean(), true );
+		return $this->send_classic_ticket_form( $event_id, $this->build_classic_ticket_form( $data ) );
 	}
 
 	/**
@@ -777,26 +761,30 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	private function set_classic_ticket_request( int $event_id, array $data ): void {
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 
-		// The classic editor posts its form as one URL-encoded string, which WordPress then slashes.
-		$_POST = wp_slash(
-			[
-				'post_id' => $event_id,
-				'nonce'   => wp_create_nonce( 'add_ticket_nonce' ),
-				'data'    => http_build_query(
-					array_merge(
-						[
-							'ticket_name'     => 'Classic editor ticket',
-							'ticket_price'    => '10',
-							'ticket_provider' => Module::class,
-							'tribe-ticket'    => [
-								'mode'     => 'own',
-								'capacity' => '50',
-							],
-						],
-						$data
-					)
-				),
-			]
+		$this->set_classic_ticket_form_request( $event_id, $this->build_classic_ticket_form( $data ) );
+	}
+
+	/**
+	 * Builds the URL-encoded form of a Tickets Commerce ticket the classic editor sends.
+	 *
+	 * @param array<string,int|string> $data The ticket form data, merged over a Tickets Commerce ticket.
+	 *
+	 * @return string The form, as `tickets.js` serializes it.
+	 */
+	private function build_classic_ticket_form( array $data ): string {
+		return http_build_query(
+			array_merge(
+				[
+					'ticket_name'     => 'Classic editor ticket',
+					'ticket_price'    => '10',
+					'ticket_provider' => Module::class,
+					'tribe-ticket'    => [
+						'mode'     => 'own',
+						'capacity' => '50',
+					],
+				],
+				$data
+			)
 		);
 	}
 
