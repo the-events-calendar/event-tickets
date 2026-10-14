@@ -41,6 +41,7 @@ final class Controller extends Controller_Contract {
 		remove_action( 'tec_tickets_ticket_pre_save', $this->container->callback( Ticket_Save::class, 'set_ticket_dates' ) );
 		remove_action( 'tec_tickets_ticket_upserted', $this->container->callback( Ticket_Save::class, 'save_rule' ) );
 		remove_action( 'tec_tickets_ticket_upserted', $this->container->callback( Ticket_Save::class, 'write_resolved_dates' ), 20 );
+		remove_filter( 'tec_tickets_ticket_data_validation', $this->container->callback( Ticket_Save::class, 'validate_ticket_data' ) );
 	}
 
 	/**
@@ -91,5 +92,6 @@ final class Controller extends Controller_Contract {
 		add_action( 'tec_tickets_ticket_upserted', $this->container->callback( Ticket_Save::class, 'save_rule' ), 10, 3 );
 		// After the rule is stored, and before Ticket_Actions schedules the sales actions from the ticket dates, at 1000.
 		add_action( 'tec_tickets_ticket_upserted', $this->container->callback( Ticket_Save::class, 'write_resolved_dates' ), 20, 2 );
+		add_filter( 'tec_tickets_ticket_data_validation', $this->container->callback( Ticket_Save::class, 'validate_ticket_data' ), 10, 3 );
 	}
 }

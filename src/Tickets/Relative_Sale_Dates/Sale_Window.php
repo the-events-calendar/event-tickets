@@ -13,13 +13,17 @@ namespace TEC\Tickets\Relative_Sale_Dates;
 
 use DateInterval;
 use DateTimeImmutable;
-use DateTimeInterface;
 use DateTimeZone;
 use Exception;
 use Tribe__Timezones as Timezones;
 
 /**
- * Turns a rule plus an event, or an event's start and end, into the sales start and end.
+ * Turns a rule plus an event into the sales start and end.
+ *
+ * The dates are resolved on the wall clock of the event timezone. In a timezone east of UTC, a time that happens twice
+ * when the clocks go back resolves to its first occurrence, as the editors' JavaScript does, while the sales actions
+ * are scheduled from the stored `Y-m-d H:i:s` strings, which PHP reads as the second: inside that repeated hour the
+ * judged and the scheduled instant can be an hour apart.
  *
  * @since TBD
  *
@@ -59,24 +63,46 @@ final class Sale_Window {
 	}
 
 	/**
-	 * Resolves a rule against an event's dates.
+	 * Gets the event's start and end in the event timezone.
 	 *
-	 * For callers that already hold the dates, such as one date of a recurring event; `resolve_for_event()` reads them
-	 * from an event. The event timezone is the event start's timezone; the event end is converted to it.
+	 * @since TBD
+	 *
+	 * @param int $event_id The event post ID.
+	 *
+	 * @return array{0: DateTimeImmutable, 1: DateTimeImmutable}|null The event start and end, or `null` when the event has no valid dates.
+	 */
+	public function get_event_dates( int $event_id ): ?array {
+		$start = get_post_meta( $event_id, '_EventStartDate', true );
+		$end   = get_post_meta( $event_id, '_EventEndDate', true );
+
+		if ( ! is_string( $start ) || '' === $start || ! is_string( $end ) || '' === $end ) {
+			return null;
+		}
+
+		$timezone = Timezones::build_timezone_object( get_post_meta( $event_id, '_EventTimezone', true ) ?: null );
+
+		try {
+			return [ new DateTimeImmutable( $start, $timezone ), new DateTimeImmutable( $end, $timezone ) ];
+		} catch ( Exception $e ) {
+			return null;
+		}
+	}
+
+	/**
+	 * Resolves a rule against an event's start and end, both in the event timezone.
 	 *
 	 * @since TBD
 	 *
 	 * @param Rule              $rule        The sales window rule.
-	 * @param DateTimeInterface $event_start The event start, in the event timezone. Build it with the event's named timezone, such as `Europe/Athens`, not a UTC offset or abbreviation parsed from a date string: only a named timezone knows its clock changes.
-	 * @param DateTimeInterface $event_end   The event end.
+	 * @param DateTimeImmutable $event_start The event start, in the event's named timezone: only a named timezone, such as `Europe/Athens`, knows its clock changes.
+	 * @param DateTimeImmutable $event_end   The event end, in the same timezone.
 	 *
 	 * @return Resolved_Window The resolved sales window.
 	 */
-	public function resolve( Rule $rule, DateTimeInterface $event_start, DateTimeInterface $event_end ): Resolved_Window {
-		$timezone = $event_start->getTimezone();
-		$anchors  = [
-			Rule::ANCHOR_START => $this->in_timezone( $event_start, $timezone ),
-			Rule::ANCHOR_END   => $this->in_timezone( $event_end, $timezone ),
+	private function resolve( Rule $rule, DateTimeImmutable $event_start, DateTimeImmutable $event_end ): Resolved_Window {
+		$anchors = [
+			Rule::ANCHOR_START => $event_start,
+			Rule::ANCHOR_END   => $event_end,
 		];
 
 		return new Resolved_Window(
@@ -101,12 +127,15 @@ final class Sale_Window {
 			return $default_date;
 		}
 
-		if ( Rule::MODE_RELATIVE === $boundary->get_mode() ) {
-			return $this->before( $anchors[ $boundary->get_anchor() ], $boundary->get_interval() );
+		$anchor   = $boundary->get_anchor();
+		$interval = $boundary->get_interval();
+
+		// Only a relative boundary has an anchor and an interval; a specific one keeps the ticket's own date.
+		if ( null === $anchor || null === $interval ) {
+			return null;
 		}
 
-		// A specific boundary keeps the ticket's own date.
-		return null;
+		return $this->before( $anchors[ $anchor ], $interval );
 	}
 
 	/**
@@ -171,46 +200,6 @@ final class Sale_Window {
 		}
 
 		return $date;
-	}
-
-	/**
-	 * Returns a date as an immutable date in the given timezone.
-	 *
-	 * @since TBD
-	 *
-	 * @param DateTimeInterface $date     The date to convert.
-	 * @param DateTimeZone      $timezone The timezone to convert to.
-	 *
-	 * @return DateTimeImmutable The same instant, in the given timezone.
-	 */
-	private function in_timezone( DateTimeInterface $date, DateTimeZone $timezone ): DateTimeImmutable {
-		return ( new DateTimeImmutable( '@' . $date->getTimestamp() ) )->setTimezone( $timezone );
-	}
-
-	/**
-	 * Gets the event's start and end in the event timezone.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $event_id The event post ID.
-	 *
-	 * @return array{0: DateTimeImmutable, 1: DateTimeImmutable}|null The event start and end, or `null` when the event has no valid dates.
-	 */
-	private function get_event_dates( int $event_id ): ?array {
-		$start = get_post_meta( $event_id, '_EventStartDate', true );
-		$end   = get_post_meta( $event_id, '_EventEndDate', true );
-
-		if ( ! is_string( $start ) || '' === $start || ! is_string( $end ) || '' === $end ) {
-			return null;
-		}
-
-		$timezone = Timezones::build_timezone_object( get_post_meta( $event_id, '_EventTimezone', true ) ?: null );
-
-		try {
-			return [ new DateTimeImmutable( $start, $timezone ), new DateTimeImmutable( $end, $timezone ) ];
-		} catch ( Exception $e ) {
-			return null;
-		}
 	}
 
 	/**
