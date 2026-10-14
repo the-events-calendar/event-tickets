@@ -225,6 +225,7 @@ class Reader_Test extends Controller_Test_Case {
 
 		$this->assertSame( '2', get_post_meta( $order->ID, Writer::VERSION_META_KEY, true ) );
 		$this->assertSame( get_post_meta( $order->ID, Order::$items_meta_key, true ), $loaded->items );
+		$this->assert_logged( 'warning', 'has no rows' );
 	}
 
 	public function test_a_failed_read_loads_from_the_meta(): void {
@@ -317,6 +318,22 @@ class Reader_Test extends Controller_Test_Case {
 		// That sync finishes and re-marks the order only if its token is still there.
 		update_post_meta( $order->ID, Writer::VERSION_META_KEY, Writer::VERSION, 'syncing:token' );
 
+		$this->assertSame( '', get_post_meta( $order->ID, Writer::VERSION_META_KEY, true ) );
+		$this->assertSame( $items, $this->load( $order->ID )->items );
+	}
+
+	public function test_an_order_whose_items_change_while_the_writer_is_not_hooked_is_unmarked(): void {
+		$this->register_controller( true );
+		[ , $ticket_ids ] = $this->make_tickets();
+		$order            = $this->create_order( [ $ticket_ids[0] => 1 ] );
+		$items            = get_post_meta( $order->ID, Order::$items_meta_key, true );
+		// The controller is registered, as when its table fails to register after it is flagged: no writer is hooked.
+		remove_action( 'tec_tickets_commerce_order_updated', tribe()->callback( Writer::class, 'sync_updated_order' ), 10 );
+		$items[ array_key_first( $items ) ]['quantity'] = 4;
+
+		update_post_meta( $order->ID, Order::$items_meta_key, $items );
+
+		$this->assertTrue( Controller::is_registered() );
 		$this->assertSame( '', get_post_meta( $order->ID, Writer::VERSION_META_KEY, true ) );
 		$this->assertSame( $items, $this->load( $order->ID )->items );
 	}

@@ -60,7 +60,7 @@ final class Reader {
 	 * Replaces the items read from the order meta with the ones stored in the table, for orders stored there.
 	 *
 	 * Other orders run no query. Any failure is logged, never thrown, and the order keeps the items from its meta,
-	 * which every order stored in the table also carries.
+	 * when it is present.
 	 *
 	 * @since TBD
 	 *
@@ -95,6 +95,14 @@ final class Reader {
 			);
 
 			return $items;
+		}
+
+		if ( ! $list ) {
+			$this->log(
+				Log::WARNING,
+				'The order is marked as stored in the table but has no rows there; the order reads its items from its meta.',
+				[ 'order_id' => $post_id ]
+			);
 		}
 
 		return $list ?: $items;
