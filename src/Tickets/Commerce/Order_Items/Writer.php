@@ -144,6 +144,102 @@ final class Writer {
 	}
 
 	/**
+	 * Syncs the rows of an order stored in the table with its new items, matching lines by identity so kept lines
+	 * keep their row IDs and take their new place in the list.
+	 *
+	 * Orders not stored in the table are left alone. The order's mark is swapped for a syncing token first and set
+	 * back only once every statement succeeded, so a sync that fails or dies half way leaves it reading the new items
+	 * from the order meta. A sync that finds another's token unmarks the order: the items changed while the other
+	 * sync ran, and its rows no longer match them. Runs on the payment path, so any failure is logged, never thrown.
+	 *
+	 * @since TBD
+	 *
+	 * @param int   $order_id The order ID.
+	 * @param array $items    The order's new items, as saved to the order meta.
+	 *
+	 * @return void
+	 */
+	public function sync_updated_order( int $order_id, array $items ): void {
+		$mark = get_post_meta( $order_id, self::VERSION_META_KEY, true );
+
+		if ( is_string( $mark ) && str_starts_with( $mark, self::SYNCING ) ) {
+			// Updated, not deleted: the other sync re-marks the order only if its token is still there.
+			update_post_meta( $order_id, self::VERSION_META_KEY, '' );
+			clean_post_cache( $order_id );
+
+			return;
+		}
+
+		if ( self::VERSION !== absint( $mark ) ) {
+			return;
+		}
+
+		$token = self::SYNCING . wp_generate_uuid4();
+
+		// Compare and set: a writer that changed the mark since it was read keeps it.
+		if ( ! update_post_meta( $order_id, self::VERSION_META_KEY, $token, self::VERSION ) ) {
+			return;
+		}
+
+		try {
+			$rows    = $this->to_rows( $order_id, $items );
+			$stored  = [];
+			$updates = [];
+			$inserts = [];
+
+			foreach ( $this->repository->get_by_order( $order_id ) as $model ) {
+				$row = $model->toArray();
+
+				$stored[ $this->line_identity( $row ) ] = $row;
+			}
+
+			foreach ( $rows as $key => $row ) {
+				$identity = $this->line_identity( $row );
+				$current  = $stored[ $identity ] ?? null;
+
+				if ( null === $current ) {
+					$inserts[] = $row;
+					continue;
+				}
+
+				unset( $stored[ $identity ] );
+
+				// serialize() is strict on key order and scalar types, and compares objects by class and state.
+				if ( $current['position'] !== $row['position'] || $current['currency'] !== $row['currency'] || serialize( $this->types->get( $current['type'] )::from_row( $current ) ) !== serialize( [ (string) $key, $items[ $key ] ] ) ) { // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
+					$updates[] = [ 'id' => $current['id'] ] + $this->keep_purchase_details( $row, $current, $items[ $key ] );
+				}
+			}
+
+			// No transaction: opening one would commit a caller's, e.g. Order::modify_status(). The unmarked order covers a partial sync.
+			$this->repository->delete_many( array_column( $stored, 'id' ) );
+			$this->repository->update_rows( $updates );
+			$this->repository->insert_many( $inserts );
+
+			// Compare and set: a newer sync that replaced the token leaves the order unmarked.
+			update_post_meta( $order_id, self::VERSION_META_KEY, self::VERSION, $token );
+		} catch ( Throwable $e ) {
+			// Updated, not deleted: with no row to compare against, another sync's compare and set would add the mark back.
+			update_post_meta( $order_id, self::VERSION_META_KEY, '' );
+
+			try {
+				$this->repository->delete_by_order( $order_id );
+			} catch ( Throwable $ignored ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch -- The order is unmarked, so rows left behind are never read.
+			}
+
+			$this->log(
+				Log::DEBUG,
+				'The order items could not be synced to the table; the order reads them from its meta.',
+				[
+					'order_id' => $order_id,
+					'error'    => $e->getMessage(),
+				]
+			);
+		}
+
+		clean_post_cache( $order_id );
+	}
+
+	/**
 	 * Keeps the name and type of each ticket on the items of an order that stays in the order meta.
 	 *
 	 * Without a row to read them from, a ticket deleted later would leave the order screens only its ID. The
@@ -224,97 +320,6 @@ final class Writer {
 	 */
 	private function is_ticket_item( array $item ): bool {
 		return in_array( $item['type'] ?? '', [ '', 'ticket', Constants::TC_RSVP_TYPE ], true );
-	}
-
-	/**
-	 * Syncs the rows of an order stored in the table with its new items, matching lines by identity so kept lines
-	 * keep their row IDs and take their new place in the list.
-	 *
-	 * Orders not stored in the table are left alone. The order's mark is swapped for a syncing token first and set
-	 * back only once every statement succeeded, so a sync that fails or dies half way leaves it reading the new items
-	 * from the order meta. A sync that finds another's token unmarks the order: the items changed while the other
-	 * sync ran, and its rows no longer match them. Runs on the payment path, so any failure is logged, never thrown.
-	 *
-	 * @since TBD
-	 *
-	 * @param int   $order_id The order ID.
-	 * @param array $items    The order's new items, as saved to the order meta.
-	 *
-	 * @return void
-	 */
-	public function sync_updated_order( int $order_id, array $items ): void {
-		$mark = get_post_meta( $order_id, self::VERSION_META_KEY, true );
-
-		if ( is_string( $mark ) && str_starts_with( $mark, self::SYNCING ) ) {
-			// Updated, not deleted: the other sync re-marks the order only if its token is still there.
-			update_post_meta( $order_id, self::VERSION_META_KEY, '' );
-			clean_post_cache( $order_id );
-
-			return;
-		}
-
-		if ( self::VERSION !== absint( $mark ) ) {
-			return;
-		}
-
-		$token = self::SYNCING . wp_generate_uuid4();
-		update_post_meta( $order_id, self::VERSION_META_KEY, $token );
-
-		try {
-			$rows    = $this->to_rows( $order_id, $items );
-			$stored  = [];
-			$updates = [];
-			$inserts = [];
-
-			foreach ( $this->repository->get_by_order( $order_id ) as $model ) {
-				$row = $model->toArray();
-
-				$stored[ $this->line_identity( $row ) ] = $row;
-			}
-
-			foreach ( $rows as $key => $row ) {
-				$identity = $this->line_identity( $row );
-				$current  = $stored[ $identity ] ?? null;
-
-				if ( null === $current ) {
-					$inserts[] = $row;
-					continue;
-				}
-
-				unset( $stored[ $identity ] );
-
-				// serialize() is strict on key order and scalar types, and compares objects by class and state.
-				if ( $current['position'] !== $row['position'] || $current['currency'] !== $row['currency'] || serialize( $this->types->get( $current['type'] )::from_row( $current ) ) !== serialize( [ (string) $key, $items[ $key ] ] ) ) { // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
-					$updates[] = [ 'id' => $current['id'] ] + $this->keep_purchase_details( $row, $current, $items[ $key ] );
-				}
-			}
-
-			// No transaction: opening one would commit a caller's, e.g. Order::modify_status(). The unmarked order covers a partial sync.
-			$this->repository->delete_many( array_column( $stored, 'id' ) );
-			$this->repository->update_rows( $updates );
-			$this->repository->insert_many( $inserts );
-
-			// Compare and set: a newer sync that replaced the token leaves the order unmarked.
-			update_post_meta( $order_id, self::VERSION_META_KEY, self::VERSION, $token );
-		} catch ( Throwable $e ) {
-			delete_post_meta( $order_id, self::VERSION_META_KEY );
-
-			try {
-				$this->repository->delete_by_order( $order_id );
-			} catch ( Throwable $ignored ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch -- The order is unmarked, so rows left behind are never read.
-			}
-
-			$this->log(
-				Log::DEBUG,
-				'The order items could not be synced to the table; the order reads them from its meta.',
-				[
-					'order_id' => $order_id,
-					'error'    => $e->getMessage(),
-				]
-			);
-		}
-
-		clean_post_cache( $order_id );
 	}
 
 	/**

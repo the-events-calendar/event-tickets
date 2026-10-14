@@ -659,8 +659,33 @@ class Writer_Test extends Controller_Test_Case {
 
 		$this->assertSame( 0, Order_Items_Table::get_total_items() );
 		$this->assertSame( '', get_post_meta( $order_id, Writer::VERSION_META_KEY, true ) );
+		// The row stays, empty, so a sync still running cannot add its mark back over rows that are gone.
+		$this->assertTrue( metadata_exists( 'post', $order_id, Writer::VERSION_META_KEY ) );
 		$this->assertEquals( $items, tec_tc_get_order( $order_id )->items );
 		$this->assert_logged( 'debug', 'could not be synced' );
+	}
+
+	public function test_a_sync_that_loses_the_mark_to_another_writer_changes_nothing(): void {
+		$this->register_controller( true );
+		[ $order_id, $before, $items ] = $this->make_order_and_new_items();
+		// Another request marks the order between the sync reading the mark and taking it.
+		add_filter(
+			'update_post_metadata',
+			static function ( $check, $object_id, $meta_key, $meta_value ) {
+				if ( Writer::VERSION_META_KEY === $meta_key && 0 === strpos( (string) $meta_value, 'syncing:' ) ) {
+					DB::query( DB::prepare( 'UPDATE %i SET meta_value = %s WHERE post_id = %d AND meta_key = %s', DB::prefix( 'postmeta' ), 'other', $object_id, $meta_key ) );
+				}
+
+				return $check;
+			},
+			10,
+			4
+		);
+
+		$this->save_items( $order_id, $items );
+
+		$this->assertSame( 'other', get_post_meta( $order_id, Writer::VERSION_META_KEY, true ) );
+		$this->assertSame( $before, $this->get_rows( $order_id ) );
 	}
 
 	public function test_an_interrupted_sync_leaves_the_order_reading_its_new_items(): void {
