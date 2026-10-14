@@ -42,13 +42,40 @@ final class Attendees {
 	 * @return array|mixed The create arguments, with the ticket's name when there is one.
 	 */
 	public function add_ticket_name( $create_args, $order, $ticket ) {
-		// Other callbacks on this filter can hand back anything.
-		if ( ! is_array( $create_args ) || ! $ticket instanceof Ticket_Object || '' === (string) $ticket->name ) {
+		// Other callbacks on this filter can hand back anything, and the repository unslashes the meta it saves.
+		if ( ! is_array( $create_args ) || ! $ticket instanceof Ticket_Object || ! is_string( $ticket->name ) || '' === $ticket->name ) {
 			return $create_args;
 		}
 
-		$create_args[ self::TICKET_NAME_META_KEY ] = $ticket->name;
+		$create_args[ self::TICKET_NAME_META_KEY ] = wp_slash( $ticket->name );
 
 		return $create_args;
+	}
+
+	/**
+	 * Keeps the stored ticket name in step with the ticket an attendee was moved to.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $attendee_id        The moved attendee's ID.
+	 * @param int $src_ticket_type_id The ticket the attendee came from.
+	 * @param int $tgt_ticket_type_id The ticket the attendee now belongs to.
+	 *
+	 * @return void
+	 */
+	public function update_ticket_name_on_move( $attendee_id, $src_ticket_type_id, $tgt_ticket_type_id ): void {
+		if ( 'tec_tc_attendee' !== get_post_type( $attendee_id ) ) {
+			return;
+		}
+
+		$name = get_post_field( 'post_title', $tgt_ticket_type_id );
+
+		if ( '' === $name ) {
+			delete_post_meta( $attendee_id, self::TICKET_NAME_META_KEY );
+
+			return;
+		}
+
+		update_post_meta( $attendee_id, self::TICKET_NAME_META_KEY, wp_slash( $name ) );
 	}
 }

@@ -97,6 +97,7 @@ class Hooks extends Service_Provider {
 		add_action( 'tribe_template_before_include:tickets/v2/commerce/checkout', [ $this, 'include_assets_checkout_shortcode' ] );
 
 		add_action( 'tribe_tickets_ticket_moved', [ $this, 'handle_moved_ticket_updates' ], 10, 6 );
+		add_action( 'tribe_tickets_ticket_moved', tribe_callback( Order_Items\Attendees::class, 'update_ticket_name_on_move' ), 10, 3 );
 
 		add_action( 'tribe_tickets_price_input_description', [ $this, 'render_sale_price_fields' ], 10, 3 );
 
@@ -120,6 +121,9 @@ class Hooks extends Service_Provider {
 	 * @since 5.1.6
 	 */
 	protected function add_filters() {
+		// Hooked here, not by the Order Items controller, so the name is still stored when that feature is switched off.
+		add_filter( 'tec_tickets_commerce_attendee_create_args', tribe_callback( Order_Items\Attendees::class, 'add_ticket_name' ), 10, 3 );
+
 		add_filter( 'tribe_shortcodes', [ $this, 'filter_register_shortcodes' ] );
 
 		add_filter( 'tribe_attendee_registration_form_classes', [ $this, 'filter_registration_form_class' ] );

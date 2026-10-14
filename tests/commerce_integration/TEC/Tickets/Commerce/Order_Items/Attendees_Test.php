@@ -2,9 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Order_Items;
 
-use Closure;
 use Codeception\TestCase\WPTestCase;
-use Generator;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
@@ -13,38 +11,7 @@ class Attendees_Test extends WPTestCase {
 	use Ticket_Maker;
 	use Order_Maker;
 
-	/**
-	 * The Order Items kill switch; spelled out because this change does not depend on the Order Items controller.
-	 */
-	private const ORDER_ITEMS_DISABLED = 'TEC_TICKETS_COMMERCE_ORDER_ITEMS_DISABLED';
-
-	public function tearDown(): void {
-		putenv( self::ORDER_ITEMS_DISABLED );
-
-		parent::tearDown();
-	}
-
-	public function order_items_switch_provider(): Generator {
-		yield 'order items on' => [ static function (): void {} ];
-
-		yield 'order items off by filter' => [
-			static function (): void {
-				add_filter( 'tec_tickets_commerce_order_items_active', '__return_false' );
-			},
-		];
-
-		yield 'order items off by environment' => [
-			static function (): void {
-				putenv( self::ORDER_ITEMS_DISABLED . '=1' );
-			},
-		];
-	}
-
-	/**
-	 * @dataProvider order_items_switch_provider
-	 */
-	public function test_it_stores_the_ticket_name_on_each_new_attendee( Closure $switch ): void {
-		$switch();
+	public function test_it_stores_the_ticket_name_on_each_new_attendee(): void {
 		$post_id     = self::factory()->post->create( [ 'post_type' => 'page' ] );
 		$ticket_id_1 = $this->create_tc_ticket( $post_id, 10 );
 		$ticket_id_2 = $this->create_tc_ticket( $post_id, 20, [ 'ticket_name' => 'Second ticket' ] );
@@ -73,11 +40,7 @@ class Attendees_Test extends WPTestCase {
 		$this->assertSame( '0', get_post_meta( $attendee->ID, Attendees::TICKET_NAME_META_KEY, true ) );
 	}
 
-	/**
-	 * @dataProvider order_items_switch_provider
-	 */
-	public function test_the_commerce_provider_hooks_it_to_the_create_args_filter( Closure $switch ): void {
-		$switch();
+	public function test_the_commerce_provider_hooks_it_to_the_create_args_filter(): void {
 		$ticket       = new Ticket_Object();
 		$ticket->name = 'A ticket';
 		$create_args  = [ 'title' => 'An attendee' ];
@@ -132,5 +95,63 @@ class Attendees_Test extends WPTestCase {
 			$first_name . ' renamed',
 			get_post_meta( $second_attendee->ID, Attendees::TICKET_NAME_META_KEY, true )
 		);
+	}
+
+	public function test_a_name_with_a_backslash_is_stored_as_typed(): void {
+		$post_id   = self::factory()->post->create( [ 'post_type' => 'page' ] );
+		$ticket_id = $this->create_tc_ticket( $post_id, 10, [ 'ticket_name' => 'Ticket A \\o/' ] );
+
+		$order    = $this->create_order( [ $ticket_id => 1 ] );
+		$attendee = tec_tc_attendees()->by( 'parent', $order->ID )->by( 'status', 'any' )->first();
+
+		$this->assertSame(
+			get_post_field( 'post_title', $ticket_id ),
+			get_post_meta( $attendee->ID, Attendees::TICKET_NAME_META_KEY, true )
+		);
+	}
+
+	public function test_a_ticket_with_a_non_string_name_stores_nothing(): void {
+		$ticket       = new Ticket_Object();
+		$ticket->name = [ 'not', 'a string' ];
+		$create_args  = [ 'title' => 'An attendee' ];
+
+		$this->assertSame( $create_args, tribe( Attendees::class )->add_ticket_name( $create_args, null, $ticket ) );
+	}
+
+	public function test_moving_an_attendee_stores_the_target_ticket_name(): void {
+		$post_id     = self::factory()->post->create( [ 'post_type' => 'page' ] );
+		$ticket_id_1 = $this->create_tc_ticket( $post_id, 10, [ 'ticket_name' => 'Ticket A' ] );
+		$ticket_id_2 = $this->create_tc_ticket( $post_id, 10, [ 'ticket_name' => 'Ticket B \\o/' ] );
+		$order       = $this->create_order( [ $ticket_id_1 => 1 ] );
+		$attendee    = tec_tc_attendees()->by( 'parent', $order->ID )->by( 'status', 'any' )->first();
+
+		do_action( 'tribe_tickets_ticket_moved', $attendee->ID, $ticket_id_1, $ticket_id_2, $post_id, $post_id, get_current_user_id() );
+
+		$this->assertSame(
+			get_post_field( 'post_title', $ticket_id_2 ),
+			get_post_meta( $attendee->ID, Attendees::TICKET_NAME_META_KEY, true )
+		);
+	}
+
+	public function test_moving_an_attendee_to_an_untitled_ticket_clears_the_stored_name(): void {
+		$post_id     = self::factory()->post->create( [ 'post_type' => 'page' ] );
+		$ticket_id_1 = $this->create_tc_ticket( $post_id, 10, [ 'ticket_name' => 'Ticket A' ] );
+		$ticket_id_2 = $this->create_tc_ticket( $post_id, 10 );
+		wp_update_post( [ 'ID' => $ticket_id_2, 'post_title' => '' ] );
+		$order    = $this->create_order( [ $ticket_id_1 => 1 ] );
+		$attendee = tec_tc_attendees()->by( 'parent', $order->ID )->by( 'status', 'any' )->first();
+
+		do_action( 'tribe_tickets_ticket_moved', $attendee->ID, $ticket_id_1, $ticket_id_2, $post_id, $post_id, get_current_user_id() );
+
+		$this->assertSame( '', get_post_meta( $attendee->ID, Attendees::TICKET_NAME_META_KEY, true ) );
+	}
+
+	public function test_moving_something_that_is_not_a_commerce_attendee_is_ignored(): void {
+		$post_id   = self::factory()->post->create( [ 'post_type' => 'page' ] );
+		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+
+		tribe( Attendees::class )->update_ticket_name_on_move( $post_id, $ticket_id, $ticket_id );
+
+		$this->assertSame( '', get_post_meta( $post_id, Attendees::TICKET_NAME_META_KEY, true ) );
 	}
 }
