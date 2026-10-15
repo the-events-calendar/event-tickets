@@ -43,6 +43,9 @@ class Provider extends Service_Provider {
 			return;
 		}
 
+		// Bound before the hooks, so Hooks gets the same callback from the container every time.
+		$this->container->singleton( Order_Items\Attendees::class );
+
 		$this->register_assets();
 		$this->register_hooks();
 		$this->load_functions();
