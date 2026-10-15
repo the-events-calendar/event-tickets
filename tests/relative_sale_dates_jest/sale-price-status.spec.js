@@ -47,6 +47,20 @@ describe( 'isSalePriceOn', () => {
 		expect( isSalePriceOn( rule, EVENT, stored, at( '2099-06-21T15:00:00Z' ) ) ).toBe( false );
 	} );
 
+	// The server stores a Now start empty; the form can still hold a date picked before the admin chose Now.
+	it( 'should count a Now start as started whatever date it is given', () => {
+		const stored = { start: '2099-06-20', end: '' };
+
+		expect( isSalePriceOn( NOW_TO_ONE_WEEK, EVENT, stored, at( '2099-06-17T15:00:00Z' ) ) ).toBe( true );
+	} );
+
+	it( 'should not tell while a relative boundary does not resolve, whatever date it is given', () => {
+		const rule = { start: { mode: 'now' }, end: { mode: 'relative', value: '', unit: UNIT_WEEKS } };
+		const stored = { start: '', end: '2099-06-30' };
+
+		expect( isSalePriceOn( rule, EVENT, stored, at( '2099-06-17T15:00:00Z' ) ) ).toBeNull();
+	} );
+
 	it( 'should not tell without a rule or event dates', () => {
 		expect( isSalePriceOn( null, EVENT, NO_STORED ) ).toBeNull();
 		expect( isSalePriceOn( NOW_TO_ONE_WEEK, null, NO_STORED ) ).toBeNull();
