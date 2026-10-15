@@ -7,6 +7,7 @@ use DateTimeImmutable;
 use Generator;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Integrations\Plugins\Yoast_Duplicate_Post\Duplicate_Post as Yoast_Duplicate_Post;
 use Tribe__Tickets__Main as Tickets_Main;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -261,6 +262,25 @@ class Event_Listener_Test extends Controller_Test_Case {
 
 		$this->assertSame( tribe( Rule_Store::class )->get( $ticket_id ), tribe( Rule_Store::class )->get( $duplicate_id ) );
 		$this->assert_resolved_from( $new_event_start, $duplicate_id );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_carry_the_rule_to_a_ticket_duplicated_by_yoast_duplicate_post(): void {
+		$event_start     = $this->get_future_event_start();
+		$event_id        = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
+		$ticket_id       = $this->create_ruled_ticket( $event_id );
+		$new_event_start = $event_start->modify( '+1 month' );
+		$new_event_id    = $this->create_event( $new_event_start->format( 'Y-m-d H:i:s' ) );
+
+		// What Yoast Duplicate Post runs once it has copied the event.
+		tribe( Yoast_Duplicate_Post::class )->duplicate_tickets_to_new_post( $new_event_id, get_post( $event_id ) );
+
+		$duplicate_ids = tribe_tickets()->where( 'event', $new_event_id )->get_ids();
+		$this->assertCount( 1, $duplicate_ids );
+		$this->assertSame( tribe( Rule_Store::class )->get( $ticket_id ), tribe( Rule_Store::class )->get( $duplicate_ids[0] ) );
+		$this->assert_resolved_from( $new_event_start, $duplicate_ids[0] );
 	}
 
 	/**
