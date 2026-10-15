@@ -69,7 +69,7 @@ const ownBlocks = new Set( [ rsvp, rsvpV2, rsvpDisabled, attendees ] );
  * Block API version. Only Event Tickets' own definitions, returned unchanged, are adapted.
  *
  * @since 5.8.0
- * @since TBD Event Tickets' own block definitions are adapted to Block API version 3 after this filter.
+ * @since 5.30.2 Event Tickets' own block definitions are adapted to Block API version 3 after this filter.
  * @param {Object[]} blocks The blocks that will be registered.
  */
 let blocks = applyFilters( 'tec.tickets.blocks.beforeRegistration', [ rsvp, attendees ] );

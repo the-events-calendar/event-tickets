@@ -37,7 +37,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 	/**
 	 * {@inheritdoc}
 	 *
-	 * @since TBD The parent post is resolved from the ticket; the `post_id` body parameter is ignored.
+	 * @since 5.30.2 The parent post is resolved from the ticket; the `post_id` body parameter is ignored.
 	 */
 	public function delete( WP_REST_Request $request ) {
 		$ticket_id   = $request['id'];
