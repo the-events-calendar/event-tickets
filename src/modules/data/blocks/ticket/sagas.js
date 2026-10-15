@@ -1259,11 +1259,10 @@ export function* saveTicketWithPostSave( clientId ) {
 				// Wait for channel to save
 				yield take( savingChannel );
 
-				// Update when saving
-				yield call( updateTicket, { payload: { clientId } } );
-
-				// Wait for channel to finish saving
+				// Wait for channel to finish saving: a ticket with a relative rule is resolved against the saved event dates.
 				yield take( notSavingChannel );
+
+				yield call( updateTicket, { payload: { clientId } } );
 			}
 		}
 	} catch ( error ) {

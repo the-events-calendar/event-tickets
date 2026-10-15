@@ -1463,6 +1463,24 @@ describe( 'Ticket Block sagas', () => {
 		} );
 	} );
 
+	describe( 'saveTicketWithPostSave', () => {
+		// A ticket with a relative rule is resolved against the event dates the server reads when the update arrives.
+		it( 'should update the ticket once the post save is done', () => {
+			const clientId = 'saved-with-the-post';
+			const savingChannel = { take: jest.fn(), close: jest.fn() };
+			const notSavingChannel = { take: jest.fn(), close: jest.fn() };
+			const gen = sagas.saveTicketWithPostSave( clientId );
+
+			expect( gen.next().value ).toEqual( select( selectors.getTicketHasBeenCreated, { clientId } ) );
+			expect( gen.next( true ).value ).toEqual( call( createWPEditorSavingChannel ) );
+			expect( gen.next( savingChannel ).value ).toEqual( call( createWPEditorNotSavingChannel ) );
+			expect( gen.next( notSavingChannel ).value ).toEqual( take( savingChannel ) );
+			expect( gen.next().value ).toEqual( take( notSavingChannel ) );
+			expect( gen.next().value ).toEqual( call( sagas.updateTicket, { payload: { clientId } } ) );
+			expect( gen.next().value ).toEqual( take( savingChannel ) );
+		} );
+	} );
+
 	describe( 'getTicketSaleDates', () => {
 		/**
 		 * Runs a saga that only yields call effects, answering each with what its function returns.
