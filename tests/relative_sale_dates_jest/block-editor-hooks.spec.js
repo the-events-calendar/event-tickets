@@ -798,6 +798,17 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 			expect( filterOnSale( clientId ) ).toBe( true );
 		} );
 
+		// The hidden date picker keeps a start picked before the admin chose Now; the server stores Now empty.
+		it( 'should count a Now start as started whatever start date the form still holds', () => {
+			const clientId = newRuledSalePriceTicket();
+			window.__tribe_common_store__.dispatch(
+				legacyActions.setTicketTempSaleStartDate( clientId, '2040-10-12' )
+			);
+			jest.useFakeTimers( { now: new Date( '2040-10-11T15:00:00Z' ) } );
+
+			expect( filterOnSale( clientId ) ).toBe( true );
+		} );
+
 		it( 'should keep what the server said of a ticket without a sale price rule', () => {
 			const clientId = newClientId();
 			setSalePriceChecked( clientId, true );
