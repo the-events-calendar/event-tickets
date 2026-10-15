@@ -99,15 +99,14 @@ class Attendees_Test extends WPTestCase {
 
 	public function test_a_name_with_a_backslash_is_stored_as_typed(): void {
 		$post_id   = self::factory()->post->create( [ 'post_type' => 'page' ] );
-		$ticket_id = $this->create_tc_ticket( $post_id, 10, [ 'ticket_name' => 'Ticket A \\o/' ] );
+		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+		// Saved slashed, as the editor's request is: wp_insert_post() unslashes, so a plain title would lose its backslash.
+		wp_update_post( [ 'ID' => $ticket_id, 'post_title' => wp_slash( 'Ticket A \\o/' ) ] );
 
 		$order    = $this->create_order( [ $ticket_id => 1 ] );
 		$attendee = tec_tc_attendees()->by( 'parent', $order->ID )->by( 'status', 'any' )->first();
 
-		$this->assertSame(
-			get_post_field( 'post_title', $ticket_id ),
-			get_post_meta( $attendee->ID, Attendees::TICKET_NAME_META_KEY, true )
-		);
+		$this->assertSame( 'Ticket A \\o/', get_post_meta( $attendee->ID, Attendees::TICKET_NAME_META_KEY, true ) );
 	}
 
 	public function test_a_ticket_with_a_non_string_name_stores_nothing(): void {
