@@ -79,12 +79,12 @@ class Metabox_Ticket_Delete_Ownership_Test extends WPTestCase {
 	/**
 	 * @dataProvider provider_ticket_makers
 	 */
-	public function test_ticket_is_deleted_through_its_own_post( string $make_ticket ): void {
+	public function test_ticket_is_deleted_through_its_own_post_whatever_post_id_is_sent( string $make_ticket ): void {
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 		$post_id   = static::factory()->post->create();
 		$ticket_id = $this->{$make_ticket}( $post_id, 10 );
 
-		$_POST['post_id']   = $post_id;
+		$_POST['post_id']   = static::factory()->post->create();
 		$_POST['ticket_id'] = $ticket_id;
 		$_POST['nonce']     = wp_create_nonce( 'remove_ticket_nonce' );
 
@@ -92,5 +92,24 @@ class Metabox_Ticket_Delete_Ownership_Test extends WPTestCase {
 
 		$this->assertIsArray( $result );
 		$this->assertNotInstanceOf( \WP_Post::class, get_post( $ticket_id ), 'The ticket must be deleted.' );
+	}
+
+	/**
+	 * @dataProvider provider_ticket_makers
+	 */
+	public function test_ticket_without_a_parent_post_is_not_deleted( string $make_ticket ): void {
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->{$make_ticket}( $post_id, 10 );
+		delete_post_meta( $ticket_id, tribe_tickets_get_ticket_provider( $ticket_id )->get_event_key() );
+
+		$_POST['post_id']   = $post_id;
+		$_POST['ticket_id'] = $ticket_id;
+		$_POST['nonce']     = wp_create_nonce( 'remove_ticket_nonce' );
+
+		$result = tribe( Metabox::class )->ajax_ticket_delete( true );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertInstanceOf( \WP_Post::class, get_post( $ticket_id ), 'The ticket must still exist.' );
 	}
 }

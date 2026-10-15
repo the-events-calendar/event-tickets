@@ -515,7 +515,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since 4.6.2
 	 * @since 5.5.7 Added optional parameter to return values instead of echoing directly.
-	 * @since TBD   Reject deletions when the ticket does not belong to the given post.
+	 * @since TBD   The parent post is resolved from the ticket; the `post_id` request parameter is ignored.
 	 *
 	 * @param bool $return_value Optional, flags whether to JSON output directly or return results.
 	 *
@@ -523,11 +523,11 @@ class Tribe__Tickets__Metabox {
 	 */
 	public function ajax_ticket_delete( $return_value = false ) {
 		$return_value = (bool) $return_value;
-		$post_id      = absint( tribe_get_request_var( 'post_id', 0 ) );
-		$post_id      = Event::filter_event_id( $post_id );
+		$ticket_id    = absint( tribe_get_request_var( 'ticket_id', 0 ) );
 
-		if ( ! $post_id ) {
-			$output = esc_html__( 'Invalid parent Post', 'event-tickets' );
+		if ( ! $ticket_id ) {
+			/* Translators: %1$s - singular ticket term */
+			$output = esc_html( sprintf( __( 'Invalid %1$s', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_delete_error' ) ) );
 			if ( $return_value ) {
 				return new WP_Error(
 					'bad_request',
@@ -539,11 +539,12 @@ class Tribe__Tickets__Metabox {
 			return;
 		}
 
-		$ticket_id = absint( tribe_get_request_var( 'ticket_id', 0 ) );
+		// The requested `post_id` is not trusted: permissions are checked against the post the ticket belongs to.
+		$post_id = absint( current( tribe_tickets_get_event_ids( $ticket_id ) ) );
+		$post_id = Event::filter_event_id( $post_id );
 
-		if ( ! $ticket_id ) {
-			/* Translators: %1$s - singular ticket term */
-			$output = esc_html( sprintf( __( 'Invalid %1$s', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_delete_error' ) ) );
+		if ( ! $post_id ) {
+			$output = esc_html__( 'Invalid parent Post', 'event-tickets' );
 			if ( $return_value ) {
 				return new WP_Error(
 					'bad_request',
@@ -573,23 +574,6 @@ class Tribe__Tickets__Metabox {
 
 		if ( empty( $provider ) ) {
 			$output = esc_html__( 'Commerce Module invalid', 'event-tickets' );
-			if ( $return_value ) {
-				return new WP_Error(
-					'bad_request',
-					$output,
-					[ 'status' => 400 ]
-				);
-			}
-			wp_send_json_error( $output );
-			return;
-		}
-
-		$ticket_event_ids = array_map( 'absint', tribe_tickets_get_event_ids( $ticket_id ) );
-
-		// The permission check only covers `$post_id`, so the ticket must belong to it.
-		if ( ! in_array( $post_id, $ticket_event_ids, true ) ) {
-			/* Translators: %1$s - singular ticket term */
-			$output = esc_html( sprintf( __( 'Failed to delete the %1$s. Refresh the page to try again.', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_delete_error' ) ) );
 			if ( $return_value ) {
 				return new WP_Error(
 					'bad_request',

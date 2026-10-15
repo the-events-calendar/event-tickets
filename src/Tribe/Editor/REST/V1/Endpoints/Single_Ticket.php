@@ -37,7 +37,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 	/**
 	 * {@inheritdoc}
 	 *
-	 * @since TBD Reject deletions when the ticket does not belong to the given post.
+	 * @since TBD The parent post is resolved from the ticket; the `post_id` body parameter is ignored.
 	 */
 	public function delete( WP_REST_Request $request ) {
 		$ticket_id   = $request['id'];
@@ -48,9 +48,19 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 		}
 
 		$body = $request->get_body_params();
-		$post_id = absint( $body['post_id'] );
 		$nonce_action = 'remove_ticket_nonce';
 		$nonce = $body[ $nonce_action ];
+
+		// The requested `post_id` is not trusted: permissions are checked against the post the ticket belongs to.
+		$post_id = absint( current( tribe_tickets_get_event_ids( $ticket_id ) ) );
+
+		if ( ! $post_id ) {
+			return new WP_Error(
+				'bad_request',
+				__( 'Invalid parent Post', 'event-tickets' ),
+				[ 'status' => 400 ]
+			);
+		}
 
 		if ( ! $this->has_permission( $post_id, $nonce, $nonce_action ) ) {
 			return new WP_Error(
@@ -67,17 +77,6 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 				'bad_request',
 				__( 'Commerce Module invalid', 'event-tickets' ),
 				[ 'status' => 400 ]
-			);
-		}
-
-		$ticket_event_ids = array_map( 'absint', tribe_tickets_get_event_ids( $ticket_id ) );
-
-		// The permission check only covers `$post_id`, so the ticket must belong to it.
-		if ( ! in_array( $post_id, $ticket_event_ids, true ) ) {
-			return new WP_Error(
-				'forbidden',
-				__( 'This ticket does not belong to the given post.', 'event-tickets' ),
-				[ 'status' => 403 ]
 			);
 		}
 

@@ -87,12 +87,12 @@ class Single_Ticket_Delete_Ownership_Test extends WPTestCase {
 	/**
 	 * @dataProvider provider_ticket_makers
 	 */
-	public function test_ticket_is_deleted_through_its_own_post( string $make_ticket ): void {
+	public function test_ticket_is_deleted_through_its_own_post_whatever_post_id_is_sent( string $make_ticket ): void {
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 		$post_id   = static::factory()->post->create();
 		$ticket_id = $this->{$make_ticket}( $post_id, 10 );
 
-		$result = $this->delete_request( $ticket_id, $post_id );
+		$result = $this->delete_request( $ticket_id, static::factory()->post->create() );
 
 		$this->assertSame( 202, $result->get_status() );
 		$this->assertNotInstanceOf( \WP_Post::class, get_post( $ticket_id ), 'The ticket must be deleted.' );
