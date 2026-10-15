@@ -1267,6 +1267,10 @@ class Ticket_Save_Test extends Controller_Test_Case {
 			array_merge( $sales_open_a_week_before, [ self::SALE_PRICE_DATA_KEY => $rule( $now, $relative( 7 ) ) ] ),
 			true,
 		];
+		yield 'a now start ending before sales open' => [
+			array_merge( $sales_open_a_week_before, [ self::SALE_PRICE_DATA_KEY => $rule( $now, $relative( 14 ) ) ] ),
+			true,
+		];
 		yield 'a now start with sales opening a week before' => [
 			array_merge( $sales_open_a_week_before, [ self::SALE_PRICE_DATA_KEY => $rule( $now, $relative( 3 ) ) ] ),
 			true,

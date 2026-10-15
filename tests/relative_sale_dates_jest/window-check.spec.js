@@ -239,20 +239,20 @@ describe( 'getWindowError', () => {
 			expect( judgeSalePrice( rule ) ).toBeNull();
 		} );
 
-		// 3 weeks before the event is 2099-06-03, before sales open on 2099-06-08.
-		it( 'should judge the end of a now start against the day sales open', () => {
+		// 3 weeks before the event is 2099-06-03, before sales open on 2099-06-08: a Now start never errors.
+		it( 'should never judge the end of a now start, even one before the day sales open', () => {
 			const rule = { start: { mode: 'now' }, end: relative( SALE_PRICE_WINDOW, 3, UNIT_WEEKS ) };
 
-			expect( judgeSalePrice( rule ) ).toBe( ENDS_BEFORE_START );
+			expect( judgeSalePrice( rule ) ).toBeNull();
 		} );
 
 		// Today is 2099-06-01, so the end on 2099-06-10 is after now but before sales open on 2099-06-12.
-		it( 'should judge a now start from the day sales open, not from now', () => {
+		it( 'should never judge the end of a now start that is after now', () => {
 			jest.useFakeTimers( { now: new Date( '2099-06-01T12:00:00Z' ) } );
 			const rule = { start: { mode: 'now' }, end: relative( SALE_PRICE_WINDOW, 2, UNIT_WEEKS ) };
 			const lateSales = parentWindow( '2099-06-12 09:00:00', '2099-06-24 19:00:00' );
 
-			expect( judgeSalePrice( rule, NO_FORM_DATES, lateSales ) ).toBe( ENDS_BEFORE_START );
+			expect( judgeSalePrice( rule, NO_FORM_DATES, lateSales ) ).toBeNull();
 		} );
 
 		it( 'should judge the end of a specific start without a date against the day sales open', () => {

@@ -942,14 +942,14 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 				expect( isDisabledWith( rule, { start: 'Invalid date' } ) ).toBe( false );
 			} );
 
-			it( 'should judge a Now start by the day sales open, never as outside the sales window', () => {
+			it( 'should never hold back a Now start, even one ending before sales open', () => {
 				const endingIn = ( weeks ) => ( {
 					start: { mode: 'now' },
 					end: salePriceBoundary( weeks, UNIT_WEEKS ),
 				} );
 
 				expect( isDisabledWith( endingIn( 1 ) ) ).toBe( false );
-				expect( isDisabledWith( endingIn( 5 ) ) ).toBe( true );
+				expect( isDisabledWith( endingIn( 5 ) ) ).toBe( false );
 			} );
 
 			it( 'should leave the button alone for a sale price the save drops for not being lower than the price', () => {

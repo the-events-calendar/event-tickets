@@ -64,9 +64,11 @@ final class Window_Validator {
 	 * Judges the window of one kind the ticket data would save.
 	 *
 	 * Without a rule, or without event dates, there is nothing to judge. A date the window reads from the ticket data
-	 * that cannot be read rejects it as such. The order of the window's ends is judged at the kind's precision; a start
-	 * without a date of its own counts as the start of the parent window. A start with its own date must fall within
-	 * the parent window, which is judged only once both ends of the parent window are known.
+	 * that cannot be read rejects it as such. The order of the window's ends is judged at the kind's precision. An open
+	 * start the kind stores itself, the sale price's *Now*, is never judged: it opens with the parent window, and an
+	 * admin choosing it gets no error. Any other start without a date of its own counts as the start of the parent
+	 * window. A start with its own date must fall within the parent window, which is judged only once both ends of the
+	 * parent window are known.
 	 *
 	 * @since TBD
 	 *
@@ -100,9 +102,10 @@ final class Window_Validator {
 		$parent_start  = $parent_window instanceof Resolved_Window ? $parent_window->get_start() : null;
 		$parent_end    = $parent_window instanceof Resolved_Window ? $parent_window->get_end() : null;
 
-		$own_start = $window->get_start();
-		$start     = $own_start ?? $parent_start;
-		$end       = $window->get_end();
+		$own_start     = $window->get_start();
+		$is_open_start = null !== $kind->get_open_start_value() && $kind->get_open_start_mode() === $rule->get_start()->get_mode();
+		$start         = $own_start ?? ( $is_open_start ? null : $parent_start );
+		$end           = $window->get_end();
 
 		$end_to_start = $start && $end ? $this->compare_dates( $end, $start, $kind ) : null;
 
