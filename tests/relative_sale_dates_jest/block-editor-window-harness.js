@@ -24,13 +24,13 @@ export const EndPicker = () => null;
 
 export const SALES_LABELS = {
 	start: {
-		mode: 'From',
+		mode: 'Start Sales:',
 		value: 'Number of units before the event that sales start',
 		unit: 'Unit of the sales start',
 		anchor: 'What the sales start is measured from',
 	},
 	end: {
-		mode: 'To',
+		mode: 'End Sales:',
 		value: 'Number of units before the event that sales end',
 		unit: 'Unit of the sales end',
 		anchor: 'What the sales end is measured from',

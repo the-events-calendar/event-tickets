@@ -89,7 +89,7 @@ function getSalesWindowSettings() {
 	return {
 		start: {
 			labels: {
-				mode: _x( 'From', 'When ticket sales start, in the Ticket block.', 'event-tickets' ),
+				mode: __( 'Start Sales:', 'event-tickets' ),
 				// translators: The screen reader label of the number of a relative ticket sales start.
 				value: __( 'Number of units before the event that sales start', 'event-tickets' ),
 				// translators: The screen reader label of the unit of a relative ticket sales start.
@@ -105,7 +105,7 @@ function getSalesWindowSettings() {
 		},
 		end: {
 			labels: {
-				mode: _x( 'To', 'When ticket sales end, in the Ticket block.', 'event-tickets' ),
+				mode: __( 'End Sales:', 'event-tickets' ),
 				// translators: The screen reader label of the number of a relative ticket sales end.
 				value: __( 'Number of units before the event that sales end', 'event-tickets' ),
 				// translators: The screen reader label of the unit of a relative ticket sales end.
