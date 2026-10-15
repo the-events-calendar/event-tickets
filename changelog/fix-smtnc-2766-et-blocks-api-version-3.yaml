@@ -1,0 +1,6 @@
+significance: patch
+type: compatibility
+entry: Updated the RSVP and Attendee List blocks to Block API version 3,
+  removing the deprecation notice shown in the block editor on WordPress 6.9 and
+  later.
+timestamp: 2026-10-08T15:02:13.916Z
