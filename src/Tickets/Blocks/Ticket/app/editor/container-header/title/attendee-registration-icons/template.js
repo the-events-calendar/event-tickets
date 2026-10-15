@@ -40,7 +40,7 @@ const AttendeeRegistrationIcons = ( {
 			<IconWithTooltip
 				propertyName={ saleWindowLabel }
 				description={ saleWindowText }
-				icon={ <SaleWindowIcon /> }
+				icon={ <SaleWindowIcon className="tribe-editor__title__sale-window-icon" /> }
 			/>
 		</div>
 	);
