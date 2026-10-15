@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.30.1\n"
+"Project-Id-Version: Event Tickets 5.30.2\n"
 "Report-Msgid-Bugs-To: https://evnt.is/191x\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-12T16:10:39+00:00\n"
+"POT-Creation-Date: 2026-10-15T20:49:46+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: event-tickets\n"
@@ -814,7 +814,7 @@ msgstr ""
 #: src/admin-views/editor/column-body-price.php:43
 #: src/Tickets/Commerce/Admin/Singular_Order_Page.php:336
 #: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:625
-#: src/Tribe/RSVP.php:1830
+#: src/Tribe/RSVP.php:1836
 msgid "Free"
 msgstr ""
 
@@ -1040,11 +1040,11 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
-#: src/admin-views/editor/panel/list.php:28
+#: src/admin-views/editor/panel/list.php:26
 msgid "You have unsaved changes to your tickets. Discard those changes?"
 msgstr ""
 
-#: src/admin-views/editor/panel/list.php:159
+#: src/admin-views/editor/panel/list.php:156
 #: src/modules/blocks/rsvp-shared/action-buttons/attendees-action-button/template.js:28
 #: src/modules/blocks/rsvp/action-buttons/attendees-action-button/template.js:28
 msgid "View Attendees"
@@ -8260,7 +8260,7 @@ msgstr ""
 #. Translators: %1$s: The HTML <a> tag, %2$s: The closing HTML </a> tag.
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:77
 #: src/Tribe/Commerce/PayPal/Main.php:2026
-#: src/Tribe/RSVP.php:2894
+#: src/Tribe/RSVP.php:2900
 #, php-format
 msgid "Return to the %1$sAttendees Report%2$s."
 msgstr ""
@@ -8269,7 +8269,7 @@ msgstr ""
 #. Translators: %1$s: The return link.
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:84
 #: src/Tribe/Commerce/PayPal/Main.php:2034
-#: src/Tribe/RSVP.php:2902
+#: src/Tribe/RSVP.php:2908
 #, php-format
 msgid "Post updated. %1$s"
 msgstr ""
@@ -8278,26 +8278,26 @@ msgstr ""
 #. Translators: %1$s: The return link.
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:88
 #: src/Tribe/Commerce/PayPal/Main.php:2039
-#: src/Tribe/RSVP.php:2907
+#: src/Tribe/RSVP.php:2913
 #, php-format
 msgid "Post published. %1$s"
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:91
 #: src/Tribe/Commerce/PayPal/Main.php:2042
-#: src/Tribe/RSVP.php:2910
+#: src/Tribe/RSVP.php:2916
 msgid "Post submitted."
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:92
 #: src/Tribe/Commerce/PayPal/Main.php:2043
-#: src/Tribe/RSVP.php:2911
+#: src/Tribe/RSVP.php:2917
 msgid "Post scheduled."
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:93
 #: src/Tribe/Commerce/PayPal/Main.php:2044
-#: src/Tribe/RSVP.php:2912
+#: src/Tribe/RSVP.php:2918
 msgid "Post draft updated."
 msgstr ""
 
@@ -9103,7 +9103,7 @@ msgstr ""
 
 #: src/Tickets/Commerce/Models/Attendee_Model.php:70
 #: src/Tribe/Commerce/PayPal/Main.php:3094
-#: src/Tribe/RSVP.php:2382
+#: src/Tribe/RSVP.php:2388
 msgid "(deleted)"
 msgstr ""
 
@@ -11235,14 +11235,14 @@ msgid "Series Passes"
 msgstr ""
 
 #: src/Tickets/Integrations/Plugins/Yoast_Duplicate_Post/Duplicate_Post.php:75
-#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:66
-#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:260
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:78
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:272
 #: src/Tribe/Metabox.php:357
 #: src/Tribe/Metabox.php:482
-#: src/Tribe/Metabox.php:574
-#: src/Tribe/Metabox.php:674
-#: src/Tribe/Metabox.php:746
-#: src/Tribe/Metabox.php:796
+#: src/Tribe/Metabox.php:576
+#: src/Tribe/Metabox.php:676
+#: src/Tribe/Metabox.php:748
+#: src/Tribe/Metabox.php:798
 msgid "Commerce Module invalid"
 msgstr ""
 
@@ -12721,7 +12721,7 @@ msgid "It looks like you have modified your shared capacity setting but have not
 msgstr ""
 
 #: src/Tribe/Assets.php:280
-#: src/Tribe/Metabox.php:980
+#: src/Tribe/Metabox.php:982
 msgid "Please enter in without thousand separators and currency symbols."
 msgstr ""
 
@@ -13184,21 +13184,29 @@ msgid "No commerce providers available"
 msgstr ""
 
 #: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:17
-#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:140
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:152
 #: src/Tribe/REST/V1/Endpoints/Single_Ticket.php:72
 msgid "The ticket post ID"
 msgstr ""
 
-#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:56
-#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:241
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:60
+#: src/Tribe/Metabox.php:297
+#: src/Tribe/Metabox.php:440
+#: src/Tribe/Metabox.php:547
+#: src/Tribe/Metabox.php:626
+msgid "Invalid parent Post"
+msgstr ""
+
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:68
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:253
 msgid "Invalid nonce"
 msgstr ""
 
-#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:279
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:291
 msgid "Invalid price"
 msgstr ""
 
-#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:322
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:334
 #, php-format
 msgid "%s was not able to be updated"
 msgstr ""
@@ -13355,13 +13363,6 @@ msgstr ""
 msgid "You do not have permission to access this content."
 msgstr ""
 
-#: src/Tribe/Metabox.php:297
-#: src/Tribe/Metabox.php:440
-#: src/Tribe/Metabox.php:529
-#: src/Tribe/Metabox.php:624
-msgid "Invalid parent Post"
-msgstr ""
-
 #. Translators:  %1$s - singular ticket term.
 #: src/Tribe/Metabox.php:326
 #, php-format
@@ -13381,7 +13382,7 @@ msgstr ""
 #. Translators: %1$s - singular ticket term.
 #. Translators: %1$s - singular ticket term
 #: src/Tribe/Metabox.php:455
-#: src/Tribe/Metabox.php:545
+#: src/Tribe/Metabox.php:530
 #, php-format
 msgid "Invalid %1$s"
 msgstr ""
@@ -13393,31 +13394,31 @@ msgid "Failed to edit the %1$s. Refresh the page to try again."
 msgstr ""
 
 #. Translators: %1$s - singular ticket term
-#: src/Tribe/Metabox.php:559
+#: src/Tribe/Metabox.php:561
 #, php-format
 msgid "Failed to delete the %1$s. Refresh the page to try again."
 msgstr ""
 
 #. Translators: %s: dynamic "ticket" text.
-#: src/Tribe/Metabox.php:640
+#: src/Tribe/Metabox.php:642
 #, php-format
 msgid "Invalid %s"
 msgstr ""
 
 #. Translators: %s: dynamic "ticket" text.
-#: src/Tribe/Metabox.php:656
+#: src/Tribe/Metabox.php:658
 #, php-format
 msgid "Failed to duplicate the %s. Refresh the page to try again."
 msgstr ""
 
 #. Translators: %1$s - singular ticket term
-#: src/Tribe/Metabox.php:696
+#: src/Tribe/Metabox.php:698
 #, php-format
 msgid "Failed to duplicate the %1$s"
 msgstr ""
 
-#: src/Tribe/Metabox.php:738
-#: src/Tribe/Metabox.php:788
+#: src/Tribe/Metabox.php:740
+#: src/Tribe/Metabox.php:790
 msgid "The attendee ID is missing from the request parameters."
 msgstr ""
 
@@ -14300,43 +14301,43 @@ msgid "You confirmed you will not be attending %s"
 msgstr ""
 
 #. translators: %1$s: RSVP label singular
-#: src/Tribe/RSVP.php:1962
+#: src/Tribe/RSVP.php:1968
 #, php-format
 msgid "Your %1$s has been received! Check your email for your %1$s confirmation."
 msgstr ""
 
 #. translators: %1$s: RSVP action verb, %2$s: RSVP label plural
-#: src/Tribe/RSVP.php:1972
+#: src/Tribe/RSVP.php:1978
 #, php-format
 msgid "You can't %1$s more than the total remaining %2$s."
 msgstr ""
 
 #. translators: %s: RSVP action verb
-#: src/Tribe/RSVP.php:1984
+#: src/Tribe/RSVP.php:1990
 #, php-format
 msgid "In order to %s, you must enter your name and a valid email address."
 msgstr ""
 
-#: src/Tribe/RSVP.php:3107
+#: src/Tribe/RSVP.php:3113
 msgid "Invalid parent ID provided!"
 msgstr ""
 
-#: src/Tribe/RSVP.php:3114
+#: src/Tribe/RSVP.php:3120
 msgid "Invalid Ticket ID provided!"
 msgstr ""
 
-#: src/Tribe/RSVP.php:3119
+#: src/Tribe/RSVP.php:3125
 msgid "This RSVP is not currently available."
 msgstr ""
 
 #. translators: %s: Required field name
-#: src/Tribe/RSVP.php:3135
-#: src/Tribe/RSVP.php:3142
+#: src/Tribe/RSVP.php:3141
+#: src/Tribe/RSVP.php:3148
 #, php-format
 msgid "Missing required RSVP field: %s"
 msgstr ""
 
-#: src/Tribe/RSVP.php:3180
+#: src/Tribe/RSVP.php:3186
 msgid "Requested amount of Tickets are not available!"
 msgstr ""
 
