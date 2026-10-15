@@ -109,7 +109,7 @@ final class Rule_Store {
 	 * @since TBD
 	 *
 	 * @param int                                                                                                               $ticket_id The ticket post ID.
-	 * @param array{start?: Boundary|array<string,mixed>, end?: Boundary|array<string,mixed>, sale_price?: array<string,mixed>} $values    The values to write, keyed by their top-level key.
+	 * @param array{start?: array<string,mixed>, end?: array<string,mixed>, sale_price?: array<string,mixed>} $values    The values to write, keyed by their top-level key.
 	 *
 	 * @return void
 	 */
@@ -221,7 +221,7 @@ final class Rule_Store {
 	 *
 	 * @param int                                                                                                               $ticket_id The ticket post ID.
 	 * @param string                                                                                                            $read      The meta as it was read, `''` for none.
-	 * @param array{start?: Boundary|array<string,mixed>, end?: Boundary|array<string,mixed>, sale_price?: array<string,mixed>} $data      The rules to write, keyed by their top-level key.
+	 * @param array{start?: array<string,mixed>, end?: array<string,mixed>, sale_price?: array<string,mixed>} $data      The rules to write, keyed by their top-level key.
 	 *
 	 * @return bool Whether the meta held what was read, and now holds the rules.
 	 */

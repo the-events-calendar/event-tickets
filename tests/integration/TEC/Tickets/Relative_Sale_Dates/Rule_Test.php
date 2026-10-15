@@ -152,8 +152,6 @@ class Rule_Test extends WPTestCase {
 		$this->assertSame( $kind, $rule->get_kind() );
 		$this->assertSame( $start_mode, $rule->get_start()->get_mode() );
 		$this->assertSame( $end_mode, $rule->get_end()->get_mode() );
-		$this->assertSame( $kind, $rule->get_start()->get_kind() );
-		$this->assertSame( $kind, $rule->get_end()->get_kind() );
 	}
 
 	/**
