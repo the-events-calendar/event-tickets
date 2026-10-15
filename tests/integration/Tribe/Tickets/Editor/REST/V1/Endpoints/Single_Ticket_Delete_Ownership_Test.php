@@ -16,11 +16,14 @@ class Single_Ticket_Delete_Ownership_Test extends WPTestCase {
 	use TC_Ticket_Maker;
 	use PayPal_Ticket_Maker;
 
+	private array $ticketable_post_types = [];
+
 	/**
 	 * @before
 	 */
 	public function enable_providers(): void {
-		tribe_update_option( 'ticket-enabled-post-types', [ 'post' ] );
+		$this->ticketable_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
+		tribe_update_option( 'ticket-enabled-post-types', array_values( array_unique( array_merge( $this->ticketable_post_types, [ 'post' ] ) ) ) );
 		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
 		add_filter( 'tribe_tickets_get_modules', [ $this, 'add_modules' ] );
 		tribe_singleton( 'tickets.data_api', new Data_API() );
@@ -32,6 +35,8 @@ class Single_Ticket_Delete_Ownership_Test extends WPTestCase {
 	 * @after
 	 */
 	public function reset_providers(): void {
+		tribe_update_option( 'ticket-enabled-post-types', $this->ticketable_post_types );
+		remove_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
 		remove_filter( 'tribe_tickets_get_modules', [ $this, 'add_modules' ] );
 		tribe_singleton( 'tickets.data_api', new Data_API() );
 	}
