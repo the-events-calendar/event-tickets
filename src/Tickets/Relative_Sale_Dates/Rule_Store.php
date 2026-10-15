@@ -108,7 +108,7 @@ final class Rule_Store {
 	 *
 	 * @since TBD
 	 *
-	 * @param int                                                                                                               $ticket_id The ticket post ID.
+	 * @param int                                                                                             $ticket_id The ticket post ID.
 	 * @param array{start?: array<string,mixed>, end?: array<string,mixed>, sale_price?: array<string,mixed>} $values    The values to write, keyed by their top-level key.
 	 *
 	 * @return void
@@ -214,13 +214,10 @@ final class Rule_Store {
 	/**
 	 * Writes the rules, or deletes the meta when there are none, if the meta still holds what was read.
 	 *
-	 * shortcut: `update_post_meta()` adds the meta when another request deleted it after the read, which brings that
-	 * request's removed rules back; the window is the time between two queries of overlapping saves of one ticket.
-	 *
 	 * @since TBD
 	 *
-	 * @param int                                                                                                               $ticket_id The ticket post ID.
-	 * @param string                                                                                                            $read      The meta as it was read, `''` for none.
+	 * @param int                                                                                             $ticket_id The ticket post ID.
+	 * @param string                                                                                          $read      The meta as it was read, `''` for none.
 	 * @param array{start?: array<string,mixed>, end?: array<string,mixed>, sale_price?: array<string,mixed>} $data      The rules to write, keyed by their top-level key.
 	 *
 	 * @return bool Whether the meta held what was read, and now holds the rules.
@@ -241,7 +238,11 @@ final class Rule_Store {
 			return false !== add_post_meta( $ticket_id, self::META_KEY, wp_slash( $json ), true );
 		}
 
-		// Unlike the new value, the previous value is compared as it is given.
+		/*
+		 * Unlike the new value, the previous value is compared as it is given.
+		 * shortcut: `update_post_meta()` adds the meta when another request deleted it after the read, which brings that
+		 * request's removed rules back; the window is the time between two queries of overlapping saves of one ticket.
+		 */
 		return false !== update_post_meta( $ticket_id, self::META_KEY, wp_slash( $json ), $read );
 	}
 
