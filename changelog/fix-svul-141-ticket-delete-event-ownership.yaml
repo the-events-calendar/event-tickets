@@ -1,4 +1,0 @@
-significance: patch
-type: security
-entry: Hardened the permission checks performed when deleting tickets and attendees. Props to "dzaku" for the report!
-timestamp: 2026-10-08T17:53:30.036Z

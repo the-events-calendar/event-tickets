@@ -1,5 +1,12 @@
 # Changelog
 
+### [5.30.2] 2026-10-15
+
+* Compatibility - Updated the RSVP and Attendee List blocks to Block API version 3, removing the deprecation notice shown in the block editor on WordPress 6.9 and later.
+* Fix - Resolved an issue where Square webhooks could be rejected for several hours when the generated webhook secret started or ended with a space.
+* Language - 0 new strings added, 31 updated, 0 fuzzied, and 0 obsoleted.
+* Security - Hardened the permission checks performed when deleting tickets and attendees. Props to "dzaku" for the report!
+
 ### [5.30.1] 2026-10-13
 
 * Fix - Avoided a fatal error and a PHP warning on the Tickets Commerce Orders report when an order carried a fee or coupon for a ticket that was no longer part of the event's sales data.
