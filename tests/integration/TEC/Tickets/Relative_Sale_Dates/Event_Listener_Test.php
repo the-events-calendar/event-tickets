@@ -2,11 +2,13 @@
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
+use Closure;
 use DateTimeImmutable;
 use Generator;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Module;
 use Tribe__Tickets__Main as Tickets_Main;
+use Tribe__Tickets__Tickets as Tickets;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Relative_Sale_Dates_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
@@ -327,6 +329,35 @@ class Event_Listener_Test extends Controller_Test_Case {
 		$this->send_classic_event_save( $event_id, $today->modify( '+1 day 19:00' ) );
 
 		$this->assertEquals( [ 10 ], get_post_meta( $event_id, '_EventCost' ) );
+	}
+
+	/**
+	 * With Tickets Commerce turned off its module has no binding, and building it registers it as an active provider.
+	 *
+	 * @test
+	 */
+	public function should_not_activate_tickets_commerce_when_it_is_off(): void {
+		$event_id       = $this->create_event( $this->get_future_event_start()->format( 'Y-m-d H:i:s' ) );
+		$active_modules = Closure::bind( static fn() => static::$active_modules, null, Tickets::class );
+		$set_modules    = Closure::bind( static function ( array $modules ) { static::$active_modules = $modules; }, null, Tickets::class );
+		$modules_before = $active_modules();
+		$set_modules( array_diff_key( $modules_before, [ Module::class => true ] ) );
+		// Undo `With_Tickets_Commerce`, which turns Tickets Commerce on and lists its module in every request.
+		remove_all_filters( 'tec_tickets_commerce_is_enabled' );
+		remove_all_filters( 'tribe_tickets_get_modules' );
+		add_filter( 'tec_tickets_commerce_is_enabled', '__return_false' );
+		unset( $this->test_services[ Module::class ] );
+		// A new request, where the first meta write builds the listener.
+		unset( $this->test_services[ Event_Listener::class ] );
+		$this->test_services->singleton( Event_Listener::class );
+
+		try {
+			$this->test_services->get( Event_Listener::class )->update_ticket_dates( $event_id );
+
+			$this->assertArrayNotHasKey( Module::class, $active_modules() );
+		} finally {
+			$set_modules( $modules_before );
+		}
 	}
 
 	/**
