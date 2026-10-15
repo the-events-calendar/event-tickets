@@ -4,6 +4,9 @@
  *
  * @since 5.9.0
  * @since 5.10.0 Added the $is_free_ticket_allowed parameter and updated validation for the Sale Price input field.
+ * @since TBD Moved the checkbox, the sale price and the date inputs to `commerce/metabox/sale-price/*`.
+ *
+ * @version TBD
  *
  * @var Ticket_Object $ticket The ticket object.
  * @var string        $sale_price The sale price.
@@ -16,80 +19,24 @@
  * @var bool          $is_free_ticket_allowed Whether free tickets are allowed.
  */
 
-$sale_price_validation_attrs = [
-	'data-validation-is-less-than="#ticket_price"',
-	'data-validation-error="' . esc_attr( wp_json_encode( $sale_price_errors ) ) . '"',
-];
-
-// Do not allow free ticket in sale price if not allowed.
-if ( ! $is_free_ticket_allowed ) {
-	$sale_price_validation_attrs[] = 'data-validation-is-greater-than="0"';
-}
+$sale_price_context = get_defined_vars();
 
 ?>
 <div class="ticket_sale_price_wrapper ticket_form_right">
 	<!--Checkbox to toggle sale price fields-->
-	<div>
-		<input
-			type="checkbox"
-			name="ticket_add_sale_price"
-			id="ticket_add_sale_price"
-			<?php checked( $sale_checkbox_on ); ?>
-		>
-		<label
-			for="ticket_add_sale_price"
-			class="ticket_form_label"
-		>
-			<?php esc_html_e( 'Add Sale Price', 'event-tickets' ); ?>
-		</label>
-	</div>
+<?php $this->template( 'commerce/metabox/sale-price/toggle', $sale_price_context ); ?>
 	<div class="ticket_sale_price tribe-dependent"
 		data-depends="#ticket_add_sale_price"
 		data-condition-is-checked
 	>
-		<div class="ticket_sale_price-field">
-			<label for="ticket_sale_price" class="ticket_form_label">
-				<?php esc_html_e( 'Sale Price:', 'event-tickets' ); ?>
-			</label>
-			<input
-				type="text"
-				id="ticket_sale_price"
-				name="ticket_sale_price"
-				class="ticket_field"
-				size="7"
-				value="<?php echo esc_attr( $sale_price ); ?>"
-				<?php echo implode( ' ', $sale_price_validation_attrs ); // phpcs:ignore ?>
-			/>
-		</div>
+<?php $this->template( 'commerce/metabox/sale-price/price', $sale_price_context ); ?>
 		<div class="ticket_sale_price-field">
 			<label class="ticket_form_label" for="ticket_start_date">
 				<?php esc_html_e( 'On sale from:', 'event-tickets' ); ?>
 			</label>
-			<input
-				autocomplete="off"
-				type="text"
-				class="tribe-datepicker tribe-field-ticket_sale_start_date ticket_field"
-				name="ticket_sale_start_date"
-				id="ticket_sale_start_date"
-				size="10"
-				value="<?php echo esc_attr( $sale_start_date ); ?>"
-				data-validation-type="datepicker"
-				data-validation-is-less-or-equal-to="#ticket_sale_end_date"
-				data-validation-error="<?php echo esc_attr( wp_json_encode( $start_date_errors ) ); ?>"
-			/>
+<?php $this->template( 'commerce/metabox/sale-price/date-input', array_merge( $sale_price_context, [ 'sale_end' => 'start' ] ) ); ?>
 			<span> <?php esc_html_e( 'to', 'event-tickets' ); ?> </span>
-			<input
-				autocomplete="off"
-				type="text"
-				class="tribe-datepicker tribe-field-ticket_sale_end_date ticket_field"
-				name="ticket_sale_end_date"
-				id="ticket_sale_end_date"
-				size="10"
-				value="<?php echo esc_attr( $sale_end_date ); ?>"
-				data-validation-type="datepicker"
-				data-validation-is-greater-or-equal-to="#ticket_sale_start_date"
-				data-validation-error="<?php echo esc_attr( wp_json_encode( $end_date_errors ) ); ?>"
-			/>
+<?php $this->template( 'commerce/metabox/sale-price/date-input', array_merge( $sale_price_context, [ 'sale_end' => 'end' ] ) ); ?>
 		</div>
 	</div>
 </div>
