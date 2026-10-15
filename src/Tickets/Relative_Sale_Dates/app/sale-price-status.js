@@ -57,6 +57,6 @@ export function isSalePriceOn( rule, eventDates, stored, now = moment() ) {
 
 	const today = toZone( now, eventDates.timezone ).format( DATE_FORMAT );
 
-	// `YYYY-MM-DD` strings compare as the days they name.
+	// Zero-padded `YYYY-MM-DD` strings sort in date order, so the days compare without parsing them again.
 	return ( ! start || start <= today ) && ( ! end || today <= end );
 }

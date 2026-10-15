@@ -27,7 +27,7 @@ final class Price_Column {
 	 *
 	 * @since TBD
 	 *
-	 * @var array<string,array<string,array<empty>>>
+	 * @var array<string,array<string,array{}>>
 	 */
 	private const ALLOWED_HTML = [
 		'span' => [
