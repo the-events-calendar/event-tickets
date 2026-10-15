@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Commerce\Order_Items;
 
+use TEC\Tickets\Commerce\Attendee;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
