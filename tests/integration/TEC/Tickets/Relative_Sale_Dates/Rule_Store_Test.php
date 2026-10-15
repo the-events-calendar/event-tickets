@@ -215,4 +215,74 @@ class Rule_Store_Test extends WPTestCase {
 		$this->assertSame( array_slice( $ticket_ids, 0, Rule_Store::TICKETS_QUERY_LIMIT ), $read_ids );
 		$this->assertSame( [ [ 'warning', $event_id ] ], $logged );
 	}
+
+	/**
+	 * Writes the rules another request stores between this request's read of them and its write.
+	 *
+	 * @param string              $write_hook The filter that runs before this request's write of the meta.
+	 * @param int                 $ticket_id  The ticket post ID.
+	 * @param array<string,mixed> $rules      The rules the other request stores.
+	 *
+	 * @return void
+	 */
+	private function store_concurrently( string $write_hook, int $ticket_id, array $rules ): void {
+		$store = static function ( $short_circuit, $object_id ) use ( &$store, $write_hook, $ticket_id, $rules ) {
+			if ( $object_id === $ticket_id ) {
+				remove_filter( $write_hook, $store );
+				update_post_meta( $ticket_id, Rule_Store::META_KEY, wp_slash( wp_json_encode( $rules ) ) );
+			}
+
+			return $short_circuit;
+		};
+
+		add_filter( $write_hook, $store, 10, 2 );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_keep_a_rule_another_request_saves_while_saving(): void {
+		$ticket_id  = static::factory()->post->create();
+		$window     = [ 'start' => [ 'mode' => Rule::MODE_DEFAULT ], 'end' => [ 'mode' => Rule::MODE_DEFAULT ] ];
+		$sale_price = [ 'start' => [ 'mode' => Rule::MODE_NOW ] ];
+		update_post_meta( $ticket_id, Rule_Store::META_KEY, wp_json_encode( $window ) );
+		$this->store_concurrently( 'update_post_metadata', $ticket_id, array_merge( $window, [ 'sale_price' => $sale_price ] ) );
+		$end = [ 'mode' => Rule::MODE_RELATIVE, 'value' => 1, 'unit' => DAY_IN_SECONDS, 'anchor' => 'start' ];
+
+		tribe( Rule_Store::class )->save( $ticket_id, [ 'end' => $end ] );
+
+		$this->assertEquals(
+			[ 'start' => $window['start'], 'end' => $end, 'sale_price' => $sale_price ],
+			tribe( Rule_Store::class )->get( $ticket_id )
+		);
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_keep_a_rule_another_request_saves_while_removing_the_last_one(): void {
+		$ticket_id  = static::factory()->post->create();
+		$window     = [ 'start' => [ 'mode' => Rule::MODE_DEFAULT ], 'end' => [ 'mode' => Rule::MODE_DEFAULT ] ];
+		$sale_price = [ 'start' => [ 'mode' => Rule::MODE_NOW ] ];
+		update_post_meta( $ticket_id, Rule_Store::META_KEY, wp_json_encode( $window ) );
+		$this->store_concurrently( 'delete_post_metadata', $ticket_id, array_merge( $window, [ 'sale_price' => $sale_price ] ) );
+
+		$this->assertTrue( tribe( Rule_Store::class )->remove( $ticket_id, [ 'start', 'end' ] ) );
+
+		$this->assertSame( [ 'sale_price' => $sale_price ], tribe( Rule_Store::class )->get( $ticket_id ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_store_a_rule_with_a_backslash_and_compare_it_on_the_next_write(): void {
+		$ticket_id = static::factory()->post->create();
+		$window    = [ 'start' => [ 'mode' => Rule::MODE_DEFAULT ], 'note' => 'a\\b "c"' ];
+
+		tribe( Rule_Store::class )->save( $ticket_id, $window );
+		tribe( Rule_Store::class )->save( $ticket_id, [ 'end' => [ 'mode' => Rule::MODE_DEFAULT ] ] );
+
+		$this->assertSame( array_merge( $window, [ 'end' => [ 'mode' => Rule::MODE_DEFAULT ] ] ), tribe( Rule_Store::class )->get( $ticket_id ) );
+		$this->assertCount( 1, get_post_meta( $ticket_id, Rule_Store::META_KEY ) );
+	}
 }
