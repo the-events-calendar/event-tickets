@@ -222,6 +222,8 @@ class Ticket_Dates_Test extends WPTestCase {
 		yield 'an end day without a time after the start day' => [ [ '2027-06-10', '' ], [ '2027-06-11', '' ], false ];
 		yield 'an end day without a time on the start day' => [ [ '2027-06-10', '19:00:00' ], [ '2027-06-10', '' ], false ];
 		yield 'an end day without a time before the start day' => [ [ '2027-06-10', '' ], [ '2027-06-09', '' ], true ];
+		// `ticket_add()` stores a start sent without a date as the day's midnight, in the date meta, without a time.
+		yield 'a start written as a midnight date, an end day on the start day' => [ [ '2027-06-10 00:00:00', '' ], [ '2027-06-10', '' ], false ];
 		yield 'no end' => [ [ '2027-06-10', '19:00:00' ], [ '', '' ], false ];
 	}
 
