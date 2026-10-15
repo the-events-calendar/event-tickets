@@ -194,7 +194,7 @@ function isBefore( date, other, kind ) {
  * - a specific boundary sent with a date that cannot be read is rejected as an unreadable date, as the server would
  *   store it as 1970 or as no date, and one sent without a date, for a kind that needs one, as a window that does not
  *   end after it starts;
- * - the window must end after it starts, at the precision the kind is kept at. A start with no date of its own, such
+ * - the window must end after it starts, or on its start day for a kind kept by day. A start with no date of its own, such
  *   as an open start the kind stores itself, opens with the parent window, so the end is judged against the parent's
  *   start, and only with both of the parent's ends, as the server judges it;
  * - the window's own start must fall inside the parent window, judged only with both of the parent's ends.
@@ -249,7 +249,12 @@ export function getWindowError( rule, eventDates, formDates, kind = SALES_WINDOW
 	const ownStart = isStoredOpenStart( rule, kind ) ? null : dates.start;
 	const start = ownStart || ( parentEnd && parentStart ) || null;
 
-	if ( start && dates.end && ! isBefore( start, dates.end, kind ) ) {
+	// A window compared by day lasts through its end day, so it may end on the day it starts.
+	if (
+		start &&
+		dates.end &&
+		( kind.precision ? isBefore( dates.end, start, kind ) : ! isBefore( start, dates.end, kind ) )
+	) {
 		return ENDS_BEFORE_START;
 	}
 

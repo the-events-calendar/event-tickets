@@ -1226,19 +1226,20 @@ class Ticket_Save_Test extends Controller_Test_Case {
 		];
 
 		yield 'from 2 weeks to 1 week before' => [ [ self::SALE_PRICE_DATA_KEY => $rule( $relative( 14 ), $relative( 7 ) ) ], true ];
-		yield 'an end on the start day' => [ [ self::SALE_PRICE_DATA_KEY => $rule( $relative( 7 ), $relative( 7 ) ) ], self::SALE_PRICE_ENDS_BEFORE_START_MESSAGE ];
+		// Tickets Commerce keeps a sale price through its end day, so a sale price can last a single day.
+		yield 'an end on the start day' => [ [ self::SALE_PRICE_DATA_KEY => $rule( $relative( 7 ), $relative( 7 ) ) ], true ];
 		yield 'an end before the start' => [ [ self::SALE_PRICE_DATA_KEY => $rule( $relative( 7 ), $relative( 14 ) ) ], self::SALE_PRICE_ENDS_BEFORE_START_MESSAGE ];
 		yield 'a specific end on the start day' => [
 			[
 				self::SALE_PRICE_DATA_KEY => $rule( $relative( 7 ), $specific ),
 				'ticket_sale_end_date'    => $days_before( 7 ),
 			],
-			self::SALE_PRICE_ENDS_BEFORE_START_MESSAGE,
+			true,
 		];
 		yield 'a now start' => [ [ self::SALE_PRICE_DATA_KEY => $rule( $now, $relative( 7 ) ) ], true ];
 		yield 'a now start ending on the day sales open' => [
 			array_merge( $sales_open_a_week_before, [ self::SALE_PRICE_DATA_KEY => $rule( $now, $relative( 7 ) ) ] ),
-			self::SALE_PRICE_ENDS_BEFORE_START_MESSAGE,
+			true,
 		];
 		yield 'a now start with sales opening a week before' => [
 			array_merge( $sales_open_a_week_before, [ self::SALE_PRICE_DATA_KEY => $rule( $now, $relative( 3 ) ) ] ),
