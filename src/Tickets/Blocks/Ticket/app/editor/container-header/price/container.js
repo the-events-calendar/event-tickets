@@ -3,6 +3,7 @@
  */
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
@@ -24,7 +25,19 @@ const mapStateToProps = ( state, ownProps ) => ( {
 	tempPrice: selectors.getTicketTempPrice( state, ownProps ),
 	showSalePrice: selectors.showSalePrice( state, ownProps ),
 	salePrice: selectors.getSalePrice( state, ownProps ) || '',
-	onSale: selectors.getTicketOnSale( state, ownProps ),
+	/**
+	 * Filters whether the ticket header shows the ticket's sale price.
+	 *
+	 * @since TBD
+	 *
+	 * @param {boolean} onSale   Whether the ticket is on sale, as the server last said.
+	 * @param {string}  clientId The client ID of the ticket block.
+	 */
+	onSale: applyFilters(
+		'tec.tickets.blocks.Ticket.onSale',
+		selectors.getTicketOnSale( state, ownProps ),
+		ownProps.clientId
+	),
 } );
 
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {
