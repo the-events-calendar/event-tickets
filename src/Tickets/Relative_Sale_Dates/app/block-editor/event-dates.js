@@ -7,14 +7,15 @@
 /**
  * External dependencies
  */
-import { useMemo, useSyncExternalStore } from '@wordpress/element';
+import { useMemo } from '@wordpress/element';
 
 /**
  * Internal dependencies
  */
 import { toServerEventDates } from '../server-event-dates';
-import { getEventDateFields, subscribeToCommonStore } from './common-store-bridge';
+import { getEventDateFields } from './common-store-bridge';
 import { getLocalizedData } from './localized-data';
+import { useCommonStoreValue } from './use-common-store-value';
 
 /** @typedef {import( '../server-event-dates' ).EventDates} EventDates */
 
@@ -49,8 +50,7 @@ export function readEventDates( fields = getEventDateFields() ) {
  * @return {EventDates|null} The event dates, or `null` when they cannot be read.
  */
 export function useEventDates() {
-	// A string, so the store's snapshot compares equal while the dates stay the same.
-	const snapshot = useSyncExternalStore( subscribeToCommonStore, () => JSON.stringify( getEventDateFields() ) );
+	const fields = useCommonStoreValue( getEventDateFields );
 
-	return useMemo( () => readEventDates( JSON.parse( snapshot ) ), [ snapshot ] );
+	return useMemo( () => readEventDates( fields ), [ fields ] );
 }

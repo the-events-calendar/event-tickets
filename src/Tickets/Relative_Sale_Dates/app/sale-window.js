@@ -28,7 +28,7 @@ const DATE_TIME_FORMAT = `${ DATE_FORMAT } ${ TIME_FORMAT }`;
  * moment.tz() does not take a fixed offset as a zone: it warns and falls back to UTC, so offsets are applied with
  * utcOffset() instead.
  */
-const FIXED_OFFSET = /^[+-]\d{2}:\d{2}$/;
+export const FIXED_OFFSET = /^[+-]\d{2}:\d{2}$/;
 
 /**
  * @typedef {Object} SaleWindowEnd
