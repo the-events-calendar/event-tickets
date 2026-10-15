@@ -1494,7 +1494,11 @@ describe( 'Ticket Block sagas', () => {
 			} );
 		} );
 
-		// Parsing an empty date gives an invalid moment, whose "Invalid date" times the duration check cannot read.
+		/*
+		 * The moment stays a moment, as the ticket details sent to `tec.tickets.blocks.ticketUpdated` callbacks always
+		 * held one, but an invalid one: its "Invalid date" times are left out for the duration check, which cannot read
+		 * them.
+		 */
 		it.each( [
 			[ 'end', { available_from: '2040-09-10 19:00:00', available_until: '' }, 'end' ],
 			[ 'start', { available_from: '', available_until: '2040-10-19 18:00:00' }, 'start' ],
@@ -1504,20 +1508,37 @@ describe( 'Ticket Block sagas', () => {
 			expect( dates ).toMatchObject( {
 				[ `${ boundary }Date` ]: '',
 				[ `${ boundary }DateInput` ]: '',
-				[ `${ boundary }DateMoment` ]: null,
 				[ `${ boundary }Time` ]: '',
 				[ `${ boundary }TimeInput` ]: '',
 			} );
+			expect( moment.isMoment( dates[ `${ boundary }DateMoment` ] ) ).toBe( true );
+			expect( dates[ `${ boundary }DateMoment` ].isValid() ).toBe( false );
 		} );
 
-		it( 'should mark a ticket loaded without an end as a duration error instead of throwing', () => {
+		// A ticket can be stored without an end, so its edits, a price change say, must not wait for one.
+		it( 'should not mark a ticket loaded without an end as a duration error', () => {
 			const clientId = 'stored-without-end';
 			const gen = sagas.handleTicketDurationError( clientId );
 
 			gen.next();
 			gen.next( moment( '2040-09-10 19:00:00' ) );
 
-			expect( gen.next( null ).value ).toEqual( put( actions.setTicketHasDurationError( clientId, true ) ) );
+			expect( gen.next( moment.invalid() ).value ).toEqual(
+				put( actions.setTicketHasDurationError( clientId, false ) )
+			);
+			expect( gen.next().done ).toBe( true );
+		} );
+
+		it( 'should mark an end cleared in the date picker as a duration error', () => {
+			const clientId = 'cleared-end';
+			const gen = sagas.handleTicketDurationError( clientId );
+
+			gen.next();
+			gen.next( moment( '2040-09-10 19:00:00' ) );
+
+			expect( gen.next( undefined ).value ).toEqual(
+				put( actions.setTicketHasDurationError( clientId, true ) )
+			);
 			expect( gen.next().done ).toBe( true );
 		} );
 
@@ -1549,7 +1570,7 @@ describe( 'Ticket Block sagas', () => {
 		startDateMoment: moment( '2018-11-09 19:48:42' ),
 		endDate: '',
 		endDateInput: '',
-		endDateMoment: null,
+		endDateMoment: moment.invalid(),
 		startTime: '19:48:42',
 		endTime: '',
 		startTimeInput: '7:48 pm',
