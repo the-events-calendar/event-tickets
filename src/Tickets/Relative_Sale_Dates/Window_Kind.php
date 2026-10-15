@@ -625,7 +625,7 @@ final class Window_Kind {
 	 * @return bool Whether the ticket will have the window once saved.
 	 */
 	public function is_saved_with( array $data ): bool {
-		return null === $this->sale_keys || self::keeps_sale_price( $data );
+		return null === $this->sale_keys || Ticket::keeps_sale_price( $data );
 	}
 
 	/**
@@ -677,26 +677,5 @@ final class Window_Kind {
 	 * @since TBD
 	 */
 	private function __construct() {
-	}
-
-	/**
-	 * Returns whether Tickets Commerce keeps the sale price the ticket data sends: checked, and lower than the price.
-	 *
-	 * The values are read and compared as `Ticket::process_sale_price_data()` reads and compares them before it saves
-	 * the sale price or drops it.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string,mixed> $data The ticket data about to be saved.
-	 *
-	 * @return bool Whether the save keeps the sale price.
-	 */
-	private static function keeps_sale_price( array $data ): bool {
-		if ( ! tribe_is_truthy( $data['ticket_add_sale_price'] ?? false ) ) {
-			return false;
-		}
-
-		// Negated rather than `<`, so it is the very comparison Tickets Commerce drops the sale price on.
-		return ! ( ( $data['ticket_sale_price'] ?? false ) >= ( $data['ticket_price'] ?? false ) );
 	}
 }
