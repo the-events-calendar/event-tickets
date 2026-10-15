@@ -64,7 +64,7 @@ final class Attendees {
 	 * @return void
 	 */
 	public function update_ticket_name_on_move( $attendee_id, $src_ticket_type_id, $tgt_ticket_type_id ): void {
-		if ( 'tec_tc_attendee' !== get_post_type( $attendee_id ) ) {
+		if ( Attendee::POSTTYPE !== get_post_type( $attendee_id ) ) {
 			return;
 		}
 
