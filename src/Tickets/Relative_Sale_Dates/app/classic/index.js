@@ -18,6 +18,7 @@ import { updateDateLimit } from './date-limits';
 import {
 	LENGTH_KINDS,
 	updateHelperText,
+	updatePriceColumn,
 	updateTicketsList,
 	updateUnitNames,
 	updateWindowLength,
@@ -59,6 +60,7 @@ function onEventChange() {
 	updateHelperText();
 	updateWindowLengths();
 	updateTicketsList();
+	updatePriceColumn();
 }
 
 /**
@@ -75,6 +77,7 @@ function onPanelsRefreshed() {
 	updateHelperText();
 	updateWindowLengths();
 	updateTicketsList();
+	updatePriceColumn();
 }
 
 /*
