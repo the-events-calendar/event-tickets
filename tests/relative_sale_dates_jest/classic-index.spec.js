@@ -1300,6 +1300,26 @@ describe( 'classic editor script', () => {
 		expect( getWindowError() ).toBe( '' );
 	} );
 
+	/*
+	 * When a panel opens, the timepicker fires `change` before the dependency script disables a Now start's date. On an
+	 * event under way, that date, today, falls after the end an hour before the event started.
+	 */
+	it( 'should judge the windows again once the editor has set up a replaced panel', async () => {
+		renderEventForm();
+		jQuery( '#ticket_sales_start_mode' ).html( '<option value="default" selected>Now</option>' );
+		jQuery( '#tribe_panel_edit' ).append( '<input id="ticket_start_date" value="6/24/2099" /><input id="ticket_start_time" value="18:30" />' );
+		const hooks = await loadScript();
+		// 20:00 in New York, an hour into the event.
+		jest.useFakeTimers( { now: new Date( '2099-06-25T00:00:00Z' ) } );
+		jQuery( '#ticket_start_time' ).trigger( 'change' );
+		expect( getWindowError() ).toBe( INVALID_WINDOW );
+
+		jQuery( '#ticket_start_date, #ticket_start_time' ).prop( 'disabled', true );
+		hooks.doAction( 'tec.tickets.admin.panels.refreshed', {} );
+
+		expect( getWindowError() ).toBe( '' );
+	} );
+
 	it( 'should write the rule before the ticket is saved', async () => {
 		renderMetabox();
 		await loadScript();
