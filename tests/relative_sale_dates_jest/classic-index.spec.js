@@ -1072,13 +1072,26 @@ describe( 'classic editor script', () => {
 					.getElementById( 'tribe_panel_edit' )
 					.insertAdjacentHTML(
 						'beforeend',
-						'<input type="hidden" id="ticket_sale_price_relative" value="" />'
+						'<input type="hidden" id="ticket_sale_price_relative" value="" data-stored-rule="0" />'
 					);
 			}
 
 			it( 'should leave a sale price kept on its own dates unjudged, as the server leaves it', async () => {
 				renderSalePriceWithoutRule( true );
 				await loadScript();
+
+				expect( validateTicket() ).toBe( true );
+				expect( readSalePriceError() ).toBe( '' );
+			} );
+
+			// Setting the value of a hidden field also sets its default value.
+			it( 'should still leave the sale price unjudged after a save wrote a rule in the field', async () => {
+				renderSalePriceWithoutRule( true );
+				await loadScript();
+				document.getElementById( 'ticket_sale_price_relative' ).value = JSON.stringify( {
+					start: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+					end: { mode: 'specific' },
+				} );
 
 				expect( validateTicket() ).toBe( true );
 				expect( readSalePriceError() ).toBe( '' );

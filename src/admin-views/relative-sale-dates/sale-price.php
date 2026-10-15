@@ -166,6 +166,7 @@ $render_date_inputs = static function ( string $sale_end ) use ( $sale_start_dat
 			name="<?php echo esc_attr( $window_kind->get_rule_keys()['data'] ); ?>"
 			id="ticket_sale_price_relative"
 			value="<?php echo esc_attr( $rule_json ); ?>"
+			data-stored-rule="<?php echo esc_attr( '' === $rule_json ? '0' : '1' ); ?>"
 		/>
 	</div>
 </div>
