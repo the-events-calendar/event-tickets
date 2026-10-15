@@ -11,7 +11,7 @@ import { useBlockProps } from '@wordpress/block-editor';
 /**
  * The Block API version the blocks of this plugin register with.
  *
- * @since TBD
+ * @since 5.30.2
  *
  * @type {number}
  */
@@ -24,7 +24,7 @@ export const BLOCK_API_VERSION = 3;
  * block's `edit` output, so the block has to render it itself through `useBlockProps()`. Without
  * it the block loses the attributes the editor relies on to select, drag and label it.
  *
- * @since TBD
+ * @since 5.30.2
  *
  * @param {Object}   block      The block definition to adapt.
  * @param {Function} block.edit The component the editor renders for the block.

@@ -515,7 +515,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since 4.6.2
 	 * @since 5.5.7 Added optional parameter to return values instead of echoing directly.
-	 * @since TBD   The parent post is resolved from the ticket; the `post_id` request parameter is ignored.
+	 * @since 5.30.2   The parent post is resolved from the ticket; the `post_id` request parameter is ignored.
 	 *
 	 * @param bool $return_value Optional, flags whether to JSON output directly or return results.
 	 *

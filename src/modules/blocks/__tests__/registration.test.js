@@ -1,7 +1,7 @@
 /**
  * Tests for the Block API version the Event Tickets blocks register with.
  *
- * @since TBD
+ * @since 5.30.2
  */
 
 /**
