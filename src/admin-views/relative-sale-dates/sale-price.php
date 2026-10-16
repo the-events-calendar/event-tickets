@@ -3,7 +3,7 @@
  * The sale price fields of the classic ticket form, for a Tickets Commerce ticket on an event.
  *
  * Replaces `commerce/metabox/sale-price`: the checkbox, the sale price and the two date inputs are that template's,
- * unchanged, the dates shown for a specific date. Each end of the window is rendered by
+ * `commerce/metabox/sale-price/*`, the dates shown for a specific date. Each end of the window is rendered by
  * `relative-sale-dates/window-boundary`; the rule is sent as JSON in the `ticket_sale_price_relative` field.
  *
  * @since TBD
@@ -27,15 +27,6 @@ use TEC\Tickets\Relative_Sale_Dates\Rule;
 use TEC\Tickets\Relative_Sale_Dates\Window_Kind;
 
 defined( 'ABSPATH' ) || die();
-
-$sale_price_validation_attrs = [
-	'data-validation-is-less-than="#ticket_price"',
-	'data-validation-error="' . esc_attr( wp_json_encode( $sale_price_errors ) ) . '"',
-];
-
-if ( ! $is_free_ticket_allowed ) {
-	$sale_price_validation_attrs[] = 'data-validation-is-greater-than="0"';
-}
 
 $modes = [
 	'start' => [
@@ -64,74 +55,18 @@ $labels = [
 	],
 ];
 
-$render_date_inputs = static function ( string $sale_end ) use ( $sale_start_date, $sale_end_date, $start_date_errors, $end_date_errors ): void {
-	if ( 'start' === $sale_end ) {
-		?>
-		<input
-			autocomplete="off"
-			type="text"
-			class="tribe-datepicker tribe-field-ticket_sale_start_date ticket_field"
-			name="ticket_sale_start_date"
-			id="ticket_sale_start_date"
-			size="10"
-			value="<?php echo esc_attr( $sale_start_date ); ?>"
-			data-validation-type="datepicker"
-			data-validation-is-less-or-equal-to="#ticket_sale_end_date"
-			data-validation-error="<?php echo esc_attr( wp_json_encode( $start_date_errors ) ); ?>"
-		/>
-		<?php
-	} else {
-		?>
-		<input
-			autocomplete="off"
-			type="text"
-			class="tribe-datepicker tribe-field-ticket_sale_end_date ticket_field"
-			name="ticket_sale_end_date"
-			id="ticket_sale_end_date"
-			size="10"
-			value="<?php echo esc_attr( $sale_end_date ); ?>"
-			data-validation-type="datepicker"
-			data-validation-is-greater-or-equal-to="#ticket_sale_start_date"
-			data-validation-error="<?php echo esc_attr( wp_json_encode( $end_date_errors ) ); ?>"
-		/>
-		<?php
-	}
+$render_date_inputs = function ( string $sale_end ): void {
+	$this->template( 'commerce/metabox/sale-price/date-input', [ 'sale_end' => $sale_end ] );
 };
 
 ?>
 <div class="ticket_sale_price_wrapper ticket_form_right">
-	<div>
-		<input
-			type="checkbox"
-			name="ticket_add_sale_price"
-			id="ticket_add_sale_price"
-			<?php checked( $sale_checkbox_on ); ?>
-		>
-		<label
-			for="ticket_add_sale_price"
-			class="ticket_form_label"
-		>
-			<?php esc_html_e( 'Add Sale Price', 'event-tickets' ); ?>
-		</label>
-	</div>
+<?php $this->template( 'commerce/metabox/sale-price/toggle' ); ?>
 	<div class="ticket_sale_price tribe-dependent"
 		data-depends="#ticket_add_sale_price"
 		data-condition-is-checked
 	>
-		<div class="ticket_sale_price-field">
-			<label for="ticket_sale_price" class="ticket_form_label">
-				<?php esc_html_e( 'Sale Price:', 'event-tickets' ); ?>
-			</label>
-			<input
-				type="text"
-				id="ticket_sale_price"
-				name="ticket_sale_price"
-				class="ticket_field"
-				size="7"
-				value="<?php echo esc_attr( $sale_price ); ?>"
-				<?php echo implode( ' ', $sale_price_validation_attrs ); // phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscaped -- Each attribute is escaped where it is built above. ?>
-			/>
-		</div>
+<?php $this->template( 'commerce/metabox/sale-price/price' ); ?>
 		<?php foreach ( [ 'start', 'end' ] as $sale_end ) : ?>
 			<?php
 			$boundary_args = [
@@ -166,6 +101,7 @@ $render_date_inputs = static function ( string $sale_end ) use ( $sale_start_dat
 			name="<?php echo esc_attr( $window_kind->get_rule_keys()['data'] ); ?>"
 			id="ticket_sale_price_relative"
 			value="<?php echo esc_attr( $rule_json ); ?>"
+			data-stored-rule="<?php echo esc_attr( '' === $rule_json ? '0' : '1' ); ?>"
 		/>
 	</div>
 </div>

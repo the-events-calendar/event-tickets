@@ -194,7 +194,8 @@ final class Ticket_Dates {
 		$time = null === $metas['time'] ? '' : get_post_meta( $ticket_id, $metas['time'], true );
 
 		return [
-			'date' => $date,
+			// `ticket_add()` writes a start sent without a date as `Y-m-d 00:00:00`, which compares after `Y-m-d`.
+			'date' => substr( $date, 0, 10 ),
 			'time' => is_string( $time ) && '' !== $time ? $time : null,
 		];
 	}

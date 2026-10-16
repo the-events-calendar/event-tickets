@@ -450,6 +450,32 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
+	public function should_leave_the_end_to_the_event_when_the_rule_change_is_dropped(): void {
+		$event_id        = $this->create_event( '2027-06-24 19:00:00' );
+		$rule            = [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ];
+		$ticket_id       = $this->create_tc_ticket( $event_id, 1, [ 'relative_sale_dates' => wp_json_encode( $rule ) ] );
+		$tickets_handler = tribe( 'tickets.handler' );
+		$this->assertFalse( $tickets_handler->has_manual_update( $ticket_id, $tickets_handler->key_end_date ) );
+		// The end the rule wrote, so no end date changes and only the rule change could flag it.
+		[ $end_date, $end_time ] = $this->get_ticket_end( $ticket_id );
+		$this->conflict_with_every_rules_write( $ticket_id );
+
+		$this->update_ticket(
+			$ticket_id,
+			[
+				'relative_sale_dates' => wp_json_encode( [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'specific' ] ] ),
+				'ticket_end_date'     => $end_date,
+				'ticket_end_time'     => $end_time,
+			]
+		);
+
+		$this->assertFalse( $tickets_handler->has_manual_update( $ticket_id, $tickets_handler->key_end_date ) );
+		$this->assertEquals( $rule, tribe( Rule_Store::class )->get( $ticket_id ) );
+	}
+
+	/**
+	 * @test
+	 */
 	public function should_keep_the_submitted_dates_of_a_ticket_without_a_rule(): void {
 		$event_id = $this->create_event( '2027-06-24 19:00:00' );
 		$data     = [
@@ -1226,19 +1252,20 @@ class Ticket_Save_Test extends Controller_Test_Case {
 		];
 
 		yield 'from 2 weeks to 1 week before' => [ [ self::SALE_PRICE_DATA_KEY => $rule( $relative( 14 ), $relative( 7 ) ) ], true ];
-		yield 'an end on the start day' => [ [ self::SALE_PRICE_DATA_KEY => $rule( $relative( 7 ), $relative( 7 ) ) ], self::SALE_PRICE_ENDS_BEFORE_START_MESSAGE ];
+		// Tickets Commerce keeps a sale price through its end day, so a sale price can last a single day.
+		yield 'an end on the start day' => [ [ self::SALE_PRICE_DATA_KEY => $rule( $relative( 7 ), $relative( 7 ) ) ], true ];
 		yield 'an end before the start' => [ [ self::SALE_PRICE_DATA_KEY => $rule( $relative( 7 ), $relative( 14 ) ) ], self::SALE_PRICE_ENDS_BEFORE_START_MESSAGE ];
 		yield 'a specific end on the start day' => [
 			[
 				self::SALE_PRICE_DATA_KEY => $rule( $relative( 7 ), $specific ),
 				'ticket_sale_end_date'    => $days_before( 7 ),
 			],
-			self::SALE_PRICE_ENDS_BEFORE_START_MESSAGE,
+			true,
 		];
 		yield 'a now start' => [ [ self::SALE_PRICE_DATA_KEY => $rule( $now, $relative( 7 ) ) ], true ];
 		yield 'a now start ending on the day sales open' => [
 			array_merge( $sales_open_a_week_before, [ self::SALE_PRICE_DATA_KEY => $rule( $now, $relative( 7 ) ) ] ),
-			self::SALE_PRICE_ENDS_BEFORE_START_MESSAGE,
+			true,
 		];
 		yield 'a now start with sales opening a week before' => [
 			array_merge( $sales_open_a_week_before, [ self::SALE_PRICE_DATA_KEY => $rule( $now, $relative( 3 ) ) ] ),

@@ -13,7 +13,6 @@ namespace TEC\Tickets\Relative_Sale_Dates;
 
 use DateInterval;
 use InvalidArgumentException;
-use JsonSerializable;
 
 /**
  * An immutable boundary of a window: a mode and, for a relative boundary, how far before which event date it falls.
@@ -24,7 +23,7 @@ use JsonSerializable;
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
-final class Boundary implements JsonSerializable {
+final class Boundary {
 	/**
 	 * The lowest number of units a relative boundary of any window accepts.
 	 *
@@ -181,17 +180,6 @@ final class Boundary implements JsonSerializable {
 	}
 
 	/**
-	 * Returns the data to encode as the boundary's canonical JSON form.
-	 *
-	 * @since TBD
-	 *
-	 * @return array{mode: string, value?: int, unit?: int, anchor?: string} The boundary, in canonical form.
-	 */
-	public function jsonSerialize(): array {
-		return $this->to_array();
-	}
-
-	/**
 	 * Returns the boundary's canonical array form, which holds only the keys its mode and its kind use.
 	 *
 	 * @since TBD
@@ -214,17 +202,6 @@ final class Boundary implements JsonSerializable {
 		}
 
 		return $data;
-	}
-
-	/**
-	 * Gets the kind of window the boundary belongs to.
-	 *
-	 * @since TBD
-	 *
-	 * @return Window_Kind The kind.
-	 */
-	public function get_kind(): Window_Kind {
-		return $this->kind;
 	}
 
 	/**

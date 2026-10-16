@@ -9,12 +9,12 @@
  * External dependencies
  */
 import moment from 'moment';
-import { _nx } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import { MODE_RELATIVE, UNIT_DAYS, UNIT_HOURS, UNIT_MINUTES, UNIT_WEEKS } from '../rule-constants';
+import { MODE_RELATIVE } from '../rule-constants';
+import { UNIT_NAMES } from '../unit-names';
 import { resolveWindow } from '../sale-window';
 import { getFormWindowLengthText } from '../window-length';
 import { getContext, getEventDates, readFormDates } from './form-context';
@@ -24,23 +24,6 @@ import { getListText } from './tickets-list';
 import { CLASSIC_SALES_WINDOW, CLASSIC_WINDOW_KINDS } from './window-kinds';
 
 /** @typedef {import( './window-kinds' ).ClassicWindowKind} ClassicWindowKind */
-
-/**
- * The name of each unit for a number of it, keyed by the unit in seconds. The msgids and context match the template's.
- *
- * @since TBD
- *
- * @type {Object<string, function( number ): string>}
- */
-const UNIT_NAMES = {
-	[ UNIT_MINUTES ]: ( number ) =>
-		_nx( 'minute', 'minutes', number, 'Unit of a relative ticket sale date.', 'event-tickets' ),
-	[ UNIT_HOURS ]: ( number ) =>
-		_nx( 'hour', 'hours', number, 'Unit of a relative ticket sale date.', 'event-tickets' ),
-	[ UNIT_DAYS ]: ( number ) => _nx( 'day', 'days', number, 'Unit of a relative ticket sale date.', 'event-tickets' ),
-	[ UNIT_WEEKS ]: ( number ) =>
-		_nx( 'week', 'weeks', number, 'Unit of a relative ticket sale date.', 'event-tickets' ),
-};
 
 /**
  * The kinds whose window the form says the length of.

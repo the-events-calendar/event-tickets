@@ -592,6 +592,7 @@ class Editor_Test extends Controller_Test_Case {
 		$this->assertSame( '1', $this->get_element( $form, 'ticket_sale_end_value' )->getAttribute( 'value' ) );
 		$this->assertSame( WEEK_IN_SECONDS, absint( $this->get_selected_value( $form, 'ticket_sale_end_unit' ) ) );
 		$this->assertSame( $rule, json_decode( $this->get_element( $form, 'ticket_sale_price_relative' )->getAttribute( 'value' ), true ) );
+		$this->assertSame( '1', $this->get_element( $form, 'ticket_sale_price_relative' )->getAttribute( 'data-stored-rule' ) );
 	}
 
 	/**
@@ -628,6 +629,7 @@ class Editor_Test extends Controller_Test_Case {
 		$this->assertSame( '1', $this->get_element( $form, 'ticket_sale_end_value' )->getAttribute( 'value' ) );
 		$this->assertSame( WEEK_IN_SECONDS, absint( $this->get_selected_value( $form, 'ticket_sale_end_unit' ) ) );
 		$this->assertSame( '', $this->get_element( $form, 'ticket_sale_price_relative' )->getAttribute( 'value' ) );
+		$this->assertSame( '0', $this->get_element( $form, 'ticket_sale_price_relative' )->getAttribute( 'data-stored-rule' ) );
 	}
 
 	/**

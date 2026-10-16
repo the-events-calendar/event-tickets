@@ -2,44 +2,18 @@
  * External dependencies
  */
 import { SelectControl, TextControl } from '@wordpress/components';
-import { _nx, _x } from '@wordpress/i18n';
+import { _x } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import {
-	ANCHOR_END,
-	ANCHOR_START,
-	MIN_VALUE,
-	MODE_RELATIVE,
-	MODE_SPECIFIC,
-	UNIT_DAYS,
-	UNIT_HOURS,
-	UNIT_MINUTES,
-	UNIT_WEEKS,
-} from '../rule-constants';
+import { ANCHOR_END, ANCHOR_START, MIN_VALUE, MODE_RELATIVE, MODE_SPECIFIC } from '../rule-constants';
+import { UNIT_NAMES } from '../unit-names';
 import { toRelativeValue } from './rule';
 
 /** @typedef {import( '../sale-window' ).SaleWindowEnd} SaleWindowEnd */
 /** @typedef {import( './window-kinds' ).BlockWindowKind} BlockWindowKind */
 /** @typedef {import( './window-kinds' ).BoundaryLabels} BoundaryLabels */
-
-/**
- * The name of each unit, in the form a number takes.
- *
- * The msgids and context match the classic editor's, so one translation serves both.
- *
- * @since TBD
- *
- * @type {Object<number, function( number ): string>}
- */
-const UNIT_NAMES = {
-	[ UNIT_MINUTES ]: ( count ) =>
-		_nx( 'minute', 'minutes', count, 'Unit of a relative ticket sale date.', 'event-tickets' ),
-	[ UNIT_HOURS ]: ( count ) => _nx( 'hour', 'hours', count, 'Unit of a relative ticket sale date.', 'event-tickets' ),
-	[ UNIT_DAYS ]: ( count ) => _nx( 'day', 'days', count, 'Unit of a relative ticket sale date.', 'event-tickets' ),
-	[ UNIT_WEEKS ]: ( count ) => _nx( 'week', 'weeks', count, 'Unit of a relative ticket sale date.', 'event-tickets' ),
-};
 
 /**
  * Builds the options of the units a window takes, named in the form the number takes.

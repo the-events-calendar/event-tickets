@@ -5,7 +5,7 @@
  */
 
 /**
- * The window does not end after it starts, at the precision its kind is kept at, or its rule is not one the server
+ * The window does not end after it starts, or on its start day for a kind kept by day, or its rule is not one the server
  * takes.
  *
  * It is the key a sales window that ends before it starts has always had, so the editors that map that key keep it.

@@ -73,15 +73,6 @@ final class Event_Listener {
 	private Sales_Window_Effects $sales_window_effects;
 
 	/**
-	 * The Tickets Commerce provider, which every ruled ticket belongs to.
-	 *
-	 * @since TBD
-	 *
-	 * @var Module
-	 */
-	private Module $tickets_commerce;
-
-	/**
 	 * The events whose dates changed in this request and whose tickets are not resolved yet, as keys.
 	 *
 	 * @since TBD
@@ -98,14 +89,12 @@ final class Event_Listener {
 	 * @param Rule_Store           $rule_store           The store of the ticket rules.
 	 * @param Ticket_Dates         $ticket_dates         The writer of the dates of every kind of window.
 	 * @param Ticket_Actions       $ticket_actions       The writer of the event cost.
-	 * @param Module               $tickets_commerce     The Tickets Commerce provider.
 	 * @param Sales_Window_Effects $sales_window_effects The effects only the sales window has.
 	 */
-	public function __construct( Rule_Store $rule_store, Ticket_Dates $ticket_dates, Ticket_Actions $ticket_actions, Module $tickets_commerce, Sales_Window_Effects $sales_window_effects ) {
+	public function __construct( Rule_Store $rule_store, Ticket_Dates $ticket_dates, Ticket_Actions $ticket_actions, Sales_Window_Effects $sales_window_effects ) {
 		$this->rule_store           = $rule_store;
 		$this->ticket_dates         = $ticket_dates;
 		$this->ticket_actions       = $ticket_actions;
-		$this->tickets_commerce     = $tickets_commerce;
 		$this->sales_window_effects = $sales_window_effects;
 	}
 
@@ -296,7 +285,8 @@ final class Event_Listener {
 		 * the ticket save that stores the cost again.
 		 */
 		if ( $changed ) {
-			$this->tickets_commerce->clear_ticket_cache_for_post( $post_id );
+			// Resolved here, not injected: the listener is built on any meta write, and building the module registers it.
+			tribe( Module::class )->clear_ticket_cache_for_post( $post_id );
 			$this->ticket_actions->update_event_cost( current( $ticket_ids ), $post_id );
 		}
 	}

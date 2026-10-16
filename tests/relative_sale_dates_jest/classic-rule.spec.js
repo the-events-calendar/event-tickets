@@ -155,7 +155,9 @@ describe( 'the rule of a sale price saved before relative dates', () => {
 	 */
 	function renderSalePrice( start, end, hadPrice, storedRule = '' ) {
 		renderForm( CLASSIC_SALE_PRICE_WINDOW, start, end );
-		document.getElementById( CLASSIC_SALE_PRICE_WINDOW.ruleFieldId ).setAttribute( 'value', storedRule );
+		const ruleField = document.getElementById( CLASSIC_SALE_PRICE_WINDOW.ruleFieldId );
+		ruleField.setAttribute( 'value', storedRule );
+		ruleField.setAttribute( 'data-stored-rule', storedRule ? '1' : '0' );
 		document
 			.getElementById( 'tribe_panel_edit' )
 			.insertAdjacentHTML(

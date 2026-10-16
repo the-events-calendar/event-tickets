@@ -9,10 +9,10 @@
  */
 import moment from 'moment';
 
-/*
- * moment.tz() does not take a fixed offset as a zone; the resolver applies one with utcOffset() instead.
+/**
+ * Internal dependencies
  */
-const FIXED_OFFSET = /^[+-]\d{2}:\d{2}$/;
+import { FIXED_OFFSET } from './sale-window';
 
 /**
  * @typedef {Object} EventDateSettings

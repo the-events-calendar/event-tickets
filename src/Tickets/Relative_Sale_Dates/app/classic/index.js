@@ -69,6 +69,8 @@ function onEventChange() {
  * @return {void}
  */
 function onPanelsRefreshed() {
+	// The timepicker set up fires `change` before the dependency script disables the date a Now start hides.
+	CLASSIC_WINDOW_KINDS.forEach( checkWindow );
 	updateUnitNames();
 	updateHelperText();
 	updateWindowLengths();

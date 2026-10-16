@@ -70,8 +70,11 @@ function readDate( value, format ) {
  * @return {string|null} The time, `HH:mm:ss`, or `null` when it cannot be read.
  */
 function readTime( value ) {
-	// The timepicker writes English am/pm whatever the locale WordPress sets on moment.
-	const time = moment( ( value || '' ).trim(), TIME_FORMATS, 'en', true );
+	/*
+	 * The timepicker writes English am/pm whatever the locale WordPress sets on moment. Read as UTC, as it lands on
+	 * today's date: in the browser's timezone, a time in the hour a clock change skips today would move.
+	 */
+	const time = moment.utc( ( value || '' ).trim(), TIME_FORMATS, 'en', true );
 
 	return time.isValid() ? time.format( 'HH:mm:ss' ) : null;
 }

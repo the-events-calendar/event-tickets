@@ -11,7 +11,6 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
-
 /**
  * Keeps the ticket's rules in one JSON meta, writing only the keys it is given so one rule never drops another.
  *
@@ -39,6 +38,15 @@ final class Rule_Store {
 	public const TICKETS_QUERY_LIMIT = 300;
 
 	/**
+	 * How many times a write is tried against fresh meta when another request changed the rules since they were read.
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	private const WRITE_ATTEMPTS = 3;
+
+	/**
 	 * Gets everything stored for a ticket.
 	 *
 	 * @since TBD
@@ -48,15 +56,7 @@ final class Rule_Store {
 	 * @return array{start?: array<string,mixed>, end?: array<string,mixed>, sale_price?: array{start?: array<string,mixed>, end?: array<string,mixed>}} The stored rules, keyed by their top-level key, or an empty array.
 	 */
 	public function get( int $ticket_id ): array {
-		$json = get_post_meta( $ticket_id, self::META_KEY, true );
-
-		if ( ! is_string( $json ) || '' === $json ) {
-			return [];
-		}
-
-		$data = json_decode( $json, true );
-
-		return is_array( $data ) ? $data : [];
+		return $this->decode( $this->read( $ticket_id ) );
 	}
 
 	/**
@@ -107,13 +107,13 @@ final class Rule_Store {
 	 *
 	 * @since TBD
 	 *
-	 * @param int                                                                                                               $ticket_id The ticket post ID.
-	 * @param array{start?: Boundary|array<string,mixed>, end?: Boundary|array<string,mixed>, sale_price?: array<string,mixed>} $values    The values to write, keyed by their top-level key.
+	 * @param int                                                                                             $ticket_id The ticket post ID.
+	 * @param array{start?: array<string,mixed>, end?: array<string,mixed>, sale_price?: array<string,mixed>} $values    The values to write, keyed by their top-level key.
 	 *
-	 * @return void
+	 * @return bool Whether the values are stored now, `false` when the write was dropped.
 	 */
-	public function save( int $ticket_id, array $values ): void {
-		$this->write( $ticket_id, array_merge( $this->get( $ticket_id ), $values ) );
+	public function save( int $ticket_id, array $values ): bool {
+		return $this->change( $ticket_id, static fn( array $stored ): array => array_merge( $stored, $values ) );
 	}
 
 	/**
@@ -124,18 +124,21 @@ final class Rule_Store {
 	 * @param int      $ticket_id The ticket post ID.
 	 * @param string[] $keys      The top-level keys to remove.
 	 *
-	 * @return bool Whether any of the keys was stored.
+	 * @return bool Whether any of the keys was stored and is removed now, `false` when the write was dropped.
 	 */
 	public function remove( int $ticket_id, array $keys ): bool {
-		$stored = $this->get( $ticket_id );
+		$removed = false;
 
-		if ( ! array_intersect_key( $stored, array_flip( $keys ) ) ) {
-			return false;
-		}
+		$changed = $this->change(
+			$ticket_id,
+			static function ( array $stored ) use ( $keys, &$removed ): ?array {
+				$removed = [] !== array_intersect_key( $stored, array_flip( $keys ) );
 
-		$this->write( $ticket_id, array_diff_key( $stored, array_flip( $keys ) ) );
+				return $removed ? array_diff_key( $stored, array_flip( $keys ) ) : null;
+			}
+		);
 
-		return true;
+		return $removed && $changed;
 	}
 
 	/**
@@ -146,12 +149,12 @@ final class Rule_Store {
 	 * @param int  $ticket_id The ticket post ID.
 	 * @param Rule $rule      The rule.
 	 *
-	 * @return void
+	 * @return bool Whether the rule is stored now, `false` when the write was dropped.
 	 */
-	public function save_rule( int $ticket_id, Rule $rule ): void {
+	public function save_rule( int $ticket_id, Rule $rule ): bool {
 		$key = $rule->get_kind()->get_store_key();
 
-		$this->save( $ticket_id, null === $key ? $rule->to_array() : [ $key => $rule->to_array() ] );
+		return $this->save( $ticket_id, null === $key ? $rule->to_array() : [ $key => $rule->to_array() ] );
 	}
 
 	/**
@@ -162,7 +165,7 @@ final class Rule_Store {
 	 * @param int         $ticket_id The ticket post ID.
 	 * @param Window_Kind $kind      The kind of the rule to remove.
 	 *
-	 * @return bool Whether a rule of the kind was stored.
+	 * @return bool Whether a rule of the kind was stored and is removed now, `false` when the write was dropped.
 	 */
 	public function remove_rule( int $ticket_id, Window_Kind $kind ): bool {
 		$key = $kind->get_store_key();
@@ -171,28 +174,108 @@ final class Rule_Store {
 	}
 
 	/**
-	 * Writes the rules, or deletes the meta when there are none.
+	 * Changes the stored rules, writing them only if no other request changed them since they were read.
+	 *
+	 * Two saves of one ticket can overlap, and a write of what one read would drop the other's rule or bring back one it
+	 * removed. On such a conflict the rules are read again, from the database, and changed again.
 	 *
 	 * @since TBD
 	 *
-	 * @param int                                                                                                               $ticket_id The ticket post ID.
-	 * @param array{start?: Boundary|array<string,mixed>, end?: Boundary|array<string,mixed>, sale_price?: array<string,mixed>} $data    The rules to write, keyed by their top-level key.
+	 * @param int                                                      $ticket_id The ticket post ID.
+	 * @param callable(array<string,mixed>):(array<string,mixed>|null) $change    Returns the rules to write from the stored
+	 *                                                                            ones, or `null` to write nothing.
 	 *
-	 * @return void
+	 * @return bool Whether the rules were written or needed no write, `false` when the write was dropped.
 	 */
-	private function write( int $ticket_id, array $data ): void {
-		if ( ! $data ) {
-			delete_post_meta( $ticket_id, self::META_KEY );
+	private function change( int $ticket_id, callable $change ): bool {
+		for ( $attempt = 1; $attempt <= self::WRITE_ATTEMPTS; $attempt++ ) {
+			$read = $this->read( $ticket_id );
+			$data = $change( $this->decode( $read ) );
 
-			return;
+			if ( null === $data || $this->write( $ticket_id, $read, $data ) ) {
+				return true;
+			}
+
+			wp_cache_delete( $ticket_id, 'post_meta' );
+		}
+
+		do_action(
+			'tribe_log',
+			'warning',
+			__CLASS__,
+			[
+				'message'   => 'The ticket rules kept changing while they were written; the last write was dropped.',
+				'ticket_id' => $ticket_id,
+			]
+		);
+
+		return false;
+	}
+
+	/**
+	 * Writes the rules, or deletes the meta when there are none, if the meta still holds what was read.
+	 *
+	 * @since TBD
+	 *
+	 * @param int                                                                                             $ticket_id The ticket post ID.
+	 * @param string                                                                                          $read      The meta as it was read, `''` for none.
+	 * @param array{start?: array<string,mixed>, end?: array<string,mixed>, sale_price?: array<string,mixed>} $data      The rules to write, keyed by their top-level key.
+	 *
+	 * @return bool Whether the meta held what was read, and now holds the rules.
+	 */
+	private function write( int $ticket_id, string $read, array $data ): bool {
+		/*
+		 * shortcut: the meta functions check the meta and change it in two queries, so a write another request makes
+		 * between them goes unseen: the delete drops the rules that request saved, the update adds back the rules it
+		 * deleted, and two first saves of a ticket add two rows. The window is the time between two queries of overlapping
+		 * saves of one ticket; take a per-ticket `GET_LOCK()` around `change()` once such saves are common.
+		 */
+		if ( ! $data ) {
+			// The meta functions unslash the value they compare against.
+			return '' === $read || delete_post_meta( $ticket_id, self::META_KEY, wp_slash( $read ) );
 		}
 
 		$json = wp_json_encode( $data );
 
-		if ( ! is_string( $json ) ) {
-			return;
+		if ( ! is_string( $json ) || $json === $read ) {
+			return true;
 		}
 
-		update_post_meta( $ticket_id, self::META_KEY, wp_slash( $json ) );
+		if ( '' === $read ) {
+			return false !== add_post_meta( $ticket_id, self::META_KEY, wp_slash( $json ), true );
+		}
+
+		// Unlike the new value, the previous value is compared as it is given.
+		return false !== update_post_meta( $ticket_id, self::META_KEY, wp_slash( $json ), $read );
+	}
+
+	/**
+	 * Reads the stored meta.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket post ID.
+	 *
+	 * @return string The stored JSON, or `''` when nothing is stored.
+	 */
+	private function read( int $ticket_id ): string {
+		$json = get_post_meta( $ticket_id, self::META_KEY, true );
+
+		return is_string( $json ) ? $json : '';
+	}
+
+	/**
+	 * Decodes the stored meta.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $json The stored JSON.
+	 *
+	 * @return array<string,mixed> The stored rules, keyed by their top-level key, or an empty array.
+	 */
+	private function decode( string $json ): array {
+		$data = '' === $json ? null : json_decode( $json, true );
+
+		return is_array( $data ) ? $data : [];
 	}
 }

@@ -57,7 +57,8 @@ export function readRule( root, kind = CLASSIC_SALES_WINDOW ) {
  *
  * Such a sale price opens without a rule on its two specific dates. While both ends stay specific it is saved as it
  * was, without a rule, so its dates are judged as they were then, a sale of a single day included. The box is checked
- * as the form renders only for a ticket saved with a sale price, and the rule field is empty only without a stored rule.
+ * as the form renders only for a ticket saved with a sale price. Whether a rule is stored is read from the rule field's
+ * marker: its value, and on a hidden field its default value too, changes once a save writes the rule in it.
  *
  * @since TBD
  *
@@ -72,7 +73,7 @@ export function keepsSalePriceWithoutRule( root, kind ) {
 	if (
 		CLASSIC_SALE_PRICE_WINDOW.id !== kind.id ||
 		! ruleField ||
-		'' !== ruleField.defaultValue ||
+		'0' !== ruleField.dataset.storedRule ||
 		! root.getElementById( kind.enabledFieldId )?.defaultChecked
 	) {
 		return false;

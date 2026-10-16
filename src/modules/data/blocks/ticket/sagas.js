@@ -458,16 +458,23 @@ const toSaleDateDetails = ( value, datePickerFormat ) => {
 };
 
 /**
- * A sale date a ticket was stored without, as the ticket details hold it.
+ * Gets a sale date a ticket was stored without, as the ticket details hold it.
  *
- * Parsing an empty date gives an invalid moment, whose "Invalid date" time the duration check cannot read: it throws,
- * and the uncaught error stops every ticket saga of the block.
+ * The moment is an invalid one, as `tec.tickets.blocks.ticketUpdated` callbacks call moment methods on it. Its
+ * "Invalid date" texts are left out: the duration check cannot read them, and its uncaught error would stop every
+ * ticket saga of the block.
  *
  * @since TBD
  *
- * @type {{date: string, input: string, moment: null, time: string, timeInput: string}}
+ * @return {{date: string, input: string, moment: Object, time: string, timeInput: string}} The empty date.
  */
-const NO_SALE_DATE = Object.freeze( { date: '', input: '', moment: null, time: '', timeInput: '' } );
+const toNoSaleDateDetails = () => ( {
+	date: '',
+	input: '',
+	moment: momentUtil.toMoment( '' ),
+	time: '',
+	timeInput: '',
+} );
 
 /**
  * Gets the sale dates a ticket was stored with, in each form the ticket details hold them.
@@ -482,8 +489,12 @@ export function* getTicketSaleDates( ticket ) {
 	const { available_from, available_until } = ticket; // eslint-disable-line camelcase
 	const datePickerFormat = tecDateSettings().datepickerFormat;
 
-	const start = available_from ? yield call( toSaleDateDetails, available_from, datePickerFormat ) : NO_SALE_DATE; // eslint-disable-line camelcase
-	const end = available_until ? yield call( toSaleDateDetails, available_until, datePickerFormat ) : NO_SALE_DATE; // eslint-disable-line camelcase
+	const start = available_from
+		? yield call( toSaleDateDetails, available_from, datePickerFormat )
+		: toNoSaleDateDetails();
+	const end = available_until
+		? yield call( toSaleDateDetails, available_until, datePickerFormat )
+		: toNoSaleDateDetails();
 
 	return {
 		startDate: start.date,
@@ -1248,11 +1259,10 @@ export function* saveTicketWithPostSave( clientId ) {
 				// Wait for channel to save
 				yield take( savingChannel );
 
-				// Update when saving
-				yield call( updateTicket, { payload: { clientId } } );
-
-				// Wait for channel to finish saving
+				// Wait for channel to finish saving: a ticket with a relative rule is resolved against the saved event dates.
 				yield take( notSavingChannel );
+
+				yield call( updateTicket, { payload: { clientId } } );
 			}
 		}
 	} catch ( error ) {
@@ -1433,8 +1443,10 @@ export function* handleTicketDurationError( clientId ) {
 	} );
 
 	if ( ! startDateMoment || ! endDateMoment ) {
+		// A date cleared in the date picker.
 		hasDurationError = true;
-	} else {
+		// A date the ticket was stored without is an invalid moment, with nothing to compare.
+	} else if ( startDateMoment.isValid() && endDateMoment.isValid() ) {
 		const startTime = yield select( selectors.getTicketTempStartTime, {
 			clientId,
 		} );

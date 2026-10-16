@@ -2,11 +2,14 @@
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
+use Closure;
 use DateTimeImmutable;
 use Generator;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Integrations\Plugins\Yoast_Duplicate_Post\Duplicate_Post as Yoast_Duplicate_Post;
 use Tribe__Tickets__Main as Tickets_Main;
+use Tribe__Tickets__Tickets as Tickets;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Relative_Sale_Dates_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
@@ -264,6 +267,25 @@ class Event_Listener_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
+	public function should_carry_the_rule_to_a_ticket_duplicated_by_yoast_duplicate_post(): void {
+		$event_start     = $this->get_future_event_start();
+		$event_id        = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
+		$ticket_id       = $this->create_ruled_ticket( $event_id );
+		$new_event_start = $event_start->modify( '+1 month' );
+		$new_event_id    = $this->create_event( $new_event_start->format( 'Y-m-d H:i:s' ) );
+
+		// What Yoast Duplicate Post runs once it has copied the event.
+		tribe( Yoast_Duplicate_Post::class )->duplicate_tickets_to_new_post( $new_event_id, get_post( $event_id ) );
+
+		$duplicate_ids = tribe_tickets()->where( 'event', $new_event_id )->get_ids();
+		$this->assertCount( 1, $duplicate_ids );
+		$this->assertSame( tribe( Rule_Store::class )->get( $ticket_id ), tribe( Rule_Store::class )->get( $duplicate_ids[0] ) );
+		$this->assert_resolved_from( $new_event_start, $duplicate_ids[0] );
+	}
+
+	/**
+	 * @test
+	 */
 	public function should_skip_a_failed_clone_and_a_ticket_without_a_rule_when_tickets_are_duplicated(): void {
 		$event_start      = $this->get_future_event_start();
 		$event_id         = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
@@ -327,6 +349,35 @@ class Event_Listener_Test extends Controller_Test_Case {
 		$this->send_classic_event_save( $event_id, $today->modify( '+1 day 19:00' ) );
 
 		$this->assertEquals( [ 10 ], get_post_meta( $event_id, '_EventCost' ) );
+	}
+
+	/**
+	 * With Tickets Commerce turned off its module has no binding, and building it registers it as an active provider.
+	 *
+	 * @test
+	 */
+	public function should_not_activate_tickets_commerce_when_it_is_off(): void {
+		$event_id       = $this->create_event( $this->get_future_event_start()->format( 'Y-m-d H:i:s' ) );
+		$active_modules = Closure::bind( static fn() => static::$active_modules, null, Tickets::class );
+		$set_modules    = Closure::bind( static function ( array $modules ) { static::$active_modules = $modules; }, null, Tickets::class );
+		$modules_before = $active_modules();
+		$set_modules( array_diff_key( $modules_before, [ Module::class => true ] ) );
+		// Undo `With_Tickets_Commerce`, which turns Tickets Commerce on and lists its module in every request.
+		remove_all_filters( 'tec_tickets_commerce_is_enabled' );
+		remove_all_filters( 'tribe_tickets_get_modules' );
+		add_filter( 'tec_tickets_commerce_is_enabled', '__return_false' );
+		unset( $this->test_services[ Module::class ] );
+		// A new request, where the first meta write builds the listener.
+		unset( $this->test_services[ Event_Listener::class ] );
+		$this->test_services->singleton( Event_Listener::class );
+
+		try {
+			$this->test_services->get( Event_Listener::class )->update_ticket_dates( $event_id );
+
+			$this->assertArrayNotHasKey( Module::class, $active_modules() );
+		} finally {
+			$set_modules( $modules_before );
+		}
 	}
 
 	/**

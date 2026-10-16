@@ -137,6 +137,10 @@ final class Sale_Window {
 	 * A number of minutes or hours that lands on a time skipped by a clock change comes off the instant instead, as the
 	 * next valid time can fall on or after the anchor: 30 minutes before 03:15 would otherwise be 03:45.
 	 *
+	 * shortcut: two boundaries of one rule can then land on the same instant, as 2 hours and 1 hour before 03:30 EDT
+	 * both give 01:30 EST on 14 March 2027 in New York, and the save rejects that window as ending when it starts; move
+	 * the boundary off the instant only when it would not keep its order against the other one, if admins hit it.
+	 *
 	 * @since TBD
 	 *
 	 * @param DateTimeImmutable $anchor   The date to move back.

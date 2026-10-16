@@ -104,7 +104,10 @@ final class Window_Validator {
 		$start     = $own_start ?? $parent_start;
 		$end       = $window->get_end();
 
-		if ( $start && $end && $this->compare_dates( $end, $start, $kind ) <= 0 ) {
+		$end_to_start = $start && $end ? $this->compare_dates( $end, $start, $kind ) : null;
+
+		// A window compared by day lasts through its end day, so it may end on the day it starts.
+		if ( null !== $end_to_start && ( $end_to_start < 0 || ( 0 === $end_to_start && ! $kind->compares_days() ) ) ) {
 			return $kind->get_error( 'endsBeforeStart' );
 		}
 

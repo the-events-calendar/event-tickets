@@ -120,8 +120,6 @@ class Boundary_Test extends WPTestCase {
 		$boundary = Boundary::from_array( $data, $kind, $end );
 
 		$this->assertSame( $data, $boundary->to_array() );
-		$this->assertSame( $data, $boundary->jsonSerialize() );
-		$this->assertSame( wp_json_encode( $data ), wp_json_encode( $boundary ) );
 	}
 
 	/**
@@ -131,7 +129,6 @@ class Boundary_Test extends WPTestCase {
 	public function should_expose_its_parts_and_interval( Window_Kind $kind, string $end, array $data ): void {
 		$boundary = Boundary::from_array( $data, $kind, $end );
 
-		$this->assertSame( $kind, $boundary->get_kind() );
 		$this->assertSame( $data['mode'], $boundary->get_mode() );
 
 		if ( ! isset( $data['value'], $data['unit'] ) ) {
@@ -195,7 +192,7 @@ class Boundary_Test extends WPTestCase {
 		$specific = Boundary::from_array( array_merge( $relative, [ 'mode' => Rule::MODE_SPECIFIC, 'anchor' => Rule::ANCHOR_START ] ), $kind, Boundary::EDGE_START );
 		$extra    = Boundary::from_array( array_merge( $relative, [ 'extra' => 'dropped' ] ), $kind, Boundary::EDGE_START );
 
-		$this->assertSame( [ 'mode' => Rule::MODE_SPECIFIC ], $specific->jsonSerialize() );
-		$this->assertSame( $relative, $extra->jsonSerialize() );
+		$this->assertSame( [ 'mode' => Rule::MODE_SPECIFIC ], $specific->to_array() );
+		$this->assertSame( $relative, $extra->to_array() );
 	}
 }

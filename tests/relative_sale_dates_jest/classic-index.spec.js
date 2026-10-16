@@ -1072,13 +1072,26 @@ describe( 'classic editor script', () => {
 					.getElementById( 'tribe_panel_edit' )
 					.insertAdjacentHTML(
 						'beforeend',
-						'<input type="hidden" id="ticket_sale_price_relative" value="" />'
+						'<input type="hidden" id="ticket_sale_price_relative" value="" data-stored-rule="0" />'
 					);
 			}
 
 			it( 'should leave a sale price kept on its own dates unjudged, as the server leaves it', async () => {
 				renderSalePriceWithoutRule( true );
 				await loadScript();
+
+				expect( validateTicket() ).toBe( true );
+				expect( readSalePriceError() ).toBe( '' );
+			} );
+
+			// Setting the value of a hidden field also sets its default value.
+			it( 'should still leave the sale price unjudged after a save wrote a rule in the field', async () => {
+				renderSalePriceWithoutRule( true );
+				await loadScript();
+				document.getElementById( 'ticket_sale_price_relative' ).value = JSON.stringify( {
+					start: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+					end: { mode: 'specific' },
+				} );
 
 				expect( validateTicket() ).toBe( true );
 				expect( readSalePriceError() ).toBe( '' );
@@ -1297,6 +1310,26 @@ describe( 'classic editor script', () => {
 		await loadScript();
 
 		expect( validateTicket() ).toBe( true );
+		expect( getWindowError() ).toBe( '' );
+	} );
+
+	/*
+	 * When a panel opens, the timepicker fires `change` before the dependency script disables a Now start's date. On an
+	 * event under way, that date, today, falls after the end an hour before the event started.
+	 */
+	it( 'should judge the windows again once the editor has set up a replaced panel', async () => {
+		renderEventForm();
+		jQuery( '#ticket_sales_start_mode' ).html( '<option value="default" selected>Now</option>' );
+		jQuery( '#tribe_panel_edit' ).append( '<input id="ticket_start_date" value="6/24/2099" /><input id="ticket_start_time" value="18:30" />' );
+		const hooks = await loadScript();
+		// 20:00 in New York, an hour into the event.
+		jest.useFakeTimers( { now: new Date( '2099-06-25T00:00:00Z' ) } );
+		jQuery( '#ticket_start_time' ).trigger( 'change' );
+		expect( getWindowError() ).toBe( INVALID_WINDOW );
+
+		jQuery( '#ticket_start_date, #ticket_start_time' ).prop( 'disabled', true );
+		hooks.doAction( 'tec.tickets.admin.panels.refreshed', {} );
+
 		expect( getWindowError() ).toBe( '' );
 	} );
 

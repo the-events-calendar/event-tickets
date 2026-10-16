@@ -237,13 +237,13 @@ final class Window_Kind {
 			'start' => $modes,
 			'end'   => $modes,
 		];
-		$kind->open_start_mode              = Rule::MODE_DEFAULT;
-		$kind->max_value                    = Boundary::MAX_VALUE;
-		$kind->units                        = [ MINUTE_IN_SECONDS, HOUR_IN_SECONDS, DAY_IN_SECONDS, WEEK_IN_SECONDS ];
-		$kind->anchors                      = [ Rule::ANCHOR_START, Rule::ANCHOR_END ];
-		$kind->store_key                    = null;
-		$kind->parent                       = null;
-		$kind->rule_keys                    = [
+		$kind->open_start_mode         = Rule::MODE_DEFAULT;
+		$kind->max_value               = Boundary::MAX_VALUE;
+		$kind->units                   = [ MINUTE_IN_SECONDS, HOUR_IN_SECONDS, DAY_IN_SECONDS, WEEK_IN_SECONDS ];
+		$kind->anchors                 = [ Rule::ANCHOR_START, Rule::ANCHOR_END ];
+		$kind->store_key               = null;
+		$kind->parent                  = null;
+		$kind->rule_keys               = [
 			'data'                  => 'relative_sale_dates',
 			'tec_rest'              => 'relative_sale_dates',
 			'block_editor_request'  => [ 'relative_sale_dates' ],
@@ -272,8 +272,8 @@ final class Window_Kind {
 				'time' => 'ticket_end_time',
 			],
 		];
-		$kind->specific_needs_date          = true;
-		$kind->errors                       = [
+		$kind->specific_needs_date     = true;
+		$kind->errors                  = [
 			'invalidRule'     => [
 				'code'    => 'tec_tickets_relative_sale_dates_invalid_rule',
 				'message' => static fn(): string => sprintf(
@@ -320,13 +320,13 @@ final class Window_Kind {
 			'start' => [ Rule::MODE_NOW, Rule::MODE_RELATIVE, Rule::MODE_SPECIFIC ],
 			'end'   => [ Rule::MODE_RELATIVE, Rule::MODE_SPECIFIC ],
 		];
-		$kind->open_start_mode              = Rule::MODE_NOW;
-		$kind->max_value                    = self::SALE_PRICE_MAX_VALUE;
-		$kind->units                        = [ DAY_IN_SECONDS, WEEK_IN_SECONDS ];
-		$kind->anchors                      = [ Rule::ANCHOR_START ];
-		$kind->store_key                    = 'sale_price';
-		$kind->parent                       = self::sales();
-		$kind->rule_keys                    = [
+		$kind->open_start_mode         = Rule::MODE_NOW;
+		$kind->max_value               = self::SALE_PRICE_MAX_VALUE;
+		$kind->units                   = [ DAY_IN_SECONDS, WEEK_IN_SECONDS ];
+		$kind->anchors                 = [ Rule::ANCHOR_START ];
+		$kind->store_key               = 'sale_price';
+		$kind->parent                  = self::sales();
+		$kind->rule_keys               = [
 			'data'                  => 'ticket_sale_price_relative',
 			'tec_rest'              => 'sale_price_relative',
 			'block_editor_request'  => [ 'sale_price', 'relative' ],
@@ -342,10 +342,10 @@ final class Window_Kind {
 				'time' => null,
 			],
 		];
-		$kind->open_start_value             = '';
-		$kind->sale_keys                    = [ 'enabled_meta' => Ticket::$sale_price_checked_key ];
-		$kind->owns_ticket_sales_dates      = false;
-		$kind->submitted_fields             = [
+		$kind->open_start_value        = '';
+		$kind->sale_keys               = [ 'enabled_meta' => Ticket::$sale_price_checked_key ];
+		$kind->owns_ticket_sales_dates = false;
+		$kind->submitted_fields        = [
 			'start' => [
 				'date' => 'ticket_sale_start_date',
 				'time' => null,
@@ -355,8 +355,8 @@ final class Window_Kind {
 				'time' => null,
 			],
 		];
-		$kind->specific_needs_date          = false;
-		$kind->errors                       = [
+		$kind->specific_needs_date     = false;
+		$kind->errors                  = [
 			'invalidRule'     => [
 				'code'    => 'tec_tickets_relative_sale_dates_sale_price_invalid_rule',
 				'message' => static fn(): string => sprintf(
@@ -625,7 +625,7 @@ final class Window_Kind {
 	 * @return bool Whether the ticket will have the window once saved.
 	 */
 	public function is_saved_with( array $data ): bool {
-		return null === $this->sale_keys || self::keeps_sale_price( $data );
+		return null === $this->sale_keys || Ticket::keeps_sale_price( $data );
 	}
 
 	/**
@@ -677,26 +677,5 @@ final class Window_Kind {
 	 * @since TBD
 	 */
 	private function __construct() {
-	}
-
-	/**
-	 * Returns whether Tickets Commerce keeps the sale price the ticket data sends: checked, and lower than the price.
-	 *
-	 * The values are read and compared as `Ticket::process_sale_price_data()` reads and compares them before it saves
-	 * the sale price or drops it.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string,mixed> $data The ticket data about to be saved.
-	 *
-	 * @return bool Whether the save keeps the sale price.
-	 */
-	private static function keeps_sale_price( array $data ): bool {
-		if ( ! tribe_is_truthy( $data['ticket_add_sale_price'] ?? false ) ) {
-			return false;
-		}
-
-		// Negated rather than `<`, so it is the very comparison Tickets Commerce drops the sale price on.
-		return ! ( ( $data['ticket_sale_price'] ?? false ) >= ( $data['ticket_price'] ?? false ) );
 	}
 }

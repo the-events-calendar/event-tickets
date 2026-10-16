@@ -16,10 +16,15 @@ use Tribe__Admin__Notices as Notices;
 use Tribe__Tickets__Admin__Move_Tickets as Move_Tickets;
 use WP_Screen;
 use TEC\Tickets\Seating\Service\Service_Status;
+use TEC\Tickets\Integrations\Plugins\Yoast_Duplicate_Post\Duplicate_Post as Yoast_Duplicate_Post;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 
 class Admin_Test extends Controller_Test_Case {
 	use With_Uopz;
 	use SnapshotAssertions;
+	use With_Tickets_Commerce;
+	use Ticket_Maker;
 
 	protected string $controller_class = Admin::class;
 
@@ -261,5 +266,30 @@ class Admin_Test extends Controller_Test_Case {
 		tribe( Move_Tickets::class )->get_post_choices();
 
 		$this->assertEquals( [ $post_id_1, $post_id_3, $post_id_4 ], array_values( $wp_send_json_success_result['posts'] ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_give_a_yoast_duplicate_post_copy_its_own_uuid_and_seats(): void {
+		$this->make_controller()->register();
+		$post_id = static::factory()->post->create();
+		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
+		update_post_meta( $post_id, Meta::META_KEY_UUID, 'post-uuid-1' );
+		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+		update_post_meta( $ticket_id, Meta::META_KEY_ENABLED, '1' );
+		update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'seat-type-1' );
+		// Yoast Duplicate Post copies the post meta, the seating UUID included, before its integration copies the tickets.
+		$copy_id = static::factory()->post->create();
+		update_post_meta( $copy_id, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
+		update_post_meta( $copy_id, Meta::META_KEY_UUID, 'post-uuid-1' );
+
+		tribe( Yoast_Duplicate_Post::class )->duplicate_tickets_to_new_post( $copy_id, get_post( $post_id ) );
+
+		$copy_ticket_ids = tribe_tickets()->where( 'event', $copy_id )->get_ids();
+		$this->assertCount( 1, $copy_ticket_ids );
+		$this->assertNotEquals( 'post-uuid-1', get_post_meta( $copy_id, Meta::META_KEY_UUID, true ) );
+		$this->assertEquals( '1', get_post_meta( $copy_ticket_ids[0], Meta::META_KEY_ENABLED, true ) );
+		$this->assertEquals( 'seat-type-1', get_post_meta( $copy_ticket_ids[0], Meta::META_KEY_SEAT_TYPE, true ) );
 	}
 }
