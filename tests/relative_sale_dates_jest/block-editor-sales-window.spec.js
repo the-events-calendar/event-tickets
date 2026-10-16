@@ -83,6 +83,14 @@ describe( 'the Ticket block sales window options', () => {
 		tearDownBlockEditor();
 	} );
 
+	// The classic and block editors name the ends of the sales window alike.
+	it( 'should name the ends of the sales window Start Sales and End Sales', () => {
+		renderSalesWindow( newClientId() );
+
+		expect( findControl( SelectControl, 'Start Sales:' ) ).toBeDefined();
+		expect( findControl( SelectControl, 'End Sales:' ) ).toBeDefined();
+	} );
+
 	describe( 'for a new ticket', () => {
 		it( 'should start sales now and end them when the event starts', () => {
 			renderSalesWindow( newClientId() );

@@ -9,7 +9,9 @@
  * beside its mode select and the rest of the end under that select.
  */
 .editor-styles-wrapper .tec-tickets-relative-sale-dates {
-	--tec-tickets-relative-sale-dates-label-width: 40px;
+
+	/* Room for the widest end label, "Start Sales:", on one line. */
+	--tec-tickets-relative-sale-dates-label-width: 80px;
 	display: flex;
 	flex: 1;
 	flex-direction: column;
@@ -33,10 +35,11 @@
 		}
 
 		.components-input-control__label {
+			flex-shrink: 0;
 			font-size: 13px;
 			font-weight: 400;
 			text-transform: none;
-			white-space: normal;
+			white-space: nowrap;
 			width: var(--tec-tickets-relative-sale-dates-label-width);
 		}
 
@@ -90,6 +93,21 @@
 .tec-tickets-relative-sale-dates
 select[aria-invalid="true"] ~ .components-input-control__backdrop {
 	border-color: #cc1818;
+}
+
+/* A relative number is a plain text control with no backdrop of its own, so the invalid outline goes on the field. */
+.editor-styles-wrapper .tec-tickets-relative-sale-dates input[aria-invalid="true"] {
+	border-color: #cc1818;
+}
+
+/*
+ * With both ends on a specific date, the legacy range check flags the same order these options already report under
+ * their end. Its text is hidden so the row is not split between two messages; its flag still blocks the save.
+ */
+.editor-styles-wrapper
+.tribe-editor__ticket__content-row--duration:has(.tec-tickets-relative-sale-dates)
+.tribe-editor__ticket__duration-error {
+	display: none;
 }
 
 .editor-styles-wrapper .tec-tickets-relative-sale-dates__error {
