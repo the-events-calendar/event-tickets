@@ -231,6 +231,8 @@ class Tickets_Test extends Ticket_Test {
 	 * @return int The event post ID.
 	 */
 	private function create_relative_sale_dates_event(): int {
+		// An earlier test's hooks are removed after it, but the flag that makes `register()` do nothing stays set.
+		tribe()->setVar( Relative_Sale_Dates_Controller::class . '_registered', false );
 		tribe( Relative_Sale_Dates_Controller::class )->register();
 		// The routes take their arguments when the server is built, so build it again with the rules in them.
 		$GLOBALS['wp_rest_server'] = null;
