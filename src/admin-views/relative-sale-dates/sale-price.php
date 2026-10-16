@@ -28,8 +28,6 @@ use TEC\Tickets\Relative_Sale_Dates\Window_Kind;
 
 defined( 'ABSPATH' ) || die();
 
-$sale_price_context = compact( 'sale_price', 'sale_checkbox_on', 'sale_start_date', 'sale_end_date', 'start_date_errors', 'end_date_errors', 'sale_price_errors', 'is_free_ticket_allowed' );
-
 $modes = [
 	'start' => [
 		Rule::MODE_NOW      => _x( 'Now', 'When the sale price starts.', 'event-tickets' ),
@@ -57,18 +55,18 @@ $labels = [
 	],
 ];
 
-$render_date_inputs = function ( string $sale_end ) use ( $sale_price_context ): void {
-	$this->template( 'commerce/metabox/sale-price/date-input', array_merge( $sale_price_context, [ 'sale_end' => $sale_end ] ) );
+$render_date_inputs = function ( string $sale_end ): void {
+	$this->template( 'commerce/metabox/sale-price/date-input', [ 'sale_end' => $sale_end ] );
 };
 
 ?>
 <div class="ticket_sale_price_wrapper ticket_form_right">
-<?php $this->template( 'commerce/metabox/sale-price/toggle', $sale_price_context ); ?>
+<?php $this->template( 'commerce/metabox/sale-price/toggle' ); ?>
 	<div class="ticket_sale_price tribe-dependent"
 		data-depends="#ticket_add_sale_price"
 		data-condition-is-checked
 	>
-<?php $this->template( 'commerce/metabox/sale-price/price', $sale_price_context ); ?>
+<?php $this->template( 'commerce/metabox/sale-price/price' ); ?>
 		<?php foreach ( [ 'start', 'end' ] as $sale_end ) : ?>
 			<?php
 			$boundary_args = [

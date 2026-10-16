@@ -23,15 +23,13 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$date_inputs_context = get_defined_vars();
-
 ?>
 <div class="input_block">
 	<label class="ticket_form_label ticket_form_left" for="ticket_start_date">
 		<?php esc_html_e( 'Start sale:', 'event-tickets' ); ?>
 	</label>
 	<div class="ticket_form_right">
-<?php $this->template( 'editor/panel/fields/date-inputs', array_merge( $date_inputs_context, [ 'sales_end' => 'start' ] ) ); ?>
+<?php $this->template( 'editor/panel/fields/date-inputs', [ 'sales_end' => 'start' ] ); ?>
 	</div>
 </div>
 <div class="input_block">
@@ -39,6 +37,6 @@ $date_inputs_context = get_defined_vars();
 		<?php esc_html_e( 'End sale:', 'event-tickets' ); ?>
 	</label>
 	<div class="ticket_form_right">
-<?php $this->template( 'editor/panel/fields/date-inputs', array_merge( $date_inputs_context, [ 'sales_end' => 'end' ] ) ); ?>
+<?php $this->template( 'editor/panel/fields/date-inputs', [ 'sales_end' => 'end' ] ); ?>
 	</div>
 </div>

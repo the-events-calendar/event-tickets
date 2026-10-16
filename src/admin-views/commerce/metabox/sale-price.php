@@ -21,24 +21,22 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$sale_price_context = get_defined_vars();
-
 ?>
 <div class="ticket_sale_price_wrapper ticket_form_right">
 	<!--Checkbox to toggle sale price fields-->
-<?php $this->template( 'commerce/metabox/sale-price/toggle', $sale_price_context ); ?>
+<?php $this->template( 'commerce/metabox/sale-price/toggle' ); ?>
 	<div class="ticket_sale_price tribe-dependent"
 		data-depends="#ticket_add_sale_price"
 		data-condition-is-checked
 	>
-<?php $this->template( 'commerce/metabox/sale-price/price', $sale_price_context ); ?>
+<?php $this->template( 'commerce/metabox/sale-price/price' ); ?>
 		<div class="ticket_sale_price-field">
 			<label class="ticket_form_label" for="ticket_start_date">
 				<?php esc_html_e( 'On sale from:', 'event-tickets' ); ?>
 			</label>
-<?php $this->template( 'commerce/metabox/sale-price/date-input', array_merge( $sale_price_context, [ 'sale_end' => 'start' ] ) ); ?>
+<?php $this->template( 'commerce/metabox/sale-price/date-input', [ 'sale_end' => 'start' ] ); ?>
 			<span> <?php esc_html_e( 'to', 'event-tickets' ); ?> </span>
-<?php $this->template( 'commerce/metabox/sale-price/date-input', array_merge( $sale_price_context, [ 'sale_end' => 'end' ] ) ); ?>
+<?php $this->template( 'commerce/metabox/sale-price/date-input', [ 'sale_end' => 'end' ] ); ?>
 		</div>
 	</div>
 </div>

@@ -62,21 +62,8 @@ $labels = [
 	],
 ];
 
-$date_inputs_context = compact(
-	'ticket',
-	'ticket_start_date',
-	'ticket_start_time',
-	'ticket_end_date',
-	'ticket_end_time',
-	'ticket_start_date_aria_label',
-	'ticket_end_date_aria_label',
-	'start_date_errors',
-	'timepicker_step',
-	'timepicker_round'
-);
-
-$render_date_inputs = function ( string $sales_end ) use ( $date_inputs_context ): void {
-	$this->template( 'editor/panel/fields/date-inputs', array_merge( $date_inputs_context, [ 'sales_end' => $sales_end ] ) );
+$render_date_inputs = function ( string $sales_end ): void {
+	$this->template( 'editor/panel/fields/date-inputs', [ 'sales_end' => $sales_end ] );
 };
 
 ?>
