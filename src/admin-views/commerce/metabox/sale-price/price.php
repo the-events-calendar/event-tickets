@@ -13,6 +13,8 @@
  * @var bool                 $is_free_ticket_allowed Whether free tickets are allowed.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 $sale_price_validation_attrs = [
 	'data-validation-is-less-than="#ticket_price"',
 	'data-validation-error="' . esc_attr( wp_json_encode( $sale_price_errors ) ) . '"',

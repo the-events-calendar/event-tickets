@@ -21,6 +21,8 @@
  * @var array<string,mixed> $ticket The ticket.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 $date_inputs_context = get_defined_vars();
 
 ?>

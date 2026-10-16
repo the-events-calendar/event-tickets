@@ -15,6 +15,8 @@
  * @var array<string,string> $end_date_errors   The errors for the sale end date.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 $is_start = 'start' === $sale_end;
 $other    = $is_start ? 'end' : 'start';
 

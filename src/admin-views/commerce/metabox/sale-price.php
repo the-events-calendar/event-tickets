@@ -19,6 +19,8 @@
  * @var bool          $is_free_ticket_allowed Whether free tickets are allowed.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 $sale_price_context = get_defined_vars();
 
 ?>

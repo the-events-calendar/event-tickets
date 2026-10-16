@@ -11,6 +11,8 @@
  * @var bool $sale_checkbox_on Whether the ticket has a sale price.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 ?>
 	<div>
 		<input

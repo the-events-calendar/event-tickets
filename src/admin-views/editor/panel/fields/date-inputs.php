@@ -23,6 +23,8 @@
 
 use Tribe__Date_Utils as Date_Utils;
 
+defined( 'ABSPATH' ) || exit;
+
 $is_start = 'start' === $sales_end;
 
 if ( $ticket ) {
