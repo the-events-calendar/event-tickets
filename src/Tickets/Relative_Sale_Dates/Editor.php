@@ -11,8 +11,10 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
+use InvalidArgumentException;
 use TEC\Tickets\Commerce\Module;
 use Tribe__Date_Utils as Dates;
+use Tribe__Tickets__Admin__Views as Admin_Views;
 use Tribe__Template as Template;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
@@ -57,6 +59,17 @@ final class Editor {
 	];
 
 	/**
+	 * The modes a ticket preset's sales window offers: a preset has no event to pick a specific date for.
+	 *
+	 * Event Tickets Plus checks the rule a preset form posts against them.
+	 *
+	 * @since TBD
+	 *
+	 * @var string[]
+	 */
+	public const PRESET_MODES = [ Rule::MODE_DEFAULT, Rule::MODE_RELATIVE ];
+
+	/**
 	 * The relative start the sale price form offers when the ticket has none: 2 weeks before the event starts.
 	 *
 	 * @since TBD
@@ -82,6 +95,7 @@ final class Editor {
 		'unit'  => WEEK_IN_SECONDS,
 	];
 
+
 	/**
 	 * The store of the ticket rules.
 	 *
@@ -92,14 +106,27 @@ final class Editor {
 	private Rule_Store $rule_store;
 
 	/**
+	 * The admin views template a ticket preset's sales window renders with.
+	 *
+	 * @since TBD
+	 *
+	 * @var Admin_Views
+	 */
+	private Admin_Views $preset_views;
+
+	/**
 	 * Editor constructor.
 	 *
 	 * @since TBD
 	 *
-	 * @param Rule_Store $rule_store The store of the ticket rules.
+	 * @param Rule_Store  $rule_store   The store of the ticket rules.
+	 * @param Admin_Views $preset_views The admin views template a ticket preset's sales window renders with. Not the
+	 *                                  shared one, which carries each render's context into the next, and renders the
+	 *                                  ticket form on the screen where a preset can be saved.
 	 */
-	public function __construct( Rule_Store $rule_store ) {
-		$this->rule_store = $rule_store;
+	public function __construct( Rule_Store $rule_store, Admin_Views $preset_views ) {
+		$this->rule_store   = $rule_store;
+		$this->preset_views = $preset_views;
 	}
 
 	/**
@@ -198,6 +225,74 @@ final class Editor {
 			'start' => [ 'mode' => Rule::MODE_DEFAULT ] + self::DEFAULT_RELATIVE_START,
 			'end'   => [ 'mode' => Rule::MODE_DEFAULT ] + self::DEFAULT_RELATIVE_END,
 		];
+	}
+
+	/**
+	 * Renders the sales window options of a ticket preset.
+	 *
+	 * A preset has no event: it offers the default and relative modes of the ticket form, with no specific date, no
+	 * helper text and no field of its own for the rule, which the preset form sends. A boundary the preset form has no
+	 * option for, or does not have, shows the ticket form's default.
+	 *
+	 * @since TBD
+	 *
+	 * @param array{start?: array<string,int|string>|null, end?: array<string,int|string>|null} $rule         The preset's sales window rule, each
+	 *                                                                                           boundary in its array form.
+	 * @param string                                                                            $field_prefix The prefix of the ids of the
+	 *                                                                                           window's inputs.
+	 *
+	 * @return string The HTML of the options.
+	 */
+	public function render_preset_sales_window( array $rule, string $field_prefix ): string {
+		$kind = Window_Kind::sales();
+		$html = $this->preset_views->template(
+			'relative-sale-dates/sales-window',
+			[
+				'window_kind'   => $kind,
+				'window_fields' => [
+					'start' => $this->get_preset_boundary_fields( $rule['start'] ?? null, $kind, Boundary::EDGE_START ),
+					'end'   => $this->get_preset_boundary_fields( $rule['end'] ?? null, $kind, Boundary::EDGE_END ),
+				],
+				'window_modes'  => [
+					'start' => self::PRESET_MODES,
+					'end'   => self::PRESET_MODES,
+				],
+				'variant'       => 'preset',
+				'field_prefix'  => $field_prefix,
+				'rule_json'     => '',
+				'unit_names'    => $this->get_unit_names_by_number( $kind ),
+			],
+			false
+		);
+
+		return is_string( $html ) ? $html : '';
+	}
+
+	/**
+	 * Gets the name of a unit of a relative sale date for a number of it, as the classic templates and scripts show it.
+	 *
+	 * The msgids and context match the scripts' (`app/unit-names.js`), so one translation serves both.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $unit   The unit, in seconds.
+	 * @param int $number The number of units.
+	 *
+	 * @return string The name, or an empty string for a unit the rules have not.
+	 */
+	public function get_unit_name( int $unit, int $number ): string {
+		switch ( $unit ) {
+			case MINUTE_IN_SECONDS:
+				return _nx( 'minute', 'minutes', $number, 'Unit of a relative ticket sale date.', 'event-tickets' );
+			case HOUR_IN_SECONDS:
+				return _nx( 'hour', 'hours', $number, 'Unit of a relative ticket sale date.', 'event-tickets' );
+			case DAY_IN_SECONDS:
+				return _nx( 'day', 'days', $number, 'Unit of a relative ticket sale date.', 'event-tickets' );
+			case WEEK_IN_SECONDS:
+				return _nx( 'week', 'weeks', $number, 'Unit of a relative ticket sale date.', 'event-tickets' );
+			default:
+				return '';
+		}
 	}
 
 	/**
@@ -322,8 +417,66 @@ final class Editor {
 			'end'   => $this->get_boundary_fields( $rule ? $rule->get_end() : null, $has_date( 'end' ), $kind, 'end' ),
 		];
 		$context['rule_json']     = $rule ? $rule->to_json() : '';
+		$context['window_modes']  = [
+			'start' => $kind->get_modes( Boundary::EDGE_START ),
+			'end'   => $kind->get_modes( Boundary::EDGE_END ),
+		];
+		$context['variant']       = 'ticket';
+		$context['field_prefix']  = 'ticket_sales';
+		$context['unit_names']    = [];
 
 		return $template->template( $this->get_template( $kind ), $context, false );
+	}
+
+	/**
+	 * Gets the values a ticket preset's sales window shows for one boundary.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,int|string>|mixed $data The boundary in its array form, as the preset stores it.
+	 * @param Window_Kind                    $kind The sales window kind.
+	 * @param string                         $end  The end of the window, `start` or `end`.
+	 *
+	 * @return array{mode: string, value: int, unit: int, anchor?: string} The mode, and the relative values the form
+	 *                                                                      offers.
+	 */
+	private function get_preset_boundary_fields( $data, Window_Kind $kind, string $end ): array {
+		if ( ! is_array( $data ) ) {
+			return $this->get_form_defaults( $kind )[ $end ];
+		}
+
+		try {
+			$boundary = Boundary::from_array( $data, $kind, $end );
+		} catch ( InvalidArgumentException $e ) {
+			return $this->get_form_defaults( $kind )[ $end ];
+		}
+
+		if ( ! in_array( $boundary->get_mode(), self::PRESET_MODES, true ) ) {
+			return $this->get_form_defaults( $kind )[ $end ];
+		}
+
+		return $this->get_boundary_fields( $boundary, false, $kind, $end );
+	}
+
+	/**
+	 * Gets the name of each unit of a kind for every number its relative boundaries take, for a form that names the unit
+	 * after the number with no script of Event Tickets', such as a ticket preset's.
+	 *
+	 * @since TBD
+	 *
+	 * @param Window_Kind $kind The kind of the window.
+	 *
+	 * @return array<int,string[]> The names of each unit, keyed by the unit in seconds, from the lowest number up.
+	 */
+	private function get_unit_names_by_number( Window_Kind $kind ): array {
+		$names   = [];
+		$numbers = range( Boundary::MIN_VALUE, $kind->get_max_value() );
+
+		foreach ( $kind->get_units() as $unit ) {
+			$names[ $unit ] = array_map( fn( int $number ): string => $this->get_unit_name( $unit, $number ), $numbers );
+		}
+
+		return $names;
 	}
 
 	/**

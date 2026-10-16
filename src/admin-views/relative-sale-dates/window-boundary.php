@@ -11,6 +11,7 @@
  *
  * @var Window_Kind                                                      $window_kind       The kind of the window.
  * @var string                                                           $boundary_end      The boundary, `start` or `end`.
+ * @var string[]                                                         $boundary_modes    The modes the boundary offers, among the kind's; the specific date shows only with the specific mode.
  * @var array{mode: string, value: int, unit: int, anchor?: string}      $boundary_fields   The mode and relative values the boundary shows.
  * @var string                                                           $field_prefix      The prefix of the ids of the window's inputs.
  * @var array<string,string>                                             $mode_labels       The label of each mode the boundary offers, keyed by the mode.
@@ -21,6 +22,7 @@
  */
 
 use TEC\Tickets\Relative_Sale_Dates\Boundary;
+use TEC\Tickets\Relative_Sale_Dates\Editor;
 use TEC\Tickets\Relative_Sale_Dates\Rule;
 use TEC\Tickets\Relative_Sale_Dates\Window_Kind;
 
@@ -28,16 +30,7 @@ defined( 'ABSPATH' ) || die();
 
 $boundary_id = $field_prefix . '_' . $boundary_end;
 
-/*
- * The unit names follow the number, as the script does when it changes; the msgids and context match the script's so
- * one translation serves both.
- */
-$unit_names = [
-	MINUTE_IN_SECONDS => _nx( 'minute', 'minutes', $boundary_fields['value'], 'Unit of a relative ticket sale date.', 'event-tickets' ),
-	HOUR_IN_SECONDS   => _nx( 'hour', 'hours', $boundary_fields['value'], 'Unit of a relative ticket sale date.', 'event-tickets' ),
-	DAY_IN_SECONDS    => _nx( 'day', 'days', $boundary_fields['value'], 'Unit of a relative ticket sale date.', 'event-tickets' ),
-	WEEK_IN_SECONDS   => _nx( 'week', 'weeks', $boundary_fields['value'], 'Unit of a relative ticket sale date.', 'event-tickets' ),
-];
+$editor = tribe( Editor::class );
 
 $anchor_names = [
 	Rule::ANCHOR_START => _x( 'before the event starts', 'What a relative ticket sale date is measured from.', 'event-tickets' ),
@@ -49,7 +42,7 @@ $anchor_names = [
 	class="tribe-dependency"
 	id="<?php echo esc_attr( $boundary_id ); ?>_mode"
 >
-	<?php foreach ( $window_kind->get_modes( $boundary_end ) as $boundary_mode ) : ?>
+	<?php foreach ( $boundary_modes as $boundary_mode ) : ?>
 		<option value="<?php echo esc_attr( $boundary_mode ); ?>" <?php selected( $boundary_fields['mode'], $boundary_mode ); ?>><?php echo esc_html( $mode_labels[ $boundary_mode ] ); ?></option>
 	<?php endforeach; ?>
 </select>
@@ -81,7 +74,7 @@ $anchor_names = [
 		<?php endif; ?>
 	>
 		<?php foreach ( $window_kind->get_units() as $unit ) : ?>
-			<option value="<?php echo esc_attr( $unit ); ?>" <?php selected( $boundary_fields['unit'], $unit ); ?>><?php echo esc_html( $unit_names[ $unit ] ); ?></option>
+			<option value="<?php echo esc_attr( $unit ); ?>" <?php selected( $boundary_fields['unit'], $unit ); ?>><?php echo esc_html( $editor->get_unit_name( $unit, $boundary_fields['value'] ) ); ?></option>
 		<?php endforeach; ?>
 	</select>
 	<?php if ( $window_kind->takes_anchor() ) : ?>
@@ -107,6 +100,7 @@ $anchor_names = [
 		></span>
 	<?php endif; ?>
 </div>
+<?php if ( in_array( Rule::MODE_SPECIFIC, $boundary_modes, true ) ) : ?>
 <div
 	class="tribe-dependent tec-tickets-relative-sale-dates__specific"
 	data-depends="#<?php echo esc_attr( $boundary_id ); ?>_mode"
@@ -117,3 +111,4 @@ $anchor_names = [
 	</label>
 	<?php $render_date_inputs( $boundary_end ); ?>
 </div>
+<?php endif; ?>
