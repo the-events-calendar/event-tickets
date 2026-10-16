@@ -8,7 +8,7 @@ import { compose } from 'redux';
  * WordPress dependencies
  */
 import { dispatch as wpDispatch } from '@wordpress/data';
-import { applyFilters } from '@wordpress/hooks';
+import { applyFilters, doAction } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
@@ -79,6 +79,15 @@ const onCancelClick = ( state, dispatch, ownProps ) => () => {
 		);
 		dispatch( actions.setTicketsTempSharedCapacity( selectors.getTicketsSharedCapacity( state ) ) );
 		dispatch( actions.setTicketHasChanges( ownProps.clientId, false ) );
+
+		/**
+		 * Fires after the edits of a saved ticket have been discarded with the Cancel button.
+		 *
+		 * @since TBD
+		 *
+		 * @param {string} clientId The client ID of the ticket block.
+		 */
+		doAction( 'tec.tickets.blocks.ticketCancelled', ownProps.clientId );
 	} else {
 		dispatch( actions.removeTicketBlock( ownProps.clientId ) );
 		wpDispatch( 'core/block-editor' ).removeBlocks( ownProps.clientId );

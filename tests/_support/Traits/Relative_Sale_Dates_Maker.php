@@ -1,0 +1,329 @@
+<?php
+
+namespace Tribe\Tickets\Test\Traits;
+
+use ActionScheduler_Action;
+use ActionScheduler_Store;
+use DateTimeImmutable;
+use TEC\Tickets\Commerce\Module;
+use RuntimeException;
+use TEC\Tickets\Commerce\Ticket;
+use TEC\Tickets\Relative_Sale_Dates\Rule;
+use TEC\Tickets\Relative_Sale_Dates\Rule_Store;
+use TEC\Tickets\Ticket_Actions;
+use WP_REST_Request;
+use WP_REST_Response;
+
+/**
+ * Builds the events, rules and lookups the Relative Sale Dates tests share.
+ *
+ * `create_ruled_ticket()` and `create_sale_price_ticket()` need the Tickets Commerce `Ticket_Maker` trait in the test case
+ * as well.
+ */
+trait Relative_Sale_Dates_Maker {
+	/**
+	 * @param int $value The number of units before the event start.
+	 * @param int $unit  The unit, one of the `*_IN_SECONDS` constants from `MINUTE_IN_SECONDS` to `WEEK_IN_SECONDS`.
+	 *
+	 * @return array{mode: string, value: int, unit: int, anchor: string} A relative edge of the window, anchored on the event start.
+	 */
+	protected function relative( int $value, int $unit ): array {
+		return [
+			'mode'   => 'relative',
+			'value'  => $value,
+			'unit'   => $unit,
+			'anchor' => 'start',
+		];
+	}
+
+	/**
+	 * @param int $value The number of units before the event start.
+	 * @param int $unit  `DAY_IN_SECONDS` or `WEEK_IN_SECONDS`.
+	 *
+	 * @return array{mode: string, value: int, unit: int} A relative boundary of the sale price window.
+	 */
+	protected function sale_price_relative( int $value, int $unit ): array {
+		return [
+			'mode'  => Rule::MODE_RELATIVE,
+			'value' => $value,
+			'unit'  => $unit,
+		];
+	}
+
+	/**
+	 * Creates an event lasting three hours.
+	 *
+	 * @param string $start    The event start, local `Y-m-d H:i:s`.
+	 * @param string $timezone The event timezone.
+	 *
+	 * @return int The event post ID.
+	 */
+	protected function create_event( string $start, string $timezone = 'UTC' ): int {
+		return tribe_events()->set_args(
+			[
+				'title'      => 'Relative Sale Dates event',
+				'status'     => 'publish',
+				'start_date' => $start,
+				'timezone'   => $timezone,
+				'duration'   => 3 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+	}
+
+	/**
+	 * @param string $hook      The sales action hook.
+	 * @param int    $ticket_id The ticket post ID.
+	 *
+	 * @return int[] The timestamps the pending actions of the ticket are scheduled at.
+	 */
+	protected function get_scheduled_timestamps( string $hook, int $ticket_id ): array {
+		$actions = as_get_scheduled_actions(
+			[
+				'hook'   => $hook,
+				'args'   => [ $ticket_id ],
+				'group'  => Ticket_Actions::AS_TICKET_ACTIONS_GROUP,
+				'status' => ActionScheduler_Store::STATUS_PENDING,
+			],
+			OBJECT
+		);
+
+		return array_values( array_map( static fn( ActionScheduler_Action $action ): int => $action->get_schedule()->get_date()->getTimestamp(), $actions ) );
+	}
+
+	/**
+	 * Sends a ticket save the way the block editor does.
+	 *
+	 * @param string              $method       The HTTP method.
+	 * @param string              $route        The route, relative to the tickets namespace.
+	 * @param int                 $post_id      The ticketed post ID.
+	 * @param string              $nonce_action The nonce action the endpoint checks.
+	 * @param array<string,mixed> $overrides    The body params to replace, merged recursively.
+	 *
+	 * @return WP_REST_Response The response.
+	 */
+	protected function send_block_editor_ticket_save( string $method, string $route, int $post_id, string $nonce_action, array $overrides = [] ): WP_REST_Response {
+		$request = new WP_REST_Request( $method, '/' . tribe( 'tickets.rest-v1.main' )->get_events_route_namespace() . $route );
+		$request->set_body_params(
+			array_replace_recursive(
+				[
+					'post_id'          => $post_id,
+					$nonce_action      => wp_create_nonce( $nonce_action ),
+					'provider'         => Module::class,
+					'name'             => 'Block editor ticket',
+					'description'      => '',
+					'price'            => '10',
+					'show_description' => 'yes',
+					'start_date'       => '',
+					'start_time'       => '',
+					'end_date'         => '',
+					'end_time'         => '',
+					'sku'              => '',
+					'iac'              => 'none',
+					'menu_order'       => 0,
+					'ticket'           => [
+						'mode'     => 'own',
+						'capacity' => 50,
+					],
+				],
+				$overrides
+			)
+		);
+
+		return rest_do_request( $request );
+	}
+
+	/**
+	 * Sends a ticket save the way the classic editor does and returns its JSON response.
+	 *
+	 * @param int    $post_id  The ticketed post ID.
+	 * @param string $data     The ticket form, URL-encoded as `tickets.js` serializes it.
+	 * @param bool   $is_admin Whether the form is the one in wp-admin, or a front-end one such as Community Events'.
+	 *
+	 * @return array{success: bool, data: mixed} The decoded JSON response.
+	 */
+	protected function send_classic_ticket_form( int $post_id, string $data, bool $is_admin = true ): array {
+		$this->set_classic_ticket_form_request( $post_id, $data, $is_admin );
+
+		add_filter( 'wp_doing_ajax', '__return_true' );
+		add_filter(
+			'wp_die_ajax_handler',
+			static fn() => static function () {
+				throw new RuntimeException( 'The AJAX response was sent.' );
+			}
+		);
+
+		ob_start();
+		try {
+			tribe( 'tickets.metabox' )->ajax_ticket_add();
+		} catch ( RuntimeException $e ) {
+			// wp_send_json_*() ends the request through the die handler.
+		}
+
+		return json_decode( ob_get_clean(), true );
+	}
+
+	/**
+	 * Fills the request with a ticket save the way the classic editor sends it, without dispatching it.
+	 *
+	 * @param int    $post_id  The ticketed post ID.
+	 * @param string $data     The ticket form, URL-encoded as `tickets.js` serializes it.
+	 * @param bool   $is_admin Whether the form is the one in wp-admin, or a front-end one such as Community Events'.
+	 *
+	 * @return void
+	 */
+	protected function set_classic_ticket_form_request( int $post_id, string $data, bool $is_admin = true ): void {
+		// WordPress slashes the request, the URL-encoded form string included.
+		$_POST = wp_slash(
+			[
+				'post_id'  => $post_id,
+				'nonce'    => wp_create_nonce( 'add_ticket_nonce' ),
+				'data'     => $data,
+				'is_admin' => $is_admin ? 'true' : 'false',
+			]
+		);
+	}
+
+	/**
+	 * @param int $ticket_id The ticket post ID.
+	 *
+	 * @return array{0: string, 1: string} The stored sales start date and time.
+	 */
+	protected function get_ticket_start( int $ticket_id ): array {
+		return [ get_post_meta( $ticket_id, '_ticket_start_date', true ), get_post_meta( $ticket_id, '_ticket_start_time', true ) ];
+	}
+
+	/**
+	 * @param int $ticket_id The ticket post ID.
+	 *
+	 * @return array{0: string, 1: string} The stored sales end date and time.
+	 */
+	protected function get_ticket_end( int $ticket_id ): array {
+		return [ get_post_meta( $ticket_id, '_ticket_end_date', true ), get_post_meta( $ticket_id, '_ticket_end_time', true ) ];
+	}
+
+	/**
+	 * Asserts a ticket's dates and sales actions follow the rule "2 weeks before the start to 1 day before the start".
+	 *
+	 * @param DateTimeImmutable $event_start The event start the ticket should be resolved from, in the event timezone.
+	 * @param int               $ticket_id   The ticket post ID.
+	 *
+	 * @return void
+	 */
+	protected function assert_resolved_from( DateTimeImmutable $event_start, int $ticket_id ): void {
+		$sales_start = $event_start->modify( '-2 weeks' );
+		$sales_end   = $event_start->modify( '-1 day' );
+		// Ticket_Actions schedules each action 30 minutes ahead of the date it announces.
+		$lead_time = 30 * MINUTE_IN_SECONDS;
+
+		$this->assertSame( [ $sales_start->format( 'Y-m-d' ), $sales_start->format( 'H:i:s' ) ], $this->get_ticket_start( $ticket_id ) );
+		$this->assertSame( [ $sales_end->format( 'Y-m-d' ), $sales_end->format( 'H:i:s' ) ], $this->get_ticket_end( $ticket_id ) );
+		$this->assertSame( [ $sales_start->getTimestamp() - $lead_time ], $this->get_scheduled_timestamps( Ticket_Actions::TICKET_START_SALES_HOOK, $ticket_id ) );
+		$this->assertSame( [ $sales_end->getTimestamp() - $lead_time ], $this->get_scheduled_timestamps( Ticket_Actions::TICKET_END_SALES_HOOK, $ticket_id ) );
+	}
+
+	/**
+	 * Creates a Tickets Commerce ticket and stores the rule "2 weeks before the start to 1 day before the start" on it.
+	 *
+	 * @param int                   $event_id  The event post ID.
+	 * @param array<string,string>  $overrides The ticket data to override.
+	 *
+	 * @return int The ticket post ID.
+	 */
+	protected function create_ruled_ticket( int $event_id, array $overrides = [] ): int {
+		$ticket_id = $this->create_tc_ticket( $event_id, 1, $overrides );
+		tribe( Rule_Store::class )->save(
+			$ticket_id,
+			[
+				'start' => $this->relative( 2, WEEK_IN_SECONDS ),
+				'end'   => $this->relative( 1, DAY_IN_SECONDS ),
+			]
+		);
+
+		return $ticket_id;
+	}
+
+	/**
+	 * Makes the ticket read "today" in UTC, the timezone the test computes its dates in.
+	 *
+	 * The ticket checks its sale price window against "today" in the site timezone. A site with no timezone string falls
+	 * back to its UTC offset, and an offset of 0 resolves to Europe/London, which is an hour ahead of UTC in summer: the
+	 * ticket's "today" is then a day ahead of the test's from 23:00 UTC.
+	 *
+	 * @return void
+	 */
+	protected function set_site_timezone_to_utc(): void {
+		update_option( 'timezone_string', 'UTC' );
+	}
+
+	/**
+	 * Creates a Tickets Commerce ticket priced 20 with a sale price of 10.
+	 *
+	 * @param int                                                                                                                                              $post_id   The ticketed post ID.
+	 * @param array<string,string|int|bool|null|array{start: array{mode: string, value?: int, unit?: int}, end: array{mode: string, value?: int, unit?: int}}> $overrides The ticket data to override.
+	 *
+	 * @return int The ticket post ID.
+	 */
+	protected function create_sale_price_ticket( int $post_id, array $overrides = [] ): int {
+		return $this->create_tc_ticket( $post_id, 20, array_merge( $this->get_sale_price_data(), $overrides ) );
+	}
+
+	/**
+	 * @return array{ticket_add_sale_price: string, ticket_sale_price: int, ticket_sale_start_date: string, ticket_sale_end_date: string} The sale price fields of a ticket form with a sale price of 10.
+	 */
+	protected function get_sale_price_data(): array {
+		return [
+			'ticket_add_sale_price'  => 'on',
+			'ticket_sale_price'      => 10,
+			'ticket_sale_start_date' => '',
+			'ticket_sale_end_date'   => '',
+		];
+	}
+
+	/**
+	 * @param int $ticket_id The ticket post ID.
+	 *
+	 * @return array{0: string, 1: string} The stored sale price start and end dates.
+	 */
+	protected function get_sale_price_dates( int $ticket_id ): array {
+		return [
+			get_post_meta( $ticket_id, Ticket::$sale_price_start_date_key, true ),
+			get_post_meta( $ticket_id, Ticket::$sale_price_end_date_key, true ),
+		];
+	}
+
+	/**
+	 * Ticket_Actions schedules nothing for a sales window that has already ended, so the events are a year away.
+	 *
+	 * @return DateTimeImmutable An event start at 19:00 UTC, a year from now.
+	 */
+	protected function get_future_event_start(): DateTimeImmutable {
+		return new DateTimeImmutable( ( new DateTimeImmutable( '+1 year' ) )->format( 'Y-m-d 19:00:00' ) );
+	}
+
+	/**
+	 * Makes another request rewrite a ticket's stored rules before each update of them, so every update conflicts.
+	 *
+	 * It writes the same rules with their keys in the other order: the stored JSON changes, the rules do not. The stored
+	 * rules need two keys or more.
+	 *
+	 * @param int $ticket_id The ticket post ID.
+	 *
+	 * @return void
+	 */
+	protected function conflict_with_every_rules_write( int $ticket_id ): void {
+		$rewrite = static function ( $short_circuit, $object_id, $meta_key ) use ( &$rewrite, $ticket_id ) {
+			if ( $object_id !== $ticket_id || Rule_Store::META_KEY !== $meta_key ) {
+				return $short_circuit;
+			}
+
+			$rules = json_decode( (string) get_post_meta( $ticket_id, Rule_Store::META_KEY, true ), true );
+			remove_filter( 'update_post_metadata', $rewrite );
+			update_post_meta( $ticket_id, Rule_Store::META_KEY, wp_slash( wp_json_encode( array_reverse( $rules, true ) ) ) );
+			add_filter( 'update_post_metadata', $rewrite, 10, 3 );
+
+			return $short_circuit;
+		};
+
+		add_filter( 'update_post_metadata', $rewrite, 10, 3 );
+	}
+}

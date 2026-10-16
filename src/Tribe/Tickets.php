@@ -4301,6 +4301,56 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Returns whether ticket data can be saved, before an editor or REST request saves it with `ticket_add()`.
+		 *
+		 * `ticket_add()` can only return `false`, so the entry points ask here first, where a callback can reject the data
+		 * with a message they show. The classic editor's ajax save, the block editor's REST V1 save and the TEC REST API
+		 * call it; other callers of `ticket_add()`, such as imports and the RSVP V2 editor, save without it.
+		 *
+		 * @since TBD
+		 *
+		 * @param int|string          $post_id The ticket parent post ID.
+		 * @param array<string,mixed> $data    The ticket data about to be saved.
+		 *
+		 * @return true|WP_Error `true` when the data can be saved, or the error it is rejected with.
+		 */
+		public function validate_ticket_data( $post_id, array $data ) {
+			/**
+			 * Filters whether ticket data can be saved, before an editor or REST request saves it.
+			 *
+			 * Return a `WP_Error` to reject the save: its message is shown to the user, and nothing is saved. Only the
+			 * classic editor's ajax save, the block editor's REST V1 save and the TEC REST API apply it.
+			 *
+			 * @since TBD
+			 *
+			 * @param true|WP_Error       $valid   `true`, or the error an earlier callback rejected the data with.
+			 * @param int                 $post_id The ticket parent post ID.
+			 * @param array<string,mixed> $data    The ticket data about to be saved, with the class name of its provider in `ticket_provider`.
+			 */
+			$valid = apply_filters(
+				'tec_tickets_ticket_data_validation',
+				true,
+				absint( $post_id ),
+				array_merge( $data, [ 'ticket_provider' => $this->class_name ] )
+			);
+
+			if ( is_wp_error( $valid ) ) {
+				return $valid;
+			}
+
+			// A callback that rejects the data without saying why still rejects it.
+			if ( false === $valid ) {
+				return new WP_Error(
+					'tec_tickets_ticket_data_invalid',
+					__( 'The ticket could not be saved.', 'event-tickets' ),
+					[ 'status' => 400 ]
+				);
+			}
+
+			return true;
+		}
+
+		/**
 		 * Get the saved or default ticket provider, if active.
 		 *
 		 * Will return False if there is a saved provider that is currently not active.

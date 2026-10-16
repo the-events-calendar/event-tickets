@@ -56,3 +56,12 @@ export const SALE_PRICE_LABELS = window?.tribe_editor_config?.tickets?.salePrice
 
 // eslint-disable-next-line max-len
 export const IS_FREE_TC_TICKET_ALLOWED = window?.tribe_editor_config?.tickets?.commerce?.isFreeTicketAllowed;
+
+/**
+ * A sale price date as the store holds a real one, `YYYY-MM-DD`: it holds an empty one as `Invalid date`.
+ *
+ * @since TBD
+ *
+ * @type {RegExp}
+ */
+export const SALE_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;

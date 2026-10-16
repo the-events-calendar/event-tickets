@@ -1,0 +1,1561 @@
+import moment from 'moment-timezone';
+import { TYPING_SETTLE_DELAY } from '@tec/tickets/relative-sale-dates/live-error';
+
+global.DateFormatter = require( 'php-date-formatter' );
+
+// The real package, not the shared mock, so a test can hand it the translations the template uses.
+jest.unmock( '@wordpress/i18n' );
+
+const UNIT_DAYS = 86400;
+const UNIT_WEEKS = 604800;
+
+/**
+ * Renders the tickets metabox with the sales window fields of a relative start and a default end.
+ */
+function renderMetabox() {
+	document.body.innerHTML = `
+		<div id="tribetickets">
+			<div id="tribe_panel_edit">
+				<select id="ticket_sales_start_mode"><option value="relative" selected>Relative</option></select>
+				<input type="number" min="1" max="60" id="ticket_sales_start_value" value="2" />
+				<select id="ticket_sales_start_unit"><option value="${ UNIT_WEEKS }" selected>weeks</option></select>
+				<select id="ticket_sales_start_anchor"><option value="start" selected>starts</option></select>
+				<select id="ticket_sales_end_mode"><option value="default" selected>Default</option></select>
+				<input type="number" min="1" max="60" id="ticket_sales_end_value" value="1" />
+				<select id="ticket_sales_end_unit"><option value="3600" selected>hours</option></select>
+				<select id="ticket_sales_end_anchor"><option value="start" selected>starts</option></select>
+				<input type="hidden" name="relative_sale_dates" id="ticket_relative_sale_dates" value="" />
+			</div>
+		</div>`;
+}
+
+/**
+ * Loads the classic editor script and waits for its DOM-ready callbacks to run.
+ *
+ * @param {Object|null} localeData The `event-tickets` translations to load the script with, or `null` for none.
+ *
+ * @return {Promise<Object>} Resolves, once the script is set up, to the hooks module the script was loaded with.
+ */
+async function loadScript( localeData = null ) {
+	let hooks;
+
+	jest.isolateModules( () => {
+		// WordPress's `wp-date` sets up `moment.tz` before the script loads.
+		require( 'moment-timezone' );
+		if ( localeData ) {
+			require( '@wordpress/i18n' ).setLocaleData( localeData, 'event-tickets' );
+		}
+		require( '@tec/tickets/relative-sale-dates/classic/index' );
+		hooks = require( '@wordpress/hooks' );
+	} );
+
+	await new Promise( ( resolve ) => jQuery( resolve ) );
+
+	return hooks;
+}
+
+/**
+ * Renders the event fields and the tickets metabox with a relative start and a relative end.
+ *
+ * @param {Object} start The relative start: `value`, `unit` and `anchor`.
+ * @param {Object} end   The end: `mode`, and `value`, `unit` and `anchor` for a relative one.
+ */
+function renderEventForm( start = { value: 2, unit: UNIT_WEEKS, anchor: 'start' }, end = undefined ) {
+	document.body.innerHTML = `
+		<input id="EventStartDate" value="6/24/2099" />
+		<input id="EventStartTime" value="7:00pm" />
+		<input id="EventEndDate" value="6/24/2099" />
+		<input id="EventEndTime" value="10:00pm" />
+		<input type="checkbox" id="allDayCheckbox" />
+		<select id="event-timezone"><option value="America/New_York" selected>New York</option></select>
+		${ renderListRow() }
+		${ renderPanel( start, end ) }`;
+}
+
+/**
+ * @return {string} The sale dates of a saved ticket that starts 2 weeks before the event and ends when it starts.
+ */
+function renderListRow() {
+	const rule = JSON.stringify( {
+		start: { mode: 'relative', value: 2, unit: UNIT_WEEKS, anchor: 'start' },
+		end: { mode: 'default' },
+	} ).replace( /"/g, '&quot;' );
+
+	return `<div id="list-row-dates" data-relative-sale-dates="${ rule }" data-sale-start="2099-06-10" data-sale-end="2099-06-24">stored</div>`;
+}
+
+/**
+ * @param {Object} start The relative start: `value`, `unit` and `anchor`.
+ * @param {Object} end   The end: `mode`, and `value`, `unit` and `anchor` for a relative one.
+ *
+ * @return {string} The tickets metabox with the ticket edit panel.
+ */
+function renderPanel( { value, unit, anchor }, end = { mode: 'relative', value: 1, unit: 3600, anchor: 'start' } ) {
+	return `
+		<div id="tribetickets">
+			<div id="tribe_panel_edit">
+				<select id="ticket_sales_start_mode"><option value="relative" selected>Relative</option></select>
+				<input type="number" min="1" max="60" id="ticket_sales_start_value" value="${ value }" />
+				<select id="ticket_sales_start_unit"><option value="${ unit }" selected>unit</option></select>
+				<select id="ticket_sales_start_anchor"><option value="${ anchor }" selected>anchor</option></select>
+				<span id="ticket_sales_start_helper"></span>
+				<select id="ticket_sales_end_mode"><option value="${ end.mode }" selected>mode</option></select>
+				<input type="number" min="1" max="60" id="ticket_sales_end_value" value="${ end.value }" />
+				<select id="ticket_sales_end_unit"><option value="${ end.unit }" selected>unit</option></select>
+				<select id="ticket_sales_end_anchor"><option value="${ end.anchor }" selected>anchor</option></select>
+				<span id="ticket_sales_end_helper"></span>
+				<input id="ticket_end_date" value="${ end.date || '' }" />
+				<input id="ticket_end_time" value="${ end.time || '' }" />
+				<p id="ticket_sales_window_error"></p>
+				<input type="hidden" name="relative_sale_dates" id="ticket_relative_sale_dates" value="" />
+			</div>
+		</div>`;
+}
+
+/**
+ * Adds the price and the sale price fields to the ticket edit panel, with the helper text that holds the sale length
+ * and the element that shows the sale price error. The sale price is lower than the price.
+ *
+ * @param {Object}  start          The start: `mode`, and `value` and `unit` for a relative one.
+ * @param {Object}  end            The end: `mode`, and `value` and `unit` for a relative one.
+ * @param {string}  [startDate=''] The specific start date, in the datepicker format.
+ * @param {boolean} [checked=true] Whether the ticket has a sale price.
+ */
+function appendSalePriceFields( start, end, startDate = '', checked = true ) {
+	const fields = ( key, { mode, value = 1, unit = UNIT_WEEKS } ) => `
+		<select id="ticket_sale_${ key }_mode"><option value="${ mode }" selected>mode</option></select>
+		<input type="number" id="ticket_sale_${ key }_value" value="${ value }" />
+		<select id="ticket_sale_${ key }_unit">
+			<option value="${ UNIT_DAYS }" ${ UNIT_DAYS === unit ? 'selected' : '' }>days</option>
+			<option value="${ UNIT_WEEKS }" ${ UNIT_WEEKS === unit ? 'selected' : '' }>weeks</option>
+		</select>`;
+
+	document.getElementById( 'tribe_panel_edit' ).insertAdjacentHTML(
+		'beforeend',
+		`<input id="ticket_price" value="20" />
+		<input type="checkbox" id="ticket_add_sale_price" ${ checked ? 'checked' : '' } />
+		<input id="ticket_sale_price" value="10" />
+		${ fields( 'start', start ) }
+		<input id="ticket_sale_start_date" value="${ startDate }" />
+		${ fields( 'end', end ) }
+		<input id="ticket_sale_end_date" value="" />
+		<span id="ticket_sale_price_length"></span>
+		<p id="ticket_sale_price_error"></p>`
+	);
+}
+
+/**
+ * @return {string} The sale length the helper text shows.
+ */
+function getSaleLengthText() {
+	return document.getElementById( 'ticket_sale_price_length' ).textContent;
+}
+
+const INVALID_WINDOW = 'Ticket sales cannot end before they start. Please adjust the sales window.';
+
+const OUT_OF_RANGE = 'Enter a number from 1 to 60.';
+
+const SALE_PRICE_ENDS_BEFORE_START = 'The sale price cannot end before it starts. Please adjust the sale price window.';
+
+const SALE_PRICE_OUTSIDE_WINDOW =
+	'The sale price window falls outside the ticket sales window. Please adjust the dates.';
+
+const SALE_PRICE_OUT_OF_RANGE = 'Enter a number from 1 to 30.';
+
+const SALE_PRICE_INVALID_DATE = 'The sale price dates cannot be read. Enter a valid date for each specific date.';
+
+/**
+ * @param {string} fieldId The id of the field.
+ * @param {string} errorId The id of the element that shows the error.
+ *
+ * @return {boolean} Whether the field is marked invalid, and points at the error that says why.
+ */
+function isMarkedInvalid( fieldId, errorId ) {
+	const field = document.getElementById( fieldId );
+
+	return 'true' === field.getAttribute( 'aria-invalid' ) && errorId === field.getAttribute( 'aria-describedby' );
+}
+
+/**
+ * @return {string} The error shown under the sale price window.
+ */
+function readSalePriceError() {
+	return document.getElementById( 'ticket_sale_price_error' ).textContent;
+}
+
+/**
+ * Renders the event fields and the tickets metabox with a sales window that ends an hour before it starts.
+ */
+function renderSalesEndingBeforeStart() {
+	renderEventForm(
+		{ value: 1, unit: 3600, anchor: 'start' },
+		{ mode: 'relative', value: 2, unit: 3600, anchor: 'start' }
+	);
+}
+
+/**
+ * Removes the event date fields, as on a form the script cannot read the event dates from.
+ */
+function removeEventDates() {
+	[ 'EventStartDate', 'EventEndDate' ].forEach( ( id ) => document.getElementById( id ).remove() );
+}
+
+/**
+ * @typedef {Object} KindForm
+ *
+ * @property {function( boolean ): void} render          Renders the form with the window valid, or ending before it
+ *                                                       starts.
+ * @property {string}                    errorId         The id of the element that shows the window's error.
+ * @property {string}                    endModeId       The id of the mode field of the window's end.
+ * @property {string}                    valuePrefix     The prefix of the ids of the window's relative number fields.
+ * @property {function(): void}         fix             Changes a field so the window no longer ends before it starts.
+ * @property {string}                    endsBeforeStart The text of a window that ends before it starts.
+ * @property {string[]}                  serverErrors    The texts the server rejects a save of the window with.
+ * @property {string}                    outOfRange      The text of a relative number out of the window's range.
+ * @property {string}                    aboveRange      A relative number just above the window's range.
+ */
+
+/**
+ * The classic form of each window kind: how to render it valid or ending before it starts, and the elements and texts
+ * of its errors.
+ *
+ * @type {Array<[string, KindForm]>}
+ */
+const KIND_FORMS = [
+	[
+		'the sales window',
+		{
+			render: ( isValid ) => ( isValid ? renderEventForm() : renderSalesEndingBeforeStart() ),
+			errorId: 'ticket_sales_window_error',
+			endModeId: 'ticket_sales_end_mode',
+			valuePrefix: 'ticket_sales',
+			// A start three hours before the event, ahead of the end two hours before.
+			fix: () => jQuery( '#ticket_sales_start_value' ).val( '3' ).trigger( 'change' ),
+			endsBeforeStart: INVALID_WINDOW,
+			serverErrors: [ [ INVALID_WINDOW, 'tec_tickets_relative_sale_dates_invalid_window' ] ],
+			outOfRange: OUT_OF_RANGE,
+			aboveRange: '61',
+		},
+	],
+	[
+		'the sale price window',
+		{
+			render: ( isValid ) => {
+				renderEventForm();
+				appendSalePriceFields(
+					{ mode: 'relative', value: isValid ? 2 : 1 },
+					{ mode: 'relative', value: isValid ? 1 : 2 }
+				);
+			},
+			errorId: 'ticket_sale_price_error',
+			endModeId: 'ticket_sale_end_mode',
+			valuePrefix: 'ticket_sale',
+			// An end two days before the event, after the start a week before.
+			fix: () => jQuery( '#ticket_sale_end_unit' ).val( String( UNIT_DAYS ) ).trigger( 'change' ),
+			endsBeforeStart: SALE_PRICE_ENDS_BEFORE_START,
+			serverErrors: [
+				[ SALE_PRICE_ENDS_BEFORE_START, 'tec_tickets_relative_sale_dates_sale_price_ends_before_start' ],
+				[ SALE_PRICE_OUTSIDE_WINDOW, 'tec_tickets_relative_sale_dates_sale_price_outside_sales_window' ],
+			],
+			outOfRange: SALE_PRICE_OUT_OF_RANGE,
+			aboveRange: '31',
+		},
+	],
+];
+
+/**
+ * Asks for the extra validation `tickets.js` runs before it saves a ticket.
+ *
+ * @return {*} What the validation handlers answered; `false` blocks the save.
+ */
+function validateTicket() {
+	return jQuery( '#tribetickets' ).triggerHandler( 'additionalValidation.tribe', [ true ] );
+}
+
+/**
+ * @return {boolean} Whether the end of the window is marked invalid, and points at the error that says why.
+ */
+function isEndMarkedInvalid() {
+	const endMode = document.getElementById( 'ticket_sales_end_mode' );
+
+	return 'true' === endMode.getAttribute( 'aria-invalid' ) && 'ticket_sales_window_error' === endMode.getAttribute( 'aria-describedby' );
+}
+
+/**
+ * @param {string} end The end of the window, `start` or `end`.
+ *
+ * @return {string} The name of the unit selected for that end.
+ */
+function getUnitLabel( end ) {
+	const unit = document.getElementById( `ticket_sales_${ end }_unit` );
+
+	return unit.options[ unit.selectedIndex ].textContent;
+}
+
+/**
+ * @return {string} The sale dates the listed ticket shows.
+ */
+function getListRowText() {
+	return document.getElementById( 'list-row-dates' ).textContent;
+}
+
+/**
+ * Adds the price cell of a listed ticket, holding both prices the server drew for it.
+ *
+ * @param {string} rule The sale price rule, as the server writes it: by default, from now to 1 week before the event
+ *                      starts.
+ */
+function appendPriceCell(
+	rule = JSON.stringify( { start: { mode: 'now' }, end: { mode: 'relative', value: 1, unit: UNIT_WEEKS } } )
+) {
+	jQuery( 'body' ).append(
+		jQuery( '<table><tr><td id="price-cell" class="ticket_price">Server price</td></tr></table>' )
+	);
+	jQuery( '#price-cell' ).attr( {
+		'data-sale-price-rule': rule,
+		'data-sale-price-start': '',
+		'data-sale-price-end': '2099-06-17',
+		'data-price-on-sale': '<ins>$10.00</ins><del>$20.00</del>',
+		'data-price-regular': '$20.00',
+	} );
+}
+
+/**
+ * @return {string} The price cell's HTML.
+ */
+function getPriceCellHtml() {
+	return document.getElementById( 'price-cell' ).innerHTML;
+}
+
+/**
+ * @return {string} The sales window error shown in the form.
+ */
+function getWindowError() {
+	return document.getElementById( 'ticket_sales_window_error' ).textContent;
+}
+
+/**
+ * @param {string} end The end of the window, `start` or `end`.
+ *
+ * @return {string} The helper text of that end.
+ */
+function getHelperText( end ) {
+	return document.getElementById( `ticket_sales_${ end }_helper` ).textContent;
+}
+
+describe( 'classic editor script', () => {
+	beforeEach( () => {
+		window.tec = { tickets: { relativeSaleDates: {} } };
+		window.tec.tickets.relativeSaleDates.classicData = {
+			timeFormat: 'g:i a',
+			dateWithYear: 'F j, Y',
+			dateNoYear: 'F j',
+			timezones: {},
+			allDay: { start: '00:00:00', end: '23:59:59', endDays: 0 },
+			text: {
+				start: 'Sales start %1$s at %2$s',
+				end: 'Sales end %1$s at %2$s',
+				windows: {
+					sales: { endsBeforeStart: INVALID_WINDOW, valueOutOfRange: OUT_OF_RANGE },
+					sale_price: {
+						endsBeforeStart: SALE_PRICE_ENDS_BEFORE_START,
+						outsideParent: SALE_PRICE_OUTSIDE_WINDOW,
+						invalidDate: SALE_PRICE_INVALID_DATE,
+						valueOutOfRange: SALE_PRICE_OUT_OF_RANGE,
+					},
+				},
+			},
+			errorCodes: {
+				sales: { endsBeforeStart: 'tec_tickets_relative_sale_dates_invalid_window' },
+				sale_price: {
+					endsBeforeStart: 'tec_tickets_relative_sale_dates_sale_price_ends_before_start',
+					outsideParent: 'tec_tickets_relative_sale_dates_sale_price_outside_sales_window',
+				},
+			},
+		};
+		window.tribe_dynamic_help_text = {
+			date_with_year: 'F j, Y',
+			date_no_year: 'F j',
+			datepicker_format: 'n/j/Y',
+		};
+	} );
+
+	afterEach( () => {
+		jest.useRealTimers();
+		jQuery( document ).off();
+		document.body.innerHTML = '';
+	} );
+
+	it( 'should show when each relative end of the window works out to', async () => {
+		renderEventForm();
+		await loadScript();
+
+		expect( getHelperText( 'start' ) ).toBe( 'Sales start June 10, 2099 at 7:00 pm' );
+		expect( getHelperText( 'end' ) ).toBe( 'Sales end June 24, 2099 at 6:00 pm' );
+	} );
+
+	it( 'should format the helper text with the localized TEC formats, as the block editor does', async () => {
+		window.tribe_dynamic_help_text.date_with_year = 'Y-m-d';
+		window.tec.tickets.relativeSaleDates.classicData.dateWithYear = 'j F Y';
+		renderEventForm();
+		await loadScript();
+
+		expect( getHelperText( 'start' ) ).toBe( 'Sales start 10 June 2099 at 7:00 pm' );
+	} );
+
+	it( 'should update the helper text when the event date changes', async () => {
+		renderEventForm();
+		await loadScript();
+
+		jQuery( '#EventStartDate' ).val( '6/25/2099' ).trigger( 'change' );
+
+		expect( getHelperText( 'start' ) ).toBe( 'Sales start June 11, 2099 at 7:00 pm' );
+	} );
+
+	it( 'should update the helper text when the event becomes all-day', async () => {
+		window.tec.tickets.relativeSaleDates.classicData.allDay = { start: '06:00:00', end: '05:59:59', endDays: 1 };
+		renderEventForm();
+		await loadScript();
+
+		jQuery( '#allDayCheckbox' ).prop( 'checked', true ).trigger( 'change' );
+
+		expect( getHelperText( 'start' ) ).toBe( 'Sales start June 10, 2099 at 6:00 am' );
+	} );
+
+	it( 'should update the helper text when the event timezone changes', async () => {
+		// A day before 02:30 on 11 March 2030 is a time New York skips as its clocks go forward on the 10th.
+		renderEventForm( { value: 1, unit: UNIT_DAYS, anchor: 'start' } );
+		jQuery( '#EventStartDate, #EventEndDate' ).val( '3/11/2030' );
+		jQuery( '#EventStartTime' ).val( '2:30am' );
+		jQuery( '#EventEndTime' ).val( '5:00am' );
+		jQuery( '#event-timezone' ).html(
+			'<option value="UTC" selected>UTC</option><option value="America/New_York">New York</option>'
+		);
+		await loadScript();
+		const utcText = getHelperText( 'start' );
+
+		jQuery( '#event-timezone' ).val( 'America/New_York' ).trigger( 'change' );
+
+		expect( utcText ).toBe( 'Sales start March 10, 2030 at 2:30 am' );
+		expect( getHelperText( 'start' ) ).toBe( 'Sales start March 10, 2030 at 3:30 am' );
+	} );
+
+	it( 'should update the helper text when a relative field changes', async () => {
+		renderEventForm();
+		await loadScript();
+
+		jQuery( '#ticket_sales_start_value' ).val( '3' ).trigger( 'change' );
+
+		expect( getHelperText( 'start' ) ).toBe( 'Sales start June 3, 2099 at 7:00 pm' );
+	} );
+
+	it( 'should show the helper text of a panel the editor replaced', async () => {
+		renderEventForm();
+		const hooks = await loadScript();
+
+		jQuery( '#tribetickets' ).replaceWith( renderPanel( { value: 1, unit: UNIT_DAYS, anchor: 'end' } ) );
+		hooks.doAction( 'tec.tickets.admin.panels.refreshed', {} );
+
+		expect( getHelperText( 'start' ) ).toBe( 'Sales start June 23, 2099 at 10:00 pm' );
+	} );
+
+	it( 'should show the sale length of a panel the editor replaced', async () => {
+		renderEventForm();
+		const hooks = await loadScript();
+
+		jQuery( '#tribetickets' ).replaceWith( renderPanel( { value: 1, unit: UNIT_DAYS, anchor: 'end' } ) );
+		appendSalePriceFields( { mode: 'relative', value: 2 }, { mode: 'relative', value: 1 } );
+		hooks.doAction( 'tec.tickets.admin.panels.refreshed', {} );
+
+		expect( getSaleLengthText() ).toBe( 'Tickets on sale for 1 week' );
+	} );
+
+	it( 'should leave the helper text of an end that is not relative empty', async () => {
+		renderEventForm();
+		jQuery( '#ticket_sales_start_mode' ).html( '<option value="default" selected>Default</option>' );
+		await loadScript();
+
+		expect( getHelperText( 'start' ) ).toBe( '' );
+	} );
+
+	it.each( [ [ 'above the range', '100' ], [ 'below the range', '-5' ] ] )(
+		'should leave the helper text of a number %s empty',
+		async ( name, value ) => {
+			renderEventForm();
+			await loadScript();
+
+			jQuery( '#ticket_sales_start_value' ).val( value ).trigger( 'input' );
+
+			expect( getHelperText( 'start' ) ).toBe( '' );
+		}
+	);
+
+	it( 'should name the unit in the plural form of the number', async () => {
+		renderEventForm();
+		await loadScript();
+
+		expect( getUnitLabel( 'start' ) ).toBe( 'weeks' );
+		expect( getUnitLabel( 'end' ) ).toBe( 'hour' );
+	} );
+
+	it( 'should name the unit of a zero in the plural', async () => {
+		renderEventForm();
+		await loadScript();
+
+		jQuery( '#ticket_sales_start_value' ).val( '0' ).trigger( 'input' );
+
+		expect( getUnitLabel( 'start' ) ).toBe( 'weeks' );
+	} );
+
+	it( 'should change the unit name when the number changes', async () => {
+		renderEventForm();
+		await loadScript();
+
+		jQuery( '#ticket_sales_start_value' ).val( '1' ).trigger( 'input' );
+		jQuery( '#ticket_sales_end_value' ).val( '3' ).trigger( 'input' );
+
+		expect( getUnitLabel( 'start' ) ).toBe( 'week' );
+		expect( getUnitLabel( 'end' ) ).toBe( 'hours' );
+	} );
+
+	it( 'should name the unit with the translation the template uses', async () => {
+		renderEventForm();
+		await loadScript( {
+			'': { domain: 'event-tickets', plural_forms: 'nplurals=2; plural=(n != 1);' },
+			'Unit of a relative ticket sale date.\u0004week': [ 'semana', 'semanas' ],
+		} );
+
+		jQuery( '#ticket_sales_start_value' ).val( '1' ).trigger( 'input' );
+
+		expect( getUnitLabel( 'start' ) ).toBe( 'semana' );
+	} );
+
+	it( 'should change the sale price unit name when the number changes', async () => {
+		renderEventForm();
+		document.getElementById( 'tribe_panel_edit' ).insertAdjacentHTML(
+			'beforeend',
+			`<input type="number" id="ticket_sale_end_value" value="1" />
+			<select id="ticket_sale_end_unit">
+				<option value="${ UNIT_DAYS }">day</option>
+				<option value="${ UNIT_WEEKS }" selected>week</option>
+			</select>`
+		);
+		await loadScript();
+
+		jQuery( '#ticket_sale_end_value' ).val( '3' ).trigger( 'input' );
+
+		const unit = document.getElementById( 'ticket_sale_end_unit' );
+		expect( Array.from( unit.options ).map( ( option ) => option.textContent ) ).toStrictEqual( [
+			'days',
+			'weeks',
+		] );
+	} );
+
+	it( 'should show how long the sale price lasts', async () => {
+		renderEventForm();
+		appendSalePriceFields( { mode: 'relative', value: 2 }, { mode: 'relative', value: 1 } );
+		await loadScript();
+
+		expect( getSaleLengthText() ).toBe( 'Tickets on sale for 1 week' );
+	} );
+
+	it( 'should update the sale length when a sale price field changes', async () => {
+		renderEventForm();
+		appendSalePriceFields( { mode: 'relative', value: 2 }, { mode: 'relative', value: 1 } );
+		await loadScript();
+
+		jQuery( '#ticket_sale_start_unit' ).val( String( UNIT_DAYS ) ).trigger( 'change' );
+		jQuery( '#ticket_sale_start_value' ).val( '10' ).trigger( 'input' );
+
+		expect( getSaleLengthText() ).toBe( 'Tickets on sale for 3 days' );
+	} );
+
+	// 02:00 UTC on June 3 is still June 2 in New York, the event timezone.
+	it( 'should count the sale length of a now start from today in the event timezone', async () => {
+		const now = new Date( '2099-06-03T02:00:00Z' );
+		jest.useFakeTimers( { now, doNotFake: [ 'setTimeout' ] } );
+		renderEventForm();
+		appendSalePriceFields( { mode: 'now' }, { mode: 'relative', value: 1, unit: UNIT_WEEKS } );
+		await loadScript();
+
+		const timezone = document.getElementById( 'event-timezone' ).value;
+		const today = moment.tz( now, timezone ).format( 'YYYY-MM-DD' );
+		const eventDay = moment( document.getElementById( 'EventStartDate' ).value, 'M/D/YYYY' );
+		const saleEnd = eventDay.subtract( 1, 'week' ).format( 'YYYY-MM-DD' );
+		const days = moment.utc( saleEnd ).diff( moment.utc( today ), 'days' );
+
+		expect( getSaleLengthText() ).toBe( `Tickets on sale for ${ days } days` );
+	} );
+
+	it( 'should clear the sale length when the relative sale price end is cleared', async () => {
+		renderEventForm();
+		appendSalePriceFields( { mode: 'relative', value: 2 }, { mode: 'relative', value: 1 } );
+		await loadScript();
+
+		jQuery( '#ticket_sale_end_value' ).val( '' ).trigger( 'input' );
+
+		expect( getSaleLengthText() ).toBe( '' );
+	} );
+
+	it( 'should leave the sale length out while a relative number is one the server would reject', async () => {
+		renderEventForm();
+		appendSalePriceFields( { mode: 'relative', value: 2 }, { mode: 'relative', value: 1 } );
+		await loadScript();
+
+		// The number field allows typing past its max; 31 days before the event would read as 24 days to this end.
+		jQuery( '#ticket_sale_start_unit' ).val( String( UNIT_DAYS ) ).trigger( 'change' );
+		jQuery( '#ticket_sale_start_value' ).val( '31' ).trigger( 'input' );
+
+		expect( getSaleLengthText() ).toBe( '' );
+	} );
+
+	it( 'should update the sale length when a sale price date is picked from the calendar', async () => {
+		renderEventForm();
+		appendSalePriceFields( { mode: 'specific' }, { mode: 'relative', value: 1 } );
+		const hooks = await loadScript();
+		const before = getSaleLengthText();
+
+		// What `tickets.js` fires after a pick, which fires no `change`.
+		jQuery( '#ticket_sale_start_date' ).val( '6/10/2099' );
+		hooks.doAction( 'tec.tickets.admin.ticketDatePicked', document.getElementById( 'ticket_sale_start_date' ) );
+
+		expect( getSaleLengthText() ).not.toBe( before );
+	} );
+
+	it( 'should update the sale length when the event date changes', async () => {
+		renderEventForm();
+		appendSalePriceFields( { mode: 'specific' }, { mode: 'relative', value: 1 }, '6/10/2099' );
+		await loadScript();
+
+		jQuery( '#EventStartDate' ).val( '6/25/2099' ).trigger( 'change' );
+
+		expect( getSaleLengthText() ).toBe( 'Tickets on sale for 8 days' );
+	} );
+
+	it( 'should write the sale dates of a listed ticket from the event dates in the form', async () => {
+		renderEventForm();
+		await loadScript();
+
+		expect( getListRowText() ).toBe( 'June 10, 2099 - June 24, 2099' );
+	} );
+
+	it( 'should write the sale dates of a listed ticket in the TEC date format with the year', async () => {
+		window.tec.tickets.relativeSaleDates.classicData.dateWithYear = 'j F Y';
+		renderEventForm();
+		await loadScript();
+
+		expect( getListRowText() ).toBe( '10 June 2099 - 24 June 2099' );
+	} );
+
+	it( 'should update the sale dates of a listed ticket when the event date changes', async () => {
+		renderEventForm();
+		await loadScript();
+
+		jQuery( '#EventStartDate' ).val( '6/30/2099' ).trigger( 'change' );
+
+		expect( getListRowText() ).toBe( 'June 16, 2099 - June 30, 2099' );
+	} );
+
+	it( 'should keep the sale dates of a listed ticket when a field of the ticket form changes', async () => {
+		renderEventForm();
+		await loadScript();
+
+		jQuery( '#ticket_sales_start_value' ).val( '3' ).trigger( 'change' );
+
+		expect( getListRowText() ).toBe( 'June 10, 2099 - June 24, 2099' );
+	} );
+
+	it( 'should keep the server text of a row whose rule cannot be read, and still update the other rows', async () => {
+		renderEventForm();
+		jQuery( '#list-row-dates' ).before( '<div id="broken-row" data-relative-sale-dates="{not json">Server text</div>' );
+		await loadScript();
+
+		expect( document.getElementById( 'broken-row' ).textContent ).toBe( 'Server text' );
+		expect( getListRowText() ).toBe( 'June 10, 2099 - June 24, 2099' );
+	} );
+
+	it( 'should write the sale dates of a list the editor replaced', async () => {
+		renderEventForm();
+		const hooks = await loadScript();
+
+		jQuery( '#list-row-dates' ).replaceWith( renderListRow() );
+		jQuery( '#EventStartDate' ).val( '6/30/2099' );
+		hooks.doAction( 'tec.tickets.admin.panels.refreshed', {} );
+
+		expect( getListRowText() ).toBe( 'June 16, 2099 - June 30, 2099' );
+	} );
+
+	it( 'should show the sale price of a listed ticket on a day its relative sale price applies', async () => {
+		// One week before the June 24 event, the sale price ends on June 17.
+		jest.useFakeTimers( { now: new Date( '2099-06-17T15:00:00Z' ), doNotFake: [ 'setTimeout' ] } );
+		renderEventForm();
+		appendPriceCell();
+		await loadScript();
+
+		expect( getPriceCellHtml() ).toBe( document.getElementById( 'price-cell' ).dataset.priceOnSale );
+	} );
+
+	it( 'should show the regular price of a listed ticket once the event moves its relative sale price end past', async () => {
+		jest.useFakeTimers( { now: new Date( '2099-06-17T15:00:00Z' ), doNotFake: [ 'setTimeout' ] } );
+		renderEventForm();
+		appendPriceCell();
+		await loadScript();
+
+		// One week before a June 23 event, the sale price ends on June 16.
+		jQuery( '#EventStartDate' ).val( '6/23/2099' ).trigger( 'change' );
+
+		expect( getPriceCellHtml() ).toBe( document.getElementById( 'price-cell' ).dataset.priceRegular );
+	} );
+
+	it( 'should keep the server price of a listed ticket whose sale price rule cannot be read', async () => {
+		renderEventForm();
+		appendPriceCell( '{not json' );
+		await loadScript();
+
+		jQuery( '#EventStartDate' ).val( '6/23/2099' ).trigger( 'change' );
+
+		expect( getPriceCellHtml() ).toBe( 'Server price' );
+	} );
+
+	it( 'should keep the server price of a listed ticket while the event date cannot be read', async () => {
+		renderEventForm();
+		appendPriceCell();
+		jQuery( '#EventStartDate' ).val( '' );
+		await loadScript();
+
+		expect( getPriceCellHtml() ).toBe( 'Server price' );
+	} );
+
+	it( 'should show the price of a list the editor replaced', async () => {
+		jest.useFakeTimers( { now: new Date( '2099-06-17T15:00:00Z' ), doNotFake: [ 'setTimeout' ] } );
+		renderEventForm();
+		const hooks = await loadScript();
+
+		appendPriceCell();
+		hooks.doAction( 'tec.tickets.admin.panels.refreshed', {} );
+
+		expect( getPriceCellHtml() ).toBe( document.getElementById( 'price-cell' ).dataset.priceOnSale );
+	} );
+
+	it( 'should block the save of a window that ends when it starts', async () => {
+		renderEventForm( { value: 1, unit: 3600, anchor: 'start' }, { mode: 'relative', value: 1, unit: 3600, anchor: 'start' } );
+		await loadScript();
+
+		expect( validateTicket() ).toBe( false );
+	} );
+
+	it( 'should block the save of a specific end before a relative start', async () => {
+		renderEventForm( undefined, { mode: 'specific', value: 1, unit: 3600, anchor: 'start', date: '6/1/2099', time: '10:00' } );
+		await loadScript();
+
+		expect( validateTicket() ).toBe( false );
+	} );
+
+	it( 'should keep the end marked invalid when common validation clears its error classes', async () => {
+		renderEventForm( { value: 1, unit: 3600, anchor: 'start' }, { mode: 'relative', value: 2, unit: 3600, anchor: 'start' } );
+		await loadScript();
+		validateTicket();
+
+		// Common's validation runs again after the save click and strips its class from every field.
+		jQuery( '#tribe_panel_edit' ).find( 'input, select, textarea' ).removeClass( 'tribe-validation-error' );
+
+		expect( isEndMarkedInvalid() ).toBe( true );
+	} );
+
+	it( 'should name a number out of range and mark that number, not the end of the window', async () => {
+		renderEventForm( { value: 0, unit: UNIT_WEEKS, anchor: 'start' } );
+		await loadScript();
+
+		expect( validateTicket() ).toBe( false );
+
+		const startValue = document.getElementById( 'ticket_sales_start_value' );
+		expect( getWindowError() ).toBe( OUT_OF_RANGE );
+		expect( startValue.getAttribute( 'aria-invalid' ) ).toBe( 'true' );
+		expect( startValue.getAttribute( 'aria-describedby' ) ).toBe( 'ticket_sales_window_error' );
+		expect( isEndMarkedInvalid() ).toBe( false );
+		expect( document.activeElement ).toBe( startValue );
+	} );
+
+	it( 'should clear the mark of a number once it is fixed', async () => {
+		renderEventForm( { value: 0, unit: UNIT_WEEKS, anchor: 'start' } );
+		await loadScript();
+		validateTicket();
+		const startValue = document.getElementById( 'ticket_sales_start_value' );
+
+		startValue.value = '2';
+		jQuery( startValue ).trigger( 'input' );
+
+		expect( startValue.hasAttribute( 'aria-invalid' ) ).toBe( false );
+		expect( getWindowError() ).toBe( '' );
+	} );
+
+	it( 'should keep the helper description of a number it marks, and restore it once the number is fixed', async () => {
+		renderEventForm( { value: 0, unit: UNIT_WEEKS, anchor: 'start' } );
+		const startValue = document.getElementById( 'ticket_sales_start_value' );
+		startValue.setAttribute( 'aria-describedby', 'ticket_sales_start_helper' );
+		await loadScript();
+
+		validateTicket();
+
+		expect( startValue.getAttribute( 'aria-describedby' ).split( ' ' ) ).toEqual(
+			expect.arrayContaining( [ 'ticket_sales_start_helper', 'ticket_sales_window_error' ] )
+		);
+
+		startValue.value = '2';
+		jQuery( startValue ).trigger( 'input' );
+
+		expect( startValue.getAttribute( 'aria-describedby' ) ).toBe( 'ticket_sales_start_helper' );
+	} );
+
+	it( 'should keep the save blocked when a handler bound later lets it through', async () => {
+		renderEventForm( { value: 1, unit: 3600, anchor: 'start' }, { mode: 'relative', value: 2, unit: 3600, anchor: 'start' } );
+		await loadScript();
+		// Event Tickets Plus returns the value it was passed when its own check passes.
+		jQuery( '#tribetickets' ).on( 'additionalValidation.tribe', ( event, valid ) => valid );
+
+		expect( validateTicket() ).toBe( false );
+	} );
+
+	it( 'should keep the save blocked by a handler bound earlier', async () => {
+		renderEventForm();
+		jQuery( '#tribetickets' ).on( 'additionalValidation.tribe', () => false );
+		await loadScript();
+
+		expect( validateTicket() ).toBe( false );
+	} );
+
+	it( 'should hold a new error back while the admin types, and show it once they stop, leaving the focus where it is', async () => {
+		renderEventForm( { value: 3, unit: 3600, anchor: 'start' }, { mode: 'relative', value: 2, unit: 3600, anchor: 'start' } );
+		await loadScript();
+		jest.useFakeTimers();
+		const startValue = document.getElementById( 'ticket_sales_start_value' );
+		startValue.focus();
+
+		jQuery( startValue ).val( '1' ).trigger( 'input' );
+
+		expect( getWindowError() ).toBe( '' );
+		expect( isEndMarkedInvalid() ).toBe( false );
+
+		jest.advanceTimersByTime( TYPING_SETTLE_DELAY );
+
+		expect( getWindowError() ).toBe( INVALID_WINDOW );
+		expect( isEndMarkedInvalid() ).toBe( true );
+		expect( document.activeElement ).toBe( startValue );
+	} );
+
+	it( 'should show a new error as soon as an option is picked', async () => {
+		renderEventForm();
+		await loadScript();
+		jest.useFakeTimers();
+		const endValue = document.getElementById( 'ticket_sales_end_value' );
+
+		jQuery( endValue ).val( '61' ).trigger( 'input' );
+		document.getElementById( 'ticket_sales_end_unit' ).dispatchEvent( new Event( 'change', { bubbles: true } ) );
+
+		expect( getWindowError() ).toBe( OUT_OF_RANGE );
+		expect( endValue.getAttribute( 'aria-invalid' ) ).toBe( 'true' );
+	} );
+
+	it( 'should show a new error as soon as a date is picked from the calendar', async () => {
+		renderEventForm();
+		const hooks = await loadScript();
+		jest.useFakeTimers();
+
+		jQuery( '#ticket_sales_end_value' ).val( '61' ).trigger( 'input' );
+		hooks.doAction( 'tec.tickets.admin.ticketDatePicked', document.getElementById( 'ticket_end_date' ) );
+
+		expect( getWindowError() ).toBe( OUT_OF_RANGE );
+	} );
+
+	// A new error shown as the number loses the focus would move the form under the click that took the focus away.
+	it( 'should hold a new error back when the typed field loses the focus', async () => {
+		renderEventForm();
+		await loadScript();
+		jest.useFakeTimers();
+		const endValue = document.getElementById( 'ticket_sales_end_value' );
+
+		jQuery( endValue ).val( '61' ).trigger( 'input' );
+		endValue.dispatchEvent( new Event( 'change', { bubbles: true } ) );
+
+		expect( getWindowError() ).toBe( '' );
+
+		jest.advanceTimersByTime( TYPING_SETTLE_DELAY );
+
+		expect( getWindowError() ).toBe( OUT_OF_RANGE );
+	} );
+
+	it( 'should follow an error already shown on every keystroke', async () => {
+		renderEventForm( { value: 1, unit: 3600, anchor: 'start' }, { mode: 'relative', value: 2, unit: 3600, anchor: 'start' } );
+		await loadScript();
+		jest.useFakeTimers();
+		validateTicket();
+		const endValue = document.getElementById( 'ticket_sales_end_value' );
+
+		jQuery( endValue ).val( '61' ).trigger( 'input' );
+
+		expect( getWindowError() ).toBe( OUT_OF_RANGE );
+		expect( endValue.getAttribute( 'aria-invalid' ) ).toBe( 'true' );
+
+		jQuery( endValue ).val( '2' ).trigger( 'input' );
+
+		expect( getWindowError() ).toBe( INVALID_WINDOW );
+		expect( isEndMarkedInvalid() ).toBe( true );
+	} );
+
+	it( 'should check the window again when the event dates change', async () => {
+		// A start two weeks before the event, on 2099-06-10, and a specific end on 2099-06-23.
+		renderEventForm( undefined, { mode: 'specific', value: 1, unit: 3600, anchor: 'start', date: '6/23/2099', time: '10:00' } );
+		await loadScript();
+
+		jQuery( '#EventEndDate' ).val( '7/24/2099' );
+		jQuery( '#EventStartDate' ).val( '7/24/2099' ).trigger( 'change' );
+
+		expect( getWindowError() ).toBe( INVALID_WINDOW );
+		expect( isMarkedInvalid( 'ticket_end_date', 'ticket_sales_window_error' ) ).toBe( true );
+	} );
+
+	// The date is what the admin typed, and what a keyboard user has to reach to fix it.
+	it( 'should mark and focus the date of a specific end that comes before the start, not its mode', async () => {
+		renderEventForm( undefined, { mode: 'specific', date: '6/1/2099', time: '10:00' } );
+		await loadScript();
+
+		expect( validateTicket() ).toBe( false );
+
+		const endDate = document.getElementById( 'ticket_end_date' );
+		expect( isMarkedInvalid( endDate.id, 'ticket_sales_window_error' ) ).toBe( true );
+		expect( isEndMarkedInvalid() ).toBe( false );
+		expect( endDate.ownerDocument.activeElement ).toBe( endDate );
+	} );
+
+	it( 'should show the sales window error the server rejected the save with on the end of the window', async () => {
+		renderEventForm();
+		const hooks = await loadScript();
+
+		hooks.doAction( 'tec.tickets.admin.ticketSaveFailed', {
+			success: false,
+			data: { message: INVALID_WINDOW, code: 'tec_tickets_relative_sale_dates_invalid_window' },
+		} );
+
+		expect( getWindowError() ).toBe( INVALID_WINDOW );
+		expect( isEndMarkedInvalid() ).toBe( true );
+	} );
+
+	// A translation the server escapes differently, or another validator's message, cannot be matched by its text.
+	it( 'should tell the sales window error by its code, not by its message', async () => {
+		renderEventForm();
+		const hooks = await loadScript();
+
+		hooks.doAction( 'tec.tickets.admin.ticketSaveFailed', {
+			success: false,
+			data: { message: INVALID_WINDOW, code: 'another_validator' },
+		} );
+
+		expect( getWindowError() ).toBe( INVALID_WINDOW );
+		expect( isEndMarkedInvalid() ).toBe( false );
+	} );
+
+	// The server localizes only the codes it rejects a save with, so any code of a kind names that kind's window.
+	it( 'should tell the window of a server error by any code localized for its kind', async () => {
+		const code = 'tec_tickets_relative_sale_dates_sale_price_new_error';
+		window.tec.tickets.relativeSaleDates.classicData.errorCodes.sale_price.newError = code;
+		renderEventForm();
+		appendSalePriceFields( { mode: 'relative', value: 2 }, { mode: 'relative', value: 1 } );
+		const hooks = await loadScript();
+
+		hooks.doAction( 'tec.tickets.admin.ticketSaveFailed', {
+			success: false,
+			data: { message: SALE_PRICE_ENDS_BEFORE_START, code },
+		} );
+
+		expect( readSalePriceError() ).toBe( SALE_PRICE_ENDS_BEFORE_START );
+		expect( getWindowError() ).toBe( '' );
+	} );
+
+	it( 'should show another error the server rejected the save with without marking the sales window', async () => {
+		renderEventForm();
+		const hooks = await loadScript();
+
+		hooks.doAction( 'tec.tickets.admin.ticketSaveFailed', {
+			success: false,
+			data: { message: 'The ticket can&#039;t be saved.' },
+		} );
+
+		expect( getWindowError() ).toBe( "The ticket can't be saved." );
+		expect( isEndMarkedInvalid() ).toBe( false );
+	} );
+
+	// The server never rejects a save with a range text, so one is not read as an error of the window it names.
+	it( 'should show a range text the server answered with as another error, without marking a window', async () => {
+		renderEventForm();
+		appendSalePriceFields( { mode: 'relative', value: 2 }, { mode: 'relative', value: 1 } );
+		const hooks = await loadScript();
+
+		hooks.doAction( 'tec.tickets.admin.ticketSaveFailed', {
+			success: false,
+			data: { message: SALE_PRICE_OUT_OF_RANGE },
+		} );
+
+		expect( getWindowError() ).toBe( SALE_PRICE_OUT_OF_RANGE );
+		expect( readSalePriceError() ).toBe( '' );
+		expect( isMarkedInvalid( 'ticket_sale_end_mode', 'ticket_sale_price_error' ) ).toBe( false );
+	} );
+
+	describe.each( KIND_FORMS )( 'for %s', ( label, form ) => {
+		it( 'should block the save of a window that ends before it starts', async () => {
+			form.render( false );
+			await loadScript();
+
+			expect( validateTicket() ).toBe( false );
+			expect( document.getElementById( form.errorId ).textContent ).toBe( form.endsBeforeStart );
+			expect( isMarkedInvalid( form.endModeId, form.errorId ) ).toBe( true );
+		} );
+
+		it( 'should move the focus to the end of a window that ends before it starts', async () => {
+			form.render( false );
+			await loadScript();
+
+			validateTicket();
+
+			const endMode = document.getElementById( form.endModeId );
+			expect( endMode.ownerDocument.activeElement ).toBe( endMode );
+		} );
+
+		it( 'should name a number above the range of the window, and mark and focus that number', async () => {
+			form.render( true );
+			await loadScript();
+			const endValue = document.getElementById( `${ form.valuePrefix }_end_value` );
+			endValue.value = form.aboveRange;
+
+			expect( validateTicket() ).toBe( false );
+			expect( document.getElementById( form.errorId ).textContent ).toBe( form.outOfRange );
+			expect( isMarkedInvalid( endValue.id, form.errorId ) ).toBe( true );
+			expect( isMarkedInvalid( form.endModeId, form.errorId ) ).toBe( false );
+			expect( endValue.ownerDocument.activeElement ).toBe( endValue );
+		} );
+
+		it.each( [ '0', '' ] )(
+			'should name a relative number of "%s" out of the range of the window',
+			async ( value ) => {
+				form.render( true );
+				await loadScript();
+				const endValue = document.getElementById( `${ form.valuePrefix }_end_value` );
+				endValue.value = value;
+
+				expect( validateTicket() ).toBe( false );
+				expect( document.getElementById( form.errorId ).textContent ).toBe( form.outOfRange );
+				expect( isMarkedInvalid( endValue.id, form.errorId ) ).toBe( true );
+			}
+		);
+
+		it( 'should let a valid window be saved', async () => {
+			form.render( true );
+			await loadScript();
+
+			expect( validateTicket() ).toBe( true );
+			expect( document.getElementById( form.errorId ).textContent ).toBe( '' );
+			expect( isMarkedInvalid( form.endModeId, form.errorId ) ).toBe( false );
+		} );
+
+		// The server rejects a rule it cannot take whatever the event dates are.
+		it( 'should name a number above the range of the window when the event dates cannot be read', async () => {
+			form.render( true );
+			removeEventDates();
+			await loadScript();
+			const endValue = document.getElementById( `${ form.valuePrefix }_end_value` );
+			endValue.value = form.aboveRange;
+
+			expect( validateTicket() ).toBe( false );
+			expect( document.getElementById( form.errorId ).textContent ).toBe( form.outOfRange );
+			expect( isMarkedInvalid( endValue.id, form.errorId ) ).toBe( true );
+		} );
+
+		it( 'should let a valid window be saved when the event dates cannot be read', async () => {
+			form.render( true );
+			removeEventDates();
+			await loadScript();
+
+			expect( validateTicket() ).toBe( true );
+			expect( document.getElementById( form.errorId ).textContent ).toBe( '' );
+		} );
+
+		it( 'should clear the error once a change fixes the window', async () => {
+			form.render( false );
+			await loadScript();
+			validateTicket();
+
+			form.fix();
+
+			expect( document.getElementById( form.errorId ).textContent ).toBe( '' );
+			expect( isMarkedInvalid( form.endModeId, form.errorId ) ).toBe( false );
+		} );
+
+		it.each( form.serverErrors )( 'should show the error of the window the server rejected the save with under the window, on its end: %s', async ( serverError, serverCode ) => {
+			form.render( true );
+			const hooks = await loadScript();
+
+			hooks.doAction( 'tec.tickets.admin.ticketSaveFailed', {
+				success: false,
+				data: { message: serverError, code: serverCode },
+			} );
+
+			expect( document.getElementById( form.errorId ).textContent ).toBe( serverError );
+			expect( isMarkedInvalid( form.endModeId, form.errorId ) ).toBe( true );
+			KIND_FORMS.filter( ( [ , other ] ) => other !== form && document.getElementById( other.errorId ) ).forEach(
+				( [ , other ] ) => expect( document.getElementById( other.errorId ).textContent ).toBe( '' )
+			);
+		} );
+	} );
+
+	describe( 'for the sale price window', () => {
+		it( 'should block the save of a sale price that starts before sales open', async () => {
+			renderEventForm();
+			appendSalePriceFields( { mode: 'relative', value: 3 }, { mode: 'relative', value: 1 } );
+			await loadScript();
+
+			expect( validateTicket() ).toBe( false );
+			expect( readSalePriceError() ).toBe( SALE_PRICE_OUTSIDE_WINDOW );
+		} );
+
+		it( 'should block the save of a specific sale price start typed as a date that cannot be read', async () => {
+			renderEventForm();
+			appendSalePriceFields( { mode: 'specific' }, { mode: 'relative', value: 1 }, 'not a date' );
+			await loadScript();
+
+			expect( validateTicket() ).toBe( false );
+			expect( readSalePriceError() ).toBe( SALE_PRICE_INVALID_DATE );
+			expect( document.getElementById( 'ticket_sale_start_date' ).getAttribute( 'aria-invalid' ) ).toBe( 'true' );
+		} );
+
+		// The picker fires no change of its own once a date is picked.
+		it( 'should check the sale price again once a date is picked for it from the calendar', async () => {
+			renderEventForm();
+			appendSalePriceFields( { mode: 'specific' }, { mode: 'relative', value: 1 }, 'not a date' );
+			const hooks = await loadScript();
+
+			hooks.doAction( 'tec.tickets.admin.ticketDatePicked', document.getElementById( 'ticket_sale_start_date' ) );
+
+			expect( readSalePriceError() ).toBe( SALE_PRICE_INVALID_DATE );
+		} );
+
+		describe( 'saved before relative dates', () => {
+			/**
+			 * Renders a one-day sale price that starts before sales open, on 2099-06-10, with the rule field empty as
+			 * the form renders it for a ticket saved without a sale price rule.
+			 *
+			 * @param {boolean} checked Whether the ticket was saved with a sale price.
+			 */
+			function renderSalePriceWithoutRule( checked ) {
+				renderEventForm();
+				appendSalePriceFields( { mode: 'specific' }, { mode: 'specific' }, '6/1/2099', checked );
+				document.getElementById( 'ticket_sale_end_date' ).value = '6/1/2099';
+				document
+					.getElementById( 'tribe_panel_edit' )
+					.insertAdjacentHTML(
+						'beforeend',
+						'<input type="hidden" id="ticket_sale_price_relative" value="" data-stored-rule="0" />'
+					);
+			}
+
+			it( 'should leave a sale price kept on its own dates unjudged, as the server leaves it', async () => {
+				renderSalePriceWithoutRule( true );
+				await loadScript();
+
+				expect( validateTicket() ).toBe( true );
+				expect( readSalePriceError() ).toBe( '' );
+			} );
+
+			// Setting the value of a hidden field also sets its default value.
+			it( 'should still leave the sale price unjudged after a save wrote a rule in the field', async () => {
+				renderSalePriceWithoutRule( true );
+				await loadScript();
+				document.getElementById( 'ticket_sale_price_relative' ).value = JSON.stringify( {
+					start: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+					end: { mode: 'specific' },
+				} );
+
+				expect( validateTicket() ).toBe( true );
+				expect( readSalePriceError() ).toBe( '' );
+			} );
+
+			it( 'should judge the same dates on a sale price the admin is adding', async () => {
+				renderSalePriceWithoutRule( false );
+				await loadScript();
+				document.getElementById( 'ticket_add_sale_price' ).checked = true;
+
+				expect( validateTicket() ).toBe( false );
+			} );
+		} );
+
+		it( 'should leave a sale price that is not added unjudged', async () => {
+			renderEventForm();
+			appendSalePriceFields( { mode: 'relative', value: 1 }, { mode: 'relative', value: 2 }, '', false );
+			await loadScript();
+
+			expect( validateTicket() ).toBe( true );
+			expect( readSalePriceError() ).toBe( '' );
+		} );
+
+		// The server keeps no sale price that is not lower than the price, so it does not judge its window either.
+		it.each( [ '20', '25' ] )(
+			'should leave a sale price of %s, not lower than the price, unjudged',
+			async ( price ) => {
+				renderEventForm();
+				appendSalePriceFields( { mode: 'relative', value: 1 }, { mode: 'relative', value: 2 } );
+				document.getElementById( 'ticket_sale_price' ).value = price;
+				await loadScript();
+
+				expect( validateTicket() ).toBe( true );
+				expect( readSalePriceError() ).toBe( '' );
+			}
+		);
+
+		it( 'should judge the sales window before the sale price', async () => {
+			renderSalesEndingBeforeStart();
+			appendSalePriceFields( { mode: 'relative', value: 1 }, { mode: 'relative', value: 2 } );
+			await loadScript();
+
+			expect( validateTicket() ).toBe( false );
+			expect( getWindowError() ).toBe( INVALID_WINDOW );
+			expect( readSalePriceError() ).toBe( '' );
+		} );
+
+		it( 'should hold a new sale price error back while the admin types, and show it once they stop, leaving the focus where it is', async () => {
+			renderEventForm();
+			appendSalePriceFields( { mode: 'relative', value: 2 }, { mode: 'relative', value: 1 } );
+			await loadScript();
+			jest.useFakeTimers();
+			const endValue = document.getElementById( 'ticket_sale_end_value' );
+			endValue.focus();
+
+			jQuery( endValue ).val( '3' ).trigger( 'input' );
+
+			expect( readSalePriceError() ).toBe( '' );
+			expect( isMarkedInvalid( 'ticket_sale_end_mode', 'ticket_sale_price_error' ) ).toBe( false );
+
+			jest.advanceTimersByTime( TYPING_SETTLE_DELAY );
+
+			expect( readSalePriceError() ).toBe( SALE_PRICE_ENDS_BEFORE_START );
+			expect( isMarkedInvalid( 'ticket_sale_end_mode', 'ticket_sale_price_error' ) ).toBe( true );
+			expect( endValue.ownerDocument.activeElement ).toBe( endValue );
+		} );
+
+		it( 'should show a new sale price error as soon as an option is picked', async () => {
+			renderEventForm();
+			appendSalePriceFields( { mode: 'relative', value: 2 }, { mode: 'relative', value: 1 } );
+			await loadScript();
+			jest.useFakeTimers();
+
+			jQuery( '#ticket_sale_end_value' ).val( '3' ).trigger( 'input' );
+			document.getElementById( 'ticket_sale_end_unit' ).dispatchEvent( new Event( 'change', { bubbles: true } ) );
+
+			expect( readSalePriceError() ).toBe( SALE_PRICE_ENDS_BEFORE_START );
+		} );
+
+		it( 'should hold a new sale price error back when the typed number loses the focus', async () => {
+			renderEventForm();
+			appendSalePriceFields( { mode: 'relative', value: 2 }, { mode: 'relative', value: 1 } );
+			await loadScript();
+			jest.useFakeTimers();
+			const endValue = document.getElementById( 'ticket_sale_end_value' );
+
+			jQuery( endValue ).val( '3' ).trigger( 'input' );
+			endValue.dispatchEvent( new Event( 'change', { bubbles: true } ) );
+
+			expect( readSalePriceError() ).toBe( '' );
+
+			jest.advanceTimersByTime( TYPING_SETTLE_DELAY );
+
+			expect( readSalePriceError() ).toBe( SALE_PRICE_ENDS_BEFORE_START );
+		} );
+
+		it( 'should clear a sale price error already shown on the keystroke that fixes the window', async () => {
+			renderEventForm();
+			appendSalePriceFields( { mode: 'relative', value: 2 }, { mode: 'relative', value: 3 } );
+			await loadScript();
+			jest.useFakeTimers();
+			validateTicket();
+
+			expect( readSalePriceError() ).toBe( SALE_PRICE_ENDS_BEFORE_START );
+
+			jQuery( '#ticket_sale_end_value' ).val( '1' ).trigger( 'input' );
+
+			expect( readSalePriceError() ).toBe( '' );
+			expect( isMarkedInvalid( 'ticket_sale_end_mode', 'ticket_sale_price_error' ) ).toBe( false );
+		} );
+
+		it( 'should show the sale price error once the admin stops typing a sales window change that leaves it starting before sales open', async () => {
+			// Sales open ten days before the event, ahead of the sale price a week before.
+			renderEventForm( { value: 10, unit: UNIT_DAYS, anchor: 'start' } );
+			appendSalePriceFields( { mode: 'relative', value: 1 }, { mode: 'relative', value: 2, unit: UNIT_DAYS } );
+			await loadScript();
+			jest.useFakeTimers();
+
+			jQuery( '#ticket_sales_start_value' ).val( '2' ).trigger( 'input' );
+
+			expect( readSalePriceError() ).toBe( '' );
+
+			jest.advanceTimersByTime( TYPING_SETTLE_DELAY );
+
+			expect( getWindowError() ).toBe( '' );
+			expect( readSalePriceError() ).toBe( SALE_PRICE_OUTSIDE_WINDOW );
+		} );
+
+		it( 'should check the sale price window again when the event dates change', async () => {
+			// Sales open two weeks before the event, on 2099-06-10, ahead of the specific sale price start on 2099-06-14.
+			renderEventForm();
+			appendSalePriceFields( { mode: 'specific' }, { mode: 'relative', value: 2, unit: UNIT_DAYS }, '6/14/2099' );
+			await loadScript();
+
+			jQuery( '#EventEndDate' ).val( '7/24/2099' );
+			jQuery( '#EventStartDate' ).val( '7/24/2099' ).trigger( 'change' );
+
+			expect( readSalePriceError() ).toBe( SALE_PRICE_OUTSIDE_WINDOW );
+		} );
+
+		it( 'should clear the sale price error once the sale price is removed', async () => {
+			renderEventForm();
+			appendSalePriceFields( { mode: 'relative', value: 1 }, { mode: 'relative', value: 2 } );
+			await loadScript();
+			validateTicket();
+
+			jQuery( '#ticket_add_sale_price' ).prop( 'checked', false ).trigger( 'change' );
+
+			expect( readSalePriceError() ).toBe( '' );
+			expect( isMarkedInvalid( 'ticket_sale_end_mode', 'ticket_sale_price_error' ) ).toBe( false );
+		} );
+
+		// The sale price is judged against the sales window.
+		it( 'should clear the sale price error once the sales window changes', async () => {
+			renderEventForm();
+			appendSalePriceFields( { mode: 'relative', value: 3 }, { mode: 'relative', value: 1 } );
+			await loadScript();
+			validateTicket();
+
+			jQuery( '#ticket_sales_start_value' ).val( '4' ).trigger( 'change' );
+
+			expect( readSalePriceError() ).toBe( '' );
+		} );
+
+		it( 'should keep the sales window error when a sale price field changes', async () => {
+			renderSalesEndingBeforeStart();
+			appendSalePriceFields( { mode: 'relative', value: 2 }, { mode: 'relative', value: 1 } );
+			await loadScript();
+			validateTicket();
+
+			jQuery( '#ticket_sale_end_value' ).val( '3' ).trigger( 'change' );
+
+			expect( getWindowError() ).toBe( INVALID_WINDOW );
+		} );
+	} );
+
+	// The server's `Boundary` takes 1 to 60: these are just outside that range, and a cleared field.
+	it.each( [
+		[ 'start', '0' ],
+		[ 'start', '61' ],
+		[ 'start', '' ],
+		[ 'end', '0' ],
+		[ 'end', '61' ],
+	] )( 'should block the save of a relative %s number out of the range the server takes: "%s"', async ( end, value ) => {
+		renderEventForm();
+		await loadScript();
+		jQuery( `#ticket_sales_${ end }_value` ).val( value );
+
+		expect( validateTicket() ).toBe( false );
+		expect( getWindowError() ).toBe( OUT_OF_RANGE );
+		expect( document.getElementById( `ticket_sales_${ end }_value` ).getAttribute( 'aria-invalid' ) ).toBe( 'true' );
+	} );
+
+	// The ends of the range the server takes, with an end an hour before the event and a start further back.
+	it.each( [ [ '1', 86400 ], [ '60', 86400 ] ] )( 'should let the save of a relative start of %s go through', async ( value, unit ) => {
+		renderEventForm( { value: Number( value ), unit, anchor: 'start' } );
+		await loadScript();
+
+		expect( validateTicket() ).toBe( true );
+	} );
+
+	it( 'should block a specific start whose date fields are disabled, as the server gets no date for it', async () => {
+		renderEventForm();
+		jQuery( '#ticket_sales_start_mode' ).html( '<option value="specific" selected>Specific</option>' );
+		jQuery( '#tribe_panel_edit' ).append( '<input id="ticket_start_date" value="6/1/2099" disabled /><input id="ticket_start_time" value="10:00" disabled />' );
+		await loadScript();
+
+		expect( validateTicket() ).toBe( false );
+	} );
+
+	it( 'should judge a Now start without the date its hidden, disabled field holds', async () => {
+		// The end falls on 2099-06-24 at 18:00, an hour before the event; the date left in the hidden field is later.
+		renderEventForm();
+		jQuery( '#ticket_sales_start_mode' ).html( '<option value="default" selected>Now</option>' );
+		jQuery( '#tribe_panel_edit' ).append( '<input id="ticket_start_date" value="7/1/2099" disabled /><input id="ticket_start_time" value="10:00" disabled />' );
+		await loadScript();
+
+		expect( validateTicket() ).toBe( true );
+		expect( getWindowError() ).toBe( '' );
+	} );
+
+	/*
+	 * When a panel opens, the timepicker fires `change` before the dependency script disables a Now start's date. On an
+	 * event under way, that date, today, falls after the end an hour before the event started.
+	 */
+	it( 'should judge the windows again once the editor has set up a replaced panel', async () => {
+		renderEventForm();
+		jQuery( '#ticket_sales_start_mode' ).html( '<option value="default" selected>Now</option>' );
+		jQuery( '#tribe_panel_edit' ).append( '<input id="ticket_start_date" value="6/24/2099" /><input id="ticket_start_time" value="18:30" />' );
+		const hooks = await loadScript();
+		// 20:00 in New York, an hour into the event.
+		jest.useFakeTimers( { now: new Date( '2099-06-25T00:00:00Z' ) } );
+		jQuery( '#ticket_start_time' ).trigger( 'change' );
+		expect( getWindowError() ).toBe( INVALID_WINDOW );
+
+		jQuery( '#ticket_start_date, #ticket_start_time' ).prop( 'disabled', true );
+		hooks.doAction( 'tec.tickets.admin.panels.refreshed', {} );
+
+		expect( getWindowError() ).toBe( '' );
+	} );
+
+	it( 'should write the rule before the ticket is saved', async () => {
+		renderMetabox();
+		await loadScript();
+
+		jQuery( '#tribetickets' ).trigger( 'pre-save-ticket.tribe' );
+
+		expect( JSON.parse( document.getElementById( 'ticket_relative_sale_dates' ).value ) ).toStrictEqual( {
+			start: { mode: 'relative', value: 2, unit: UNIT_WEEKS, anchor: 'start' },
+			end: { mode: 'default' },
+		} );
+	} );
+
+	it( 'should write the sale price rule before the ticket is saved', async () => {
+		renderMetabox();
+		document.getElementById( 'tribe_panel_edit' ).insertAdjacentHTML(
+			'beforeend',
+			`<select id="ticket_sale_start_mode"><option value="now" selected>Now</option></select>
+			<input type="number" id="ticket_sale_start_value" value="2" />
+			<select id="ticket_sale_start_unit"><option value="${ UNIT_WEEKS }" selected>weeks</option></select>
+			<select id="ticket_sale_end_mode"><option value="relative" selected>Relative</option></select>
+			<input type="number" id="ticket_sale_end_value" value="3" />
+			<select id="ticket_sale_end_unit"><option value="${ UNIT_DAYS }" selected>days</option></select>
+			<input type="hidden" name="ticket_sale_price_relative" id="ticket_sale_price_relative" value="" />`
+		);
+		await loadScript();
+
+		jQuery( '#tribetickets' ).trigger( 'pre-save-ticket.tribe' );
+
+		expect( JSON.parse( document.getElementById( 'ticket_sale_price_relative' ).value ) ).toStrictEqual( {
+			start: { mode: 'now' },
+			end: { mode: 'relative', value: 3, unit: UNIT_DAYS },
+		} );
+	} );
+
+	it( 'should write the rule when another handler stops the save event from bubbling', async () => {
+		renderMetabox();
+		// Event Tickets Plus binds a handler like this one on the metabox.
+		jQuery( '#tribetickets' ).on( 'pre-save-ticket.tribe', ( event ) => event.stopPropagation() );
+		await loadScript();
+
+		jQuery( '#tribetickets' ).trigger( 'pre-save-ticket.tribe' );
+
+		expect( document.getElementById( 'ticket_relative_sale_dates' ).value ).not.toBe( '' );
+	} );
+} );
+
+describe( 'classic date picker limits', () => {
+	const endDate = new Date( 2027, 5, 1 );
+	let datepickerCalls;
+
+	/**
+	 * Renders the sales date inputs as `tickets.js` leaves them, with jQuery UI's marker class, and a specific end.
+	 */
+	function renderDatePickers() {
+		document.body.innerHTML = `
+			<div id="tribetickets">
+				<select id="ticket_sales_start_mode">
+					<option value="specific" selected>On a specific date</option>
+					<option value="relative">Relative</option>
+				</select>
+				<input type="text" id="ticket_start_date" class="hasDatepicker" value="2027-05-01" />
+				<select id="ticket_sales_end_mode">
+					<option value="specific" selected>On a specific date</option>
+					<option value="relative">Relative</option>
+				</select>
+				<input type="text" id="ticket_end_date" class="hasDatepicker" value="2027-06-01" />
+			</div>`;
+	}
+
+	/**
+	 * Changes a mode select the way the admin does.
+	 *
+	 * @param {string} id    The mode select id.
+	 * @param {string} value The mode to pick.
+	 */
+	function changeMode( id, value ) {
+		jQuery( `#${ id }` ).val( value ).trigger( 'change' );
+	}
+
+	beforeEach( () => {
+		datepickerCalls = [];
+		jQuery.fn.datepicker = function ( ...args ) {
+			datepickerCalls.push( [ this.attr( 'id' ), ...args ] );
+
+			return 'getDate' === args[ 0 ] ? endDate : this;
+		};
+	} );
+
+	afterEach( () => {
+		delete jQuery.fn.datepicker;
+		document.body.innerHTML = '';
+	} );
+
+	it( 'should lift the limit a relative end leaves on the start picker', async () => {
+		renderDatePickers();
+		await loadScript();
+
+		changeMode( 'ticket_sales_end_mode', 'relative' );
+
+		expect( datepickerCalls ).toContainEqual( [ 'ticket_start_date', 'option', 'maxDate', null ] );
+	} );
+
+	it( 'should give the limit back when the end returns to a specific date', async () => {
+		renderDatePickers();
+		await loadScript();
+
+		changeMode( 'ticket_sales_end_mode', 'relative' );
+		changeMode( 'ticket_sales_end_mode', 'specific' );
+
+		expect( datepickerCalls[ datepickerCalls.length - 1 ] ).toStrictEqual( [
+			'ticket_start_date',
+			'option',
+			'maxDate',
+			endDate,
+		] );
+	} );
+
+	it( 'should lift the limit a relative sale price end leaves on the sale price start picker', async () => {
+		renderDatePickers();
+		document.getElementById( 'tribetickets' ).insertAdjacentHTML(
+			'beforeend',
+			`<select id="ticket_sale_start_mode"><option value="specific" selected>On a specific date</option></select>
+			<input type="text" id="ticket_sale_start_date" class="hasDatepicker" value="2027-05-01" />
+			<select id="ticket_sale_end_mode">
+				<option value="specific" selected>On a specific date</option>
+				<option value="relative">Relative</option>
+			</select>
+			<input type="text" id="ticket_sale_end_date" class="hasDatepicker" value="2027-06-01" />`
+		);
+		await loadScript();
+
+		changeMode( 'ticket_sale_end_mode', 'relative' );
+
+		expect( datepickerCalls ).toContainEqual( [ 'ticket_sale_start_date', 'option', 'maxDate', null ] );
+		expect( datepickerCalls ).not.toContainEqual( [ 'ticket_start_date', 'option', 'maxDate', null ] );
+	} );
+
+	it( 'should lift the limit a relative start leaves on the end picker', async () => {
+		renderDatePickers();
+		await loadScript();
+
+		changeMode( 'ticket_sales_start_mode', 'relative' );
+
+		expect( datepickerCalls ).toContainEqual( [ 'ticket_end_date', 'option', 'minDate', null ] );
+	} );
+} );

@@ -60,11 +60,13 @@
             "enabled": "",
             "sale_price": "",
             "start_date": "",
-            "end_date": ""
+            "end_date": "",
+            "relative": null
         },
         "supports_attendee_information": false,
         "attendees": [],
-        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}"
+        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}",
+        "relative_sale_dates": null
     },
     {
         "description": "Test TC ticket description for {EVENT_ID}",
@@ -127,11 +129,13 @@
             "enabled": "",
             "sale_price": "",
             "start_date": "",
-            "end_date": ""
+            "end_date": "",
+            "relative": null
         },
         "supports_attendee_information": false,
         "attendees": [],
-        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}"
+        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}",
+        "relative_sale_dates": null
     },
     {
         "description": "Test TC ticket description for {EVENT_ID}",
@@ -194,11 +198,13 @@
             "enabled": "",
             "sale_price": "",
             "start_date": "",
-            "end_date": ""
+            "end_date": "",
+            "relative": null
         },
         "supports_attendee_information": false,
         "attendees": [],
-        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}"
+        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}",
+        "relative_sale_dates": null
     },
     {
         "description": "No Access",
@@ -261,11 +267,13 @@
             "enabled": "No Access",
             "sale_price": "No Access",
             "start_date": "No Access",
-            "end_date": "No Access"
+            "end_date": "No Access",
+            "relative": "No Access"
         },
         "supports_attendee_information": null,
         "attendees": [],
-        "rest_url": "No Access"
+        "rest_url": "No Access",
+        "relative_sale_dates": "No Access"
     },
     {
         "description": "No Access",
@@ -328,11 +336,13 @@
             "enabled": "No Access",
             "sale_price": "No Access",
             "start_date": "No Access",
-            "end_date": "No Access"
+            "end_date": "No Access",
+            "relative": "No Access"
         },
         "supports_attendee_information": null,
         "attendees": [],
-        "rest_url": "No Access"
+        "rest_url": "No Access",
+        "relative_sale_dates": "No Access"
     },
     {
         "description": "No Access",
@@ -395,11 +405,13 @@
             "enabled": "No Access",
             "sale_price": "No Access",
             "start_date": "No Access",
-            "end_date": "No Access"
+            "end_date": "No Access",
+            "relative": "No Access"
         },
         "supports_attendee_information": null,
         "attendees": [],
-        "rest_url": "No Access"
+        "rest_url": "No Access",
+        "relative_sale_dates": "No Access"
     },
     {
         "description": "Test TC ticket description for {EVENT_ID}",
@@ -462,11 +474,13 @@
             "enabled": "",
             "sale_price": "",
             "start_date": "",
-            "end_date": ""
+            "end_date": "",
+            "relative": null
         },
         "supports_attendee_information": false,
         "attendees": [],
-        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}"
+        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}",
+        "relative_sale_dates": null
     },
     {
         "description": "Test TC ticket description for {EVENT_ID}",
@@ -529,11 +543,13 @@
             "enabled": "",
             "sale_price": "",
             "start_date": "",
-            "end_date": ""
+            "end_date": "",
+            "relative": null
         },
         "supports_attendee_information": false,
         "attendees": [],
-        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}"
+        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}",
+        "relative_sale_dates": null
     },
     {
         "description": "Test TC ticket description for {EVENT_ID}",
@@ -596,11 +612,13 @@
             "enabled": "",
             "sale_price": "",
             "start_date": "",
-            "end_date": ""
+            "end_date": "",
+            "relative": null
         },
         "supports_attendee_information": false,
         "attendees": [],
-        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}"
+        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}",
+        "relative_sale_dates": null
     },
     {
         "description": "No Access",
@@ -663,11 +681,13 @@
             "enabled": "No Access",
             "sale_price": "No Access",
             "start_date": "No Access",
-            "end_date": "No Access"
+            "end_date": "No Access",
+            "relative": "No Access"
         },
         "supports_attendee_information": null,
         "attendees": [],
-        "rest_url": "No Access"
+        "rest_url": "No Access",
+        "relative_sale_dates": "No Access"
     },
     {
         "description": "No Access",
@@ -730,11 +750,13 @@
             "enabled": "No Access",
             "sale_price": "No Access",
             "start_date": "No Access",
-            "end_date": "No Access"
+            "end_date": "No Access",
+            "relative": "No Access"
         },
         "supports_attendee_information": null,
         "attendees": [],
-        "rest_url": "No Access"
+        "rest_url": "No Access",
+        "relative_sale_dates": "No Access"
     },
     {
         "description": "No Access",
@@ -797,11 +819,13 @@
             "enabled": "No Access",
             "sale_price": "No Access",
             "start_date": "No Access",
-            "end_date": "No Access"
+            "end_date": "No Access",
+            "relative": "No Access"
         },
         "supports_attendee_information": null,
         "attendees": [],
-        "rest_url": "No Access"
+        "rest_url": "No Access",
+        "relative_sale_dates": "No Access"
     },
     {
         "description": "Test TC ticket description for {EVENT_ID}",
@@ -864,10 +888,12 @@
             "enabled": "",
             "sale_price": "",
             "start_date": "",
-            "end_date": ""
+            "end_date": "",
+            "relative": null
         },
         "supports_attendee_information": false,
         "attendees": [],
-        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}"
+        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}",
+        "relative_sale_dates": null
     }
 ]
