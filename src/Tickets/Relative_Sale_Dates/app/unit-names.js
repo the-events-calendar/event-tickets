@@ -15,8 +15,8 @@ import { _nx } from '@wordpress/i18n';
 import { UNIT_DAYS, UNIT_HOURS, UNIT_MINUTES, UNIT_WEEKS } from './rule-constants';
 
 /**
- * The name of each unit for a number of it, keyed by the unit in seconds. The msgids and context match the classic
- * template's, so one translation serves both editors.
+ * The name of each unit for a number of it, keyed by the unit in seconds. The msgids and context match
+ * `Editor::get_unit_name()`'s, so one translation serves both editors.
  *
  * @since TBD
  *

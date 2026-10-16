@@ -72,6 +72,7 @@ $render_date_inputs = function ( string $sale_end ): void {
 			$boundary_args = [
 				'window_kind'        => $window_kind,
 				'boundary_end'       => $sale_end,
+				'boundary_modes'     => $window_kind->get_modes( $sale_end ),
 				'boundary_fields'    => $window_fields[ $sale_end ],
 				'field_prefix'       => 'ticket_sale',
 				'mode_labels'        => $modes[ $sale_end ],

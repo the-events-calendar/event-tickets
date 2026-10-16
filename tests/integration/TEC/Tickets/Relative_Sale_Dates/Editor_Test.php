@@ -41,6 +41,13 @@ class Editor_Test extends Controller_Test_Case {
 	private const EVENT_START = '2027-06-24 19:00:00';
 
 	/**
+	 * The id prefix the preset sales window tests render with, unlike the ticket form's `ticket_sales`.
+	 *
+	 * @var string
+	 */
+	private const PRESET_PREFIX = 'tec_tickets_preset_sales';
+
+	/**
 	 * The ids of the sale price inputs the classic ticket form has always had.
 	 *
 	 * @var string[]
@@ -894,6 +901,145 @@ class Editor_Test extends Controller_Test_Case {
 
 		$this->assertTrue( $response['success'], wp_json_encode( $response['data'] ?? null ) );
 		$this->assertSame( $rule, $this->get_stored_sale_price_rule( $ticket_id ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_render_the_preset_sales_window_from_its_rule(): void {
+		$rule = [
+			'start' => [
+				'mode'   => Rule::MODE_RELATIVE,
+				'value'  => 3,
+				'unit'   => DAY_IN_SECONDS,
+				'anchor' => Rule::ANCHOR_END,
+			],
+			'end'   => [ 'mode' => Rule::MODE_DEFAULT ],
+		];
+
+		$form = $this->render_preset_sales_window( $rule );
+
+		$this->assertSame( Rule::MODE_RELATIVE, $this->get_selected_value( $form, self::PRESET_PREFIX . '_start_mode' ) );
+		$this->assertSame( '3', $this->get_element( $form, self::PRESET_PREFIX . '_start_value' )->getAttribute( 'value' ) );
+		$this->assertSame( DAY_IN_SECONDS, absint( $this->get_selected_value( $form, self::PRESET_PREFIX . '_start_unit' ) ) );
+		$this->assertSame( Rule::ANCHOR_END, $this->get_selected_value( $form, self::PRESET_PREFIX . '_start_anchor' ) );
+		$this->assertSame( Rule::MODE_DEFAULT, $this->get_selected_value( $form, self::PRESET_PREFIX . '_end_mode' ) );
+		// A boundary on its default mode offers the ticket form's relative values once the admin switches to relative.
+		$this->assertSame( Editor::DEFAULT_RELATIVE_END['value'], absint( $this->get_element( $form, self::PRESET_PREFIX . '_end_value' )->getAttribute( 'value' ) ) );
+		$this->assertSame( self::PRESET_PREFIX . '_start_mode', $form->query( "//label[@for='" . self::PRESET_PREFIX . "_start_mode']" )->item( 0 )->getAttribute( 'for' ) );
+		$this->assertSame(
+			Window_Kind::sales()->get_error( 'endsBeforeStart' )->get_error_message(),
+			$this->get_element( $form, self::PRESET_PREFIX . '_window_error' )->getAttribute( 'data-ends-before-start' )
+		);
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_offer_no_specific_date_helper_text_or_rule_field_in_the_preset_sales_window(): void {
+		$form = $this->render_preset_sales_window( [] );
+
+		foreach ( [ 'start', 'end' ] as $end ) {
+			$this->assertSame( [ Rule::MODE_DEFAULT, Rule::MODE_RELATIVE ], $this->get_option_values( $form, self::PRESET_PREFIX . "_{$end}_mode" ) );
+			$this->assertFalse( $this->get_element( $form, self::PRESET_PREFIX . "_{$end}_value" )->hasAttribute( 'aria-describedby' ) );
+		}
+
+		$this->assertSame( 0, $form->query( "//*[contains(@class, 'tec-tickets-relative-sale-dates__specific')]" )->length );
+		$this->assertSame( 0, $form->query( "//*[contains(@class, 'tec-tickets-relative-sale-dates__helper')]" )->length );
+		$this->assertSame( 0, $form->query( '//input' )->length - $form->query( "//input[@type='number']" )->length, 'Only the relative numbers are inputs.' );
+	}
+
+	/**
+	 * The preset form has no Event Tickets script to name a unit after the number typed.
+	 *
+	 * @test
+	 */
+	public function should_give_the_preset_sales_window_the_name_of_each_unit_for_each_number(): void {
+		$form = $this->render_preset_sales_window( [] );
+
+		$names = json_decode( $form->query( '//*[@data-unit-names]' )->item( 0 )->getAttribute( 'data-unit-names' ), true );
+
+		$this->assertSame( array_map( 'strval', Window_Kind::sales()->get_units() ), array_map( 'strval', array_keys( $names ) ) );
+		foreach ( $names as $unit_names ) {
+			$this->assertCount( Window_Kind::sales()->get_max_value(), $unit_names );
+		}
+		$this->assertSame( _nx( 'day', 'days', 1, 'Unit of a relative ticket sale date.', 'event-tickets' ), $names[ DAY_IN_SECONDS ][0] );
+		$this->assertSame( _nx( 'day', 'days', 2, 'Unit of a relative ticket sale date.', 'event-tickets' ), $names[ DAY_IN_SECONDS ][1] );
+	}
+
+	/**
+	 * @return Generator<string,array{0: array{start?: array{mode: string, value?: int, unit?: int, anchor?: string}|null, end?: array{mode: string, value?: int, unit?: int, anchor?: string}|null}}>
+	 */
+	public function preset_boundary_without_an_option_provider(): Generator {
+		yield 'missing' => [ [] ];
+		yield 'null' => [ [ 'start' => null ] ];
+		yield 'a specific date' => [ [ 'start' => [ 'mode' => Rule::MODE_SPECIFIC ] ] ];
+		yield 'out of range' => [ [ 'start' => array_merge( Editor::DEFAULT_RELATIVE_START, [ 'value' => Boundary::MAX_VALUE + 1 ] ) ] ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider preset_boundary_without_an_option_provider
+	 *
+	 * @param array{start?: array{mode: string, value?: int, unit?: int, anchor?: string}|null, end?: array{mode: string, value?: int, unit?: int, anchor?: string}|null} $rule The rule, whose start the preset form has no option for.
+	 */
+	public function should_render_the_default_for_a_preset_boundary_it_has_no_option_for( array $rule ): void {
+		$form = $this->render_preset_sales_window( $rule );
+
+		$this->assertSame( Rule::MODE_DEFAULT, $this->get_selected_value( $form, self::PRESET_PREFIX . '_start_mode' ) );
+		$this->assertSame( Editor::DEFAULT_RELATIVE_START['value'], absint( $this->get_element( $form, self::PRESET_PREFIX . '_start_value' )->getAttribute( 'value' ) ) );
+	}
+
+	/**
+	 * The admin views template carries each render's context into the next one, and the event screen renders the
+	 * *Save as preset* modal next to the ticket form.
+	 *
+	 * @test
+	 */
+	public function should_keep_the_ticket_form_sales_window_after_a_preset_one(): void {
+		$this->make_controller()->register();
+		$event_id = $this->create_event( self::EVENT_START );
+		$this->render_preset_sales_window( [] );
+
+		$form = $this->render_ticket_form( $event_id );
+
+		$this->assertContains( Rule::MODE_SPECIFIC, $this->get_option_values( $form, 'ticket_sales_start_mode' ) );
+		$this->assertTrue( $this->get_element( $form, 'ticket_sales_start_value' )->hasAttribute( 'aria-describedby' ) );
+		$this->get_element( $form, 'ticket_relative_sale_dates' );
+		$this->get_element( $form, 'ticket_sales_window_error' );
+	}
+
+	/**
+	 * @param array{start?: array{mode: string, value?: int, unit?: int, anchor?: string}|null, end?: array{mode: string, value?: int, unit?: int, anchor?: string}|null} $rule The preset's rule.
+	 *
+	 * @return DOMXPath The preset sales window, ready to query.
+	 */
+	private function render_preset_sales_window( array $rule ): DOMXPath {
+		$document = new DOMDocument();
+		// The window is an HTML fragment, which libxml warns about.
+		libxml_use_internal_errors( true );
+		$document->loadHTML( '<?xml encoding="UTF-8">' . tribe( Editor::class )->render_preset_sales_window( $rule, self::PRESET_PREFIX ) );
+		libxml_clear_errors();
+
+		return new DOMXPath( $document );
+	}
+
+	/**
+	 * @param DOMXPath $form The form.
+	 * @param string   $id   The select id.
+	 *
+	 * @return string[] The values of the select's options.
+	 */
+	private function get_option_values( DOMXPath $form, string $id ): array {
+		$values = [];
+
+		foreach ( $form->query( "//select[@id='{$id}']/option" ) as $option ) {
+			$values[] = $option->getAttribute( 'value' );
+		}
+
+		$this->assertNotEmpty( $values, "No options in {$id}." );
+
+		return $values;
 	}
 
 	/**
