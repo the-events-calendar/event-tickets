@@ -234,6 +234,35 @@ final class Rule implements JsonSerializable {
 	}
 
 	/**
+	 * Returns whether the window ends when or before it starts whatever the event's dates, as for a ticket preset, which
+	 * has no event.
+	 *
+	 * A boundary is a length of time before its anchor; the default end is the event start itself. With a start and an
+	 * end before the same anchor, or a start before the event end and an end before the event start, the start falls
+	 * on or after the end for every event as soon as its length is not the longer. A start before the event start and
+	 * an end before the event end fit a long enough event. A default start, or a specific date, is only judged once
+	 * the event's dates are known. Lengths compare in seconds, a day as 24 hours.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether no event's dates would make the window end after it starts.
+	 */
+	public function ends_before_start_for_every_event(): bool {
+		$start = $this->get_length_before_anchor( $this->start );
+		$end   = self::MODE_DEFAULT === $this->end->get_mode() ? [ self::ANCHOR_START, 0 ] : $this->get_length_before_anchor( $this->end );
+
+		if ( ! $start || ! $end ) {
+			return false;
+		}
+
+		if ( self::ANCHOR_START === $start[0] && self::ANCHOR_END === $end[0] ) {
+			return false;
+		}
+
+		return $start[1] <= $end[1];
+	}
+
+	/**
 	 * Returns the rule's canonical array form, for storage and for the editors.
 	 *
 	 * @since TBD
@@ -307,5 +336,25 @@ final class Rule implements JsonSerializable {
 		}
 
 		return self::from_array( $data, $kind );
+	}
+
+	/**
+	 * Gets how long before its anchor a relative boundary falls.
+	 *
+	 * @since TBD
+	 *
+	 * @param Boundary $boundary The boundary.
+	 *
+	 * @return array{0: string, 1: int}|null The anchor and the length in seconds, or `null` when the boundary is not
+	 *                                       relative.
+	 */
+	private function get_length_before_anchor( Boundary $boundary ): ?array {
+		$data = $boundary->to_array();
+
+		if ( self::MODE_RELATIVE !== $data['mode'] ) {
+			return null;
+		}
+
+		return [ $boundary->get_anchor(), $data['value'] * $data['unit'] ];
 	}
 }

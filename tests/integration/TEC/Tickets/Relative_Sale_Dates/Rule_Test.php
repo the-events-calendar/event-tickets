@@ -368,6 +368,29 @@ class Rule_Test extends WPTestCase {
 	}
 
 	/**
+	 * @return Generator<string,array{0: array{start: array{mode: string, value?: int, unit?: int, anchor?: string}, end: array{mode: string, value?: int, unit?: int, anchor?: string}}, 1: bool}>
+	 */
+	public function preset_order_provider(): Generator {
+		$fixtures = json_decode( file_get_contents( codecept_data_dir( 'relative-sale-dates/preset-order-cases.json' ) ), true );
+
+		foreach ( $fixtures['cases'] as $case ) {
+			yield $case['name'] => [ $case['rule'], $case['ends_before_start'] ];
+		}
+	}
+
+	/**
+	 * A ticket preset has no event, so its window is rejected only when no event would make it valid.
+	 *
+	 * @test
+	 * @dataProvider preset_order_provider
+	 *
+	 * @param array{start: array{mode: string, value?: int, unit?: int, anchor?: string}, end: array{mode: string, value?: int, unit?: int, anchor?: string}} $data The rule.
+	 */
+	public function should_tell_whether_a_window_ends_before_it_starts_for_every_event( array $data, bool $expected ): void {
+		$this->assertSame( $expected, Rule::from_array( $data, Window_Kind::sales() )->ends_before_start_for_every_event() );
+	}
+
+	/**
 	 * Reads the fixtures shared by the sale price rule and resolver tests, in PHP and in Jest.
 	 *
 	 * @return array{cases: list<array{name: string, rule: array{start: array{mode: string, value?: int, unit?: int}, end: array{mode: string, value?: int, unit?: int}}}>, invalid_rules: list<array{name: string, rule: array{start?: array<string,int|float|string>|string, end?: array<string,int|float|string>|string}, reason: string}>}
