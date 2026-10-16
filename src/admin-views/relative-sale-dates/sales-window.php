@@ -45,7 +45,7 @@ $modes = [
 
 $labels = [
 	'start' => [
-		'mode'     => __( 'Start sale:', 'event-tickets' ),
+		'mode'     => __( 'Start Sales:', 'event-tickets' ),
 		'relative' => _x( 'Starts', 'Opens a relative ticket sales start, as in "Starts 2 weeks before the event starts".', 'event-tickets' ),
 		'value'    => __( 'Number of units before the event that sales start', 'event-tickets' ),
 		'unit'     => __( 'Unit of the sales start', 'event-tickets' ),
@@ -53,7 +53,7 @@ $labels = [
 		'date'     => $ticket_start_date_aria_label,
 	],
 	'end'   => [
-		'mode'     => __( 'End sale:', 'event-tickets' ),
+		'mode'     => __( 'End Sales:', 'event-tickets' ),
 		'relative' => _x( 'Ends', 'Opens a relative ticket sales end, as in "Ends 1 hour before the event starts".', 'event-tickets' ),
 		'value'    => __( 'Number of units before the event that sales end', 'event-tickets' ),
 		'unit'     => __( 'Unit of the sales end', 'event-tickets' ),
