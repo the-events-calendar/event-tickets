@@ -7,12 +7,20 @@ import { getSettings } from '@wordpress/date';
 /**
  * Internal dependencies
  */
-import { isTicketReadyBesidesDuration, isTicketsCommerce, TICKETS_COMMERCE_PROVIDER } from './common-store-bridge';
+import {
+	getLegacyState,
+	getTicketSalePriceFormDates,
+	isSalePriceChecked,
+	isTicketReadyBesidesDuration,
+	isTicketsCommerce,
+	TICKETS_COMMERCE_PROVIDER,
+} from './common-store-bridge';
 import { readEventDates } from './event-dates';
 import { ANCHOR_END, MODE_DEFAULT, MODE_RELATIVE, MODE_SPECIFIC } from '../rule-constants';
+import { isSalePriceOn } from '../sale-price-status';
 import { resolveWindow } from '../sale-window';
 import { judgeWindow } from '../window-check';
-import { SALES_WINDOW } from '../window-kinds';
+import { SALE_PRICE_WINDOW, SALES_WINDOW } from '../window-kinds';
 import { getFormRule, isSpecificWindow, toRequestRule } from './rule';
 import { formatSaleDate } from './sale-dates';
 import SalePriceWindow from './sale-price-window';
@@ -230,6 +238,35 @@ export function filterSaleWindowDates( dates, clientId ) {
 	const format = ( date, ticketDate ) => ( date?.isValid() ? formatSaleDate( dateFormat, date ) : ticketDate );
 
 	return { fromDate: format( saleWindow.start, dates.fromDate ), toDate: format( saleWindow.end, dates.toDate ) };
+}
+
+/**
+ * Tells the ticket header whether a ticket is on sale for the event dates in the editor, when its sale price has a rule.
+ *
+ * A ticket without one, or whose rule or event dates cannot be read, keeps what the server said.
+ *
+ * @since TBD
+ *
+ * @param {boolean} onSale   Whether the ticket is on sale, as the server last said.
+ * @param {string}  clientId The client ID of the ticket block.
+ *
+ * @return {boolean} Whether the ticket is on sale.
+ */
+export function filterTicketOnSale( onSale, clientId ) {
+	const rule = select( STORE_NAME ).getDraftRule( clientId, SALE_PRICE_WINDOW );
+
+	// The header reads this on every change of the legacy store, so a ticket without a rule skips the event dates.
+	if ( ! rule || ! isTicketsCommerce( clientId ) || ! isSalePriceChecked( clientId ) ) {
+		return onSale;
+	}
+
+	const formDates = getTicketSalePriceFormDates( getLegacyState(), clientId );
+	const isOn = isSalePriceOn( rule, readEventDates(), {
+		start: formDates.start?.slice( 0, 10 ) ?? '',
+		end: formDates.end?.slice( 0, 10 ) ?? '',
+	} );
+
+	return null === isOn ? onSale : isOn;
 }
 
 /**
