@@ -50,6 +50,7 @@ class Duplicate_Post extends Integration_Abstract {
 	 * Duplicate tickets to a new post.
 	 *
 	 * @since 5.6.3
+	 * @since TBD Fires `tec_tickets_tickets_duplicated` once the tickets are copied.
 	 *
 	 * @param int    $new_post_id ID of the new post.
 	 * @param object $post        Original post object.
