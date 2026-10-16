@@ -9,6 +9,8 @@
 
 namespace TEC\Tickets\Admin\Attendees;
 
+use WP_Error;
+
 /**
  * Class Modal.
  *
@@ -181,11 +183,12 @@ class Modal {
 	 * depending on the request.
 	 *
 	 * @since 5.10.0
+	 * @since TBD Denies the request unless the current user can edit the attendee's event, and reads the event ID from the attendee record.
 	 *
 	 * @param string|\WP_Error $render_response The render response HTML content or WP_Error with list of errors.
 	 * @param array            $vars            The request variables.
 	 *
-	 * @return string $html The response with the HTML of the form, depending on the call.
+	 * @return string|WP_Error $html The response with the HTML of the form, depending on the call.
 	 */
 	public function get_modal_content_ajax( $render_response, $vars ) {
 		if ( 'tec_tickets_attendee_details' !== $vars['request'] ) {
@@ -206,8 +209,13 @@ class Modal {
 			return '<div class="tec-tickets__admin-attendees-modal-attendee-info-value">' . esc_html__( 'Attendee provider not found.', 'event-tickets' ) . '</div>';
 		}
 
-		$attendee       = $provider->get_attendee( $attendee_id );
-		$post_id        = (int) sanitize_text_field( $vars['eventId'] );
+		$attendee = $provider->get_attendee( $attendee_id );
+		$post_id  = is_array( $attendee ) && ! empty( $attendee['event_id'] ) ? absint( $attendee['event_id'] ) : 0;
+
+		if ( ! $post_id || ! current_user_can( 'edit_post', $post_id ) ) {
+			return new WP_Error( 'tec_tickets_attendee_details_forbidden', __( 'You do not have permission to view this attendee.', 'event-tickets' ) );
+		}
+
 		$ticket_id      = (int) sanitize_text_field( $vars['ticketId'] );
 		$attendee_name  = (string) sanitize_text_field( $vars['attendeeName'] );
 		$attendee_email = (string) sanitize_text_field( $vars['attendeeEmail'] );

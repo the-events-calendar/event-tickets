@@ -1,0 +1,4 @@
+significance: patch
+type: security
+entry: Strengthened permission checks when viewing attendee details in the admin.
+timestamp: 2026-10-16T19:48:18.195Z
