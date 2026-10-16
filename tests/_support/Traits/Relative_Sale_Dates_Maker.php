@@ -299,4 +299,31 @@ trait Relative_Sale_Dates_Maker {
 	protected function get_future_event_start(): DateTimeImmutable {
 		return new DateTimeImmutable( ( new DateTimeImmutable( '+1 year' ) )->format( 'Y-m-d 19:00:00' ) );
 	}
+
+	/**
+	 * Makes another request rewrite a ticket's stored rules before each update of them, so every update conflicts.
+	 *
+	 * It writes the same rules with their keys in the other order: the stored JSON changes, the rules do not. The stored
+	 * rules need two keys or more.
+	 *
+	 * @param int $ticket_id The ticket post ID.
+	 *
+	 * @return void
+	 */
+	protected function conflict_with_every_rules_write( int $ticket_id ): void {
+		$rewrite = static function ( $short_circuit, $object_id, $meta_key ) use ( &$rewrite, $ticket_id ) {
+			if ( $object_id !== $ticket_id || Rule_Store::META_KEY !== $meta_key ) {
+				return $short_circuit;
+			}
+
+			$rules = json_decode( (string) get_post_meta( $ticket_id, Rule_Store::META_KEY, true ), true );
+			remove_filter( 'update_post_metadata', $rewrite );
+			update_post_meta( $ticket_id, Rule_Store::META_KEY, wp_slash( wp_json_encode( array_reverse( $rules, true ) ) ) );
+			add_filter( 'update_post_metadata', $rewrite, 10, 3 );
+
+			return $short_circuit;
+		};
+
+		add_filter( 'update_post_metadata', $rewrite, 10, 3 );
+	}
 }
