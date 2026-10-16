@@ -292,4 +292,32 @@ class Delete_Ticket_Test extends WPTestCase {
 
 		$this->assertFalse( $result );
 	}
+
+	public function delete_attendee_event_id_provider(): \Generator {
+		yield 'event ID passed' => [ true ];
+		yield 'event ID not passed, as the Attendees report does' => [ false ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider delete_attendee_event_id_provider
+	 */
+	public function should_delete_attendee( bool $pass_event_id ): void {
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+		$ticket_id   = $this->create_rsvp_ticket( $event_id );
+		$attendee_id = $this->create_rsvp_attendee( $ticket_id, $event_id );
+
+		$result = $this->rsvp->delete_ticket( $pass_event_id ? $event_id : null, $attendee_id );
+
+		$this->assertTrue( $result );
+		$this->assertFalse( get_post_status( $attendee_id ) );
+		$this->assertEquals( 'publish', get_post_status( $ticket_id ) );
+	}
 }
