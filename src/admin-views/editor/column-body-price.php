@@ -7,6 +7,8 @@
  * @var array<string,string> $relative_sale_price_attributes The attributes of a ticket with a relative sale price.
  */
 
+defined( 'ABSPATH' ) || die();
+
 if ( $provider_obj instanceof Tribe__Tickets__RSVP ) {
 	// If the ticket is an RSVP, we don't need to render the price column.
 	echo '<td></td>';
