@@ -749,6 +749,98 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 		} );
 	} );
 
+	describe( 'on tec.tickets.blocks.Ticket.onSale', () => {
+		/**
+		 * Filters whether the ticket header shows a ticket block on sale, as the server last said it was not.
+		 *
+		 * @param {string} clientId The client ID of the ticket block.
+		 *
+		 * @return {boolean} Whether the header shows the ticket on sale.
+		 */
+		function filterOnSale( clientId ) {
+			return applyFilters( 'tec.tickets.blocks.Ticket.onSale', false, clientId );
+		}
+
+		/**
+		 * @return {string} The client ID of a checked sale price from now to 1 week before the event, October 13, 2040.
+		 */
+		function newRuledSalePriceTicket() {
+			const clientId = newSalePriceTicket();
+			dispatch( STORE_NAME ).setDraftRule( clientId, storedSalePrice, SALE_PRICE_WINDOW );
+
+			return clientId;
+		}
+
+		afterEach( () => {
+			jest.useRealTimers();
+		} );
+
+		// One week before the October 20 event, the sale price ends on October 13 in São Paulo.
+		it( 'should show the sale price up to the day its relative end works out to', () => {
+			const clientId = newRuledSalePriceTicket();
+
+			jest.useFakeTimers( { now: new Date( '2040-10-13T15:00:00Z' ) } );
+			expect( filterOnSale( clientId ) ).toBe( true );
+
+			jest.useFakeTimers( { now: new Date( '2040-10-14T15:00:00Z' ) } );
+			expect( filterOnSale( clientId ) ).toBe( false );
+		} );
+
+		it( 'should follow an event date moved in the editor before it is saved', () => {
+			const clientId = newRuledSalePriceTicket();
+			jest.useFakeTimers( { now: new Date( '2040-10-14T15:00:00Z' ) } );
+
+			window.__tribe_common_store__.dispatch( {
+				type: 'SET_DATETIME',
+				datetime: { ...DEFAULT_EVENT, start: '2040-10-25 19:00:00', end: '2040-10-25 22:30:00' },
+			} );
+
+			expect( filterOnSale( clientId ) ).toBe( true );
+		} );
+
+		// The hidden date picker keeps a start picked before the admin chose Now; the server stores Now empty.
+		it( 'should count a Now start as started whatever start date the form still holds', () => {
+			const clientId = newRuledSalePriceTicket();
+			window.__tribe_common_store__.dispatch(
+				legacyActions.setTicketTempSaleStartDate( clientId, '2040-10-12' )
+			);
+			jest.useFakeTimers( { now: new Date( '2040-10-11T15:00:00Z' ) } );
+
+			expect( filterOnSale( clientId ) ).toBe( true );
+		} );
+
+		it( 'should keep what the server said of a ticket without a sale price rule', () => {
+			const clientId = newClientId();
+			setSalePriceChecked( clientId, true );
+
+			expect( filterOnSale( clientId ) ).toBe( false );
+		} );
+
+		it( 'should keep what the server said of a ticket whose sale price is unchecked', () => {
+			const clientId = newRuledSalePriceTicket();
+			window.__tribe_common_store__.dispatch( legacyActions.setTempSalePriceChecked( clientId, false ) );
+			jest.useFakeTimers( { now: new Date( '2040-10-13T15:00:00Z' ) } );
+
+			expect( filterOnSale( clientId ) ).toBe( false );
+		} );
+
+		it( 'should keep what the server said once the block moves off Tickets Commerce', () => {
+			const clientId = newRuledSalePriceTicket();
+			window.__tribe_common_store__.dispatch( legacyActions.setTicketsProvider( WOO_PROVIDER ) );
+			jest.useFakeTimers( { now: new Date( '2040-10-13T15:00:00Z' ) } );
+
+			expect( filterOnSale( clientId ) ).toBe( false );
+		} );
+
+		it( 'should keep what the server said while the event dates cannot be read', () => {
+			const clientId = newRuledSalePriceTicket();
+			delete window.tec.events;
+			jest.useFakeTimers( { now: new Date( '2040-10-13T15:00:00Z' ) } );
+
+			expect( filterOnSale( clientId ) ).toBe( false );
+		} );
+	} );
+
 	describe( 'on tec.tickets.blocks.confirmButton.isDisabled', () => {
 		/**
 		 * Asks whether the Create or Update button of a ticket block is disabled.
@@ -942,14 +1034,14 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 				expect( isDisabledWith( rule, { start: 'Invalid date' } ) ).toBe( false );
 			} );
 
-			it( 'should judge a Now start by the day sales open, never as outside the sales window', () => {
+			it( 'should never hold back a Now start, even one ending before sales open', () => {
 				const endingIn = ( weeks ) => ( {
 					start: { mode: 'now' },
 					end: salePriceBoundary( weeks, UNIT_WEEKS ),
 				} );
 
 				expect( isDisabledWith( endingIn( 1 ) ) ).toBe( false );
-				expect( isDisabledWith( endingIn( 5 ) ) ).toBe( true );
+				expect( isDisabledWith( endingIn( 5 ) ) ).toBe( false );
 			} );
 
 			it( 'should leave the button alone for a sale price the save drops for not being lower than the price', () => {

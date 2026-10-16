@@ -702,13 +702,13 @@ describe( 'the Ticket block sale price window options', () => {
 			expect( getErrors() ).toStrictEqual( [ OUTSIDE_SALES_WINDOW ] );
 		} );
 
-		it( 'should never show the sales window message for a Now start', () => {
+		it( 'should never show a message for a Now start, even one ending before sales open', () => {
 			renderWithSalesWindow( {
 				start: { mode: 'now' },
 				end: { mode: 'relative', value: 5, unit: UNIT_WEEKS },
 			} );
 
-			expect( getErrors() ).toStrictEqual( [ ENDS_BEFORE_START ] );
+			expect( getErrors() ).toStrictEqual( [] );
 		} );
 
 		it( 'should show no message for a valid sale price window', () => {

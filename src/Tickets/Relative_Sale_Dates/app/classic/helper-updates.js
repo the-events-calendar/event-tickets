@@ -1,6 +1,6 @@
 /**
  * Keeps the text around the classic ticket form's windows in step with the form: the dates relative ends work out to,
- * how long a window lasts, the unit names and the tickets list.
+ * how long a window lasts, the unit names and the tickets list, its sale dates and its prices.
  *
  * @since TBD
  */
@@ -16,6 +16,7 @@ import moment from 'moment';
 import { MODE_RELATIVE } from '../rule-constants';
 import { UNIT_NAMES } from '../unit-names';
 import { resolveWindow } from '../sale-window';
+import { isSalePriceOn } from '../sale-price-status';
 import { getFormWindowLengthText } from '../window-length';
 import { getContext, getEventDates, readFormDates } from './form-context';
 import { formatHelperText } from './helper-text';
@@ -218,5 +219,45 @@ export function updateTicketsList() {
 			{ start: row.dataset.saleStart, end: row.dataset.saleEnd || '' },
 			listSettings
 		);
+	} );
+}
+
+/**
+ * Shows in each listed ticket price the sale price or the regular one, as the sale price rule works out for the
+ * event dates in the form.
+ *
+ * Both prices are the ones the server drew for the ticket. A cell drawn without a rule, or whose rule or event dates
+ * cannot be read, keeps its price.
+ *
+ * @since TBD
+ *
+ * @return {void}
+ */
+export function updatePriceColumn() {
+	const context = getContext();
+	const cells = document.querySelectorAll( '[data-sale-price-rule]' );
+
+	if ( ! context || ! cells.length ) {
+		return;
+	}
+
+	const eventDates = getEventDates( context );
+
+	cells.forEach( ( cell ) => {
+		const onSale = isSalePriceOn( parseRule( cell.dataset.salePriceRule ), eventDates, {
+			start: cell.dataset.salePriceStart || '',
+			end: cell.dataset.salePriceEnd || '',
+		} );
+
+		if ( null === onSale ) {
+			return;
+		}
+
+		// The server drew this HTML for this ticket and keeps it in an attribute of its own cell.
+		const html = onSale ? cell.dataset.priceOnSale : cell.dataset.priceRegular;
+
+		if ( cell.innerHTML !== html ) {
+			cell.innerHTML = html;
+		}
 	} );
 }

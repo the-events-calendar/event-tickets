@@ -300,6 +300,34 @@ function getListRowText() {
 }
 
 /**
+ * Adds the price cell of a listed ticket, holding both prices the server drew for it.
+ *
+ * @param {string} rule The sale price rule, as the server writes it: by default, from now to 1 week before the event
+ *                      starts.
+ */
+function appendPriceCell(
+	rule = JSON.stringify( { start: { mode: 'now' }, end: { mode: 'relative', value: 1, unit: UNIT_WEEKS } } )
+) {
+	jQuery( 'body' ).append(
+		jQuery( '<table><tr><td id="price-cell" class="ticket_price">Server price</td></tr></table>' )
+	);
+	jQuery( '#price-cell' ).attr( {
+		'data-sale-price-rule': rule,
+		'data-sale-price-start': '',
+		'data-sale-price-end': '2099-06-17',
+		'data-price-on-sale': '<ins>$10.00</ins><del>$20.00</del>',
+		'data-price-regular': '$20.00',
+	} );
+}
+
+/**
+ * @return {string} The price cell's HTML.
+ */
+function getPriceCellHtml() {
+	return document.getElementById( 'price-cell' ).innerHTML;
+}
+
+/**
  * @return {string} The sales window error shown in the form.
  */
 function getWindowError() {
@@ -655,6 +683,58 @@ describe( 'classic editor script', () => {
 		hooks.doAction( 'tec.tickets.admin.panels.refreshed', {} );
 
 		expect( getListRowText() ).toBe( 'June 16, 2099 - June 30, 2099' );
+	} );
+
+	it( 'should show the sale price of a listed ticket on a day its relative sale price applies', async () => {
+		// One week before the June 24 event, the sale price ends on June 17.
+		jest.useFakeTimers( { now: new Date( '2099-06-17T15:00:00Z' ), doNotFake: [ 'setTimeout' ] } );
+		renderEventForm();
+		appendPriceCell();
+		await loadScript();
+
+		expect( getPriceCellHtml() ).toBe( document.getElementById( 'price-cell' ).dataset.priceOnSale );
+	} );
+
+	it( 'should show the regular price of a listed ticket once the event moves its relative sale price end past', async () => {
+		jest.useFakeTimers( { now: new Date( '2099-06-17T15:00:00Z' ), doNotFake: [ 'setTimeout' ] } );
+		renderEventForm();
+		appendPriceCell();
+		await loadScript();
+
+		// One week before a June 23 event, the sale price ends on June 16.
+		jQuery( '#EventStartDate' ).val( '6/23/2099' ).trigger( 'change' );
+
+		expect( getPriceCellHtml() ).toBe( document.getElementById( 'price-cell' ).dataset.priceRegular );
+	} );
+
+	it( 'should keep the server price of a listed ticket whose sale price rule cannot be read', async () => {
+		renderEventForm();
+		appendPriceCell( '{not json' );
+		await loadScript();
+
+		jQuery( '#EventStartDate' ).val( '6/23/2099' ).trigger( 'change' );
+
+		expect( getPriceCellHtml() ).toBe( 'Server price' );
+	} );
+
+	it( 'should keep the server price of a listed ticket while the event date cannot be read', async () => {
+		renderEventForm();
+		appendPriceCell();
+		jQuery( '#EventStartDate' ).val( '' );
+		await loadScript();
+
+		expect( getPriceCellHtml() ).toBe( 'Server price' );
+	} );
+
+	it( 'should show the price of a list the editor replaced', async () => {
+		jest.useFakeTimers( { now: new Date( '2099-06-17T15:00:00Z' ), doNotFake: [ 'setTimeout' ] } );
+		renderEventForm();
+		const hooks = await loadScript();
+
+		appendPriceCell();
+		hooks.doAction( 'tec.tickets.admin.panels.refreshed', {} );
+
+		expect( getPriceCellHtml() ).toBe( document.getElementById( 'price-cell' ).dataset.priceOnSale );
 	} );
 
 	it( 'should block the save of a window that ends when it starts', async () => {
