@@ -124,12 +124,12 @@ final class Rule_Store {
 	 * @param int      $ticket_id The ticket post ID.
 	 * @param string[] $keys      The top-level keys to remove.
 	 *
-	 * @return bool Whether any of the keys was stored.
+	 * @return bool Whether any of the keys was stored and is removed now, `false` when the write was dropped.
 	 */
 	public function remove( int $ticket_id, array $keys ): bool {
 		$removed = false;
 
-		$this->change(
+		$changed = $this->change(
 			$ticket_id,
 			static function ( array $stored ) use ( $keys, &$removed ): ?array {
 				$removed = (bool) array_intersect_key( $stored, array_flip( $keys ) );
@@ -138,7 +138,7 @@ final class Rule_Store {
 			}
 		);
 
-		return $removed;
+		return $removed && $changed;
 	}
 
 	/**
@@ -165,7 +165,7 @@ final class Rule_Store {
 	 * @param int         $ticket_id The ticket post ID.
 	 * @param Window_Kind $kind      The kind of the rule to remove.
 	 *
-	 * @return bool Whether a rule of the kind was stored.
+	 * @return bool Whether a rule of the kind was stored and is removed now, `false` when the write was dropped.
 	 */
 	public function remove_rule( int $ticket_id, Window_Kind $kind ): bool {
 		$key = $kind->get_store_key();
@@ -185,15 +185,15 @@ final class Rule_Store {
 	 * @param callable(array<string,mixed>):(array<string,mixed>|null) $change    Returns the rules to write from the stored
 	 *                                                                            ones, or `null` to write nothing.
 	 *
-	 * @return void
+	 * @return bool Whether the rules were written or needed no write, `false` when the write was dropped.
 	 */
-	private function change( int $ticket_id, callable $change ): void {
+	private function change( int $ticket_id, callable $change ): bool {
 		for ( $attempt = 1; $attempt <= self::WRITE_ATTEMPTS; $attempt++ ) {
 			$read = $this->read( $ticket_id );
 			$data = $change( $this->decode( $read ) );
 
 			if ( null === $data || $this->write( $ticket_id, $read, $data ) ) {
-				return;
+				return true;
 			}
 
 			wp_cache_delete( $ticket_id, 'post_meta' );
@@ -208,6 +208,8 @@ final class Rule_Store {
 				'ticket_id' => $ticket_id,
 			]
 		);
+
+		return false;
 	}
 
 	/**

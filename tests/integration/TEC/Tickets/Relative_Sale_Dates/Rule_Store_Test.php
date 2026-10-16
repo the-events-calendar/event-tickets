@@ -275,6 +275,33 @@ class Rule_Store_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function should_report_no_removal_when_every_write_of_it_conflicts(): void {
+		$ticket_id = static::factory()->post->create();
+		$window    = [ 'start' => [ 'mode' => Rule::MODE_DEFAULT ], 'end' => [ 'mode' => Rule::MODE_DEFAULT ] ];
+		update_post_meta( $ticket_id, Rule_Store::META_KEY, wp_json_encode( $window + [ 'sale_price' => [ 'start' => [ 'mode' => Rule::MODE_NOW ] ] ] ) );
+		$writes = 0;
+		$store  = static function ( $short_circuit, $object_id ) use ( &$store, &$writes, $ticket_id, $window ) {
+			if ( $object_id === $ticket_id ) {
+				// Another request changes the sale price rule before each of this request's writes.
+				remove_filter( 'update_post_metadata', $store );
+				update_post_meta( $ticket_id, Rule_Store::META_KEY, wp_json_encode( $window + [ 'sale_price' => [ 'start' => [ 'mode' => Rule::MODE_RELATIVE, 'value' => ++$writes ] ] ] ) );
+				add_filter( 'update_post_metadata', $store, 10, 2 );
+			}
+
+			return $short_circuit;
+		};
+		add_filter( 'update_post_metadata', $store, 10, 2 );
+
+		$removed = tribe( Rule_Store::class )->remove( $ticket_id, [ 'start', 'end' ] );
+		remove_filter( 'update_post_metadata', $store );
+
+		$this->assertFalse( $removed );
+		$this->assertSame( $window, array_intersect_key( tribe( Rule_Store::class )->get( $ticket_id ), $window ) );
+	}
+
+	/**
+	 * @test
+	 */
 	public function should_store_a_rule_with_a_backslash_and_compare_it_on_the_next_write(): void {
 		$ticket_id = static::factory()->post->create();
 		$window    = [ 'start' => [ 'mode' => Rule::MODE_DEFAULT ], 'note' => 'a\\b "c"' ];
