@@ -237,13 +237,13 @@ final class Window_Kind {
 			'start' => $modes,
 			'end'   => $modes,
 		];
-		$kind->open_start_mode              = Rule::MODE_DEFAULT;
-		$kind->max_value                    = Boundary::MAX_VALUE;
-		$kind->units                        = [ MINUTE_IN_SECONDS, HOUR_IN_SECONDS, DAY_IN_SECONDS, WEEK_IN_SECONDS ];
-		$kind->anchors                      = [ Rule::ANCHOR_START, Rule::ANCHOR_END ];
-		$kind->store_key                    = null;
-		$kind->parent                       = null;
-		$kind->rule_keys                    = [
+		$kind->open_start_mode         = Rule::MODE_DEFAULT;
+		$kind->max_value               = Boundary::MAX_VALUE;
+		$kind->units                   = [ MINUTE_IN_SECONDS, HOUR_IN_SECONDS, DAY_IN_SECONDS, WEEK_IN_SECONDS ];
+		$kind->anchors                 = [ Rule::ANCHOR_START, Rule::ANCHOR_END ];
+		$kind->store_key               = null;
+		$kind->parent                  = null;
+		$kind->rule_keys               = [
 			'data'                  => 'relative_sale_dates',
 			'tec_rest'              => 'relative_sale_dates',
 			'block_editor_request'  => [ 'relative_sale_dates' ],
@@ -272,8 +272,8 @@ final class Window_Kind {
 				'time' => 'ticket_end_time',
 			],
 		];
-		$kind->specific_needs_date          = true;
-		$kind->errors                       = [
+		$kind->specific_needs_date     = true;
+		$kind->errors                  = [
 			'invalidRule'     => [
 				'code'    => 'tec_tickets_relative_sale_dates_invalid_rule',
 				'message' => static fn(): string => sprintf(
@@ -320,13 +320,13 @@ final class Window_Kind {
 			'start' => [ Rule::MODE_NOW, Rule::MODE_RELATIVE, Rule::MODE_SPECIFIC ],
 			'end'   => [ Rule::MODE_RELATIVE, Rule::MODE_SPECIFIC ],
 		];
-		$kind->open_start_mode              = Rule::MODE_NOW;
-		$kind->max_value                    = self::SALE_PRICE_MAX_VALUE;
-		$kind->units                        = [ DAY_IN_SECONDS, WEEK_IN_SECONDS ];
-		$kind->anchors                      = [ Rule::ANCHOR_START ];
-		$kind->store_key                    = 'sale_price';
-		$kind->parent                       = self::sales();
-		$kind->rule_keys                    = [
+		$kind->open_start_mode         = Rule::MODE_NOW;
+		$kind->max_value               = self::SALE_PRICE_MAX_VALUE;
+		$kind->units                   = [ DAY_IN_SECONDS, WEEK_IN_SECONDS ];
+		$kind->anchors                 = [ Rule::ANCHOR_START ];
+		$kind->store_key               = 'sale_price';
+		$kind->parent                  = self::sales();
+		$kind->rule_keys               = [
 			'data'                  => 'ticket_sale_price_relative',
 			'tec_rest'              => 'sale_price_relative',
 			'block_editor_request'  => [ 'sale_price', 'relative' ],
@@ -342,10 +342,10 @@ final class Window_Kind {
 				'time' => null,
 			],
 		];
-		$kind->open_start_value             = '';
-		$kind->sale_keys                    = [ 'enabled_meta' => Ticket::$sale_price_checked_key ];
-		$kind->owns_ticket_sales_dates      = false;
-		$kind->submitted_fields             = [
+		$kind->open_start_value        = '';
+		$kind->sale_keys               = [ 'enabled_meta' => Ticket::$sale_price_checked_key ];
+		$kind->owns_ticket_sales_dates = false;
+		$kind->submitted_fields        = [
 			'start' => [
 				'date' => 'ticket_sale_start_date',
 				'time' => null,
@@ -355,8 +355,8 @@ final class Window_Kind {
 				'time' => null,
 			],
 		];
-		$kind->specific_needs_date          = false;
-		$kind->errors                       = [
+		$kind->specific_needs_date     = false;
+		$kind->errors                  = [
 			'invalidRule'     => [
 				'code'    => 'tec_tickets_relative_sale_dates_sale_price_invalid_rule',
 				'message' => static fn(): string => sprintf(

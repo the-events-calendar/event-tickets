@@ -371,5 +371,4 @@ final class Ticket_Save {
 			$parent ? $this->get_rule_to_apply( $ticket_id, $data, $parent ) : null
 		);
 	}
-
 }

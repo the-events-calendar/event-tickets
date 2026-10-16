@@ -11,7 +11,6 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
-
 /**
  * Keeps the ticket's rules in one JSON meta, writing only the keys it is given so one rule never drops another.
  *
