@@ -224,6 +224,12 @@ final class Rule_Store {
 	 * @return bool Whether the meta held what was read, and now holds the rules.
 	 */
 	private function write( int $ticket_id, string $read, array $data ): bool {
+		/*
+		 * shortcut: the meta functions check the meta and change it in two queries, so a write another request makes
+		 * between them goes unseen: the delete drops the rules that request saved, the update adds back the rules it
+		 * deleted, and two first saves of a ticket add two rows. The window is the time between two queries of overlapping
+		 * saves of one ticket; take a per-ticket `GET_LOCK()` around `change()` once such saves are common.
+		 */
 		if ( ! $data ) {
 			// The meta functions unslash the value they compare against.
 			return '' === $read || delete_post_meta( $ticket_id, self::META_KEY, wp_slash( $read ) );
@@ -239,11 +245,7 @@ final class Rule_Store {
 			return false !== add_post_meta( $ticket_id, self::META_KEY, wp_slash( $json ), true );
 		}
 
-		/*
-		 * Unlike the new value, the previous value is compared as it is given.
-		 * shortcut: `update_post_meta()` adds the meta when another request deleted it after the read, which brings that
-		 * request's removed rules back; the window is the time between two queries of overlapping saves of one ticket.
-		 */
+		// Unlike the new value, the previous value is compared as it is given.
 		return false !== update_post_meta( $ticket_id, self::META_KEY, wp_slash( $json ), $read );
 	}
 
