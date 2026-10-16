@@ -132,7 +132,7 @@ final class Rule_Store {
 		$changed = $this->change(
 			$ticket_id,
 			static function ( array $stored ) use ( $keys, &$removed ): ?array {
-				$removed = (bool) array_intersect_key( $stored, array_flip( $keys ) );
+				$removed = [] !== array_intersect_key( $stored, array_flip( $keys ) );
 
 				return $removed ? array_diff_key( $stored, array_flip( $keys ) ) : null;
 			}
