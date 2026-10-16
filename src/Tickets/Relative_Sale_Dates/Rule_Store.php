@@ -110,10 +110,10 @@ final class Rule_Store {
 	 * @param int                                                                                             $ticket_id The ticket post ID.
 	 * @param array{start?: array<string,mixed>, end?: array<string,mixed>, sale_price?: array<string,mixed>} $values    The values to write, keyed by their top-level key.
 	 *
-	 * @return void
+	 * @return bool Whether the values are stored now, `false` when the write was dropped.
 	 */
-	public function save( int $ticket_id, array $values ): void {
-		$this->change( $ticket_id, static fn( array $stored ): array => array_merge( $stored, $values ) );
+	public function save( int $ticket_id, array $values ): bool {
+		return $this->change( $ticket_id, static fn( array $stored ): array => array_merge( $stored, $values ) );
 	}
 
 	/**
@@ -149,12 +149,12 @@ final class Rule_Store {
 	 * @param int  $ticket_id The ticket post ID.
 	 * @param Rule $rule      The rule.
 	 *
-	 * @return void
+	 * @return bool Whether the rule is stored now, `false` when the write was dropped.
 	 */
-	public function save_rule( int $ticket_id, Rule $rule ): void {
+	public function save_rule( int $ticket_id, Rule $rule ): bool {
 		$key = $rule->get_kind()->get_store_key();
 
-		$this->save( $ticket_id, null === $key ? $rule->to_array() : [ $key => $rule->to_array() ] );
+		return $this->save( $ticket_id, null === $key ? $rule->to_array() : [ $key => $rule->to_array() ] );
 	}
 
 	/**

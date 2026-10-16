@@ -180,8 +180,7 @@ final class Ticket_Save {
 
 			$rule = $this->get_rule_to_apply( $ticket_id, $data, $kind );
 
-			if ( $rule ) {
-				$this->rule_store->save_rule( $ticket_id, $rule );
+			if ( $rule && $this->rule_store->save_rule( $ticket_id, $rule ) ) {
 				$this->sales_window_effects->flag_end_left_to_ticket( $ticket_id, Rule::from_stored( $stored, $kind ), $rule );
 			}
 		}

@@ -296,6 +296,20 @@ class Rule_Store_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function should_report_no_save_when_every_write_of_it_conflicts(): void {
+		$ticket_id = static::factory()->post->create();
+		$stored    = [ 'start' => [ 'mode' => Rule::MODE_DEFAULT ], 'end' => [ 'mode' => Rule::MODE_DEFAULT ] ];
+		update_post_meta( $ticket_id, Rule_Store::META_KEY, wp_json_encode( $stored ) );
+		$this->conflict_with_every_rules_write( $ticket_id );
+
+		$this->assertFalse( tribe( Rule_Store::class )->save( $ticket_id, [ 'end' => [ 'mode' => Rule::MODE_SPECIFIC ] ] ) );
+
+		$this->assertEquals( $stored, tribe( Rule_Store::class )->get( $ticket_id ) );
+	}
+
+	/**
+	 * @test
+	 */
 	public function should_store_a_rule_with_a_backslash_and_compare_it_on_the_next_write(): void {
 		$ticket_id = static::factory()->post->create();
 		$window    = [ 'start' => [ 'mode' => Rule::MODE_DEFAULT ], 'note' => 'a\\b "c"' ];
