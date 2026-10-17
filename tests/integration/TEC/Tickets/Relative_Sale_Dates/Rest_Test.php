@@ -506,6 +506,37 @@ class Rest_Test extends Controller_Test_Case {
 	}
 
 	/**
+	 * @test
+	 */
+	public function should_map_the_block_editor_rule_of_an_accepted_provider_ticket_only(): void {
+		$this->make_controller()->register();
+		$rule    = wp_json_encode( [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => [ 'mode' => 'default' ] ] );
+		$request = new WP_REST_Request();
+		$request->set_param( 'ticket', [ 'relative_sale_dates' => $rule ] );
+		$paypal = tribe( 'tickets.commerce.paypal' );
+
+		$this->assertSame( [], tribe( Rest::class )->map_block_editor_rule( [], $request, $paypal ) );
+
+		$this->accept_paypal_tickets();
+
+		$this->assertSame( [ 'relative_sale_dates' => $rule ], tribe( Rest::class )->map_block_editor_rule( [], $request, $paypal ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_give_the_tec_rest_api_entity_of_another_provider_ticket_its_sales_window_rule_alone(): void {
+		$this->accept_paypal_tickets();
+		$this->make_controller()->register();
+		$rule      = [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => [ 'mode' => 'default' ] ];
+		$ticket_id = $this->create_ticket( 'tickets.commerce.paypal', $this->create_event( '2027-06-24 19:00:00' ), 1, [ 'relative_sale_dates' => wp_json_encode( $rule ) ] );
+
+		$entity = tribe( Rest::class )->add_rule_to_tec_rest_api_ticket( [ 'id' => $ticket_id ] );
+
+		$this->assertSame( [ 'id' => $ticket_id, 'relative_sale_dates' => $rule ], $entity );
+	}
+
+	/**
 	 * @param int                  $ticket_id The ticket post ID.
 	 * @param array<string,mixed>  $kind      The fixtures of the kind of rule.
 	 *

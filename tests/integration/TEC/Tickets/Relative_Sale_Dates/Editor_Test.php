@@ -497,8 +497,7 @@ class Editor_Test extends Controller_Test_Case {
 	}
 
 	/**
-	 * Tickets Commerce renders its price fields in the panel of a ticket of any provider, so the panel of an RSVP offers
-	 * the sale price options in them; its date fields stay unchanged.
+	 * An RSVP is not a Tickets Commerce ticket, so its panel offers neither window's options.
 	 *
 	 * @test
 	 */
@@ -514,7 +513,7 @@ class Editor_Test extends Controller_Test_Case {
 		add_filter( $hook, $callback, 10, 4 );
 
 		$this->assertSame( $expected, $this->render_ticket_panel( $event_id, $rsvp_id ) );
-		$this->get_element( $this->render_ticket_form( $event_id, $rsvp_id ), 'ticket_sale_start_mode' );
+		$this->assertSame( 0, $this->render_ticket_form( $event_id, $rsvp_id )->query( "//*[@id='ticket_sale_start_mode']" )->length );
 	}
 
 	/**
@@ -1007,6 +1006,37 @@ class Editor_Test extends Controller_Test_Case {
 		$this->assertTrue( $this->get_element( $form, 'ticket_sales_start_value' )->hasAttribute( 'aria-describedby' ) );
 		$this->get_element( $form, 'ticket_relative_sale_dates' );
 		$this->get_element( $form, 'ticket_sales_window_error' );
+	}
+
+	/**
+	 * Only Tickets Commerce tickets have the sale price fields the sale price window replaces.
+	 *
+	 * @test
+	 */
+	public function should_offer_the_sales_window_alone_to_a_ticket_of_an_accepted_provider(): void {
+		$this->accept_paypal_tickets();
+		$this->make_controller()->register();
+		$event_id  = $this->create_event( self::EVENT_START );
+		$ticket_id = $this->create_ticket( 'tickets.commerce.paypal', $event_id, 1 );
+
+		$form = $this->render_ticket_form( $event_id, $ticket_id );
+
+		// A saved ticket without a rule opens on its own dates, as a Tickets Commerce one does.
+		$this->assertSame( 'specific', $this->get_selected_value( $form, 'ticket_sales_start_mode' ) );
+		$this->assertSame( 0, $form->query( "//*[@id='ticket_sale_start_mode']" )->length );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_leave_the_date_fields_of_a_provider_the_sales_window_does_not_apply_to(): void {
+		$this->accept_paypal_tickets();
+		remove_all_filters( 'tec_tickets_relative_sale_dates_ticket_providers' );
+		$this->make_controller()->register();
+		$event_id  = $this->create_event( self::EVENT_START );
+		$ticket_id = $this->create_ticket( 'tickets.commerce.paypal', $event_id, 1 );
+
+		$this->assertSame( 0, $this->render_ticket_form( $event_id, $ticket_id )->query( "//*[@id='ticket_sales_start_mode']" )->length );
 	}
 
 	/**

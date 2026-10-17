@@ -17,6 +17,7 @@ use Tribe__Date_Utils as Dates;
 use Tribe__Tickets__Admin__Views as Admin_Views;
 use Tribe__Template as Template;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use Tribe__Tickets__Tickets as Ticket_Provider;
 
 /**
  * Replaces the sale dates and sale price fields of the classic ticket form with the options of each window kind.
@@ -115,6 +116,15 @@ final class Editor {
 	private Admin_Views $preset_views;
 
 	/**
+	 * The providers the relative sales window applies to.
+	 *
+	 * @since TBD
+	 *
+	 * @var Providers
+	 */
+	private Providers $providers;
+
+	/**
 	 * Editor constructor.
 	 *
 	 * @since TBD
@@ -123,10 +133,12 @@ final class Editor {
 	 * @param Admin_Views $preset_views The admin views template a ticket preset's sales window renders with. Not the
 	 *                                  shared one, which carries each render's context into the next, and renders the
 	 *                                  ticket form on the screen where a preset can be saved.
+	 * @param Providers   $providers    The providers the relative sales window applies to.
 	 */
-	public function __construct( Rule_Store $rule_store, Admin_Views $preset_views ) {
+	public function __construct( Rule_Store $rule_store, Admin_Views $preset_views, Providers $providers ) {
 		$this->rule_store   = $rule_store;
 		$this->preset_views = $preset_views;
+		$this->providers    = $providers;
 	}
 
 	/**
@@ -163,7 +175,8 @@ final class Editor {
 	}
 
 	/**
-	 * Renders the sales window options in place of the sale dates fields of a Tickets Commerce ticket on an event.
+	 * Renders the sales window options in place of the sale dates fields of a ticket on an event, for a provider the
+	 * relative sales window applies to.
 	 *
 	 * Only the fields template's own output is replaced, so what other code renders before and after it stays.
 	 *
@@ -296,10 +309,11 @@ final class Editor {
 	}
 
 	/**
-	 * Returns whether the relative options apply to the fields a template renders.
+	 * Returns whether the relative options of a window apply to the fields a template renders.
 	 *
 	 * The template's `provider` is the one whose fields it renders: the ticket's for the panel's own fields, and the
-	 * event's for the price fields, which Tickets Commerce renders in the panel of a ticket of any provider.
+	 * event's for a new ticket's price fields. The sales window applies to the providers `Providers` accepts, while it
+	 * is active; the sale price window to Tickets Commerce alone, whose fields it replaces.
 	 *
 	 * A front-end form, such as Community Events', loads its panels through admin-ajax, where `is_admin()` is true, so it
 	 * says it is not in wp-admin with an `is_admin` request var, which the ticket controls read the same way
@@ -308,15 +322,21 @@ final class Editor {
 	 * @since TBD
 	 *
 	 * @param array<string,mixed> $context The ticket panel data, as the template holds it.
+	 * @param Window_Kind         $kind    The kind of the window.
 	 *
-	 * @return bool Whether the fields are the wp-admin ones of Tickets Commerce, for a ticket that is not an RSVP or a
-	 *              Series Pass, on an event.
+	 * @return bool Whether the fields are the wp-admin ones of an active provider the window applies to, for a ticket
+	 *              that is not an RSVP or a Series Pass, on an event.
 	 */
-	private function applies_to( array $context ): bool {
+	private function applies_to( array $context, Window_Kind $kind ): bool {
+		$provider       = $context['provider'] ?? null;
+		$provider_class = $provider instanceof Ticket_Provider ? $provider->class_name : '';
 		// An event defaults to the Tickets Commerce provider even when Tickets Commerce is not active.
+		$is_active_accepted = $kind->owns_ticket_sales_dates()
+			? isset( $this->providers->get_active()[ $provider_class ] )
+			: Module::class === $provider_class && isset( $context['modules'][ Module::class ] );
+
 		return 'tribe_events' === get_post_type( $context['post_id'] ?? 0 )
-			&& ( $context['provider'] ?? null ) instanceof Module
-			&& isset( $context['modules'][ Module::class ] )
+			&& $is_active_accepted
 			&& ! in_array( $context['ticket_type'] ?? 'default', array_merge( [ 'rsvp' ], Ticket_Save::EXCLUDED_TICKET_TYPES ), true )
 			// A front-end form, such as Community Events', does not load the script that writes the rule.
 			&& tribe_is_truthy( tec_get_request_var( 'is_admin', is_admin() ) );
@@ -397,7 +417,7 @@ final class Editor {
 	private function render_fields( $html, Template $template, Window_Kind $kind ) {
 		$context = $template->get_values();
 
-		if ( ! $this->applies_to( $context ) ) {
+		if ( ! $this->applies_to( $context, $kind ) ) {
 			return $html;
 		}
 

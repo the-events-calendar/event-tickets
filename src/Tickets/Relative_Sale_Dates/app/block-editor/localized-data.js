@@ -15,6 +15,13 @@
  */
 
 /**
+ * @typedef {Object} TicketProviders
+ *
+ * @property {string[]} classes The provider classes, as the tickets block holds its provider.
+ * @property {string[]} slugs   The provider slugs, as the block editor tickets REST API gives a ticket's provider.
+ */
+
+/**
  * @typedef {Object} BlockEditorData
  *
  * @property {Object<string,SaleWindowRule>}        windowDefaults   The `start` and `end` a new window of each kind
@@ -28,6 +35,7 @@
  * @property {Object}                               allDay           The times the server saves for an all-day event:
  *                                                                   `start` and `end`, `HH:mm:ss`, and `endDays`.
  * @property {HelperTextFormats}                    formats          The date and time formats of the helper text.
+ * @property {TicketProviders}                      ticketProviders  The active providers the sales window applies to.
  */
 
 /**
@@ -39,4 +47,15 @@
  */
 export function getLocalizedData() {
 	return window.tec.tickets.relativeSaleDates.blockEditorData;
+}
+
+/**
+ * Gets the active providers the sales window applies to, as the server localizes them.
+ *
+ * @since TBD
+ *
+ * @return {TicketProviders|undefined} The providers, or `undefined` when the script is not localized with them.
+ */
+export function getLocalizedTicketProviders() {
+	return window.tec?.tickets?.relativeSaleDates?.blockEditorData?.ticketProviders;
 }
