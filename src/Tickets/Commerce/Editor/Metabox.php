@@ -160,15 +160,17 @@ class Metabox {
 	 * Renders the sale price fields for TicketsCommerce.
 	 *
 	 * @since 5.9.0
+	 * @since TBD Judged a saved ticket by its own provider, not the post's.
 	 *
 	 * @param int                 $ticket_id The ticket ID.
 	 * @param int                 $post_id The post ID.
 	 * @param array<string,mixed> $context The context array.
 	 */
 	public function render_sale_price_fields( $ticket_id, $post_id, $context ): void {
-		$provider = $context['provider'] ?? false;
+		// A post can hold tickets of another provider, which keep their sale price in the same meta as a string.
+		$provider = $ticket_id ? tribe_tickets_get_ticket_provider( $ticket_id ) : ( $context['provider'] ?? false );
 
-		if ( ! $provider || Module::class !== $provider->class_name ) {
+		if ( ! $provider instanceof Module ) {
 			return;
 		}
 
