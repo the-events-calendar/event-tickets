@@ -381,6 +381,28 @@ class Event_Listener_Test extends Controller_Test_Case {
 	}
 
 	/**
+	 * @test
+	 */
+	public function should_move_the_resolved_dates_of_an_accepted_provider_ticket_in_its_format(): void {
+		$paypal      = $this->accept_paypal_tickets();
+		$event_start = $this->get_future_event_start();
+		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
+		$rule        = [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => $this->relative( 1, DAY_IN_SECONDS ) ];
+		$ticket_id   = $this->create_ticket( 'tickets.commerce.paypal', $event_id, 1, [ 'relative_sale_dates' => wp_json_encode( $rule ) ] );
+		add_filter(
+			'tec_tickets_relative_sale_dates_event_ticket_ids',
+			static fn( array $ticket_ids ): array => array_merge( $ticket_ids, [ $ticket_id ] )
+		);
+		$moved = $event_start->modify( '+3 days' );
+
+		$this->send_classic_event_save( $event_id, $moved );
+
+		$this->assertSame( $moved->modify( '-2 weeks' )->format( 'Y-m-d H:i:s' ), get_post_meta( $ticket_id, '_ticket_start_date', true ) );
+		$this->assertSame( $moved->modify( '-1 day' )->format( 'Y-m-d H:i:s' ), get_post_meta( $ticket_id, '_ticket_end_date', true ) );
+		$this->assertArrayHasKey( $paypal, tribe( Providers::class )->get_active() );
+	}
+
+	/**
 	 * Saves the event from the classic editor, moving it to a new start for three hours.
 	 *
 	 * @param int               $event_id The event post ID.

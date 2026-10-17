@@ -60,46 +60,30 @@ final class Rule_Store {
 	}
 
 	/**
-	 * Gets the Tickets Commerce tickets of an event that have stored rules, at most `TICKETS_QUERY_LIMIT` of them.
+	 * Gets the tickets of an event that have stored rules: the Tickets Commerce ones, at most `TICKETS_QUERY_LIMIT` of
+	 * them, and those of the other providers the relative sales window applies to.
 	 *
 	 * @since TBD
 	 *
 	 * @param int $event_id The event post ID.
 	 *
-	 * @return int[] The ticket post IDs, none while Tickets Commerce is off.
+	 * @return int[] The ticket post IDs.
 	 */
 	public function get_ticket_ids_for_event( int $event_id ): array {
-		// Tickets Commerce loads its ticket functions only while it is on, and events are saved whether it is or not.
-		if ( ! tec_tickets_commerce_is_enabled() || ! function_exists( 'tec_tc_tickets' ) ) {
-			return [];
-		}
+		/**
+		 * Filters the tickets of an event that have relative sale dates rules, which are resolved again when it moves.
+		 *
+		 * A provider added through `tec_tickets_relative_sale_dates_ticket_providers` adds its own tickets of the event
+		 * that have the rules meta, `TEC\Tickets\Relative_Sale_Dates\Rule_Store::META_KEY`.
+		 *
+		 * @since TBD
+		 *
+		 * @param int[] $ticket_ids The ticket post IDs, Tickets Commerce's.
+		 * @param int   $event_id   The event post ID.
+		 */
+		$ticket_ids = apply_filters( 'tec_tickets_relative_sale_dates_event_ticket_ids', $this->get_commerce_ticket_ids_for_event( $event_id ), $event_id );
 
-		$ticket_ids = array_map(
-			'absint',
-			tec_tc_tickets()
-				->where( 'event', $event_id )
-				->where( 'meta_exists', self::META_KEY )
-				->where( 'post_status', 'any' )
-				->order_by( 'ID', 'ASC' )
-				->per_page( self::TICKETS_QUERY_LIMIT )
-				->get_ids()
-		);
-
-		// A full page may leave tickets out; the oldest ones are kept, and the cut is logged so it can be found.
-		if ( count( $ticket_ids ) >= self::TICKETS_QUERY_LIMIT ) {
-			do_action(
-				'tribe_log',
-				'warning',
-				__CLASS__,
-				[
-					'message'  => 'Only the first ruled tickets of the event were read; the others keep their dates.',
-					'event_id' => $event_id,
-					'limit'    => self::TICKETS_QUERY_LIMIT,
-				]
-			);
-		}
-
-		return $ticket_ids;
+		return is_array( $ticket_ids ) ? array_values( array_unique( array_filter( array_map( 'absint', $ticket_ids ) ) ) ) : [];
 	}
 
 	/**
@@ -171,6 +155,49 @@ final class Rule_Store {
 		$key = $kind->get_store_key();
 
 		return $this->remove( $ticket_id, null === $key ? [ 'start', 'end' ] : [ $key ] );
+	}
+
+	/**
+	 * Gets the Tickets Commerce tickets of an event that have stored rules, at most `TICKETS_QUERY_LIMIT` of them.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id The event post ID.
+	 *
+	 * @return int[] The ticket post IDs, none while Tickets Commerce is off.
+	 */
+	private function get_commerce_ticket_ids_for_event( int $event_id ): array {
+		// Tickets Commerce loads its ticket functions only while it is on, and events are saved whether it is or not.
+		if ( ! tec_tickets_commerce_is_enabled() || ! function_exists( 'tec_tc_tickets' ) ) {
+			return [];
+		}
+
+		$ticket_ids = array_map(
+			'absint',
+			tec_tc_tickets()
+				->where( 'event', $event_id )
+				->where( 'meta_exists', self::META_KEY )
+				->where( 'post_status', 'any' )
+				->order_by( 'ID', 'ASC' )
+				->per_page( self::TICKETS_QUERY_LIMIT )
+				->get_ids()
+		);
+
+		// A full page may leave tickets out; the oldest ones are kept, and the cut is logged so it can be found.
+		if ( count( $ticket_ids ) >= self::TICKETS_QUERY_LIMIT ) {
+			do_action(
+				'tribe_log',
+				'warning',
+				__CLASS__,
+				[
+					'message'  => 'Only the first ruled tickets of the event were read; the others keep their dates.',
+					'event_id' => $event_id,
+					'limit'    => self::TICKETS_QUERY_LIMIT,
+				]
+			);
+		}
+
+		return $ticket_ids;
 	}
 
 	/**

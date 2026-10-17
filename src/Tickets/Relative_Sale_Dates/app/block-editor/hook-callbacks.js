@@ -10,10 +10,11 @@ import { getSettings } from '@wordpress/date';
 import {
 	getLegacyState,
 	getTicketSalePriceFormDates,
+	isAcceptedProvider,
+	isAcceptedTicket,
 	isSalePriceChecked,
 	isTicketReadyBesidesDuration,
 	isTicketsCommerce,
-	TICKETS_COMMERCE_PROVIDER,
 } from './common-store-bridge';
 import { readEventDates } from './event-dates';
 import { ANCHOR_END, MODE_DEFAULT, MODE_RELATIVE, MODE_SPECIFIC } from '../rule-constants';
@@ -35,7 +36,7 @@ import { BLOCK_WINDOW_KINDS } from './window-kinds';
 /** @typedef {import( '../window-check' ).WindowReader} TicketWindowReader */
 
 /**
- * Loads the rules of a Tickets Commerce ticket fetched from the server.
+ * Loads the rules of a ticket fetched from the server, sold through a provider the sales window applies to.
  *
  * The store knows nothing of a ticket another provider sells, so its requests carry no rule. A ticket without a sale
  * price has no sale price rule to load, so checking its sale price opens on the defaults.
@@ -48,7 +49,7 @@ import { BLOCK_WINDOW_KINDS } from './window-kinds';
  * @return {void}
  */
 export function loadTicketRule( clientId, ticket ) {
-	if ( TICKETS_COMMERCE_PROVIDER !== ticket?.provider ) {
+	if ( ! isAcceptedTicket( ticket ) ) {
 		return;
 	}
 
@@ -76,7 +77,7 @@ export function loadTicketRule( clientId, ticket ) {
 export function saveTicketRule( clientId, ticketId, details, ticket ) {
 	dispatch( STORE_NAME ).saveSentRule( clientId );
 
-	if ( TICKETS_COMMERCE_PROVIDER !== ticket?.provider ) {
+	if ( ! isAcceptedTicket( ticket ) ) {
 		return;
 	}
 
@@ -145,7 +146,7 @@ function getSentValue( clientId, kind, rule, readWindow, eventDates ) {
  */
 export function filterSetBodyDetails( body, clientId ) {
 	// The options are hidden for another provider, whose ticket the server saves without a rule.
-	if ( ! isTicketsCommerce( clientId ) ) {
+	if ( ! isAcceptedProvider( clientId ) ) {
 		return body;
 	}
 
@@ -172,7 +173,7 @@ export function filterSetBodyDetails( body, clientId ) {
 }
 
 /**
- * Renders the sales window options of a Tickets Commerce ticket in place of its Sale Duration picker.
+ * Renders the sales window options of a ticket in place of its Sale Duration picker, for a provider they apply to.
  *
  * @since TBD
  *
@@ -182,7 +183,7 @@ export function filterSetBodyDetails( body, clientId ) {
  * @return {Object} The sales window options, or the picker for a ticket another provider sells.
  */
 export function filterTicketDuration( picker, clientId ) {
-	if ( ! isTicketsCommerce( clientId ) ) {
+	if ( ! isAcceptedProvider( clientId ) ) {
 		return picker;
 	}
 
@@ -224,7 +225,7 @@ export function filterSaleWindowDates( dates, clientId ) {
 	const rule = select( STORE_NAME ).getDraftRule( clientId );
 
 	// The header reads its dates on every change of the legacy store, so a ticket without a rule skips the event dates.
-	if ( ! rule || ! isTicketsCommerce( clientId ) ) {
+	if ( ! rule || ! isAcceptedProvider( clientId ) ) {
 		return dates;
 	}
 
@@ -290,7 +291,7 @@ export function filterTicketOnSale( onSale, clientId ) {
  * @return {boolean} Whether the button is disabled.
  */
 export function filterConfirmDisabled( isDisabled, state, { clientId } ) {
-	if ( ! isTicketsCommerce( clientId ) ) {
+	if ( ! isAcceptedProvider( clientId ) ) {
 		return isDisabled;
 	}
 
@@ -329,7 +330,7 @@ export function filterConfirmDisabled( isDisabled, state, { clientId } ) {
  * @return {boolean} Whether the sale end follows the event start.
  */
 export function filterSyncSaleEndWithEventStart( followsEventStart, clientId ) {
-	if ( ! isTicketsCommerce( clientId ) ) {
+	if ( ! isAcceptedProvider( clientId ) ) {
 		return followsEventStart;
 	}
 

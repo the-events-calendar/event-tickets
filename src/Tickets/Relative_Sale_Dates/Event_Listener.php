@@ -11,7 +11,6 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
-use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Ticket_Actions;
 
 /**
@@ -73,6 +72,15 @@ final class Event_Listener {
 	private Sales_Window_Effects $sales_window_effects;
 
 	/**
+	 * The providers the relative sales window applies to.
+	 *
+	 * @since TBD
+	 *
+	 * @var Providers
+	 */
+	private Providers $providers;
+
+	/**
 	 * The events whose dates changed in this request and whose tickets are not resolved yet, as keys.
 	 *
 	 * @since TBD
@@ -90,12 +98,14 @@ final class Event_Listener {
 	 * @param Ticket_Dates         $ticket_dates         The writer of the dates of every kind of window.
 	 * @param Ticket_Actions       $ticket_actions       The writer of the event cost.
 	 * @param Sales_Window_Effects $sales_window_effects The effects only the sales window has.
+	 * @param Providers            $providers            The providers the relative sales window applies to.
 	 */
-	public function __construct( Rule_Store $rule_store, Ticket_Dates $ticket_dates, Ticket_Actions $ticket_actions, Sales_Window_Effects $sales_window_effects ) {
+	public function __construct( Rule_Store $rule_store, Ticket_Dates $ticket_dates, Ticket_Actions $ticket_actions, Sales_Window_Effects $sales_window_effects, Providers $providers ) {
 		$this->rule_store           = $rule_store;
 		$this->ticket_dates         = $ticket_dates;
 		$this->ticket_actions       = $ticket_actions;
 		$this->sales_window_effects = $sales_window_effects;
+		$this->providers            = $providers;
 	}
 
 	/**
@@ -285,8 +295,10 @@ final class Event_Listener {
 		 * the ticket save that stores the cost again.
 		 */
 		if ( $changed ) {
-			// Resolved here, not injected: the listener is built on any meta write, and building the module registers it.
-			tribe( Module::class )->clear_ticket_cache_for_post( $post_id );
+			// Resolved here, not injected: the listener is built on any meta write, and building a module registers it.
+			foreach ( $this->providers->get_active() as $provider ) {
+				$provider->clear_ticket_cache_for_post( $post_id );
+			}
 			$this->ticket_actions->update_event_cost( current( $ticket_ids ), $post_id );
 		}
 	}

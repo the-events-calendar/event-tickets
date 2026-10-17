@@ -263,6 +263,10 @@ class Ticket_Save_Test extends Controller_Test_Case {
 			static fn( self $test, array $data ): int => $test->create_ticket( 'tickets.rsvp', $test->create_event( '2027-06-24 19:00:00' ), 0, $data ),
 		];
 
+		yield 'ticket of a provider the sales window does not apply to' => [
+			static fn( self $test, array $data ): int => $test->create_ticket( 'tickets.commerce.paypal', $test->create_event( '2027-06-24 19:00:00' ), 1, $data ),
+		];
+
 		yield 'Tickets Commerce ticket on a page' => [
 			static fn( self $test, array $data ): int => $test->create_tc_ticket( static::factory()->post->create( [ 'post_type' => 'page' ] ), 1, $data ),
 		];
@@ -305,6 +309,42 @@ class Ticket_Save_Test extends Controller_Test_Case {
 		// RSVPs store the date and the time together in the date meta.
 		$this->assertSame( "{$data['ticket_start_date']} {$data['ticket_start_time']}", trim( implode( ' ', $this->get_ticket_start( $ticket_id ) ) ) );
 		$this->assertSame( "{$data['ticket_end_date']} {$data['ticket_end_time']}", trim( implode( ' ', $this->get_ticket_end( $ticket_id ) ) ) );
+	}
+
+	/**
+	 * A provider added through the filter is saved the way it saves its own dates: here, as datetimes in the date metas.
+	 *
+	 * @test
+	 */
+	public function should_store_the_rule_of_an_accepted_provider_ticket_and_write_its_dates_in_its_format(): void {
+		$this->accept_paypal_tickets();
+		$event_start = new DateTimeImmutable( '2027-06-24 19:00:00' );
+		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ), 'America/New_York' );
+		$rule        = [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => [ 'mode' => 'default' ] ];
+
+		$ticket_id = $this->create_ticket( 'tickets.commerce.paypal', $event_id, 1, [ 'relative_sale_dates' => wp_json_encode( $rule ) ] );
+
+		$this->assertSame( $rule, $this->get_stored_rule( $ticket_id ) );
+		$this->assertSame( $event_start->modify( '-2 weeks' )->format( 'Y-m-d H:i:s' ), get_post_meta( $ticket_id, '_ticket_start_date', true ) );
+		$this->assertSame( $event_start->format( 'Y-m-d H:i:s' ), get_post_meta( $ticket_id, '_ticket_end_date', true ) );
+		$this->assertSame( 'America/New_York', get_post_meta( $ticket_id, Ticket_Dates::TIMEZONE_META_KEY, true ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_reject_an_invalid_sales_window_of_an_accepted_provider_ticket(): void {
+		$this->accept_paypal_tickets();
+		$event_id = $this->create_event( '2027-06-24 19:00:00' );
+		$data     = [
+			'ticket_provider'     => tribe( 'tickets.commerce.paypal' )->class_name,
+			'relative_sale_dates' => wp_json_encode( [ 'start' => $this->relative( 1, DAY_IN_SECONDS ), 'end' => $this->relative( 2, DAY_IN_SECONDS ) ] ),
+		];
+
+		$valid = apply_filters( 'tec_tickets_ticket_data_validation', true, $event_id, $data );
+
+		$this->assertInstanceOf( WP_Error::class, $valid );
+		$this->assertSame( self::INVALID_WINDOW_MESSAGE, $valid->get_error_message() );
 	}
 
 	/**

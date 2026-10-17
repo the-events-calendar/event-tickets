@@ -220,6 +220,39 @@ class Rule_Store_Test extends WPTestCase {
 	}
 
 	/**
+	 * Another provider's ruled tickets come from the filter, whether Tickets Commerce is on or not.
+	 *
+	 * @test
+	 */
+	public function should_add_the_ruled_tickets_the_filter_gives_to_the_tickets_commerce_ones(): void {
+		$event_id      = static::factory()->post->create();
+		$tc_ticket_id  = static::factory()->post->create( [ 'post_type' => Ticket::POSTTYPE ] );
+		$other_ids     = static::factory()->post->create_many( 2 );
+		update_post_meta( $tc_ticket_id, Ticket::$event_relation_meta_key, $event_id );
+		tribe( Rule_Store::class )->save( $tc_ticket_id, [ 'start' => [ 'mode' => Rule::MODE_DEFAULT ] ] );
+		$filtered = [];
+		add_filter(
+			'tec_tickets_relative_sale_dates_event_ticket_ids',
+			static function ( array $ticket_ids, int $filtered_event_id ) use ( &$filtered, $other_ids, $tc_ticket_id ): array {
+				$filtered[] = $filtered_event_id;
+
+				// The Tickets Commerce ticket again, as a string, which is read once.
+				return array_merge( $ticket_ids, $other_ids, [ "{$tc_ticket_id}" ] );
+			},
+			10,
+			2
+		);
+
+		$this->assertSame( array_merge( [ $tc_ticket_id ], $other_ids ), tribe( Rule_Store::class )->get_ticket_ids_for_event( $event_id ) );
+		$this->assertSame( [ $event_id ], $filtered );
+
+		// After the suite's own filter, which turns Tickets Commerce on for every test.
+		add_filter( 'tec_tickets_commerce_is_enabled', '__return_false', PHP_INT_MAX );
+
+		$this->assertSame( array_merge( $other_ids, [ $tc_ticket_id ] ), tribe( Rule_Store::class )->get_ticket_ids_for_event( $event_id ) );
+	}
+
+	/**
 	 * Writes the rules another request stores between this request's read of them and its write.
 	 *
 	 * @param string              $write_hook The filter that runs before this request's write of the meta.

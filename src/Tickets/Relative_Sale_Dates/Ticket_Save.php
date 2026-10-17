@@ -20,7 +20,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use WP_Error;
 
 /**
- * Applies the rules of a Tickets Commerce ticket on an event when the ticket is saved.
+ * Applies the rules of a ticket on an event when the ticket is saved, for a provider the relative sales window applies to.
  *
  * Each kind of window has its own rule, sent under the kind's data key. The rule sent with the ticket data replaces the
  * stored one; a save that does not send the rule keeps the stored one and applies it again, and an empty rule removes
@@ -86,6 +86,15 @@ final class Ticket_Save {
 	private Window_Validator $window_validator;
 
 	/**
+	 * The providers the relative sales window applies to.
+	 *
+	 * @since TBD
+	 *
+	 * @var Providers
+	 */
+	private Providers $providers;
+
+	/**
 	 * Ticket_Save constructor.
 	 *
 	 * @since TBD
@@ -95,13 +104,15 @@ final class Ticket_Save {
 	 * @param Ticket_Dates         $ticket_dates         The writer of the ticket dates.
 	 * @param Sales_Window_Effects $sales_window_effects The effects only the sales window has.
 	 * @param Window_Validator     $window_validator     The judge of the windows a save would store.
+	 * @param Providers            $providers            The providers the relative sales window applies to.
 	 */
-	public function __construct( Rule_Store $rule_store, Sale_Window $sale_window, Ticket_Dates $ticket_dates, Sales_Window_Effects $sales_window_effects, Window_Validator $window_validator ) {
+	public function __construct( Rule_Store $rule_store, Sale_Window $sale_window, Ticket_Dates $ticket_dates, Sales_Window_Effects $sales_window_effects, Window_Validator $window_validator, Providers $providers ) {
 		$this->rule_store           = $rule_store;
 		$this->sale_window          = $sale_window;
 		$this->ticket_dates         = $ticket_dates;
 		$this->sales_window_effects = $sales_window_effects;
 		$this->window_validator     = $window_validator;
+		$this->providers            = $providers;
 	}
 
 	/**
@@ -119,7 +130,7 @@ final class Ticket_Save {
 	 * @return void
 	 */
 	public function set_ticket_dates( int $post_id, Ticket_Object $ticket, array $data ): void {
-		if ( Module::class !== $ticket->provider_class || ! $this->applies_to( $post_id, $data['ticket_type'] ?? 'default' ) ) {
+		if ( ! $this->providers->accepts_provider( $ticket->provider_class ) || ! $this->applies_to( $post_id, $data['ticket_type'] ?? 'default' ) ) {
 			return;
 		}
 
@@ -193,6 +204,10 @@ final class Ticket_Save {
 	 * so the dates set before the save do not survive it when the ticket data leaves the start or end empty. Tickets
 	 * Commerce writes the submitted sale price dates during the save, so the resolved ones go over them afterwards.
 	 *
+	 * A provider that saves the submitted dates rather than the ticket's, such as one added through
+	 * `tec_tickets_relative_sale_dates_ticket_providers`, gets the dates `set_ticket_dates()` set only here, so a start
+	 * that opens the window at once moves a later start to now here too.
+	 *
 	 * @since TBD
 	 *
 	 * @param int $ticket_id The ticket post ID.
@@ -211,7 +226,7 @@ final class Ticket_Save {
 			$rule = Rule::from_stored( $stored, $kind );
 
 			if ( $rule ) {
-				$this->ticket_dates->write( $ticket_id, $post_id, $rule );
+				$this->ticket_dates->write( $ticket_id, $post_id, $rule, true );
 			}
 		}
 	}
@@ -233,9 +248,12 @@ final class Ticket_Save {
 	 * @return true|WP_Error `true` when every window is valid or does not apply, the first error otherwise.
 	 */
 	public function validate_ticket_data( $valid, int $post_id, array $data ) {
+		$provider_class = $data['ticket_provider'] ?? Module::class;
+
 		if (
 			is_wp_error( $valid )
-			|| Module::class !== ( $data['ticket_provider'] ?? Module::class )
+			|| ! is_string( $provider_class )
+			|| ! $this->providers->accepts_provider( $provider_class )
 			|| ! $this->applies_to( $post_id, $data['ticket_type'] ?? 'default' )
 		) {
 			return $valid;
@@ -274,10 +292,10 @@ final class Ticket_Save {
 	 * @param int $ticket_id The ticket post ID.
 	 * @param int $post_id   The ticket parent post ID.
 	 *
-	 * @return bool Whether the ticket is a Tickets Commerce ticket the rule applies to.
+	 * @return bool Whether the ticket's provider is one the rule applies to, and the ticket one it applies to.
 	 */
 	private function applies_to_saved_ticket( int $ticket_id, int $post_id ): bool {
-		return Ticket::POSTTYPE === get_post_type( $ticket_id )
+		return $this->providers->accepts_ticket( $ticket_id )
 			&& $this->applies_to( $post_id, get_post_meta( $ticket_id, Ticket::$type_meta_key, true ) ?: 'default' );
 	}
 

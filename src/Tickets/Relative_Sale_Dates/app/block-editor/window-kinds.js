@@ -20,6 +20,7 @@ import {
 	getTicketSalePriceFormDates,
 	isSalePriceChecked,
 	isSalePriceKept,
+	isTicketsCommerce,
 } from './common-store-bridge';
 
 /** @typedef {import( '../sale-window' ).SaleWindowRule} SaleWindowRule */
@@ -215,8 +216,11 @@ export const BLOCK_SALE_PRICE_WINDOW = Object.freeze( {
 	...SALE_PRICE_WINDOW,
 	parent: BLOCK_SALES_WINDOW,
 	getBoundarySettings: getSalePriceSettings,
-	// The server drops the rule along with an unchecked sale price.
-	isAdded: isSalePriceChecked,
+	/*
+	 * The server drops the rule along with an unchecked sale price, and saves a sale price for Tickets Commerce alone,
+	 * though the block offers one to another provider's ticket too.
+	 */
+	isAdded: ( clientId ) => isTicketsCommerce( clientId ) && isSalePriceChecked( clientId ),
 	// The server judges the window of a sale price it keeps: a checked one lower than the price.
 	isKept: isSalePriceKept,
 	/*

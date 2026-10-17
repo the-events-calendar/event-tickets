@@ -10,7 +10,9 @@ use RuntimeException;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Relative_Sale_Dates\Rule;
 use TEC\Tickets\Relative_Sale_Dates\Rule_Store;
+use TEC\Tickets\Relative_Sale_Dates\Ticket_Dates;
 use TEC\Tickets\Ticket_Actions;
+use Tribe__Tickets__Data_API;
 use WP_REST_Request;
 use WP_REST_Response;
 
@@ -325,5 +327,28 @@ trait Relative_Sale_Dates_Maker {
 		};
 
 		add_filter( 'update_post_metadata', $rewrite, 10, 3 );
+	}
+
+	/**
+	 * Turns PayPal on and has the relative sales window apply to its tickets, written as datetimes in the date metas, as
+	 * a provider other than Tickets Commerce asks for.
+	 *
+	 * @return string The PayPal provider class.
+	 */
+	protected function accept_paypal_tickets(): string {
+		$paypal = tribe( 'tickets.commerce.paypal' );
+		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
+		add_filter( 'tribe_tickets_get_modules', static fn( array $modules ): array => array_merge( $modules, [ $paypal->class_name => $paypal->plugin_name ] ) );
+		// The data API reads the modules once, when it is built.
+		tribe_singleton( 'tickets.data_api', new Tribe__Tickets__Data_API() );
+		add_filter( 'tec_tickets_relative_sale_dates_ticket_providers', static fn( array $classes ): array => array_merge( $classes, [ $paypal->class_name ] ) );
+		add_filter(
+			'tec_tickets_relative_sale_dates_ticket_date_format',
+			static fn( string $format, int $ticket_id ): string => get_post_type( $ticket_id ) === $paypal->ticket_object ? Ticket_Dates::FORMAT_DATETIME : $format,
+			10,
+			2
+		);
+
+		return $paypal->class_name;
 	}
 }
