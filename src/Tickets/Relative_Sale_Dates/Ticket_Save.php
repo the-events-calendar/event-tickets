@@ -226,7 +226,7 @@ final class Ticket_Save {
 			$rule = Rule::from_stored( $stored, $kind );
 
 			if ( $rule ) {
-				$this->ticket_dates->write( $ticket_id, $post_id, $rule, true );
+				$this->ticket_dates->write( $ticket_id, $post_id, $rule );
 			}
 		}
 	}

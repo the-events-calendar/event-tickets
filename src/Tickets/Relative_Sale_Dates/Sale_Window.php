@@ -20,10 +20,9 @@ use Tribe__Timezones as Timezones;
 /**
  * Turns a rule plus an event into the start and end of its window.
  *
- * The dates are resolved on the wall clock of the event timezone. In a timezone east of UTC, a time that happens twice
- * when the clocks go back resolves to its first occurrence, as the editors' JavaScript does, while the sales actions
- * are scheduled from the stored `Y-m-d H:i:s` strings, which PHP reads as the second: inside that repeated hour the
- * judged and the scheduled instant can be an hour apart.
+ * The dates are resolved on the wall clock of the event timezone. A time that happens twice when the clocks go back
+ * takes the occurrence PHP reads it as, the one the stored `Y-m-d H:i:s` strings are read back with and the editors'
+ * JavaScript takes too, so a window is judged at the instants the ticket is sold and its sales actions scheduled at.
  *
  * @since TBD
  *
@@ -137,6 +136,9 @@ final class Sale_Window {
 	 * A number of minutes or hours that lands on a time skipped by a clock change comes off the instant instead, as the
 	 * next valid time can fall on or after the anchor: 30 minutes before 03:15 would otherwise be 03:45.
 	 *
+	 * A time that happens twice takes the occurrence PHP reads it as, the one the ticket is read back with: an earlier
+	 * one would let a window that reads as ending before it starts pass as valid.
+	 *
 	 * shortcut: two boundaries of one rule can then land on the same instant, as 2 hours and 1 hour before 03:30 EDT
 	 * both give 01:30 EST on 14 March 2027 in New York, and the save rejects that window as ending when it starts; move
 	 * the boundary off the instant only when it would not keep its order against the other one, if admins hit it.
@@ -153,7 +155,7 @@ final class Sale_Window {
 		$wall_clock = ( new DateTimeImmutable( $anchor->format( 'Y-m-d H:i:s' ), new DateTimeZone( 'UTC' ) ) )
 			->sub( $interval )
 			->format( 'Y-m-d H:i:s' );
-		$date       = $this->at_wall_clock( $wall_clock, $anchor->getTimezone() );
+		$date       = new DateTimeImmutable( $wall_clock, $anchor->getTimezone() );
 
 		// Days and weeks keep their wall-clock time: a skipped time a day or more back still lands well before the anchor.
 		if ( $interval->d || $date->format( 'Y-m-d H:i:s' ) === $wall_clock ) {
@@ -163,36 +165,5 @@ final class Sale_Window {
 		$seconds = ( new DateTimeImmutable( '@0' ) )->add( $interval )->getTimestamp();
 
 		return ( new DateTimeImmutable( '@' . ( $anchor->getTimestamp() - $seconds ) ) )->setTimezone( $anchor->getTimezone() );
-	}
-
-	/**
-	 * Returns the date a wall-clock time falls on in a timezone.
-	 *
-	 * A time skipped by a clock change moves forward by the size of the change. A time that happens twice takes its
-	 * first occurrence, as the editors' JavaScript does: PHP alone takes the first west of UTC and the second east of it.
-	 *
-	 * @since TBD
-	 *
-	 * @param string       $wall_clock The wall-clock time, in `Y-m-d H:i:s` format.
-	 * @param DateTimeZone $timezone   The timezone.
-	 *
-	 * @return DateTimeImmutable The date, in the given timezone.
-	 */
-	private function at_wall_clock( string $wall_clock, DateTimeZone $timezone ): DateTimeImmutable {
-		$date        = new DateTimeImmutable( $wall_clock, $timezone );
-		$as_utc      = ( new DateTimeImmutable( $wall_clock, new DateTimeZone( 'UTC' ) ) )->getTimestamp();
-		$transitions = $timezone->getTransitions( $as_utc - DAY_IN_SECONDS, $as_utc + DAY_IN_SECONDS );
-
-		// A fixed offset has no transitions, and no time that happens twice.
-		foreach ( is_array( $transitions ) ? $transitions : [] as $transition ) {
-			// Not `setTimestamp()`: on PHP 7.4 it snaps back to the occurrence the date already holds.
-			$candidate = ( new DateTimeImmutable( '@' . ( $as_utc - $transition['offset'] ) ) )->setTimezone( $timezone );
-
-			if ( $candidate < $date && $candidate->format( 'Y-m-d H:i:s' ) === $wall_clock ) {
-				$date = $candidate;
-			}
-		}
-
-		return $date;
 	}
 }

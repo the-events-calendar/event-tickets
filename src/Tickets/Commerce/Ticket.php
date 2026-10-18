@@ -374,6 +374,7 @@ class Ticket extends Ticket_Data {
 	 * @todo TribeCommerceLegacy: This method needs to make use of the Ticket Model.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Set the provider before judging the sale price, so its dates are read in the event timezone.
 	 *
 	 * @param int|\WP_Post $ticket_id
 	 *
@@ -410,11 +411,11 @@ class Ticket extends Ticket_Data {
 		$return->name             = $product->post_title;
 		$return->menu_order       = $product->menu_order;
 		$return->post_type        = $product->post_type;
+		$return->provider_class   = Module::class;
 		$return->on_sale          = $this->is_on_sale( $return );
 		$return->price            = $this->get_price( $return );
 		$return->regular_price    = $this->get_regular_price( $return->ID );
 		$return->value            = Value::create( $return->price );
-		$return->provider_class   = Module::class;
 		$return->admin_link       = '';
 		$return->show_description = $return->show_description();
 		$return->start_date       = get_post_meta( $ticket_id, static::START_DATE_META_KEY, true );

@@ -87,21 +87,21 @@ final class Ticket_Dates {
 	 * Writes the dates a rule resolves to into the date metas of the rule's kind.
 	 *
 	 * A boundary the rule does not resolve, `specific` or an open start, keeps the date the ticket has, unless the kind
-	 * writes an open start as a value of its own. A new event timezone counts as a change of the sales window even when
-	 * its dates stay the same: they now fall at other instants, and the sales actions announce them.
+	 * writes an open start as a value of its own. A start that opens the window at once moves a later ticket start to
+	 * now: the ticket keeps the wall-clock time it was saved with, which an event moved to a timezone behind its own reads
+	 * as a later instant. A new event timezone counts as a change of the sales window even when its dates stay the same:
+	 * they now fall at other instants, and the sales actions announce them.
 	 *
 	 * @since TBD
 	 *
-	 * @param int  $ticket_id       The ticket post ID.
-	 * @param int  $post_id         The event post ID.
-	 * @param Rule $rule            The ticket's rule, of any kind.
-	 * @param bool $moves_now_start Whether a start that opens the window at once moves a later ticket start to now, as a
-	 *                              save does; an event move leaves the start to the ticket.
+	 * @param int  $ticket_id The ticket post ID.
+	 * @param int  $post_id   The event post ID.
+	 * @param Rule $rule      The ticket's rule, of any kind.
 	 *
 	 * @return bool Whether any of the dates, or the timezone the sales window is in, changed; `false` when the ticket
 	 *              does not have the window or the event has no valid dates.
 	 */
-	public function write( int $ticket_id, int $post_id, Rule $rule, bool $moves_now_start = false ): bool {
+	public function write( int $ticket_id, int $post_id, Rule $rule ): bool {
 		$kind = $rule->get_kind();
 
 		if ( ! $kind->is_enabled_for_ticket( $ticket_id ) ) {
@@ -117,10 +117,7 @@ final class Ticket_Dates {
 		$metas  = $kind->get_date_metas();
 		$format = $this->get_format( $ticket_id, $kind );
 
-		if ( $moves_now_start ) {
-			$window = $this->sales_window_effects->apply_now_start( $window, $rule, $this->read_wall_clock( $ticket_id, $metas['start'], $format ) );
-		}
-
+		$window = $this->sales_window_effects->apply_now_start( $window, $rule, $this->read_wall_clock( $ticket_id, $metas['start'], $format ) );
 		$values = $this->sales_window_effects->get_extra_metas( $window, $kind );
 		$start  = $window->get_start();
 
