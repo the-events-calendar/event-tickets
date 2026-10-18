@@ -43,6 +43,35 @@ class Sale_Window_Test extends WPTestCase {
 	}
 
 	/**
+	 * @return Generator<string,array{0: array{name: string, rule: array{start: array{mode: string, value?: int, unit?: int, anchor?: string}, end: array{mode: string, value?: int, unit?: int, anchor?: string}}, timezone: string, event_start: string, event_end: string, expected: array{start_local: ?string, start_utc: ?string, end_local: ?string, end_utc: ?string, valid: ?bool}}}>
+	 */
+	public function bounded_fixtures_provider(): Generator {
+		foreach ( $this->fixtures_provider() as $name => [ $case ] ) {
+			if ( $case['expected']['start_local'] && $case['expected']['end_local'] ) {
+				yield $name => [ $case ];
+			}
+		}
+	}
+
+	/**
+	 * @test
+	 * @dataProvider bounded_fixtures_provider
+	 */
+	public function should_order_the_resolved_dates_as_their_wall_clock_times( array $case ): void {
+		$event_id = $this->create_event_with_dates( $case['event_start'], $case['event_end'], $case['timezone'] );
+
+		$window = tribe( Sale_Window::class )->resolve_for_event( Rule::from_array( $case['rule'], Window_Kind::sales() ), $event_id );
+		$start  = $window->get_start();
+		$end    = $window->get_end();
+
+		/*
+		 * A ticket stores the wall-clock times, and every reader parses them back in the event timezone: the window it
+		 * reads only keeps the resolved order when the two orders agree, in the hour a clock change repeats too.
+		 */
+		$this->assertSame( $start->getTimestamp() < $end->getTimestamp(), $start->format( 'Y-m-d H:i:s' ) < $end->format( 'Y-m-d H:i:s' ) );
+	}
+
+	/**
 	 * @return Generator<string,array{0: array{name: string, rule: array{start: array{mode: string, value?: int, unit?: int}, end: array{mode: string, value?: int, unit?: int}}, timezone: string, event_start: string, event_end: string, expected: array{start: ?string, end: ?string}}}>
 	 */
 	public function sale_price_fixtures_provider(): Generator {

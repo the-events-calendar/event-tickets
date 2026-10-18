@@ -303,12 +303,8 @@ class Ticket_Dates_Test extends WPTestCase {
 		$this->assertSame( $expected['end_local'] ?? $before[1], get_post_meta( $ticket_id, Ticket::END_DATE_META_KEY, true ) );
 		$this->assertSame( '', get_post_meta( $ticket_id, Ticket::START_TIME_META_KEY, true ) );
 		$this->assertSame( '', get_post_meta( $ticket_id, Ticket::END_TIME_META_KEY, true ) );
-		/*
-		 * The dates are stored as wall-clock times, as Tickets Commerce stores them, so the window is judged by them: in an
-		 * autumn overlap a start can read later than an end that falls after it.
-		 */
-		if ( $expected['start_local'] && $expected['end_local'] ) {
-			$this->assertSame( $expected['end_local'] <= $expected['start_local'], tribe( Ticket_Dates::class )->ends_before_it_starts( $ticket_id, Window_Kind::sales() ) );
+		if ( null !== $expected['valid'] ) {
+			$this->assertSame( ! $expected['valid'], tribe( Ticket_Dates::class )->ends_before_it_starts( $ticket_id, Window_Kind::sales() ) );
 		}
 	}
 
