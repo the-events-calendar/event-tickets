@@ -356,20 +356,11 @@ class Ticket_Dates_Test extends WPTestCase {
 	}
 
 	/**
-	 * @return Generator<string,array{0: bool}>
-	 */
-	public function moves_now_start_provider(): Generator {
-		yield 'a save' => [ true ];
-		yield 'an event move' => [ false ];
-	}
-
-	/**
 	 * A provider that saves the submitted dates, not the ticket's, gets the start a Now boundary sets only from here.
 	 *
 	 * @test
-	 * @dataProvider moves_now_start_provider
 	 */
-	public function should_move_a_later_start_to_now_for_an_open_start_only_on_a_save( bool $moves_now_start ): void {
+	public function should_move_a_later_start_to_now_for_an_open_start(): void {
 		$event_start = $this->get_future_event_start();
 		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ), 'America/New_York' );
 		$ticket_id   = $this->create_tc_ticket( $event_id );
@@ -379,15 +370,11 @@ class Ticket_Dates_Test extends WPTestCase {
 		$rule   = Rule::from_array( [ 'start' => [ 'mode' => Rule::MODE_DEFAULT ], 'end' => [ 'mode' => Rule::MODE_DEFAULT ] ], Window_Kind::sales() );
 		$before = new DateTimeImmutable( 'now', new DateTimeZone( 'America/New_York' ) );
 
-		tribe( Ticket_Dates::class )->write( $ticket_id, $event_id, $rule, $moves_now_start );
+		tribe( Ticket_Dates::class )->write( $ticket_id, $event_id, $rule );
 
 		$start = new DateTimeImmutable( get_post_meta( $ticket_id, Ticket::START_DATE_META_KEY, true ), new DateTimeZone( 'America/New_York' ) );
-		if ( $moves_now_start ) {
-			$this->assertLessThan( $later_start->getTimestamp(), $start->getTimestamp() );
-			$this->assertGreaterThanOrEqual( $before->getTimestamp(), $start->getTimestamp() + 1 );
-		} else {
-			$this->assertSame( $later_start->format( 'Y-m-d H:i:s' ), $start->format( 'Y-m-d H:i:s' ) );
-		}
+		$this->assertLessThan( $later_start->getTimestamp(), $start->getTimestamp() );
+		$this->assertGreaterThanOrEqual( $before->getTimestamp(), $start->getTimestamp() + 1 );
 	}
 
 	/**

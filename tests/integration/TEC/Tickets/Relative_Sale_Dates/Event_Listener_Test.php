@@ -4,6 +4,7 @@ namespace TEC\Tickets\Relative_Sale_Dates;
 
 use Closure;
 use DateTimeImmutable;
+use DateTimeZone;
 use Generator;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Module;
@@ -400,6 +401,39 @@ class Event_Listener_Test extends Controller_Test_Case {
 		$this->assertSame( $moved->modify( '-2 weeks' )->format( 'Y-m-d H:i:s' ), get_post_meta( $ticket_id, '_ticket_start_date', true ) );
 		$this->assertSame( $moved->modify( '-1 day' )->format( 'Y-m-d H:i:s' ), get_post_meta( $ticket_id, '_ticket_end_date', true ) );
 		$this->assertArrayHasKey( $paypal, tribe( Providers::class )->get_active() );
+	}
+
+	/**
+	 * A Now start keeps the time it was saved with, which a timezone behind the event's reads as a later instant.
+	 *
+	 * @test
+	 */
+	public function should_keep_a_now_start_open_when_the_event_moves_to_a_timezone_behind(): void {
+		$kolkata     = new DateTimeZone( 'Asia/Kolkata' );
+		$sao_paulo   = new DateTimeZone( 'America/Sao_Paulo' );
+		$event_start = $this->get_future_event_start()->format( 'Y-m-d H:i:s' );
+		$event_id    = $this->create_event( $event_start, $kolkata->getName() );
+		$saved_start = new DateTimeImmutable( '-1 hour', $kolkata );
+		$ticket_id   = $this->create_tc_ticket(
+			$event_id,
+			1,
+			[
+				'ticket_start_date' => $saved_start->format( 'Y-m-d' ),
+				'ticket_start_time' => $saved_start->format( 'H:i:s' ),
+			]
+		);
+		tribe( Rule_Store::class )->save(
+			$ticket_id,
+			[
+				'start' => [ 'mode' => 'default' ],
+				'end'   => $this->relative( 1, DAY_IN_SECONDS ),
+			]
+		);
+
+		$this->send_classic_event_save( $event_id, new DateTimeImmutable( $event_start, $sao_paulo ) );
+
+		$start = new DateTimeImmutable( implode( ' ', $this->get_ticket_start( $ticket_id ) ), $sao_paulo );
+		$this->assertLessThanOrEqual( ( new DateTimeImmutable( 'now', $sao_paulo ) )->getTimestamp(), $start->getTimestamp() );
 	}
 
 	/**
