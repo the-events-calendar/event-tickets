@@ -14,7 +14,6 @@ namespace TEC\Tickets\Relative_Sale_Dates;
 use InvalidArgumentException;
 use TEC\Tickets\Commerce\Module;
 use Tribe__Date_Utils as Dates;
-use Tribe__Tickets__Admin__Views as Admin_Views;
 use Tribe__Template as Template;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Ticket_Provider;
@@ -107,15 +106,6 @@ final class Editor {
 	private Rule_Store $rule_store;
 
 	/**
-	 * The admin views template a ticket preset's sales window renders with.
-	 *
-	 * @since TBD
-	 *
-	 * @var Admin_Views
-	 */
-	private Admin_Views $preset_views;
-
-	/**
 	 * The providers the relative sales window applies to.
 	 *
 	 * @since TBD
@@ -129,16 +119,12 @@ final class Editor {
 	 *
 	 * @since TBD
 	 *
-	 * @param Rule_Store  $rule_store   The store of the ticket rules.
-	 * @param Admin_Views $preset_views The admin views template a ticket preset's sales window renders with. Not the
-	 *                                  shared one, which carries each render's context into the next, and renders the
-	 *                                  ticket form on the screen where a preset can be saved.
-	 * @param Providers   $providers    The providers the relative sales window applies to.
+	 * @param Rule_Store $rule_store The store of the ticket rules.
+	 * @param Providers  $providers  The providers the relative sales window applies to.
 	 */
-	public function __construct( Rule_Store $rule_store, Admin_Views $preset_views, Providers $providers ) {
-		$this->rule_store   = $rule_store;
-		$this->preset_views = $preset_views;
-		$this->providers    = $providers;
+	public function __construct( Rule_Store $rule_store, Providers $providers ) {
+		$this->rule_store = $rule_store;
+		$this->providers  = $providers;
 	}
 
 	/**
@@ -241,11 +227,15 @@ final class Editor {
 	}
 
 	/**
-	 * Renders the sales window options of a ticket preset.
+	 * Gets the context the `relative-sale-dates/sales-window` admin view renders the sales window options of a ticket
+	 * preset with.
 	 *
 	 * A preset has no event: it offers the default and relative modes of the ticket form, with no specific date, no
 	 * helper text and no field of its own for the rule, which the preset form sends. A boundary the preset form has no
 	 * option for, or does not have, shows the ticket form's default.
+	 *
+	 * Render the view with an admin views template of its own, not the shared `tickets.admin.views` one: that one
+	 * carries each render's context into the next, and renders the ticket form on the screen where a preset can be saved.
 	 *
 	 * @since TBD
 	 *
@@ -254,31 +244,27 @@ final class Editor {
 	 * @param string                                                                            $field_prefix The prefix of the ids of the
 	 *                                                                                           window's inputs.
 	 *
-	 * @return string The HTML of the options.
+	 * @return array{window_kind: Window_Kind, window_fields: array{start: array{mode: string, value: int, unit: int, anchor?: string}, end: array{mode: string, value: int, unit: int, anchor?: string}}, window_modes: array{start: string[], end: string[]}, variant: string, field_prefix: string, rule_json: string, unit_names: array<int,string[]>} The
+	 *         context of the view.
 	 */
-	public function render_preset_sales_window( array $rule, string $field_prefix ): string {
+	public function get_preset_sales_window_context( array $rule, string $field_prefix ): array {
 		$kind = Window_Kind::sales();
-		$html = $this->preset_views->template(
-			'relative-sale-dates/sales-window',
-			[
-				'window_kind'   => $kind,
-				'window_fields' => [
-					'start' => $this->get_preset_boundary_fields( $rule['start'] ?? null, $kind, Boundary::EDGE_START ),
-					'end'   => $this->get_preset_boundary_fields( $rule['end'] ?? null, $kind, Boundary::EDGE_END ),
-				],
-				'window_modes'  => [
-					'start' => self::PRESET_MODES,
-					'end'   => self::PRESET_MODES,
-				],
-				'variant'       => 'preset',
-				'field_prefix'  => $field_prefix,
-				'rule_json'     => '',
-				'unit_names'    => $this->get_unit_names_by_number( $kind ),
-			],
-			false
-		);
 
-		return is_string( $html ) ? $html : '';
+		return [
+			'window_kind'   => $kind,
+			'window_fields' => [
+				'start' => $this->get_preset_boundary_fields( $rule['start'] ?? null, $kind, Boundary::EDGE_START ),
+				'end'   => $this->get_preset_boundary_fields( $rule['end'] ?? null, $kind, Boundary::EDGE_END ),
+			],
+			'window_modes'  => [
+				'start' => self::PRESET_MODES,
+				'end'   => self::PRESET_MODES,
+			],
+			'variant'       => 'preset',
+			'field_prefix'  => $field_prefix,
+			'rule_json'     => '',
+			'unit_names'    => $this->get_unit_names_by_number( $kind ),
+		];
 	}
 
 	/**
