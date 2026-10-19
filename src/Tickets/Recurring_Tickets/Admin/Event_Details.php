@@ -53,12 +53,12 @@ final class Event_Details {
 	 *
 	 * @since TBD
 	 *
-	 * @param int|mixed $event_id The event of the page.
+	 * @param int|mixed $event_id The event of the page, or one of its dates.
 	 *
 	 * @return void
 	 */
 	public function render( $event_id ): void {
-		$event_id = (int) $event_id;
+		$event_id = $this->event_dates->event_of( (int) $event_id );
 		$dates    = $this->event_dates->current( $event_id );
 
 		if ( ! $dates ) {

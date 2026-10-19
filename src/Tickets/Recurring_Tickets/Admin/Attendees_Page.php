@@ -285,8 +285,8 @@ final class Attendees_Page {
 	}
 
 	/**
-	 * Gives the event's Attendees page the sales of its recurring event tickets over every date: their templates are
-	 * never sold.
+	 * Gives the Attendees page of a recurring event, or of one of its dates, its recurring event tickets' labels, and
+	 * the event's page the sales of its templates over every date: a template is never sold, its rows are.
 	 *
 	 * @since TBD
 	 *
@@ -303,10 +303,19 @@ final class Attendees_Page {
 			return $context;
 		}
 
-		$sales     = $this->template_sales->for_event( (int) $post_id );
+		$context['type_labels'][ Template_Guard::TICKET_TYPE ]       = __( 'Recurring Event Tickets', 'event-tickets' );
+		$context['type_icon_classes'][ Template_Guard::TICKET_TYPE ] = 'tec-tickets__admin-attendees-overview-ticket-type-icon--ticket';
+		$context['post_singular_label']                              = __( 'Recurring Event', 'event-tickets' );
+
+		$sales     = $this->template_sales->for_event( $this->event_dates->event_of( (int) $post_id ) );
 		$sold      = (int) ( $context['ticket_totals']['sold'] ?? 0 );
 		$available = (int) ( $context['ticket_totals']['available'] ?? 0 );
 		foreach ( $templates as $template ) {
+			// A date's page lists its rows, which count their own sales.
+			if ( Ticket_ID::is_table_ticket( (int) $template->ID ) ) {
+				continue;
+			}
+
 			$template_sales = $sales[ (int) $template->ID ] ?? [
 				'sold'      => 0,
 				'available' => 0,
@@ -334,10 +343,6 @@ final class Attendees_Page {
 			'sold'      => $sold,
 			'available' => $available,
 		];
-
-		$context['type_labels'][ Template_Guard::TICKET_TYPE ]       = __( 'Recurring Event Tickets', 'event-tickets' );
-		$context['type_icon_classes'][ Template_Guard::TICKET_TYPE ] = 'tec-tickets__admin-attendees-overview-ticket-type-icon--ticket';
-		$context['post_singular_label']                              = __( 'Recurring Event', 'event-tickets' );
 
 		return $context;
 	}

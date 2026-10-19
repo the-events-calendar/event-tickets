@@ -183,16 +183,63 @@ class Orders_Page_Test extends WPTestCase {
 	public function it_should_sum_the_sales_of_the_next_date_apart(): void {
 		$summary = $this->summary();
 
-		$this->assertSame( (int) $this->dates[0]->provisional_id, $summary->get_next_date() );
-		$next = $summary->get_next_date_sales();
-		$this->assertSame( 1, $next['total_sales']['qty'] );
-		$this->assertSame( 1, $next['by_status'][ Completed::SLUG ]['qty_sold'] );
+		$this->assertSame( (int) $this->dates[0]->provisional_id, $summary->get_this_date() );
+		$this_date = $summary->get_this_date_sales();
+		$this->assertSame( 1, $this_date['total_sales']['qty'] );
+		$this->assertSame( 1, $this_date['by_status'][ Completed::SLUG ]['qty_sold'] );
 
 		ob_start();
 		do_action( 'tec_tickets_commerce_order_report_before_sales_totals', $summary );
 		$html = (string) ob_get_clean();
 
-		$this->assertStringContainsString( 'Next Date:', $html );
+		$this->assertStringContainsString( 'This Date: ' . $summary->get_this_date_label(), $html );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_sum_the_sales_of_the_date_chosen_apart(): void {
+		$_GET[ Date_Filter::NAME ] = (string) $this->dates[1]->provisional_id;
+
+		$this->assertSame( (int) $this->dates[1]->provisional_id, $this->summary()->get_this_date() );
+
+		// Many dates chosen at once are no one date: the next is.
+		$_GET[ Date_Filter::NAME ] = Date_Filter::UPCOMING;
+
+		$this->assertSame( (int) $this->dates[0]->provisional_id, $this->summary()->get_this_date() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_list_the_recurring_event_tickets_sales_on_this_date_first(): void {
+		$summary = $this->summary();
+		$by_type = $summary->get_tickets_by_type();
+
+		$this->assertSame( Order_Summary::DATE_TYPE, array_key_first( $by_type ) );
+		$this->assertCount( 1, $by_type[ Order_Summary::DATE_TYPE ] );
+		$line = $by_type[ Order_Summary::DATE_TYPE ][0];
+		$this->assertSame( 1, $line['qty_data'][ Completed::SLUG ], 'Only the order of this date.' );
+		$row       = array_column( tribe( Rows::class )->get_by_post( $this->event ), null, 'occurrence_id' )[ $this->dates[0]->occurrence_id ];
+		$available = -1 === (int) $row->capacity ? 'Unlimited' : (int) $row->stock;
+		$this->assertSame( $available, $line['qty_data'][ $line['ticket']->availability_slug() ], 'The availability of this date alone.' );
+		$this->assertSame( 'Recurring Event Tickets · ' . $summary->get_this_date_label(), $summary->get_label_for_type( Order_Summary::DATE_TYPE ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_summarize_a_dates_page_as_its_events_with_the_date_apart(): void {
+		$date = (int) $this->dates[1]->provisional_id;
+
+		$vars    = apply_filters( 'tec_tickets_commerce_reports_tickets-commerce-orders_template_vars', [ 'post_id' => $date ] );
+		$summary = $vars['order_summary'];
+
+		$this->assertInstanceOf( Order_Summary::class, $summary );
+		$this->assertSame( $this->event, $summary->get_post_id() );
+		$this->assertSame( $date, $summary->get_this_date() );
+		$this->assertSame( 2, $summary->get_event_sales_data()['total_sales']['qty'], 'Every date of the event.' );
+		$this->assertSame( 'Recurring Event', $vars['post_singular_label'] );
 	}
 
 	/**

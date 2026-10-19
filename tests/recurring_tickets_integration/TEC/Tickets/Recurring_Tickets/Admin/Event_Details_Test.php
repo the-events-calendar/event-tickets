@@ -34,6 +34,21 @@ class Event_Details_Test extends WPTestCase {
 	 * @test
 	 * @dataProvider pages
 	 */
+	public function it_should_list_the_dates_of_its_event_on_a_dates_page( string $hook ): void {
+		$event = $this->create_recurring_event();
+		$this->create_tc_ticket( $event, 10 );
+		$dates = $this->get_dates( $event );
+
+		$html = $this->details( $hook, (int) $dates[1]->provisional_id );
+
+		$this->assertStringContainsString( 'Upcoming dates:', $html );
+		$this->assertStringContainsString( esc_html( tribe_format_date( $dates[0]->start_date, true, tribe_get_datetime_format( true ) ) ), $html );
+	}
+
+	/**
+	 * @test
+	 * @dataProvider pages
+	 */
 	public function it_should_leave_an_event_without_recurring_event_tickets_its_one_date( string $hook ): void {
 		$event = tribe_events()->set_args(
 			[

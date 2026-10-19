@@ -1,9 +1,9 @@
 <?php
 /**
- * The sales of a recurring event's next date, above the sales totals of every date on its Orders page.
+ * The sales of one date of a recurring event, above the sales totals of every date on its Orders page.
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/admin-views/recurring-tickets/orders/next-date.php
+ * [your-theme]/tribe/tickets/admin-views/recurring-tickets/orders/this-date.php
  *
  * @since TBD
  *

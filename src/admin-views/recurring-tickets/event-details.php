@@ -18,25 +18,29 @@
 ?>
 <li class="tec-tickets__recurring-event-dates">
 	<strong><?php echo esc_html( $dates_label ); ?></strong>
-	<ul>
+	<ul id="tec-tickets-recurring-event-dates-list">
 		<?php foreach ( $shown as $date ) : ?>
 			<li><?php echo esc_html( $date ); ?></li>
 		<?php endforeach; ?>
+		<?php foreach ( $folded as $date ) : ?>
+			<li class="tec-tickets__recurring-event-dates-folded" hidden><?php echo esc_html( $date ); ?></li>
+		<?php endforeach; ?>
 	</ul>
 	<?php if ( $folded ) : ?>
-		<details>
-			<summary>
-				<?php
-				// translators: %d is how many more dates the event has.
-				echo esc_html( sprintf( _n( '+ %d more', '+ %d more', count( $folded ), 'event-tickets' ), count( $folded ) ) );
-				?>
-			</summary>
-			<ul>
-				<?php foreach ( $folded as $date ) : ?>
-					<li><?php echo esc_html( $date ); ?></li>
-				<?php endforeach; ?>
-			</ul>
-		</details>
+		<?php
+		// translators: %d is how many more dates the event has.
+		$show_more = sprintf( _n( '+ %d more', '+ %d more', count( $folded ), 'event-tickets' ), count( $folded ) );
+		$show_less = __( 'Show fewer', 'event-tickets' );
+		?>
+		<button
+			type="button"
+			class="button-link"
+			aria-controls="tec-tickets-recurring-event-dates-list"
+			aria-expanded="false"
+			data-more="<?php echo esc_attr( $show_more ); ?>"
+			data-less="<?php echo esc_attr( $show_less ); ?>"
+			onclick="var open = 'true' !== this.getAttribute( 'aria-expanded' ); document.querySelectorAll( '#tec-tickets-recurring-event-dates-list .tec-tickets__recurring-event-dates-folded' ).forEach( function ( date ) { date.hidden = ! open; } ); this.setAttribute( 'aria-expanded', String( open ) ); this.textContent = open ? this.dataset.less : this.dataset.more;"
+		><?php echo esc_html( $show_more ); ?></button>
 	<?php endif; ?>
 </li>
 <?php if ( $venue ) : ?>

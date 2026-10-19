@@ -193,6 +193,26 @@ class Attendees_Page_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_leave_the_rows_on_a_dates_overview_their_own_counts(): void {
+		$date = (int) get_post_meta( $this->kept, '_tec_tickets_commerce_event', true );
+		// Only an admin screen lists a date's rows among its tickets.
+		set_current_screen( 'tribe_events_page_tickets-attendees' );
+
+		try {
+			$context = tribe( 'tickets.attendees' )->get_render_context( $date );
+		} finally {
+			set_current_screen( 'front' );
+		}
+
+		$this->assertTrue( Ticket_ID::is_table_ticket( (int) $context['tickets_by_type'][ Template_Guard::TICKET_TYPE ][0]->ID ) );
+		$this->assertArrayNotHasKey( 'ticket_stats', $context, 'A row counts its own sales.' );
+		$this->assertSame( 1, $context['ticket_totals']['sold'] );
+		$this->assertSame( 'Recurring Event Tickets', $context['type_labels'][ Template_Guard::TICKET_TYPE ] );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_count_the_recurring_event_tickets_sold_on_every_date_as_paid(): void {
 		$this->assertSame( 1, apply_filters( 'tribe_tickets_get_total_paid', 0, 0, $this->event ) );
 		$this->assertSame( 0, apply_filters( 'tribe_tickets_get_total_paid', 0, 0, static::factory()->post->create() ) );

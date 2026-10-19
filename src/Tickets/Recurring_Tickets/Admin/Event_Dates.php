@@ -11,6 +11,7 @@ namespace TEC\Tickets\Recurring_Tickets\Admin;
 
 use DateTimeInterface;
 use TEC\Common\StellarWP\DB\DB;
+use TEC\Tickets\Event;
 use TEC\Tickets\Recurring_Tickets\Commerce\Attendees;
 use TEC\Tickets\Recurring_Tickets\Hydrator;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
@@ -70,6 +71,19 @@ final class Event_Dates {
 	public function __construct( Rows $rows, Hydrator $hydrator ) {
 		$this->rows     = $rows;
 		$this->hydrator = $hydrator;
+	}
+
+	/**
+	 * Returns the event a post ID stands for: the event of a date, the post itself otherwise.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The post ID, an event's or one of its dates'.
+	 *
+	 * @return int The event's post ID.
+	 */
+	public function event_of( int $post_id ): int {
+		return Event::filter_event_id( $post_id, 'recurring-tickets-dates' ) ?? $post_id;
 	}
 
 	/**

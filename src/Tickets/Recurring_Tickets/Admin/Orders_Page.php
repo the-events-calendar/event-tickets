@@ -14,7 +14,8 @@ use Tribe__Date_Utils as Dates;
 
 /**
  * Lists a recurring event's orders of every date on the event's Orders page and its export, gives each ordered
- * ticket its date, narrows the list to the dates chosen and sums the sales over every date and the next one.
+ * ticket its date, narrows the list to the dates chosen and sums the sales over every date and on one: the date
+ * chosen, else the next.
  *
  * An order of a row holds its date's ID; the event's Orders page looks orders up by the event's own ID.
  *
@@ -120,7 +121,7 @@ final class Orders_Page {
 	 * @return string|mixed The name.
 	 */
 	public function add_date_to_purchased( $name, $cart_item ) {
-		$dates = $this->event_dates->all( $this->page_event_id() );
+		$dates = $this->event_dates->all( $this->event_dates->event_of( $this->page_event_id() ) );
 		$start = $dates[ (int) ( ( (array) $cart_item )['event_id'] ?? 0 ) ] ?? '';
 
 		if ( '' === $start ) {
@@ -153,7 +154,8 @@ final class Orders_Page {
 	}
 
 	/**
-	 * Gives a recurring event's Orders page the summary of the sales of every date and of the next one.
+	 * Gives a recurring event's Orders page, and a date's, the summary of the sales of every date and of one: the
+	 * date of the page, else the date chosen, else the next.
 	 *
 	 * @since TBD
 	 *
@@ -163,15 +165,17 @@ final class Orders_Page {
 	 */
 	public function summarize( $vars ): array {
 		$vars     = (array) $vars;
-		$event_id = (int) ( $vars['post_id'] ?? 0 );
+		$post_id  = (int) ( $vars['post_id'] ?? 0 );
+		$event_id = $this->event_dates->event_of( $post_id );
 		$dates    = $this->event_dates->all( $event_id );
 
 		if ( ! $dates ) {
 			return $vars;
 		}
 
-		$upcoming = array_keys( $this->event_dates->upcoming( $this->event_dates->current( $event_id ) ) );
-		$summary  = new Order_Summary( $event_id, $this->rows, $this->template_sales, $dates, (int) ( $upcoming[0] ?? 0 ) );
+		$this_date = isset( $this->event_dates->current( $event_id )[ $post_id ] ) ? $post_id : $this->this_date( $event_id );
+		$label     = $this_date ? tribe_format_date( $dates[ $this_date ], false, tribe_get_option( 'dateWithoutYearFormat', 'F j' ) ) : '';
+		$summary   = new Order_Summary( $event_id, $this->rows, $this->template_sales, $dates, $this_date, $label );
 		$summary->init();
 
 		$vars['order_summary']       = $summary;
@@ -181,7 +185,7 @@ final class Orders_Page {
 	}
 
 	/**
-	 * Prints, above the sales totals of every date, those of the next date.
+	 * Prints, above the sales totals of every date, those of the date summed apart.
 	 *
 	 * @since TBD
 	 *
@@ -189,21 +193,39 @@ final class Orders_Page {
 	 *
 	 * @return void
 	 */
-	public function render_next_date( $summary ): void {
-		if ( ! $summary instanceof Order_Summary || ! $summary->get_next_date() ) {
+	public function render_this_date( $summary ): void {
+		if ( ! $summary instanceof Order_Summary || ! $summary->get_this_date() ) {
 			return;
 		}
 
-		$start = $this->event_dates->all( $summary->get_post_id() )[ $summary->get_next_date() ] ?? '';
-
 		tribe( 'tickets.admin.views' )->template(
-			'recurring-tickets/orders/next-date',
+			'recurring-tickets/orders/this-date',
 			[
-				// translators: %s is the date of the event's next occurrence, e.g. "Nov 28".
-				'title' => sprintf( __( 'Next Date: %s', 'event-tickets' ), tribe_format_date( $start, false, tribe_get_option( 'dateWithoutYearFormat', 'F j' ) ) ),
-				'sales' => $summary->get_next_date_sales(),
+				// translators: %s is the date the sales are of, e.g. "October 22".
+				'title' => sprintf( __( 'This Date: %s', 'event-tickets' ), $summary->get_this_date_label() ),
+				'sales' => $summary->get_this_date_sales(),
 			]
 		);
+	}
+
+	/**
+	 * Returns the date to sum apart: the one date chosen in the filter, else the next date.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id The event.
+	 *
+	 * @return int The date's post ID, 0 when none is chosen and none is to come.
+	 */
+	private function this_date( int $event_id ): int {
+		$current = $this->event_dates->current( $event_id );
+		$chosen  = $this->date_filter->chosen( $current );
+
+		if ( $chosen && 1 === count( $chosen ) ) {
+			return $chosen[0];
+		}
+
+		return (int) array_key_first( $this->event_dates->upcoming( $current ) );
 	}
 
 	/**
