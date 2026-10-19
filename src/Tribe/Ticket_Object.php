@@ -446,6 +446,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * Return a DateTimeZone associated with the parent Event of the current ticket
 		 *
 		 * @since 4.7.1
+		 * @since TBD Stopped keeping the site timezone it falls back to while the ticket does not know its event.
 		 *
 		 * @return DateTimeZone|null
 		 */
@@ -469,6 +470,12 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				if ( Tribe__Timezones::is_utc_offset( $wp_timezone ) ) {
 					$wp_timezone = Tribe__Timezones::generate_timezone_string_from_utc_offset( $wp_timezone );
 				}
+
+				// A ticket read before it knows its event, such as one still being built, finds the event timezone later.
+				if ( is_null( $this->get_event_id() ) ) {
+					return new DateTimeZone( $wp_timezone );
+				}
+
 				$this->event_timezone = new DateTimeZone( $wp_timezone );
 			}
 

@@ -85,6 +85,22 @@ export function describeSharedFixtureCases( expectedJuneOffset ) {
 			}
 		);
 
+		/*
+		 * A ticket stores the wall-clock times, and the server reads them back in the event timezone: the window it
+		 * reads only keeps the resolved order when the two orders agree, in the hour a clock change repeats too.
+		 */
+		it.each(
+			fixtures.cases
+				.filter( ( fixture ) => fixture.expected.start_local && fixture.expected.end_local )
+				.map( ( fixture ) => [ fixture.name, fixture ] )
+		)( 'should order the resolved dates as their wall-clock times: %s', ( name, fixture ) => {
+			const window = resolveSaleWindow( fixture.rule, fixture.event_start, fixture.event_end, fixture.timezone );
+
+			expect( window.start.isBefore( window.end ) ).toBe(
+				window.start.format( FORMAT ) < window.end.format( FORMAT )
+			);
+		} );
+
 		it.each(
 			fixtures.cases.flatMap( ( fixture ) =>
 				[ 'start', 'end' ]

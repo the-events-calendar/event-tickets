@@ -174,7 +174,7 @@ function resolveRelative( end, anchors, timezone ) {
  * The amount comes off the wall-clock time, not off the instant, so a clock change in between does not shift the
  * result: 8 hours before 08:00 is 00:00 even on a night an hour longer or shorter than usual. The result is then built
  * fresh from that wall-clock time rather than with `subtract()`: a time skipped by a clock change is pushed forward by
- * the size of the change, and a time that happens twice takes its first occurrence.
+ * the size of the change, and a time that happens twice takes the occurrence the server reads the stored time back as.
  *
  * A number of minutes or hours that lands on a time skipped by a clock change comes off the instant instead, as the
  * next valid time can fall on or after the anchor: 30 minutes before 03:15 would otherwise be 03:45.
@@ -195,7 +195,7 @@ function before( anchor, value, unit, timezone ) {
 		.utc( anchor.format( DATE_TIME_FORMAT ), DATE_TIME_FORMAT, true )
 		.subtract( seconds, 'seconds' )
 		.format( DATE_TIME_FORMAT );
-	const date = fromLocal( wallClock, timezone );
+	const date = fromEventLocal( wallClock, timezone );
 
 	// Days and weeks keep their wall-clock time: a skipped time a day or more back still lands well before the anchor.
 	if ( unit >= UNIT_DAYS || date.format( DATE_TIME_FORMAT ) === wallClock ) {
@@ -206,7 +206,7 @@ function before( anchor, value, unit, timezone ) {
 }
 
 /**
- * Builds an event date from its wall-clock date and time, taking the occurrence the server takes.
+ * Builds a date in the event timezone from its wall-clock date and time, taking the occurrence the server takes.
  *
  * A time that happens twice is read as PHP reads it, with the offset in effect at that wall-clock time read as UTC:
  * the second occurrence east of UTC and the first west of it. The Events Calendar stores the event's UTC dates the same
