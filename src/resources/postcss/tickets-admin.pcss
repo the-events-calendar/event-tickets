@@ -775,6 +775,11 @@ p.description {
 		margin-top: 16px;
 	}
 
+	/* A recurring event keeps its New ticket button above the notice, which core hides there. */
+	&:has(.recurring-event-tickets) {
+		margin-top: var(--tec-spacer-3);
+	}
+
 	.ticket-editor-notice_warning--message {
 		margin-top: 0;
 	}
