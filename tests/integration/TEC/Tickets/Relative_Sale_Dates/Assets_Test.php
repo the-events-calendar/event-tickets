@@ -5,9 +5,13 @@ namespace TEC\Tickets\Relative_Sale_Dates;
 use Generator;
 use TEC\Common\StellarWP\Assets\Assets as Asset_Registry;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
+use TEC\Tickets\Commerce\Module;
+use Tribe\Tickets\Test\Traits\Relative_Sale_Dates_Maker;
 use Tribe__Timezones as Timezones;
 
 class Assets_Test extends Controller_Test_Case {
+	use Relative_Sale_Dates_Maker;
+
 	protected $controller_class = Assets::class;
 
 	/**
@@ -453,6 +457,40 @@ class Assets_Test extends Controller_Test_Case {
 		do_action( 'enqueue_block_editor_assets' );
 
 		$this->assertContains( 'wp-date', wp_scripts()->registered[ Assets::BLOCK_EDITOR_SCRIPT ]->deps );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_localize_the_active_providers_the_sales_window_applies_to(): void {
+		$this->assertSame( [ 'classes' => [ Module::class ], 'slugs' => [ 'tc' ] ], $this->get_block_editor_localized_data()['ticketProviders'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_localize_an_accepted_provider_by_its_class_and_rest_api_slug(): void {
+		$paypal = $this->accept_paypal_tickets();
+
+		$this->assertSame( [ 'classes' => [ Module::class, $paypal ], 'slugs' => [ 'tc', 'tribe-commerce' ] ], $this->get_block_editor_localized_data()['ticketProviders'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_enqueue_the_block_editor_script_with_another_accepted_provider_on_and_tickets_commerce_off(): void {
+		$this->accept_paypal_tickets();
+		// The environment variable wins over the setting and its filter.
+		$this->tickets_commerce_env = getenv( 'TEC_TICKETS_COMMERCE' );
+		putenv( 'TEC_TICKETS_COMMERCE=0' );
+		add_filter( 'tec_tickets_commerce_is_enabled', '__return_false' );
+		$this->make_controller()->register();
+		set_current_screen( 'tribe_events' );
+		get_current_screen()->is_block_editor( true );
+
+		do_action( 'enqueue_block_editor_assets' );
+
+		$this->assertTrue( wp_script_is( Assets::BLOCK_EDITOR_SCRIPT, 'enqueued' ) );
 	}
 
 	/**

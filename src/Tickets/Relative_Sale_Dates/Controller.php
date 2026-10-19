@@ -112,6 +112,7 @@ final class Controller extends Controller_Contract {
 	 */
 	protected function do_register(): void {
 		$this->container->singleton( Rule_Store::class );
+		$this->container->singleton( Providers::class );
 		// The tickets handler is bound only by name: autowiring its class would build a second one, which hooks again.
 		$this->container->singleton(
 			Sales_Window_Effects::class,

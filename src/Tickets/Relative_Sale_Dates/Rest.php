@@ -41,14 +41,25 @@ final class Rest {
 	private Rule_Store $rule_store;
 
 	/**
+	 * The providers the relative sales window applies to.
+	 *
+	 * @since TBD
+	 *
+	 * @var Providers
+	 */
+	private Providers $providers;
+
+	/**
 	 * Rest constructor.
 	 *
 	 * @since TBD
 	 *
 	 * @param Rule_Store $rule_store The store of the ticket rules.
+	 * @param Providers  $providers  The providers the relative sales window applies to.
 	 */
-	public function __construct( Rule_Store $rule_store ) {
+	public function __construct( Rule_Store $rule_store, Providers $providers ) {
 		$this->rule_store = $rule_store;
+		$this->providers  = $providers;
 	}
 
 	/**
@@ -63,7 +74,8 @@ final class Rest {
 	 * @param WP_REST_Request           $request     The request.
 	 * @param Tickets                   $provider    The provider that saves the ticket.
 	 *
-	 * @return array<string,mixed>|mixed The ticket data, with the rules of a Tickets Commerce ticket.
+	 * @return array<string,mixed>|mixed The ticket data, with the rules of a ticket of a provider the relative sales
+	 *                                   window applies to.
 	 */
 	public function map_block_editor_rule( $ticket_data, WP_REST_Request $request, Tickets $provider ) {
 		if ( ! is_array( $ticket_data ) ) {
@@ -72,11 +84,16 @@ final class Rest {
 
 		$ticket = $request->get_param( 'ticket' );
 
-		if ( ! $provider instanceof Module || ! is_array( $ticket ) ) {
+		if ( ! $this->providers->accepts_provider( $provider->class_name ) || ! is_array( $ticket ) ) {
 			return $ticket_data;
 		}
 
 		foreach ( Window_Kind::all() as $kind ) {
+			// The Ticket block offers another provider's ticket a sale price, which only Tickets Commerce saves.
+			if ( ! $kind->owns_ticket_sales_dates() && ! $provider instanceof Module ) {
+				continue;
+			}
+
 			$keys   = $kind->get_rule_keys();
 			$path   = $keys['block_editor_request'];
 			$key    = array_pop( $path );
@@ -210,21 +227,30 @@ final class Rest {
 	}
 
 	/**
-	 * Adds the ticket's stored rules, or `null`, to a Tickets Commerce ticket the TEC REST API returns.
+	 * Adds the ticket's stored rules, or `null`, to a ticket the TEC REST API returns.
+	 *
+	 * A provider added through `tec_tickets_relative_sale_dates_ticket_providers` hooks this to its own ticket entity;
+	 * only a Tickets Commerce ticket has a sale price rule.
 	 *
 	 * @since TBD
 	 *
 	 * @param array<string,mixed>|mixed $entity The ticket entity.
 	 *
-	 * @return array<string,mixed>|mixed The entity, with `relative_sale_dates` and `sale_price_relative`.
+	 * @return array<string,mixed>|mixed The entity, with `relative_sale_dates` and, for a Tickets Commerce ticket,
+	 *                                   `sale_price_relative`.
 	 */
 	public function add_rule_to_tec_rest_api_ticket( $entity ) {
 		if ( ! is_array( $entity ) ) {
 			return $entity;
 		}
-		$ticket_id = absint( $entity['id'] ?? 0 );
+		$ticket_id       = absint( $entity['id'] ?? 0 );
+		$is_other_ticket = $ticket_id && Ticket::POSTTYPE !== get_post_type( $ticket_id );
 
 		foreach ( Window_Kind::all() as $kind ) {
+			if ( $is_other_ticket && ! $kind->owns_ticket_sales_dates() ) {
+				continue;
+			}
+
 			$entity[ $kind->get_rule_keys()['tec_rest'] ] = $ticket_id ? $this->get_stored_rule( $ticket_id, $kind ) : null;
 		}
 

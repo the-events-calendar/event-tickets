@@ -125,12 +125,12 @@ if ( ! empty( $ticket ) ) {
 			$sale_price_desc  = esc_html__( 'Current sale or member price. This can be managed via the product editor.', 'event-tickets' );
 		}
 		?>
+		<?php // The field has no name: the provider manages the sale price, which a save must not overwrite with it. ?>
 		<div class="input_block">
 			<label for="ticket_sale_price" class="ticket_form_label ticket_form_left"><?php echo esc_html( $sale_price_label ); ?></label>
 			<input
 				type="text"
 				id="ticket_sale_price"
-				name='ticket_sale_price'
 				class="ticket_field ticket_form_right"
 				size="7"
 				value="<?php echo esc_attr( $sale_price ); ?>"

@@ -668,6 +668,82 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 		} );
 	} );
 
+	describe( 'with WooCommerce among the providers the server says the sales window applies to', () => {
+		const ACCEPTED_PROVIDERS = { classes: [ TICKETS_COMMERCE, WOO_PROVIDER ], slugs: [ 'tc', 'woo' ] };
+		const Picker = () => null;
+		const Row = () => null;
+
+		/**
+		 * Sets the legacy state the provider selectors read for a ticket block, with WooCommerce accepted.
+		 *
+		 * @param {string} provider       The ticket provider the tickets block uses.
+		 * @param {string} clientId       The client ID of the ticket block.
+		 * @param {string} ticketProvider The provider slug the ticket keeps once fetched, or an empty string for a new one.
+		 *
+		 * @return {void}
+		 */
+		function setProviders( provider, clientId, ticketProvider = '' ) {
+			const tickets = { allClientIds: [ clientId ], byClientId: { [ clientId ]: { provider: ticketProvider } } };
+			setBlockEditorData( { ticketProviders: ACCEPTED_PROVIDERS } );
+			window.tribe = { tickets: { data: { blocks: { selectors: legacySelectors } } } };
+			window.__tribe_common_store__ = { getState: () => ( { tickets: { blocks: { ticket: { provider, tickets } } } } ) };
+		}
+
+		it( 'should load the sales window rule of a fetched ticket WooCommerce sells', () => {
+			const clientId = newClientId();
+			setBlockEditorData( { ticketProviders: ACCEPTED_PROVIDERS } );
+
+			doAction( 'tec.tickets.blocks.fetchTicket', clientId, { id: 23, provider: 'woo', relative_sale_dates: storedRule }, {} );
+
+			expect( select( STORE_NAME ).getDraftRule( clientId ) ).toStrictEqual( storedRule );
+		} );
+
+		it( 'should render the sales window options of a new ticket of a WooCommerce block around the picker', () => {
+			const clientId = newClientId();
+			setProviders( WOO_PROVIDER, clientId );
+
+			const rendered = applyFilters( 'tec.tickets.blocks.Ticket.Duration.renderPicker', <Picker />, clientId );
+
+			expect( rendered.type ).toBe( SalesWindow );
+		} );
+
+		it( 'should render the sales window options of an older WooCommerce ticket under a Tickets Commerce block', () => {
+			const clientId = newClientId();
+			setProviders( TICKETS_COMMERCE, clientId, 'woo' );
+
+			const rendered = applyFilters( 'tec.tickets.blocks.Ticket.Duration.renderPicker', <Picker />, clientId );
+
+			expect( rendered.type ).toBe( SalesWindow );
+		} );
+
+		it( 'should leave the sale price dates row of a WooCommerce ticket alone', () => {
+			const clientId = newClientId();
+			setProviders( WOO_PROVIDER, clientId );
+
+			const rendered = applyFilters( 'tec.tickets.blocks.Ticket.SalePrice.renderPickers', <Row />, clientId, {
+				start: <Picker />,
+				end: <Picker />,
+			} );
+
+			expect( rendered.type ).toBe( Row );
+		} );
+
+		// The block offers a WooCommerce ticket a sale price, which only Tickets Commerce saves.
+		it( 'should send the sales window rule of a WooCommerce ticket, and no sale price rule', () => {
+			const clientId = newClientId();
+			setSalePriceChecked( clientId, true );
+			setBlockEditorData( { ticketProviders: ACCEPTED_PROVIDERS } );
+			window.__tribe_common_store__.dispatch( legacyActions.setTicketsProvider( WOO_PROVIDER ) );
+			dispatch( STORE_NAME ).setDraftRule( clientId, storedRule );
+			dispatch( STORE_NAME ).setDraftRule( clientId, storedSalePrice, SALE_PRICE_WINDOW );
+
+			const body = buildBody( clientId );
+
+			expect( JSON.parse( body.get( BODY_FIELD ) ) ).toStrictEqual( storedRule );
+			expect( body.has( SALE_PRICE_BODY_FIELD ) ).toBe( false );
+		} );
+	} );
+
 	describe( 'on tec.tickets.blocks.Ticket.SaleWindow.dates', () => {
 		const ticketDates = { fromDate: 'September 1, 2040', toDate: 'December 31, 2040' };
 

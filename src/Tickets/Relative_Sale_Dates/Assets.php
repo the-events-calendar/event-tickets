@@ -198,26 +198,27 @@ final class Assets extends Controller_Contract {
 
 	/**
 	 * Returns whether the current admin screen edits an event in the classic editor, where the classic ticket form shows
-	 * the sales window options: only for Tickets Commerce tickets, so only with Tickets Commerce on.
+	 * the sales window options: only for the tickets of a provider they apply to, so only with such a provider on.
 	 *
 	 * @since TBD
 	 *
-	 * @return bool Whether the current screen is the classic event edit screen, with Tickets Commerce on.
+	 * @return bool Whether the current screen is the classic event edit screen, with a provider the options apply to on.
 	 */
 	private function is_classic_event_edit_screen(): bool {
-		return $this->is_event_edit_screen() && ! get_current_screen()->is_block_editor() && tec_tickets_commerce_is_enabled();
+		return $this->is_event_edit_screen() && ! get_current_screen()->is_block_editor() && $this->container->get( Providers::class )->has_active_provider();
 	}
 
 	/**
 	 * Returns whether the current admin screen edits an event in the block editor, where the Ticket block shows the sales
-	 * window options: only for Tickets Commerce tickets, so only with Tickets Commerce on.
+	 * window options: only for the tickets of a provider they apply to, so only with such a provider on.
 	 *
 	 * @since TBD
 	 *
-	 * @return bool Whether the current screen is the block editor event edit screen, with Tickets Commerce on.
+	 * @return bool Whether the current screen is the block editor event edit screen, with a provider the options apply
+	 *              to on.
 	 */
 	private function is_block_event_edit_screen(): bool {
-		return $this->is_event_edit_screen() && get_current_screen()->is_block_editor() && tec_tickets_commerce_is_enabled();
+		return $this->is_event_edit_screen() && get_current_screen()->is_block_editor() && $this->container->get( Providers::class )->has_active_provider();
 	}
 
 	/**
@@ -317,7 +318,7 @@ final class Assets extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @return array{windowDefaults: array<string,array{start: array{mode: string, value: int, unit: int, anchor?: string}, end: array{mode: string, value: int, unit: int, anchor?: string}}>, windowErrorTexts: array<string,array{endsBeforeStart: string, outsideParent?: string, invalidDate: string, valueOutOfRange: string}>, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, dateNoYear: string, time: string}} The script data, with the defaults and the error texts keyed by the kind's ID.
+	 * @return array{windowDefaults: array<string,array{start: array{mode: string, value: int, unit: int, anchor?: string}, end: array{mode: string, value: int, unit: int, anchor?: string}}>, windowErrorTexts: array<string,array{endsBeforeStart: string, outsideParent?: string, invalidDate: string, valueOutOfRange: string}>, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, dateNoYear: string, time: string}, ticketProviders: array{classes: string[], slugs: string[]}} The script data, with the defaults and the error texts keyed by the kind's ID.
 	 */
 	private function get_block_editor_script_data(): array {
 		$editor          = $this->container->get( Editor::class );
@@ -339,6 +340,27 @@ final class Assets extends Controller_Contract {
 				'dateNoYear'   => $this->get_date_format( false ),
 				'time'         => $this->get_time_format(),
 			],
+			'ticketProviders'  => $this->get_ticket_providers(),
+		];
+	}
+
+	/**
+	 * Gets the active providers the sales window options apply to, as the Ticket block names them.
+	 *
+	 * The block holds the provider of the tickets block as a class, and that of a ticket fetched from the server as the
+	 * slug the block editor tickets REST API gives it.
+	 *
+	 * @since TBD
+	 *
+	 * @return array{classes: string[], slugs: string[]} The provider classes and their REST API slugs.
+	 */
+	private function get_ticket_providers(): array {
+		$classes    = array_keys( $this->container->get( Providers::class )->get_active() );
+		$repository = tribe( 'tickets.rest-v1.repository' );
+
+		return [
+			'classes' => $classes,
+			'slugs'   => array_map( [ $repository, 'get_provider_slug' ], $classes ),
 		];
 	}
 

@@ -269,6 +269,132 @@ class Ticket_Dates_Test extends WPTestCase {
 	}
 
 	/**
+	 * @return Generator<string,array{0: array{name: string, rule: array{start: array{mode: string, value?: int, unit?: int, anchor?: string}, end: array{mode: string, value?: int, unit?: int, anchor?: string}}, timezone: string, event_start: string, event_end: string, expected: array{start_local: ?string, start_utc: ?string, end_local: ?string, end_utc: ?string, valid: ?bool}}}>
+	 */
+	public function sale_window_fixtures_provider(): Generator {
+		$fixtures = json_decode( file_get_contents( codecept_data_dir( 'relative-sale-dates/sale-window-cases.json' ) ), true );
+
+		foreach ( $fixtures['cases'] as $case ) {
+			yield $case['name'] => [ $case ];
+		}
+	}
+
+	/**
+	 * A provider that reads a sales date and its time from the date meta gets both there, as the event's wall clock.
+	 *
+	 * @test
+	 * @dataProvider sale_window_fixtures_provider
+	 */
+	public function should_write_the_shared_fixture_case_as_datetimes_in_the_date_metas( array $case ): void {
+		$event_id  = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$ticket_id = $this->create_tc_ticket( $event_id );
+		update_post_meta( $event_id, '_EventStartDate', $case['event_start'] );
+		update_post_meta( $event_id, '_EventEndDate', $case['event_end'] );
+		update_post_meta( $event_id, '_EventTimezone', $case['timezone'] );
+		$before = [ get_post_meta( $ticket_id, Ticket::START_DATE_META_KEY, true ), get_post_meta( $ticket_id, Ticket::END_DATE_META_KEY, true ) ];
+		delete_post_meta( $ticket_id, Ticket::START_TIME_META_KEY );
+		delete_post_meta( $ticket_id, Ticket::END_TIME_META_KEY );
+		$this->write_dates_as_datetimes();
+
+		tribe( Ticket_Dates::class )->write( $ticket_id, $event_id, Rule::from_array( $case['rule'], Window_Kind::sales() ) );
+
+		$expected = $case['expected'];
+		$this->assertSame( $expected['start_local'] ?? $before[0], get_post_meta( $ticket_id, Ticket::START_DATE_META_KEY, true ) );
+		$this->assertSame( $expected['end_local'] ?? $before[1], get_post_meta( $ticket_id, Ticket::END_DATE_META_KEY, true ) );
+		$this->assertSame( '', get_post_meta( $ticket_id, Ticket::START_TIME_META_KEY, true ) );
+		$this->assertSame( '', get_post_meta( $ticket_id, Ticket::END_TIME_META_KEY, true ) );
+		/*
+		 * The dates are stored as wall-clock times, as Tickets Commerce stores them, so the window is judged by them: in an
+		 * autumn overlap a start can read later than an end that falls after it.
+		 */
+		if ( $expected['start_local'] && $expected['end_local'] ) {
+			$this->assertSame( $expected['end_local'] <= $expected['start_local'], tribe( Ticket_Dates::class )->ends_before_it_starts( $ticket_id, Window_Kind::sales() ) );
+		}
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_write_the_sale_price_as_whole_days_whatever_the_sales_dates_format(): void {
+		$event_start = new DateTimeImmutable( '2027-06-24 19:00:00' );
+		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
+		$ticket_id   = $this->create_dated_sale_price_ticket( $event_id );
+		$this->write_dates_as_datetimes();
+
+		tribe( Ticket_Dates::class )->write( $ticket_id, $event_id, $this->get_relative_rule( Window_Kind::sale_price(), 2, 1 ) );
+
+		$this->assertSame(
+			[
+				'start' => [ 'date' => $event_start->modify( '-2 weeks' )->format( 'Y-m-d' ) ],
+				'end'   => [ 'date' => $event_start->modify( '-1 week' )->format( 'Y-m-d' ) ],
+			],
+			$this->get_dates( Window_Kind::sale_price(), $ticket_id )
+		);
+	}
+
+	/**
+	 * @return Generator<string,array{0: string, 1: string, 2: bool}>
+	 */
+	public function written_datetime_window_provider(): Generator {
+		yield 'an end after the start' => [ '2027-06-10 19:00:00', '2027-06-11 09:00:00', false ];
+		yield 'an end equal to the start' => [ '2027-06-10 19:00:00', '2027-06-10 19:00:00', true ];
+		yield 'an end before the start' => [ '2027-06-10 19:00:00', '2027-06-10 18:59:59', true ];
+		yield 'an end day without a time on the start day' => [ '2027-06-10 19:00:00', '2027-06-10', false ];
+		yield 'no end' => [ '2027-06-10 19:00:00', '', false ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider written_datetime_window_provider
+	 */
+	public function should_tell_whether_a_window_written_as_datetimes_ends_before_it_starts( string $start, string $end, bool $ends_before ): void {
+		$ticket_id = $this->create_tc_ticket( $this->create_event( '2027-06-24 19:00:00' ) );
+		update_post_meta( $ticket_id, Ticket::START_DATE_META_KEY, $start );
+		update_post_meta( $ticket_id, Ticket::END_DATE_META_KEY, $end );
+		// Times a provider writing datetimes never reads.
+		update_post_meta( $ticket_id, Ticket::START_TIME_META_KEY, '00:00:00' );
+		update_post_meta( $ticket_id, Ticket::END_TIME_META_KEY, '23:59:59' );
+		$this->write_dates_as_datetimes();
+
+		$this->assertSame( $ends_before, tribe( Ticket_Dates::class )->ends_before_it_starts( $ticket_id, Window_Kind::sales() ) );
+	}
+
+	/**
+	 * @return Generator<string,array{0: bool}>
+	 */
+	public function moves_now_start_provider(): Generator {
+		yield 'a save' => [ true ];
+		yield 'an event move' => [ false ];
+	}
+
+	/**
+	 * A provider that saves the submitted dates, not the ticket's, gets the start a Now boundary sets only from here.
+	 *
+	 * @test
+	 * @dataProvider moves_now_start_provider
+	 */
+	public function should_move_a_later_start_to_now_for_an_open_start_only_on_a_save( bool $moves_now_start ): void {
+		$event_start = $this->get_future_event_start();
+		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ), 'America/New_York' );
+		$ticket_id   = $this->create_tc_ticket( $event_id );
+		$later_start = $event_start->modify( '-1 day' );
+		update_post_meta( $ticket_id, Ticket::START_DATE_META_KEY, $later_start->format( 'Y-m-d H:i:s' ) );
+		$this->write_dates_as_datetimes();
+		$rule   = Rule::from_array( [ 'start' => [ 'mode' => Rule::MODE_DEFAULT ], 'end' => [ 'mode' => Rule::MODE_DEFAULT ] ], Window_Kind::sales() );
+		$before = new DateTimeImmutable( 'now', new DateTimeZone( 'America/New_York' ) );
+
+		tribe( Ticket_Dates::class )->write( $ticket_id, $event_id, $rule, $moves_now_start );
+
+		$start = new DateTimeImmutable( get_post_meta( $ticket_id, Ticket::START_DATE_META_KEY, true ), new DateTimeZone( 'America/New_York' ) );
+		if ( $moves_now_start ) {
+			$this->assertLessThan( $later_start->getTimestamp(), $start->getTimestamp() );
+			$this->assertGreaterThanOrEqual( $before->getTimestamp(), $start->getTimestamp() + 1 );
+		} else {
+			$this->assertSame( $later_start->format( 'Y-m-d H:i:s' ), $start->format( 'Y-m-d H:i:s' ) );
+		}
+	}
+
+	/**
 	 * Creates a Tickets Commerce ticket priced 20 with a sale price of 10 between the fixed sale price dates.
 	 *
 	 * @param int                       $post_id   The ticketed post ID.
@@ -349,5 +475,15 @@ class Ticket_Dates_Test extends WPTestCase {
 		}
 
 		return $dates;
+	}
+
+	/**
+	 * Has every ticket's sales dates written as datetimes in the date metas, as a provider other than Tickets Commerce
+	 * asks for.
+	 *
+	 * @return void
+	 */
+	private function write_dates_as_datetimes(): void {
+		add_filter( 'tec_tickets_relative_sale_dates_ticket_date_format', static fn(): string => Ticket_Dates::FORMAT_DATETIME );
 	}
 }

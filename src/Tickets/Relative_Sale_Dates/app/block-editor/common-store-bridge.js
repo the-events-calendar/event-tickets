@@ -12,6 +12,9 @@
  */
 import { SALE_DATE_PATTERN, TICKETS_COMMERCE_MODULE_CLASS } from '../../../../modules/data/blocks/ticket/constants';
 import { isSalePriceKept as keepsSalePrice } from '../php-compare';
+import { getLocalizedTicketProviders } from './localized-data';
+
+/** @typedef {import( './localized-data' ).TicketProviders} TicketProviders */
 
 /**
  * The provider slug the block editor tickets REST API gives a Tickets Commerce ticket, which a fetched ticket keeps.
@@ -67,6 +70,42 @@ export function isTicketsCommerce( clientId ) {
 	}
 
 	return TICKETS_COMMERCE_MODULE_CLASS === selectors.getTicketsProvider( state );
+}
+
+/**
+ * Returns whether a ticket is sold through a provider the sales window applies to, read as `isTicketsCommerce()` reads
+ * Tickets Commerce.
+ *
+ * @since TBD
+ *
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {boolean} Whether the sales window applies to the ticket's provider.
+ */
+export function isAcceptedProvider( clientId ) {
+	const { selectors } = getTicketData();
+	const state = getLegacyState();
+	const { classes, slugs } = getTicketProviders();
+	const ticketProvider = selectors.getTicketProvider( state, { clientId } );
+
+	if ( ticketProvider ) {
+		return slugs.includes( ticketProvider );
+	}
+
+	return classes.includes( selectors.getTicketsProvider( state ) );
+}
+
+/**
+ * Returns whether a ticket fetched from the server is sold through a provider the sales window applies to.
+ *
+ * @since TBD
+ *
+ * @param {Object} [ticket] The ticket, as the block editor tickets REST API returns it.
+ *
+ * @return {boolean} Whether the sales window applies to the ticket's provider.
+ */
+export function isAcceptedTicket( ticket ) {
+	return getTicketProviders().slugs.includes( ticket?.provider );
 }
 
 /**
@@ -282,4 +321,20 @@ export function getTicketSalePriceFormDates( state, clientId ) {
 		start: toSalePriceFormDate( selectors.getTicketTempSaleStartDate( state, props ) ),
 		end: toSalePriceFormDate( selectors.getTicketTempSaleEndDate( state, props ) ),
 	};
+}
+
+/**
+ * Gets the active providers the sales window applies to: Tickets Commerce, unless the server names others.
+ *
+ * @since TBD
+ *
+ * @return {TicketProviders} The provider classes and slugs.
+ */
+function getTicketProviders() {
+	return (
+		getLocalizedTicketProviders() ?? {
+			classes: [ TICKETS_COMMERCE_MODULE_CLASS ],
+			slugs: [ TICKETS_COMMERCE_PROVIDER ],
+		}
+	);
 }
