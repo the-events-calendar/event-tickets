@@ -18,6 +18,7 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Classic_Ticket_Form;
 use Tribe\Tickets\Test\Traits\Relative_Sale_Dates_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
+use Tribe__Tickets__Admin__Views as Admin_Views;
 
 class Editor_Test extends Controller_Test_Case {
 	use Classic_Ticket_Form;
@@ -1048,7 +1049,13 @@ class Editor_Test extends Controller_Test_Case {
 		$document = new DOMDocument();
 		// The window is an HTML fragment, which libxml warns about.
 		libxml_use_internal_errors( true );
-		$document->loadHTML( '<?xml encoding="UTF-8">' . tribe( Editor::class )->render_preset_sales_window( $rule, self::PRESET_PREFIX ) );
+		$document->loadHTML(
+			'<?xml encoding="UTF-8">' . tribe( Admin_Views::class )->template(
+				'relative-sale-dates/sales-window',
+				tribe( Editor::class )->get_preset_sales_window_context( $rule, self::PRESET_PREFIX ),
+				false
+			)
+		);
 		libxml_clear_errors();
 
 		return new DOMXPath( $document );
