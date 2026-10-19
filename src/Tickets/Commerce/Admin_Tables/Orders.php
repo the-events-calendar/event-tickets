@@ -123,15 +123,7 @@ class Orders extends WP_List_Table {
 			'total'            => __( 'Total', 'event-tickets' ),
 		];
 
-		/**
-		 * Filters the columns of the Tickets Commerce orders table.
-		 *
-		 * @since TBD
-		 *
-		 * @param array<string,string> $columns The columns, as [ <slug> => <title> ].
-		 * @param int                  $post_id The post whose orders are listed, 0 if none.
-		 */
-		return (array) apply_filters( 'tec_tickets_commerce_reports_orders_table_columns', $columns, (int) tribe_get_request_var( 'event_id', tribe_get_request_var( 'post_id', 0 ) ) );
+		return $columns;
 	}
 
 	/**
@@ -265,18 +257,7 @@ class Orders extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_default( $item, $column ) {
-		$value = empty( $item->$column ) ? '??' : $item->$column;
-
-		/**
-		 * Filters the value of a cell of the Tickets Commerce orders table without a column method of its own.
-		 *
-		 * @since TBD
-		 *
-		 * @param string  $value  The cell's value, as HTML.
-		 * @param WP_Post $item   The order.
-		 * @param string  $column The column.
-		 */
-		return apply_filters( 'tec_tickets_commerce_reports_orders_table_column', $value, $item, $column );
+		return empty( $item->$column ) ? '??' : $item->$column;
 	}
 
 	/**
@@ -337,6 +318,7 @@ class Orders extends WP_List_Table {
 	 * Handler for the purchased column.
 	 *
 	 * @since 5.2.0
+	 * @since TBD Filters each ticket's name.
 	 *
 	 * @param WP_Post $item The current item.
 	 *
@@ -357,10 +339,20 @@ class Orders extends WP_List_Table {
 				continue;
 			}
 
-			$ticket   = Tickets::load_ticket_object( $cart_item['ticket_id'] );
-			$name     = esc_html( $ticket->name );
+			$ticket = Tickets::load_ticket_object( $cart_item['ticket_id'] );
+
+			/**
+			 * Filters the name of a ticket purchased in an order, in the orders table.
+			 *
+			 * @since TBD
+			 *
+			 * @param string              $name      The ticket's name.
+			 * @param array<string,mixed> $cart_item The order's line of the ticket.
+			 * @param WP_Post             $item      The order.
+			 */
+			$name     = esc_html( apply_filters( 'tec_tickets_commerce_reports_orders_table_purchased_ticket_name', $ticket->name, $cart_item, $item ) );
 			$quantity = esc_html( (int) $cart_item['quantity'] );
-			$output   .= "<div class='tribe-line-item'>{$quantity} - {$name}</div>";
+			$output  .= "<div class='tribe-line-item'>{$quantity} - {$name}</div>";
 		}
 
 		return $output;

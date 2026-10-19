@@ -13,6 +13,7 @@ use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Event;
 use TEC\Tickets\Recurring_Tickets\Commerce\Attendees;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
+use TEC\Tickets\Recurring_Tickets\Template_Guard;
 use TEC\Tickets\Recurring_Tickets\Ticket_ID;
 use Tribe__Events__Main as TEC;
 use Tribe__Tickets__Tickets as Tickets;
@@ -47,15 +48,6 @@ final class Attendees_Page {
 	private Rows $rows;
 
 	/**
-	 * The dates each event's attendees hold, by event: the date's start by its post ID.
-	 *
-	 * @since TBD
-	 *
-	 * @var array<int,array<int,string>>
-	 */
-	private array $dates = [];
-
-	/**
 	 * The select that narrows the table to one date.
 	 *
 	 * @since TBD
@@ -65,16 +57,38 @@ final class Attendees_Page {
 	private Date_Filter $date_filter;
 
 	/**
+	 * The event's dates.
+	 *
+	 * @since TBD
+	 *
+	 * @var Event_Dates
+	 */
+	private Event_Dates $event_dates;
+
+	/**
+	 * The sales of each recurring event ticket over every date.
+	 *
+	 * @since TBD
+	 *
+	 * @var Template_Sales
+	 */
+	private Template_Sales $template_sales;
+
+	/**
 	 * Attendees_Page constructor.
 	 *
 	 * @since TBD
 	 *
-	 * @param Rows        $rows        The rows repository.
-	 * @param Date_Filter $date_filter The select that narrows the table to one date.
+	 * @param Rows           $rows           The rows repository.
+	 * @param Date_Filter    $date_filter    The select that narrows the table to one date.
+	 * @param Event_Dates    $event_dates    The event's dates.
+	 * @param Template_Sales $template_sales The sales of each recurring event ticket over every date.
 	 */
-	public function __construct( Rows $rows, Date_Filter $date_filter ) {
-		$this->rows        = $rows;
-		$this->date_filter = $date_filter;
+	public function __construct( Rows $rows, Date_Filter $date_filter, Event_Dates $event_dates, Template_Sales $template_sales ) {
+		$this->rows           = $rows;
+		$this->date_filter    = $date_filter;
+		$this->event_dates    = $event_dates;
+		$this->template_sales = $template_sales;
 	}
 
 	/**
@@ -193,7 +207,7 @@ final class Attendees_Page {
 	public function add_date_column( $columns, $event_id ): array {
 		$columns = (array) $columns;
 
-		if ( ! $this->held_dates( (int) $event_id ) ) {
+		if ( ! $this->event_dates->held( (int) $event_id ) ) {
 			return $columns;
 		}
 
@@ -227,7 +241,7 @@ final class Attendees_Page {
 	}
 
 	/**
-	 * Adds, above the attendees table, a select of the dates its attendees hold to narrow the list to one.
+	 * Adds, above the attendees table, a select of the event's dates to narrow the list to one.
 	 *
 	 * @since TBD
 	 *
@@ -238,18 +252,18 @@ final class Attendees_Page {
 	 */
 	public function add_date_filter( $nav, $which ): array {
 		$nav      = (array) $nav;
-		$event_id = Event::filter_event_id( (int) tribe_get_request_var( 'event_id' ), 'attendees-table' );
-		$dates    = 'top' === $which ? $this->held_dates( (int) $event_id ) : [];
+		$event_id = (int) Event::filter_event_id( (int) tribe_get_request_var( 'event_id' ), 'attendees-table' );
+		$dates    = 'top' === $which ? $this->event_dates->all( $event_id ) : [];
 
 		if ( $dates ) {
-			$nav['left'][ Date_Filter::NAME ] = $this->date_filter->render( $dates );
+			$nav['left'][ Date_Filter::NAME ] = $this->date_filter->render( $dates, $this->event_dates->removed( $event_id ), __( 'Attendees for:', 'event-tickets' ) );
 		}
 
 		return $nav;
 	}
 
 	/**
-	 * Narrows the attendees table's query to the chosen date.
+	 * Narrows the attendees table's query to the chosen dates.
 	 *
 	 * @since TBD
 	 *
@@ -260,49 +274,86 @@ final class Attendees_Page {
 	 */
 	public function narrow_to_date( $args, $event_id ): array {
 		$args   = (array) $args;
-		$chosen = $this->date_filter->chosen( $this->held_dates( (int) $event_id ) );
+		$chosen = $this->date_filter->chosen( $this->event_dates->all( (int) $event_id ) );
 
-		if ( $chosen ) {
-			$args['by']                = (array) ( $args['by'] ?? [] );
-			$args['by']['meta_equals'] = [ '_tec_tickets_commerce_event', $chosen ];
+		if ( null !== $chosen ) {
+			$args['by']            = (array) ( $args['by'] ?? [] );
+			$args['by']['meta_in'] = [ '_tec_tickets_commerce_event', $chosen ?: [ 0 ] ];
 		}
 
 		return $args;
 	}
 
 	/**
-	 * Returns the dates an event's attendees hold, removed ones included, in start order.
+	 * Gives the event's Attendees page the sales of its recurring event tickets over every date: their templates are
+	 * never sold.
 	 *
 	 * @since TBD
 	 *
-	 * @param int $event_id The event.
+	 * @param array<string,mixed>|mixed $context The Attendees page's render context.
+	 * @param int|mixed                 $post_id The post of the page.
 	 *
-	 * @return array<int,string> The date's start, by its post ID.
+	 * @return array<string,mixed> The context.
 	 */
-	public function held_dates( int $event_id ): array {
-		if ( $event_id <= 0 ) {
-			return [];
+	public function summarize_tickets( $context, $post_id ): array {
+		$context   = (array) $context;
+		$templates = $context['tickets_by_type'][ Template_Guard::TICKET_TYPE ] ?? [];
+
+		if ( ! $templates ) {
+			return $context;
 		}
 
-		if ( isset( $this->dates[ $event_id ] ) ) {
-			return $this->dates[ $event_id ];
+		$sales     = $this->template_sales->for_event( (int) $post_id );
+		$sold      = (int) ( $context['ticket_totals']['sold'] ?? 0 );
+		$available = (int) ( $context['ticket_totals']['available'] ?? 0 );
+		foreach ( $templates as $template ) {
+			$template_sales = $sales[ (int) $template->ID ] ?? [
+				'sold'      => 0,
+				'available' => 0,
+			];
+
+			$context['ticket_stats'][ (int) $template->ID ] = sprintf(
+				// translators: %1$d is the number of tickets issued, %2$s the number available, or "Unlimited".
+				_x( '%1$d issued (%2$s available)', 'recurring event ticket on the attendees overview', 'event-tickets' ),
+				$template_sales['sold'],
+				tribe_tickets_get_readable_amount( $template_sales['available'] )
+			);
+
+			// The page counted the template; its rows are what was sold.
+			$sold += $template_sales['sold'] - (int) $template->qty_sold();
+
+			if ( -1 === $available ) {
+				continue;
+			}
+
+			// ponytail: assumes the template's own stock; a shared-capacity template was counted once per event instead.
+			$available = -1 === $template_sales['available'] ? -1 : $available + $template_sales['available'] - max( 0, (int) $template->available() );
 		}
 
-		global $wpdb;
-		$rows = DB::get_results(
-			DB::prepare(
-				"SELECT dates.meta_value AS date_id, MIN( starts.meta_value ) AS start FROM %i events JOIN %i dates ON dates.post_id = events.post_id AND dates.meta_key = '_tec_tickets_commerce_event' JOIN %i starts ON starts.post_id = events.post_id AND starts.meta_key = %s WHERE events.meta_key = %s AND events.meta_value = %s GROUP BY dates.meta_value ORDER BY start",
-				$wpdb->postmeta,
-				$wpdb->postmeta,
-				$wpdb->postmeta,
-				Attendees::OCCURRENCE_START_META_KEY,
-				Attendees::POST_ID_META_KEY,
-				(string) $event_id
-			)
-		);
+		$context['ticket_totals'] = [
+			'sold'      => $sold,
+			'available' => $available,
+		];
 
-		$this->dates[ $event_id ] = array_column( (array) $rows, 'start', 'date_id' );
+		$context['type_labels'][ Template_Guard::TICKET_TYPE ]       = __( 'Recurring Event Tickets', 'event-tickets' );
+		$context['type_icon_classes'][ Template_Guard::TICKET_TYPE ] = 'tec-tickets__admin-attendees-overview-ticket-type-icon--ticket';
+		$context['post_singular_label']                              = __( 'Recurring Event', 'event-tickets' );
 
-		return $this->dates[ $event_id ];
+		return $context;
+	}
+
+	/**
+	 * Adds, to the tickets an event's attendance totals count as paid, the recurring event tickets sold on its dates.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|mixed $total    The number paid.
+	 * @param int|mixed $original The number before filtering.
+	 * @param int|mixed $event_id The event.
+	 *
+	 * @return int The number paid.
+	 */
+	public function add_sold_to_paid( $total, $original, $event_id ): int {
+		return (int) $total + $this->template_sales->sold( (int) $event_id );
 	}
 }

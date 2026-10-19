@@ -2,7 +2,7 @@
 /**
  * Template to render the Orders Report Summary.
  *
- * @version 5.6.7
+ * @version TBD
  *
  * @var int $post_id The current post ID.
  * @var WP_Post $post The current post object.
@@ -97,8 +97,18 @@ $tickets_by_type = $order_summary->get_tickets_by_type();
 					<?php endforeach; ?>
 			</div>
 			<div class="welcome-panel-column welcome-panel-last alternate">
+				<?php
+				/**
+				 * Fires before the sales totals in the Orders Report admin view.
+				 *
+				 * @since TBD
+				 *
+				 * @param Order_Summary $order_summary The data object.
+				 */
+				do_action( 'tec_tickets_commerce_order_report_before_sales_totals', $order_summary );
+				?>
 				<div class="tec-tickets__admin-orders-report__sales-overview__title">
-					<h3><?php echo esc_html__( 'Sales Totals', 'event-tickets' ); ?></h3>
+					<h3><?php echo esc_html( $order_summary->get_sales_totals_title() ); ?></h3>
 				</div>
 				<div class="tec-tickets__admin-orders-report__sales-overview__data">
 					<div class="tec-tickets__admin-orders-report__sales-overview__by-status">

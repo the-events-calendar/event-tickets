@@ -5,6 +5,7 @@ namespace TEC\Tickets\Recurring_Tickets\Admin;
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
+use TEC\Tickets\Recurring_Tickets\Template_Guard;
 use TEC\Tickets\Recurring_Tickets\Ticket_ID;
 use TEC\Tickets\Tests\Recurring_Tickets\Row_Orders;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
@@ -47,7 +48,9 @@ class Attendees_Page_Test extends WPTestCase {
 		( new Tickets() )->empty_table();
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 		$this->event = $this->create_recurring_event();
-		$this->create_tc_ticket( $this->event, 10, [ 'ticket_name' => 'General Admission' ] );
+		$template = $this->create_tc_ticket( $this->event, 10, [ 'ticket_name' => 'General Admission' ] );
+		// As the ticket editor saves a ticket on a recurring event.
+		update_post_meta( $template, '_type', Template_Guard::TICKET_TYPE );
 		$dates = $this->get_dates( $this->event );
 		$rows  = [];
 		foreach ( tribe( Rows::class )->get_by_post( $this->event ) as $row ) {
@@ -141,8 +144,12 @@ class Attendees_Page_Test extends WPTestCase {
 		foreach ( [ $this->kept, $this->stranded ] as $attendee ) {
 			$date = (int) get_post_meta( $attendee, '_tec_tickets_commerce_event', true );
 			$this->assertStringContainsString( 'value="' . $date . '"', $select, 'A removed date stays listed.' );
-			$this->assertStringContainsString( esc_html( tribe_format_date( get_post_meta( $attendee, '_tec_tickets_recurring_occurrence_start', true ), true ) ), $select );
+			$this->assertStringContainsString( esc_html( tribe_format_date( get_post_meta( $attendee, '_tec_tickets_recurring_occurrence_start', true ), true, tribe_get_datetime_format( true ) ) ), $select );
 		}
+		$stranded = esc_html( tribe_format_date( get_post_meta( $this->stranded, '_tec_tickets_recurring_occurrence_start', true ), true, tribe_get_datetime_format( true ) ) );
+		$this->assertStringContainsString( $stranded . ' (removed)', $select );
+		$this->assertStringContainsString( 'Attendees for:', $select );
+		$this->assertStringContainsString( 'value="' . Date_Filter::UPCOMING . '"', $select );
 		$this->assertSame( [ 'left' => [], 'right' => [] ], apply_filters( 'tribe_events_tickets_attendees_table_nav', [ 'left' => [], 'right' => [] ], 'bottom' ) );
 	}
 
@@ -159,6 +166,36 @@ class Attendees_Page_Test extends WPTestCase {
 		$_GET[ Date_Filter::NAME ] = (string) static::factory()->post->create();
 
 		$this->assertSame( [ $this->kept, $this->stranded ], $this->table_attendees() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_count_the_recurring_event_tickets_sold_on_every_date_in_the_overview(): void {
+		// Only an admin screen lists a template among the event's tickets.
+		set_current_screen( 'tribe_events_page_tickets-attendees' );
+
+		try {
+			$context = tribe( 'tickets.attendees' )->get_render_context( $this->event );
+		} finally {
+			set_current_screen( 'front' );
+		}
+
+		$template = $context['tickets_by_type'][ Template_Guard::TICKET_TYPE ][0];
+
+		// The second date's row is gone, and its sale with it.
+		$this->assertSame( 1, $context['ticket_totals']['sold'] );
+		$this->assertStringStartsWith( '1 issued (', $context['ticket_stats'][ $template->ID ] );
+		$this->assertSame( 'Recurring Event Tickets', $context['type_labels'][ Template_Guard::TICKET_TYPE ] );
+		$this->assertSame( 'Recurring Event', $context['post_singular_label'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_count_the_recurring_event_tickets_sold_on_every_date_as_paid(): void {
+		$this->assertSame( 1, apply_filters( 'tribe_tickets_get_total_paid', 0, 0, $this->event ) );
+		$this->assertSame( 0, apply_filters( 'tribe_tickets_get_total_paid', 0, 0, static::factory()->post->create() ) );
 	}
 
 	/**
