@@ -119,8 +119,25 @@ class Classic_Test extends WPTestCase {
 		tribe( Warnings::class )->render_hidden_recurring_warning_for_ticket_meta_box( $this->create_recurring_event() );
 		$html = (string) ob_get_clean();
 
-		$this->assertStringContainsString( 'Recurring events sell recurring event tickets', $html );
+		$this->assertStringContainsString( 'Tickets you add here are offered on every date of this event. Each date has its own capacity.', $html );
+		$this->assertStringContainsString( 'You can&#039;t add standard tickets or RSVPs to a recurring event.', $html );
 		$this->assertStringNotContainsString( 'Standard tickets are not yet supported', $html );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_say_where_to_sell_series_passes_for_a_recurring_event_in_a_series(): void {
+		$event  = $this->create_recurring_event();
+		$series = tec_series()->where( 'event_post_id', $event )->first();
+
+		ob_start();
+		tribe( Warnings::class )->render_hidden_recurring_warning_for_ticket_meta_box( $event );
+		$html = (string) ob_get_clean();
+
+		$this->assertStringContainsString( 'This event is part of the <a href="' . esc_url( get_edit_post_link( $series ) ) . '"', $html );
+		$this->assertStringContainsString( 'To sell a pass that covers every event in the Series, add Series Passes on the Series edit screen.', $html );
+		$this->assertStringNotContainsString( 'Series admin', $html );
 	}
 
 	/**
