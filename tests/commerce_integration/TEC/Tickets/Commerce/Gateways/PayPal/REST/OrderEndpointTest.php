@@ -11,7 +11,6 @@ use TEC\Tickets\Commerce\Pending_Order;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Denied;
 use TEC\Tickets\Commerce\Status\Pending;
-use TEC\Tickets\Commerce\Status\Voided;
 use WP_Error;
 use WP_REST_Request;
 
@@ -256,13 +255,8 @@ class OrderEndpointTest extends \Codeception\TestCase\WPTestCase {
 
 	public function test_recheck_reports_an_unconfirmed_capture_when_the_order_cannot_be_denied(): void {
 		$order_id = $this->create_pending_order();
-		/* Voided is final, so the move to Denied is refused the way a concurrent request's would be. */
-		wp_update_post(
-			[
-				'ID'          => $order_id,
-				'post_status' => tribe( Voided::class )->get_wp_slug(),
-			]
-		);
+		/* A concurrent request holding the order lock is what makes the move to Denied fail. */
+		tribe( Order::class )->lock_order( $order_id );
 		$this->stub_paypal(
 			$this->approved_order(
 				[
@@ -277,7 +271,23 @@ class OrderEndpointTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertNotContains( 'POST ' . $this->paypal_order_id . '/capture', $this->requests );
 		$this->assertInstanceOf( WP_Error::class, $response );
 		$this->assertEquals( 'tec-tc-gateway-paypal-unconfirmed-capture', $response->get_error_code() );
-		$this->assertEquals( tribe( Voided::class )->get_wp_slug(), get_post_status( $order_id ) );
+		$this->assertEquals( tribe( Pending::class )->get_wp_slug(), get_post_status( $order_id ) );
+	}
+
+	public function test_recheck_does_not_capture_an_order_that_was_denied(): void {
+		$order_id = $this->create_pending_order();
+		/* The buyer closed the bank's verification, so PayPal holds the order approved with no authentication result. */
+		$this->stub_paypal( $this->approved_order( null ) );
+		$request = $this->make_update_request();
+		$request->set_param( 'liability_shift', 'NO' );
+		$this->make_endpoint()->handle_update_order( $request );
+
+		$response = $this->make_endpoint()->handle_recheck_order( $this->paypal_order_id, get_post( $order_id ) );
+
+		$this->assertNotContains( 'POST ' . $this->paypal_order_id . '/capture', $this->requests );
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertEquals( 'tec-tc-gateway-paypal-capture-declined', $response->get_error_code() );
+		$this->assertEquals( tribe( Denied::class )->get_wp_slug(), get_post_status( $order_id ) );
 	}
 
 	private function assert_capture_outcome( int $order_id, $response, bool $captures ): void {

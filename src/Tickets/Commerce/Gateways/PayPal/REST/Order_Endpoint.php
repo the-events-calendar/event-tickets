@@ -328,25 +328,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		// An earlier request already resolved this order, and capturing twice is an error at PayPal.
 		// Report the status the order actually carries rather than asking the buyer to pay again.
 		if ( ! $this->order_is_in_flight( $order ) ) {
-			$settled = tribe( Status_Handler::class )->get_by_wp_slug( (string) get_post_status( $order->ID ) );
-
-			if ( ! $settled ) {
-				return new WP_Error(
-					'tec-tc-gateway-paypal-invalid-capture-status',
-					$messages['invalid-capture-status'],
-					[ 'status' => 500 ]
-				);
-			}
-
-			if ( ! $this->status_is_paid( $settled ) ) {
-				return new WP_Error(
-					'tec-tc-gateway-paypal-capture-declined',
-					$messages['capture-declined'],
-					[ 'status' => 402 ]
-				);
-			}
-
-			return $this->settled_response( $order, $paypal_order_id, $settled );
+			return $this->resolved_order_response( $order, $paypal_order_id );
 		}
 
 		$paypal_order_response = tribe( Client::class )->get_order( $paypal_order_id );
@@ -477,7 +459,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * @since 5.27.6.1 Removed order data from response for failed orders.
 	 * @since 5.29.4 Captures an approved order nothing captured yet, and stops writing unsettled PayPal
 	 *        states over the order.
-	 * @since TBD Refuses to capture a card payment that failed 3D Secure authentication.
+	 * @since TBD Refuses to capture a card payment that failed 3D Secure authentication, or an order
+	 *        that is no longer in flight.
 	 *
 	 * @param string  $order_id The PayPal order ID.
 	 * @param WP_Post $order    The TC Order object.
@@ -507,6 +490,15 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			Status::APPROVED === Arr::get( $paypal_order_response, 'status' )
 			&& null === $this->get_deciding_capture( $paypal_order_response )
 		) {
+			/*
+			 * A Denied order stays approved at PayPal, and when the buyer closed the bank's verification
+			 * PayPal holds no authentication result to refuse the capture on. Only an order still in
+			 * flight may be captured here.
+			 */
+			if ( ! $this->order_is_in_flight( $order ) ) {
+				return $this->resolved_order_response( $order, $order_id );
+			}
+
 			$paypal_capture_response = $this->capture_if_authenticated( $order, $paypal_order_response );
 
 			if ( is_wp_error( $paypal_capture_response ) ) {
@@ -996,6 +988,39 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$truncated_text .= $ellipsis;
 
 		return $truncated_text;
+	}
+
+	/**
+	 * Answers for an order an earlier request already resolved, with the status it carries.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $order           The Tickets Commerce order.
+	 * @param string  $paypal_order_id The PayPal order ID.
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
+	private function resolved_order_response( $order, string $paypal_order_id ) {
+		$messages = $this->get_error_messages();
+		$settled  = tribe( Status_Handler::class )->get_by_wp_slug( get_post_status( $order->ID ) );
+
+		if ( ! $settled ) {
+			return new WP_Error(
+				'tec-tc-gateway-paypal-invalid-capture-status',
+				$messages['invalid-capture-status'],
+				[ 'status' => 500 ]
+			);
+		}
+
+		if ( ! $this->status_is_paid( $settled ) ) {
+			return new WP_Error(
+				'tec-tc-gateway-paypal-capture-declined',
+				$messages['capture-declined'],
+				[ 'status' => 402 ]
+			);
+		}
+
+		return $this->settled_response( $order, $paypal_order_id, $settled );
 	}
 
 	/**
