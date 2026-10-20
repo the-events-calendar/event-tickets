@@ -353,22 +353,49 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		/*
 		 * Without the order there is no authentication result to check, and capturing blind is what
-		 * charges a buyer who cancelled their bank's verification. The recheck reads the order again.
+		 * charges a buyer who cancelled their bank's verification. Nothing was captured yet, so the
+		 * buyer can safely be told to try again.
 		 */
-		if ( ! $this->is_paypal_payload( $paypal_order_response ) ) {
-			$response['success']  = true;
-			$response['order_id'] = $paypal_order_id;
-
-			return new WP_REST_Response( $response );
+		if (
+			! $this->is_paypal_payload( $paypal_order_response )
+			|| $paypal_order_id !== Arr::get( $paypal_order_response, 'id' )
+			|| ! isset( $paypal_order_response['status'] )
+		) {
+			return new WP_Error(
+				'tec-tc-gateway-paypal-unverified-order',
+				$messages['unverified-order'],
+				[ 'status' => 502 ]
+			);
 		}
 
-		if ( $this->card_authentication_failed( $paypal_order_response ) ) {
-			return $this->deny_unauthenticated_order( $order, $paypal_order_response );
+		// An earlier capture already took the money, and capturing again is refused as unprocessable.
+		if ( null !== $this->get_deciding_capture( $paypal_order_response ) ) {
+			$status = $this->settle_order_status( $order, $paypal_order_response );
+
+			if ( is_wp_error( $status ) ) {
+				return $status;
+			}
+
+			if ( null === $status ) {
+				$response['success']  = true;
+				$response['order_id'] = $paypal_order_id;
+
+				return new WP_REST_Response( $response );
+			}
+
+			return $this->settled_response( $order, $paypal_order_id, $status );
 		}
 
-		$payer_id = $request->get_param( 'payer_id' );
+		$paypal_capture_response = $this->capture_if_authenticated(
+			$order,
+			$paypal_order_response,
+			$request->get_param( 'payer_id' ),
+			$request->get_param( 'liability_shift' )
+		);
 
-		$paypal_capture_response = tribe( Client::class )->capture_order( $paypal_order_id, $payer_id );
+		if ( is_wp_error( $paypal_capture_response ) ) {
+			return $paypal_capture_response;
+		}
 
 		// The capture got back nothing we can read: a transport failure, the five second default
 		// timeout, or a body PayPal did not fill in. PayPal may still have taken the money, so this is
@@ -480,11 +507,11 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			Status::APPROVED === Arr::get( $paypal_order_response, 'status' )
 			&& null === $this->get_deciding_capture( $paypal_order_response )
 		) {
-			if ( $this->card_authentication_failed( $paypal_order_response ) ) {
-				return $this->deny_unauthenticated_order( $order, $paypal_order_response );
-			}
+			$paypal_capture_response = $this->capture_if_authenticated( $order, $paypal_order_response );
 
-			$paypal_capture_response = tribe( Client::class )->capture_order( $order_id );
+			if ( is_wp_error( $paypal_capture_response ) ) {
+				return $paypal_capture_response;
+			}
 
 			if ( $this->is_paypal_payload( $paypal_capture_response ) ) {
 				$paypal_order_response = $paypal_capture_response;
@@ -793,12 +820,13 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Arguments used for the updating order for PayPal.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Added the `liability_shift` argument.
 	 *
 	 * @return array
 	 */
 	public function update_order_args() {
 		return [
-			'order_id' => [
+			'order_id'        => [
 				'description'       => __( 'Order ID in PayPal', 'event-tickets' ),
 				'required'          => true,
 				'type'              => 'string',
@@ -811,7 +839,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				},
 				'sanitize_callback' => [ $this, 'sanitize_callback' ],
 			],
-			'payer_id' => [
+			'payer_id'        => [
 				'description'       => __( 'Payer ID token from PayPal', 'event-tickets' ),
 				'required'          => false,
 				'type'              => 'string',
@@ -823,6 +851,12 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 					return $value;
 				},
 				'sanitize_callback' => [ $this, 'sanitize_callback' ],
+			],
+			'liability_shift' => [
+				'description'       => __( 'The 3D Secure liability shift PayPal reported to the card form', 'event-tickets' ),
+				'required'          => false,
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
 			],
 		];
 	}
@@ -914,6 +948,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			'unconfirmed-capture'     => __( 'We could not confirm your payment. Check your PayPal account before trying again, so that you are not charged twice.', 'event-tickets' ),
 			'invalid-capture-status'  => __( 'There was a problem with the Order status change, please try again.', 'event-tickets' ),
 			'failed-authentication'   => __( 'Your card could not be verified by your bank, so no payment was taken. Please try again.', 'event-tickets' ),
+			'unverified-order'        => __( 'We could not reach PayPal to verify your card, so no payment was taken. Please try again.', 'event-tickets' ),
 		];
 
 		/**
@@ -964,33 +999,64 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	}
 
 	/**
+	 * Captures a PayPal order, unless its card failed the 3D Secure authentication its bank asked for.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post     $order           The Tickets Commerce order.
+	 * @param array       $paypal_order    The PayPal order response.
+	 * @param string|null $payer_id        The payer ID PayPal handed the browser, if any.
+	 * @param string|null $liability_shift The liability shift PayPal reported to the card form, if any.
+	 *
+	 * @return array|WP_Error|null The capture response, or an error when the order was denied instead.
+	 */
+	private function capture_if_authenticated( $order, array $paypal_order, ?string $payer_id = null, ?string $liability_shift = null ) {
+		if ( $this->card_authentication_failed( $paypal_order, $liability_shift ) ) {
+			return $this->deny_unauthenticated_order( $order, $paypal_order );
+		}
+
+		return tribe( Client::class )->capture_order( Arr::get( $paypal_order, 'id' ), $payer_id );
+	}
+
+	/**
 	 * Whether the card on a PayPal order failed the 3D Secure authentication its bank asked for.
 	 *
-	 * A buyer who cancels the bank's verification still leaves PayPal with an approved order, so the
-	 * order status alone cannot stop the capture. Only a possible liability shift, or a card that
-	 * never entered 3D Secure, may be captured.
+	 * A buyer who closes the bank's verification still leaves PayPal with an approved order, and PayPal
+	 * records no authentication result on it: only the card form hears `SKIPPED_BY_BUYER`. So the
+	 * liability shift the card form reported stands in when the order carries none. Only a possible
+	 * liability shift, or a card the bank never asked to verify, may be captured.
 	 *
 	 * @link https://developer.paypal.com/docs/checkout/advanced/customize/3d-secure/response-parameters/
 	 *
 	 * @since TBD
 	 *
-	 * @param array $paypal_order A PayPal order response.
+	 * @param array       $paypal_order    A PayPal order response.
+	 * @param string|null $liability_shift The liability shift PayPal reported to the card form, if any.
 	 *
 	 * @return bool
 	 */
-	private function card_authentication_failed( array $paypal_order ): bool {
+	private function card_authentication_failed( array $paypal_order, ?string $liability_shift = null ): bool {
 		$result = Arr::get( $paypal_order, [ 'payment_source', 'card', 'authentication_result' ] );
 
 		if ( ! is_array( $result ) ) {
+			if ( null === $liability_shift ) {
+				return false;
+			}
+
+			$result = [ 'liability_shift' => $liability_shift ];
+		}
+
+		$liability_shift = Arr::get( $result, 'liability_shift' );
+
+		if ( in_array( $liability_shift, [ 'POSSIBLE', 'YES' ], true ) ) {
 			return false;
 		}
 
-		if ( 'POSSIBLE' === Arr::get( $result, 'liability_shift' ) ) {
-			return false;
-		}
-
-		// Not enrolled, issuer unavailable, or bypassed: the bank never asked the buyer to verify.
-		return ! in_array( Arr::get( $result, [ 'three_d_secure', 'enrollment_status' ] ), [ 'N', 'U', 'B' ], true );
+		// Not enrolled, issuer unavailable, or bypassed: only safe while PayPal kept the liability at NO.
+		return ! (
+			'NO' === $liability_shift
+			&& in_array( Arr::get( $result, [ 'three_d_secure', 'enrollment_status' ] ), [ 'N', 'U', 'B' ], true )
+		);
 	}
 
 	/**
@@ -1004,15 +1070,39 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * @return WP_Error
 	 */
 	private function deny_unauthenticated_order( $order, array $paypal_order ): WP_Error {
-		tribe( Order::class )->modify_status(
+		$messages = $this->get_error_messages();
+
+		$updated = tribe( Order::class )->modify_status(
 			$order->ID,
 			Denied::SLUG,
 			[ 'gateway_payload' => $paypal_order ]
 		);
 
+		// Another request moved the order on and may have captured it, so "no payment was taken" could be untrue.
+		if ( ! $updated && tribe( Denied::class )->get_wp_slug() !== get_post_status( $order->ID ) ) {
+			do_action(
+				'tribe_log',
+				'error',
+				__CLASS__,
+				[
+					sprintf(
+						'Order %1$d failed 3D Secure authentication but could not be denied, its status is "%2$s".',
+						$order->ID,
+						get_post_status( $order->ID )
+					),
+				]
+			);
+
+			return new WP_Error(
+				'tec-tc-gateway-paypal-unconfirmed-capture',
+				$messages['unconfirmed-capture'],
+				[ 'status' => 502 ]
+			);
+		}
+
 		return new WP_Error(
 			'tec-tc-gateway-paypal-failed-authentication',
-			$this->get_error_messages()['failed-authentication'],
+			$messages['failed-authentication'],
 			[ 'status' => 402 ]
 		);
 	}
