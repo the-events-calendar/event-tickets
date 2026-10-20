@@ -22,7 +22,7 @@ use Tribe__Tickets__Tickets as Tickets;
  *
  * @package TEC\Tickets\Commerce
  */
-class Event_Provider_Heal {
+final class Event_Provider_Heal {
 
 	/**
 	 * Returns the provider an event stored as Tickets Commerce should use, storing it when it changes.
