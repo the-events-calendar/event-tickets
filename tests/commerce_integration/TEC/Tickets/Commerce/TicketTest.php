@@ -320,6 +320,31 @@ class TicketTest extends WPTestCase {
 			},
 		];
 
+		yield 'added a ticket with negative sale price' => [
+			function (): array {
+				$post_id   = static::factory()->post->create();
+				$ticket_id = $this->create_tc_ticket(
+					$post_id,
+					20,
+					[
+						'ticket_add_sale_price'  => 'on',
+						'ticket_sale_price'      => -5,
+						'ticket_sale_start_date' => '2010-03-01',
+						'ticket_sale_end_date'   => '2040-03-01',
+					]
+				);
+
+				return [
+					$post_id,
+					$ticket_id,
+					false,
+					false,
+					false,
+					false,
+				];
+			},
+		];
+
 		yield 'added a ticket with sale price then saved again with unchecked sale price' => [
 			function (): array {
 				$post_id   = static::factory()->post->create();

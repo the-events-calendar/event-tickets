@@ -1183,6 +1183,7 @@ class Ticket extends Ticket_Data {
 	 * Process the sale price data.
 	 *
 	 * @since 5.9.0
+	 * @since TBD Discards a negative sale price.
 	 *
 	 * @param Ticket_Object       $ticket   The ticket post object.
 	 * @param array<string,mixed> $raw_data The raw data from the request.
@@ -1201,7 +1202,7 @@ class Ticket extends Ticket_Data {
 		$sale_price    = Arr::get( $raw_data, 'ticket_sale_price', false );
 		$regular_price = Arr::get( $raw_data, 'ticket_price', false );
 
-		if ( $sale_price >= $regular_price ) {
+		if ( $sale_price >= $regular_price || Value::create( $sale_price )->get_decimal() < 0 ) {
 			$this->remove_sale_price_data( $ticket );
 			return;
 		}

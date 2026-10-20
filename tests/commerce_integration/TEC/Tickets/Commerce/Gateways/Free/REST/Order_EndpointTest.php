@@ -11,6 +11,8 @@ namespace TEC\Tickets\Commerce\Gateways\Free\REST;
 
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Ticket;
+use TEC\Tickets\Commerce\Utils\Value;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 use WP_REST_Request;
@@ -175,6 +177,46 @@ class Order_EndpointTest extends WPTestCase {
 		$this->assertEquals( 400, $response->get_status() );
 		$error = $response->as_error();
 		$this->assertEquals( 'tec_tickets_commerce_free_order_invalid_cart', $error->get_error_code() );
+	}
+
+	/**
+	 * @test
+	 * @covers Order_Endpoint::handle_create_order
+	 */
+	public function should_reject_cart_offset_by_a_negative_priced_ticket() {
+		$price              = 10.00;
+		$event_id           = self::factory()->post->create( [ 'post_title' => 'Offset Event' ] );
+		$paid_ticket_id     = $this->create_tc_ticket( $event_id, $price );
+		$negative_ticket_id = $this->create_tc_ticket( $event_id, $price );
+
+		// Written straight to meta: a sale price stored before negative values were rejected on save.
+		update_post_meta( $negative_ticket_id, Ticket::$sale_price_checked_key, true );
+		update_post_meta( $negative_ticket_id, Ticket::$sale_price_key, Value::create( -$price ) );
+
+		$cart = tribe( Cart::class );
+		$cart->add_ticket( $paid_ticket_id, 1 );
+		$cart->add_ticket( $negative_ticket_id, 1 );
+
+		$this->assertEquals( 0.0, $cart->get_cart_total(), 'The negative ticket should offset the paid one.' );
+
+		$request = new WP_REST_Request( 'POST', '/tribe/tickets/v1/commerce/free/order' );
+		$request->set_header( 'Content-Type', 'application/json' );
+		$request->set_body(
+			wp_json_encode(
+				[
+					'purchaser' => [
+						'name'  => 'Test User',
+						'email' => 'test@example.com',
+					],
+				]
+			)
+		);
+
+		$response = rest_do_request( $request );
+
+		$this->assertTrue( $response->is_error(), 'Response should be an error for a cart offset by a negative price' );
+		$this->assertEquals( 400, $response->get_status() );
+		$this->assertEquals( 'tec_tickets_commerce_free_order_invalid_cart', $response->as_error()->get_error_code() );
 	}
 
 	/**

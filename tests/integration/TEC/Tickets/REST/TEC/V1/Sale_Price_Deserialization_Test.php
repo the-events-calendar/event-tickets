@@ -9,7 +9,7 @@ use TEC\Tickets\REST\TEC\V1\Endpoints\Ticket;
 
 class Sale_Price_Deserialization_Test extends WPTestCase {
 
-	protected function filter_params( $sale_price ): array {
+	protected function filter_params( $sale_price, $price = 10 ): array {
 		$event_id = static::factory()->post->create( [ 'post_type' => 'post', 'post_status' => 'publish' ] );
 
 		$ticketable   = tribe_get_option( 'ticket-enabled-post-types', [] );
@@ -20,7 +20,7 @@ class Sale_Price_Deserialization_Test extends WPTestCase {
 			[
 				'event'      => $event_id,
 				'title'      => 'Ticket',
-				'price'      => 10,
+				'price'      => $price,
 				'sale_price' => $sale_price,
 			]
 		);
@@ -52,5 +52,38 @@ class Sale_Price_Deserialization_Test extends WPTestCase {
 		$result = $this->filter_params( serialize( Value::create( 5 ) ) );
 
 		$this->assertSame( '5', (string) $result['ticket_params']['ticket_sale_price'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_reject_a_negative_sale_price() {
+		$this->expectException( InvalidRestArgumentException::class );
+		$this->filter_params( -5 );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_reject_a_serialized_negative_value_object() {
+		$this->expectException( InvalidRestArgumentException::class );
+		$this->filter_params( serialize( Value::create( -5 ) ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_reject_a_negative_price() {
+		$this->expectException( InvalidRestArgumentException::class );
+		$this->filter_params( 5, -10 );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_accept_a_zero_sale_price() {
+		$result = $this->filter_params( 0 );
+
+		$this->assertSame( 0, $result['ticket_params']['ticket_sale_price'] );
 	}
 }
