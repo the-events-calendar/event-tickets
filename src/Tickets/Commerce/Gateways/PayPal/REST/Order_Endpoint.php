@@ -850,7 +850,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				'type'              => 'string',
 				'validate_callback' => static function ( $value ) {
 					if ( ! is_string( $value ) ) {
-						return new WP_Error( 'rest_invalid_param', 'The liability shift argument must be a string.', [ 'status' => 400 ] );
+						return new WP_Error( 'rest_invalid_param', __( 'The liability shift argument must be a string.', 'event-tickets' ), [ 'status' => 400 ] );
 					}
 
 					return $value;
