@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Recurring_Tickets\Editor;
 
 use Codeception\TestCase\WPTestCase;
+use TEC\Events_Pro\Custom_Tables\V1\Editors\Classic\Recurrence;
 use TEC\Tickets\Recurring_Tickets\Template_Guard;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use Tribe\Tickets\Editor\Warnings;
@@ -122,6 +123,17 @@ class Classic_Test extends WPTestCase {
 		$this->assertStringContainsString( 'Tickets you add here are offered on every date of this event. Each date has its own capacity.', $html );
 		$this->assertStringContainsString( 'You can&#039;t add standard tickets or RSVPs to a recurring event.', $html );
 		$this->assertStringNotContainsString( 'Standard tickets are not yet supported', $html );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_say_what_to_do_with_an_event_that_has_standard_tickets_in_place_of_its_recurrence_rules(): void {
+		ob_start();
+		tribe( Recurrence::class )->add_recurrence_not_supported_with_tickets_message( '' );
+		$html = (string) ob_get_clean();
+
+		$this->assertStringContainsString( 'This event has tickets or RSVPs, so it can&#039;t be made a recurring event. To sell tickets for every date, create a new recurring event and add recurring event tickets there.', $html );
 	}
 
 	/**

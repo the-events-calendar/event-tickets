@@ -164,6 +164,29 @@ final class Classic {
 	}
 
 	/**
+	 * Adds, where the recurrence rules of an event with standard tickets or RSVPs would be, how to sell tickets for
+	 * every date instead: an existing ticket never becomes a recurring event ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|mixed $message The message saying the event can't be made recurring.
+	 *
+	 * @return string The message, with the way to sell tickets for every date.
+	 */
+	public function filter_recurrence_not_supported_message( $message ): string {
+		$event = tribe_get_event_label_singular_lowercase();
+
+		return trim(
+			sprintf(
+				// translators: %1$s is the message saying the event can't be made recurring, %2$s the lowercase singular label for an event.
+				__( '%1$s To sell tickets for every date, create a new recurring %2$s and add recurring %2$s tickets there.', 'event-tickets' ),
+				is_string( $message ) ? $message : '',
+				$event
+			)
+		);
+	}
+
+	/**
 	 * Keeps the notice that says recurring tickets are not supported off an event whose tickets are all templates.
 	 *
 	 * @since TBD
