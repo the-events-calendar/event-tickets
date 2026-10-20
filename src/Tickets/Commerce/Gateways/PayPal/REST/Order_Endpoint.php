@@ -491,9 +491,9 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			&& null === $this->get_deciding_capture( $paypal_order_response )
 		) {
 			/*
-			 * A Denied order stays approved at PayPal, and when the buyer closed the bank's verification
-			 * PayPal holds no authentication result to refuse the capture on. Only an order still in
-			 * flight may be captured here.
+			 * PayPal can still hold a Denied order as approved, and when the buyer closed the bank's
+			 * verification it stores no authentication result to refuse the capture on. Only an order
+			 * still in flight may be captured here.
 			 */
 			if ( ! $this->order_is_in_flight( $order ) ) {
 				return $this->resolved_order_response( $order, $order_id );
@@ -1054,10 +1054,12 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Whether the card on a PayPal order failed the 3D Secure authentication its bank asked for.
 	 *
-	 * A buyer who closes the bank's verification still leaves PayPal with an approved order, and PayPal
-	 * records no authentication result on it: only the card form hears `SKIPPED_BY_BUYER`. So the
-	 * liability shift the card form reported stands in when the order carries none. Only a possible
-	 * liability shift, or a card the bank never asked to verify, may be captured.
+	 * When the buyer closes the bank's verification, PayPal stores no `authentication_result` on the
+	 * order at all, yet still accepts a capture for it: only the card form hears `SKIPPED_BY_BUYER`.
+	 * The liability shift the card form reported stands in when the order carries none. That value
+	 * comes from the browser, so it stops an honest checkout from capturing, not a buyer who forges
+	 * the request: it is not a hard gate. Only a possible liability shift, or a card the bank never
+	 * asked to verify, may be captured.
 	 *
 	 * @link https://developer.paypal.com/docs/checkout/advanced/customize/3d-secure/response-parameters/
 	 *
