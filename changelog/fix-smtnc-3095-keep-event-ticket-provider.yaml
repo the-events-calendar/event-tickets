@@ -1,0 +1,7 @@
+significance: patch
+type: fixed
+entry: Kept an event's payment provider when an RSVP is saved in the Classic
+  Editor or imported from CSV, showed the RSVP alongside tickets sold through
+  another provider, and restored the provider of events that had been switched
+  to Tickets Commerce so their tickets show again.
+timestamp: 2026-10-20T16:58:03.907Z

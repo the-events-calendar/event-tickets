@@ -91,4 +91,38 @@ class Rsvp_Block_Test extends WPTestCase {
 			'Front-end ticket form should render the RSVP alongside the ticket.'
 		);
 	}
+
+	/**
+	 * The RSVP lives in Tickets Commerce, but must show on an event whose tickets another provider sells.
+	 *
+	 * Legacy PayPal stands in for WooCommerce: it is the only other paid provider ET's suites can load.
+	 */
+	public function test_front_end_form_should_render_rsvp_when_another_provider_sells_the_tickets(): void {
+		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
+		add_filter(
+			'tribe_tickets_get_modules',
+			static function ( array $modules ): array {
+				$modules['Tribe__Tickets__Commerce__PayPal__Main'] = tribe( 'tickets.commerce.paypal' )->plugin_name;
+
+				return $modules;
+			}
+		);
+
+		$post_id = static::factory()->post->create( [ 'post_status' => 'publish' ] );
+		$this->create_tc_rsvp_ticket( $post_id );
+		update_post_meta( $post_id, tribe( 'tickets.handler' )->key_provider_field, 'Tribe__Tickets__Commerce__PayPal__Main' );
+
+		// Skip the "My Tickets" view-link; it requires a full singular post query context.
+		add_filter( 'tribe_tickets_order_link_template_already_rendered', '__return_true' );
+
+		$GLOBALS['post'] = get_post( $post_id );
+
+		ob_start();
+		tribe( Module::class )->front_end_tickets_form( '' );
+		$html = ob_get_clean();
+
+		remove_filter( 'tribe_tickets_order_link_template_already_rendered', '__return_true' );
+
+		$this->assertStringContainsString( 'tribe-tickets__rsvp-wrapper', $html );
+	}
 }

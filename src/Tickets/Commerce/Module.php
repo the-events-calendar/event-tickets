@@ -308,6 +308,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * Shows the tickets form in the front end
 	 *
 	 * @since 5.1.9
+	 * @since TBD Shows the TC-RSVP when another provider sells the event's tickets.
 	 *
 	 * @param string $unused_content Unused content.
 	 *
@@ -325,6 +326,14 @@ class Module extends \Tribe__Tickets__Tickets {
 		}
 
 		if ( empty( $tickets ) ) {
+			// Another provider sells this event's tickets: its TC-RSVP still shows, as a V1 RSVP did.
+			foreach ( (array) $this->get_tickets_ids( $post->ID, RSVP_V2_Constants::FRONT_END_TICKETS_FORM_CONTEXT ) as $ticket_id ) {
+				if ( RSVP_V2_Constants::TC_RSVP_TYPE === get_post_meta( $ticket_id, '_type', true ) ) {
+					tribe( Tickets_View::class )->get_rsvp_block( $post );
+					break;
+				}
+			}
+
 			return;
 		}
 
