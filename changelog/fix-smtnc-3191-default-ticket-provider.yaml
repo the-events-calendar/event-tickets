@@ -1,0 +1,5 @@
+significance: patch
+type: fixed
+entry: Made WooCommerce or EDD, when active, the default payment provider for
+  new events instead of Tickets Commerce, which RSVPs now turn on.
+timestamp: 2026-10-20T17:46:54.498Z
