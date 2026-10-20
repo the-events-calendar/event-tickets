@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Recurring_Tickets\Editor;
 
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
+use TEC\Tickets\Event;
 use TEC\Tickets\Recurring_Tickets\Template_Guard;
 use TEC\Tickets\Seating\Meta as Seating_Meta;
 use Tribe__Events__Main as TEC;
@@ -64,6 +65,30 @@ final class Classic {
 		}
 
 		tribe( 'tickets.admin.views' )->template( 'recurring-tickets/form-toggle', [ 'hidden' => ! tribe_is_recurring_event( $post_id ) ] );
+	}
+
+	/**
+	 * Renders the tickets panel of a date for its event: a date's rows can't be saved from it, the event's recurring
+	 * event tickets can, for every date.
+	 *
+	 * Runs after Flexible Tickets, which keeps a date's ID in the panel for its Series Passes.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|null|mixed $event_id    The event ID the panel would render for.
+	 * @param string|mixed   $context     The context of the lookup.
+	 * @param int|mixed      $original_id The ID the lookup started from.
+	 *
+	 * @return int|null|mixed The event's ID for a date's panel; `$event_id` otherwise.
+	 */
+	public function panel_event_id( $event_id, $context = 'default', $original_id = null ) {
+		if ( 'tickets-metabox-render' !== $context || ! is_numeric( $original_id ) ) {
+			return $event_id;
+		}
+
+		$event = (int) Event::filter_event_id( (int) $original_id );
+
+		return $event !== (int) $original_id && $this->offers_recurring_tickets( $event ) ? $event : $event_id;
 	}
 
 	/**

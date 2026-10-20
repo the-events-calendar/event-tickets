@@ -4,7 +4,10 @@ namespace TEC\Tickets\Recurring_Tickets\Editor;
 
 use Codeception\TestCase\WPTestCase;
 use TEC\Events_Pro\Custom_Tables\V1\Editors\Classic\Recurrence;
+use TEC\Tickets\Event;
+use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Template_Guard;
+use TEC\Tickets\Recurring_Tickets\Ticket_ID;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use Tribe\Tickets\Editor\Warnings;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -123,6 +126,38 @@ class Classic_Test extends WPTestCase {
 		$this->assertStringContainsString( 'Tickets you add here are offered on every date of this event. Each date has its own capacity.', $html );
 		$this->assertStringContainsString( 'You can&#039;t add standard tickets or RSVPs to a recurring event.', $html );
 		$this->assertStringNotContainsString( 'Standard tickets are not yet supported', $html );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_list_the_events_recurring_event_tickets_on_a_dates_screen(): void {
+		$event    = $this->create_recurring_event();
+		$template = $this->create_tc_ticket( $event, 10 );
+		// As the ticket editor saves a ticket on a recurring event.
+		update_post_meta( $template, '_type', Template_Guard::TICKET_TYPE );
+		$date = (int) $this->get_dates( $event )[1]->provisional_id;
+		$row  = Ticket_ID::from_row_id( (int) tribe( Rows::class )->get_by_occurrence( (int) $this->get_dates( $event )[1]->occurrence_id )[0]->id );
+		set_current_screen( 'tribe_events' );
+
+		try {
+			// As the date's edit screen renders the panel.
+			ob_start();
+			tribe( 'tickets.metabox' )->render( $date );
+			$rendered = (string) ob_get_clean();
+
+			// As the panel reloads when a ticket is edited.
+			$_POST['post_id'] = $date;
+			$reloaded         = implode( '', (array) tribe( 'tickets.metabox' )->get_panels( Event::filter_event_id( $date, 'tickets-metabox-render' ) ) );
+		} finally {
+			unset( $_POST['post_id'] );
+			set_current_screen( 'front' );
+		}
+
+		foreach ( [ $rendered, $reloaded ] as $html ) {
+			$this->assertStringContainsString( 'order_' . $template . '"', $html, 'The ticket a save can update.' );
+			$this->assertStringNotContainsString( 'order_' . $row . '"', $html );
+		}
 	}
 
 	/**
