@@ -848,7 +848,14 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				'description'       => __( 'The 3D Secure liability shift PayPal reported to the card form', 'event-tickets' ),
 				'required'          => false,
 				'type'              => 'string',
-				'sanitize_callback' => 'sanitize_text_field',
+				'validate_callback' => static function ( $value ) {
+					if ( ! is_string( $value ) ) {
+						return new WP_Error( 'rest_invalid_param', 'The liability shift argument must be a string.', [ 'status' => 400 ] );
+					}
+
+					return $value;
+				},
+				'sanitize_callback' => [ $this, 'sanitize_callback' ],
 			],
 		];
 	}
@@ -927,6 +934,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Returns an array of error messages that are used by the API responses.
 	 *
 	 * @since 5.2.0
+	 * @since TBD Added the `failed-authentication` and `unverified-order` messages.
 	 *
 	 * @return array $messages Array of error messages.
 	 */
@@ -991,14 +999,14 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	}
 
 	/**
-	 * Answers for an order an earlier request already resolved, with the status it carries.
+	 * Reports the status of an order that is no longer in flight, instead of capturing it again.
 	 *
 	 * @since TBD
 	 *
 	 * @param WP_Post $order           The Tickets Commerce order.
 	 * @param string  $paypal_order_id The PayPal order ID.
 	 *
-	 * @return WP_Error|WP_REST_Response
+	 * @return WP_Error|WP_REST_Response An error for an unpaid or unknown status, the success response for a paid one.
 	 */
 	private function resolved_order_response( $order, string $paypal_order_id ) {
 		$messages = $this->get_error_messages();
@@ -1058,7 +1066,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * @param array       $paypal_order    A PayPal order response.
 	 * @param string|null $liability_shift The liability shift PayPal reported to the card form, if any.
 	 *
-	 * @return bool
+	 * @return bool Whether the order must not be captured.
 	 */
 	private function card_authentication_failed( array $paypal_order, ?string $liability_shift = null ): bool {
 		$result = Arr::get( $paypal_order, [ 'payment_source', 'card', 'authentication_result' ] );
@@ -1092,7 +1100,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * @param WP_Post $order        The Tickets Commerce order.
 	 * @param array   $paypal_order The PayPal order response.
 	 *
-	 * @return WP_Error
+	 * @return WP_Error A 402 when the order was denied, or a 502 when another request moved it on first.
 	 */
 	private function deny_unauthenticated_order( $order, array $paypal_order ): WP_Error {
 		$messages = $this->get_error_messages();

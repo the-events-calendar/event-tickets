@@ -13,6 +13,7 @@ use TEC\Tickets\Commerce\Status\Denied;
 use TEC\Tickets\Commerce\Status\Pending;
 use WP_Error;
 use WP_REST_Request;
+use WP_REST_Response;
 
 class OrderEndpointTest extends \Codeception\TestCase\WPTestCase {
 
@@ -215,8 +216,8 @@ class OrderEndpointTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function unreadable_order_lookup_provider(): array {
 		return [
-			'PayPal could not be reached'       => [ new WP_Error( 'http_request_failed', 'cURL error 28: Operation timed out' ) ],
-			'PayPal answered with an error'     => [
+			'PayPal could not be reached'   => [ new WP_Error( 'http_request_failed', 'cURL error 28: Operation timed out' ) ],
+			'PayPal answered with an error' => [
 				[
 					'name'    => 'RESOURCE_NOT_FOUND',
 					'message' => 'The specified resource does not exist.',
@@ -290,6 +291,11 @@ class OrderEndpointTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( tribe( Denied::class )->get_wp_slug(), get_post_status( $order_id ) );
 	}
 
+	/**
+	 * @param int                       $order_id The Tickets Commerce order ID.
+	 * @param WP_Error|WP_REST_Response $response What the endpoint answered.
+	 * @param bool                      $captures Whether the card should have been captured.
+	 */
 	private function assert_capture_outcome( int $order_id, $response, bool $captures ): void {
 		$capture_request = 'POST ' . $this->paypal_order_id . '/capture';
 
@@ -309,7 +315,7 @@ class OrderEndpointTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @param array{liability_shift:string,three_d_secure:array{enrollment_status:string,authentication_status?:string}}|null $authentication_result
 	 *
-	 * @return array{id:string,status:string,payment_source:array{card:array{last_digits:string,authentication_result?:array}},purchase_units:array<int,array{reference_id:string}>}
+	 * @return array{id:string,status:string,payment_source:array{card:array{last_digits:string,authentication_result?:array{liability_shift:string,three_d_secure:array{enrollment_status:string,authentication_status?:string}}}},purchase_units:array<int,array{reference_id:string}>}
 	 */
 	private function approved_order( ?array $authentication_result ): array {
 		$card = [ 'last_digits' => $this->faker->numerify( '####' ) ];
@@ -326,6 +332,11 @@ class OrderEndpointTest extends \Codeception\TestCase\WPTestCase {
 		];
 	}
 
+	/**
+	 * @param array{id:string,status:string,payment_source:array{card:array{last_digits:string,authentication_result?:array{liability_shift:string,three_d_secure:array{enrollment_status:string,authentication_status?:string}}}},purchase_units:array<int,array{reference_id:string}>} $approved The approved order.
+	 *
+	 * @return array{id:string,status:string,payment_source:array{card:array{last_digits:string,authentication_result?:array{liability_shift:string,three_d_secure:array{enrollment_status:string,authentication_status?:string}}}},purchase_units:array<int,array{payments:array{captures:array<int,array{id:string,status:string,final_capture:bool,update_time:string}>}}>} The order with one completed capture.
+	 */
 	private function completed_order( array $approved ): array {
 		$approved['status']         = 'COMPLETED';
 		$approved['purchase_units'] = [
@@ -336,7 +347,7 @@ class OrderEndpointTest extends \Codeception\TestCase\WPTestCase {
 							'id'            => strtoupper( $this->faker->bothify( '##?##?##?##?##?##?' ) ),
 							'status'        => 'COMPLETED',
 							'final_capture' => true,
-							'update_time'   => gmdate( 'c' ),
+							'update_time'   => $this->faker->dateTime()->format( 'c' ),
 						],
 					],
 				],
