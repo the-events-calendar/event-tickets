@@ -7,6 +7,7 @@
  * @since TBD
  */
 import { addFilter } from '@wordpress/hooks';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Lets the Tickets block render its dashboard on a recurring event.
@@ -42,6 +43,23 @@ export function offerTicketsOnRecurringEvents( mappedProps, { isRecurring } ) {
 	return { ...mappedProps, showConfirm: true, showNotSupportedMessage: false, showWarning: false };
 }
 
+/**
+ * Adds, where the recurrence rules of an event with standard tickets or RSVPs would be, how to sell tickets for every
+ * date instead: an existing ticket never becomes a recurring event ticket.
+ *
+ * @since TBD
+ *
+ * @param {string} message The message saying the event can't be made recurring.
+ *
+ * @return {string} The message, with the way to sell tickets for every date.
+ */
+export function explainRecurrenceNotSupported( message ) {
+	return `${ message } ${ __(
+		'To sell tickets for every date, create a new recurring event and add recurring event tickets there.',
+		'event-tickets'
+	) }`.trim();
+}
+
 addFilter(
 	'tec.tickets.blocks.Tickets.mappedProps',
 	'tec.tickets.recurringTickets',
@@ -53,4 +71,9 @@ addFilter(
 	'tec.tickets.recurringTickets',
 	offerTicketsOnRecurringEvents,
 	20
+);
+addFilter(
+	'tec.eventsPro.recurrence.notSupportedWithTicketsMessage',
+	'tec.tickets.recurringTickets',
+	explainRecurrenceNotSupported
 );
