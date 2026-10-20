@@ -1,5 +1,5 @@
 significance: patch
-type: fixed
+type: fix
 entry: Kept an event's payment provider when an RSVP is saved in the Classic
   Editor or imported from CSV, showed the RSVP alongside tickets sold through
   another provider, and restored the provider of events that had been switched
