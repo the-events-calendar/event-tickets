@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.30.0.2\n"
+"Project-Id-Version: Event Tickets 5.30.2\n"
 "Report-Msgid-Bugs-To: https://evnt.is/191x\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-05T19:02:56+00:00\n"
+"POT-Creation-Date: 2026-10-15T20:49:46+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: event-tickets\n"
@@ -224,6 +224,7 @@ msgstr ""
 #: src/admin-views/admin-welcome-message.php:197
 #: src/admin-views/seating/tabs/maps.php:41
 #: src/admin-views/settings/tickets-commerce/paypal/connect/non-ssl-notice.php:25
+#: src/admin-views/settings/tickets-commerce/paypal/signup-link.php:33
 #: src/Tickets/Commerce/Gateways/Square/Settings.php:83
 #: src/Tickets/Commerce/Gateways/Stripe/Settings.php:199
 #: src/Tickets/Emails/Email/Completed_Order.php:117
@@ -719,7 +720,7 @@ msgid "Refund"
 msgstr ""
 
 #: src/admin-views/commerce/reports/attendees.php:27
-#: src/Tickets/Commerce/Admin_Tables/Orders.php:563
+#: src/Tickets/Commerce/Admin_Tables/Orders.php:567
 #: src/Tribe/Attendees.php:1202
 #: src/Tribe/Attendees_Table.php:745
 msgid "Export"
@@ -813,7 +814,7 @@ msgstr ""
 #: src/admin-views/editor/column-body-price.php:43
 #: src/Tickets/Commerce/Admin/Singular_Order_Page.php:336
 #: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:625
-#: src/Tribe/RSVP.php:1830
+#: src/Tribe/RSVP.php:1836
 msgid "Free"
 msgstr ""
 
@@ -1039,11 +1040,11 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
-#: src/admin-views/editor/panel/list.php:28
+#: src/admin-views/editor/panel/list.php:26
 msgid "You have unsaved changes to your tickets. Discard those changes?"
 msgstr ""
 
-#: src/admin-views/editor/panel/list.php:159
+#: src/admin-views/editor/panel/list.php:156
 #: src/modules/blocks/rsvp-shared/action-buttons/attendees-action-button/template.js:28
 #: src/modules/blocks/rsvp/action-buttons/attendees-action-button/template.js:28
 msgid "View Attendees"
@@ -2029,6 +2030,7 @@ msgid "A valid SSL certificate and secure (https) connection are required to con
 msgstr ""
 
 #: src/admin-views/settings/tickets-commerce/paypal/connect/non-ssl-notice.php:39
+#: src/admin-views/settings/tickets-commerce/paypal/signup-link.php:90
 msgid "PayPal connection unavailable"
 msgstr ""
 
@@ -2082,11 +2084,17 @@ msgstr ""
 msgid "You have connected your account for test mode. You will need to connect again once you are in live mode."
 msgstr ""
 
-#: src/admin-views/settings/tickets-commerce/paypal/signup-link.php:23
+#. translators: %1$s: Host name of the PayPal connection service. %2$s: Link to the PayPal troubleshooting article.
+#: src/admin-views/settings/tickets-commerce/paypal/signup-link.php:38
+#, php-format
+msgid "We could not get a connection link from PayPal. Reload this page to try again. If it keeps failing, check that your site can reach %1$s. %2$s"
+msgstr ""
+
+#: src/admin-views/settings/tickets-commerce/paypal/signup-link.php:55
 msgid "Select your country of operation"
 msgstr ""
 
-#: src/admin-views/settings/tickets-commerce/paypal/signup-link.php:45
+#: src/admin-views/settings/tickets-commerce/paypal/signup-link.php:78
 msgid "Connect Automatically with <i>PayPal</i>"
 msgstr ""
 
@@ -3682,6 +3690,7 @@ msgid "Checkbox"
 msgstr ""
 
 #: src/Tickets/Commerce/Admin_Tables/Attendees.php:174
+#: src/Tickets/Commerce/Admin_Tables/Orders.php:346
 #: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:462
 #: src/views/emails/template-parts/body/order/ticket-totals/header-row.php:32
 #: src/views/tickets/my-tickets/user-details.php:34
@@ -3821,40 +3830,40 @@ msgstr ""
 msgid "No matching orders found."
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders.php:360
+#: src/Tickets/Commerce/Admin_Tables/Orders.php:364
 #: src/Tribe/Commerce/PayPal/Orders/Table.php:177
 #, php-format
 msgid "%1$s"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders.php:464
+#: src/Tickets/Commerce/Admin_Tables/Orders.php:468
 msgid "Search by Purchaser Name"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders.php:465
+#: src/Tickets/Commerce/Admin_Tables/Orders.php:469
 msgid "Search by Purchaser Email"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders.php:466
+#: src/Tickets/Commerce/Admin_Tables/Orders.php:470
 msgid "Search by Gateway"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders.php:467
+#: src/Tickets/Commerce/Admin_Tables/Orders.php:471
 #: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:689
 msgid "Search by Gateway ID"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders.php:468
+#: src/Tickets/Commerce/Admin_Tables/Orders.php:472
 #: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:690
 msgid "Search by Order ID"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders.php:555
+#: src/Tickets/Commerce/Admin_Tables/Orders.php:559
 #: src/Tribe/Attendees_Table.php:744
 msgid "Print"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders.php:654
+#: src/Tickets/Commerce/Admin_Tables/Orders.php:658
 msgid "orders"
 msgstr ""
 
@@ -8221,29 +8230,29 @@ msgstr ""
 msgid " and relay the following message:"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Signup.php:216
+#: src/Tickets/Commerce/Gateways/PayPal/Signup.php:237
 msgid "There was a problem with the status check for your account. Please try disconnecting and connecting again. If the problem persists, please contact support."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Signup.php:226
+#: src/Tickets/Commerce/Gateways/PayPal/Signup.php:247
 msgid "Set up an account to receive payment from PayPal"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Signup.php:230
+#: src/Tickets/Commerce/Gateways/PayPal/Signup.php:251
 msgid "Confirm your primary email address"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Signup.php:241
+#: src/Tickets/Commerce/Gateways/PayPal/Signup.php:262
 msgid ""
 "Your account was expected to be able to accept custom payments, but is not. Please make sure your\n"
 "\t\t\t\taccount country matches the country setting. If the problem persists, please contact PayPal."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Signup.php:260
+#: src/Tickets/Commerce/Gateways/PayPal/Signup.php:281
 msgid "Reach out to PayPal to enable PPCP_CUSTOM for your account"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Signup.php:272
+#: src/Tickets/Commerce/Gateways/PayPal/Signup.php:293
 msgid "Reach out to PayPal to resolve the following capabilities:"
 msgstr ""
 
@@ -8251,7 +8260,7 @@ msgstr ""
 #. Translators: %1$s: The HTML <a> tag, %2$s: The closing HTML </a> tag.
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:77
 #: src/Tribe/Commerce/PayPal/Main.php:2026
-#: src/Tribe/RSVP.php:2894
+#: src/Tribe/RSVP.php:2900
 #, php-format
 msgid "Return to the %1$sAttendees Report%2$s."
 msgstr ""
@@ -8260,7 +8269,7 @@ msgstr ""
 #. Translators: %1$s: The return link.
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:84
 #: src/Tribe/Commerce/PayPal/Main.php:2034
-#: src/Tribe/RSVP.php:2902
+#: src/Tribe/RSVP.php:2908
 #, php-format
 msgid "Post updated. %1$s"
 msgstr ""
@@ -8269,26 +8278,26 @@ msgstr ""
 #. Translators: %1$s: The return link.
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:88
 #: src/Tribe/Commerce/PayPal/Main.php:2039
-#: src/Tribe/RSVP.php:2907
+#: src/Tribe/RSVP.php:2913
 #, php-format
 msgid "Post published. %1$s"
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:91
 #: src/Tribe/Commerce/PayPal/Main.php:2042
-#: src/Tribe/RSVP.php:2910
+#: src/Tribe/RSVP.php:2916
 msgid "Post submitted."
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:92
 #: src/Tribe/Commerce/PayPal/Main.php:2043
-#: src/Tribe/RSVP.php:2911
+#: src/Tribe/RSVP.php:2917
 msgid "Post scheduled."
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:93
 #: src/Tribe/Commerce/PayPal/Main.php:2044
-#: src/Tribe/RSVP.php:2912
+#: src/Tribe/RSVP.php:2918
 msgid "Post draft updated."
 msgstr ""
 
@@ -8341,7 +8350,7 @@ msgstr ""
 
 #: src/Tickets/Commerce/Gateways/Square/Ajax.php:93
 #: src/Tickets/Commerce/Gateways/Square/Ajax.php:120
-#: src/Tickets/Commerce/Gateways/Square/Webhooks.php:356
+#: src/Tickets/Commerce/Gateways/Square/Webhooks.php:364
 #: src/Tickets/Seating/Ajax_Methods.php:66
 msgid "You do not have permission to perform this action."
 msgstr ""
@@ -8721,16 +8730,16 @@ msgstr ""
 msgid "Untitled Ticket"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Square/Webhooks.php:218
-#: src/Tickets/Commerce/Gateways/Square/Webhooks.php:374
+#: src/Tickets/Commerce/Gateways/Square/Webhooks.php:226
+#: src/Tickets/Commerce/Gateways/Square/Webhooks.php:382
 msgid "Failed to register webhook endpoint for Square. Please check your connection settings and try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Square/Webhooks.php:345
+#: src/Tickets/Commerce/Gateways/Square/Webhooks.php:353
 msgid "Security check failed. Please refresh the page and try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Square/Webhooks.php:384
+#: src/Tickets/Commerce/Gateways/Square/Webhooks.php:392
 msgid "Webhook endpoint successfully registered with Square."
 msgstr ""
 
@@ -9094,7 +9103,7 @@ msgstr ""
 
 #: src/Tickets/Commerce/Models/Attendee_Model.php:70
 #: src/Tribe/Commerce/PayPal/Main.php:3094
-#: src/Tribe/RSVP.php:2382
+#: src/Tribe/RSVP.php:2388
 msgid "(deleted)"
 msgstr ""
 
@@ -11226,14 +11235,14 @@ msgid "Series Passes"
 msgstr ""
 
 #: src/Tickets/Integrations/Plugins/Yoast_Duplicate_Post/Duplicate_Post.php:75
-#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:66
-#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:260
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:78
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:272
 #: src/Tribe/Metabox.php:357
 #: src/Tribe/Metabox.php:482
-#: src/Tribe/Metabox.php:574
-#: src/Tribe/Metabox.php:674
-#: src/Tribe/Metabox.php:746
-#: src/Tribe/Metabox.php:796
+#: src/Tribe/Metabox.php:576
+#: src/Tribe/Metabox.php:676
+#: src/Tribe/Metabox.php:748
+#: src/Tribe/Metabox.php:798
 msgid "Commerce Module invalid"
 msgstr ""
 
@@ -12712,7 +12721,7 @@ msgid "It looks like you have modified your shared capacity setting but have not
 msgstr ""
 
 #: src/Tribe/Assets.php:280
-#: src/Tribe/Metabox.php:980
+#: src/Tribe/Metabox.php:982
 msgid "Please enter in without thousand separators and currency symbols."
 msgstr ""
 
@@ -13175,21 +13184,29 @@ msgid "No commerce providers available"
 msgstr ""
 
 #: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:17
-#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:140
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:152
 #: src/Tribe/REST/V1/Endpoints/Single_Ticket.php:72
 msgid "The ticket post ID"
 msgstr ""
 
-#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:56
-#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:241
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:60
+#: src/Tribe/Metabox.php:297
+#: src/Tribe/Metabox.php:440
+#: src/Tribe/Metabox.php:547
+#: src/Tribe/Metabox.php:626
+msgid "Invalid parent Post"
+msgstr ""
+
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:68
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:253
 msgid "Invalid nonce"
 msgstr ""
 
-#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:279
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:291
 msgid "Invalid price"
 msgstr ""
 
-#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:322
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:334
 #, php-format
 msgid "%s was not able to be updated"
 msgstr ""
@@ -13346,13 +13363,6 @@ msgstr ""
 msgid "You do not have permission to access this content."
 msgstr ""
 
-#: src/Tribe/Metabox.php:297
-#: src/Tribe/Metabox.php:440
-#: src/Tribe/Metabox.php:529
-#: src/Tribe/Metabox.php:624
-msgid "Invalid parent Post"
-msgstr ""
-
 #. Translators:  %1$s - singular ticket term.
 #: src/Tribe/Metabox.php:326
 #, php-format
@@ -13372,7 +13382,7 @@ msgstr ""
 #. Translators: %1$s - singular ticket term.
 #. Translators: %1$s - singular ticket term
 #: src/Tribe/Metabox.php:455
-#: src/Tribe/Metabox.php:545
+#: src/Tribe/Metabox.php:530
 #, php-format
 msgid "Invalid %1$s"
 msgstr ""
@@ -13384,31 +13394,31 @@ msgid "Failed to edit the %1$s. Refresh the page to try again."
 msgstr ""
 
 #. Translators: %1$s - singular ticket term
-#: src/Tribe/Metabox.php:559
+#: src/Tribe/Metabox.php:561
 #, php-format
 msgid "Failed to delete the %1$s. Refresh the page to try again."
 msgstr ""
 
 #. Translators: %s: dynamic "ticket" text.
-#: src/Tribe/Metabox.php:640
+#: src/Tribe/Metabox.php:642
 #, php-format
 msgid "Invalid %s"
 msgstr ""
 
 #. Translators: %s: dynamic "ticket" text.
-#: src/Tribe/Metabox.php:656
+#: src/Tribe/Metabox.php:658
 #, php-format
 msgid "Failed to duplicate the %s. Refresh the page to try again."
 msgstr ""
 
 #. Translators: %1$s - singular ticket term
-#: src/Tribe/Metabox.php:696
+#: src/Tribe/Metabox.php:698
 #, php-format
 msgid "Failed to duplicate the %1$s"
 msgstr ""
 
-#: src/Tribe/Metabox.php:738
-#: src/Tribe/Metabox.php:788
+#: src/Tribe/Metabox.php:740
+#: src/Tribe/Metabox.php:790
 msgid "The attendee ID is missing from the request parameters."
 msgstr ""
 
@@ -13778,115 +13788,119 @@ msgstr ""
 msgid "The requested page was not found."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:245
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:97
+msgid "The provided API key is not valid."
+msgstr ""
+
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:257
 #: src/Tribe/REST/V1/Endpoints/Ticket_Archive.php:254
 msgid "The page of results to return; defaults to 1"
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:253
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:265
 msgid "How many attendees to return per results page; defaults to posts_per_page."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:262
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:274
 msgid "Limit results to attendees whose ticket is provided by one of the providers specified in the CSV list or array; defaults to all the available."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:275
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:287
 msgid "Limit results to attendees containing the specified string in the title or description."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:281
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:293
 #: src/Tribe/REST/V1/Endpoints/Ticket_Archive.php:275
 msgid "Offset the results by a specific number of items."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:287
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:299
 #: src/Tribe/REST/V1/Endpoints/Ticket_Archive.php:281
 msgid "Sort results in ASC or DESC order. Defaults to ASC."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:296
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:308
 msgid "Order the results by one of date, relevance, id, include, title or slug. Defaults to id."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:308
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:320
 msgid "Limit results to attendees by post the ticket is associated with."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:314
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:326
 msgid "Limit results to attendees associated with a ticket."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:320
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:332
 msgid "Limit results to attendees created after or on the specified UTC date or timestamp."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:326
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:338
 msgid "Limit results to attendees created before or on the specified UTC date or timestamp."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:332
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:344
 msgid "Limit results to a specific CSV list or array of attendee IDs."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:345
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:357
 msgid "Exclude a specific CSV list or array of attendee IDs from the results."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:358
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:370
 msgid "Limit results to attendees that paid tickets a price equal or below the specified value; if not specified no maximum price limit will be used."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:364
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:376
 msgid "Limit results to attendees that paid tickets a price equal or above the specified value; if not specified no minimum price limit will be used."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:370
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:382
 msgid "Limit results to attendees whose ticket is assigned to one of the posts specified in the CSV list or array."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:383
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:395
 msgid "Limit results to attendees whose tickets is not assigned to any of the posts specified in the CSV list or array.."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:396
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:408
 #: src/Tribe/REST/V1/Endpoints/Ticket_Archive.php:329
 msgid "Limit results to a specific CSV list or array of ticket IDs."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:408
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:420
 msgid "Exclude a specific CSV list or array of ticket IDs."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:420
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:432
 msgid "Limit results to attendees for posts that are in one of the post statuses specified in the CSV list or array; defaults to publish."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:431
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:443
 msgid "Limit results to attendees that are in one of post statuses specified in the CSV list or array; defaults to publish."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:442
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:454
 msgid "Limit results to attendees whose order status is in one of post statuses specified in the CSV list or array; defaults to public."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:453
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:465
 msgid "Limit results to attendees that are or not checked-in."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:458
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:470
 msgid "Limit results to RSVP Attendees that have one of the RSVP Going status specified in the CSV list or array."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:469
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:481
 msgid "Limit results to attendees for tickets that provide attendees the possibility to fill in additional information or not; requires ET+."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:474
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:486
 msgid "Limit results to attendees by name. It will search for names that are like the specified value"
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:479
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:491
 msgid "Limit results to attendees by email. It will search for emails that are like the specified value"
 msgstr ""
 
@@ -14287,43 +14301,43 @@ msgid "You confirmed you will not be attending %s"
 msgstr ""
 
 #. translators: %1$s: RSVP label singular
-#: src/Tribe/RSVP.php:1962
+#: src/Tribe/RSVP.php:1968
 #, php-format
 msgid "Your %1$s has been received! Check your email for your %1$s confirmation."
 msgstr ""
 
 #. translators: %1$s: RSVP action verb, %2$s: RSVP label plural
-#: src/Tribe/RSVP.php:1972
+#: src/Tribe/RSVP.php:1978
 #, php-format
 msgid "You can't %1$s more than the total remaining %2$s."
 msgstr ""
 
 #. translators: %s: RSVP action verb
-#: src/Tribe/RSVP.php:1984
+#: src/Tribe/RSVP.php:1990
 #, php-format
 msgid "In order to %s, you must enter your name and a valid email address."
 msgstr ""
 
-#: src/Tribe/RSVP.php:3107
+#: src/Tribe/RSVP.php:3113
 msgid "Invalid parent ID provided!"
 msgstr ""
 
-#: src/Tribe/RSVP.php:3114
+#: src/Tribe/RSVP.php:3120
 msgid "Invalid Ticket ID provided!"
 msgstr ""
 
-#: src/Tribe/RSVP.php:3119
+#: src/Tribe/RSVP.php:3125
 msgid "This RSVP is not currently available."
 msgstr ""
 
 #. translators: %s: Required field name
-#: src/Tribe/RSVP.php:3135
-#: src/Tribe/RSVP.php:3142
+#: src/Tribe/RSVP.php:3141
+#: src/Tribe/RSVP.php:3148
 #, php-format
 msgid "Missing required RSVP field: %s"
 msgstr ""
 
-#: src/Tribe/RSVP.php:3180
+#: src/Tribe/RSVP.php:3186
 msgid "Requested amount of Tickets are not available!"
 msgstr ""
 
@@ -14443,7 +14457,7 @@ msgstr ""
 msgid "This %s is no longer active."
 msgstr ""
 
-#: src/Tribe/Tickets_View.php:1503
+#: src/Tribe/Tickets_View.php:1509
 #: src/views/tickets/orders-pp-tickets.php:31
 #: src/views/tickets/orders-rsvp.php:39
 #: src/views/tickets/orders-tc-tickets.php:23
@@ -14452,7 +14466,7 @@ msgctxt "fallback post type singular name"
 msgid "Post"
 msgstr ""
 
-#: src/Tribe/Tickets_View.php:1543
+#: src/Tribe/Tickets_View.php:1549
 #, php-format
 msgid "%1$d %2$s"
 msgid_plural "%1$d %3$s"
@@ -14461,24 +14475,24 @@ msgstr[1] ""
 
 #. Translators: 1: singular or plural label for ticket type on My Tickets page link label.
 #. Translators: %s: post type label.
-#: src/Tribe/Tickets_View.php:1556
+#: src/Tribe/Tickets_View.php:1562
 #: src/views/tickets/orders.php:115
 #, php-format
 msgid "View %s"
 msgstr ""
 
-#: src/Tribe/Tickets_View.php:1557
+#: src/Tribe/Tickets_View.php:1563
 msgid "View all"
 msgstr ""
 
 #. Translators: 1: number of RSVPs and/or Tickets with accompanying ticket type text, 2: post type label
-#: src/Tribe/Tickets_View.php:1560
+#: src/Tribe/Tickets_View.php:1566
 #, php-format
 msgid "You have %1$s for this %2$s."
 msgstr ""
 
 #. Translators: 1: number of RSVPs and/or Tickets with accompanying ticket type text, 2: post type label
-#: src/Tribe/Tickets_View.php:1560
+#: src/Tribe/Tickets_View.php:1566
 msgctxt "separator if there are more multiple type of tickets."
 msgid " and "
 msgstr ""
