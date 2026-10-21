@@ -12,6 +12,7 @@ namespace TEC\Tickets\Recurring_Tickets;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 use TEC\Common\StellarWP\Schema\Register;
+use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
 
 /**
@@ -35,6 +36,7 @@ final class Core_Controller extends Controller_Contract {
 	public function unregister(): void {
 		remove_filter( Occurrence_Guard::FILTER, $this->container->callback( Occurrence_Guard::class, 'remember' ), 9 );
 		remove_filter( Occurrence_Guard::FILTER, $this->container->callback( Occurrence_Guard::class, 'restore' ), PHP_INT_MAX );
+		remove_filter( 'get_post_metadata', $this->container->callback( Meta_Shim::class, 'read' ), 9 );
 	}
 
 	/**
@@ -67,5 +69,10 @@ final class Core_Controller extends Controller_Contract {
 		// Before ECP's callback at 10, and after every other one.
 		add_filter( Occurrence_Guard::FILTER, $this->container->callback( Occurrence_Guard::class, 'remember' ), 9 );
 		add_filter( Occurrence_Guard::FILTER, $this->container->callback( Occurrence_Guard::class, 'restore' ), PHP_INT_MAX );
+
+		$this->container->singleton( Rows::class );
+		$this->container->singleton( Meta_Shim::class );
+		// Before ECP's meta cache hydration at 10, which reads any ID above its own base as a date and queries for it.
+		add_filter( 'get_post_metadata', $this->container->callback( Meta_Shim::class, 'read' ), 9, 4 );
 	}
 }
