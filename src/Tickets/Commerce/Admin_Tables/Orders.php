@@ -318,6 +318,7 @@ class Orders extends WP_List_Table {
 	 * Handler for the purchased column.
 	 *
 	 * @since 5.2.0
+	 * @since 5.30.1 Line items whose ticket no longer exists fall back to a generic label.
 	 * @since TBD Filters each ticket's name.
 	 *
 	 * @param WP_Post $item The current item.
@@ -339,7 +340,11 @@ class Orders extends WP_List_Table {
 				continue;
 			}
 
-			$ticket = Tickets::load_ticket_object( $cart_item['ticket_id'] );
+			$ticket   = Tickets::load_ticket_object( $cart_item['ticket_id'] );
+			$quantity = absint( $cart_item['quantity'] );
+
+			/* An order keeps its items when the ticket behind them is deleted, so there may be no ticket to name. */
+			$name = $ticket ? $ticket->name : _n( 'Ticket', 'Tickets', $quantity, 'event-tickets' );
 
 			/**
 			 * Filters the name of a ticket purchased in an order, in the orders table.
@@ -350,9 +355,9 @@ class Orders extends WP_List_Table {
 			 * @param array<string,mixed> $cart_item The order's line of the ticket.
 			 * @param WP_Post             $item      The order.
 			 */
-			$name     = esc_html( apply_filters( 'tec_tickets_commerce_reports_orders_table_purchased_ticket_name', $ticket->name, $cart_item, $item ) );
-			$quantity = esc_html( (int) $cart_item['quantity'] );
-			$output  .= "<div class='tribe-line-item'>{$quantity} - {$name}</div>";
+			$name = apply_filters( 'tec_tickets_commerce_reports_orders_table_purchased_ticket_name', $name, $cart_item, $item );
+
+			$output .= sprintf( "<div class='tribe-line-item'>%1\$d - %2\$s</div>", $quantity, esc_html( $name ) );
 		}
 
 		return $output;
