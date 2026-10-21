@@ -41,6 +41,38 @@ class TicketTest extends WPTestCase {
 			},
 		];
 
+		yield 'ticket with a stored negative sale price value => false' => [
+			function (): array {
+				$post_id   = static::factory()->post->create();
+				$ticket_id = $this->create_tc_ticket( $post_id, 20 );
+
+				update_post_meta( $ticket_id, Ticket::$sale_price_checked_key, true );
+				update_post_meta( $ticket_id, Ticket::$sale_price_key, Value::create( -10 ) );
+
+				return [
+					$post_id,
+					$ticket_id,
+					false,
+				];
+			},
+		];
+
+		yield 'ticket with a stored negative sale price number => false' => [
+			function (): array {
+				$post_id   = static::factory()->post->create();
+				$ticket_id = $this->create_tc_ticket( $post_id, 20 );
+
+				update_post_meta( $ticket_id, Ticket::$sale_price_checked_key, true );
+				update_post_meta( $ticket_id, Ticket::$sale_price_key, -10 );
+
+				return [
+					$post_id,
+					$ticket_id,
+					false,
+				];
+			},
+		];
+
 		yield 'ticket has sale price but inactive sale check => false' => [
 			function (): array {
 				$post_id   = static::factory()->post->create();

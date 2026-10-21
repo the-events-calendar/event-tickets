@@ -12,7 +12,6 @@ namespace TEC\Tickets\Commerce\Gateways\Free\REST;
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Ticket;
-use TEC\Tickets\Commerce\Utils\Value;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 use WP_REST_Request;
@@ -189,9 +188,8 @@ class Order_EndpointTest extends WPTestCase {
 		$paid_ticket_id     = $this->create_tc_ticket( $event_id, $price );
 		$negative_ticket_id = $this->create_tc_ticket( $event_id, $price );
 
-		// Written straight to meta: a sale price stored before negative values were rejected on save.
-		update_post_meta( $negative_ticket_id, Ticket::$sale_price_checked_key, true );
-		update_post_meta( $negative_ticket_id, Ticket::$sale_price_key, Value::create( -$price ) );
+		// Written straight to meta: no save path stores a negative price, but the endpoint must not rely on that.
+		update_post_meta( $negative_ticket_id, Ticket::$price_meta_key, -$price );
 
 		$cart = tribe( Cart::class );
 		$cart->add_ticket( $paid_ticket_id, 1 );
