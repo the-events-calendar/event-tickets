@@ -1,0 +1,164 @@
+/*
+ * Every rule starts at `.editor-styles-wrapper`: the block editor copies
+ * a stylesheet into its canvas iframe only when one of its selectors
+ * names that class or `.wp-block`.
+ */
+
+/*
+ * The options take the rest of the row beside their section label, as the other fields do, with each end's label
+ * beside its mode select and the rest of the end under that select.
+ */
+.editor-styles-wrapper .tec-tickets-relative-sale-dates {
+
+	/* Room for the widest end label, "Start Sales:", on one line. */
+	--tec-tickets-relative-sale-dates-label-width: 80px;
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: var(--tec-spacer-3);
+	min-width: 0;
+}
+
+.editor-styles-wrapper .tec-tickets-relative-sale-dates__end {
+	display: flex;
+	flex-direction: column;
+	gap: var(--tec-spacer-1);
+
+	> :not(.components-select-control) {
+		margin-left: calc(var(--tec-tickets-relative-sale-dates-label-width) + var(--tec-spacer-1));
+	}
+
+	> .components-select-control {
+
+		.components-input-base {
+			justify-content: flex-start;
+		}
+
+		.components-input-control__label {
+			flex-shrink: 0;
+			font-size: 13px;
+			font-weight: 400;
+			text-transform: none;
+			white-space: nowrap;
+			width: var(--tec-tickets-relative-sale-dates-label-width);
+		}
+
+		.components-input-control__container {
+			flex: none;
+			max-width: 100%;
+			width: 245px;
+		}
+	}
+}
+
+.editor-styles-wrapper .tec-tickets-relative-sale-dates__relative {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--tec-spacer-1);
+
+	.components-text-control__input {
+		width: 64px;
+	}
+}
+
+.editor-styles-wrapper .tec-tickets-relative-sale-dates__helper {
+	color: #757575;
+	flex-basis: 100%;
+	font-size: var(--tec-font-size-1);
+	margin: 0;
+}
+
+/* An empty live region stays mounted, out of the layout, so the text written into it later is announced. */
+.editor-styles-wrapper .tec-tickets-relative-sale-dates__helper:empty {
+	border: 0;
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* How long the sale price lasts, under the sale end. */
+.editor-styles-wrapper
+.tribe-editor__ticket__sale-price-wrapper
+.tec-tickets-relative-sale-dates__helper {
+	font-style: italic;
+}
+
+/* The select draws no border: the control's backdrop, its sibling, does. */
+.editor-styles-wrapper
+.tec-tickets-relative-sale-dates
+select[aria-invalid="true"] ~ .components-input-control__backdrop {
+	border-color: #cc1818;
+}
+
+/* A relative number is a plain text control with no backdrop of its own, so the invalid outline goes on the field. */
+.editor-styles-wrapper .tec-tickets-relative-sale-dates input[aria-invalid="true"] {
+	border-color: #cc1818;
+}
+
+/*
+ * With both ends on a specific date, the legacy range check flags the same order these options already report under
+ * their end. Its text is hidden so the row is not split between two messages; its flag still blocks the save.
+ */
+.editor-styles-wrapper
+.tribe-editor__ticket__content-row--duration:has(.tec-tickets-relative-sale-dates)
+.tribe-editor__ticket__duration-error {
+	display: none;
+}
+
+.editor-styles-wrapper .tec-tickets-relative-sale-dates__error {
+	color: #cc1818;
+}
+
+/*
+ * An error stays the help of the control it is about, which points `aria-describedby` at it, but shows last in its
+ * end, under the options: the controls' own wrappers are left out of the layout so their help can be reordered.
+ */
+.editor-styles-wrapper .tec-tickets-relative-sale-dates__end > .components-select-control,
+.editor-styles-wrapper .tec-tickets-relative-sale-dates__relative > .components-base-control {
+	display: contents;
+}
+
+.editor-styles-wrapper .tec-tickets-relative-sale-dates__end > .components-select-control > .components-base-control__help {
+	margin: 0 0 0 calc(var(--tec-tickets-relative-sale-dates-label-width) + var(--tec-spacer-1));
+	order: 1;
+}
+
+.editor-styles-wrapper .tec-tickets-relative-sale-dates__relative > .components-base-control > .components-base-control__help {
+	flex-basis: 100%;
+	margin: 0;
+	order: 1;
+}
+
+/*
+ * The sale price boundaries line up with the Sale Price field above them: their labels take its label's column and
+ * type, so each select starts where its input does.
+ */
+.editor-styles-wrapper .tribe-editor__ticket__sale-price-wrapper .tec-tickets-relative-sale-dates {
+	--tec-tickets-relative-sale-dates-label-width: 92px;
+
+	.tec-tickets-relative-sale-dates__end > .components-select-control .components-input-control__label {
+		font-size: 15px;
+	}
+
+	.tec-tickets-relative-sale-dates__relative > span {
+		font-size: 13px;
+	}
+}
+
+/* Each end shows only its own half of the picker it is handed. */
+.editor-styles-wrapper
+.tec-tickets-relative-sale-dates__picker--start
+.tribe-editor__date-time-range-picker__end,
+.editor-styles-wrapper
+.tec-tickets-relative-sale-dates__picker--end
+.tribe-editor__date-time-range-picker__start,
+.editor-styles-wrapper
+.tec-tickets-relative-sale-dates__picker--end
+.tribe-editor__date-time-range-picker__separator--time-range {
+	display: none;
+}

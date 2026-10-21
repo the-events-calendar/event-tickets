@@ -1,0 +1,6 @@
+significance: patch
+type: fix
+entry: Included Tickets Commerce tickets whose sale price has no start or end
+  date, or ends today, in the Discounted Tickets filter of the admin tickets
+  list.
+timestamp: 2026-10-13T18:28:11.383Z

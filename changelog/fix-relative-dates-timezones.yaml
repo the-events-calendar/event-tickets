@@ -1,0 +1,6 @@
+significance: patch
+type: fix
+entry: Made a Tickets Commerce ticket with a sale price read its sales dates and
+  sale price days in the event's timezone instead of the site's, so it went on
+  and off sale and showed its sale price at the right time.
+timestamp: 2026-10-17T22:26:33.557Z

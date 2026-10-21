@@ -1,0 +1,5 @@
+significance: patch
+type: fix
+entry: Kept the Ticket block from saving 1970-01-01 as the date of a sale price
+  saved without dates when the ticket was updated.
+timestamp: 2026-10-13T18:28:14.635Z

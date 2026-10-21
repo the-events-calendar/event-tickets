@@ -1,0 +1,5 @@
+significance: patch
+type: fix
+entry: Gave an event copied with Yoast Duplicate Post its own seating ID, and
+  its tickets their seat settings and relative sale dates.
+timestamp: 2026-10-15T16:36:30.000Z
