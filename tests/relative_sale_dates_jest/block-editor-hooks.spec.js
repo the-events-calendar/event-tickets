@@ -1,6 +1,7 @@
 import React from 'react';
 import { addFilter, applyFilters, doAction, filters, removeFilter } from '@wordpress/hooks';
 import { dispatch, getStoreState, select } from '@wordpress/data';
+import { getSettings, setSettings } from '@wordpress/date';
 import { STORE_NAME } from '@tec/tickets/relative-sale-dates/block-editor/store/constants';
 import SalesWindow from '@tec/tickets/relative-sale-dates/block-editor/sales-window';
 import SalePriceWindow from '@tec/tickets/relative-sale-dates/block-editor/sale-price-window';
@@ -745,7 +746,8 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 	} );
 
 	describe( 'on tec.tickets.blocks.Ticket.SaleWindow.dates', () => {
-		const ticketDates = { fromDate: 'September 1, 2040', toDate: 'December 31, 2040' };
+		const ticketDates = { fromDate: 'September 1, 2040 10:00 am', toDate: 'December 31, 2040 11:00 pm' };
+		const packageSettings = getSettings();
 
 		/**
 		 * Filters the sale dates the ticket header shows for a ticket block.
@@ -758,23 +760,44 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 			return applyFilters( 'tec.tickets.blocks.Ticket.SaleWindow.dates', ticketDates, clientId );
 		}
 
+		/*
+		 * WordPress sets the site's formats before the block loads; the package's own default time format is `g: i a`.
+		 * The `datetime` format WordPress sets is its own, not the site's, so it differs here to show it is not read.
+		 */
+		beforeAll( () => {
+			setSettings( {
+				...packageSettings,
+				formats: { ...packageSettings.formats, time: 'g:i a', datetime: 'M j, Y H:i' },
+			} );
+		} );
+
+		afterAll( () => {
+			setSettings( packageSettings );
+		} );
+
 		beforeEach( () => {
 			setBlockEditorData();
 			setEventState( DEFAULT_EVENT ).dispatch( legacyActions.setTicketsProvider( TICKETS_COMMERCE ) );
 		} );
 
-		it( 'should show the dates the rule of a ticket works out to', () => {
+		it( 'should show the dates and times the rule of a ticket works out to', () => {
 			const clientId = newClientId();
 			dispatch( STORE_NAME ).setDraftRule( clientId, { start: storedRule.start, end: { mode: 'default' } } );
 
-			expect( filterDates( clientId ) ).toStrictEqual( { fromDate: 'October 6, 2040', toDate: 'October 20, 2040' } );
+			expect( filterDates( clientId ) ).toStrictEqual( {
+				fromDate: 'October 6, 2040 7:00 pm',
+				toDate: 'October 20, 2040 7:00 pm',
+			} );
 		} );
 
 		it( 'should keep the ticket\'s own start when sales start now', () => {
 			const clientId = newClientId();
 			dispatch( STORE_NAME ).setDraftRule( clientId, { start: { mode: 'default' }, end: storedRule.end } );
 
-			expect( filterDates( clientId ) ).toStrictEqual( { fromDate: ticketDates.fromDate, toDate: 'October 20, 2040' } );
+			expect( filterDates( clientId ) ).toStrictEqual( {
+				fromDate: ticketDates.fromDate,
+				toDate: 'October 20, 2040 9:30 pm',
+			} );
 		} );
 
 		it( 'should keep the ticket date of a relative end whose number is cleared', () => {
@@ -786,7 +809,7 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 
 			expect( filterDates( clientId ) ).toStrictEqual( {
 				fromDate: ticketDates.fromDate,
-				toDate: 'October 20, 2040',
+				toDate: 'October 20, 2040 9:30 pm',
 			} );
 		} );
 

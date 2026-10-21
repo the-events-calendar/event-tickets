@@ -216,7 +216,8 @@ export function filterSalePricePickers( dates, clientId, pickers ) {
  *
  * @since TBD
  *
- * @param {{fromDate: string, toDate: string}} dates    The sale dates the header shows, in the site date format.
+ * @param {{fromDate: string, toDate: string}} dates    The sale dates the header shows, in the site date and time
+ *                                                      formats.
  * @param {string}                             clientId The client ID of the ticket block.
  *
  * @return {{fromDate: string, toDate: string}} The sale dates to show.
@@ -235,8 +236,10 @@ export function filterSaleWindowDates( dates, clientId ) {
 		return dates;
 	}
 
-	const { date: dateFormat } = getSettings().formats;
-	const format = ( date, ticketDate ) => ( date?.isValid() ? formatSaleDate( dateFormat, date ) : ticketDate );
+	// @wordpress/date's `datetime` format is WordPress's own, not the site's: the header joins the site formats instead.
+	const { date: dateFormat, time: timeFormat } = getSettings().formats;
+	const dateTimeFormat = `${ dateFormat } ${ timeFormat }`;
+	const format = ( date, ticketDate ) => ( date?.isValid() ? formatSaleDate( dateTimeFormat, date ) : ticketDate );
 
 	return { fromDate: format( saleWindow.start, dates.fromDate ), toDate: format( saleWindow.end, dates.toDate ) };
 }
