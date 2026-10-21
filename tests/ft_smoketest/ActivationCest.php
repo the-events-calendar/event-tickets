@@ -4,6 +4,18 @@ use FT_Smoketester as Tester;
 
 class ActivationCest {
 	/**
+	 * Stores the running WordPress's database version, as an upgrade would.
+	 *
+	 * The dump comes from an older WordPress: past the first admin page, an older version sends every admin page
+	 * to the "Database Update Required" screen. CI runs several WordPress versions, so the dump can't hold the one.
+	 */
+	public function _before( Tester $I ): void {
+		global $wp_db_version;
+
+		$I->haveOptionInDatabase( 'db_version', $wp_db_version );
+	}
+
+	/**
 	 * It should activate deactivate correctly
 	 *
 	 * @test
