@@ -15,6 +15,7 @@ import rsvpDisabled from './rsvp-disabled';
 import attendees from './attendees';
 import { isV2Enabled } from '../data/blocks/rsvp-v2/config';
 import { initTicketsBlockFilters } from '../data/blocks/rsvp-v2/tickets-block-filters';
+import withBlockWrapper from './with-block-wrapper';
 
 /**
  * Check if RSVP is disabled via editor config.
@@ -54,17 +55,26 @@ addFilter( 'tec.tickets.blocks.beforeRegistration', 'tec.tickets.rsvp-v2', maybe
 // Initialize filters to exclude RSVP V2 tickets from the Tickets block.
 initTicketsBlockFilters();
 
-let blocks = [ rsvp, attendees ];
+/*
+ * Only definitions that are still exactly ours are upgraded: they are dynamic, so their saved markup
+ * is the same at every Block API version. A block a filter callback adds or changes may save static
+ * markup that would lose the classes WordPress adds at version 1, so its version is left to its author.
+ */
+const ownBlocks = new Set( [ rsvp, rsvpV2, rsvpDisabled, attendees ] );
 
 /**
  * Allows filtering the list of blocks registered by Event Tickets.
  *
- * the
+ * Callbacks receive the block definitions as written, before they are adapted to the current
+ * Block API version. Only Event Tickets' own definitions, returned unchanged, are adapted.
  *
  * @since 5.8.0
+ * @since 5.30.2 Event Tickets' own block definitions are adapted to Block API version 3 after this filter.
  * @param {Object[]} blocks The blocks that will be registered.
  */
-blocks = applyFilters( 'tec.tickets.blocks.beforeRegistration', blocks );
+let blocks = applyFilters( 'tec.tickets.blocks.beforeRegistration', [ rsvp, attendees ] );
+
+blocks = blocks.map( ( block ) => ( ownBlocks.has( block ) ? withBlockWrapper( block ) : block ) );
 
 blocks.forEach( ( block ) => registerBlockType( `tribe/${ block.id }`, block ) );
 

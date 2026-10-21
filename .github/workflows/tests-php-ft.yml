@@ -186,7 +186,7 @@ jobs:
       # ------------------------------------------------------------------------------
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
-        if: failure
+        if: failure()
         with:
           name: output ${{ matrix.suite }}
           path: tests/_output/
