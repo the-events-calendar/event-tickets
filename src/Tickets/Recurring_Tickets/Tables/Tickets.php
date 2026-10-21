@@ -24,6 +24,7 @@ use TEC\Common\StellarWP\Schema\Columns\Updated_At;
 use TEC\Common\StellarWP\Schema\Indexes\Unique_Key;
 use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
 use TEC\Common\StellarWP\Schema\Tables\Table_Schema;
+use TEC\Tickets\Recurring_Tickets\Models\Ticket;
 
 /**
  * Class Tickets.
@@ -97,7 +98,7 @@ final class Tickets extends Table {
 				$columns[] = ( new String_Column( 'name' ) )->set_length( 255 );
 				$columns[] = ( new Text_Column( 'description' ) )->set_nullable( true );
 				// MySQL stores BOOLEAN as tinyint(1).
-				$columns[] = ( new Boolean_Column( 'show_description' ) )->set_default( 1 );
+				$columns[] = ( new Boolean_Column( 'show_description' ) )->set_default( true );
 				$columns[] = ( new String_Column( 'sku' ) )->set_length( 255 )->set_nullable( true );
 				// Thousandths of the currency's unit, whatever the currency, so changing it never rescales a price.
 				// A sale price stays on the template.
@@ -134,6 +135,19 @@ final class Tickets extends Table {
 				return new Table_Schema( $table_name, $columns, $indexes );
 			},
 		];
+	}
+
+	/**
+	 * Builds a model from a row, so the table's lookups return models.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $row The row, with values cast to their PHP types.
+	 *
+	 * @return Ticket The model.
+	 */
+	public static function transform_from_array( array $row ): Ticket {
+		return Ticket::fromData( $row );
 	}
 
 	/**
