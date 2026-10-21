@@ -86,7 +86,7 @@ final class Date_Tickets {
 
 		$template_ids = [];
 		foreach ( $tickets as $ticket ) {
-			if ( $ticket instanceof Ticket_Object && $this->templates->is_template( $ticket ) ) {
+			if ( $ticket instanceof Ticket_Object && $this->templates->is_template( (int) $ticket->ID ) ) {
 				$template_ids[] = (int) $ticket->ID;
 			}
 		}

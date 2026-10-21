@@ -17,6 +17,7 @@ use TEC\Tickets\Commerce\Values\Legacy_Value_Factory as Factory;
 use TEC\Tickets\Commerce\Values\Precision_Value;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
+use TEC\Tickets\Recurring_Tickets\Template_Guard;
 
 /**
  * Class Abstract_Cart
@@ -376,6 +377,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 *
 	 * @since 5.21.0
 	 * @since 5.30.0 `type` is now only defaulted to `ticket` when missing, instead of being
+	 * @since TBD Leaves out the template of a recurring event ticket.
 	 *            unconditionally overwritten, so non-ticket item types (e.g. TC-RSVP) survive.
 	 *
 	 * @param array $items The items in the cart.
@@ -392,6 +394,11 @@ abstract class Abstract_Cart implements Cart_Interface {
 				// Try to get the ticket object, and if it's not valid, remove it from the cart.
 				$item['obj'] = Tickets::load_ticket_object( $item['ticket_id'] );
 				if ( ! $item['obj'] instanceof Ticket_Object ) {
+					return null;
+				}
+
+				// A recurring event ticket's template is never sold, however it reached the cart.
+				if ( tribe( Template_Guard::class )->is_template( (int) $item['ticket_id'] ) ) {
 					return null;
 				}
 
