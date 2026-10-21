@@ -40,6 +40,7 @@ final class Core_Controller extends Controller_Contract {
 		foreach ( [ 'add', 'update', 'delete' ] as $write ) {
 			remove_filter( "{$write}_post_metadata", $this->container->callback( Meta_Shim::class, 'refuse_write' ), PHP_INT_MIN );
 		}
+		remove_filter( 'tec_tickets_get_tickets', $this->container->callback( Date_Tickets::class, 'swap' ) );
 	}
 
 	/**
@@ -84,5 +85,9 @@ final class Core_Controller extends Controller_Contract {
 		foreach ( [ 'add', 'update', 'delete' ] as $write ) {
 			add_filter( "{$write}_post_metadata", $this->container->callback( Meta_Shim::class, 'refuse_write' ), PHP_INT_MIN, 3 );
 		}
+
+		$this->container->singleton( Template_Guard::class );
+		$this->container->singleton( Date_Tickets::class );
+		add_filter( 'tec_tickets_get_tickets', $this->container->callback( Date_Tickets::class, 'swap' ), 10, 2 );
 	}
 }
