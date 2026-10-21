@@ -156,12 +156,13 @@ class Block extends Abstract_Block {
 	 * Overrides the parent method to register the editor scripts.
 	 *
 	 * @since 5.8.0
+	 * @since TBD Registered the editor scripts before the block, so the editor canvas gets its editor style.
 	 *
 	 * @return void
 	 */
 	public function register() {
+		$this->register_editor_scripts();
 		parent::register();
-		add_action( 'admin_enqueue_scripts', [ $this, 'register_editor_scripts' ] );
 	}
 
 	/**
