@@ -3,9 +3,7 @@
 namespace TEC\Tickets\Recurring_Tickets;
 
 use Codeception\TestCase\WPTestCase;
-use TEC\Common\StellarWP\DB\DB;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
-use TEC\Events\Custom_Tables\V1\Tables\Occurrences;
 use TEC\Events_Pro\Custom_Tables\V1\Events\Provisional\ID_Generator;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 
@@ -22,15 +20,12 @@ class Occurrence_Guard_Test extends WPTestCase {
 		$event     = $this->create_recurring_event();
 		$date      = $this->get_dates( $event )[0];
 		$ticket_id = Ticket_ID::from_row_id( 5 );
-		// The occurrence ID ECP computes from the ticket ID: give it to a real date.
-		DB::query(
-			DB::prepare(
-				'UPDATE %i SET occurrence_id = %d WHERE occurrence_id = %d',
-				Occurrences::table_name(),
-				$ticket_id - tribe( ID_Generator::class )->current(),
-				$date->occurrence_id
-			)
-		);
+		/*
+		 * Move ECP's base so the ticket ID minus the base is a real date's occurrence ID.
+		 * Changing the occurrence ID instead would raise the table's AUTO_INCREMENT, which a rollback does not undo.
+		 */
+		$base = $ticket_id - $date->occurrence_id;
+		add_filter( 'pre_option_' . tribe( ID_Generator::class )->option_name(), static fn() => $base );
 
 		$this->assertSame( $ticket_id, Occurrence::normalize_id( $ticket_id ) );
 	}
