@@ -23,6 +23,7 @@ use TEC\Common\StellarWP\Models\Repositories\Repository;
 use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Order_Modifier_Relationships as Table;
 use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Order_Modifiers;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Relationships as Relationship_Model;
+use TEC\Tickets\Recurring_Tickets\Ticket_ID;
 
 /**
  * Class Order_Modifier_Relationships
@@ -37,12 +38,18 @@ class Order_Modifier_Relationship extends Repository implements Insertable, Upda
 	 * Inserts a new relationship record.
 	 *
 	 * @since 5.18.0
+	 * @since TBD Writes nothing for a recurring event ticket's row.
 	 *
 	 * @param Model $model The model instance to insert.
 	 *
 	 * @return Relationship_Model The inserted model instance.
 	 */
 	public function insert( Model $model ): Relationship_Model {
+		// Fees and coupons stay attached to a recurring event ticket's template, never to its rows.
+		if ( Ticket_ID::is_table_ticket( $model->post_id ) ) {
+			return $model;
+		}
+
 		DB::insert(
 			Table::table_name(),
 			[
