@@ -181,9 +181,13 @@ final class Recurrence_Controller extends Controller_Contract {
 	 * @return void
 	 */
 	private function show_outdated_ecp_notice(): void {
+		// The controller can register more than once in a request, and a second show() with the same ID throws.
+		AdminNotices::removeNotice( self::OUTDATED_ECP_NOTICE );
+
+		// Registration runs before init, too early to translate; the callback translates when the notice renders.
 		AdminNotices::show(
 			self::OUTDATED_ECP_NOTICE,
-			esc_html__( 'Recurring event tickets need a newer version of Events Calendar Pro. Update Events Calendar Pro to sell tickets for each date of your recurring events.', 'event-tickets' )
+			static fn() => esc_html__( 'Recurring event tickets need a newer version of Events Calendar Pro. Update Events Calendar Pro to sell tickets for each date of your recurring events.', 'event-tickets' )
 		)
 			->urgency( 'warning' )
 			->dismissible()
