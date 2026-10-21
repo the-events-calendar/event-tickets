@@ -17,6 +17,9 @@ class Recurrence_Controller_Test extends Controller_Test_Case {
 	private array $removed_constants = [];
 
 	/**
+	 * On an ECP without the hooks, the plugin already showed the notice while booting.
+	 *
+	 * @before
 	 * @after
 	 */
 	public function restore(): void {
@@ -32,6 +35,10 @@ class Recurrence_Controller_Test extends Controller_Test_Case {
 	 * @test
 	 */
 	public function it_should_be_active_with_an_ecp_that_has_the_hooks(): void {
+		if ( ! defined( Events::class . '::AFTER_TRANSFER_OCCURRENCES_ACTION' ) ) {
+			$this->markTestSkipped( 'The installed ECP does not fire the soft-4830 actions yet.' );
+		}
+
 		$this->assertTrue( $this->make_controller()->is_active() );
 	}
 
@@ -62,8 +69,22 @@ class Recurrence_Controller_Test extends Controller_Test_Case {
 		$this->assertFalse( Recurrence_Controller::is_registered() );
 		$notice = $this->notices()[ Recurrence_Controller::OUTDATED_ECP_NOTICE ] ?? null;
 		$this->assertNotNull( $notice, 'An older ECP is named in an admin notice.' );
-		$this->assertStringContainsString( 'Events Calendar Pro', (string) $notice->getRenderTextOrCallback() );
+		$render = $notice->getRenderTextOrCallback();
+		$this->assertIsCallable( $render, 'The text is translated when the notice renders, not at registration.' );
+		$this->assertStringContainsString( 'Events Calendar Pro', $render() );
 		$this->assertTrue( $notice->isDismissible() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_throw_when_registered_twice_on_an_older_ecp(): void {
+		$this->remove_ecp_constant( 'AFTER_TRANSFER_OCCURRENCES_ACTION' );
+
+		$this->make_controller()->register();
+		$this->make_controller()->register();
+
+		$this->assertArrayHasKey( Recurrence_Controller::OUTDATED_ECP_NOTICE, $this->notices() );
 	}
 
 	/**
@@ -99,6 +120,10 @@ class Recurrence_Controller_Test extends Controller_Test_Case {
 	 * @return void
 	 */
 	private function remove_ecp_constant( string $constant ): void {
+		if ( ! defined( Events::class . '::' . $constant ) ) {
+			return;
+		}
+
 		$this->removed_constants[ $constant ] = constant( Events::class . '::' . $constant );
 		uopz_undefine( Events::class, $constant );
 		$this->assertFalse( defined( Events::class . '::' . $constant ) );
