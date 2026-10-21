@@ -934,9 +934,7 @@ class Series_PassesTest extends Controller_Test_Case {
 			'series'     => $series,
 		] )->create()->ID;
 		$ticket_1                         = $this->create_tc_ticket( $event_in_series_with_own_tickets, 23 );
-		add_post_meta( $event_in_series_with_own_tickets, '_EventCost', 23 );
 		$ticket_2 = $this->create_tc_ticket( $event_in_series_with_own_tickets, 89 );
-		add_post_meta( $event_in_series_with_own_tickets, '_EventCost', 89 );
 		$event_in_series_wo_tickets       = tribe_events()->set_args( [
 			'title'      => 'Event in Series without own Tickets',
 			'status'     => 'publish',
@@ -951,9 +949,7 @@ class Series_PassesTest extends Controller_Test_Case {
 			'end_date'   => '2020-02-11 18:00:00',
 		] )->create()->ID;
 		$ticket_3                         = $this->create_tc_ticket( $event_not_in_series_with_tickets, 11 );
-		add_post_meta( $event_not_in_series_with_tickets, '_EventCost', 11 );
 		$ticket_4 = $this->create_tc_ticket( $event_not_in_series_with_tickets, 17 );
-		add_post_meta( $event_not_in_series_with_tickets, '_EventCost', 17 );
 		$event_not_in_series_wo_tickets = tribe_events()->set_args( [
 			'title'      => 'Event not in Series without own Tickets',
 			'status'     => 'publish',
