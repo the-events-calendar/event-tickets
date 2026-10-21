@@ -816,6 +816,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @since 5.8.0 Added the `$context` parameter.
 		 * @since 5.29.0 Made $context explicitly nullable.
 		 * @since 5.30.0 Only cache the result when no context is passed, since a context changes which tickets are returned.
+		 * @since TBD Passes the list, cached or not, through the `tec_tickets_get_tickets` filter.
 		 *
 		 * @param int         $post_id ID of parent "event" post.
 		 * @param string|null $context The context of the request.
@@ -837,7 +838,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$use_cache = null === $context;
 
 			if ( $use_cache && isset( $cache[ $key ] ) && is_array( $cache[ $key ] ) ) {
-				return $cache[ $key ];
+				return $this->filter_tickets( $cache[ $key ], $post_id, $context );
 			}
 
 			$default_provider = static::get_event_ticket_provider( $post_id );
@@ -879,7 +880,35 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$cache[ $key ] = $tickets;
 			}
 
-			return $tickets;
+			return $this->filter_tickets( $tickets, $post_id, $context );
+		}
+
+		/**
+		 * Filters the tickets `get_tickets()` returns, after its cache, so a filter never serves a stale list.
+		 *
+		 * @since TBD
+		 *
+		 * @param Tribe__Tickets__Ticket_Object[] $tickets The tickets.
+		 * @param int|string                      $post_id The post ID as it was asked for.
+		 * @param string|null                     $context The context the tickets were asked in.
+		 *
+		 * @return Tribe__Tickets__Ticket_Object[] The tickets.
+		 */
+		private function filter_tickets( array $tickets, $post_id, ?string $context ): array {
+			/**
+			 * Filters the tickets of a post, as `Tribe__Tickets__Tickets::get_tickets()` returns them.
+			 *
+			 * Runs on every list, cached or not. The post ID is the one asked for: a date of a recurring event keeps
+			 * its own ID here, while the tickets were read from its event.
+			 *
+			 * @since TBD
+			 *
+			 * @param Tribe__Tickets__Ticket_Object[] $tickets  The tickets.
+			 * @param int|string                      $post_id  The post ID as it was asked for.
+			 * @param string|null                     $context  The context the tickets were asked in, null for none.
+			 * @param Tribe__Tickets__Tickets         $provider The ticket provider listing them.
+			 */
+			return (array) apply_filters( 'tec_tickets_get_tickets', $tickets, $post_id, $context, $this );
 		}
 
 		/**
