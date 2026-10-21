@@ -1,6 +1,6 @@
 <?php
 /**
- * Answers post meta reads on table ticket IDs from the row, or from its template.
+ * Answers post meta reads on table ticket IDs from the row, or from its template, and refuses writes.
  *
  * @since TBD
  *
@@ -113,6 +113,41 @@ final class Meta_Shim {
 
 		// WordPress hands back the first value of the array when one was asked for.
 		return $single ? [ reset( $values ) ] : $values;
+	}
+
+	/**
+	 * Refuses a post meta write on a table ticket ID, and logs it: the log is the list of code that still writes
+	 * ticket meta.
+	 *
+	 * Hooked on the add, update and delete short-circuit filters, which pass the same first three arguments.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed  $check     The answer another filter gave, or null.
+	 * @param int    $object_id The post ID.
+	 * @param string $meta_key  The meta key.
+	 *
+	 * @return mixed False, nothing written, for a table ticket ID; `$check` for any other ID.
+	 */
+	public function refuse_write( $check, $object_id, $meta_key ) {
+		if ( null !== $check || ! Ticket_ID::is_table_ticket( $object_id ) ) {
+			return $check;
+		}
+
+		do_action(
+			'tribe_log',
+			'debug',
+			'Refused a post meta write on a recurring event ticket.',
+			[
+				'action'    => str_replace( [ '_post_metadata' ], '', current_filter() ),
+				'ticket_id' => (int) $object_id,
+				'key'       => (string) $meta_key,
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_wp_debug_backtrace_summary -- The caller is what the log is for.
+				'caller'    => wp_debug_backtrace_summary( null, 4 ),
+			]
+		);
+
+		return false;
 	}
 
 	/**
