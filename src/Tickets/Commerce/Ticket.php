@@ -16,6 +16,7 @@ use Tribe__Date_Utils as Date_Utils;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use TEC\Tickets\Ticket_Data;
 use TEC\Tickets\Recurring_Tickets\Hydrator;
+use TEC\Tickets\Recurring_Tickets\Stock;
 use TEC\Tickets\Recurring_Tickets\Ticket_ID;
 
 /**
@@ -934,12 +935,22 @@ class Ticket extends Ticket_Data {
 	 *
 	 * @since 5.1.9
 	 * @since 5.5.10 updated method signature to match new action signature.
+	 * @since TBD A recurring event ticket gets its ticket back on its row.
 	 *
 	 * @param int $attendee_id Attendee ID.
 	 */
 	public function update_stock_after_attendee_deletion( $attendee_id ) {
 		$event_id   = (int) get_post_meta( $attendee_id, Attendee::$event_relation_meta_key, true );
 		$product_id = (int) get_post_meta( $attendee_id, Attendee::$ticket_relation_meta_key, true );
+
+		if ( Ticket_ID::is_table_ticket( $product_id ) ) {
+			// One statement for both columns, as a sale is; a row has no shared capacity.
+			tribe( Stock::class )->release( Ticket_ID::to_row_id( $product_id ), 1 );
+			\Tribe__Tickets__Attendance::instance( $event_id )->increment_deleted_attendees_count();
+			\Tribe__Post_Transient::instance()->delete( $event_id, \Tribe__Tickets__Tickets::ATTENDEES_CACHE );
+
+			return;
+		}
 
 		$global_stock    = new \Tribe__Tickets__Global_Stock( $event_id );
 		$shared_capacity = false;
@@ -988,6 +999,7 @@ class Ticket extends Ticket_Data {
 	 *
 	 * @since 5.1.9
 	 * @since 5.13.3 Modified logic when updating global stock.
+	 * @since TBD A recurring event ticket's sales change on its row.
 	 *
 	 * @param int                                $ticket_id       The ticket post ID.
 	 * @param int                                $quantity        The quantity to increase the ticket sales by.
@@ -997,6 +1009,9 @@ class Ticket extends Ticket_Data {
 	 * @return int The new sales amount.
 	 */
 	public function increase_ticket_sales_by( $ticket_id, $quantity = 1, $shared_capacity = false, $global_stock = null ) {
+		if ( Ticket_ID::is_table_ticket( $ticket_id ) ) {
+			return tribe( Stock::class )->add_sales( Ticket_ID::to_row_id( (int) $ticket_id ), (int) $quantity );
+		}
 
 		$original_total_sales = (int) get_post_meta(
 			$ticket_id,
@@ -1025,6 +1040,7 @@ class Ticket extends Ticket_Data {
 	 * @todo TribeCommerceLegacy: This should be moved into using a Flag Action.
 	 *
 	 * @since 5.1.9
+	 * @since TBD A recurring event ticket's sales change on its row.
 	 *
 	 * @param int                                $ticket_id       The ticket post ID.
 	 * @param int                                $quantity        The quantity to increase the ticket sales by.
@@ -1034,6 +1050,10 @@ class Ticket extends Ticket_Data {
 	 * @return int The new sales amount.
 	 */
 	public function decrease_ticket_sales_by( $ticket_id, $quantity = 1, $shared_capacity = false, $global_stock = null ) {
+		if ( Ticket_ID::is_table_ticket( $ticket_id ) ) {
+			return tribe( Stock::class )->remove_sales( Ticket_ID::to_row_id( (int) $ticket_id ), (int) $quantity );
+		}
+
 		// Adjust sales.
 		$sales = (int) get_post_meta( $ticket_id, static::$sales_meta_key, true ) - $quantity;
 
@@ -1165,6 +1185,7 @@ class Ticket extends Ticket_Data {
 	 * Increase the ticket stock.
 	 *
 	 * @since 5.5.10
+	 * @since TBD A recurring event ticket's stock changes on its row.
 	 *
 	 * @param int|WP_Post|null $ticket_id  The ticket post ID.
 	 * @param int              $quantity   The quantity to increase the ticket stock by.
@@ -1172,6 +1193,10 @@ class Ticket extends Ticket_Data {
 	 * @return bool|int
 	 */
 	public function increase_ticket_stock_by( $ticket_id, $quantity = 1 ) {
+		if ( Ticket_ID::is_table_ticket( $ticket_id ) ) {
+			return tribe( Stock::class )->add_stock( Ticket_ID::to_row_id( (int) $ticket_id ), (int) $quantity );
+		}
+
 		$stock = (int) get_post_meta( $ticket_id, static::$stock_meta_key, true ) + $quantity;
 		return update_post_meta( $ticket_id, static::$stock_meta_key, $stock );
 	}
@@ -1180,6 +1205,7 @@ class Ticket extends Ticket_Data {
 	 * Decrease the ticket stock.
 	 *
 	 * @since 5.8.3
+	 * @since TBD A recurring event ticket's stock changes on its row.
 	 *
 	 * @param int $ticket_id int The ticket post ID.
 	 * @param int $quantity  int The quantity to decrease the ticket stock by.
@@ -1187,6 +1213,10 @@ class Ticket extends Ticket_Data {
 	 * @return bool|int
 	 */
 	public function decrease_ticket_stock_by( int $ticket_id, int $quantity = 1 ) {
+		if ( Ticket_ID::is_table_ticket( $ticket_id ) ) {
+			return tribe( Stock::class )->remove_stock( Ticket_ID::to_row_id( $ticket_id ), $quantity );
+		}
+
 		$stock = (int) get_post_meta( $ticket_id, static::$stock_meta_key, true ) - $quantity;
 		$stock = max( 0, $stock );
 
