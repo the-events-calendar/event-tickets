@@ -1262,7 +1262,24 @@ export function* saveTicketWithPostSave( clientId ) {
 				// Wait for channel to finish saving: a ticket with a relative rule is resolved against the saved event dates.
 				yield take( notSavingChannel );
 
-				yield call( updateTicket, { payload: { clientId } } );
+				/**
+				 * Filters whether saving the post updates the ticket too. Returning false skips the update, for example
+				 * when the server would reject it.
+				 *
+				 * @since TBD
+				 * @param {boolean} updatesTicket Whether saving the post updates the ticket.
+				 * @param {string}  clientId      The client ID of the ticket block.
+				 */
+				const updatesTicket = yield call(
+					applyFilters,
+					'tec.tickets.blocks.updateTicketWithPostSave',
+					true,
+					clientId
+				);
+
+				if ( updatesTicket ) {
+					yield call( updateTicket, { payload: { clientId } } );
+				}
 			}
 		}
 	} catch ( error ) {

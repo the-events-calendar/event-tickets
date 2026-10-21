@@ -104,8 +104,8 @@ export function resetTicketRule( clientId ) {
  *
  * A ticket the store knows nothing of sends no rule, so the server keeps the one stored; one whose draft has no rule
  * sends the kind's `emptyValue`. A draft the editor judges the server would reject sends no rule either, nor does one
- * whose parent window is rejected: saving the post updates the ticket too, and the server would reject the ticket's
- * other changes with it. Nor does the rule of a window the ticket form does not add.
+ * whose parent window is rejected: the server would reject the ticket's other changes with it. Nor does the rule of a
+ * window the ticket form does not add.
  *
  * @since TBD
  *
@@ -308,12 +308,30 @@ export function filterConfirmDisabled( isDisabled, state, { clientId } ) {
 		return true;
 	}
 
-	const eventDates = readEventDates();
-	const readWindow = getTicketWindowReader( clientId, select, ( kind ) =>
-		readTicketWindowForm( clientId, kind, state )
-	);
+	return hasTicketWindowError( clientId, state );
+}
 
-	return BLOCK_WINDOW_KINDS.some( ( kind ) => null !== judgeWindow( kind, readWindow, eventDates ) );
+/**
+ * Keeps saving the post from updating a ticket while a window the server judges is invalid, as the ticket's Update
+ * button is kept disabled: moving the event into the past makes a sales window from *Now* to *When the event starts*
+ * end before it starts.
+ *
+ * The server judges the rule it stores, and saving the event resolves that rule against the new event dates without
+ * the update, so the update is skipped rather than sent without the draft rule.
+ *
+ * @since TBD
+ *
+ * @param {boolean} updatesTicket Whether saving the post updates the ticket.
+ * @param {string}  clientId      The client ID of the ticket block.
+ *
+ * @return {boolean} Whether saving the post updates the ticket.
+ */
+export function filterUpdateTicketWithPostSave( updatesTicket, clientId ) {
+	if ( ! updatesTicket || ! isAcceptedProvider( clientId ) ) {
+		return updatesTicket;
+	}
+
+	return ! hasTicketWindowError( clientId );
 }
 
 /**
@@ -347,4 +365,24 @@ export function filterSyncSaleEndWithEventStart( followsEventStart, clientId ) {
 	const startCountsFromEventEnd = MODE_RELATIVE === rule.start.mode && ANCHOR_END === rule.start.anchor;
 
 	return MODE_SPECIFIC === rule.end.mode && ! startCountsFromEventEnd ? followsEventStart : false;
+}
+
+/**
+ * Returns whether a window of a ticket has an error the server would reject a save of the ticket for.
+ *
+ * @since TBD
+ *
+ * @param {string} clientId The client ID of the ticket block.
+ * @param {Object} [state]  The legacy ticket state, such as the one the dashboard is rendered with; the common store's
+ *                          when left out.
+ *
+ * @return {boolean} Whether a window has an error.
+ */
+function hasTicketWindowError( clientId, state ) {
+	const eventDates = readEventDates();
+	const readWindow = getTicketWindowReader( clientId, select, ( kind ) =>
+		readTicketWindowForm( clientId, kind, state )
+	);
+
+	return BLOCK_WINDOW_KINDS.some( ( kind ) => null !== judgeWindow( kind, readWindow, eventDates ) );
 }

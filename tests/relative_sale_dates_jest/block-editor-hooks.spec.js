@@ -1271,6 +1271,54 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 		} );
 	} );
 
+	describe( 'on tec.tickets.blocks.updateTicketWithPostSave', () => {
+		const updatesTicket = ( clientId, value = true ) =>
+			applyFilters( 'tec.tickets.blocks.updateTicketWithPostSave', value, clientId );
+
+		// The event the ticket below was created for, moved to the day before the ticket was created.
+		const movedEvent = { ...DEFAULT_EVENT, start: '2020-01-01 19:00:00', end: '2020-01-01 22:30:00' };
+
+		beforeEach( () => {
+			setBlockEditorData();
+			setEventState( movedEvent ).dispatch( legacyActions.setTicketsProvider( TICKETS_COMMERCE ) );
+		} );
+
+		it( 'should not update a ticket whose sales from Now end before they start once the event moves before them', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setRule( clientId, { start: { mode: 'default' }, end: { mode: 'default' } } );
+			// The start of Now the ticket was saved with, and its end synced to the moved event start.
+			legacyTicketState( clientId, '2020-01-02 10:00:00', movedEvent.start );
+
+			expect( updatesTicket( clientId ) ).toBe( false );
+		} );
+
+		it( 'should update a ticket whose windows are valid', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setRule( clientId, { start: { mode: 'default' }, end: { mode: 'default' } } );
+			legacyTicketState( clientId, '2019-12-01 10:00:00', movedEvent.start );
+
+			expect( updatesTicket( clientId ) ).toBe( true );
+			expect( updatesTicket( clientId, false ) ).toBe( false );
+		} );
+
+		it( 'should leave the update of a ticket not sold through a provider the sales window applies to alone', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setRule( clientId, { start: { mode: 'default' }, end: { mode: 'default' } } );
+			legacyTicketState( clientId, '2020-01-02 10:00:00', movedEvent.start );
+			window.__tribe_common_store__.dispatch( legacyActions.setTicketsProvider( WOO_PROVIDER ) );
+
+			expect( updatesTicket( clientId ) ).toBe( true );
+		} );
+
+		it( 'should update a ticket without a rule', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setRule( clientId, null );
+			legacyTicketState( clientId, '2020-01-02 10:00:00', movedEvent.start );
+
+			expect( updatesTicket( clientId ) ).toBe( true );
+		} );
+	} );
+
 	describe.each( [ 'tec.tickets.blocks.ticketCreated', 'tec.tickets.blocks.ticketUpdated' ] )( 'on %s', ( hook ) => {
 		describe.each( REQUEST_CASES )( 'for $title', ( kindCase ) => {
 			const { kind, newTicket, stored, edited, later } = kindCase;

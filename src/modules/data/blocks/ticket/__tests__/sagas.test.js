@@ -1476,8 +1476,29 @@ describe( 'Ticket Block sagas', () => {
 			expect( gen.next( savingChannel ).value ).toEqual( call( createWPEditorNotSavingChannel ) );
 			expect( gen.next( notSavingChannel ).value ).toEqual( take( savingChannel ) );
 			expect( gen.next().value ).toEqual( take( notSavingChannel ) );
-			expect( gen.next().value ).toEqual( call( sagas.updateTicket, { payload: { clientId } } ) );
+			expect( gen.next().value ).toEqual(
+				call( applyFilters, 'tec.tickets.blocks.updateTicketWithPostSave', true, clientId )
+			);
+			expect( gen.next( true ).value ).toEqual( call( sagas.updateTicket, { payload: { clientId } } ) );
 			expect( gen.next().value ).toEqual( take( savingChannel ) );
+		} );
+
+		it( 'should not update the ticket when tec.tickets.blocks.updateTicketWithPostSave returns false', () => {
+			const clientId = 'kept-out-of-the-post-save';
+			const savingChannel = { take: jest.fn(), close: jest.fn() };
+			const notSavingChannel = { take: jest.fn(), close: jest.fn() };
+			const gen = sagas.saveTicketWithPostSave( clientId );
+
+			gen.next();
+			gen.next( true );
+			gen.next( savingChannel );
+			gen.next( notSavingChannel );
+			gen.next();
+
+			expect( gen.next().value ).toEqual(
+				call( applyFilters, 'tec.tickets.blocks.updateTicketWithPostSave', true, clientId )
+			);
+			expect( gen.next( false ).value ).toEqual( take( savingChannel ) );
 		} );
 	} );
 
