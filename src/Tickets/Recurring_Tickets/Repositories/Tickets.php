@@ -12,7 +12,9 @@ namespace TEC\Tickets\Recurring_Tickets\Repositories;
 use InvalidArgumentException;
 use TEC\Common\Abstracts\Custom_Table_Repository;
 use TEC\Common\StellarWP\DB\DB;
+use TEC\Tickets\Ticket_Cache_Controller;
 use TEC\Tickets\Recurring_Tickets\Models\Ticket;
+use TEC\Tickets\Recurring_Tickets\Ticket_ID;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets as Tickets_Table;
 
 /**
@@ -214,6 +216,7 @@ final class Tickets extends Custom_Table_Repository {
 		}
 
 		DB::update( Tickets_Table::table_name(), $update, [ 'id' => $row_id ] );
+		tribe( Ticket_Cache_Controller::class )->clean_ticket_cache( Ticket_ID::from_row_id( $row_id ) );
 	}
 
 	/**
