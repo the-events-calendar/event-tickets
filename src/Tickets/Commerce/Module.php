@@ -16,6 +16,7 @@ use Tribe__Utils__Array as Arr;
 use TEC\Tickets\Commerce\Communication\Email as Email_Communication;
 use TEC\Tickets\Commerce\Emails\RSVP_Email_Sender;
 use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
+use TEC\Tickets\Recurring_Tickets\Ticket_ID;
 
 /**
  * Class Tickets Provider class for Tickets Commerce
@@ -604,6 +605,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.1.9
 	 * @since 5.6.7 Set some provider-invariant ticket properties.
+	 * @since TBD Returns a recurring event ticket as loaded from its row.
 	 *
 	 * @param int|WP_post $post_id   The post ID.
 	 * @param int|WP_post $ticket_id The ticket ID.
@@ -615,6 +617,11 @@ class Module extends \Tribe__Tickets__Tickets {
 
 		if ( ! $ticket instanceof \Tribe__Tickets__Ticket_Object ) {
 			return null;
+		}
+
+		// A recurring event ticket is not a post: assigning its type would write post meta for its ID.
+		if ( Ticket_ID::is_table_ticket( $ticket_id ) ) {
+			return $ticket;
 		}
 
 		// Set provider-invariant ticket properties.
