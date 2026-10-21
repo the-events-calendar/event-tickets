@@ -1004,20 +1004,35 @@
 	</p>
 
 	<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connect-button">
-		<a
-			target="_blank"
-			data-paypal-onboard-complete="tecTicketsCommerceGatewayPayPalSignupCallback"
-			href="https://www.paypal.com/bizsignup/partner/entry?referralToken=%5BPAYPAL_TOKEN_STRING%5D&displayMode=minibrowser"
-			data-paypal-button="true"
-			id="connect_to_paypal"
-			class="tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link"
+					<a
+				target="_blank"
+				data-paypal-onboard-complete="tecTicketsCommerceGatewayPayPalSignupCallback"
+				href="https://www.paypal.com/bizsignup/partner/entry?referralToken=%5BPAYPAL_TOKEN_STRING%5D&#038;displayMode=minibrowser"
+				data-paypal-button="true"
+				id="connect_to_paypal"
+				class="tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link"
+			>
+				Connect Automatically with <i>PayPal</i>			</a>
+		
+		<div
+			class="event-tickets tec-tickets__admin-settings-tickets-commerce-gateway-connect-error"
+			role="alert"
+			style="display: none;"
 		>
-			Connect Automatically with <i>PayPal</i>		</a>
+			<div class="tribe-tickets__notice tribe-tickets__notice--error tec-tickets__admin-settings-tickets-commerce-gateway-modal-notice-error">
+				<div class="tribe-common-b2 tribe-tickets-notice__content">
+					<h4 class="tribe-tickets-notice__title">
+						PayPal connection unavailable					</h4>
+					<div class="tribe-tickets-notice__message">
+						We could not get a connection link from PayPal. Reload this page to try again. If it keeps failing, check that your site can reach whodat.theeventscalendar.com. <a href="https://evnt.is/1axw" target="_blank" rel="noopener noreferrer">Learn more</a>					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
-</div>		
+</div>
+		
 <div class="tec-tickets__admin-settings-tickets-commerce-gateway-help-links">
-
 	<div class="tec-tickets__admin-settings-tickets-commerce-gateway-help-link">
 	<svg
  class="tribe-common-c-svgicon tribe-common-c-svgicon--lightbulb" fill="none"
@@ -1036,7 +1051,6 @@ xmlns="http://www.w3.org/2000/svg"
 		class="tec-tickets__admin-settings-tickets-commerce-gateway-help-link-url"
 	>Learn more about configuring PayPal payments</a>
 </div>
-
 	<div class="tec-tickets__admin-settings-tickets-commerce-gateway-help-link">
 	<svg
  class="tribe-common-c-svgicon tribe-common-c-svgicon--lightbulb" fill="none"
@@ -1055,6 +1069,5 @@ xmlns="http://www.w3.org/2000/svg"
 		class="tec-tickets__admin-settings-tickets-commerce-gateway-help-link-url"
 	>Get troubleshooting help</a>
 </div>
-
 </div>
 </div>
