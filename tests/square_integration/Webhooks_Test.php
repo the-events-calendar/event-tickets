@@ -74,13 +74,7 @@ class Webhooks_Test extends Controller_Test_Case {
 
 		$controller->refresh_webhook();
 
-		$new_webhook = tribe_get_option( Webhooks::OPTION_WEBHOOK );
-		$new_webhook_id = $new_webhook['id'];
-
-		$this->assertNotSame( $fetched_at, $new_webhook['fetched_at'] );
-		$this->assertGreaterThan( strtotime( $fetched_at ), strtotime( $new_webhook['fetched_at'] ) );
-		$this->assertTrue( time() - strtotime( $new_webhook['fetched_at'] ) < 1 );
-		$this->assertSame( $webhook_id, $new_webhook_id );
+		$this->assert_webhook_refreshed( $controller, $fetched_at, $webhook_id );
 	}
 
 	/**
@@ -111,6 +105,48 @@ class Webhooks_Test extends Controller_Test_Case {
 
 		$this->assertFalse( $controller->verify_signature( 'invalid' ) );
 		$this->assertTrue( $controller->verify_signature( $hashed ) );
+	}
+
+	public function whitespace_padded_secret_provider(): Generator {
+		$padded_secrets = [
+			'leading space'  => ' ' . str_repeat( 'a', 63 ),
+			'trailing space' => str_repeat( 'a', 63 ) . ' ',
+			'both ends'      => ' ' . str_repeat( 'a', 62 ) . ' ',
+		];
+
+		foreach ( $padded_secrets as $name => $secret ) {
+			yield "newly generated, {$name}" => [
+				function ( Webhooks $controller ) use ( $secret ): void {
+					// Random generation only pads a secret about one time in 45, so force it.
+					$this->set_fn_return( 'wp_generate_password', $secret );
+					$controller->get_webhook_secret( false, true );
+
+					$this->assertSame( trim( $secret ), get_transient( Webhooks::OPTION_WEBHOOK_SECRET ) );
+				},
+				$secret,
+			];
+
+			// Secrets stored before generation trimmed them must verify without being regenerated.
+			yield "already stored, {$name}" => [
+				function () use ( $secret ): void {
+					set_transient( Webhooks::OPTION_WEBHOOK_SECRET, $secret, 2 * DAY_IN_SECONDS );
+				},
+				$secret,
+			];
+		}
+	}
+
+	/**
+	 * @test
+	 * @dataProvider whitespace_padded_secret_provider
+	 */
+	public function it_should_verify_signature_of_whitespace_padded_secret( Closure $fixture, string $secret ): void {
+		$controller = $this->make_controller();
+
+		$fixture( $controller );
+
+		// Square holds the hash of the raw secret, as it was put in the registered webhook URL.
+		$this->assertTrue( $controller->verify_signature( wp_hash_password( $secret ) ) );
 	}
 
 	/**
@@ -282,17 +318,28 @@ class Webhooks_Test extends Controller_Test_Case {
 			return;
 		}
 
-		$new_webhook = tribe_get_option( Webhooks::OPTION_WEBHOOK );
-		$new_webhook_id = $new_webhook['id'];
-
-		$this->assertNotSame( $fetched_at, $new_webhook['fetched_at'] );
-		$this->assertGreaterThan( strtotime( $fetched_at ), strtotime( $new_webhook['fetched_at'] ) );
-		$this->assertTrue( time() - strtotime( $new_webhook['fetched_at'] ) < 1 );
-		$this->assertSame( $webhook_id, $new_webhook_id );
+		$this->assert_webhook_refreshed( $controller, $fetched_at, $webhook_id );
 
 		$this->assertTrue(
 			$success->was_called_times_with( 1, ...$args )
 		);
 		$this->assertFalse( $error->was_called() );
+	}
+
+	/**
+	 * Asserts the stored webhook kept its ID and was fetched again just now.
+	 *
+	 * @param Webhooks $controller The controller under test.
+	 * @param string   $fetched_at The `fetched_at` value before the refresh.
+	 * @param string   $webhook_id The webhook ID before the refresh.
+	 */
+	private function assert_webhook_refreshed( Webhooks $controller, string $fetched_at, string $webhook_id ): void {
+		$new_webhook = tribe_get_option( Webhooks::OPTION_WEBHOOK );
+
+		$this->assertNotSame( $fetched_at, $new_webhook['fetched_at'] );
+		$this->assertGreaterThan( strtotime( $fetched_at ), strtotime( $new_webhook['fetched_at'] ) );
+		// `fetched_at` is stored in site-local time; get_fetched_date() parses it in that timezone.
+		$this->assertEqualsWithDelta( time(), $controller->get_fetched_date()->getTimestamp(), 5 );
+		$this->assertSame( $webhook_id, $new_webhook['id'] );
 	}
 }
