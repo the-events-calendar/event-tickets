@@ -308,6 +308,107 @@ final class Tickets extends Custom_Table_Repository {
 	}
 
 	/**
+	 * Deletes rows by ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param int[] $row_ids The row IDs.
+	 *
+	 * @return int The number of rows deleted.
+	 */
+	public function delete_ids( array $row_ids ): int {
+		$row_ids = array_values( array_filter( array_map( 'intval', $row_ids ) ) );
+
+		if ( ! $row_ids ) {
+			return 0;
+		}
+
+		$deleted = (int) Tickets_Table::delete_many( $row_ids, 'id' );
+		array_map( [ $this, 'forget' ], $row_ids );
+		$this->occurrence_rows = [];
+
+		return $deleted;
+	}
+
+	/**
+	 * Writes a template's values on its rows, except on the columns a row overrides.
+	 *
+	 * Rows without overrides take the values in one statement. A row keeps its sales: a new capacity sets its stock
+	 * to the capacity less the sales, never below 0, or to NULL when the capacity is unlimited.
+	 *
+	 * @since TBD
+	 *
+	 * @param int                 $template_id The template ID.
+	 * @param array<string,mixed> $values      The values, keyed by column; integers, strings or NULL.
+	 *
+	 * @return void
+	 */
+	public function refresh_template( int $template_id, array $values ): void {
+		$rows = $this->get_by_template( $template_id );
+
+		if ( ! $rows || ! $values ) {
+			return;
+		}
+
+		[ $set, $args ] = $this->set_clause( $values );
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- The SET clause holds placeholders only.
+		DB::query( DB::prepare( "UPDATE %i SET {$set} WHERE parent_id = %d AND overrides IS NULL", Tickets_Table::table_name(), ...array_merge( $args, [ $template_id ] ) ) );
+
+		foreach ( $rows as $row ) {
+			$own = array_diff_key( $values, array_flip( (array) $row->overrides ) );
+
+			if ( $row->overrides && $own ) {
+				[ $set, $args ] = $this->set_clause( $own );
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- The SET clause holds placeholders only.
+				DB::query( DB::prepare( "UPDATE %i SET {$set} WHERE id = %d", Tickets_Table::table_name(), ...array_merge( $args, [ (int) $row->id ] ) ) );
+			}
+
+			$this->forget( (int) $row->id );
+		}
+
+		$this->occurrence_rows = [];
+	}
+
+	/**
+	 * Builds the SET clause of an update, with the stock that follows a capacity.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $values The values, keyed by column.
+	 *
+	 * @return array{0: string, 1: array<int,mixed>} The clause, with placeholders, and its arguments.
+	 */
+	private function set_clause( array $values ): array {
+		$set  = [];
+		$args = [];
+
+		foreach ( $values as $column => $value ) {
+			$args[] = $column;
+
+			if ( null === $value ) {
+				$set[] = '%i = NULL';
+				continue;
+			}
+
+			$set[]  = is_int( $value ) ? '%i = %d' : '%i = %s';
+			$args[] = $value;
+		}
+
+		if ( array_key_exists( 'capacity', $values ) ) {
+			$capacity = (int) $values['capacity'];
+
+			if ( -1 === $capacity ) {
+				$set[] = 'stock = NULL';
+			} else {
+				$set[]  = 'stock = GREATEST( %d - CAST( sales AS SIGNED ), 0 )';
+				$args[] = $capacity;
+			}
+		}
+
+		return [ implode( ', ', $set ), $args ];
+	}
+
+	/**
 	 * Forgets every row and date read in this request.
 	 *
 	 * @since TBD
