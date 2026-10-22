@@ -4,6 +4,7 @@ namespace TEC\Tickets\Recurring_Tickets\Editor;
 
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Recurring_Tickets\Template_Guard;
+use TEC\Tickets\Tests\Recurring_Tickets\Recurrence_Tier_Check;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use Tribe\Tickets\Editor\Warnings;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -15,6 +16,7 @@ use Tribe__Admin__Notices as Notices;
 class Classic_Test extends WPTestCase {
 	use Ticket_Rows;
 	use Ticket_Maker;
+	use Recurrence_Tier_Check;
 
 	/**
 	 * @before
@@ -37,6 +39,8 @@ class Classic_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_offer_a_recurring_event_ticket_on_a_recurring_event(): void {
+		$this->skip_without_recurrence_tier();
+
 		$html = $this->new_ticket_buttons( $this->create_recurring_event() );
 
 		$this->assertStringContainsString( 'id="recurring_ticket_form_toggle"', $html );
@@ -49,6 +53,8 @@ class Classic_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_render_the_button_hidden_on_a_single_event_for_when_it_recurs(): void {
+		$this->skip_without_recurrence_tier();
+
 		$event = tribe_events()->set_args(
 			[
 				'title'      => 'Single Event',
@@ -84,6 +90,8 @@ class Classic_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_head_a_recurring_event_tickets_form_with_its_type_and_the_number_of_dates(): void {
+		$this->skip_without_recurrence_tier();
+
 		$event = $this->create_recurring_event( 4 );
 		$views = tribe( 'tickets.admin.views' );
 		$views->set_values(
@@ -106,6 +114,8 @@ class Classic_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_title_the_list_of_recurring_event_tickets(): void {
+		$this->skip_without_recurrence_tier();
+
 		$table_data = apply_filters( 'tec_tickets_editor_list_table_data_' . Template_Guard::TICKET_TYPE, [ 'ticket_type' => Template_Guard::TICKET_TYPE ] );
 
 		$this->assertSame( 'Recurring event tickets', $table_data['table_title'] ?? null );
@@ -115,6 +125,8 @@ class Classic_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_say_what_a_recurring_event_offers_in_place_of_standard_tickets(): void {
+		$this->skip_without_recurrence_tier();
+
 		ob_start();
 		tribe( Warnings::class )->render_hidden_recurring_warning_for_ticket_meta_box( $this->create_recurring_event() );
 		$html = (string) ob_get_clean();
@@ -127,6 +139,8 @@ class Classic_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_not_warn_about_recurring_tickets_when_every_ticket_is_a_recurring_event_ticket(): void {
+		$this->skip_without_recurrence_tier();
+
 		$event = $this->create_recurring_event();
 		$this->create_tc_ticket( $event, 10 );
 

@@ -5,6 +5,7 @@ namespace TEC\Tickets\Recurring_Tickets;
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
+use TEC\Tickets\Tests\Recurring_Tickets\Requires_Recurrence_Tier;
 use TEC\Tickets\Tests\Recurring_Tickets\Row_Orders;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -16,6 +17,7 @@ class Event_Deletion_Test extends WPTestCase {
 	use Ticket_Rows;
 	use Ticket_Maker;
 	use Row_Orders;
+	use Requires_Recurrence_Tier;
 
 	/**
 	 * @before
