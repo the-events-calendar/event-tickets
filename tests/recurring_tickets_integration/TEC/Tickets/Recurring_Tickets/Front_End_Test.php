@@ -7,6 +7,7 @@ use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
+use TEC\Tickets\Tests\Recurring_Tickets\Recurrence_Tier_Check;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 
@@ -16,6 +17,7 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 class Front_End_Test extends WPTestCase {
 	use Ticket_Rows;
 	use Ticket_Maker;
+	use Recurrence_Tier_Check;
 
 	/**
 	 * The dates' IDs.
@@ -55,6 +57,8 @@ class Front_End_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_take_a_row_on_its_own_date(): void {
+		$this->skip_without_recurrence_tier();
+
 		$second = $this->dates[1];
 
 		$this->assertSame( [ $this->tickets[ $second ] ], $this->cart_tickets( $second, $this->tickets[ $second ] ) );
@@ -64,6 +68,8 @@ class Front_End_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_refuse_a_row_sent_from_another_dates_page(): void {
+		$this->skip_without_recurrence_tier();
+
 		$this->assertSame( [], $this->cart_tickets( $this->dates[2], $this->tickets[ $this->dates[1] ] ) );
 	}
 
@@ -71,6 +77,8 @@ class Front_End_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_refuse_a_row_that_is_not_published(): void {
+		$this->skip_without_recurrence_tier();
+
 		$second = $this->dates[1];
 		$this->update_row( $this->tickets[ $second ], [ 'status' => 'draft' ] );
 
@@ -81,6 +89,8 @@ class Front_End_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_refuse_a_row_outside_its_sale_window(): void {
+		$this->skip_without_recurrence_tier();
+
 		$second = $this->dates[1];
 		$this->update_row( $this->tickets[ $second ], [ 'end_date' => '2020-01-01 00:00:00', 'end_date_utc' => '2020-01-01 00:00:00' ] );
 
@@ -91,6 +101,8 @@ class Front_End_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_refuse_every_row_while_the_recurrence_tier_is_off(): void {
+		$this->skip_without_recurrence_tier();
+
 		$second = $this->dates[1];
 		tribe( Recurrence_Controller::class )->unregister();
 		tribe()->setVar( Recurrence_Controller::class . '_registered', false );
