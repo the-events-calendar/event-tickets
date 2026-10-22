@@ -118,6 +118,7 @@ final class Recurrence_Controller extends Controller_Contract {
 		// The tier is never registered on an ECP that lacks these actions, and naming a missing constant is fatal.
 		if ( self::ecp_has_hooks() ) {
 			remove_action( Events::AFTER_TRANSFER_OCCURRENCES_ACTION, $this->container->callback( Detach::class, 'move_rows' ) );
+			remove_action( Events::AFTER_DETACH_OCCURRENCE_ACTION, $this->container->callback( Detach::class, 'detach_rows' ) );
 		}
 	}
 
@@ -171,6 +172,7 @@ final class Recurrence_Controller extends Controller_Contract {
 
 		add_action( 'tec_tickets_tickets_duplicated', $this->container->callback( Detach::class, 'remember_clones' ), 10, 3 );
 		add_action( Events::AFTER_TRANSFER_OCCURRENCES_ACTION, $this->container->callback( Detach::class, 'move_rows' ), 10, 3 );
+		add_action( Events::AFTER_DETACH_OCCURRENCE_ACTION, $this->container->callback( Detach::class, 'detach_rows' ), 10, 3 );
 
 		$this->container->make( Assets::class )->register();
 	}
