@@ -56,6 +56,7 @@ final class Core_Controller extends Controller_Contract {
 		remove_filter( 'tec_events_pro_custom_tables_v1_is_provisional_post_id', [ Ticket_ID::class, 'filter_provisional_post_id' ] );
 		remove_filter( 'tec_tickets_commerce_get_ticket_before', $this->container->callback( Commerce\Row_Post::class, 'filter_ticket' ) );
 		remove_filter( 'tec_tickets_commerce_cart_prepare_data', $this->container->callback( Front_End::class, 'filter_cart_data' ) );
+		remove_action( 'tec_tickets_commerce_attendee_after_create', $this->container->callback( Commerce\Attendees::class, 'store' ) );
 	}
 
 	/**
@@ -107,11 +108,13 @@ final class Core_Controller extends Controller_Contract {
 		$this->container->singleton( Date_Tickets::class );
 		$this->container->singleton( Commerce\Row_Post::class );
 		$this->container->singleton( Front_End::class );
+		$this->container->singleton( Commerce\Attendees::class );
 		add_filter( 'tec_tickets_get_tickets', $this->container->callback( Date_Tickets::class, 'swap' ), 10, 2 );
 		// After the swap: a date's templates are already gone, any left are the event's own.
 		add_filter( 'tec_tickets_get_tickets', $this->container->callback( Template_Guard::class, 'drop_from_front_end' ), 20, 2 );
 		add_filter( 'tec_events_pro_custom_tables_v1_is_provisional_post_id', [ Ticket_ID::class, 'filter_provisional_post_id' ], 10, 2 );
 		add_filter( 'tec_tickets_commerce_get_ticket_before', $this->container->callback( Commerce\Row_Post::class, 'filter_ticket' ), 10, 4 );
 		add_filter( 'tec_tickets_commerce_cart_prepare_data', $this->container->callback( Front_End::class, 'filter_cart_data' ) );
+		add_action( 'tec_tickets_commerce_attendee_after_create', $this->container->callback( Commerce\Attendees::class, 'store' ), 10, 3 );
 	}
 }
