@@ -10,6 +10,7 @@ use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Recurring_Tickets\Models\Ticket;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
+use TEC\Tickets\Tests\Recurring_Tickets\Recurrence_Tier_Check;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 
@@ -19,6 +20,7 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 class Sync_Test extends WPTestCase {
 	use Ticket_Rows;
 	use Ticket_Maker;
+	use Recurrence_Tier_Check;
 
 	/**
 	 * @before
@@ -32,6 +34,8 @@ class Sync_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_give_each_date_a_row_of_a_new_template_with_its_values(): void {
+		$this->skip_without_recurrence_tier();
+
 		$event    = $this->create_recurring_event();
 		$dates    = $this->get_dates( $event );
 		$template = $this->create_template( $event, 'General Admission', '10.50', 20 );
@@ -78,6 +82,8 @@ class Sync_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_refresh_the_rows_when_the_template_changes(): void {
+		$this->skip_without_recurrence_tier();
+
 		$event    = $this->create_recurring_event();
 		$template = $this->create_template( $event, 'General Admission', '10.50', 20 );
 		$ids      = array_column( $this->snapshot( $template ), 'id' );
@@ -94,6 +100,8 @@ class Sync_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_keep_sales_when_the_capacity_changes(): void {
+		$this->skip_without_recurrence_tier();
+
 		$event    = $this->create_recurring_event();
 		$template = $this->create_template( $event, 'General Admission', '10.50', 10 );
 		$first    = $this->rows_of( $template )[0];
@@ -117,6 +125,8 @@ class Sync_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_keep_an_overridden_column(): void {
+		$this->skip_without_recurrence_tier();
+
 		$event    = $this->create_recurring_event();
 		$template = $this->create_template( $event, 'General Admission', '10.50', 20 );
 		$first    = $this->rows_of( $template )[0];
@@ -133,6 +143,8 @@ class Sync_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_delete_the_rows_of_a_removed_date(): void {
+		$this->skip_without_recurrence_tier();
+
 		$event    = $this->create_recurring_event();
 		$dates    = $this->get_dates( $event );
 		$template = $this->create_template( $event, 'General Admission', '10.50', 20 );
@@ -154,6 +166,8 @@ class Sync_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_delete_the_rows_of_a_deleted_template(): void {
+		$this->skip_without_recurrence_tier();
+
 		$event    = $this->create_recurring_event();
 		$template = $this->create_template( $event, 'General Admission', '10.50', 20 );
 		$other    = $this->create_template( $event, 'VIP', '25', 5 );
@@ -168,6 +182,8 @@ class Sync_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_leave_a_row_whose_date_moved_to_another_event(): void {
+		$this->skip_without_recurrence_tier();
+
 		$event    = $this->create_recurring_event();
 		$other    = $this->create_recurring_event();
 		$dates    = $this->get_dates( $event );
@@ -216,6 +232,8 @@ class Sync_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_take_the_rows_another_request_wrote_meanwhile(): void {
+		$this->skip_without_recurrence_tier();
+
 		$event    = $this->create_recurring_event();
 		$template = $this->create_template( $event, 'General Admission', '10.50', 20 );
 		$first    = $this->rows_of( $template )[0];
