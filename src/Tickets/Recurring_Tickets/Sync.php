@@ -69,16 +69,27 @@ final class Sync {
 	private Template_Guard $guard;
 
 	/**
+	 * The same-date re-pointing.
+	 *
+	 * @since TBD
+	 *
+	 * @var Reconcile
+	 */
+	private Reconcile $reconcile;
+
+	/**
 	 * Sync constructor.
 	 *
 	 * @since TBD
 	 *
-	 * @param Rows           $rows  The rows repository.
-	 * @param Template_Guard $guard The template guard.
+	 * @param Rows           $rows      The rows repository.
+	 * @param Template_Guard $guard     The template guard.
+	 * @param Reconcile      $reconcile The same-date re-pointing.
 	 */
-	public function __construct( Rows $rows, Template_Guard $guard ) {
-		$this->rows  = $rows;
-		$this->guard = $guard;
+	public function __construct( Rows $rows, Template_Guard $guard, Reconcile $reconcile ) {
+		$this->rows      = $rows;
+		$this->guard     = $guard;
+		$this->reconcile = $reconcile;
 	}
 
 	/**
@@ -160,7 +171,9 @@ final class Sync {
 	 * @return void
 	 */
 	private function apply( int $post_id, array $templates, array $dates ): void {
-		$rows   = $this->delete_stale( $this->rows->get_by_post( $post_id ), $templates, $dates );
+		// A gone date may be the same day under a new ID: its rows follow it before the rest go.
+		$rows   = $this->reconcile->repoint( $post_id, $this->rows->get_by_post( $post_id ), $dates );
+		$rows   = $this->delete_stale( $rows, $templates, $dates );
 		$values = [];
 
 		foreach ( $templates as $template_id ) {
