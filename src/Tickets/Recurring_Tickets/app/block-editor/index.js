@@ -8,6 +8,7 @@
  */
 import { addFilter } from '@wordpress/hooks';
 import { __, _x, sprintf } from '@wordpress/i18n';
+import { hasRecurrenceRules } from '@moderntribe/common/utils/recurrence';
 import { TICKET_LABELS } from '../../../../modules/data/blocks/ticket/constants';
 
 /**
@@ -100,6 +101,47 @@ export function describeRecurringTickets( mappedProps ) {
 }
 
 /**
+ * Names, in the ticket form, the type of a ticket saved on a recurring event, which is never a standard ticket there.
+ *
+ * Runs after Flexible Tickets, which describes a standard ticket of an event in a Series.
+ *
+ * @since TBD
+ *
+ * @param {Object} mappedProps           The props of the ticket form's type.
+ * @param {Object} context               The context of the filter.
+ * @param {Object} context.state         The state of the Tickets block.
+ * @param {Object} context.ticketDetails The ticket being edited.
+ *
+ * @return {Object} The props.
+ */
+export function nameRecurringTicketType( mappedProps, { state, ticketDetails } ) {
+	if ( 'recurring' !== ticketDetails?.type && ! hasRecurrenceRules( state ) ) {
+		return mappedProps;
+	}
+
+	const postTypeLabel =
+		window.tribe_editor_config?.post?.labels?.singular_name?.toLowerCase() || __( 'event', 'event-tickets' );
+
+	return {
+		...mappedProps,
+		typeName: sprintf(
+			// Translators: %s is the singular label for a ticket.
+			_x( 'Recurring Event %s', 'The ticket type name of a recurring event ticket.', 'event-tickets' ),
+			TICKET_LABELS?.ticket?.singular ?? __( 'Ticket', 'event-tickets' )
+		),
+		typeDescription: sprintf(
+			// Translators: %s is the post type name in human readable form.
+			_x(
+				'Sold for each date of this recurring %s.',
+				'The ticket type description of a recurring event ticket.',
+				'event-tickets'
+			),
+			postTypeLabel
+		),
+	};
+}
+
+/**
  * Offers "Add a Ticket" on a recurring event, without the message that tickets are not supported there.
  *
  * Runs after Flexible Tickets, which hides the button on a recurring event.
@@ -143,6 +185,7 @@ addFilter(
 	describeRecurringTickets,
 	20
 );
+addFilter( 'tec.tickets.blocks.Tickets.Type.mappedProps', 'tec.tickets.recurringTickets', nameRecurringTicketType, 20 );
 addFilter(
 	'tec.tickets.blocks.Tickets.mappedProps',
 	'tec.tickets.recurringTickets',

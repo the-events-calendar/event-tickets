@@ -1,7 +1,11 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 import { applyFilters } from '@wordpress/hooks';
+import { hasRecurrenceRules } from '@moderntribe/common/utils/recurrence';
 import '../../../src/Tickets/Recurring_Tickets/app/block-editor';
+
+// Reads Events Calendar Pro's recurrence store, which is not loaded in tests.
+jest.mock( '@moderntribe/common/utils/recurrence', () => ( { hasRecurrenceRules: jest.fn( () => false ) } ) );
 
 // The shared stub has no _x() and no numbered placeholders; with no translations loaded, the real one returns English.
 jest.mock( '@wordpress/i18n', () => jest.requireActual( '@wordpress/i18n' ) );
@@ -96,6 +100,37 @@ describe( 'Recurring event tickets in the block editor', () => {
 			const props = { ...empty, ...overrides };
 
 			expect( inactive( props ) ).toBe( props );
+		} );
+	} );
+
+	describe( 'the ticket type in the ticket form', () => {
+		const standard = { typeName: 'Standard Ticket', typeDescription: 'A standard ticket is specific to this event.' };
+		const typeProps = ( { recurs, type } ) => {
+			hasRecurrenceRules.mockReturnValue( recurs );
+
+			return applyFilters( 'tec.tickets.blocks.Tickets.Type.mappedProps', { ...standard }, {
+				state: {},
+				ownProps: {},
+				ticketDetails: { type },
+			} );
+		};
+
+		afterEach( () => {
+			hasRecurrenceRules.mockReturnValue( false );
+		} );
+
+		test.each( [
+			[ 'a new ticket on a recurring event', { recurs: true, type: 'default' } ],
+			[ 'a recurring event ticket', { recurs: false, type: 'recurring' } ],
+		] )( 'names %s a recurring event ticket', ( _label, ticket ) => {
+			expect( typeProps( ticket ) ).toEqual( {
+				typeName: 'Recurring Event Ticket',
+				typeDescription: 'Sold for each date of this recurring event.',
+			} );
+		} );
+
+		test( 'leaves a standard ticket on a single event as it is', () => {
+			expect( typeProps( { recurs: false, type: 'default' } ) ).toEqual( standard );
 		} );
 	} );
 } );
