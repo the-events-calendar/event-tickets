@@ -15,6 +15,7 @@ use Tribe__Utils__Array as Arr;
 use Tribe__Date_Utils as Date_Utils;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use TEC\Tickets\Ticket_Data;
+use TEC\Tickets\Recurring_Tickets\Commerce\Attendees as Recurring_Attendees;
 use TEC\Tickets\Recurring_Tickets\Commerce\Row_Post;
 use TEC\Tickets\Recurring_Tickets\Hydrator;
 use TEC\Tickets\Recurring_Tickets\Stock;
@@ -954,6 +955,13 @@ class Ticket extends Ticket_Data {
 			}
 			\Tribe__Tickets__Attendance::instance( $event_id )->increment_deleted_attendees_count();
 			\Tribe__Post_Transient::instance()->delete( $event_id, \Tribe__Tickets__Tickets::ATTENDEES_CACHE );
+
+			// The attendee's event lists it too, under the event's own ID.
+			$post_id = (int) get_post_meta( $attendee_id, Recurring_Attendees::POST_ID_META_KEY, true );
+
+			if ( $post_id ) {
+				\Tribe__Post_Transient::instance()->delete( $post_id, \Tribe__Tickets__Tickets::ATTENDEES_CACHE );
+			}
 
 			return;
 		}
