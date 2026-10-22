@@ -3077,6 +3077,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public function get_ticket_prices( array $prices, $post_id ) {
+			// The block editor saves an empty Event Price block as an empty cost, which is no cost at all.
+			$prices = array_filter( $prices, static fn( $price ) => '' !== $price && null !== $price );
+
 			// If value already exists, do not override it. Return it.
 			if ( ! empty( $prices ) ) {
 				return $prices;
