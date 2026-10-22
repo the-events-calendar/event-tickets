@@ -9,12 +9,14 @@ use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
+use TEC\Tickets\Tests\Recurring_Tickets\Without_Recurrence_Tier;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 
 /**
  * The Tickets Commerce stock functions move a table ticket's stock and sales on its row, never in post meta.
  */
 class Commerce_Stock_Guards_Test extends WPTestCase {
+	use Without_Recurrence_Tier;
 	use Ticket_Rows;
 	use Ticket_Maker;
 

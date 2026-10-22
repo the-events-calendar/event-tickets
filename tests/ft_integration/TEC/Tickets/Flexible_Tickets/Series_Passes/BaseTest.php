@@ -326,6 +326,8 @@ class BaseTest extends Controller_Test_Case {
 					'recurrence' => 'RRULE:FREQ=WEEKLY;COUNT=3',
 				] )->create()->ID;
 				$ticket_id = $this->create_tc_ticket( $event );
+				// A standard ticket: one saved on a recurring event now is a recurring event ticket.
+				update_post_meta( $ticket_id, '_type', 'default' );
 
 				return [ $event, $ticket_id, true ];
 			}
@@ -358,6 +360,8 @@ class BaseTest extends Controller_Test_Case {
 					'recurrence' => 'RRULE:FREQ=WEEKLY;COUNT=3',
 				] )->create()->ID;
 				$ticket_id = $this->create_tc_ticket( $event );
+				// A standard ticket: one saved on a recurring event now is a recurring event ticket.
+				update_post_meta( $ticket_id, '_type', 'default' );
 
 				// Second occurrence.
 				$occurrence = Occurrence::where( 'post_id', $event )->offset( 1 )->first();

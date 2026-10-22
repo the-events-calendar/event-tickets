@@ -206,6 +206,7 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	 * allowing users to select applicable fees for the current ticket.
 	 *
 	 * @since 5.18.0
+	 * @since TBD Recurring event tickets get the fee section.
 	 *
 	 * @param int      $post_id The post ID of the ticket.
 	 * @param int|null $ticket_id The ticket ID.
@@ -215,7 +216,7 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	 */
 	public function add_fee_section( int $post_id, ?int $ticket_id, string $ticket_type ): void {
 		// Bail if no ticket!
-		if ( ! in_array( $ticket_type, [ 'default', 'ticket', 'series_pass' ], true ) ) {
+		if ( ! in_array( $ticket_type, [ 'default', 'ticket', 'series_pass', 'recurring' ], true ) ) {
 			return;
 		}
 

@@ -8,12 +8,14 @@ use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Tickets_Repository;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
+use TEC\Tickets\Tests\Recurring_Tickets\Without_Recurrence_Tier;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 
 /**
  * Post meta of a table ticket ID comes from its row, or its template for anything else, and never from wp_postmeta.
  */
 class Meta_Shim_Test extends WPTestCase {
+	use Without_Recurrence_Tier;
 	use Ticket_Rows;
 	use Ticket_Maker;
 

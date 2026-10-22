@@ -76,6 +76,8 @@ final class Recurrence_Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
+		remove_action( 'tec_tickets_ticket_pre_save', $this->container->callback( Ticket_Type::class, 'remember' ) );
+		remove_action( 'tribe_tickets_ticket_add', $this->container->callback( Ticket_Type::class, 'assign' ), 5 );
 	}
 
 	/**
@@ -86,6 +88,11 @@ final class Recurrence_Controller extends Controller_Contract {
 	 * @return void
 	 */
 	protected function do_register(): void {
+		$this->container->singleton( Ticket_Type::class );
+
+		add_action( 'tec_tickets_ticket_pre_save', $this->container->callback( Ticket_Type::class, 'remember' ), 10, 2 );
+		// Before anything else reads the type of the ticket just saved.
+		add_action( 'tribe_tickets_ticket_add', $this->container->callback( Ticket_Type::class, 'assign' ), 5, 5 );
 	}
 
 	/**
