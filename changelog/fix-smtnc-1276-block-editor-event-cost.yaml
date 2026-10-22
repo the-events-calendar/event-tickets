@@ -1,0 +1,5 @@
+significance: patch
+type: fix
+entry: Kept the Get Tickets button and ticket prices in calendar views for
+  events saved in the block editor with an empty event price.
+timestamp: 2026-10-22T20:06:39.758Z
