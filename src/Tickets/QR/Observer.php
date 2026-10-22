@@ -7,6 +7,7 @@
 
 namespace TEC\Tickets\QR;
 
+use TEC\Tickets\Recurring_Tickets\Commerce\Attendees as Recurring_Attendees;
 use Tribe__Tickets__Tickets as Tickets;
 
 /**
@@ -89,6 +90,7 @@ class Observer {
 	 *
 	 * @since 5.7.0
 	 * @since 5.30.0.2 Records the QR status here and passes an "already checked in" flag to the notice.
+	 * @since TBD Checks in an attendee of a recurring event ticket whose date is gone against its event.
 	 *
 	 * @param int    $event_id      Event post ID.
 	 * @param int    $ticket_id     Ticket post ID.
@@ -106,6 +108,12 @@ class Observer {
 		}
 
 		$post = get_post( $event_id );
+
+		// An attendee of a recurring event ticket whose date is gone is checked in against its event.
+		if ( empty( $post ) ) {
+			$event_id = (int) get_post_meta( (int) $ticket_id, Recurring_Attendees::POST_ID_META_KEY, true );
+			$post     = $event_id ? get_post( $event_id ) : null;
+		}
 
 		if ( empty( $post ) ) {
 			return [
