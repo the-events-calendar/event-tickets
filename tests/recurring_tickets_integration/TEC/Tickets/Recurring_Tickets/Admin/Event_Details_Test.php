@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Recurring_Tickets\Admin;
 
 use Codeception\TestCase\WPTestCase;
+use TEC\Tickets\Tests\Recurring_Tickets\Recurrence_Tier_Check;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 
@@ -12,12 +13,15 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 class Event_Details_Test extends WPTestCase {
 	use Ticket_Rows;
 	use Ticket_Maker;
+	use Recurrence_Tier_Check;
 
 	/**
 	 * @test
 	 * @dataProvider pages
 	 */
 	public function it_should_list_the_dates_of_a_recurring_event_in_place_of_its_one_date( string $hook ): void {
+		$this->skip_without_recurrence_tier();
+
 		$event = $this->create_recurring_event( 5 );
 		$this->create_tc_ticket( $event, 10 );
 		$dates = $this->get_dates( $event );
@@ -35,6 +39,8 @@ class Event_Details_Test extends WPTestCase {
 	 * @dataProvider pages
 	 */
 	public function it_should_list_the_dates_of_its_event_on_a_dates_page( string $hook ): void {
+		$this->skip_without_recurrence_tier();
+
 		$event = $this->create_recurring_event();
 		$this->create_tc_ticket( $event, 10 );
 		$dates = $this->get_dates( $event );

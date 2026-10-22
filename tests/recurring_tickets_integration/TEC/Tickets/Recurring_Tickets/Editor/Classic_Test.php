@@ -144,6 +144,8 @@ class Classic_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_list_the_events_recurring_event_tickets_on_a_dates_screen(): void {
+		$this->skip_without_recurrence_tier();
+
 		$event    = $this->create_recurring_event();
 		$template = $this->create_tc_ticket( $event, 10 );
 		// As the ticket editor saves a ticket on a recurring event.
@@ -176,6 +178,8 @@ class Classic_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_say_what_to_do_with_an_event_that_has_standard_tickets_in_place_of_its_recurrence_rules(): void {
+		$this->skip_without_recurrence_tier();
+
 		ob_start();
 		tribe( Recurrence::class )->add_recurrence_not_supported_with_tickets_message( '' );
 		$html = (string) ob_get_clean();
@@ -187,6 +191,8 @@ class Classic_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_say_where_to_sell_series_passes_for_a_recurring_event_in_a_series(): void {
+		$this->skip_without_recurrence_tier();
+
 		$event  = $this->create_recurring_event();
 		$series = tec_series()->where( 'event_post_id', $event )->first();
 
