@@ -6,11 +6,6 @@
  */
 
 /**
- * External dependencies
- */
-import moment from 'moment';
-
-/**
  * Internal dependencies
  */
 import { MODE_RELATIVE } from '../rule-constants';
@@ -91,7 +86,6 @@ export function updateHelperText() {
 	const saleWindow = resolveWindow( rule, getEventDates( context ), CLASSIC_SALES_WINDOW );
 	const formats = {
 		dateWithYear: settings.dateWithYear,
-		dateNoYear: settings.dateNoYear,
 		timeFormat: settings.timeFormat,
 		dateSettings: getDateSettings( dynamic ),
 	};
@@ -99,12 +93,8 @@ export function updateHelperText() {
 	[ 'start', 'end' ].forEach( ( key ) => {
 		const date = saleWindow ? saleWindow[ key ] : null;
 		const isRelative = MODE_RELATIVE === rule[ key ].mode;
-
-		// The year is now's in the event timezone, as the block editor reads it.
 		const text =
-			isRelative && date && date.isValid()
-				? formatHelperText( settings.text[ key ], date, formats, moment().utcOffset( date.utcOffset() ).year() )
-				: '';
+			isRelative && date && date.isValid() ? formatHelperText( settings.text[ key ], date, formats ) : '';
 		const helper = document.getElementById( `ticket_sales_${ key }_helper` );
 
 		// The helper is a live region: writing the same text again can announce it again.
@@ -203,7 +193,10 @@ export function updateTicketsList() {
 	}
 
 	const eventDates = getEventDates( context );
-	const listSettings = { format: context.settings.dateWithYear, dateSettings: getDateSettings( context.dynamic ) };
+	const listSettings = {
+		format: `${ context.settings.dateWithYear } ${ context.settings.timeFormat }`,
+		dateSettings: getDateSettings( context.dynamic ),
+	};
 
 	rows.forEach( ( row ) => {
 		const rule = parseRule( row.dataset.relativeSaleDates );

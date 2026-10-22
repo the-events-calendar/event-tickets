@@ -305,10 +305,26 @@ class Editor_Test extends Controller_Test_Case {
 
 		$dates = $this->get_available_dates( $list, $ruled );
 		$this->assertSame( $rule, json_decode( $dates->getAttribute( 'data-relative-sale-dates' ), true ) );
-		$this->assertSame( $this->get_ticket_start( $ruled )[0], $dates->getAttribute( 'data-sale-start' ) );
-		$this->assertSame( $this->get_ticket_end( $ruled )[0], $dates->getAttribute( 'data-sale-end' ) );
+		$this->assertSame( implode( ' ', $this->get_ticket_start( $ruled ) ), $dates->getAttribute( 'data-sale-start' ) );
+		$this->assertSame( implode( ' ', $this->get_ticket_end( $ruled ) ), $dates->getAttribute( 'data-sale-end' ) );
 		// Each row's template context is merged into the next one, so the rule must not carry over.
 		$this->assertFalse( $this->get_available_dates( $list, $plain )->hasAttribute( 'data-relative-sale-dates' ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_show_the_time_of_each_sales_date_in_the_tickets_list(): void {
+		$this->make_controller()->register();
+		$event_start = new DateTimeImmutable( '2027-06-24 19:00:00' );
+		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
+		$rule        = [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => $this->relative( 1, HOUR_IN_SECONDS ) ];
+		$ticket_id   = $this->create_tc_ticket( $event_id, 1, [ 'relative_sale_dates' => wp_json_encode( $rule ) ] );
+
+		$dates = $this->get_available_dates( $this->render_tickets_list( $event_id ), $ticket_id );
+
+		$expected = $event_start->modify( '-2 weeks' )->format( 'F j, Y g:i a' ) . ' - ' . $event_start->modify( '-1 hour' )->format( 'F j, Y g:i a' );
+		$this->assertSame( $expected, trim( $dates->textContent ) );
 	}
 
 	/**
