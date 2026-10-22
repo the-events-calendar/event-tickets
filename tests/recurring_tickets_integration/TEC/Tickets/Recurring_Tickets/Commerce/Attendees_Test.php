@@ -6,6 +6,7 @@ use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
 use TEC\Tickets\Recurring_Tickets\Ticket_ID;
+use TEC\Tickets\Tests\Recurring_Tickets\Recurrence_Tier_Check;
 use TEC\Tickets\Tests\Recurring_Tickets\Row_Orders;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -17,6 +18,7 @@ class Attendees_Test extends WPTestCase {
 	use Ticket_Rows;
 	use Ticket_Maker;
 	use Row_Orders;
+	use Recurrence_Tier_Check;
 
 	/**
 	 * @after
@@ -30,6 +32,8 @@ class Attendees_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_store_the_event_and_the_dates_start_on_a_rows_attendee(): void {
+		$this->skip_without_recurrence_tier();
+
 		( new Tickets() )->empty_table();
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 		$event  = $this->create_recurring_event();

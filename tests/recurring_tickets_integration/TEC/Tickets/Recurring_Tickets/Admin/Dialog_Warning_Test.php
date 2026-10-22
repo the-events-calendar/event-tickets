@@ -7,6 +7,7 @@ use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Stock;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
+use TEC\Tickets\Tests\Recurring_Tickets\Recurrence_Tier_Check;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 
@@ -16,6 +17,7 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 class Dialog_Warning_Test extends WPTestCase {
 	use Ticket_Rows;
 	use Ticket_Maker;
+	use Recurrence_Tier_Check;
 
 	/**
 	 * @before
@@ -28,6 +30,8 @@ class Dialog_Warning_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_warn_how_many_upcoming_dates_have_sold_tickets(): void {
+		$this->skip_without_recurrence_tier();
+
 		$event = $this->create_recurring_event( 4 );
 		$this->create_tc_ticket( $event, 10 );
 		$rows = $this->rows_by_date( $event );

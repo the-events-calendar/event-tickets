@@ -8,6 +8,7 @@ use TEC\Events_Pro\Custom_Tables\V1\Events\Provisional\ID_Generator;
 use TEC\Events_Pro\Custom_Tables\V1\Updates\Update_Controllers\Upcoming;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
+use TEC\Tickets\Tests\Recurring_Tickets\Requires_Recurrence_Tier;
 use TEC\Tickets\Tests\Recurring_Tickets\Row_Orders;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use Tribe\Events_Pro\Tests\Traits\CT1\CT1_Fixtures;
@@ -21,6 +22,7 @@ class Split_Test extends WPTestCase {
 	use Ticket_Maker;
 	use Row_Orders;
 	use CT1_Fixtures;
+	use Requires_Recurrence_Tier;
 
 	/**
 	 * @before
