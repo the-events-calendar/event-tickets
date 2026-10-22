@@ -7,11 +7,14 @@ use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Events_Pro\Custom_Tables\V1\Events\Provisional\ID_Generator;
 use TEC\Events_Pro\Custom_Tables\V1\Models\Provisional_Post;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
+use TEC\Tickets\Tests\Recurring_Tickets\Recurrence_Tier_Check;
 
 /**
  * The Core tier is always on: already sold table tickets must keep working whatever else is switched off.
  */
 class Core_Controller_Test extends Controller_Test_Case {
+	use Recurrence_Tier_Check;
+
 	protected string $controller_class = Core_Controller::class;
 
 	/**
@@ -66,6 +69,8 @@ class Core_Controller_Test extends Controller_Test_Case {
 	 * @test
 	 */
 	public function it_should_tell_ecp_a_table_ticket_id_is_not_a_date(): void {
+		$this->skip_without_recurrence_tier();
+
 		$this->make_controller()->register();
 		$provisional = tribe( Provisional_Post::class );
 

@@ -6,6 +6,7 @@ use Codeception\TestCase\WPTestCase;
 use TEC\Common\StellarWP\Shepherd\Config;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
+use TEC\Tickets\Tests\Recurring_Tickets\Recurrence_Tier_Check;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 
@@ -15,6 +16,7 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 class Sync_Task_Test extends WPTestCase {
 	use Ticket_Rows;
 	use Ticket_Maker;
+	use Recurrence_Tier_Check;
 
 	/**
 	 * @before
@@ -28,6 +30,8 @@ class Sync_Task_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_sync_an_event_above_the_inline_limit_in_one_background_task(): void {
+		$this->skip_without_recurrence_tier();
+
 		add_filter( 'tec_tickets_recurring_tickets_sync_inline_limit', static fn() => 4 );
 		$prefix    = Config::get_hook_prefix();
 		$created   = [];
