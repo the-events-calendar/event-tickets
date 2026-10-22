@@ -9,6 +9,7 @@ use TEC\Events_Pro\Custom_Tables\V1\Event_Factory;
 use TEC\Events_Pro\Custom_Tables\V1\Events\Recurrence;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
+use TEC\Tickets\Tests\Recurring_Tickets\Recurrence_Tier_Check;
 use TEC\Tickets\Tests\Recurring_Tickets\Row_Orders;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -20,6 +21,7 @@ class Reconcile_Test extends WPTestCase {
 	use Ticket_Rows;
 	use Ticket_Maker;
 	use Row_Orders;
+	use Recurrence_Tier_Check;
 
 	/**
 	 * The first day of the events.
@@ -49,6 +51,8 @@ class Reconcile_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_keep_each_dates_rows_and_attendees_when_the_start_time_changes(): void {
+		$this->skip_without_recurrence_tier();
+
 		$event     = $this->create_event( $this->daily( '10:00:00' ) );
 		$template  = $this->create_tc_ticket( $event, 10 );
 		$before    = $this->rows_by_day( $template );
@@ -112,6 +116,8 @@ class Reconcile_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_not_guess_on_a_day_with_two_dates(): void {
+		$this->skip_without_recurrence_tier();
+
 		$event    = $this->create_event( $this->daily( '10:00:00' )->with_date_recurrence( $this->day, false, '15:00:00', '16:00:00' ) );
 		$template = $this->create_tc_ticket( $event, 10 );
 		$on_day   = $this->rows_on( $template, $this->day );
