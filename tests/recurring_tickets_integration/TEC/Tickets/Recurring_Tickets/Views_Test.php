@@ -6,6 +6,7 @@ use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
+use TEC\Tickets\Tests\Recurring_Tickets\Recurrence_Tier_Check;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use Tribe\Tickets\Events\Views\V2\Models\Tickets as Ticket_Model;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -17,6 +18,7 @@ use Tribe__Tickets__Tickets as Tribe_Tickets;
 class Views_Test extends WPTestCase {
 	use Ticket_Rows;
 	use Ticket_Maker;
+	use Recurrence_Tier_Check;
 
 	/**
 	 * The event.
@@ -72,6 +74,8 @@ class Views_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_keep_each_dates_availability_apart(): void {
+		$this->skip_without_recurrence_tier();
+
 		$this->assertTrue( tribe( Stock::class )->sell( $this->row_of( 1 ), 5 ) );
 
 		// The second date is read, and cached, first.
@@ -87,6 +91,8 @@ class Views_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_drop_a_dates_entry_when_its_rows_are_refreshed(): void {
+		$this->skip_without_recurrence_tier();
+
 		$this->assertTrue( tribe( Stock::class )->sell( $this->row_of( 1 ), 5 ) );
 		$this->assertTrue( ( new Ticket_Model( (int) $this->dates[1]->provisional_id ) )->sold_out() );
 
@@ -112,6 +118,8 @@ class Views_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_read_the_rows_of_every_date_of_an_events_query_at_once(): void {
+		$this->skip_without_recurrence_tier();
+
 		// A new request starts with no row read.
 		$rows = tribe( Rows::class );
 		\Closure::bind(
