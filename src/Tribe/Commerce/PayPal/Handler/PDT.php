@@ -1,5 +1,7 @@
 <?php
 
+use TEC\Tickets\Legacy_PayPal\Cart_Reconciler;
+
 class Tribe__Tickets__Commerce__PayPal__Handler__PDT implements Tribe__Tickets__Commerce__PayPal__Handler__Interface {
 
 	/**
@@ -15,6 +17,7 @@ class Tribe__Tickets__Commerce__PayPal__Handler__PDT implements Tribe__Tickets__
 	 * Checks the request to see if payment data was communicated
 	 *
 	 * @since 4.7
+	 * @since TBD Only fulfils a transaction that matches the cart stored by the checkout.
 	 */
 	public function check_response() {
 		if ( ! isset( $_GET['tx'] ) ) {
@@ -32,7 +35,28 @@ class Tribe__Tickets__Commerce__PayPal__Handler__PDT implements Tribe__Tickets__
 			return false;
 		}
 
-		$gateway->set_transaction_data( $gateway->parse_transaction( $results ) );
+		$transaction = $gateway->parse_transaction( $results );
+
+		/*
+		 * The cart is cleared by the ticket generation below, so it has to be compared first. Anything PayPal
+		 * echoes back that the site's own cart does not back is not fulfilled, whatever the payment status.
+		 */
+		$mismatch = $transaction ? tribe( Cart_Reconciler::class )->find_mismatch( $transaction ) : 'the transaction is not a Tribe Commerce one';
+
+		if ( $mismatch ) {
+			do_action( 'tribe_log', 'warning', __CLASS__, [ 'message' => "PayPal PDT transaction not fulfilled: {$mismatch}." ] );
+
+			$custom = Tribe__Tickets__Commerce__PayPal__Custom_Argument::decode( Tribe__Utils__Array::get( (array) $transaction, 'custom', '' ), true );
+			$url    = get_permalink( absint( Tribe__Utils__Array::get( $custom, 'pid', 0 ) ) ) ?: home_url();
+
+			// phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect
+			wp_redirect( esc_url_raw( add_query_arg( 'tpp_error', 104, $url ) ) );
+			tribe_exit();
+
+			return false;
+		}
+
+		$gateway->set_transaction_data( $transaction );
 
 		// since the purchase has completed, reset the invoice number
 		$gateway->reset_invoice_number();
