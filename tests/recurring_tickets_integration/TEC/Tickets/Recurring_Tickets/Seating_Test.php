@@ -5,6 +5,7 @@ namespace TEC\Tickets\Recurring_Tickets;
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
 use TEC\Tickets\Seating\Meta;
+use TEC\Tickets\Tests\Recurring_Tickets\Recurrence_Tier_Check;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 
@@ -14,6 +15,7 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 class Seating_Test extends WPTestCase {
 	use Ticket_Rows;
 	use Ticket_Maker;
+	use Recurrence_Tier_Check;
 
 	/**
 	 * @before
@@ -53,6 +55,8 @@ class Seating_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_give_an_event_with_recurring_event_tickets_no_seating_layout(): void {
+		$this->skip_without_recurrence_tier();
+
 		$event = $this->create_recurring_event();
 		$this->create_tc_ticket( $event, 10 );
 		$date = (int) $this->get_dates( $event )[1]->provisional_id;
