@@ -115,7 +115,10 @@ final class Recurrence_Controller extends Controller_Contract {
 		remove_action( 'tribe_tickets_ticket_add', $this->container->callback( Seating::class, 'forget' ), 6 );
 		remove_action( 'tec_tickets_commerce_ticket_deleted', $this->container->callback( Seating::class, 'forget_deleted' ), 5 );
 		remove_action( 'tec_tickets_tickets_duplicated', $this->container->callback( Detach::class, 'remember_clones' ) );
-		remove_action( Events::AFTER_TRANSFER_OCCURRENCES_ACTION, $this->container->callback( Detach::class, 'move_rows' ) );
+		// The tier is never registered on an ECP that lacks these actions, and naming a missing constant is fatal.
+		if ( self::ecp_has_hooks() ) {
+			remove_action( Events::AFTER_TRANSFER_OCCURRENCES_ACTION, $this->container->callback( Detach::class, 'move_rows' ) );
+		}
 	}
 
 	/**
