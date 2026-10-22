@@ -148,7 +148,7 @@ final class Ticket_Dates {
 	 * Returns whether a window of the ticket, as written, ends before it starts.
 	 *
 	 * A window stored with times ends before it starts when its end is not after its start; one stored as whole days,
-	 * such as the sale price, when its end day is before its start day.
+	 * such as the sale price, when its end day is not after its start day, as the save judges it.
 	 *
 	 * @since TBD
 	 *
@@ -165,6 +165,10 @@ final class Ticket_Dates {
 
 		if ( null === $start || null === $end ) {
 			return false;
+		}
+
+		if ( $kind->compares_days() ) {
+			return $end['date'] <= $start['date'];
 		}
 
 		// Without both times only the days can be told apart.

@@ -250,8 +250,8 @@ class Ticket_Dates_Test extends WPTestCase {
 	 */
 	public function written_sale_price_window_provider(): Generator {
 		yield 'an end day after the start day' => [ '2027-06-10', '2027-06-11', false ];
-		// The sale price is on all of its end day, so a single day is a valid window.
-		yield 'an end day equal to the start day' => [ '2027-06-10', '2027-06-10', false ];
+		// The save rejects a sale price that ends on the day it starts, so an event move that writes one announces it.
+		yield 'an end day equal to the start day' => [ '2027-06-10', '2027-06-10', true ];
 		yield 'an end day before the start day' => [ '2027-06-10', '2027-06-09', true ];
 		yield 'a start of now, written empty' => [ '', '2027-06-09', false ];
 	}
