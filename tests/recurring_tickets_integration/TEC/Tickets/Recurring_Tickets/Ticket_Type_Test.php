@@ -6,6 +6,7 @@ use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Commerce\Order_Modifiers\Admin\Order_Modifier_Fee_Metabox;
+use TEC\Tickets\Tests\Recurring_Tickets\Recurrence_Tier_Check;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use Tribe\Tickets\Test\Commerce\OrderModifiers\Fee_Creator;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -18,6 +19,7 @@ class Ticket_Type_Test extends WPTestCase {
 	use Ticket_Rows;
 	use Ticket_Maker;
 	use Fee_Creator;
+	use Recurrence_Tier_Check;
 
 	/**
 	 * @before
@@ -30,6 +32,8 @@ class Ticket_Type_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_make_a_ticket_saved_on_a_recurring_event_a_recurring_event_ticket(): void {
+		$this->skip_without_recurrence_tier();
+
 		$event = $this->create_recurring_event();
 
 		$saved_as_default = $this->create_tc_ticket( $event, 10, [ 'ticket_type' => 'default' ] );
@@ -43,6 +47,8 @@ class Ticket_Type_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_store_a_ticket_created_and_edited_in_the_block_editor_as_recurring(): void {
+		$this->skip_without_recurrence_tier();
+
 		$event = $this->create_recurring_event();
 
 		$created = $this->block_editor_save( $event, null, 'General Admission' );
@@ -70,6 +76,8 @@ class Ticket_Type_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_keep_a_template_recurring_when_saved_without_a_type_on_an_event_that_no_longer_recurs(): void {
+		$this->skip_without_recurrence_tier();
+
 		$event    = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
 		$template = $this->create_tc_ticket( $event, 10 );
 		update_post_meta( $template, '_type', Template_Guard::TICKET_TYPE );
@@ -112,6 +120,8 @@ class Ticket_Type_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_give_a_template_its_own_capacity_instead_of_a_shared_one(): void {
+		$this->skip_without_recurrence_tier();
+
 		$event    = $this->create_recurring_event();
 		$template = $this->create_tc_ticket(
 			$event,
