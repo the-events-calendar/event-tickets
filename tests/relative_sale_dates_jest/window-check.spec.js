@@ -117,17 +117,12 @@ describe( 'getWindowError', () => {
 			expect( getWindowError( rule, EVENT_DATES, NO_FORM_DATES, kind, parent ) ).toBe( ENDS_BEFORE_START );
 		} );
 
-		/*
-		 * 1 week before the event is 2099-06-17 at 19:00, the instant the start falls on. A sale price is compared by
-		 * day and Tickets Commerce keeps it through its end day, so one that ends on its start day lasts that day.
-		 */
-		it( 'should reject a window that ends when it starts, unless it lasts a day', () => {
+		// 1 week before the event is 2099-06-17 at 19:00, the instant the start falls on.
+		it( 'should reject a window that ends when it starts', () => {
 			const rule = { start: { mode: 'specific' }, end: relative( kind, 1, UNIT_WEEKS ) };
 			const formDates = { start: '2099-06-17 19:00:00', end: null };
 
-			expect( getWindowError( rule, EVENT_DATES, formDates, kind, parent ) ).toBe(
-				kind === SALE_PRICE_WINDOW ? null : ENDS_BEFORE_START
-			);
+			expect( getWindowError( rule, EVENT_DATES, formDates, kind, parent ) ).toBe( ENDS_BEFORE_START );
 		} );
 
 		// A month is not a unit either kind takes, so the server keeps the stored rule and rejects the save.
@@ -188,12 +183,15 @@ describe( 'getWindowError', () => {
 
 	describe( 'for the sale price window', () => {
 		// The form sends a sale price date as midnight; the end, 1 week before the event, is 2099-06-17 at 19:00.
-		// Tickets Commerce keeps a sale price through its end day.
-		it( 'should accept a window that ends on the day it starts, as it is kept by the day', () => {
+		it( 'should reject a window that ends later on the day it starts, as it is kept by the day', () => {
 			const formDates = { start: '2099-06-17 00:00:00', end: null };
 			const salePriceRule = { start: { mode: 'specific' }, end: relative( SALE_PRICE_WINDOW, 1, UNIT_WEEKS ) };
+			const salesRule = { start: { mode: 'specific' }, end: relative( SALES_WINDOW, 1, UNIT_WEEKS ) };
 
-			expect( getWindowError( salePriceRule, EVENT_DATES, formDates, SALE_PRICE_WINDOW, SALES ) ).toBeNull();
+			expect( getWindowError( salePriceRule, EVENT_DATES, formDates, SALE_PRICE_WINDOW, SALES ) ).toBe(
+				ENDS_BEFORE_START
+			);
+			expect( getWindowError( salesRule, EVENT_DATES, formDates, SALES_WINDOW ) ).toBeNull();
 		} );
 
 		it( 'should reject a window that ends on the day before it starts', () => {

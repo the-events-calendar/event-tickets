@@ -1292,15 +1292,14 @@ class Ticket_Save_Test extends Controller_Test_Case {
 		];
 
 		yield 'from 2 weeks to 1 week before' => [ [ self::SALE_PRICE_DATA_KEY => $rule( $relative( 14 ), $relative( 7 ) ) ], true ];
-		// Tickets Commerce keeps a sale price through its end day, so a sale price can last a single day.
-		yield 'an end on the start day' => [ [ self::SALE_PRICE_DATA_KEY => $rule( $relative( 7 ), $relative( 7 ) ) ], true ];
+		yield 'an end on the start day' => [ [ self::SALE_PRICE_DATA_KEY => $rule( $relative( 7 ), $relative( 7 ) ) ], self::SALE_PRICE_ENDS_BEFORE_START_MESSAGE ];
 		yield 'an end before the start' => [ [ self::SALE_PRICE_DATA_KEY => $rule( $relative( 7 ), $relative( 14 ) ) ], self::SALE_PRICE_ENDS_BEFORE_START_MESSAGE ];
 		yield 'a specific end on the start day' => [
 			[
 				self::SALE_PRICE_DATA_KEY => $rule( $relative( 7 ), $specific ),
 				'ticket_sale_end_date'    => $days_before( 7 ),
 			],
-			true,
+			self::SALE_PRICE_ENDS_BEFORE_START_MESSAGE,
 		];
 		yield 'a now start' => [ [ self::SALE_PRICE_DATA_KEY => $rule( $now, $relative( 7 ) ) ], true ];
 		yield 'a now start ending on the day sales open' => [
@@ -1395,6 +1394,7 @@ class Ticket_Save_Test extends Controller_Test_Case {
 			],
 			true,
 		];
+		// Without a rule the sale price is saved as it was before relative dates, a sale of a single day included.
 		yield 'fixed sale price dates on the same day' => [
 			[
 				'ticket_sale_start_date' => $days_before( 7 ),
