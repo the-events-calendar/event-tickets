@@ -70,14 +70,14 @@ class Tribe__Tickets__Data_API {
 
 		// only the rsvp order key is non numeric.
 		if ( is_object( $post ) && ! empty( $post->ID ) ) {
-			$cpt  = get_post_type( $post->ID );
 			$post = (int) $post->ID;
+			$cpt  = $this->get_post_type( $post );
 		} elseif ( ! is_numeric( $post ) ) {
 			$post = esc_attr( $post );
 			$cpt  = $this->check_rsvp_order_key_exists( $post );
 		} else {
 			$post = absint( $post );
-			$cpt  = get_post_type( $post );
+			$cpt  = $this->get_post_type( $post );
 		}
 
 		// If no custom post type.
@@ -101,6 +101,23 @@ class Tribe__Tickets__Data_API {
 		}
 
 		return $cpt_arr;
+	}
+
+	/**
+	 * Returns the post type of an ID, where a recurring event ticket, which has no post, is a Tickets Commerce ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The ID.
+	 *
+	 * @return string|false The post type, or false.
+	 */
+	private function get_post_type( int $post_id ) {
+		if ( \TEC\Tickets\Recurring_Tickets\Ticket_ID::is_table_ticket( $post_id ) ) {
+			return \TEC\Tickets\Commerce\Ticket::POSTTYPE;
+		}
+
+		return get_post_type( $post_id );
 	}
 
 	/**
