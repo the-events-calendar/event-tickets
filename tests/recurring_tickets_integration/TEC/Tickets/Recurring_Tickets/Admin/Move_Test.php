@@ -8,6 +8,7 @@ use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
 use TEC\Tickets\Recurring_Tickets\Ticket_ID;
+use TEC\Tickets\Tests\Recurring_Tickets\Recurrence_Tier_Check;
 use TEC\Tickets\Tests\Recurring_Tickets\Row_Orders;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -22,6 +23,7 @@ class Move_Test extends WPTestCase {
 	use Ticket_Rows;
 	use Ticket_Maker;
 	use Row_Orders;
+	use Recurrence_Tier_Check;
 
 	/**
 	 * @before
@@ -65,6 +67,8 @@ class Move_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_offer_a_dates_rows_and_never_a_template_as_ticket_types(): void {
+		$this->skip_without_recurrence_tier();
+
 		$event    = $this->create_recurring_event();
 		$template = $this->create_tc_ticket( $event, 10, [ 'ticket_name' => 'General Admission' ] );
 		$date     = $this->get_dates( $event )[2];
@@ -84,6 +88,8 @@ class Move_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_move_a_stranded_attendee_to_another_dates_row(): void {
+		$this->skip_without_recurrence_tier();
+
 		$event = $this->create_recurring_event();
 		$this->create_tc_ticket( $event, 10, [ 'ticket_name' => 'General Admission', 'tribe-ticket' => [ 'mode' => 'own', 'capacity' => 10 ] ] );
 		$dates  = $this->get_dates( $event );
@@ -117,6 +123,8 @@ class Move_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_offer_no_template_of_a_recurring_event_without_ecp(): void {
+		$this->skip_without_recurrence_tier();
+
 		global $wp_actions;
 		$event    = $this->create_recurring_event();
 		$template = $this->create_tc_ticket( $event, 10 );
@@ -138,6 +146,8 @@ class Move_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_give_an_attendee_moved_through_the_events_own_id_its_rows_date(): void {
+		$this->skip_without_recurrence_tier();
+
 		$event = $this->create_recurring_event();
 		$this->create_tc_ticket( $event, 10 );
 		$dates    = $this->get_dates( $event );
