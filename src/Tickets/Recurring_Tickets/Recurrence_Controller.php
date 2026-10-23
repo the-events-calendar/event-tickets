@@ -172,7 +172,7 @@ final class Recurrence_Controller extends Controller_Contract {
 
 		add_filter( 'tec_tickets_seating_enabled', $this->container->callback( Seating::class, 'filter_enabled' ), 10, 2 );
 		foreach ( [ 'add', 'update' ] as $write ) {
-			add_filter( "{$write}_post_metadata", $this->container->callback( Seating::class, 'refuse_layout' ), 10, 3 );
+			add_filter( "{$write}_post_metadata", $this->container->callback( Seating::class, 'refuse_layout' ), 10, 4 );
 		}
 		// After the type is set, at 5, and before Sync, at 10.
 		add_action( 'tribe_tickets_ticket_add', $this->container->callback( Seating::class, 'forget' ), 6 );
