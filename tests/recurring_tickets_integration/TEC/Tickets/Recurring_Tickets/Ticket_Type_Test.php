@@ -6,6 +6,7 @@ use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Commerce\Order_Modifiers\Admin\Order_Modifier_Fee_Metabox;
+use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Tests\Recurring_Tickets\Recurrence_Tier_Check;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use Tribe\Tickets\Test\Commerce\OrderModifiers\Fee_Creator;
@@ -70,6 +71,35 @@ class Ticket_Type_Test extends WPTestCase {
 		$this->assertSame( 202, $edited->get_status(), wp_json_encode( $edited->get_data() ) );
 		$this->assertSame( 'General Admission, renamed', get_post( $ticket_id )->post_title );
 		$this->assertSame( Template_Guard::TICKET_TYPE, get_post_meta( $ticket_id, '_type', true ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_give_a_ticket_created_on_one_date_in_the_block_editor_to_every_date(): void {
+		$this->skip_without_recurrence_tier();
+
+		$event = $this->create_recurring_event();
+		$dates = $this->get_dates( $event );
+
+		// The block editor sends the ID in the address bar, which is the date's when editing one date.
+		$created = $this->block_editor_save( absint( $dates[1]->provisional_id ), null, 'Added from a date' );
+		$this->assertSame( 202, $created->get_status(), wp_json_encode( $created->get_data() ) );
+
+		$ticket_id = absint( get_posts(
+			[
+				'post_type' => Ticket::POSTTYPE,
+				'fields'    => 'ids',
+				's'         => 'Added from a date',
+			]
+		)[0] );
+		$this->assertSame( $event, absint( get_post_meta( $ticket_id, Ticket::$event_relation_meta_key, true ) ) );
+		$this->assertSame( Template_Guard::TICKET_TYPE, get_post_meta( $ticket_id, '_type', true ) );
+		$this->assertCount( count( $dates ), tribe( Rows::class )->get_by_template( $ticket_id ) );
+
+		$edited = $this->block_editor_save( absint( $dates[1]->provisional_id ), $ticket_id, 'Added from a date, renamed' );
+		$this->assertSame( 202, $edited->get_status(), wp_json_encode( $edited->get_data() ) );
+		$this->assertSame( $event, absint( get_post_meta( $ticket_id, Ticket::$event_relation_meta_key, true ) ) );
 	}
 
 	/**
