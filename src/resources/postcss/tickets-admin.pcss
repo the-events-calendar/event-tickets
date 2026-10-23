@@ -932,6 +932,29 @@ p.description {
 	position: relative;
 }
 
+/*
+ * A label floated at the top of its row sits above the text of a control taller than it, as WordPress 7's 40px ones
+ * are. These rows line the label up with the first line of their control instead, whatever the control's height.
+ */
+@media (min-width: 782px) {
+
+	.input_block.tec-tickets-field-row {
+		align-items: baseline;
+		display: grid;
+		grid-template-columns: 132px minmax(0, 1fr);
+
+		> :not(.ticket_form_left) {
+			grid-column: 2;
+			margin-left: 0;
+		}
+
+		> input {
+			justify-self: start;
+			max-width: 100%;
+		}
+	}
+}
+
 .tec-tickets-relative-sale-dates {
 	/* The width of the Name field, so both ends line up whatever option their mode select shows. */
 	--tec-tickets-relative-sale-dates-select-width: 280px;
