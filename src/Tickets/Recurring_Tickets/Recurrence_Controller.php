@@ -12,6 +12,7 @@ namespace TEC\Tickets\Recurring_Tickets;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\AdminNotices\AdminNotices;
 use TEC\Events_Pro\Custom_Tables\V1\Updates\Events;
+use TEC\Tickets\Recurring_Tickets\Editor\Block_Editor;
 use TEC\Tickets\Recurring_Tickets\Editor\Classic;
 
 /**
@@ -108,6 +109,7 @@ final class Recurrence_Controller extends Controller_Contract {
 		remove_filter( 'tec_tickets_filter_event_id', $this->container->callback( Classic::class, 'panel_event_id' ), 600 );
 		remove_action( 'admin_init', $this->container->callback( Classic::class, 'hide_legacy_notice' ), 9 );
 		remove_filter( 'tec_tickets_editor_list_table_data_' . Template_Guard::TICKET_TYPE, $this->container->callback( Classic::class, 'title_list' ) );
+		remove_filter( 'tec_tickets_editor_list_tickets', $this->container->callback( Block_Editor::class, 'remove_date_copies' ) );
 		remove_filter( 'tec_tickets_views_v2_ticket_model_cache_id', $this->container->callback( Views::class, 'cache_id' ) );
 		remove_action( 'tec_tickets_recurring_tickets_synced', $this->container->callback( Views::class, 'forget_dates' ) );
 		remove_action( 'tec_events_custom_tables_v1_custom_tables_query_results', $this->container->callback( Views::class, 'prime_dates' ) );
@@ -163,6 +165,10 @@ final class Recurrence_Controller extends Controller_Contract {
 		// Before the notice, at 10.
 		add_action( 'admin_init', $this->container->callback( Classic::class, 'hide_legacy_notice' ), 9 );
 		add_filter( 'tec_tickets_editor_list_table_data_' . Template_Guard::TICKET_TYPE, $this->container->callback( Classic::class, 'title_list' ) );
+
+		$this->container->singleton( Block_Editor::class );
+
+		add_filter( 'tec_tickets_editor_list_tickets', $this->container->callback( Block_Editor::class, 'remove_date_copies' ) );
 
 		$this->container->singleton( Views::class );
 
