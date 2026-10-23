@@ -16,13 +16,16 @@ defined( 'ABSPATH' ) || die();
 if ( empty( $ticket->start_date ) ) {
 	return;
 }
-$classes     = [
+$classes = [
 	'tribe-tickets__tickets-editor-ticket-available-dates',
 	'dashicons-before',
 ];
-$date_format = tribe_get_date_format( true ) . ' ' . tribe_get_time_format();
+// The same fallbacks as the Relative Sale Dates scripts, which rewrite these dates when a ticket follows the event.
+$date_format = ( tribe_get_date_format( true ) ?: 'F j, Y' ) . ' ' . ( tribe_get_time_format() ?: 'g:i a' );
 $start_time  = strtotime( $ticket->start_date . ' ' . $ticket->start_time );
-$date_string = date_i18n( $date_format, $start_time ) . ' - ';
+// Formatted in UTC, where `strtotime()` read it: `date_i18n()` would move a time in the site's DST gap.
+$utc         = new DateTimeZone( 'UTC' );
+$date_string = wp_date( $date_format, $start_time, $utc ) . ' - ';
 
 // Icon design is based on if start date is in the future or not.
 $classes[] = ( current_time( 'timestamp' ) < $start_time ) // phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested
@@ -31,7 +34,7 @@ $classes[] = ( current_time( 'timestamp' ) < $start_time ) // phpcs:ignore WordP
 
 if ( ! empty( $ticket->end_date ) ) {
 	$end_time     = strtotime( $ticket->end_date . ' ' . $ticket->end_time );
-	$date_string .= date_i18n( $date_format, $end_time );
+	$date_string .= wp_date( $date_format, $end_time, $utc );
 
 	// Add a class to differentiate tickets that are no longer on sale.
 	if ( current_time( 'timestamp' ) > $end_time ) { // phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested

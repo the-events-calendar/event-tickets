@@ -328,6 +328,48 @@ class Editor_Test extends Controller_Test_Case {
 	}
 
 	/**
+	 * 2:30 am does not exist in New York on the day the clocks spring forward; the classic script shows it as stored.
+	 *
+	 * @test
+	 */
+	public function should_show_a_sales_time_in_the_site_timezone_gap_as_stored(): void {
+		update_option( 'timezone_string', 'America/New_York' );
+		$this->make_controller()->register();
+		$event_id   = $this->create_event( '2027-06-24 19:00:00', 'America/New_York' );
+		$sale_start = new DateTimeImmutable( '2027-03-14 02:30:00' );
+		$ticket_id  = $this->create_tc_ticket(
+			$event_id,
+			1,
+			[
+				'ticket_start_date' => $sale_start->format( 'Y-m-d' ),
+				'ticket_start_time' => $sale_start->format( 'H:i:s' ),
+			]
+		);
+
+		$dates = $this->get_available_dates( $this->render_tickets_list( $event_id ), $ticket_id );
+
+		$this->assertStringStartsWith( $sale_start->format( 'F j, Y g:i a' ) . ' - ', trim( $dates->textContent ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_show_the_sales_dates_in_the_scripts_fallback_formats_when_the_formats_are_blank(): void {
+		$this->make_controller()->register();
+		add_filter( 'tribe_date_format', '__return_empty_string' );
+		add_filter( 'tribe_time_format', '__return_empty_string' );
+		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
+		$ticket_id = $this->create_tc_ticket( $event_id );
+
+		$dates = $this->get_available_dates( $this->render_tickets_list( $event_id ), $ticket_id );
+
+		$start    = new DateTimeImmutable( implode( ' ', $this->get_ticket_start( $ticket_id ) ) );
+		$end      = new DateTimeImmutable( implode( ' ', $this->get_ticket_end( $ticket_id ) ) );
+		$expected = $start->format( 'F j, Y g:i a' ) . ' - ' . $end->format( 'F j, Y g:i a' );
+		$this->assertSame( $expected, trim( $dates->textContent ) );
+	}
+
+	/**
 	 * Tickets Commerce caches a ticket with the ID it was loaded with, and an attendee's `product_id` meta is a string.
 	 *
 	 * @test
