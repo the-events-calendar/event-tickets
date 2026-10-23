@@ -79,7 +79,7 @@ if ( ! empty( $ticket ) ) {
 	data-condition-not="Tribe__Tickets__RSVP"
 	<?php endif; ?>
 >
-	<div class="input_block">
+	<div class="input_block tec-tickets-field-row">
 		<label for="ticket_price" class="ticket_form_label ticket_form_left"><?php esc_html_e( 'Price:', 'event-tickets' ); ?></label>
 		<input
 			type="text"

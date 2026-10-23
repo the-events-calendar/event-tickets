@@ -90,7 +90,7 @@ $render_date_inputs = function ( string $sales_end ): void {
 		'render_date_inputs' => $render_date_inputs,
 	];
 	?>
-<div class="input_block tec-tickets-relative-sale-dates">
+<div class="input_block tec-tickets-field-row tec-tickets-relative-sale-dates">
 	<label class="ticket_form_label ticket_form_left" for="<?php echo esc_attr( "{$field_prefix}_{$sales_end}_mode" ); ?>">
 		<?php echo esc_html( $labels[ $sales_end ]['mode'] ); ?>
 	</label>
