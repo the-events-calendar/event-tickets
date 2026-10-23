@@ -6,6 +6,7 @@
  *
  * @since TBD
  */
+import { select } from '@wordpress/data';
 import { addFilter } from '@wordpress/hooks';
 import { __, _x, sprintf } from '@wordpress/i18n';
 import { hasRecurrenceRules } from '@moderntribe/common/utils/recurrence';
@@ -142,11 +143,47 @@ export function nameRecurringTicketType( mappedProps, { state, ticketDetails } )
 }
 
 /**
- * Keeps Seating's choice between General Admission and Assigned Seating out of the ticket form on a recurring event,
- * as recurring event tickets cannot be seated.
+ * Whether the event being edited recurs, as its rules stand in the editor, saved or not.
  *
  * Reads the Tickets block's store from the window, where common keeps the one store every bundle shares: this
  * bundle's copy of the store module would make a second one.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the event recurs.
+ */
+function eventRecurs() {
+	const store = window.__tribe_common_store__;
+
+	return Boolean( store && hasRecurrenceRules( store.getState() ) );
+}
+
+/**
+ * Sends a new ticket on a recurring event as a recurring event ticket, as the classic editor's form does.
+ *
+ * The server would otherwise decide by the event as it is saved, and a new event's recurrence is only saved with it.
+ * A ticket already saved keeps its type.
+ *
+ * @since TBD
+ *
+ * @param {FormData} body     The body of the request that saves the ticket.
+ * @param {string}   clientId The client ID of the ticket's block.
+ *
+ * @return {FormData} The body.
+ */
+export function sendRecurringTicketType( body, clientId ) {
+	const isNew = ! select( 'core/block-editor' ).getBlockAttributes( clientId )?.hasBeenCreated;
+
+	if ( isNew && eventRecurs() ) {
+		body.append( 'ticket_type', 'recurring' );
+	}
+
+	return body;
+}
+
+/**
+ * Keeps Seating's choice between General Admission and Assigned Seating out of the ticket form on a recurring event,
+ * as recurring event tickets cannot be seated.
  *
  * @since TBD
  *
@@ -155,9 +192,7 @@ export function nameRecurringTicketType( mappedProps, { state, ticketDetails } )
  * @return {boolean} Whether it does.
  */
 export function keepSeatingOffRecurringEvents( render ) {
-	const store = window.__tribe_common_store__;
-
-	return render && ! ( store && hasRecurrenceRules( store.getState() ) );
+	return render && ! eventRecurs();
 }
 
 /**
@@ -211,6 +246,7 @@ addFilter(
 	keepSeatingOffRecurringEvents,
 	20
 );
+addFilter( 'tec.tickets.blocks.setBodyDetails', 'tec.tickets.recurringTickets', sendRecurringTicketType );
 addFilter(
 	'tec.tickets.blocks.Tickets.mappedProps',
 	'tec.tickets.recurringTickets',

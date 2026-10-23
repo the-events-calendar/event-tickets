@@ -1,11 +1,15 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 import { applyFilters } from '@wordpress/hooks';
+import { select } from '@wordpress/data';
 import { hasRecurrenceRules } from '@moderntribe/common/utils/recurrence';
 import '../../../src/Tickets/Recurring_Tickets/app/block-editor';
 
 // Reads Events Calendar Pro's recurrence store, which is not loaded in tests.
 jest.mock( '@moderntribe/common/utils/recurrence', () => ( { hasRecurrenceRules: jest.fn( () => false ) } ) );
+
+// Not installed: WordPress provides it in the editor.
+jest.mock( '@wordpress/data', () => ( { select: jest.fn() } ), { virtual: true } );
 
 // The shared stub has no _x() and no numbered placeholders; with no translations loaded, the real one returns English.
 jest.mock( '@wordpress/i18n', () => jest.requireActual( '@wordpress/i18n' ) );
@@ -157,6 +161,34 @@ describe( 'Recurring event tickets in the block editor', () => {
 
 		test( 'stays off where Seating already turned it off', () => {
 			expect( renderSeatingForm( { recurs: false, render: false } ) ).toBe( false );
+		} );
+	} );
+
+	describe( 'the type sent with a ticket', () => {
+		const sentType = ( { recurs, hasBeenCreated } ) => {
+			window.__tribe_common_store__ = { getState: () => ( {} ) };
+			hasRecurrenceRules.mockReturnValue( recurs );
+			select.mockReturnValue( { getBlockAttributes: () => ( { hasBeenCreated } ) } );
+			const body = new FormData();
+
+			return applyFilters( 'tec.tickets.blocks.setBodyDetails', body, 'ticket' ).get( 'ticket_type' );
+		};
+
+		afterEach( () => {
+			delete window.__tribe_common_store__;
+			hasRecurrenceRules.mockReturnValue( false );
+		} );
+
+		test( 'is recurring for a new ticket on a recurring event', () => {
+			expect( sentType( { recurs: true, hasBeenCreated: false } ) ).toBe( 'recurring' );
+		} );
+
+		test( 'is left out for a ticket already saved, which keeps its type', () => {
+			expect( sentType( { recurs: true, hasBeenCreated: true } ) ).toBeNull();
+		} );
+
+		test( 'is left out on a single event', () => {
+			expect( sentType( { recurs: false, hasBeenCreated: false } ) ).toBeNull();
 		} );
 	} );
 } );
