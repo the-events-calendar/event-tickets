@@ -1,5 +1,7 @@
 <?php
 
+use TEC\Tickets\Event;
+
 class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 	extends Tribe__Tickets__REST__V1__Endpoints__Base
 	implements Tribe__REST__Endpoints__DELETE_Endpoint_Interface,
@@ -224,6 +226,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 	 * @since 4.12.3 Update detecting ticket provider to account for possibly inactive provider.
 	 * @since 5.6.5  Validates if price is greater than 0 when provider is PayPal or Tickets Commerce
 	 * @since 5.9.0    Added support for sale price for Tickets Commerce.
+	 * @since TBD      Saves the ticket on the event when the post ID is a date of a recurring event.
 	 *
 	 * @param WP_REST_Request $request      The request object.
 	 * @param string          $nonce_action The nonce action.
@@ -244,8 +247,9 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 			$request->get_body_params()
 		);
 
-		$nonce   = $body[ $nonce_action ];
-		$post_id = $body['post_id'];
+		$nonce = $body[ $nonce_action ];
+		// Editing one date of a recurring event, the block editor sends the date's ID; its tickets belong to the event.
+		$post_id = Event::filter_event_id( $body['post_id'], 'tickets-editor-rest-save' );
 
 		if ( ! $this->has_permission( $post_id, $nonce, $nonce_action ) ) {
 			return new WP_Error(
