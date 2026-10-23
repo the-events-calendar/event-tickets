@@ -72,6 +72,29 @@ class Event_Provider_Heal_Test extends WPTestCase {
 		$this->assertSame( Module::class, $this->stored_provider( $post_id ) );
 	}
 
+	/**
+	 * Without a persistent object cache, a kept Tickets Commerce must not be checked again on every request.
+	 */
+	public function test_keeps_tickets_commerce_until_the_next_post_save(): void {
+		$post_id      = $this->make_event();
+		$tc_ticket_id = $this->create_tc_ticket( $post_id, 10 );
+		$this->create_paypal_ticket( $post_id, 10 );
+
+		$this->store_tickets_commerce( $post_id );
+
+		$this->assertSame( Module::class, Tickets::get_event_ticket_provider( $post_id ) );
+
+		// Detach the TC ticket without a post save, then start a new request on a site without an object cache.
+		delete_post_meta( $tc_ticket_id, Ticket::$event_relation_meta_key );
+		wp_cache_flush();
+
+		$this->assertSame( Module::class, Tickets::get_event_ticket_provider( $post_id ) );
+
+		wp_update_post( [ 'ID' => $post_id ] );
+
+		$this->assertSame( self::PAYPAL, Tickets::get_event_ticket_provider( $post_id ) );
+	}
+
 	public function test_keeps_tickets_commerce_without_tickets(): void {
 		$post_id = $this->make_event();
 

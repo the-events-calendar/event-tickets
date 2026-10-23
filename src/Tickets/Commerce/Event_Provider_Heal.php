@@ -44,11 +44,12 @@ final class Event_Provider_Heal {
 		}
 
 		// Only a kept Tickets Commerce is cached: a healed provider is stored, so it is never checked again.
+		// A transient, so the result outlives the request on sites without a persistent object cache.
 		// The active modules are in the key so activating or deactivating one runs the check again.
 		$cache_key = 'tec_tickets_event_provider_heal_' . $post_id . '_' . md5( implode( ',', $other_paid_modules ) );
 		$cache     = tribe_cache();
 
-		if ( $cache->get( $cache_key, Cache_Listener::TRIGGER_SAVE_POST ) ) {
+		if ( $cache->get_transient( $cache_key, Cache_Listener::TRIGGER_SAVE_POST ) ) {
 			return Module::class;
 		}
 
@@ -62,7 +63,7 @@ final class Event_Provider_Heal {
 			return $provider;
 		}
 
-		$cache->set( $cache_key, true, 0, Cache_Listener::TRIGGER_SAVE_POST );
+		$cache->set_transient( $cache_key, true, DAY_IN_SECONDS, Cache_Listener::TRIGGER_SAVE_POST );
 
 		return Module::class;
 	}
