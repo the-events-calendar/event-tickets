@@ -133,4 +133,30 @@ describe( 'Recurring event tickets in the block editor', () => {
 			expect( typeProps( { recurs: false, type: 'default' } ) ).toEqual( standard );
 		} );
 	} );
+
+	describe( 'Seating in the ticket form', () => {
+		const renderSeatingForm = ( { recurs, render = true } ) => {
+			window.__tribe_common_store__ = { getState: () => ( {} ) };
+			hasRecurrenceRules.mockReturnValue( recurs );
+
+			return applyFilters( 'tec.tickets.blocks.Ticket.renderSeatingForm', render, { clientId: 'ticket' } );
+		};
+
+		afterEach( () => {
+			delete window.__tribe_common_store__;
+			hasRecurrenceRules.mockReturnValue( false );
+		} );
+
+		test( 'is not offered on a recurring event', () => {
+			expect( renderSeatingForm( { recurs: true } ) ).toBe( false );
+		} );
+
+		test( 'is offered on a single event', () => {
+			expect( renderSeatingForm( { recurs: false } ) ).toBe( true );
+		} );
+
+		test( 'stays off where Seating already turned it off', () => {
+			expect( renderSeatingForm( { recurs: false, render: false } ) ).toBe( false );
+		} );
+	} );
 } );
