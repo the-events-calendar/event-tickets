@@ -9,6 +9,8 @@ use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use Tribe__Cache_Listener as Cache;
 use Tribe__Utils__Array as Arr;
 use TEC\Tickets\RSVP\V2\Constants;
+use TEC\Tickets\Commerce\Event_Provider_Heal;
+use TEC\Tickets\Commerce\Module as Commerce_Module;
 
 // phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
 
@@ -3747,8 +3749,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			// Bail if there aren't any tickets.
-			$tickets = $this->get_tickets( $post->ID );
-			if ( empty( $tickets ) ) {
+			if ( ! $this->has_tickets_for_post_content( $post->ID ) ) {
 				return false;
 			}
 
@@ -3761,6 +3762,19 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			return true;
+		}
+
+		/**
+		 * Whether the post has tickets of this provider to show in its content.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $post_id The post ID.
+		 *
+		 * @return bool Whether the post has tickets of this provider to show in its content.
+		 */
+		protected function has_tickets_for_post_content( int $post_id ): bool {
+			return ! empty( $this->get_tickets( $post_id ) );
 		}
 
 		/**
@@ -4379,6 +4393,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @see get_ticket_provider_instance()
 		 *
 		 * @since 4.12.3
+		 * @since TBD A post wrongly stored as Tickets Commerce heals to the provider that owns its tickets.
 		 *
 		 * @param int $post_id The post ID of the event to which the ticket is attached.
 		 *
@@ -4396,7 +4411,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$saved = get_post_meta( $post_id, $tickets_handler->key_provider_field, true );
 
 				if ( ! empty( $saved ) ) {
-					$provider = $saved;
+					// Saving an RSVP v2 used to store Tickets Commerce over the event's real provider.
+					$provider = Commerce_Module::class === $saved
+						? tribe( Event_Provider_Heal::class )->heal( (int) $post_id )
+						: $saved;
 				}
 			}
 
