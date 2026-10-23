@@ -2032,6 +2032,26 @@ describe( 'Ticket Block sagas', () => {
 				] )
 			);
 		} );
+
+		it( 'should remove the notice a skipped post save update added once the ticket is updated', () => {
+			const clientId = 'updated-after-a-skipped-post-save';
+			const removeNotice = jest.fn();
+			const gen = sagas.updateTicket( { payload: { clientId } } );
+
+			gen.next();
+			gen.next( { append: jest.fn(), entries: () => [] } );
+			gen.next( ticketStoredWithoutEnd.id );
+			gen.next();
+			gen.next( { response: { ok: true }, data: ticketStoredWithoutEnd } );
+			gen.next( stepSavedTicketSaleDates( ticketStoredWithoutEnd, clientId, parsedSaleDatesWithoutEnd, tempEnd ) );
+			gen.next( salePriceDatesWithoutDates );
+			gen.next( Object.values( tempFields ) );
+
+			expect( gen.next().value ).toEqual( call( wpDispatch, 'core/notices' ) );
+			expect( gen.next( { removeNotice } ).value ).toEqual(
+				call( removeNotice, `tec-tickets-ticket-not-updated-${ clientId }` )
+			);
+		} );
 	} );
 
 	describe( 'deleteTicket', () => {

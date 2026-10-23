@@ -44,6 +44,17 @@ const { UNLIMITED, SHARED, TICKET_TYPES, PROVIDER_CLASS_TO_PROVIDER_MAPPING } = 
 const { restNonce, tecDateSettings } = globals;
 const { wpREST } = api;
 
+/**
+ * Returns the ID of the notice that warns a post save left a ticket's changes unsaved.
+ *
+ * @since TBD
+ *
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {string} The notice ID.
+ */
+const getTicketNotUpdatedNoticeId = ( clientId ) => `tec-tickets-ticket-not-updated-${ clientId }`;
+
 export function* createMissingTicketBlocks( tickets ) {
 	const { insertBlock, updateBlockListSettings } = yield call( wpDispatch, 'core/block-editor' );
 	const { getBlockCount, getBlocks } = yield call( wpSelect, 'core/block-editor' );
@@ -889,6 +900,9 @@ export function* updateTicket( action ) {
 				put( actions.setTicketTempDetails( clientId, ticketDetails ) ),
 			] );
 
+			const { removeNotice } = yield call( wpDispatch, 'core/notices' );
+			yield call( removeNotice, getTicketNotUpdatedNoticeId( clientId ) );
+
 			/**
 			 * Fires after the ticket has been updated.
 			 *
@@ -1240,7 +1254,7 @@ export function* setTicketTempDetails( action ) {
 
 /**
  * Warns that saving the post left a ticket's changes unsaved. The notice is one per ticket, so saving the post again
- * does not stack it.
+ * does not stack it, and updating the ticket removes it.
  *
  * @since TBD
  *
@@ -1261,7 +1275,7 @@ export function* noticeTicketNotUpdated( clientId ) {
 			),
 			title
 		),
-		{ id: `tec-tickets-ticket-not-updated-${ clientId }` }
+		{ id: getTicketNotUpdatedNoticeId( clientId ) }
 	);
 }
 
