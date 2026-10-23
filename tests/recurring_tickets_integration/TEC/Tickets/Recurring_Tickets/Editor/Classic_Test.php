@@ -3,7 +3,11 @@
 namespace TEC\Tickets\Recurring_Tickets\Editor;
 
 use Codeception\TestCase\WPTestCase;
+use TEC\Events_Pro\Custom_Tables\V1\Editors\Classic\Recurrence;
+use TEC\Tickets\Event;
+use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Template_Guard;
+use TEC\Tickets\Recurring_Tickets\Ticket_ID;
 use TEC\Tickets\Tests\Recurring_Tickets\Recurrence_Tier_Check;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use Tribe\Tickets\Editor\Warnings;
@@ -131,8 +135,74 @@ class Classic_Test extends WPTestCase {
 		tribe( Warnings::class )->render_hidden_recurring_warning_for_ticket_meta_box( $this->create_recurring_event() );
 		$html = (string) ob_get_clean();
 
-		$this->assertStringContainsString( 'Recurring events sell recurring event tickets', $html );
+		$this->assertStringContainsString( 'Tickets you add here are offered on every date of this event. Each date has its own capacity.', $html );
+		$this->assertStringContainsString( 'You can&#039;t add standard tickets or RSVPs to a recurring event.', $html );
 		$this->assertStringNotContainsString( 'Standard tickets are not yet supported', $html );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_list_the_events_recurring_event_tickets_on_a_dates_screen(): void {
+		$this->skip_without_recurrence_tier();
+
+		$event    = $this->create_recurring_event();
+		$template = $this->create_tc_ticket( $event, 10 );
+		// As the ticket editor saves a ticket on a recurring event.
+		update_post_meta( $template, '_type', Template_Guard::TICKET_TYPE );
+		$date = (int) $this->get_dates( $event )[1]->provisional_id;
+		$row  = Ticket_ID::from_row_id( (int) tribe( Rows::class )->get_by_occurrence( (int) $this->get_dates( $event )[1]->occurrence_id )[0]->id );
+		set_current_screen( 'tribe_events' );
+
+		try {
+			// As the date's edit screen renders the panel.
+			ob_start();
+			tribe( 'tickets.metabox' )->render( $date );
+			$rendered = (string) ob_get_clean();
+
+			// As the panel reloads when a ticket is edited.
+			$_POST['post_id'] = $date;
+			$reloaded         = implode( '', (array) tribe( 'tickets.metabox' )->get_panels( Event::filter_event_id( $date, 'tickets-metabox-render' ) ) );
+		} finally {
+			unset( $_POST['post_id'] );
+			set_current_screen( 'front' );
+		}
+
+		foreach ( [ $rendered, $reloaded ] as $html ) {
+			$this->assertStringContainsString( 'order_' . $template . '"', $html, 'The ticket a save can update.' );
+			$this->assertStringNotContainsString( 'order_' . $row . '"', $html );
+		}
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_say_what_to_do_with_an_event_that_has_standard_tickets_in_place_of_its_recurrence_rules(): void {
+		$this->skip_without_recurrence_tier();
+
+		ob_start();
+		tribe( Recurrence::class )->add_recurrence_not_supported_with_tickets_message( '' );
+		$html = (string) ob_get_clean();
+
+		$this->assertStringContainsString( 'This event has tickets or RSVPs, so it can&#039;t be made a recurring event. To sell tickets for every date, create a new recurring event and add recurring event tickets there.', $html );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_say_where_to_sell_series_passes_for_a_recurring_event_in_a_series(): void {
+		$this->skip_without_recurrence_tier();
+
+		$event  = $this->create_recurring_event();
+		$series = tec_series()->where( 'event_post_id', $event )->first();
+
+		ob_start();
+		tribe( Warnings::class )->render_hidden_recurring_warning_for_ticket_meta_box( $event );
+		$html = (string) ob_get_clean();
+
+		$this->assertStringContainsString( 'This event is part of the <a href="' . esc_url( get_edit_post_link( $series ) ) . '"', $html );
+		$this->assertStringContainsString( 'To sell a pass that covers every event in the Series, add Series Passes on the Series edit screen.', $html );
+		$this->assertStringNotContainsString( 'Series admin', $html );
 	}
 
 	/**

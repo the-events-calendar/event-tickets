@@ -12,6 +12,7 @@ namespace TEC\Tickets\Recurring_Tickets;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\AdminNotices\AdminNotices;
 use TEC\Events_Pro\Custom_Tables\V1\Updates\Events;
+use TEC\Tickets\Recurring_Tickets\Editor\Block_Editor;
 use TEC\Tickets\Recurring_Tickets\Editor\Classic;
 
 /**
@@ -104,8 +105,11 @@ final class Recurrence_Controller extends Controller_Contract {
 		remove_action( 'tribe_events_tickets_new_ticket_buttons', $this->container->callback( Classic::class, 'render_button' ) );
 		remove_action( self::TYPE_HEADER_ACTION, $this->container->callback( Classic::class, 'render_type_header' ) );
 		remove_filter( self::WARNING_CONTEXT_FILTER, $this->container->callback( Classic::class, 'filter_warning' ), 20 );
+		remove_filter( 'tec_events_pro_custom_tables_v1_recurrence_not_supported_with_tickets_message', $this->container->callback( Classic::class, 'filter_recurrence_not_supported_message' ) );
+		remove_filter( 'tec_tickets_filter_event_id', $this->container->callback( Classic::class, 'panel_event_id' ), 600 );
 		remove_action( 'admin_init', $this->container->callback( Classic::class, 'hide_legacy_notice' ), 9 );
 		remove_filter( 'tec_tickets_editor_list_table_data_' . Template_Guard::TICKET_TYPE, $this->container->callback( Classic::class, 'title_list' ) );
+		remove_filter( 'tec_tickets_editor_list_tickets', $this->container->callback( Block_Editor::class, 'remove_date_copies' ) );
 		remove_filter( 'tec_tickets_views_v2_ticket_model_cache_id', $this->container->callback( Views::class, 'cache_id' ) );
 		remove_action( 'tec_tickets_recurring_tickets_synced', $this->container->callback( Views::class, 'forget_dates' ) );
 		remove_action( 'tec_events_custom_tables_v1_custom_tables_query_results', $this->container->callback( Views::class, 'prime_dates' ) );
@@ -155,9 +159,16 @@ final class Recurrence_Controller extends Controller_Contract {
 		add_action( self::TYPE_HEADER_ACTION, $this->container->callback( Classic::class, 'render_type_header' ), 10, 3 );
 		// After Flexible Tickets adds its message, at 10.
 		add_filter( self::WARNING_CONTEXT_FILTER, $this->container->callback( Classic::class, 'filter_warning' ), 20 );
+		add_filter( 'tec_events_pro_custom_tables_v1_recurrence_not_supported_with_tickets_message', $this->container->callback( Classic::class, 'filter_recurrence_not_supported_message' ) );
+		// After Flexible Tickets, which keeps a date's ID in the tickets panel.
+		add_filter( 'tec_tickets_filter_event_id', $this->container->callback( Classic::class, 'panel_event_id' ), 600, 3 );
 		// Before the notice, at 10.
 		add_action( 'admin_init', $this->container->callback( Classic::class, 'hide_legacy_notice' ), 9 );
 		add_filter( 'tec_tickets_editor_list_table_data_' . Template_Guard::TICKET_TYPE, $this->container->callback( Classic::class, 'title_list' ) );
+
+		$this->container->singleton( Block_Editor::class );
+
+		add_filter( 'tec_tickets_editor_list_tickets', $this->container->callback( Block_Editor::class, 'remove_date_copies' ) );
 
 		$this->container->singleton( Views::class );
 
@@ -167,7 +178,7 @@ final class Recurrence_Controller extends Controller_Contract {
 
 		add_filter( 'tec_tickets_seating_enabled', $this->container->callback( Seating::class, 'filter_enabled' ), 10, 2 );
 		foreach ( [ 'add', 'update' ] as $write ) {
-			add_filter( "{$write}_post_metadata", $this->container->callback( Seating::class, 'refuse_layout' ), 10, 3 );
+			add_filter( "{$write}_post_metadata", $this->container->callback( Seating::class, 'refuse_layout' ), 10, 4 );
 		}
 		// After the type is set, at 5, and before Sync, at 10.
 		add_action( 'tribe_tickets_ticket_add', $this->container->callback( Seating::class, 'forget' ), 6 );

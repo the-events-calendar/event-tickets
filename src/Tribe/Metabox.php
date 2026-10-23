@@ -118,6 +118,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since 4.6.2
 	 * @since 5.26.4 Add user permission check.
+	 * @since TBD Renders the panels for the post the metabox renders them for.
 	 *
 	 * @return string html content of the panels
 	 */
@@ -133,6 +134,9 @@ class Tribe__Tickets__Metabox {
 		if ( ! user_can( get_current_user_id(), 'edit_post', $post_id ) ) {
 			wp_send_json_error( esc_html__( 'You do not have permission to access this content.', 'event-tickets' ) );
 		}
+
+		// As `render()` does: the panels reloaded must list the tickets the page listed.
+		$post_id = Event::filter_event_id( $post_id, 'tickets-metabox-render' );
 
 		// Get the post object and set global $post for templates
 		global $post;

@@ -443,6 +443,17 @@ class Order_Summary {
 	}
 
 	/**
+	 * Returns the title of the sales totals.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The title.
+	 */
+	public function get_sales_totals_title(): string {
+		return __( 'Sales Totals', 'event-tickets' );
+	}
+
+	/**
 	 * Get the tickets.
 	 *
 	 * @since 5.6.7

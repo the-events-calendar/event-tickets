@@ -319,6 +319,7 @@ class Orders extends WP_List_Table {
 	 *
 	 * @since 5.2.0
 	 * @since 5.30.1 Line items whose ticket no longer exists fall back to a generic label.
+	 * @since TBD Filters each ticket's name.
 	 *
 	 * @param WP_Post $item The current item.
 	 *
@@ -344,6 +345,17 @@ class Orders extends WP_List_Table {
 
 			/* An order keeps its items when the ticket behind them is deleted, so there may be no ticket to name. */
 			$name = $ticket ? $ticket->name : _n( 'Ticket', 'Tickets', $quantity, 'event-tickets' );
+
+			/**
+			 * Filters the name of a ticket purchased in an order, in the orders table.
+			 *
+			 * @since TBD
+			 *
+			 * @param string              $name      The ticket's name.
+			 * @param array<string,mixed> $cart_item The order's line of the ticket.
+			 * @param WP_Post             $item      The order.
+			 */
+			$name = apply_filters( 'tec_tickets_commerce_reports_orders_table_purchased_ticket_name', $name, $cart_item, $item );
 
 			$output .= sprintf( "<div class='tribe-line-item'>%1\$d - %2\$s</div>", $quantity, esc_html( $name ) );
 		}
@@ -549,6 +561,18 @@ class Orders extends WP_List_Table {
 				'href'   => true,
 				'rel'    => true,
 				'target' => true,
+			],
+			'label'  => [
+				'class' => true,
+				'for'   => true,
+			],
+			'select' => [
+				'id'   => true,
+				'name' => true,
+			],
+			'option' => [
+				'selected' => true,
+				'value'    => true,
 			],
 		];
 
