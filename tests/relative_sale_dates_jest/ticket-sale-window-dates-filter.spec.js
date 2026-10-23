@@ -1,8 +1,13 @@
 import React from 'react';
+import moment from 'moment';
 import { combineReducers, createStore } from 'redux';
 import { addFilter, removeFilter } from '@wordpress/hooks';
 import reducer from '@moderntribe/tickets/data/blocks/ticket/reducer';
-import { registerTicketBlock } from '@moderntribe/tickets/data/blocks/ticket/actions';
+import {
+	registerTicketBlock,
+	setTicketTempEndDateMoment,
+	setTicketTempStartDateMoment,
+} from '@moderntribe/tickets/data/blocks/ticket/actions';
 
 /*
  * The container passes the sale dates to its template as props, so the template is replaced with one that keeps
@@ -37,11 +42,14 @@ const CLIENT_ID = 'ticket-block-sale-window';
 /**
  * Renders the attendee registration and sale window icons of a ticket header.
  *
+ * @param {Object[]} [ticketActions] The actions to dispatch on the ticket block before it renders.
+ *
  * @return {void}
  */
-function renderIcons() {
+function renderIcons( ticketActions = [] ) {
 	mockStore = createStore( combineReducers( { tickets: combineReducers( { blocks: combineReducers( { ticket: reducer } ) } ) } ) );
 	mockStore.dispatch( registerTicketBlock( CLIENT_ID ) );
+	ticketActions.forEach( ( action ) => mockStore.dispatch( action ) );
 
 	const icons = global.renderer.create( <SaleWindowIcons clientId={ CLIENT_ID } /> );
 	icons.unmount();
@@ -61,6 +69,16 @@ describe( 'the ticket header sale window', () => {
 		const [ dates, clientId ] = filter.mock.calls[ 0 ];
 		expect( dates ).toStrictEqual( { fromDate: mockTemplateProps.fromDate, toDate: mockTemplateProps.toDate } );
 		expect( clientId ).toBe( CLIENT_ID );
+	} );
+
+	it( 'should show the date and time each end of the ticket\'s sales window falls on', () => {
+		renderIcons( [
+			setTicketTempStartDateMoment( CLIENT_ID, moment( '2040-10-06 19:00:00' ) ),
+			setTicketTempEndDateMoment( CLIENT_ID, moment( '2040-10-20 18:00:00' ) ),
+		] );
+
+		expect( mockTemplateProps.fromDate ).toBe( 'October 6, 2040 7:00 pm' );
+		expect( mockTemplateProps.toDate ).toBe( 'October 20, 2040 6:00 pm' );
 	} );
 
 	it( 'should show the sale dates tec.tickets.blocks.Ticket.SaleWindow.dates returns', () => {

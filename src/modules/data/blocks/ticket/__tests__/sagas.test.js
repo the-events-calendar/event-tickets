@@ -1476,8 +1476,67 @@ describe( 'Ticket Block sagas', () => {
 			expect( gen.next( savingChannel ).value ).toEqual( call( createWPEditorNotSavingChannel ) );
 			expect( gen.next( notSavingChannel ).value ).toEqual( take( savingChannel ) );
 			expect( gen.next().value ).toEqual( take( notSavingChannel ) );
-			expect( gen.next().value ).toEqual( call( sagas.updateTicket, { payload: { clientId } } ) );
+			expect( gen.next().value ).toEqual(
+				call( applyFilters, 'tec.tickets.blocks.updateTicketWithPostSave', true, clientId )
+			);
+			expect( gen.next( true ).value ).toEqual( call( sagas.updateTicket, { payload: { clientId } } ) );
 			expect( gen.next().value ).toEqual( take( savingChannel ) );
+		} );
+
+		it( 'should not update the ticket when tec.tickets.blocks.updateTicketWithPostSave returns false', () => {
+			const clientId = 'kept-out-of-the-post-save';
+			const savingChannel = { take: jest.fn(), close: jest.fn() };
+			const notSavingChannel = { take: jest.fn(), close: jest.fn() };
+			const gen = sagas.saveTicketWithPostSave( clientId );
+
+			gen.next();
+			gen.next( true );
+			gen.next( savingChannel );
+			gen.next( notSavingChannel );
+			gen.next();
+
+			expect( gen.next().value ).toEqual(
+				call( applyFilters, 'tec.tickets.blocks.updateTicketWithPostSave', true, clientId )
+			);
+			expect( gen.next( false ).value ).toEqual( select( selectors.getTicketHasChanges, { clientId } ) );
+			expect( gen.next( false ).value ).toEqual( take( savingChannel ) );
+		} );
+
+		it( 'should warn when the skipped update leaves the ticket changes unsaved', () => {
+			const clientId = 'skipped-with-changes';
+			const savingChannel = { take: jest.fn(), close: jest.fn() };
+			const notSavingChannel = { take: jest.fn(), close: jest.fn() };
+			const gen = sagas.saveTicketWithPostSave( clientId );
+
+			gen.next();
+			gen.next( true );
+			gen.next( savingChannel );
+			gen.next( notSavingChannel );
+			gen.next();
+			gen.next();
+
+			expect( gen.next( false ).value ).toEqual( select( selectors.getTicketHasChanges, { clientId } ) );
+			expect( gen.next( true ).value ).toEqual( call( sagas.noticeTicketNotUpdated, clientId ) );
+			expect( gen.next().value ).toEqual( take( savingChannel ) );
+		} );
+	} );
+
+	describe( 'noticeTicketNotUpdated', () => {
+		it( 'should add one warning notice per ticket', () => {
+			const clientId = 'ticket-not-updated';
+			const title = 'General admission';
+			const createWarningNotice = jest.fn();
+			const gen = sagas.noticeTicketNotUpdated( clientId );
+
+			expect( gen.next().value ).toEqual( select( selectors.getTicketTitle, { clientId } ) );
+			expect( gen.next( title ).value ).toEqual( call( wpDispatch, 'core/notices' ) );
+
+			const { fn, args } = gen.next( { createWarningNotice } ).value.CALL;
+
+			expect( fn ).toBe( createWarningNotice );
+			expect( args[ 0 ] ).toContain( `"${ title }"` );
+			expect( args[ 1 ] ).toEqual( { id: `tec-tickets-ticket-not-updated-${ clientId }` } );
+			expect( gen.next().done ).toEqual( true );
 		} );
 	} );
 
@@ -1971,6 +2030,26 @@ describe( 'Ticket Block sagas', () => {
 					put( actions.setTicketDetails( clientId, ticketDetails ) ),
 					put( actions.setTicketTempDetails( clientId, ticketDetails ) ),
 				] )
+			);
+		} );
+
+		it( 'should remove the notice a skipped post save update added once the ticket is updated', () => {
+			const clientId = 'updated-after-a-skipped-post-save';
+			const removeNotice = jest.fn();
+			const gen = sagas.updateTicket( { payload: { clientId } } );
+
+			gen.next();
+			gen.next( { append: jest.fn(), entries: () => [] } );
+			gen.next( ticketStoredWithoutEnd.id );
+			gen.next();
+			gen.next( { response: { ok: true }, data: ticketStoredWithoutEnd } );
+			gen.next( stepSavedTicketSaleDates( ticketStoredWithoutEnd, clientId, parsedSaleDatesWithoutEnd, tempEnd ) );
+			gen.next( salePriceDatesWithoutDates );
+			gen.next( Object.values( tempFields ) );
+
+			expect( gen.next().value ).toEqual( call( wpDispatch, 'core/notices' ) );
+			expect( gen.next( { removeNotice } ).value ).toEqual(
+				call( removeNotice, `tec-tickets-ticket-not-updated-${ clientId }` )
 			);
 		} );
 	} );
