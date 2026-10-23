@@ -1498,7 +1498,45 @@ describe( 'Ticket Block sagas', () => {
 			expect( gen.next().value ).toEqual(
 				call( applyFilters, 'tec.tickets.blocks.updateTicketWithPostSave', true, clientId )
 			);
+			expect( gen.next( false ).value ).toEqual( select( selectors.getTicketHasChanges, { clientId } ) );
 			expect( gen.next( false ).value ).toEqual( take( savingChannel ) );
+		} );
+
+		it( 'should warn when the skipped update leaves the ticket changes unsaved', () => {
+			const clientId = 'skipped-with-changes';
+			const savingChannel = { take: jest.fn(), close: jest.fn() };
+			const notSavingChannel = { take: jest.fn(), close: jest.fn() };
+			const gen = sagas.saveTicketWithPostSave( clientId );
+
+			gen.next();
+			gen.next( true );
+			gen.next( savingChannel );
+			gen.next( notSavingChannel );
+			gen.next();
+			gen.next();
+
+			expect( gen.next( false ).value ).toEqual( select( selectors.getTicketHasChanges, { clientId } ) );
+			expect( gen.next( true ).value ).toEqual( call( sagas.noticeTicketNotUpdated, clientId ) );
+			expect( gen.next().value ).toEqual( take( savingChannel ) );
+		} );
+	} );
+
+	describe( 'noticeTicketNotUpdated', () => {
+		it( 'should add one warning notice per ticket', () => {
+			const clientId = 'ticket-not-updated';
+			const title = 'General admission';
+			const createWarningNotice = jest.fn();
+			const gen = sagas.noticeTicketNotUpdated( clientId );
+
+			expect( gen.next().value ).toEqual( select( selectors.getTicketTitle, { clientId } ) );
+			expect( gen.next( title ).value ).toEqual( call( wpDispatch, 'core/notices' ) );
+
+			const { fn, args } = gen.next( { createWarningNotice } ).value.CALL;
+
+			expect( fn ).toBe( createWarningNotice );
+			expect( args[ 0 ] ).toContain( `"${ title }"` );
+			expect( args[ 1 ] ).toEqual( { id: `tec-tickets-ticket-not-updated-${ clientId }` } );
+			expect( gen.next().done ).toEqual( true );
 		} );
 	} );
 
