@@ -63,14 +63,20 @@ final class Seating {
 	 *
 	 * @since TBD
 	 *
-	 * @param mixed  $check     Null to let the write go on, anything else to short-circuit it.
-	 * @param int    $object_id The post ID.
-	 * @param string $meta_key  The meta key.
+	 * @param mixed  $check      Null to let the write go on, anything else to short-circuit it.
+	 * @param int    $object_id  The post ID.
+	 * @param string $meta_key   The meta key.
+	 * @param mixed  $meta_value The value written.
 	 *
 	 * @return mixed False to refuse the layout, the value passed otherwise.
 	 */
-	public function refuse_layout( $check, $object_id, $meta_key ) {
-		if ( null !== $check || Meta::META_KEY_LAYOUT_ID !== $meta_key || ! $this->has_templates( (int) $object_id ) ) {
+	public function refuse_layout( $check, $object_id, $meta_key, $meta_value = '' ) {
+		if ( null !== $check || Meta::META_KEY_LAYOUT_ID !== $meta_key || ! $this->has_templates( absint( $object_id ) ) ) {
+			return $check;
+		}
+
+		// An empty layout is no layout: the block editor writes one with every save of the event.
+		if ( '' === $meta_value || null === $meta_value ) {
 			return $check;
 		}
 
