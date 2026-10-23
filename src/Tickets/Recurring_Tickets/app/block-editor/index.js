@@ -142,6 +142,25 @@ export function nameRecurringTicketType( mappedProps, { state, ticketDetails } )
 }
 
 /**
+ * Keeps Seating's choice between General Admission and Assigned Seating out of the ticket form on a recurring event,
+ * as recurring event tickets cannot be seated.
+ *
+ * Reads the Tickets block's store from the window, where common keeps the one store every bundle shares: this
+ * bundle's copy of the store module would make a second one.
+ *
+ * @since TBD
+ *
+ * @param {boolean} render Whether Seating renders its capacity choice.
+ *
+ * @return {boolean} Whether it does.
+ */
+export function keepSeatingOffRecurringEvents( render ) {
+	const store = window.__tribe_common_store__;
+
+	return render && ! ( store && hasRecurrenceRules( store.getState() ) );
+}
+
+/**
  * Offers "Add a Ticket" on a recurring event, without the message that tickets are not supported there.
  *
  * Runs after Flexible Tickets, which hides the button on a recurring event.
@@ -186,6 +205,12 @@ addFilter(
 	20
 );
 addFilter( 'tec.tickets.blocks.Tickets.Type.mappedProps', 'tec.tickets.recurringTickets', nameRecurringTicketType, 20 );
+addFilter(
+	'tec.tickets.blocks.Ticket.renderSeatingForm',
+	'tec.tickets.recurringTickets',
+	keepSeatingOffRecurringEvents,
+	20
+);
 addFilter(
 	'tec.tickets.blocks.Tickets.mappedProps',
 	'tec.tickets.recurringTickets',
