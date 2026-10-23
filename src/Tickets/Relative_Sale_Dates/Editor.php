@@ -152,8 +152,8 @@ final class Editor {
 		$context['relative_sale_dates_attributes'] = $rule
 			? [
 				'data-relative-sale-dates' => $rule->to_json(),
-				'data-sale-start'          => $this->get_sale_date( $ticket->start_date ),
-				'data-sale-end'            => $this->get_sale_date( $ticket->end_date ),
+				'data-sale-start'          => $this->get_sale_date( $ticket->start_date, $ticket->start_time ),
+				'data-sale-end'            => $this->get_sale_date( $ticket->end_date, $ticket->end_time ),
 			]
 			: [];
 
@@ -347,16 +347,17 @@ final class Editor {
 	}
 
 	/**
-	 * Gets a ticket sale date as the classic script reads it.
+	 * Gets a ticket sale date and time as the classic script reads them.
 	 *
 	 * @since TBD
 	 *
 	 * @param string|null $date The ticket sale date.
+	 * @param string|null $time The ticket sale time.
 	 *
-	 * @return string The date, `Y-m-d`, or an empty string when the ticket has none.
+	 * @return string The date and time, `Y-m-d H:i:s`, or an empty string when the ticket has no date.
 	 */
-	private function get_sale_date( ?string $date ): string {
-		return $date ? Dates::date_only( $date, false, Dates::DBDATEFORMAT ) : '';
+	private function get_sale_date( ?string $date, ?string $time ): string {
+		return $date ? Dates::date_only( "{$date} {$time}", false, Dates::DBDATETIMEFORMAT ) : '';
 	}
 
 	/**

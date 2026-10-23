@@ -52,7 +52,7 @@ const DEFAULT_DATA = {
 	},
 	timezones: {},
 	allDay: { start: '00:00:00', end: '23:59:59', endDays: 0 },
-	formats: { dateWithYear: 'F j, Y', dateNoYear: 'F j', time: 'g:i a' },
+	formats: { dateWithYear: 'F j, Y', time: 'g:i a' },
 	ticketProviders: { classes: [ 'TEC\\Tickets\\Commerce\\Module' ], slugs: [ 'tc' ] },
 };
 

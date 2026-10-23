@@ -4,7 +4,7 @@
  *
  * Displays the available dates of tickets below the ticket title.
  *
- * @since TBD Prints the attributes the Relative Sale Dates classic script reads.
+ * @since TBD Shows the time of each sales date, and prints the attributes the Relative Sale Dates classic script reads.
  *
  * @var \Tribe__Template              $this                           [Global] Template object.
  * @var Tribe__Tickets__Ticket_Object $ticket                         [Global] The tickets provider instance.
@@ -16,13 +16,16 @@ defined( 'ABSPATH' ) || die();
 if ( empty( $ticket->start_date ) ) {
 	return;
 }
-$classes     = [
+$classes = [
 	'tribe-tickets__tickets-editor-ticket-available-dates',
 	'dashicons-before',
 ];
-$date_format = tribe_get_date_format( true );
-$start_time  = strtotime( $ticket->start_date );
-$date_string = date_i18n( $date_format, $start_time ) . ' - ';
+// The same fallbacks as the Relative Sale Dates scripts, which rewrite these dates when a ticket follows the event.
+$date_format = ( tribe_get_date_format( true ) ?: 'F j, Y' ) . ' ' . ( tribe_get_time_format() ?: 'g:i a' );
+$start_time  = strtotime( $ticket->start_date . ' ' . $ticket->start_time );
+// Formatted in UTC, where `strtotime()` read it: `date_i18n()` would move a time in the site's DST gap.
+$utc         = new DateTimeZone( 'UTC' );
+$date_string = wp_date( $date_format, $start_time, $utc ) . ' - ';
 
 // Icon design is based on if start date is in the future or not.
 $classes[] = ( current_time( 'timestamp' ) < $start_time ) // phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested
@@ -30,8 +33,8 @@ $classes[] = ( current_time( 'timestamp' ) < $start_time ) // phpcs:ignore WordP
 	: 'dashicons-clock';
 
 if ( ! empty( $ticket->end_date ) ) {
-	$end_time     = strtotime( $ticket->end_date );
-	$date_string .= date_i18n( $date_format, $end_time );
+	$end_time     = strtotime( $ticket->end_date . ' ' . $ticket->end_time );
+	$date_string .= wp_date( $date_format, $end_time, $utc );
 
 	// Add a class to differentiate tickets that are no longer on sale.
 	if ( current_time( 'timestamp' ) > $end_time ) { // phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested
@@ -41,5 +44,5 @@ if ( ! empty( $ticket->end_date ) ) {
 
 ?>
 <div <?php tec_classes( $classes ); ?><?php tribe_attributes( $relative_sale_dates_attributes ?? [] ); ?>>
-	<?php echo $date_string; ?>
+	<?php echo esc_html( $date_string ); ?>
 </div>

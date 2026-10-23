@@ -305,10 +305,68 @@ class Editor_Test extends Controller_Test_Case {
 
 		$dates = $this->get_available_dates( $list, $ruled );
 		$this->assertSame( $rule, json_decode( $dates->getAttribute( 'data-relative-sale-dates' ), true ) );
-		$this->assertSame( $this->get_ticket_start( $ruled )[0], $dates->getAttribute( 'data-sale-start' ) );
-		$this->assertSame( $this->get_ticket_end( $ruled )[0], $dates->getAttribute( 'data-sale-end' ) );
+		$this->assertSame( implode( ' ', $this->get_ticket_start( $ruled ) ), $dates->getAttribute( 'data-sale-start' ) );
+		$this->assertSame( implode( ' ', $this->get_ticket_end( $ruled ) ), $dates->getAttribute( 'data-sale-end' ) );
 		// Each row's template context is merged into the next one, so the rule must not carry over.
 		$this->assertFalse( $this->get_available_dates( $list, $plain )->hasAttribute( 'data-relative-sale-dates' ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_show_the_time_of_each_sales_date_in_the_tickets_list(): void {
+		$this->make_controller()->register();
+		$event_start = new DateTimeImmutable( '2027-06-24 19:00:00' );
+		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
+		$rule        = [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => $this->relative( 1, HOUR_IN_SECONDS ) ];
+		$ticket_id   = $this->create_tc_ticket( $event_id, 1, [ 'relative_sale_dates' => wp_json_encode( $rule ) ] );
+
+		$dates = $this->get_available_dates( $this->render_tickets_list( $event_id ), $ticket_id );
+
+		$expected = $event_start->modify( '-2 weeks' )->format( 'F j, Y g:i a' ) . ' - ' . $event_start->modify( '-1 hour' )->format( 'F j, Y g:i a' );
+		$this->assertSame( $expected, trim( $dates->textContent ) );
+	}
+
+	/**
+	 * 2:30 am does not exist in New York on the day the clocks spring forward; the classic script shows it as stored.
+	 *
+	 * @test
+	 */
+	public function should_show_a_sales_time_in_the_site_timezone_gap_as_stored(): void {
+		update_option( 'timezone_string', 'America/New_York' );
+		$this->make_controller()->register();
+		$event_id   = $this->create_event( '2027-06-24 19:00:00', 'America/New_York' );
+		$sale_start = new DateTimeImmutable( '2027-03-14 02:30:00' );
+		$ticket_id  = $this->create_tc_ticket(
+			$event_id,
+			1,
+			[
+				'ticket_start_date' => $sale_start->format( 'Y-m-d' ),
+				'ticket_start_time' => $sale_start->format( 'H:i:s' ),
+			]
+		);
+
+		$dates = $this->get_available_dates( $this->render_tickets_list( $event_id ), $ticket_id );
+
+		$this->assertStringStartsWith( $sale_start->format( 'F j, Y g:i a' ) . ' - ', trim( $dates->textContent ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_show_the_sales_dates_in_the_scripts_fallback_formats_when_the_formats_are_blank(): void {
+		$this->make_controller()->register();
+		add_filter( 'tribe_date_format', '__return_empty_string' );
+		add_filter( 'tribe_time_format', '__return_empty_string' );
+		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
+		$ticket_id = $this->create_tc_ticket( $event_id );
+
+		$dates = $this->get_available_dates( $this->render_tickets_list( $event_id ), $ticket_id );
+
+		$start    = new DateTimeImmutable( implode( ' ', $this->get_ticket_start( $ticket_id ) ) );
+		$end      = new DateTimeImmutable( implode( ' ', $this->get_ticket_end( $ticket_id ) ) );
+		$expected = $start->format( 'F j, Y g:i a' ) . ' - ' . $end->format( 'F j, Y g:i a' );
+		$this->assertSame( $expected, trim( $dates->textContent ) );
 	}
 
 	/**
