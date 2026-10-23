@@ -3749,8 +3749,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			// Bail if there aren't any tickets.
-			$tickets = $this->get_tickets( $post->ID );
-			if ( empty( $tickets ) ) {
+			if ( ! $this->has_tickets_for_post_content( $post->ID ) ) {
 				return false;
 			}
 
@@ -3763,6 +3762,19 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			return true;
+		}
+
+		/**
+		 * Whether the post has tickets of this provider to show in its content.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $post_id The post ID.
+		 *
+		 * @return bool Whether the post has tickets of this provider to show in its content.
+		 */
+		protected function has_tickets_for_post_content( int $post_id ): bool {
+			return ! empty( $this->get_tickets( $post_id ) );
 		}
 
 		/**

@@ -327,11 +327,8 @@ class Module extends \Tribe__Tickets__Tickets {
 
 		if ( empty( $tickets ) ) {
 			// Another provider sells this event's tickets: its TC-RSVP still shows, as a V1 RSVP did.
-			foreach ( (array) $this->get_tickets_ids( $post->ID, RSVP_V2_Constants::FRONT_END_TICKETS_FORM_CONTEXT ) as $ticket_id ) {
-				if ( RSVP_V2_Constants::TC_RSVP_TYPE === get_post_meta( $ticket_id, '_type', true ) ) {
-					tribe( Tickets_View::class )->get_rsvp_block( $post );
-					break;
-				}
+			if ( $this->has_tc_rsvp( $post->ID ) ) {
+				tribe( Tickets_View::class )->get_rsvp_block( $post );
 			}
 
 			return;
@@ -348,6 +345,40 @@ class Module extends \Tribe__Tickets__Tickets {
 				break;
 			}
 		}
+	}
+
+	/**
+	 * Whether the post has Tickets Commerce tickets to show in its content.
+	 *
+	 * The TC-RSVP counts even when another provider sells the post's tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The post ID.
+	 *
+	 * @return bool Whether the post has Tickets Commerce tickets to show in its content.
+	 */
+	protected function has_tickets_for_post_content( int $post_id ): bool {
+		return parent::has_tickets_for_post_content( $post_id ) || $this->has_tc_rsvp( $post_id );
+	}
+
+	/**
+	 * Whether the post has a TC-RSVP, whichever provider sells its tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The post ID.
+	 *
+	 * @return bool Whether the post has a TC-RSVP.
+	 */
+	private function has_tc_rsvp( int $post_id ): bool {
+		foreach ( (array) $this->get_tickets_ids( $post_id, RSVP_V2_Constants::FRONT_END_TICKETS_FORM_CONTEXT ) as $ticket_id ) {
+			if ( RSVP_V2_Constants::TC_RSVP_TYPE === get_post_meta( $ticket_id, '_type', true ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
