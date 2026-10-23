@@ -1,0 +1,5 @@
+significance: patch
+type: security
+entry: Hardened the ticket editor so tickets can only be changed or viewed
+  through the event they belong to.
+timestamp: 2026-10-23T17:08:20.160Z
