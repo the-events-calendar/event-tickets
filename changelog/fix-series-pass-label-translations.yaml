@@ -1,0 +1,6 @@
+significance: patch
+type: fix
+entry: Kept the event edit screen working when a translation breaks the
+  placeholders of the Series Pass help text, falling back to English for that
+  sentence.
+timestamp: 2026-10-23T17:01:31.735Z
