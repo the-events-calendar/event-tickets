@@ -4,6 +4,7 @@ namespace TEC\Tickets\Relative_Sale_Dates;
 
 use Closure;
 use DateTimeImmutable;
+use DateTimeZone;
 use DOMDocument;
 use DOMElement;
 use DOMXPath;
@@ -367,6 +368,28 @@ class Editor_Test extends Controller_Test_Case {
 		$end      = new DateTimeImmutable( implode( ' ', $this->get_ticket_end( $ticket_id ) ) );
 		$expected = $start->format( 'F j, Y g:i a' ) . ' - ' . $end->format( 'F j, Y g:i a' );
 		$this->assertSame( $expected, trim( $dates->textContent ) );
+	}
+
+	/**
+	 * Sales dates are stored in the event timezone, here 12 hours ahead of the site's: read in the site's, a sale that
+	 * started or ended 2 hours ago would still be 10 hours away.
+	 *
+	 * @test
+	 */
+	public function should_tell_an_on_sale_and_an_expired_ticket_apart_in_the_event_timezone(): void {
+		update_option( 'timezone_string', 'America/Sao_Paulo' );
+		$this->make_controller()->register();
+		$event_now = new DateTimeImmutable( 'now', new DateTimeZone( 'Asia/Tokyo' ) );
+		$event_id  = $this->create_event( $event_now->modify( '+60 days' )->format( 'Y-m-d H:i:s' ), 'Asia/Tokyo' );
+		$on_sale   = $this->create_tc_ticket( $event_id, 1, $this->get_sales_window( $event_now->modify( '-2 hours' ), $event_now->modify( '+30 days' ) ) );
+		$expired   = $this->create_tc_ticket( $event_id, 1, $this->get_sales_window( $event_now->modify( '-10 days' ), $event_now->modify( '-2 hours' ) ) );
+
+		$list = $this->render_tickets_list( $event_id );
+
+		$on_sale_classes = explode( ' ', $this->get_available_dates( $list, $on_sale )->getAttribute( 'class' ) );
+		$this->assertContains( 'dashicons-clock', $on_sale_classes );
+		$this->assertNotContains( 'tribe-tickets__tickets-editor-ticket-available-dates-icon-expired', $on_sale_classes );
+		$this->assertContains( 'tribe-tickets__tickets-editor-ticket-available-dates-icon-expired', explode( ' ', $this->get_available_dates( $list, $expired )->getAttribute( 'class' ) ) );
 	}
 
 	/**
@@ -1150,6 +1173,21 @@ class Editor_Test extends Controller_Test_Case {
 		libxml_clear_errors();
 
 		return new DOMXPath( $document );
+	}
+
+	/**
+	 * @param DateTimeImmutable $start The sales start, in the event timezone.
+	 * @param DateTimeImmutable $end   The sales end, in the event timezone.
+	 *
+	 * @return array{ticket_start_date: string, ticket_start_time: string, ticket_end_date: string, ticket_end_time: string} The ticket's sales dates.
+	 */
+	private function get_sales_window( DateTimeImmutable $start, DateTimeImmutable $end ): array {
+		return [
+			'ticket_start_date' => $start->format( 'Y-m-d' ),
+			'ticket_start_time' => $start->format( 'H:i:s' ),
+			'ticket_end_date'   => $end->format( 'Y-m-d' ),
+			'ticket_end_time'   => $end->format( 'H:i:s' ),
+		];
 	}
 
 	/**

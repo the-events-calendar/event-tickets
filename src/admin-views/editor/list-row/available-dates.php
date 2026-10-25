@@ -4,7 +4,8 @@
  *
  * Displays the available dates of tickets below the ticket title.
  *
- * @since TBD Shows the time of each sales date, and prints the attributes the Relative Sale Dates classic script reads.
+ * @since TBD Shows the time of each sales date, tells an upcoming or expired ticket in its event's timezone, and prints
+ *            the attributes the Relative Sale Dates classic script reads.
  *
  * @var \Tribe__Template              $this                           [Global] Template object.
  * @var Tribe__Tickets__Ticket_Object $ticket                         [Global] The tickets provider instance.
@@ -27,8 +28,8 @@ $start_time  = strtotime( $ticket->start_date . ' ' . $ticket->start_time );
 $utc         = new DateTimeZone( 'UTC' );
 $date_string = wp_date( $date_format, $start_time, $utc ) . ' - ';
 
-// Icon design is based on if start date is in the future or not.
-$classes[] = ( current_time( 'timestamp' ) < $start_time ) // phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested
+// Icon design is based on if start date is in the future or not, in the event timezone the dates are stored in.
+$classes[] = $ticket->date_is_earlier()
 	? 'dashicons-arrow-right-alt'
 	: 'dashicons-clock';
 
@@ -37,7 +38,7 @@ if ( ! empty( $ticket->end_date ) ) {
 	$date_string .= wp_date( $date_format, $end_time, $utc );
 
 	// Add a class to differentiate tickets that are no longer on sale.
-	if ( current_time( 'timestamp' ) > $end_time ) { // phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested
+	if ( $ticket->date_is_later() ) {
 		$classes[] = 'tribe-tickets__tickets-editor-ticket-available-dates-icon-expired';
 	}
 }
