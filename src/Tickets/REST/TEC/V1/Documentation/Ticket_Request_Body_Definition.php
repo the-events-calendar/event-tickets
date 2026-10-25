@@ -53,6 +53,7 @@ class Ticket_Request_Body_Definition extends Definition {
 	 * Returns the documentation for the definition.
 	 *
 	 * @since 5.26.0
+	 * @since TBD Documented a minimum of 0 for the price and sale price.
 	 *
 	 * @return array
 	 */
@@ -70,6 +71,8 @@ class Ticket_Request_Body_Definition extends Definition {
 			new Number(
 				'price',
 				fn() => __( 'The price of the ticket', 'event-tickets' ),
+				null,
+				0,
 			)
 		)->set_example( 25.05 );
 
@@ -77,6 +80,8 @@ class Ticket_Request_Body_Definition extends Definition {
 			new Number(
 				'sale_price',
 				fn() => __( 'The sale price of the ticket', 'event-tickets' ),
+				null,
+				0,
 			)
 		)->set_example( 20.05 );
 

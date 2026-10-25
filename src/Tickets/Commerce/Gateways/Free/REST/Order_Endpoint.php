@@ -18,6 +18,7 @@ use TEC\Tickets\Commerce\Stock_Validator;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Success;
+use TEC\Tickets\Commerce\Utils\Value;
 
 use WP_Error;
 use WP_REST_Request;
@@ -70,6 +71,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since 5.10.0
 	 * @since 5.26.6 Added cart validation to reject empty carts and carts containing paid tickets.
+	 * @since TBD Rejects carts containing a negative-priced ticket.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -87,8 +89,18 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		// Check if cart has any items.
 		$cart_items = $cart->get_repository()->get_items_in_cart();
 
+		// The total alone is not enough: every ticket line must be free, not below zero.
+		$has_negative_item = [] !== array_filter(
+			$cart->get_items_in_cart( true ),
+			static function ( array $item ): bool {
+				$sub_total = $item['sub_total'] instanceof Value ? $item['sub_total']->get_decimal() : $item['sub_total'];
+
+				return is_numeric( $sub_total ) && $sub_total < 0;
+			}
+		);
+
 		// If cart is empty or has any cost > 0, reject the request.
-		if ( ! ( $cart_items && $cart_total <= 0 ) ) {
+		if ( ! ( $cart_items && $cart_total <= 0 ) || $has_negative_item ) {
 			return new WP_Error(
 				'tec_tickets_commerce_free_order_invalid_cart',
 				__( 'This endpoint can only be used for carts with a total of 0. Carts with paid tickets require payment.', 'event-tickets' ),
