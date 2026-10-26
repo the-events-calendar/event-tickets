@@ -118,6 +118,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since 4.6.2
 	 * @since 5.26.4 Add user permission check.
+	 * @since TBD    Verifies the nonce the ticket editor sends.
 	 *
 	 * @return string html content of the panels
 	 */
@@ -129,8 +130,11 @@ class Tribe__Tickets__Metabox {
 			wp_send_json_error( esc_html__( 'Invalid Post ID', 'event-tickets' ) );
 		}
 
-		// Check user permissions for this post - bail if not authorized.
-		if ( ! user_can( get_current_user_id(), 'edit_post', $post_id ) ) {
+		// Check user permissions for this post - bail if not authorized. The request can save the ticket order and settings.
+		if (
+			! wp_verify_nonce( tribe_get_request_var( 'nonce', '' ), 'add_ticket_nonce' )
+			|| ! user_can( get_current_user_id(), 'edit_post', $post_id )
+		) {
 			wp_send_json_error( esc_html__( 'You do not have permission to access this content.', 'event-tickets' ) );
 		}
 
@@ -283,7 +287,6 @@ class Tribe__Tickets__Metabox {
 	 * @since 4.6.2
 	 * @since 4.10.9 Use customizable ticket name functions.
 	 * @since 5.5.7 Added optional parameter to return values instead of echoing directly.
-	 * @since TBD   Rejects an existing ticket that is not attached to the requested post.
 	 *
 	 * @param bool $return_value Optional, flags whether to JSON output directly or return results.
 	 *
@@ -321,12 +324,7 @@ class Tribe__Tickets__Metabox {
 		}
 		$ticket_type = sanitize_text_field( $ticket_type ?: 'default' );
 
-		$edited_ticket_id = absint( $data['ticket_id'] ?? 0 );
-
-		if (
-			! $this->has_permission( $post_id, $_POST, 'add_ticket_nonce' ) // phpcs:ignore WordPress.Security.NonceVerification.Missing -- has_permission() verifies the nonce.
-			|| ( $edited_ticket_id && ! Event::ticket_belongs_to_post( $edited_ticket_id, $post_id ) )
-		) {
+		if ( ! $this->has_permission( $post_id, $_POST, 'add_ticket_nonce' ) ) {
 			$failed_ticket_output = esc_html(
 				/* Translators:  %1$s - singular ticket term. */
 				sprintf( __( 'Failed to add the %1$s. Refresh the page to try again.', 'event-tickets' ),
@@ -745,6 +743,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since 4.6.2
 	 * @since 4.12.3 Use new helper method to account for possibly inactive ticket provider.
+	 * @since TBD    Requires the user to manage the attendees of the attendee's event and of the requested event.
 	 */
 	public function ajax_attendee_checkin() {
 		$event_id    = Tribe__Utils__Array::get( $_POST, 'event_ID', false );
@@ -762,10 +761,14 @@ class Tribe__Tickets__Metabox {
 			wp_send_json_error( esc_html__( 'Commerce Module invalid', 'event-tickets' ) );
 		}
 
+		/** @var Tribe__Tickets__Attendees $attendees */
+		$attendees = tribe( 'tickets.attendees' );
+
 		if (
 			empty( $_POST['nonce'] )
 			|| ! wp_verify_nonce( $_POST['nonce'], 'checkin' )
-			|| ! $this->user_can( 'edit_posts', $attendee_id )
+			|| ! $attendees->user_can_manage_attendee( $attendee_id )
+			|| ( $event_id && ! $attendees->user_can_manage_attendees( 0, absint( $event_id ) ) )
 		) {
 			wp_send_json_error( "Cheatin' huh?" );
 		}
@@ -795,6 +798,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since 4.6.2
 	 * @since 4.12.3 Use new helper method to account for possibly inactive ticket provider.
+	 * @since TBD    Requires the user to manage the attendees of the attendee's event and of the requested event.
 	 */
 	public function ajax_attendee_uncheckin() {
 		$event_id    = Tribe__Utils__Array::get( $_POST, 'event_ID', false );
@@ -812,10 +816,14 @@ class Tribe__Tickets__Metabox {
 			wp_send_json_error( esc_html__( 'Commerce Module invalid', 'event-tickets' ) );
 		}
 
+		/** @var Tribe__Tickets__Attendees $attendees */
+		$attendees = tribe( 'tickets.attendees' );
+
 		if (
 			empty( $_POST['nonce'] )
 			|| ! wp_verify_nonce( $_POST['nonce'], 'uncheckin' )
-			|| ! $this->user_can( 'edit_posts', $attendee_id )
+			|| ! $attendees->user_can_manage_attendee( $attendee_id )
+			|| ( $event_id && ! $attendees->user_can_manage_attendees( 0, absint( $event_id ) ) )
 		) {
 			wp_send_json_error( "Cheatin' huh?" );
 		}

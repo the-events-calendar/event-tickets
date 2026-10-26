@@ -25,8 +25,8 @@ class Single_Ticket_Parent_Permission_Test extends WPTestCase {
 	 * @test
 	 * @dataProvider provider_paid_ticket_makers
 	 */
-	public function it_should_not_update_a_ticket_of_another_post( string $provider, callable $make_ticket ): void {
-		$ticket_id   = $make_ticket( static::factory()->post->create() );
+	public function it_should_not_update_a_ticket_of_another_post( string $provider, string $make_ticket ): void {
+		$ticket_id   = $this->{$make_ticket}( static::factory()->post->create() );
 		$ticket_name = get_post_field( 'post_title', $ticket_id, 'raw' );
 		$own_draft   = $this->log_in_as_contributor_with_own_draft();
 
@@ -34,6 +34,7 @@ class Single_Ticket_Parent_Permission_Test extends WPTestCase {
 
 		$this->assertInstanceOf( WP_Error::class, $result );
 		$this->assertSame( 403, $result->get_error_data()['status'] );
+		$this->assertStringNotContainsString( 'nonce', $result->get_error_message(), 'Support must not chase a nonce issue.' );
 		$this->assertSame( $ticket_name, get_post_field( 'post_title', $ticket_id, 'raw' ) );
 	}
 
@@ -41,8 +42,8 @@ class Single_Ticket_Parent_Permission_Test extends WPTestCase {
 	 * @test
 	 * @dataProvider provider_paid_ticket_makers
 	 */
-	public function it_should_not_save_a_ticket_of_another_post_through_the_create_route( string $provider, callable $make_ticket ): void {
-		$ticket_id   = $make_ticket( static::factory()->post->create() );
+	public function it_should_not_save_a_ticket_of_another_post_through_the_create_route( string $provider, string $make_ticket ): void {
+		$ticket_id   = $this->{$make_ticket}( static::factory()->post->create() );
 		$ticket_name = get_post_field( 'post_title', $ticket_id, 'raw' );
 		$own_draft   = $this->log_in_as_contributor_with_own_draft();
 
@@ -57,10 +58,25 @@ class Single_Ticket_Parent_Permission_Test extends WPTestCase {
 	 * @test
 	 * @dataProvider provider_paid_ticket_makers
 	 */
-	public function it_should_update_a_ticket_through_the_post_it_is_attached_to( string $provider, callable $make_ticket ): void {
+	public function it_should_update_a_ticket_through_the_post_it_is_attached_to( string $provider, string $make_ticket ): void {
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 		$post_id   = static::factory()->post->create();
-		$ticket_id = $make_ticket( $post_id );
+		$ticket_id = $this->{$make_ticket}( $post_id );
+		$new_name  = $this->faker->sentence();
+
+		$result = $this->update_request( $ticket_id, $post_id, $new_name );
+
+		$this->assertSame( 202, $result->get_status() );
+		$this->assertSame( $new_name, get_post_field( 'post_title', $ticket_id, 'raw' ) );
+	}
+
+	/**
+	 * @test
+	 * @dataProvider provider_paid_ticket_makers
+	 */
+	public function it_should_let_an_editor_update_a_ticket_of_another_authors_post( string $provider, string $make_ticket ): void {
+		$post_id   = $this->log_in_as_editor_of_another_authors_post();
+		$ticket_id = $this->{$make_ticket}( $post_id );
 		$new_name  = $this->faker->sentence();
 
 		$result = $this->update_request( $ticket_id, $post_id, $new_name );

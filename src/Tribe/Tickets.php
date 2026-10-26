@@ -8,6 +8,7 @@
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use Tribe__Cache_Listener as Cache;
 use Tribe__Utils__Array as Arr;
+use TEC\Tickets\Event;
 use TEC\Tickets\RSVP\V2\Constants;
 
 // phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
@@ -4106,6 +4107,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Creates a ticket object and calls the child save_ticket function
 		 *
+		 * @since TBD Returns false, saving nothing, when the ID to update is not a ticket attached to the post.
+		 *
 		 * @param int   $post_id ID of parent "event" post.
 		 * @param array $data    Raw post data.
 		 *
@@ -4123,6 +4126,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$ticket->start_date       = null;
 			$ticket->end_date         = null;
 			$ticket->menu_order       = isset( $data['ticket_menu_order'] ) ? intval( $data['ticket_menu_order'] ) : null;
+
+			// Every save path takes the ticket ID from the request, and the caller only checked its rights on the post.
+			if ( $update && ! Event::ticket_belongs_to_post( $ticket->ID, absint( $post_id ) ) ) {
+				return false;
+			}
 
 			/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
 			$tickets_handler = tribe( 'tickets.handler' );

@@ -1084,6 +1084,32 @@ class Tribe__Tickets__Attendees {
 	}
 
 	/**
+	 * Determines if the current user is allowed to check in, or undo the check-in of, an attendee.
+	 *
+	 * The event is read from the attendee, never from the request, so a user cannot pass an event they manage to act
+	 * on the attendee of another.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $attendee_id The attendee post ID.
+	 *
+	 * @return bool Whether the ID is an attendee and the current user can manage the attendees of its event.
+	 */
+	public function user_can_manage_attendee( $attendee_id ): bool {
+		$attendee_id = absint( $attendee_id );
+
+		if ( ! $attendee_id || ! in_array( get_post_type( $attendee_id ), tribe_attendees()->attendee_types(), true ) ) {
+			return false;
+		}
+
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+		$event_id        = absint( $tickets_handler->get_object_connections( $attendee_id )->event );
+
+		return $event_id && $this->user_can_manage_attendees( 0, $event_id );
+	}
+
+	/**
 	 * Create an attendee for any Commerce provider from a ticket.
 	 *
 	 * @since 5.1.0

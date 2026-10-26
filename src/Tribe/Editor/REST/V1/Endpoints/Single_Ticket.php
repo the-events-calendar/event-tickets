@@ -250,13 +250,24 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 		$nonce   = $body[ $nonce_action ];
 		$post_id = $body['post_id'];
 
-		if (
-			! $this->has_permission( $post_id, $nonce, $nonce_action )
-			|| ( $ticket_id && ! Event::ticket_belongs_to_post( absint( $ticket_id ), absint( $post_id ) ) )
-		) {
+		if ( ! $this->has_permission( $post_id, $nonce, $nonce_action ) ) {
 			return new WP_Error(
 				'forbidden',
 				__( 'Invalid nonce', 'event-tickets' ),
+				[ 'status' => 403 ]
+			);
+		}
+
+		if ( $ticket_id && ! Event::ticket_belongs_to_post( absint( $ticket_id ), absint( $post_id ) ) ) {
+			return new WP_Error(
+				'forbidden',
+				esc_html(
+					sprintf(
+						/* translators: %s: The singular, lowercase ticket label. */
+						__( 'This %s can only be edited from the post it belongs to.', 'event-tickets' ),
+						tribe_get_ticket_label_singular_lowercase( 'rest_edit_ticket_error' )
+					)
+				),
 				[ 'status' => 403 ]
 			);
 		}
