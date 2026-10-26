@@ -485,6 +485,9 @@
 	margin-bottom: 1em;
 	position: relative;
 
+	/* The label column of the form, which every control lines up after. */
+	--tec-tickets-form-label-width: 132px;
+
 	.ticket_form_left {
 		box-sizing: border-box;
 		display: block;
@@ -502,7 +505,7 @@
 
 	input,
 	textarea {
-		max-width: calc(100% - 132px);
+		max-width: calc(100% - var(--tec-tickets-form-label-width));
 	}
 
 	.ticket_field {
@@ -525,7 +528,7 @@
 		}
 
 		@media (min-width: 782px) {
-			margin-left: 132px;
+			margin-left: var(--tec-tickets-form-label-width);
 		}
 
 		&:last-child {
@@ -549,7 +552,7 @@
 			display: flex;
 
 			.ticket_form_left {
-				flex: 0 0 132px;
+				flex: 0 0 var(--tec-tickets-form-label-width);
 			}
 
 			.ticket_form_right {
@@ -941,7 +944,10 @@ p.description {
 	.input_block.tec-tickets-field-row {
 		align-items: baseline;
 		display: grid;
-		grid-template-columns: 132px minmax(0, 1fr);
+		grid-template-columns: var(--tec-tickets-form-label-width) minmax(0, 1fr);
+
+		/* A row nested in another `.input_block`, as the price row is when its field is disabled, starts the grid itself. */
+		margin-left: 0;
 
 		> :not(.ticket_form_left) {
 			grid-column: 2;
