@@ -214,7 +214,14 @@ class Modal {
 		// The attendee's own event decides access, never the one the client names.
 		$post_id = absint( Arr::get( $attendee, 'event_id', 0 ) );
 
-		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees( get_current_user_id(), $post_id ) ) {
+		/*
+		 * The attendee management filter can be loosened by other plugins, so the post capability is checked
+		 * on top of it.
+		 */
+		if (
+			! current_user_can( 'edit_post', $post_id )
+			|| ! tribe( 'tickets.attendees' )->user_can_manage_attendees( get_current_user_id(), $post_id )
+		) {
 			return new WP_Error( 'tec-tickets-attendee-forbidden', esc_html__( 'You do not have permission to view this attendee.', 'event-tickets' ) );
 		}
 

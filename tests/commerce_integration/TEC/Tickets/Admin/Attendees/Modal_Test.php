@@ -194,6 +194,22 @@ class Modal_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_deny_a_contributor_who_cannot_edit_the_event_even_when_the_management_filter_allows_everyone(): void {
+		$owner_id = $this->factory()->user->create( [ 'role' => 'editor' ] );
+		$fixture  = $this->create_attendee_on_post_owned_by( $owner_id );
+
+		add_filter( 'tribe_tickets_user_can_manage_attendees', '__return_true' );
+		wp_set_current_user( $this->factory()->user->create( [ 'role' => 'contributor' ] ) );
+
+		$this->request_attendee_details( $fixture );
+
+		$this->assertSame( 'error', self::$response['type'] );
+		$this->assertStringNotContainsString( $fixture['security_code'], wp_json_encode( self::$response['data'] ) );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_ignore_the_client_supplied_event_id_when_checking_access(): void {
 		$owner_id = $this->factory()->user->create( [ 'role' => 'editor' ] );
 		$fixture  = $this->create_attendee_on_post_owned_by( $owner_id );
