@@ -15,6 +15,7 @@ class Tribe__Tickets__Commerce__PayPal__Handler__IPN implements Tribe__Tickets__
 	 * Checks the request to see if payment data was communicated
 	 *
 	 * @since 4.7
+	 * @since TBD Maps PayPal's `Pending` to the stored pending status and any unknown status to `undefined`.
 	 */
 	public function check_response() {
 		if ( empty( $_POST ) || ! isset( $_POST['txn_id'], $_POST['payer_email'] ) ) {
@@ -37,7 +38,7 @@ class Tribe__Tickets__Commerce__PayPal__Handler__IPN implements Tribe__Tickets__
 		$results = $gateway->parse_transaction( $data );
 		$gateway->set_transaction_data( $results );
 
-		$payment_status = trim( strtolower( $data['payment_status'] ) );
+		$payment_status = Tribe__Tickets__Commerce__PayPal__Stati::cast_paypal_payment_status( Tribe__Utils__Array::get( $data, 'payment_status', '' ) );
 
 		/** @var Tribe__Tickets__Commerce__PayPal__Stati $stati */
 		$stati = tribe( 'tickets.commerce.paypal.stati' );

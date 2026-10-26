@@ -81,6 +81,26 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	}
 
 	/**
+	 * Casts the `payment_status` PayPal sends to one handled and recognized.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $paypal_status The payment status as PayPal reports it, e.g. `Pending`.
+	 *
+	 * @return string The recognized payment status, `undefined` if PayPal's status has no match.
+	 */
+	public static function cast_paypal_payment_status( $paypal_status ) {
+		$payment_status = trim( strtolower( $paypal_status ) );
+
+		// PayPal reports `Pending`, the stored status is `pending-payment`.
+		if ( 'pending' === $payment_status ) {
+			$payment_status = self::$pending;
+		}
+
+		return self::cast_payment_status( $payment_status );
+	}
+
+	/**
 	 * Registers the post stati with WordPress.
 	 *
 	 * @since 4.7

@@ -15,7 +15,7 @@ class Tribe__Tickets__Commerce__PayPal__Handler__PDT implements Tribe__Tickets__
 	 * Checks the request to see if payment data was communicated
 	 *
 	 * @since 4.7
-	 * @since TBD Generates tickets with the payment status PayPal reports instead of always as completed.
+	 * @since TBD Generates tickets with the recognized payment status PayPal reports instead of always as completed.
 	 */
 	public function check_response() {
 		if ( ! isset( $_GET['tx'] ) ) {
@@ -39,8 +39,7 @@ class Tribe__Tickets__Commerce__PayPal__Handler__PDT implements Tribe__Tickets__
 		 * A SUCCESS lookup only proves the transaction exists: the payment can still be pending or denied.
 		 * Read the status from PayPal's response, not from the `st` query argument the browser carries.
 		 */
-		$payment_status = trim( strtolower( Tribe__Utils__Array::get( $results, 'payment_status', '' ) ) );
-		$payment_status = '' === $payment_status ? Tribe__Tickets__Commerce__PayPal__Stati::$undefined : $payment_status;
+		$payment_status = Tribe__Tickets__Commerce__PayPal__Stati::cast_paypal_payment_status( Tribe__Utils__Array::get( $results, 'payment_status', '' ) );
 
 		/** @var Tribe__Tickets__Commerce__PayPal__Stati $stati */
 		$stati = tribe( 'tickets.commerce.paypal.stati' );
