@@ -1,0 +1,6 @@
+significance: patch
+type: fix
+entry: Made the Tickets block's Add a Ticket button open the new ticket form on
+  the first click instead of leaving a blank ticket, and let keyboard users add
+  and save tickets with Enter or Space.
+timestamp: 2026-10-21T22:20:14.762Z
