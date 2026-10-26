@@ -28,6 +28,11 @@ trait Transaction_Maker {
 	private int $paypal_sent_emails = 0;
 
 	/**
+	 * @var string[] The locations the site redirected the buyer to.
+	 */
+	private array $paypal_redirects = [];
+
+	/**
 	 * @var array{0: array<string,string>|null, 1: array<string,object>} The status manager's active modules and statuses before the test.
 	 */
 	private array $paypal_status_backup = [ null, [] ];
@@ -43,6 +48,7 @@ trait Transaction_Maker {
 	public function set_up_paypal_transactions(): void {
 		$this->paypal_get_backup  = $_GET;
 		$this->paypal_sent_emails = 0;
+		$this->paypal_redirects   = [];
 
 		$status_manager             = tribe( 'tickets.status' );
 		$this->paypal_status_backup = ( fn() => [ $this->active_modules, $this->statuses ] )->call( $status_manager );
@@ -60,17 +66,21 @@ trait Transaction_Maker {
 				return $modules;
 			}
 		);
-		tribe_singleton( 'tickets.data_api', new Data_API() );
-		/*
-		 * Production reads the PayPal statuses and registers the order types and statuses on `init`, when the module
-		 * is already active. Unregistered, a query for denied orders matches every order.
-		 */
-		$this->paypal_registry_backup = [ $GLOBALS['wp_post_types'], $GLOBALS['wp_post_statuses'] ];
-		$status_manager->setup();
-		tribe( 'tickets.commerce.paypal' )->register_types();
-
 		add_filter( 'tribe_exit', static fn() => '__return_true' );
-		add_filter( 'wp_redirect', '__return_false' );
+		/*
+		 * Records the location and passes it on: the hooks are saved once per run, after the first test's `@before`,
+		 * so the first test's callback stays hooked ahead of this one. The settings tabs drop it at 10.
+		 */
+		add_filter(
+			'wp_redirect',
+			function ( $location ) {
+				$this->paypal_redirects[] = $location;
+
+				return $location;
+			},
+			0
+		);
+		add_filter( 'wp_redirect', '__return_false', PHP_INT_MAX );
 		add_filter(
 			'pre_wp_mail',
 			function () {
@@ -79,6 +89,14 @@ trait Transaction_Maker {
 				return true;
 			}
 		);
+		tribe_singleton( 'tickets.data_api', new Data_API() );
+		/*
+		 * Production reads the PayPal statuses and registers the order types and statuses on `init`, when the module
+		 * is already active. Unregistered, a query for denied orders matches every order.
+		 */
+		$this->paypal_registry_backup = [ $GLOBALS['wp_post_types'], $GLOBALS['wp_post_statuses'] ];
+		$status_manager->setup();
+		tribe( 'tickets.commerce.paypal' )->register_types();
 	}
 
 	/**
@@ -94,7 +112,7 @@ trait Transaction_Maker {
 	}
 
 	/**
-	 * Stores the cart the checkout saves before it sends the buyer to PayPal.
+	 * Stores the cart, then builds the PayPal cart URL the checkout sends the buyer to.
 	 *
 	 * @param int $ticket_id The ticket in the cart.
 	 * @param int $quantity  The quantity in the cart.
@@ -102,12 +120,19 @@ trait Transaction_Maker {
 	 * @return string The invoice the cart is stored under.
 	 */
 	protected function check_out_with_paypal( int $ticket_id, int $quantity ): string {
-		$invoice = Factory::create()->regexify( '[A-Za-z0-9]{12}' );
+		$invoice     = Factory::create()->regexify( '[A-Za-z0-9]{12}' );
+		$use_invoice = static fn() => $invoice;
+		$paypal      = tribe( 'tickets.commerce.paypal' );
+		$cart        = tribe( 'tickets.commerce.paypal.cart' );
 
-		$cart = tribe( 'tickets.commerce.paypal.cart' );
 		$cart->set_id( $invoice );
 		$cart->add_item( $ticket_id, $quantity );
 		$cart->save();
+
+		// The checkout reads the invoice from the buyer's cookie.
+		add_filter( 'tribe_tickets_commerce_paypal_invoice_number', $use_invoice );
+		tribe( 'tickets.commerce.paypal.gateway' )->get_paypal_cart_api_url( $paypal->get_event_for_ticket( $ticket_id )->ID );
+		remove_filter( 'tribe_tickets_commerce_paypal_invoice_number', $use_invoice );
 
 		return $invoice;
 	}
