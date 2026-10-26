@@ -233,6 +233,36 @@ export function explainRecurrenceNotSupported( message ) {
 	) }`.trim();
 }
 
+/**
+ * Keeps the recurrence rules of a recurring event editable when its tickets are recurring event tickets, which belong
+ * on a recurring event. A standard ticket or an RSVP still locks them.
+ *
+ * A ticket not saved yet on a recurring event is saved as a recurring event ticket.
+ *
+ * @since TBD
+ *
+ * @param {boolean} locked Whether the tickets or RSVPs of the event lock its recurrence rules.
+ *
+ * @return {boolean} Whether they do.
+ */
+export function unlockRecurrenceForRecurringTickets( locked ) {
+	const state = window.__tribe_common_store__?.getState();
+
+	if ( ! locked || ! state?.tickets || state.tickets.blocks?.rsvp?.id ) {
+		return locked;
+	}
+
+	const { allClientIds = [], byClientId = {} } = state.tickets.blocks?.ticket?.tickets ?? {};
+	const recurs = hasRecurrenceRules( state );
+	const isRecurringTicket = ( clientId ) => {
+		const ticket = byClientId[ clientId ];
+
+		return 'recurring' === ticket?.details?.type || ( recurs && ! ticket?.hasBeenCreated );
+	};
+
+	return ! allClientIds.every( isRecurringTicket );
+}
+
 addFilter(
 	'tec.tickets.blocks.Tickets.Inactive.mappedProps',
 	'tec.tickets.recurringTickets',
@@ -258,6 +288,11 @@ addFilter(
 	'tec.tickets.recurringTickets',
 	offerTicketsOnRecurringEvents,
 	20
+);
+addFilter(
+	'tec.eventsPro.recurrence.lockedByTickets',
+	'tec.tickets.recurringTickets',
+	unlockRecurrenceForRecurringTickets
 );
 addFilter(
 	'tec.eventsPro.recurrence.notSupportedWithTicketsMessage',

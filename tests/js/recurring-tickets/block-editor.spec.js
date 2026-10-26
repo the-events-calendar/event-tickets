@@ -191,4 +191,53 @@ describe( 'Recurring event tickets in the block editor', () => {
 			expect( sentType( { recurs: false, hasBeenCreated: false } ) ).toBeNull();
 		} );
 	} );
+
+	describe( 'the recurrence rules of an event with tickets', () => {
+		const locked = ( { recurs = true, tickets = [], rsvp = null, lockedByEcp = true } ) => {
+			const byClientId = Object.fromEntries(
+				tickets.map( ( { type, hasBeenCreated = true }, i ) => [ `t${ i }`, { hasBeenCreated, details: { type } } ] )
+			);
+			const state = {
+				tickets: {
+					blocks: {
+						rsvp: { id: rsvp },
+						ticket: { tickets: { allClientIds: Object.keys( byClientId ), byClientId } },
+					},
+				},
+			};
+			window.__tribe_common_store__ = { getState: () => state };
+			hasRecurrenceRules.mockReturnValue( recurs );
+
+			return applyFilters( 'tec.eventsPro.recurrence.lockedByTickets', lockedByEcp );
+		};
+
+		afterEach( () => {
+			delete window.__tribe_common_store__;
+			hasRecurrenceRules.mockReturnValue( false );
+		} );
+
+		test( 'stay editable when every ticket is a recurring event ticket', () => {
+			expect( locked( { tickets: [ { type: 'recurring' }, { type: 'recurring' } ] } ) ).toBe( false );
+		} );
+
+		test( 'stay editable with a new ticket on a recurring event, which saves as a recurring event ticket', () => {
+			expect( locked( { tickets: [ { type: 'recurring' }, { type: 'default', hasBeenCreated: false } ] } ) ).toBe( false );
+		} );
+
+		test( 'stay locked by a standard ticket', () => {
+			expect( locked( { tickets: [ { type: 'recurring' }, { type: 'default' } ] } ) ).toBe( true );
+		} );
+
+		test( 'stay locked by a new ticket on a single event', () => {
+			expect( locked( { recurs: false, tickets: [ { type: 'default', hasBeenCreated: false } ] } ) ).toBe( true );
+		} );
+
+		test( 'stay locked by an RSVP', () => {
+			expect( locked( { tickets: [ { type: 'recurring' } ], rsvp: 42 } ) ).toBe( true );
+		} );
+
+		test( 'stay unlocked where Events Calendar Pro does not lock them', () => {
+			expect( locked( { tickets: [ { type: 'default' } ], lockedByEcp: false } ) ).toBe( false );
+		} );
+	} );
 } );
