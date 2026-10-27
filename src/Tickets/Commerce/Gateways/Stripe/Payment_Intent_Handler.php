@@ -249,6 +249,9 @@ class Payment_Intent_Handler {
 
 		// Refuse a PaymentIntent already bound to another order before it is mutated at Stripe below.
 		if ( $this->is_bound_to_other_order( $payment_intent['id'], $order ) ) {
+			// Forget the intent so the next checkout load mints a fresh one rather than serving this again.
+			$this->store_payment_intent_cookie( null );
+
 			return new WP_Error(
 				'tec-tc-gateway-stripe-payment-intent-already-bound',
 				__( 'This payment is already associated with another order. Please refresh checkout and try again.', 'event-tickets' )

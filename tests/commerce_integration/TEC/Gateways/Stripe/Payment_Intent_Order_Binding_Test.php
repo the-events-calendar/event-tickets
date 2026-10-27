@@ -300,6 +300,55 @@ class Payment_Intent_Order_Binding_Test extends WPTestCase {
 	}
 
 	/**
+	 * Rejecting a bound PaymentIntent must forget the intent cookie so the next checkout load mints a
+	 * fresh one, otherwise a buyer whose first order went terminal (e.g. a declined card, later Denied)
+	 * is locked out of retrying: the same intent is served and rejected on every submit.
+	 *
+	 * @test
+	 */
+	public function should_forget_intent_cookie_when_rejecting_bound_payment_intent(): void {
+		$this->set_class_fn_return( Settings::class, 'is_licensed_plugin', true );
+		tribe_update_option( Currency::$currency_code_option, 'USD' );
+
+		$first_order = $this->make_order_for_price( 100.0 );
+		$this->bind_payment_intent_to_order( 'pi_bound', $first_order->ID );
+
+		$retry_order = $this->make_order_for_price( 100.0 );
+
+		$payment_intent = [
+			'id'                     => 'pi_bound',
+			'amount'                 => '10000',
+			'application_fee_amount' => '0',
+			'metadata'               => [],
+			'client_secret'          => 'pi_bound_secret',
+		];
+
+		$this->set_class_fn_return( Payment_Intent::class, 'get', $payment_intent );
+		$this->set_class_fn_return( Cart::class, 'get_cart_total', 100.0 );
+
+		$forgot_intent = false;
+		$this->set_class_fn_return(
+			Payment_Intent_Handler::class,
+			'store_payment_intent_cookie',
+			function ( $payment_intent_id ) use ( &$forgot_intent ) {
+				$forgot_intent = null === $payment_intent_id;
+
+				return true;
+			},
+			true
+		);
+
+		$result = tribe( Payment_Intent_Handler::class )->update_payment_intent(
+			[ 'payment_intent' => [ 'id' => 'pi_bound' ] ],
+			$retry_order
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertEquals( 'tec-tc-gateway-stripe-payment-intent-already-bound', $result->get_error_code() );
+		$this->assertTrue( $forgot_intent, 'Rejecting a bound intent must clear the intent cookie.' );
+	}
+
+	/**
 	 * Store a gateway order id on an order the way the create endpoint does.
 	 *
 	 * @param string $payment_intent_id The Stripe PaymentIntent id to bind.

@@ -17,10 +17,13 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe\REST;
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent_Handler;
+use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Status\Created;
 use TEC\Tickets\Commerce\Utils\Currency;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Settings_Manager;
+use WP_Error;
 use WP_REST_Request;
 
 class Order_Endpoint_Credential_Round_Trip_Test extends WPTestCase {
@@ -157,5 +160,43 @@ class Order_Endpoint_Credential_Round_Trip_Test extends WPTestCase {
 			tribe( Order_Endpoint::class )->current_user_can_edit_order( $update_request ),
 			'A mismatched client secret must still be refused.'
 		);
+	}
+
+	/**
+	 * When more than one local order holds the same gateway order id, the update route must refuse to
+	 * complete any of them, so a payment made once cannot drive a duplicate order to paid.
+	 */
+	public function test_update_refuses_payment_intent_shared_by_multiple_orders(): void {
+		$this->make_created_order_bound_to( 'pi_shared' );
+		$this->make_created_order_bound_to( 'pi_shared' );
+
+		$request = new WP_REST_Request( 'POST', '/tec-tickets/v1/commerce/stripe/order' );
+		$request->set_param( 'order_id', 'pi_shared' );
+		$request->set_param( 'client_secret', 'pi_shared_secret' );
+
+		$result = tribe( Order_Endpoint::class )->handle_update_order( $request );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertEquals( 'tec-tc-gateway-stripe-payment-intent-order-mismatch', $result->get_error_code() );
+	}
+
+	/**
+	 * Create a Created-status Tickets Commerce order holding the given gateway order id.
+	 *
+	 * @param string $gateway_order_id The gateway order id to bind.
+	 *
+	 * @return int The created order id.
+	 */
+	private function make_created_order_bound_to( string $gateway_order_id ): int {
+		$order_id = static::factory()->post->create(
+			[
+				'post_type'   => Order::POSTTYPE,
+				'post_status' => tribe( Created::class )->get_wp_slug(),
+			]
+		);
+
+		update_post_meta( $order_id, Order::$gateway_order_id_meta_key, $gateway_order_id );
+
+		return $order_id;
 	}
 }
