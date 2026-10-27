@@ -79,7 +79,7 @@ if ( ! empty( $ticket ) ) {
 	data-condition-not="Tribe__Tickets__RSVP"
 	<?php endif; ?>
 >
-	<div class="input_block">
+	<div class="input_block tec-tickets-field-row">
 		<label for="ticket_price" class="ticket_form_label ticket_form_left"><?php esc_html_e( 'Price:', 'event-tickets' ); ?></label>
 		<input
 			type="text"
@@ -126,7 +126,7 @@ if ( ! empty( $ticket ) ) {
 		}
 		?>
 		<?php // The field has no name: the provider manages the sale price, which a save must not overwrite with it. ?>
-		<div class="input_block">
+		<div class="input_block tec-tickets-field-row">
 			<label for="ticket_sale_price" class="ticket_form_label ticket_form_left"><?php echo esc_html( $sale_price_label ); ?></label>
 			<input
 				type="text"
