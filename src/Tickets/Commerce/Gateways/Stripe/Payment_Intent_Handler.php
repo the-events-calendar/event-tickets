@@ -247,12 +247,7 @@ class Payment_Intent_Handler {
 			);
 		}
 
-		/*
-		 * Security: a PaymentIntent belongs to exactly one local order. Refuse one already bound to a
-		 * different order here, before the intent is mutated at Stripe below, so a payment made for one
-		 * order cannot be rebound to another same-priced order, and so an unrelated checkout cannot
-		 * overwrite the metadata or receipt email of a payment that is not its own.
-		 */
+		// Refuse a PaymentIntent already bound to another order before it is mutated at Stripe below.
 		if ( $this->is_bound_to_other_order( $payment_intent['id'], $order ) ) {
 			return new WP_Error(
 				'tec-tc-gateway-stripe-payment-intent-already-bound',
