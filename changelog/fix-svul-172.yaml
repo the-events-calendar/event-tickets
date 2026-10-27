@@ -1,5 +1,4 @@
 significance: patch
 type: security
-entry: Resolved a security issue where a Stripe payment could be associated with
-  more than one order.
+entry: Prevented a Stripe payment from being associated with more than one order.
 timestamp: 2026-10-27T19:00:22.024Z
