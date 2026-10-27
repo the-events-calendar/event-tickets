@@ -82,7 +82,7 @@ class Service_Provider_Test extends WPTestCase {
 		yield 'visitor, email preview' => [ 'visitor', 'tec_tickets_preview_email', false ];
 		yield 'subscriber, attendee details' => [ 'subscriber', 'tec_tickets_attendee_details', false ];
 		yield 'subscriber, email preview' => [ 'subscriber', 'tec_tickets_preview_email', false ];
-		yield 'contributor, attendee details' => [ 'contributor', 'tec_tickets_attendee_details', false ];
+		yield 'contributor, attendee details' => [ 'contributor', 'tec_tickets_attendee_details', true ];
 		yield 'contributor, email preview' => [ 'contributor', 'tec_tickets_preview_email', false ];
 		yield 'editor, attendee details' => [ 'editor', 'tec_tickets_attendee_details', true ];
 		yield 'editor, email preview' => [ 'editor', 'tec_tickets_preview_email', false ];

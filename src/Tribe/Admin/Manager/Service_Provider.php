@@ -101,7 +101,9 @@ class Service_Provider extends Service_Provider_Contract {
 	/**
 	 * Whether the current user may make the given admin manager request.
 	 *
-	 * Request types not listed need `edit_posts`, the capability that hands out the nonce.
+	 * Request types not listed need `edit_posts`, the capability that hands out the nonce. Attendee details
+	 * are not listed: whether the user may manage attendees depends on the attendee's event, which only its
+	 * handler loads, and plugins filtering that check deny it when no event is given.
 	 *
 	 * @since TBD
 	 *
@@ -111,8 +113,6 @@ class Service_Provider extends Service_Provider_Contract {
 	 */
 	private function user_can_make_request( $request ): bool {
 		switch ( is_string( $request ) ? $request : '' ) {
-			case 'tec_tickets_attendee_details':
-				return tribe( 'tickets.attendees' )->user_can_manage_attendees();
 			case 'tec_tickets_preview_email':
 				return current_user_can( Admin_Pages::get_capability() );
 			default:

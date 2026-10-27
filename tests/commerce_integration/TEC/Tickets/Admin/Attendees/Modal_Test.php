@@ -210,6 +210,30 @@ class Modal_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_disclose_the_attendee_to_an_administrator_when_management_is_denied_without_an_event(): void {
+		$owner_id = $this->factory()->user->create( [ 'role' => 'editor' ] );
+		$fixture  = $this->create_attendee_on_post_owned_by( $owner_id );
+
+		// Community Events denies attendee management when no event ID is given outside the Attendees page.
+		add_filter(
+			'tribe_tickets_user_can_manage_attendees',
+			static function ( $can, $user_id, $event_id ) {
+				return $event_id ? $can : false;
+			},
+			10,
+			3
+		);
+		wp_set_current_user( $this->factory()->user->create( [ 'role' => 'administrator' ] ) );
+
+		$this->request_attendee_details( $fixture );
+
+		$this->assertSame( 'success', self::$response['type'] );
+		$this->assertStringContainsString( $fixture['security_code'], self::$response['data']['html'] );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_ignore_the_client_supplied_event_id_when_checking_access(): void {
 		$owner_id = $this->factory()->user->create( [ 'role' => 'editor' ] );
 		$fixture  = $this->create_attendee_on_post_owned_by( $owner_id );
