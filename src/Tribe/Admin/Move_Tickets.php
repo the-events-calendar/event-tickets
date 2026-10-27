@@ -6,6 +6,7 @@ use Tribe__Events__Pro__Main as ECP;
 use Tribe__Events__Main as TEC;
 use TEC\Tickets\Admin\Attendees\Page as Attendees_Page;
 use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
+use TEC\Tickets\Event;
 
 /**
  * Handles moving attendees from a post to another.
@@ -64,6 +65,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * would re-enter this method until the request times out.
 	 *
 	 * @since 5.29.5 Moved off `admin_init` so the admin screen is resolved before the iframe renders.
+	 * @since TBD    Requires the user to edit the post or manage its attendees.
 	 */
 	public function dialog() {
 		if ( ! $this->is_move_tickets_dialog() ) {
@@ -76,8 +78,14 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 		$event_id = absint( tribe_get_request_var( 'event_id', tribe_get_request_var( 'post', 0 ) ) );
 
-		// Bail when we don't have the event.
-		if ( 0 === $event_id ) {
+		// Bail when we don't have the event, or the user could neither move its tickets nor its attendees.
+		if (
+			0 === $event_id
+			|| (
+				! current_user_can( 'edit_post', $event_id )
+				&& ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $event_id )
+			)
+		) {
 			return;
 		}
 
@@ -385,6 +393,8 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * Given an array of WP_Post objects, returns an array containing the post title
 	 * of each (with the post ID as the index).
 	 *
+	 * @since TBD Lists only the posts the current user can edit or manage the attendees of.
+	 *
 	 * @param array $query_results
 	 *
 	 * @return array
@@ -395,6 +405,15 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 		while ( $query->have_posts() ) {
 			$query->the_post();
+
+			// Admin requests query every author's drafts; list only posts a ticket type or attendee move may target.
+			if (
+				! current_user_can( 'edit_post', $post->ID )
+				&& ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $post->ID )
+			) {
+				continue;
+			}
+
 			/*y This filter is documented in wp-includes/post-template.php */
 			$title = apply_filters( 'the_title', $post->post_title, $post->ID );
 
@@ -417,6 +436,8 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	/**
 	 * Returns a list of ticket types available in a specific post
 	 * (belonging to a specific provider).
+	 *
+	 * @since TBD Requires the user to manage the attendees of the post.
 	 */
 	public function get_ticket_types() {
 		if ( ! wp_verify_nonce( $_POST['check'], 'move_tickets' ) ) {
@@ -427,6 +448,10 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			'post_id'  => '',
 			'provider' => '',
 		) );
+
+		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, absint( $args['post_id'] ) ) ) {
+			wp_send_json_error();
+		}
 
 		wp_send_json_success(
 			array(
@@ -468,6 +493,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * Listens for and handles requests to reassign tickets from one ticket type to another.
 	 *
 	 * @since 4.10.9 Use customizable ticket name functions.
+	 * @since TBD    Requires the user to manage the attendees of the source and destination posts and of each attendee's post.
 	 */
 	public function move_tickets_request() {
 		if ( ! wp_verify_nonce( $_POST['check'], 'move_tickets' ) ) {
@@ -485,6 +511,15 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		$ticket_ids     = array_map( 'intval', (array) $args['ticket_ids'] );
 		$target_type_id = absint( $args['target_type_id'] );
 		$target_post_id = absint( $args['target_post_id'] );
+
+		// The nonce is printed for every editor user, so the request IDs are authorized here.
+		if ( ! $this->user_can_move_attendees( $ticket_ids, $src_post_id, $target_post_id ) ) {
+			wp_send_json_error(
+				[
+					'message' => esc_html__( 'You do not have permission to perform this action. Please reload the page.', 'event-tickets' ),
+				]
+			);
+		}
 
 		if ( ! $ticket_ids || ! $target_type_id ) {
 			wp_send_json_error( array(
@@ -549,6 +584,8 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * moved (ie, you cannot move RSVP tickets to a WooCommerce ticket type, nor can
 	 * a mix of RSVP and WooCommerce tickets be moved to a new ticket type).
 	 *
+	 * @since TBD Moves nothing when the target ticket type is not attached to the target post.
+	 *
 	 * @param array $ticket_ids
 	 * @param int   $tgt_ticket_type_id
 	 * @param int   $src_event_id
@@ -581,6 +618,13 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		$successful_moves = 0;
 
 		if ( ! $ticket_type ) {
+			return 0;
+		}
+
+		$tgt_post_id = Event::filter_event_id( $tgt_event_id );
+
+		// The repository lists a Series Pass under each event of its Series, as the move dialog does.
+		if ( ! $tgt_post_id || ! tribe_tickets()->where( 'event', $tgt_post_id )->in( absint( $tgt_ticket_type_id ) )->found() ) {
 			return 0;
 		}
 
@@ -863,5 +907,40 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 			Tribe__Post_History::load( $issued_ticket_id )->add_entry( $history_message, $history_data );
 		}
+	}
+
+	/**
+	 * Returns whether the current user may move the attendees from the source to the target post.
+	 *
+	 * @since TBD
+	 *
+	 * @param int[] $attendee_ids   The IDs of the attendees to move, as requested.
+	 * @param int   $src_post_id    The ID of the post the attendees are moved from, as requested.
+	 * @param int   $target_post_id The ID of the post the attendees are moved to, as requested.
+	 *
+	 * @return bool Whether the user manages the attendees of both posts and of the post each attendee belongs to.
+	 */
+	private function user_can_move_attendees( array $attendee_ids, int $src_post_id, int $target_post_id ): bool {
+		/** @var Tribe__Tickets__Attendees $attendees */
+		$attendees = tribe( 'tickets.attendees' );
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		// An attendee's post is read from the attendee, never trusted from the request.
+		$post_ids = [ $src_post_id, $target_post_id ];
+
+		foreach ( $attendee_ids as $attendee_id ) {
+			$post_ids[] = $tickets_handler->get_object_connections( $attendee_id )->event;
+		}
+
+		foreach ( array_unique( $post_ids ) as $post_id ) {
+			$post_id = Event::filter_event_id( $post_id );
+
+			if ( ! $post_id || ! $attendees->user_can_manage_attendees( 0, $post_id ) ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }
