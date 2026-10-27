@@ -1,0 +1,6 @@
+significance: patch
+type: security
+entry: Hardened the attendee updates submitted from the My Tickets page.
+  Template overrides of `tickets/orders.php` must keep the
+  `tribe_tickets_orders_before_submit` action.
+timestamp: 2026-10-20T17:01:37.507Z
