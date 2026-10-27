@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\Stripe\REST\Webhook_Endpoint;
+use TEC\Tickets\Commerce\Order;
 use WP_Error;
 
 /**
@@ -209,6 +210,7 @@ class Payment_Intent_Handler {
 	 * @since 5.3.0
 	 * @since 5.8.1   Added customer's name / event name to the payment intent description
 	 * @since 5.28.5.1     Added validation to ensure the PaymentIntent amount matches the order total
+	 * @since TBD     Reject a PaymentIntent already bound to another order before mutating it.
 	 *
 	 * @param array    $data  The purchase data received from the front-end.
 	 * @param \WP_Post $order The order object.
@@ -242,6 +244,19 @@ class Payment_Intent_Handler {
 			return new WP_Error(
 				'tec-tc-gateway-stripe-payment-intent-cart-mismatch',
 				__( 'The selected payment does not match the items in your cart. Please refresh checkout and try again.', 'event-tickets' )
+			);
+		}
+
+		/*
+		 * Security: a PaymentIntent belongs to exactly one local order. Refuse one already bound to a
+		 * different order here, before the intent is mutated at Stripe below, so a payment made for one
+		 * order cannot be rebound to another same-priced order, and so an unrelated checkout cannot
+		 * overwrite the metadata or receipt email of a payment that is not its own.
+		 */
+		if ( $this->is_bound_to_other_order( $payment_intent['id'], $order ) ) {
+			return new WP_Error(
+				'tec-tc-gateway-stripe-payment-intent-already-bound',
+				__( 'This payment is already associated with another order. Please refresh checkout and try again.', 'event-tickets' )
 			);
 		}
 
@@ -382,6 +397,28 @@ class Payment_Intent_Handler {
 		$payment_intent_description = apply_filters( 'tec_tickets_commerce_stripe_update_payment_description', $payment_intent_description, $order, $data, $body, $payment_intent );
 
 		return $payment_intent_description;
+	}
+
+	/**
+	 * Whether the given PaymentIntent is already bound to a local order other than the one provided.
+	 *
+	 * @since TBD
+	 *
+	 * @param string   $payment_intent_id The Stripe PaymentIntent ID.
+	 * @param \WP_Post $order             The order the intent is about to be bound to.
+	 *
+	 * @return bool Whether another local order already holds this PaymentIntent.
+	 */
+	private function is_bound_to_other_order( string $payment_intent_id, \WP_Post $order ): bool {
+		$bound_order_ids = tribe( Order::class )->get_order_ids_from_gateway_order_id( $payment_intent_id );
+
+		foreach ( $bound_order_ids as $bound_order_id ) {
+			if ( absint( $bound_order_id ) !== absint( $order->ID ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	// phpcs:disable

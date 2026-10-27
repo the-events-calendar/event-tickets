@@ -212,4 +212,107 @@ class Payment_Intent_Order_Binding_Test extends WPTestCase {
 		$this->assertNotInstanceOf( WP_Error::class, $result );
 		$this->assertEquals( 'pi_match', $result['id'] );
 	}
+
+	/**
+	 * A PaymentIntent already bound to another order must be refused before the intent is mutated
+	 * at Stripe, so a payment made for one order cannot be rebound to a different same-priced order.
+	 *
+	 * @test
+	 */
+	public function should_reject_create_when_payment_intent_bound_to_another_order(): void {
+		$this->set_class_fn_return( Settings::class, 'is_licensed_plugin', true );
+		tribe_update_option( Currency::$currency_code_option, 'USD' );
+
+		$paid_order = $this->make_order_for_price( 100.0 );
+		$this->bind_payment_intent_to_order( 'pi_bound', $paid_order->ID );
+
+		// A second buyer's order for the same $100.00 total.
+		$second_order = $this->make_order_for_price( 100.0 );
+
+		$shared_payment_intent = [
+			'id'                     => 'pi_bound',
+			'amount'                 => '10000',
+			'application_fee_amount' => '0',
+			'metadata'               => [],
+			'client_secret'          => 'pi_bound_secret',
+		];
+
+		$this->set_class_fn_return( Payment_Intent::class, 'get', $shared_payment_intent );
+		$this->set_class_fn_return( Cart::class, 'get_cart_total', 100.0 );
+
+		$stripe_was_mutated = false;
+		$this->set_class_fn_return(
+			Payment_Intent::class,
+			'update',
+			function () use ( &$stripe_was_mutated, $shared_payment_intent ) {
+				$stripe_was_mutated = true;
+
+				return $shared_payment_intent;
+			},
+			true
+		);
+
+		$result = tribe( Payment_Intent_Handler::class )->update_payment_intent(
+			[ 'payment_intent' => [ 'id' => 'pi_bound' ] ],
+			$second_order
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertEquals( 'tec-tc-gateway-stripe-payment-intent-already-bound', $result->get_error_code() );
+		$this->assertFalse(
+			$stripe_was_mutated,
+			'The PaymentIntent must not be updated at Stripe when it is already bound to another order.'
+		);
+	}
+
+	/**
+	 * The same cart retrying its own order must still succeed: the intent is bound to that order, not
+	 * a different one.
+	 *
+	 * @test
+	 */
+	public function should_accept_create_when_payment_intent_bound_to_same_order(): void {
+		$this->set_class_fn_return( Settings::class, 'is_licensed_plugin', true );
+		tribe_update_option( Currency::$currency_code_option, 'USD' );
+
+		$order = $this->make_order_for_price( 100.0 );
+		$this->bind_payment_intent_to_order( 'pi_same', $order->ID );
+
+		$payment_intent = [
+			'id'                     => 'pi_same',
+			'amount'                 => '10000',
+			'application_fee_amount' => '0',
+			'metadata'               => [],
+			'client_secret'          => 'pi_same_secret',
+		];
+
+		$this->set_class_fn_return( Payment_Intent::class, 'get', $payment_intent );
+		$this->set_class_fn_return( Payment_Intent::class, 'update', $payment_intent );
+		$this->set_class_fn_return( Cart::class, 'get_cart_total', 100.0 );
+
+		$result = tribe( Payment_Intent_Handler::class )->update_payment_intent(
+			[ 'payment_intent' => [ 'id' => 'pi_same' ] ],
+			$order
+		);
+
+		$this->assertNotInstanceOf( WP_Error::class, $result );
+		$this->assertEquals( 'pi_same', $result['id'] );
+	}
+
+	/**
+	 * Store a gateway order id on an order the way the create endpoint does.
+	 *
+	 * @param string $payment_intent_id The Stripe PaymentIntent id to bind.
+	 * @param int    $order_id          The order to bind it to.
+	 *
+	 * @return void
+	 */
+	protected function bind_payment_intent_to_order( string $payment_intent_id, int $order_id ): void {
+		tec_tc_orders()
+			->by_args( [ 'id' => $order_id ] )
+			->set_args( [ 'gateway_order_id' => $payment_intent_id ] )
+			->save();
+
+		clean_post_cache( $order_id );
+	}
 }
