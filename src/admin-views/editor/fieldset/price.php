@@ -79,7 +79,7 @@ if ( ! empty( $ticket ) ) {
 	data-condition-not="Tribe__Tickets__RSVP"
 	<?php endif; ?>
 >
-	<div class="input_block">
+	<div class="input_block tec-tickets-field-row">
 		<label for="ticket_price" class="ticket_form_label ticket_form_left"><?php esc_html_e( 'Price:', 'event-tickets' ); ?></label>
 		<input
 			type="text"
@@ -125,12 +125,12 @@ if ( ! empty( $ticket ) ) {
 			$sale_price_desc  = esc_html__( 'Current sale or member price. This can be managed via the product editor.', 'event-tickets' );
 		}
 		?>
-		<div class="input_block">
+		<?php // The field has no name: the provider manages the sale price, which a save must not overwrite with it. ?>
+		<div class="input_block tec-tickets-field-row">
 			<label for="ticket_sale_price" class="ticket_form_label ticket_form_left"><?php echo esc_html( $sale_price_label ); ?></label>
 			<input
 				type="text"
 				id="ticket_sale_price"
-				name='ticket_sale_price'
 				class="ticket_field ticket_form_right"
 				size="7"
 				value="<?php echo esc_attr( $sale_price ); ?>"

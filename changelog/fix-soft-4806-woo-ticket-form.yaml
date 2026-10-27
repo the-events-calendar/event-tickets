@@ -1,0 +1,6 @@
+significance: patch
+type: fix
+entry: Prevented the classic editor ticket form from breaking when it opens a
+  ticket on sale from another provider, such as WooCommerce, on an event that
+  sells through Tickets Commerce.
+timestamp: 2026-10-17T17:37:02.633Z

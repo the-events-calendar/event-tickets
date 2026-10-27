@@ -50,6 +50,7 @@ class Duplicate_Post extends Integration_Abstract {
 	 * Duplicate tickets to a new post.
 	 *
 	 * @since 5.6.3
+	 * @since TBD Fires `tec_tickets_tickets_duplicated` once the tickets are copied.
 	 *
 	 * @param int    $new_post_id ID of the new post.
 	 * @param object $post        Original post object.
@@ -65,6 +66,8 @@ class Duplicate_Post extends Integration_Abstract {
 			return $new_post_id;
 		}
 
+		$duplicated_ticket_ids = [];
+
 		foreach ( $tickets as $ticket ) {
 
 			$provider = tribe( $ticket->provider_class );
@@ -77,8 +80,11 @@ class Duplicate_Post extends Integration_Abstract {
 				);
 			}
 
-			$provider->clone_ticket_to_new_post( $post->ID, $new_post_id, $ticket->ID );
+			$duplicated_ticket_ids[ $ticket->ID ] = $provider->clone_ticket_to_new_post( $post->ID, $new_post_id, $ticket->ID );
 		}
+
+		/** This action is documented in src/Tickets/Integrations/Plugins/Events_Pro/Duplicate_Post.php */
+		do_action( 'tec_tickets_tickets_duplicated', $duplicated_ticket_ids, $new_post_id, $post->ID );
 
 		return $new_post_id;
 	}

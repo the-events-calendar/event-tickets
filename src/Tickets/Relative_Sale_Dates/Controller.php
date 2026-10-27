@@ -1,0 +1,172 @@
+<?php
+/**
+ * Relative Sale Dates controller.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Relative_Sale_Dates
+ */
+
+declare( strict_types=1 );
+
+namespace TEC\Tickets\Relative_Sale_Dates;
+
+use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Tickets\Ticket_Actions;
+
+/**
+ * Registers the Relative Sale Dates feature and holds the switch that turns all of it off.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Relative_Sale_Dates
+ */
+final class Controller extends Controller_Contract {
+	/**
+	 * The name of the constant, and of the environment variable, that disables the feature when truthy.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const DISABLED = 'TEC_TICKETS_RELATIVE_SALE_DATES_DISABLED';
+
+	/**
+	 * Unregisters the controller.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function unregister(): void {
+		remove_action( 'tec_tickets_ticket_pre_save', $this->container->callback( Ticket_Save::class, 'set_ticket_dates' ) );
+		remove_action( 'tec_tickets_ticket_upserted', $this->container->callback( Ticket_Save::class, 'save_rule' ), 8 );
+		remove_action( 'tec_tickets_ticket_upserted', $this->container->callback( Ticket_Save::class, 'write_resolved_dates' ), 9 );
+		remove_filter( 'tec_tickets_ticket_data_validation', $this->container->callback( Ticket_Save::class, 'validate_ticket_data' ) );
+		remove_action( 'tec_events_custom_tables_v1_after_save_occurrences', $this->container->callback( Event_Listener::class, 'update_ticket_dates' ) );
+		remove_action( 'added_post_meta', $this->container->callback( Event_Listener::class, 'mark_moved_event' ) );
+		remove_action( 'updated_postmeta', $this->container->callback( Event_Listener::class, 'mark_moved_event' ) );
+		remove_action( 'wp_after_insert_post', $this->container->callback( Event_Listener::class, 'update_saved_event_tickets' ) );
+		remove_action( 'tec_shutdown', $this->container->callback( Event_Listener::class, 'update_moved_event_tickets' ) );
+		remove_action( 'tribe_tickets_ticket_type_moved', $this->container->callback( Event_Listener::class, 'update_moved_ticket' ) );
+		remove_filter( 'tec_tickets_ticket_end_date_follows_event_start', $this->container->callback( Event_Listener::class, 'filter_end_date_follows_event_start' ) );
+		remove_action( 'tec_tickets_tickets_duplicated', $this->container->callback( Event_Listener::class, 'copy_rules_to_duplicates' ) );
+		remove_action( 'tec_tickets_tickets_duplicated', $this->container->callback( Event_Listener::class, 'update_duplicated_tickets' ), 20 );
+		remove_filter( 'tec_tickets_rest_single_ticket_add_data', $this->container->callback( Rest::class, 'map_block_editor_rule' ) );
+		remove_filter( 'tribe_tickets_rest_api_ticket_data', $this->container->callback( Rest::class, 'add_rule_to_block_editor_ticket_data' ) );
+		remove_filter( 'tec_rest_swagger_ticket_request_body_definition', $this->container->callback( Rest::class, 'add_rule_to_definition' ) );
+		remove_filter( 'tec_rest_swagger_ticket_definition', $this->container->callback( Rest::class, 'add_rule_to_definition' ) );
+		remove_filter( 'tec_rest_schema_filter', $this->container->callback( Rest::class, 'keep_a_rule_sent_as_null' ) );
+		remove_filter( 'tec_rest_v1_tec_tc_ticket_transform_entity', $this->container->callback( Rest::class, 'add_rule_to_tec_rest_api_ticket' ) );
+		remove_filter( 'tec_tickets_rest_ticket_data_params', $this->container->callback( Rest::class, 'add_rule_to_ticket_data_params' ) );
+		remove_filter( 'tec_tickets_ticket_panel_data', $this->container->callback( Classic_Panel_Data::class, 'add_rule_to_panel_data' ) );
+		remove_filter( 'tribe_template_include_html:tickets/admin-views/editor/panel/fields/dates', $this->container->callback( Editor::class, 'render_sales_window_fields' ) );
+		remove_filter( 'tribe_template_include_html:tickets/admin-views/commerce/metabox/sale-price', $this->container->callback( Editor::class, 'render_sale_price_fields' ) );
+		remove_filter( 'tribe_template_context:tickets/admin-views/editor/list-row/available-dates', $this->container->callback( Editor::class, 'filter_available_dates_context' ) );
+		remove_filter( 'tribe_template_context:tickets/admin-views/editor/column-body-price', $this->container->callback( Price_Column::class, 'filter_context' ) );
+		$this->container->get( Assets::class )->unregister();
+	}
+
+	/**
+	 * Determines whether the feature is active.
+	 *
+	 * Switching it off registers nothing: stored rules stay on their tickets without being read, and event moves no
+	 * longer resolve them, so the tickets keep the dates last written. Switched back on, the next save or event move
+	 * resolves them again from those stored rules.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the feature is active.
+	 */
+	public function is_active(): bool {
+		if ( defined( self::DISABLED ) && constant( self::DISABLED ) ) {
+			return false;
+		}
+
+		if ( getenv( self::DISABLED ) ) {
+			return false;
+		}
+
+		/**
+		 * Filters whether the Relative Sale Dates feature is active.
+		 *
+		 * Only applies when neither the disabling constant nor the environment variable is set. It is read while the
+		 * plugins load, so add it from a plugin or a must-use plugin: one added in a theme's `functions.php` comes too
+		 * late and is ignored.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $active Whether the feature is active. Default `true`.
+		 */
+		return tribe_is_truthy( apply_filters( 'tec_tickets_relative_sale_dates_active', true ) );
+	}
+
+	/**
+	 * Registers the controller.
+	 *
+	 * `Ticket_Save` is bound as a singleton so the container returns the same callbacks to `unregister()`.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function do_register(): void {
+		$this->container->singleton( Rule_Store::class );
+		$this->container->singleton( Providers::class );
+		// The tickets handler is bound only by name: autowiring its class would build a second one, which hooks again.
+		$this->container->singleton(
+			Sales_Window_Effects::class,
+			static fn() => new Sales_Window_Effects( tribe( 'tickets.handler' ), tribe( Ticket_Actions::class ) )
+		);
+		$this->container->singleton( Ticket_Dates::class );
+		$this->container->singleton( Ticket_Save::class );
+
+		add_action( 'tec_tickets_ticket_pre_save', $this->container->callback( Ticket_Save::class, 'set_ticket_dates' ), 10, 3 );
+
+		/*
+		 * The rules are stored, and their dates written, before Ticket_Actions stores the event cost at 10: the cost lists
+		 * the sale price only while its dates put it on sale.
+		 */
+		add_action( 'tec_tickets_ticket_upserted', $this->container->callback( Ticket_Save::class, 'save_rule' ), 8, 3 );
+		// After the rules are stored, and before Ticket_Actions schedules the sales actions from the ticket dates, at 1000.
+		add_action( 'tec_tickets_ticket_upserted', $this->container->callback( Ticket_Save::class, 'write_resolved_dates' ), 9, 2 );
+		add_filter( 'tec_tickets_ticket_data_validation', $this->container->callback( Ticket_Save::class, 'validate_ticket_data' ), 10, 3 );
+
+		$this->container->singleton( Event_Listener::class );
+
+		add_action( 'tec_events_custom_tables_v1_after_save_occurrences', $this->container->callback( Event_Listener::class, 'update_ticket_dates' ) );
+		// Without the custom tables nothing saves occurrences, so the listener marks the moved events itself.
+		add_action( 'added_post_meta', $this->container->callback( Event_Listener::class, 'mark_moved_event' ), 10, 3 );
+		add_action( 'updated_postmeta', $this->container->callback( Event_Listener::class, 'mark_moved_event' ), 10, 3 );
+		// The latest hook that sees every event meta written by both the classic and the block editor.
+		add_action( 'wp_after_insert_post', $this->container->callback( Event_Listener::class, 'update_saved_event_tickets' ) );
+		add_action( 'tec_shutdown', $this->container->callback( Event_Listener::class, 'update_moved_event_tickets' ) );
+		add_action( 'tribe_tickets_ticket_type_moved', $this->container->callback( Event_Listener::class, 'update_moved_ticket' ), 10, 2 );
+		add_filter( 'tec_tickets_ticket_end_date_follows_event_start', $this->container->callback( Event_Listener::class, 'filter_end_date_follows_event_start' ), 10, 2 );
+		add_action( 'tec_tickets_tickets_duplicated', $this->container->callback( Event_Listener::class, 'copy_rules_to_duplicates' ) );
+		add_action( 'tec_tickets_tickets_duplicated', $this->container->callback( Event_Listener::class, 'update_duplicated_tickets' ), 20, 2 );
+
+		$this->container->singleton( Rest::class );
+
+		add_filter( 'tec_tickets_rest_single_ticket_add_data', $this->container->callback( Rest::class, 'map_block_editor_rule' ), 10, 3 );
+		add_filter( 'tribe_tickets_rest_api_ticket_data', $this->container->callback( Rest::class, 'add_rule_to_block_editor_ticket_data' ) );
+		add_filter( 'tec_rest_swagger_ticket_request_body_definition', $this->container->callback( Rest::class, 'add_rule_to_definition' ) );
+		add_filter( 'tec_rest_swagger_ticket_definition', $this->container->callback( Rest::class, 'add_rule_to_definition' ) );
+		add_filter( 'tec_rest_schema_filter', $this->container->callback( Rest::class, 'keep_a_rule_sent_as_null' ), 10, 3 );
+		add_filter( 'tec_rest_v1_tec_tc_ticket_transform_entity', $this->container->callback( Rest::class, 'add_rule_to_tec_rest_api_ticket' ) );
+		add_filter( 'tec_tickets_rest_ticket_data_params', $this->container->callback( Rest::class, 'add_rule_to_ticket_data_params' ) );
+
+		$this->container->singleton( Classic_Panel_Data::class );
+
+		add_filter( 'tec_tickets_ticket_panel_data', $this->container->callback( Classic_Panel_Data::class, 'add_rule_to_panel_data' ), 10, 3 );
+
+		$this->container->singleton( Editor::class );
+		$this->container->singleton( Price_Column::class );
+
+		add_filter( 'tribe_template_include_html:tickets/admin-views/editor/panel/fields/dates', $this->container->callback( Editor::class, 'render_sales_window_fields' ), 10, 4 );
+		add_filter( 'tribe_template_include_html:tickets/admin-views/commerce/metabox/sale-price', $this->container->callback( Editor::class, 'render_sale_price_fields' ), 10, 4 );
+		add_filter( 'tribe_template_context:tickets/admin-views/editor/list-row/available-dates', $this->container->callback( Editor::class, 'filter_available_dates_context' ) );
+		add_filter( 'tribe_template_context:tickets/admin-views/editor/column-body-price', $this->container->callback( Price_Column::class, 'filter_context' ) );
+		$this->container->register( Assets::class );
+	}
+}

@@ -1,0 +1,340 @@
+/**
+ * Reads and writes the legacy ticket store the Ticket block runs on.
+ *
+ * The actions and selectors come from the Ticket block's own script at runtime, so this bundle does not carry a second
+ * copy of the legacy ticket code. The store is common's shared one.
+ *
+ * @since TBD
+ */
+
+/**
+ * Internal dependencies
+ */
+import { SALE_DATE_PATTERN, TICKETS_COMMERCE_MODULE_CLASS } from '../../../../modules/data/blocks/ticket/constants';
+import { isSalePriceKept as keepsSalePrice } from '../php-compare';
+import { getLocalizedTicketProviders } from './localized-data';
+
+/** @typedef {import( './localized-data' ).TicketProviders} TicketProviders */
+
+/**
+ * The provider slug the block editor tickets REST API gives a Tickets Commerce ticket, which a fetched ticket keeps.
+ *
+ * @since TBD
+ *
+ * @type {string}
+ */
+export const TICKETS_COMMERCE_PROVIDER = 'tc';
+
+/**
+ * Returns the state of common's shared store, which holds the legacy ticket data.
+ *
+ * @since TBD
+ *
+ * @return {Object} The state.
+ */
+export function getLegacyState() {
+	return window.__tribe_common_store__.getState();
+}
+
+/**
+ * Returns the legacy ticket actions and selectors.
+ *
+ * @since TBD
+ *
+ * @return {{actions: Object, selectors: Object}} The actions and selectors.
+ */
+function getTicketData() {
+	return window.tribe.tickets.data.blocks;
+}
+
+/**
+ * Returns whether a ticket is sold through Tickets Commerce, the only provider the rule applies to.
+ *
+ * A ticket fetched from the server keeps its own provider, which an event's older tickets may not share with the tickets
+ * block; the server judges the ticket by it. A new ticket has none yet and is created with the block's, which the admin
+ * can change while editing, so both are read from the store rather than from localized data.
+ *
+ * @since TBD
+ *
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {boolean} Whether the ticket is sold through Tickets Commerce.
+ */
+export function isTicketsCommerce( clientId ) {
+	const { selectors } = getTicketData();
+	const state = getLegacyState();
+	const ticketProvider = selectors.getTicketProvider( state, { clientId } );
+
+	if ( ticketProvider ) {
+		return TICKETS_COMMERCE_PROVIDER === ticketProvider;
+	}
+
+	return TICKETS_COMMERCE_MODULE_CLASS === selectors.getTicketsProvider( state );
+}
+
+/**
+ * Returns whether a ticket is sold through a provider the sales window applies to, read as `isTicketsCommerce()` reads
+ * Tickets Commerce.
+ *
+ * @since TBD
+ *
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {boolean} Whether the sales window applies to the ticket's provider.
+ */
+export function isAcceptedProvider( clientId ) {
+	const { selectors } = getTicketData();
+	const state = getLegacyState();
+	const { classes, slugs } = getTicketProviders();
+	const ticketProvider = selectors.getTicketProvider( state, { clientId } );
+
+	if ( ticketProvider ) {
+		return slugs.includes( ticketProvider );
+	}
+
+	return classes.includes( selectors.getTicketsProvider( state ) );
+}
+
+/**
+ * Returns whether a ticket fetched from the server is sold through a provider the sales window applies to.
+ *
+ * @since TBD
+ *
+ * @param {Object} [ticket] The ticket, as the block editor tickets REST API returns it.
+ *
+ * @return {boolean} Whether the sales window applies to the ticket's provider.
+ */
+export function isAcceptedTicket( ticket ) {
+	return getTicketProviders().slugs.includes( ticket?.provider );
+}
+
+/**
+ * Returns whether a ticket's form has its sale price checked, which is when the form sends one.
+ *
+ * @since TBD
+ *
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {boolean} Whether the sale price is checked.
+ */
+export function isSalePriceChecked( clientId ) {
+	return Boolean( getTicketData().selectors.getTempSalePriceChecked( getLegacyState(), { clientId } ) );
+}
+
+/**
+ * Returns whether a ticket's form has a sale price the save keeps: a checked one lower than the price.
+ *
+ * The save drops a sale price that is at least the price, comparing the two strings the request sends as PHP does, and
+ * judges its window only when it keeps it.
+ *
+ * @since TBD
+ *
+ * @param {Object} state    The legacy ticket state.
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {boolean} Whether the save keeps the sale price.
+ */
+export function isSalePriceKept( state, clientId ) {
+	const { selectors } = getTicketData();
+	const props = { clientId };
+
+	return keepsSalePrice(
+		Boolean( selectors.getTempSalePriceChecked( state, props ) ),
+		String( selectors.getTempSalePrice( state, props ) ),
+		String( selectors.getTicketTempPrice( state, props ) )
+	);
+}
+
+/**
+ * Marks a ticket as changed, which enables its Create or Update button.
+ *
+ * @since TBD
+ *
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {void}
+ */
+export function markTicketChanged( clientId ) {
+	window.__tribe_common_store__.dispatch( getTicketData().actions.setTicketHasChanges( clientId, true ) );
+}
+
+/**
+ * Clears the error the legacy ticket code keeps for a sales duration whose specific dates do not start before they end.
+ *
+ * @since TBD
+ *
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {void}
+ */
+export function clearTicketDurationError( clientId ) {
+	window.__tribe_common_store__.dispatch( getTicketData().actions.setTicketHasDurationError( clientId, false ) );
+}
+
+/**
+ * Returns whether the legacy ticket code holds a sales duration error for a ticket.
+ *
+ * @since TBD
+ *
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {boolean} Whether the ticket has the error.
+ */
+export function hasTicketDurationError( clientId ) {
+	return Boolean( getTicketData().selectors.getTicketHasDurationError( getLegacyState(), { clientId } ) );
+}
+
+/**
+ * Returns whether the legacy checks would let a ticket be created or updated, leaving aside its sales duration error.
+ *
+ * @since TBD
+ *
+ * @param {Object} state    The legacy ticket state.
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {boolean} Whether the ticket passes every other legacy check.
+ */
+export function isTicketReadyBesidesDuration( state, clientId ) {
+	const { selectors } = getTicketData();
+	const props = { clientId };
+
+	return (
+		! selectors.isTicketDisabled( state, props ) &&
+		Boolean( selectors.getTicketHasChanges( state, props ) ) &&
+		selectors.isTicketValid( state, props )
+	);
+}
+
+/**
+ * Returns whether the legacy ticket code keeps a ticket's fields disabled: while the ticket saves, while another ticket
+ * is selected, or while the tickets settings are open.
+ *
+ * @since TBD
+ *
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {boolean} Whether the ticket's fields are disabled.
+ */
+export function isTicketDisabled( clientId ) {
+	return Boolean( getTicketData().selectors.isTicketDisabled( getLegacyState(), { clientId } ) );
+}
+
+/**
+ * Subscribes to the common store, which holds the event dates The Events Calendar edits.
+ *
+ * @since TBD
+ *
+ * @param {Function} listener Called after every change to the store.
+ *
+ * @return {Function} The function that unsubscribes the listener.
+ */
+export function subscribeToCommonStore( listener ) {
+	return window.__tribe_common_store__.subscribe( listener );
+}
+
+/**
+ * Reads the event dates as The Events Calendar's block editor holds them.
+ *
+ * @since TBD
+ *
+ * @return {{start: string, end: string, allDay: boolean, timeZone: string}|null} The start and end,
+ *                                                                              `YYYY-MM-DD HH:mm:ss`, whether the
+ *                                                                              event lasts all day and its timezone,
+ *                                                                              or `null` without The Events
+ *                                                                              Calendar's datetime store.
+ */
+export function getEventDateFields() {
+	const selectors = window.tec?.events?.app?.main?.data?.blocks?.datetime?.selectors;
+
+	if ( ! selectors ) {
+		return null;
+	}
+
+	const state = getLegacyState();
+
+	return {
+		start: selectors.getStart( state ),
+		end: selectors.getEnd( state ),
+		allDay: Boolean( selectors.getAllDay( state ) ),
+		timeZone: selectors.getTimeZone( state ),
+	};
+}
+
+/**
+ * Reads the sale start and end a ticket's form sends, from the legacy ticket state.
+ *
+ * @since TBD
+ *
+ * @param {Object} state    The legacy ticket state.
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {{start: string|null, end: string|null}} The start and end, `YYYY-MM-DD HH:mm:ss` in the event timezone, or
+ *                                                 `null` for one the form sends no date for.
+ */
+export function getTicketFormDates( state, clientId ) {
+	const { selectors } = getTicketData();
+	const props = { clientId };
+	const join = ( date, time ) => ( date && time ? `${ date } ${ time }` : null );
+
+	return {
+		start: join(
+			selectors.getTicketTempStartDate( state, props ),
+			selectors.getTicketTempStartTime( state, props )
+		),
+		end: join( selectors.getTicketTempEndDate( state, props ), selectors.getTicketTempEndTime( state, props ) ),
+	};
+}
+
+/**
+ * Returns a sale price date the legacy ticket state holds as the start of its day, or `null` when it holds no day.
+ *
+ * The legacy code keeps an empty sale price date it loads or saves as the string `Invalid date`.
+ *
+ * @since TBD
+ *
+ * @param {string|null|undefined} date The date the legacy ticket state holds.
+ *
+ * @return {string|null} The start of the day, `YYYY-MM-DD HH:mm:ss`, or `null`.
+ */
+function toSalePriceFormDate( date ) {
+	return 'string' === typeof date && SALE_DATE_PATTERN.test( date ) ? `${ date } 00:00:00` : null;
+}
+
+/**
+ * Reads the sale price start and end a ticket's form sends, from the legacy ticket state.
+ *
+ * The sale price dates are whole days, so each is read as the start of its day.
+ *
+ * @since TBD
+ *
+ * @param {Object} state    The legacy ticket state.
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {{start: string|null, end: string|null}} The start and end, `YYYY-MM-DD HH:mm:ss` in the event timezone, or
+ *                                                 `null` for one the form holds no day for.
+ */
+export function getTicketSalePriceFormDates( state, clientId ) {
+	const { selectors } = getTicketData();
+	const props = { clientId };
+
+	return {
+		start: toSalePriceFormDate( selectors.getTicketTempSaleStartDate( state, props ) ),
+		end: toSalePriceFormDate( selectors.getTicketTempSaleEndDate( state, props ) ),
+	};
+}
+
+/**
+ * Gets the active providers the sales window applies to: Tickets Commerce, unless the server names others.
+ *
+ * @since TBD
+ *
+ * @return {TicketProviders} The provider classes and slugs.
+ */
+function getTicketProviders() {
+	return (
+		getLocalizedTicketProviders() ?? {
+			classes: [ TICKETS_COMMERCE_MODULE_CLASS ],
+			slugs: [ TICKETS_COMMERCE_PROVIDER ],
+		}
+	);
+}
