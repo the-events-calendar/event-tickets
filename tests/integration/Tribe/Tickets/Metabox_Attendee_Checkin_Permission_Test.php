@@ -69,16 +69,59 @@ class Metabox_Attendee_Checkin_Permission_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_should_not_check_in_through_a_requested_event_the_user_cannot_manage(): void {
-		$post_id         = $this->log_in_as_editor_of_another_authors_post();
+	public function it_should_not_check_in_an_attendee_of_another_event_when_a_plugin_grants_attendee_management(): void {
+		$attendee_id = $this->make_attendee( static::factory()->post->create() );
+		$own_draft   = $this->log_in_as_contributor_with_own_draft();
+		// Community Events grants attendee management to any logged-in user in the admin when an event is given.
+		add_filter( 'tribe_tickets_user_can_manage_attendees', '__return_true' );
+
+		$checked_in   = $this->request_checkin( 'ajax_attendee_checkin', 'checkin', $attendee_id, $own_draft );
+		$unchecked_in = $this->request_checkin( 'ajax_attendee_uncheckin', 'uncheckin', $attendee_id, $own_draft );
+
+		$this->assertFalse( $checked_in );
+		$this->assertFalse( $unchecked_in );
+		$this->assertEmpty( get_post_meta( $attendee_id, Attendee::$checked_in_meta_key, true ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_let_an_author_check_in_an_attendee_of_their_own_event(): void {
+		$post_id     = $this->log_in_as_author_with_own_post();
+		$attendee_id = $this->make_attendee( $post_id );
+
+		$checked_in = $this->request_checkin( 'ajax_attendee_checkin', 'checkin', $attendee_id, $post_id );
+
+		$this->assertTrue( $checked_in );
+		$this->assertNotEmpty( get_post_meta( $attendee_id, Attendee::$checked_in_meta_key, true ) );
+
+		$unchecked_in = $this->request_checkin( 'ajax_attendee_uncheckin', 'uncheckin', $attendee_id, $post_id );
+
+		$this->assertTrue( $unchecked_in );
+		$this->assertEmpty( get_post_meta( $attendee_id, Attendee::$checked_in_meta_key, true ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_check_in_when_a_plugin_narrows_attendee_management(): void {
+		$post_id     = $this->log_in_as_editor_of_another_authors_post();
+		$attendee_id = $this->make_attendee( $post_id );
+		add_filter( 'tribe_tickets_user_can_manage_attendees', '__return_false' );
+
+		$checked_in = $this->request_checkin( 'ajax_attendee_checkin', 'checkin', $attendee_id, $post_id );
+
+		$this->assertFalse( $checked_in );
+		$this->assertEmpty( get_post_meta( $attendee_id, Attendee::$checked_in_meta_key, true ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_check_in_through_a_requested_event_the_user_cannot_edit(): void {
+		$post_id         = $this->log_in_as_author_with_own_post();
 		$attendee_id     = $this->make_attendee( $post_id );
-		$forbidden_event = static::factory()->post->create();
-		add_filter(
-			'tribe_tickets_user_can_manage_attendees',
-			static fn( $user_can, $user_id, $event_id ) => $forbidden_event === absint( $event_id ) ? false : $user_can,
-			10,
-			3
-		);
+		$forbidden_event = static::factory()->post->create( [ 'post_author' => static::factory()->user->create() ] );
 
 		$checked_in = $this->request_checkin( 'ajax_attendee_checkin', 'checkin', $attendee_id, $forbidden_event );
 

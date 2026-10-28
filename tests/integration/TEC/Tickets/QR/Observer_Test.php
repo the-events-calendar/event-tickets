@@ -42,6 +42,35 @@ class Observer_Test extends WPTestCase {
 		$this->assertNotEmpty( get_post_meta( $attendee_id, Attendee::$checked_in_meta_key, true ) );
 	}
 
+	/**
+	 * @test
+	 */
+	public function it_should_not_check_in_for_a_user_a_plugin_grants_attendee_management(): void {
+		$post_id     = static::factory()->post->create();
+		$attendee_id = $this->make_attendee( $post_id );
+		$this->log_in_as_contributor_with_own_draft();
+		// Community Events grants attendee management to any logged-in user in the admin when an event is given.
+		add_filter( 'tribe_tickets_user_can_manage_attendees', '__return_true' );
+
+		$result = tribe( Observer::class )->authorized_check_in( $post_id, $attendee_id, $this->security_code( $attendee_id ) );
+
+		$this->assertFalse( $result['user_had_access'] );
+		$this->assertEmpty( get_post_meta( $attendee_id, Attendee::$checked_in_meta_key, true ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_check_in_for_the_author_of_the_event(): void {
+		$post_id     = $this->log_in_as_author_with_own_post();
+		$attendee_id = $this->make_attendee( $post_id );
+
+		$result = tribe( Observer::class )->authorized_check_in( $post_id, $attendee_id, $this->security_code( $attendee_id ) );
+
+		$this->assertTrue( $result['user_had_access'] );
+		$this->assertNotEmpty( get_post_meta( $attendee_id, Attendee::$checked_in_meta_key, true ) );
+	}
+
 	private function make_attendee( int $post_id ): int {
 		$order = $this->create_order( [ $this->create_tc_ticket( $post_id ) => 1 ] );
 

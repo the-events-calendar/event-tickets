@@ -743,7 +743,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since 4.6.2
 	 * @since 4.12.3 Use new helper method to account for possibly inactive ticket provider.
-	 * @since TBD    Requires the user to manage the attendees of the attendee's event and of the requested event.
+	 * @since TBD    Requires the user to manage the attendees of the attendee's event and of the requested event, or to be their author.
 	 */
 	public function ajax_attendee_checkin() {
 		$event_id    = Tribe__Utils__Array::get( $_POST, 'event_ID', false );
@@ -767,8 +767,7 @@ class Tribe__Tickets__Metabox {
 		if (
 			empty( $_POST['nonce'] )
 			|| ! wp_verify_nonce( $_POST['nonce'], 'checkin' )
-			|| ! $attendees->user_can_manage_attendee( $attendee_id )
-			|| ( $event_id && ! $attendees->user_can_manage_attendees( 0, absint( $event_id ) ) )
+			|| ! $attendees->user_can_check_in_attendee( $attendee_id, absint( $event_id ) )
 		) {
 			wp_send_json_error( "Cheatin' huh?" );
 		}
@@ -798,7 +797,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since 4.6.2
 	 * @since 4.12.3 Use new helper method to account for possibly inactive ticket provider.
-	 * @since TBD    Requires the user to manage the attendees of the attendee's event and of the requested event.
+	 * @since TBD    Requires the user to manage the attendees of the attendee's event and of the requested event, or to be their author.
 	 */
 	public function ajax_attendee_uncheckin() {
 		$event_id    = Tribe__Utils__Array::get( $_POST, 'event_ID', false );
@@ -822,8 +821,7 @@ class Tribe__Tickets__Metabox {
 		if (
 			empty( $_POST['nonce'] )
 			|| ! wp_verify_nonce( $_POST['nonce'], 'uncheckin' )
-			|| ! $attendees->user_can_manage_attendee( $attendee_id )
-			|| ( $event_id && ! $attendees->user_can_manage_attendees( 0, absint( $event_id ) ) )
+			|| ! $attendees->user_can_check_in_attendee( $attendee_id, absint( $event_id ) )
 		) {
 			wp_send_json_error( "Cheatin' huh?" );
 		}

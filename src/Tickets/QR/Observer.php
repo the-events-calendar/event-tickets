@@ -89,7 +89,7 @@ class Observer {
 	 *
 	 * @since 5.7.0
 	 * @since 5.30.0.2 Records the QR status here and passes an "already checked in" flag to the notice.
-	 * @since TBD Requires the user to manage the attendees of the attendee's event instead of `edit_posts`.
+	 * @since TBD Requires the user to manage the attendees of the attendee's event and of the requested event, or to be their author, instead of `edit_posts`.
 	 *
 	 * @param int    $event_id      Event post ID.
 	 * @param int    $ticket_id     Ticket post ID.
@@ -99,7 +99,7 @@ class Observer {
 	 */
 	public function authorized_check_in( $event_id, $ticket_id, $security_code ): array {
 
-		if ( ! is_user_logged_in() || ! tribe( 'tickets.attendees' )->user_can_manage_attendee( $ticket_id ) ) {
+		if ( ! is_user_logged_in() || ! tribe( 'tickets.attendees' )->user_can_check_in_attendee( $ticket_id, $event_id ) ) {
 			return [
 				'url'             => get_permalink( $event_id ),
 				'user_had_access' => false,
@@ -199,7 +199,6 @@ class Observer {
 	 *
 	 * @since 5.7.0
 	 * @since 5.30.0.2 Made read-only and gated behind `edit_posts`; the status write moved to the authorized check-in path.
-	 * @since TBD Gated behind the capability to manage attendees instead of `edit_posts`.
 	 *
 	 * @return void
 	 */
@@ -214,8 +213,8 @@ class Observer {
 			return;
 		}
 
-		// The attendee may be deleted, so this read-only notice checks the generic attendee capability.
-		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
+		// Match the check-in capability; this notice must never write state.
+		if ( ! current_user_can( 'edit_posts' ) ) {
 			return;
 		}
 

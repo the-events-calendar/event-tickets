@@ -83,6 +83,13 @@ trait With_Ticket_Providers {
 		);
 	}
 
+	private function log_in_as_author_with_own_post(): int {
+		$author = static::factory()->user->create( [ 'role' => 'author' ] );
+		wp_set_current_user( $author );
+
+		return static::factory()->post->create( [ 'post_author' => $author ] );
+	}
+
 	private function log_in_as_editor_of_another_authors_post(): int {
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'editor' ] ) );
 
