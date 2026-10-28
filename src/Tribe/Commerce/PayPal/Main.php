@@ -732,6 +732,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * Generate and store all the attendees information for a new order.
 	 *
 	 * @since 4.7
+	 * @since TBD Stores the order with the given payment status, counts the sale when an existing attendee completes and ignores a refund for an order the site does not have.
 	 *
 	 * @param string $payment_status The tickets payment status, defaults to completed.
 	 * @param bool   $redirect       Whether the client should be redirected or not.
@@ -791,13 +792,30 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			$order_id        = Tribe__Utils__Array::get( $transaction_data, 'parent_txn_id', $order_id );
 			$order           = Tribe__Tickets__Commerce__PayPal__Order::from_order_id( $order_id );
 
+			// PayPal can report a refund for a payment this site never stored an order for: there is nothing to refund.
+			if ( ! $order ) {
+				do_action(
+					'tribe_log',
+					'warning',
+					__CLASS__,
+					[
+						'message'       => 'PayPal refund not applied: no order is stored for the refunded payment.',
+						'txn_id'        => $refund_order_id,
+						'parent_txn_id' => $order_id,
+					]
+				);
+
+				return;
+			}
+
 			$order->refund_with( $refund_order_id );
 
 			unset( $transaction_data['txn_id'], $transaction_data['parent_txn_id'] );
 
 			$order->hydrate_from_transaction_data( $transaction_data );
 		} else {
-			$order = Tribe__Tickets__Commerce__PayPal__Order::from_transaction_data( $transaction_data );
+			// The order casts PayPal's raw status, which knows no `Pending`; store the one the attendees get.
+			$order = Tribe__Tickets__Commerce__PayPal__Order::from_transaction_data( array_merge( $transaction_data, [ 'payment_status' => $payment_status ] ) );
 		}
 
 		$order->set_meta( 'transaction_data', $raw_transaction_data );
@@ -1042,6 +1060,15 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				} else {
 					// Update attendee.
 					$this->update_attendee( $attendee_id, $data );
+
+					// Only creating an attendee counts its sale, so count it when a pending one completes.
+					if (
+						Tribe__Tickets__Commerce__PayPal__Stati::$completed === $attendee_order_status
+						&& Tribe__Tickets__Commerce__PayPal__Stati::$completed !== $existing_attendee['order_status']
+					) {
+						$global_stock = new Tribe__Tickets__Global_Stock( $post_id );
+						$this->increase_ticket_sales_by( $product_id, 1, $global_stock->is_enabled(), $global_stock );
+					}
 				}
 
 				$order->add_attendee( $attendee_id );
