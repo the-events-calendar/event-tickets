@@ -33,6 +33,31 @@ class IPNTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
+	 */
+	public function it_should_ignore_a_refund_notification_for_a_payment_the_site_has_no_order_for(): void {
+		$faker    = Factory::create();
+		$post_id  = static::factory()->post->create();
+		$ticket   = tribe( 'tickets.commerce.paypal' )->get_ticket( $post_id, $this->create_paypal_ticket( $post_id, $faker->numberBetween( 10, 50 ) ) );
+		$quantity = $faker->numberBetween( 1, 3 );
+		$refund   = $this->paypal_transaction(
+			$ticket,
+			$quantity,
+			$this->check_out_with_paypal( $ticket->ID, $quantity ),
+			[
+				'payment_status' => 'Refunded',
+				'parent_txn_id'  => strtoupper( $faker->bothify( '#?#?#?#?#?#?#?#?#' ) ),
+			]
+		);
+
+		$this->notify_from_paypal( $refund );
+
+		$this->assertFalse( Order::from_order_id( $refund['parent_txn_id'] ) );
+		$this->assertSame( [], tribe( 'tickets.commerce.paypal' )->get_attendees_by_order_id( $refund['txn_id'] ) );
+		$this->assertSame( 0, $this->paypal_sent_emails );
+	}
+
+	/**
+	 * @test
 	 * it should be instantiatable
 	 */
 	public function it_should_be_instantiatable() {

@@ -732,7 +732,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * Generate and store all the attendees information for a new order.
 	 *
 	 * @since 4.7
-	 * @since TBD Stores the order with the given payment status and counts the sale when an existing attendee completes.
+	 * @since TBD Stores the order with the given payment status, counts the sale when an existing attendee completes and ignores a refund for an order the site does not have.
 	 *
 	 * @param string $payment_status The tickets payment status, defaults to completed.
 	 * @param bool   $redirect       Whether the client should be redirected or not.
@@ -791,6 +791,22 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			$refund_order_id = $order_id;
 			$order_id        = Tribe__Utils__Array::get( $transaction_data, 'parent_txn_id', $order_id );
 			$order           = Tribe__Tickets__Commerce__PayPal__Order::from_order_id( $order_id );
+
+			// PayPal can report a refund for a payment this site never stored an order for: there is nothing to refund.
+			if ( ! $order ) {
+				do_action(
+					'tribe_log',
+					'warning',
+					__CLASS__,
+					[
+						'message'       => 'PayPal refund not applied: no order is stored for the refunded payment.',
+						'txn_id'        => $refund_order_id,
+						'parent_txn_id' => $order_id,
+					]
+				);
+
+				return;
+			}
 
 			$order->refund_with( $refund_order_id );
 

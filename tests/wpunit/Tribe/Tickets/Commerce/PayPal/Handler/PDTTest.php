@@ -93,6 +93,21 @@ class PDTTest extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_ignore_a_refund_for_a_payment_the_site_has_no_order_for(): void {
+		[ $ticket, $quantity ] = $this->make_ticket_and_quantity();
+		$transaction           = $this->paypal_transaction( $ticket, $quantity, $this->check_out_with_paypal( $ticket->ID, $quantity ), [ 'payment_status' => 'Refunded' ] );
+
+		$this->return_from_paypal( $transaction );
+
+		$this->assertSame( [], tribe( 'tickets.commerce.paypal' )->get_attendees_by_order_id( $transaction['txn_id'] ) );
+		$this->assertFalse( Order::from_order_id( $transaction['txn_id'] ) );
+		$this->assertSame( 0, $this->paypal_sent_emails );
+		$this->assertSame( 0, $this->stored_paypal_ticket( $ticket )->qty_sold() );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_not_complete_attendees_when_the_payment_status_is_missing(): void {
 		[ $ticket, $quantity ] = $this->make_ticket_and_quantity();
 		$transaction           = $this->paypal_transaction( $ticket, $quantity, $this->check_out_with_paypal( $ticket->ID, $quantity ), [ 'payment_status' => null ] );
