@@ -2,10 +2,11 @@
 /**
  * The Template for displaying the Tickets Commerce PayPal connect button.
  *
- * @version 5.30.1
+ * @version TBD
  *
  * @since 5.1.9
  * @since 5.30.1 Render an error notice when no signup URL could be obtained.
+ * @since TBD Removed the "Learn more" link from the error notice.
  *
  * @var Tribe__Template $this         Template object.
  * @var string|false    $url          The PayPal signup URL, false when it could not be generated.
@@ -27,17 +28,10 @@ $signup_host = (string) wp_parse_url(
 	PHP_URL_HOST
 );
 
-$signup_error_link = sprintf(
-	'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
-	esc_url( 'https://evnt.is/1axw' ),
-	esc_html__( 'Learn more', 'event-tickets' )
-);
-
 $signup_error = sprintf(
-	/* translators: %1$s: Host name of the PayPal connection service. %2$s: Link to the PayPal troubleshooting article. */
-	esc_html__( 'We could not get a connection link from PayPal. Reload this page to try again. If it keeps failing, check that your site can reach %1$s. %2$s', 'event-tickets' ),
-	esc_html( $signup_host ),
-	$signup_error_link
+	/* translators: %1$s: Host name of the PayPal connection service. */
+	esc_html__( 'We could not get a connection link from PayPal. Reload this page to try again. If it keeps failing, check that your site can reach %1$s.', 'event-tickets' ),
+	esc_html( $signup_host )
 );
 ?>
 <div

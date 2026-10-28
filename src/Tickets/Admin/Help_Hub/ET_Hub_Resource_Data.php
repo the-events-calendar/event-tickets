@@ -277,6 +277,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	 * Adds the "Tickets & RSVPs" section.
 	 *
 	 * @since 5.24.0
+	 * @since TBD Linked the Tickets Commerce setup article and removed the Moving Tickets link.
 	 *
 	 * @param Link_Section_Builder $builder The section builder instance.
 	 */
@@ -292,18 +293,13 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 				$this->get_icon_url( 'article_icon' )
 			)
 			->add_link(
-				_x( 'Setting Up E-Commerce for Selling Tickets', 'E-Commerce article', 'event-tickets' ),
-				'https://evnt.is/1ap0',
+				_x( 'Setting up Tickets Commerce', 'Tickets Commerce article', 'event-tickets' ),
+				'https://evnt.is/1axs',
 				$this->get_icon_url( 'article_icon' )
 			)
 			->add_link(
 				_x( 'Creating Tickets', 'Creating tickets article', 'event-tickets' ),
 				'https://evnt.is/1ap2',
-				$this->get_icon_url( 'article_icon' )
-			)
-			->add_link(
-				_x( 'Moving Tickets', 'Moving tickets article', 'event-tickets' ),
-				'https://evnt.is/ap10',
 				$this->get_icon_url( 'article_icon' )
 			)
 			->build();
@@ -313,6 +309,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	 * Adds the "Attendee Management" section.
 	 *
 	 * @since 5.24.0
+	 * @since TBD Renamed the links and linked the Managing Attendees article.
 	 *
 	 * @param Link_Section_Builder $builder The section builder instance.
 	 */
@@ -325,17 +322,17 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 				_x( 'Collect key details during registration, publicly display attendees, and generate reports.', 'Section description', 'event-tickets' )
 			)
 			->add_link(
-				_x( 'Attendee Registration Settings', 'Registration settings article', 'event-tickets' ),
+				_x( 'Using Attendee Registration', 'Registration settings article', 'event-tickets' ),
 				'https://evnt.is/1ap11',
 				$this->get_icon_url( 'article_icon' )
 			)
 			->add_link(
-				_x( 'Enabling Attendee Information for Tickets', 'Attendee information article', 'event-tickets' ),
-				'https://evnt.is/1ap12',
+				_x( 'Managing Attendees', 'Managing attendees article', 'event-tickets' ),
+				'https://evnt.is/manage-attendees',
 				$this->get_icon_url( 'article_icon' )
 			)
 			->add_link(
-				_x( 'Managing Orders and Attendees', 'Managing orders article', 'event-tickets' ),
+				_x( 'Managing Orders', 'Managing orders article', 'event-tickets' ),
 				'https://evnt.is/1aoy',
 				$this->get_icon_url( 'article_icon' )
 			)
