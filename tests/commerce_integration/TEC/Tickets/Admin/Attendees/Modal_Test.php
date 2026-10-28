@@ -177,6 +177,52 @@ class Modal_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_disclose_the_attendee_to_an_author_role_user_who_owns_the_event(): void {
+		$author_id = $this->factory()->user->create( [ 'role' => 'author' ] );
+		$fixture   = $this->create_attendee_on_post_owned_by( $author_id );
+
+		wp_set_current_user( $author_id );
+
+		$this->request_attendee_details( $fixture );
+
+		$this->assertSame( 'success', self::$response['type'], 'An Author manages the attendees of their own event.' );
+		$this->assertStringContainsString( $fixture['security_code'], self::$response['data']['html'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_deny_an_author_role_user_the_attendee_of_another_authors_event(): void {
+		$owner_id = $this->factory()->user->create( [ 'role' => 'author' ] );
+		$fixture  = $this->create_attendee_on_post_owned_by( $owner_id );
+
+		wp_set_current_user( $this->factory()->user->create( [ 'role' => 'author' ] ) );
+
+		$this->request_attendee_details( $fixture );
+
+		$this->assertSame( 'error', self::$response['type'] );
+		$this->assertStringNotContainsString( $fixture['security_code'], wp_json_encode( self::$response['data'] ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_let_the_management_filter_deny_the_event_author(): void {
+		$author_id = $this->factory()->user->create( [ 'role' => 'author' ] );
+		$fixture   = $this->create_attendee_on_post_owned_by( $author_id );
+
+		add_filter( 'tribe_tickets_user_can_manage_attendees', '__return_false' );
+		wp_set_current_user( $author_id );
+
+		$this->request_attendee_details( $fixture );
+
+		$this->assertSame( 'error', self::$response['type'] );
+		$this->assertStringNotContainsString( $fixture['security_code'], wp_json_encode( self::$response['data'] ) );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_deny_an_editor_who_does_not_own_the_attendees_event_on_an_ownership_only_site(): void {
 		$owner_id = $this->factory()->user->create( [ 'role' => 'editor' ] );
 		$fixture  = $this->create_attendee_on_post_owned_by( $owner_id );
