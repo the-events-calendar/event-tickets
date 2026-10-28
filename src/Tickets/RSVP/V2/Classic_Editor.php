@@ -97,6 +97,7 @@ class Classic_Editor {
 	 * Processes TC-RSVP ticket data from metabox POST values.
 	 *
 	 * @since 5.30.0
+	 * @since TBD No longer changes the event's ticket provider to Tickets Commerce.
 	 *
 	 * @param int                 $post_id   The post ID being saved.
 	 * @param array<string,mixed> $post_data The unslashed $_POST data from the metabox.
@@ -129,10 +130,6 @@ class Classic_Editor {
 		unset( $data['ticket_provider'] );
 
 		$event_id = Event::filter_event_id( $post_id, 'tickets-rsvp-classic-save' ) ?? $post_id;
-
-		/** @var Tickets_Handler $tickets_handler */
-		$tickets_handler = tribe( 'tickets.handler' );
-		update_post_meta( $event_id, $tickets_handler->key_provider_field, Module::class );
 
 		Module::get_instance()->ticket_add( $event_id, $data );
 	}
