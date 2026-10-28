@@ -163,8 +163,8 @@ final class Tickets_By_Date {
 		return [
 			'id'            => (int) $ticket->ID,
 			'name'          => (string) $ticket->name,
-			'price'         => Value::create( $ticket->price )->get_currency(),
-			'regular_price' => (float) $ticket->price < (float) $regular ? Value::create( $regular )->get_currency() : null,
+			'price'         => $this->money( $ticket->price ),
+			'regular_price' => (float) $ticket->price < (float) $regular ? $this->money( $regular ) : null,
 			'capacity'      => $unlimited ? -1 : (int) $row->capacity,
 			'available'     => $unlimited ? -1 : max( 0, (int) $row->stock ),
 			'sales_window'  => $this->sales_window( $row ),
@@ -230,6 +230,19 @@ final class Tickets_By_Date {
 		$end    = '' === $window['end_date'] ? '' : tribe_format_date( $window['end_date'], false, $format );
 
 		return trim( "{$start} - {$end}", ' -' );
+	}
+
+	/**
+	 * Returns an amount in the Tickets Commerce currency as plain text: the section prints it as text, not HTML.
+	 *
+	 * @since TBD
+	 *
+	 * @param float|int|string $amount The amount.
+	 *
+	 * @return string The amount, e.g. "$10.00".
+	 */
+	private function money( $amount ): string {
+		return html_entity_decode( Value::create( $amount )->get_currency(), ENT_QUOTES, 'UTF-8' );
 	}
 
 	/**

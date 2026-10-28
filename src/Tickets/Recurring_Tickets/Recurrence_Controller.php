@@ -103,6 +103,7 @@ final class Recurrence_Controller extends Controller_Contract {
 		remove_action( 'tec_tickets_commerce_ticket_deleted', $this->container->callback( Sync::class, 'sync_deleted_ticket' ) );
 		remove_action( 'before_delete_post', $this->container->callback( Sync::class, 'delete_event' ) );
 		remove_action( 'tribe_events_tickets_new_ticket_buttons', $this->container->callback( Classic::class, 'render_button' ) );
+		remove_action( 'tribe_events_tickets_after_new_ticket_panel', $this->container->callback( Classic::class, 'render_tickets_by_date' ) );
 		remove_action( self::TYPE_HEADER_ACTION, $this->container->callback( Classic::class, 'render_type_header' ) );
 		remove_filter( self::WARNING_CONTEXT_FILTER, $this->container->callback( Classic::class, 'filter_warning' ), 20 );
 		remove_filter( 'tec_events_pro_custom_tables_v1_recurrence_not_supported_with_tickets_message', $this->container->callback( Classic::class, 'filter_recurrence_not_supported_message' ) );
@@ -156,6 +157,7 @@ final class Recurrence_Controller extends Controller_Contract {
 		$this->container->singleton( Classic::class );
 
 		add_action( 'tribe_events_tickets_new_ticket_buttons', $this->container->callback( Classic::class, 'render_button' ) );
+		add_action( 'tribe_events_tickets_after_new_ticket_panel', $this->container->callback( Classic::class, 'render_tickets_by_date' ) );
 		add_action( self::TYPE_HEADER_ACTION, $this->container->callback( Classic::class, 'render_type_header' ), 10, 3 );
 		// After Flexible Tickets adds its message, at 10.
 		add_filter( self::WARNING_CONTEXT_FILTER, $this->container->callback( Classic::class, 'filter_warning' ), 20 );

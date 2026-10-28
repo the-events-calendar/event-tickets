@@ -54,6 +54,29 @@ final class Assets {
 				'conditionals' => [ $this, 'is_editing_an_event_in_the_classic_editor' ],
 			]
 		);
+
+		tec_asset(
+			$plugin,
+			'tec-tickets-recurring-tickets-by-date-classic',
+			$plugin->plugin_url . 'build/RecurringTickets/tickets-by-date-classic.js',
+			[ 'react', 'react-jsx-runtime', 'wp-dom-ready', 'wp-element', 'wp-i18n', 'jquery' ],
+			'admin_enqueue_scripts',
+			[
+				'in_footer'    => true,
+				'conditionals' => [ $this, 'is_editing_an_event_in_the_classic_editor' ],
+			]
+		);
+
+		tec_asset(
+			$plugin,
+			'tec-tickets-recurring-tickets-by-date-classic-style',
+			$plugin->plugin_url . 'build/RecurringTickets/tickets-by-date-classic.css',
+			[ 'dashicons' ],
+			'admin_enqueue_scripts',
+			[
+				'conditionals' => [ $this, 'is_editing_an_event_in_the_classic_editor' ],
+			]
+		);
 	}
 
 	/**

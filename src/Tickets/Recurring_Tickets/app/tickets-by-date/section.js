@@ -6,7 +6,7 @@
  */
 import React, { useState } from 'react';
 import { __, _x, sprintf } from '@wordpress/i18n';
-import './style.pcss';
+import './section.pcss';
 
 /**
  * How many dates a page lists.
