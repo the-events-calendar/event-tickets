@@ -27,11 +27,7 @@ const mapStateToProps = ( state, ownProps ) => {
 			__( 'Standard %s are not yet supported on recurring events.', 'event-tickets' ),
 			TICKET_LABELS.ticket.pluralLowercase
 		),
-		ctaLink: (
-			<a className="helper-link" href="https://evnt.is/1b7a" target="_blank" rel="noopener noreferrer">
-				{ __( 'Read about our plans for future features', 'event-tickets' ) }
-			</a>
-		),
+		ctaLink: null,
 		// While not directly used in the render, this prop will trigger a refresh on change of the post status.
 		postStatus: getCurrentPostStatus(),
 	};
