@@ -1,0 +1,6 @@
+significance: patch
+type: fix
+entry: Removed broken and outdated help links from the Payments settings, the
+  settings sidebar and the Tickets Help page, and pointed the remaining links to
+  current articles.
+timestamp: 2026-10-27T19:45:09.584Z
