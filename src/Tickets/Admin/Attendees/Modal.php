@@ -9,6 +9,9 @@
 
 namespace TEC\Tickets\Admin\Attendees;
 
+use Tribe__Utils__Array as Arr;
+use WP_Error;
+
 /**
  * Class Modal.
  *
@@ -181,11 +184,12 @@ class Modal {
 	 * depending on the request.
 	 *
 	 * @since 5.10.0
+	 * @since TBD Denies users who may not manage the attendee's own event, and reads the attendee's details from the stored record.
 	 *
 	 * @param string|\WP_Error $render_response The render response HTML content or WP_Error with list of errors.
 	 * @param array            $vars            The request variables.
 	 *
-	 * @return string $html The response with the HTML of the form, depending on the call.
+	 * @return string|\WP_Error The response with the HTML of the form, depending on the call, or the error when access is denied.
 	 */
 	public function get_modal_content_ajax( $render_response, $vars ) {
 		if ( 'tec_tickets_attendee_details' !== $vars['request'] ) {
@@ -197,20 +201,33 @@ class Modal {
 		/** @var Tribe__Tickets__Editor__Template $template */
 		$tickets_template = tribe( 'tickets.editor.template' );
 
-		/** @var Tribe__Tickets__Admin__Views $admin_views */
+		/** @var Tribe__Tickets__Admin__Views $admin_template */
 		$admin_template = tribe( 'tickets.admin.views' );
 		$attendee_id    = (int) sanitize_text_field( $vars['attendeeId'] );
 		$provider       = tribe_tickets_get_ticket_provider( $attendee_id );
+		$attendee       = $provider ? $provider->get_attendee( $attendee_id ) : false;
 
-		if ( ! $provider ) {
-			return '<div class="tec-tickets__admin-attendees-modal-attendee-info-value">' . esc_html__( 'Attendee provider not found.', 'event-tickets' ) . '</div>';
+		if ( ! $attendee ) {
+			return new WP_Error( 'tec-tickets-attendee-not-found', esc_html__( 'Attendee not found.', 'event-tickets' ) );
 		}
 
-		$attendee       = $provider->get_attendee( $attendee_id );
-		$post_id        = (int) sanitize_text_field( $vars['eventId'] );
-		$ticket_id      = (int) sanitize_text_field( $vars['ticketId'] );
-		$attendee_name  = (string) sanitize_text_field( $vars['attendeeName'] );
-		$attendee_email = (string) sanitize_text_field( $vars['attendeeEmail'] );
+		// The attendee's own event decides access, never the one the client names.
+		$post_id = absint( Arr::get( $attendee, 'event_id', 0 ) );
+
+		/*
+		 * The attendee management filter can be loosened by other plugins, so the post capability is checked
+		 * on top of it.
+		 */
+		if (
+			! current_user_can( 'edit_post', $post_id )
+			|| ! tribe( 'tickets.attendees' )->user_can_manage_attendees( get_current_user_id(), $post_id )
+		) {
+			return new WP_Error( 'tec-tickets-attendee-forbidden', esc_html__( 'You do not have permission to view this attendee.', 'event-tickets' ) );
+		}
+
+		$ticket_id      = absint( Arr::get( $attendee, 'product_id', 0 ) );
+		$attendee_name  = Arr::get( $attendee, 'holder_name' ) ?: Arr::get( $attendee, 'purchaser_name' ) ?: '';
+		$attendee_email = Arr::get( $attendee, 'holder_email' ) ?: Arr::get( $attendee, 'purchaser_email' ) ?: '';
 
 		// Send the attendee object to the template.
 		$context = [
