@@ -31,19 +31,6 @@ class TicketsBlockTest extends TicketsBlock_TestCase {
 
 			return $modules;
 		} );
-
-		// Reset Data_API object so it sees PayPal: the ticket update checks the ticket's provider.
-		tribe_singleton( 'tickets.data_api', new Data_API );
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function tearDown() {
-		parent::tearDown();
-
-		// Reset Data_API object so it pulls the modules without the PayPal filter.
-		tribe_singleton( 'tickets.data_api', new Data_API );
 	}
 
 	/**
@@ -67,6 +54,17 @@ class TicketsBlockTest extends TicketsBlock_TestCase {
 	 * @return int Ticket ID.
 	 */
 	protected function create_block_ticket( $post_id, $price, $overrides ) {
-		return $this->create_paypal_ticket( $post_id, $price, $overrides );
+		/*
+		 * An update checks the ticket belongs to the post through the ticket's provider, which the Data API only
+		 * resolves once rebuilt with PayPal. The snapshots render with the original Data API, so it is put back.
+		 */
+		$data_api = tribe( 'tickets.data_api' );
+		tribe_singleton( 'tickets.data_api', new Data_API );
+
+		$ticket_id = $this->create_paypal_ticket( $post_id, $price, $overrides );
+
+		tribe_singleton( 'tickets.data_api', $data_api );
+
+		return $ticket_id;
 	}
 }
