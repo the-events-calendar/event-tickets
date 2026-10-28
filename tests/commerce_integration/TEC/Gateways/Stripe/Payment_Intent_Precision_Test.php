@@ -312,6 +312,8 @@ class Payment_Intent_Precision_Test extends WPTestCase {
 		$payment_intent_without_fee = [
 			'id'                     => 'pi_test',
 			'amount'                 => '1000',
+			'currency'               => 'usd',
+			'status'                 => 'requires_payment_method',
 			'application_fee_amount' => '0',
 		];
 
@@ -323,6 +325,8 @@ class Payment_Intent_Precision_Test extends WPTestCase {
 		$payment_intent_with_fee = [
 			'id'                     => 'pi_test',
 			'amount'                 => '1000',
+			'currency'               => 'usd',
+			'status'                 => 'requires_payment_method',
 			'application_fee_amount' => '20',
 		];
 

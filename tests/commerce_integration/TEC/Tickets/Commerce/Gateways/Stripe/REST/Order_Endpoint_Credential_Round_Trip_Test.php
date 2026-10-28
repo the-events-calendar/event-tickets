@@ -181,6 +181,51 @@ class Order_Endpoint_Credential_Round_Trip_Test extends WPTestCase {
 	}
 
 	/**
+	 * A gateway error carries the request it made, Authorization header included, and the REST server
+	 * would print that data to an anonymous buyer. Only the code and a message may go out.
+	 */
+	public function test_create_does_not_return_the_gateway_error_data(): void {
+		$this->make_cart_with_ticket();
+		$this->set_class_fn_return(
+			Payment_Intent_Handler::class,
+			'update_payment_intent',
+			new WP_Error(
+				'tec-tickets-commerce-gateway-client-unexpected',
+				null,
+				[ 'request_arguments' => [ 'headers' => [ 'Authorization' => 'Bearer sk_live_leaked' ] ] ]
+			)
+		);
+
+		$result = $this->create_order();
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'tec-tickets-commerce-gateway-client-unexpected', $result->get_error_code() );
+		$this->assertNotEmpty( $result->get_error_message(), 'A gateway error without a message must fall back to the generic one.' );
+		$this->assertStringNotContainsString(
+			'sk_live_leaked',
+			wp_json_encode( rest_convert_error_to_response( $result )->get_data() )
+		);
+	}
+
+	/**
+	 * The handler's own recovery message must reach the buyer.
+	 */
+	public function test_create_returns_the_handler_error_message(): void {
+		$this->make_cart_with_ticket();
+		$this->set_class_fn_return(
+			Payment_Intent_Handler::class,
+			'update_payment_intent',
+			new WP_Error( 'tec-tc-gateway-stripe-payment-intent-already-bound', 'Please refresh checkout and try again.' )
+		);
+
+		$result = $this->create_order();
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'tec-tc-gateway-stripe-payment-intent-already-bound', $result->get_error_code() );
+		$this->assertSame( 'Please refresh checkout and try again.', $result->get_error_message() );
+	}
+
+	/**
 	 * Create a Created-status Tickets Commerce order holding the given gateway order id.
 	 *
 	 * @param string $gateway_order_id The gateway order id to bind.

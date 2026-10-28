@@ -1,4 +1,4 @@
 significance: patch
 type: security
-entry: Prevented a Stripe payment from being associated with more than one order.
+entry: Hardened how Stripe payments are matched to orders.
 timestamp: 2026-10-27T19:00:22.024Z

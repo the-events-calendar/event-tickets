@@ -210,7 +210,7 @@ class Payment_Intent_Handler {
 	 * @since 5.3.0
 	 * @since 5.8.1   Added customer's name / event name to the payment intent description
 	 * @since 5.28.5.1     Added validation to ensure the PaymentIntent amount matches the order total
-	 * @since TBD     Reject a PaymentIntent already bound to another order before mutating it.
+	 * @since TBD     Reject a PaymentIntent not issued to this browser's checkout, or already bound to another order.
 	 *
 	 * @param array    $data  The purchase data received from the front-end.
 	 * @param \WP_Post $order The order object.
@@ -219,6 +219,21 @@ class Payment_Intent_Handler {
 	 */
 	public function update_payment_intent( $data, \WP_Post $order ) {
 		$body = [];
+
+		/*
+		 * Only bind the intent this checkout issued to this browser: binding one by its ID alone would
+		 * hand its client secret to anyone who learned the ID. The cookie is compared lower case
+		 * because get_payment_intent_cookie() reads it through sanitize_key().
+		 */
+		$requested_id = $data['payment_intent']['id'] ?? '';
+		$issued_id    = $this->get_payment_intent_cookie();
+
+		if ( ! is_string( $requested_id ) || ! $issued_id || strtolower( $requested_id ) !== $issued_id ) {
+			return new WP_Error(
+				'tec-tc-gateway-stripe-payment-intent-invalid',
+				__( 'The payment could not be verified. Please refresh checkout and try again.', 'event-tickets' )
+			);
+		}
 
 		// Attempt to avoid an extra request by using the existing payment intent.
 		$payment_intent = $this->get();

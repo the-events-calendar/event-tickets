@@ -182,7 +182,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since 5.3.0
 	 * @since 5.29.0.1 Removed the cart hash query param from the return URL. See SVUL-L34.
-	 * @since TBD Return the handler's own error so the buyer sees how to recover.
+	 * @since TBD Return the handler's error code and message, without its data, so the buyer sees how to recover.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -241,8 +241,13 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$payment_intent = tribe( Payment_Intent_Handler::class )->update_payment_intent( $data, $order );
 
 		if ( is_wp_error( $payment_intent ) ) {
-			// Surface the handler's own message so the buyer is told how to recover (e.g. refresh checkout).
-			return $payment_intent;
+			// Pass on the message only: a gateway error's data can carry the request, Authorization header included.
+			$message = $payment_intent->get_error_message();
+
+			return new WP_Error(
+				$payment_intent->get_error_code(),
+				$message ? $message : $messages['failed-creating-payment-intent']
+			);
 		}
 
 		if ( empty( $payment_intent['id'] ) || empty( $payment_intent['created'] ) ) {

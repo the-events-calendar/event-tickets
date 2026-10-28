@@ -29,6 +29,19 @@ class Payment_Intent {
 	const TEST_MULTIPLIER = 3.14;
 
 	/**
+	 * The Stripe statuses of a Payment Intent that can still take a payment.
+	 *
+	 * @since TBD
+	 *
+	 * @var string[]
+	 */
+	private const PAYABLE_STATUSES = [
+		'requires_payment_method',
+		'requires_confirmation',
+		'requires_action',
+	];
+
+	/**
 	 * The key used to identify payment intents created to validate configurations.
 	 *
 	 * @since 5.3.0
@@ -197,6 +210,7 @@ class Payment_Intent {
 	 *
 	 * @since 5.28.4.1
 	 * @since 5.29.5 Expected values now come from get_charge_values_for_cart().
+	 * @since TBD    Rejects a Payment Intent that can no longer take a payment, or is in another currency.
 	 *
 	 * @param array $payment_intent Payment intent data from Stripe.
 	 * @param Cart  $cart           The cart used for checkout.
@@ -205,6 +219,11 @@ class Payment_Intent {
 	 */
 	public static function is_valid_for_cart( array $payment_intent, Cart $cart ): bool {
 		if ( empty( $payment_intent['id'] ) || ! empty( $payment_intent['errors'] ) ) {
+			return false;
+		}
+
+		// A paid or canceled intent must never be served to, or bound by, another checkout.
+		if ( ! in_array( $payment_intent['status'] ?? '', self::PAYABLE_STATUSES, true ) ) {
 			return false;
 		}
 
@@ -218,8 +237,11 @@ class Payment_Intent {
 		$expected_fee    = $expected['application_fee_amount'];
 		$actual_amount   = isset( $payment_intent['amount'] ) ? sprintf( '%d', $payment_intent['amount'] ) : '';
 		$actual_fee      = isset( $payment_intent['application_fee_amount'] ) ? sprintf( '%d', $payment_intent['application_fee_amount'] ) : '0';
+		$actual_currency = isset( $payment_intent['currency'] ) && is_string( $payment_intent['currency'] ) ? strtolower( $payment_intent['currency'] ) : '';
 
-		return $expected_amount === $actual_amount && $expected_fee === $actual_fee;
+		return $expected_amount === $actual_amount
+			&& $expected_fee === $actual_fee
+			&& $expected['currency'] === $actual_currency;
 	}
 
 	/**
@@ -229,10 +251,11 @@ class Payment_Intent {
 	 * application fee cannot drift apart when the cart total changes mid-checkout.
 	 *
 	 * @since 5.29.5
+	 * @since TBD Includes the currency, lower case as Stripe reports it.
 	 *
 	 * @param Cart $cart The cart used for checkout.
 	 *
-	 * @return array{amount?: string, application_fee_amount?: string} Empty when the cart cannot be charged.
+	 * @return array{amount?: string, application_fee_amount?: string, currency?: string} Empty when the cart cannot be charged.
 	 */
 	public static function get_charge_values_for_cart( Cart $cart ): array {
 		$cart_total = $cart->get_cart_total();
@@ -268,6 +291,7 @@ class Payment_Intent {
 		return [
 			'amount'                 => sprintf( '%d', $value->get_integer() ),
 			'application_fee_amount' => sprintf( '%d', $fee->get_integer() ),
+			'currency'               => strtolower( $value->get_currency_code() ),
 		];
 	}
 

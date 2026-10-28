@@ -50,6 +50,7 @@ class Payment_Intent_Order_Binding_Test extends WPTestCase {
 	 * @since 5.28.5.1
 	 */
 	public function tearDown(): void {
+		unset( $_COOKIE[ tribe( Payment_Intent_Handler::class )->get_payment_intent_cookie_name() ] );
 		tribe( Cart::class )->clear_cart();
 		tribe_set_var( Tribe__Settings_Manager::OPTION_CACHE_VAR_NAME, [] );
 
@@ -165,12 +166,16 @@ class Payment_Intent_Order_Binding_Test extends WPTestCase {
 			'id'                     => 'pi_cheap',
 			'amount'                 => '100',
 			'application_fee_amount' => '0',
+			'currency'               => 'usd',
+			'status'                 => 'requires_payment_method',
 			'metadata'               => [],
 		];
 
 		$this->set_class_fn_return( Payment_Intent::class, 'get', $cheap_payment_intent );
 		// Current cart is the $100.00 cart.
 		$this->set_class_fn_return( Cart::class, 'get_cart_total', 100.0 );
+
+		$this->issue_payment_intent_to_browser( 'pi_cheap' );
 
 		$result = tribe( Payment_Intent_Handler::class )->update_payment_intent(
 			[ 'payment_intent' => [ 'id' => 'pi_cheap' ] ],
@@ -196,6 +201,8 @@ class Payment_Intent_Order_Binding_Test extends WPTestCase {
 			'id'                     => 'pi_match',
 			'amount'                 => '10000',
 			'application_fee_amount' => '0',
+			'currency'               => 'usd',
+			'status'                 => 'requires_payment_method',
 			'metadata'               => [],
 			'client_secret'          => 'pi_match_secret',
 		];
@@ -203,6 +210,8 @@ class Payment_Intent_Order_Binding_Test extends WPTestCase {
 		$this->set_class_fn_return( Payment_Intent::class, 'get', $matching_payment_intent );
 		$this->set_class_fn_return( Payment_Intent::class, 'update', $matching_payment_intent );
 		$this->set_class_fn_return( Cart::class, 'get_cart_total', 100.0 );
+
+		$this->issue_payment_intent_to_browser( 'pi_match' );
 
 		$result = tribe( Payment_Intent_Handler::class )->update_payment_intent(
 			[ 'payment_intent' => [ 'id' => 'pi_match' ] ],
@@ -233,6 +242,8 @@ class Payment_Intent_Order_Binding_Test extends WPTestCase {
 			'id'                     => 'pi_bound',
 			'amount'                 => '10000',
 			'application_fee_amount' => '0',
+			'currency'               => 'usd',
+			'status'                 => 'requires_payment_method',
 			'metadata'               => [],
 			'client_secret'          => 'pi_bound_secret',
 		];
@@ -251,6 +262,8 @@ class Payment_Intent_Order_Binding_Test extends WPTestCase {
 			},
 			true
 		);
+
+		$this->issue_payment_intent_to_browser( 'pi_bound' );
 
 		$result = tribe( Payment_Intent_Handler::class )->update_payment_intent(
 			[ 'payment_intent' => [ 'id' => 'pi_bound' ] ],
@@ -282,6 +295,8 @@ class Payment_Intent_Order_Binding_Test extends WPTestCase {
 			'id'                     => 'pi_same',
 			'amount'                 => '10000',
 			'application_fee_amount' => '0',
+			'currency'               => 'usd',
+			'status'                 => 'requires_payment_method',
 			'metadata'               => [],
 			'client_secret'          => 'pi_same_secret',
 		];
@@ -289,6 +304,8 @@ class Payment_Intent_Order_Binding_Test extends WPTestCase {
 		$this->set_class_fn_return( Payment_Intent::class, 'get', $payment_intent );
 		$this->set_class_fn_return( Payment_Intent::class, 'update', $payment_intent );
 		$this->set_class_fn_return( Cart::class, 'get_cart_total', 100.0 );
+
+		$this->issue_payment_intent_to_browser( 'pi_same' );
 
 		$result = tribe( Payment_Intent_Handler::class )->update_payment_intent(
 			[ 'payment_intent' => [ 'id' => 'pi_same' ] ],
@@ -319,6 +336,8 @@ class Payment_Intent_Order_Binding_Test extends WPTestCase {
 			'id'                     => 'pi_bound',
 			'amount'                 => '10000',
 			'application_fee_amount' => '0',
+			'currency'               => 'usd',
+			'status'                 => 'requires_payment_method',
 			'metadata'               => [],
 			'client_secret'          => 'pi_bound_secret',
 		];
@@ -338,6 +357,8 @@ class Payment_Intent_Order_Binding_Test extends WPTestCase {
 			true
 		);
 
+		$this->issue_payment_intent_to_browser( 'pi_bound' );
+
 		$result = tribe( Payment_Intent_Handler::class )->update_payment_intent(
 			[ 'payment_intent' => [ 'id' => 'pi_bound' ] ],
 			$retry_order
@@ -346,6 +367,183 @@ class Payment_Intent_Order_Binding_Test extends WPTestCase {
 		$this->assertInstanceOf( WP_Error::class, $result );
 		$this->assertEquals( 'tec-tc-gateway-stripe-payment-intent-already-bound', $result->get_error_code() );
 		$this->assertTrue( $forgot_intent, 'Rejecting a bound intent must clear the intent cookie.' );
+	}
+
+	/**
+	 * @return array<string,array{0:string,1:bool}>
+	 */
+	public function payment_intent_status_provider(): array {
+		return [
+			'requires_payment_method' => [ 'requires_payment_method', true ],
+			'requires_confirmation'   => [ 'requires_confirmation', true ],
+			'requires_action'         => [ 'requires_action', true ],
+			'processing'              => [ 'processing', false ],
+			'requires_capture'        => [ 'requires_capture', false ],
+			'succeeded'               => [ 'succeeded', false ],
+			'canceled'                => [ 'canceled', false ],
+			'missing'                 => [ '', false ],
+		];
+	}
+
+	/**
+	 * An intent that has been paid or canceled must never be reused by another checkout.
+	 *
+	 * @test
+	 * @dataProvider payment_intent_status_provider
+	 */
+	public function should_only_accept_payment_intents_that_can_still_take_a_payment( string $status, bool $expected ): void {
+		$this->set_class_fn_return( Settings::class, 'is_licensed_plugin', true );
+		$this->set_class_fn_return( Cart::class, 'get_cart_total', 100.0 );
+		tribe_update_option( Currency::$currency_code_option, 'USD' );
+
+		$payment_intent = $this->make_payment_intent( 'pi_status', [ 'status' => $status ] );
+
+		$this->assertSame( $expected, Payment_Intent::is_valid_for_cart( $payment_intent, tribe( Cart::class ) ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_reject_payment_intent_in_another_currency(): void {
+		$this->set_class_fn_return( Settings::class, 'is_licensed_plugin', true );
+		$this->set_class_fn_return( Cart::class, 'get_cart_total', 100.0 );
+		tribe_update_option( Currency::$currency_code_option, 'USD' );
+
+		$this->assertFalse(
+			Payment_Intent::is_valid_for_cart( $this->make_payment_intent( 'pi_eur', [ 'currency' => 'eur' ] ), tribe( Cart::class ) ),
+			'An intent for the same amount in another currency must not be reused.'
+		);
+		$this->assertTrue(
+			Payment_Intent::is_valid_for_cart( $this->make_payment_intent( 'pi_usd', [ 'currency' => 'USD' ] ), tribe( Cart::class ) ),
+			'The currency comparison must not depend on case.'
+		);
+	}
+
+	/**
+	 * Checkout must not serve the browser an intent it remembers once that intent has been paid.
+	 *
+	 * @test
+	 */
+	public function should_mint_a_new_payment_intent_when_the_remembered_one_is_paid(): void {
+		$this->set_class_fn_return( Settings::class, 'is_licensed_plugin', true );
+		$this->make_order_for_price( 100.0 );
+		$this->set_class_fn_return( Cart::class, 'get_cart_total', 100.0 );
+		$this->issue_payment_intent_to_browser( 'pi_paid' );
+
+		$this->set_class_fn_return( Payment_Intent::class, 'get', $this->make_payment_intent( 'pi_paid', [ 'status' => 'succeeded' ] ) );
+		$this->set_class_fn_return( Payment_Intent::class, 'create', $this->make_payment_intent( 'pi_fresh' ) );
+
+		$handler = new Payment_Intent_Handler();
+		$handler->create_payment_intent_for_cart();
+
+		$this->assertSame( 'pi_fresh', $handler->get()['id'] );
+	}
+
+	/**
+	 * An intent ID learned elsewhere must not be bound, nor its client secret handed back.
+	 *
+	 * @test
+	 */
+	public function should_reject_create_with_payment_intent_not_issued_to_this_browser(): void {
+		$this->set_class_fn_return( Settings::class, 'is_licensed_plugin', true );
+		$order = $this->make_order_for_price( 100.0 );
+		$this->set_class_fn_return( Cart::class, 'get_cart_total', 100.0 );
+		$this->issue_payment_intent_to_browser( 'pi_mine' );
+
+		$stripe_was_called = false;
+		$stub              = function () use ( &$stripe_was_called ) {
+			$stripe_was_called = true;
+
+			return $this->make_payment_intent( 'pi_someone_elses' );
+		};
+		$this->set_class_fn_return( Payment_Intent::class, 'get', $stub, true );
+		$this->set_class_fn_return( Payment_Intent::class, 'update', $stub, true );
+
+		$result = tribe( Payment_Intent_Handler::class )->update_payment_intent(
+			[ 'payment_intent' => [ 'id' => 'pi_someone_elses' ] ],
+			$order
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertEquals( 'tec-tc-gateway-stripe-payment-intent-invalid', $result->get_error_code() );
+		$this->assertFalse( $stripe_was_called, 'An intent not issued to this browser must not be fetched or updated.' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_reject_create_when_no_payment_intent_was_issued_to_this_browser(): void {
+		$this->set_class_fn_return( Settings::class, 'is_licensed_plugin', true );
+		$order = $this->make_order_for_price( 100.0 );
+		$this->set_class_fn_return( Cart::class, 'get_cart_total', 100.0 );
+		$this->set_class_fn_return( Payment_Intent::class, 'get', $this->make_payment_intent( 'pi_unbound' ) );
+		$this->set_class_fn_return( Payment_Intent::class, 'update', $this->make_payment_intent( 'pi_unbound' ) );
+
+		$result = tribe( Payment_Intent_Handler::class )->update_payment_intent(
+			[ 'payment_intent' => [ 'id' => 'pi_unbound' ] ],
+			$order
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertEquals( 'tec-tc-gateway-stripe-payment-intent-invalid', $result->get_error_code() );
+	}
+
+	/**
+	 * Stripe IDs are mixed case, and the cookie is read back through sanitize_key().
+	 *
+	 * @test
+	 */
+	public function should_accept_create_with_mixed_case_payment_intent_issued_to_this_browser(): void {
+		$this->set_class_fn_return( Settings::class, 'is_licensed_plugin', true );
+		$order = $this->make_order_for_price( 100.0 );
+		$this->set_class_fn_return( Cart::class, 'get_cart_total', 100.0 );
+		$this->issue_payment_intent_to_browser( 'pi_3MtwBwLkdIwHu7ix' );
+
+		$payment_intent = $this->make_payment_intent( 'pi_3MtwBwLkdIwHu7ix' );
+		$this->set_class_fn_return( Payment_Intent::class, 'get', $payment_intent );
+		$this->set_class_fn_return( Payment_Intent::class, 'update', $payment_intent );
+
+		$result = tribe( Payment_Intent_Handler::class )->update_payment_intent(
+			[ 'payment_intent' => [ 'id' => 'pi_3MtwBwLkdIwHu7ix' ] ],
+			$order
+		);
+
+		$this->assertNotInstanceOf( WP_Error::class, $result );
+		$this->assertEquals( 'pi_3MtwBwLkdIwHu7ix', $result['id'] );
+	}
+
+	/**
+	 * Builds a $100.00 USD intent shaped like Stripe's response.
+	 *
+	 * @param string                $id        The intent ID.
+	 * @param array<string,string>  $overrides Fields to replace.
+	 *
+	 * @return array{id:string,amount:string,application_fee_amount:string,currency:string,status:string,metadata:array<string,string>,client_secret:string}
+	 */
+	protected function make_payment_intent( string $id, array $overrides = [] ): array {
+		return array_merge(
+			[
+				'id'                     => $id,
+				'amount'                 => '10000',
+				'application_fee_amount' => '0',
+				'currency'               => 'usd',
+				'status'                 => 'requires_payment_method',
+				'metadata'               => [],
+				'client_secret'          => $id . '_secret',
+			],
+			$overrides
+		);
+	}
+
+	/**
+	 * Sets the intent cookie the checkout page leaves in the buyer's browser.
+	 *
+	 * @param string $payment_intent_id The intent ID checkout issued.
+	 *
+	 * @return void
+	 */
+	protected function issue_payment_intent_to_browser( string $payment_intent_id ): void {
+		$_COOKIE[ tribe( Payment_Intent_Handler::class )->get_payment_intent_cookie_name() ] = $payment_intent_id;
 	}
 
 	/**

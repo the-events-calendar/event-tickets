@@ -246,7 +246,7 @@ class Coupons_Test extends Controller_Test_Case {
 
 		$this->assertNotEmpty( $sent_body, 'A Stripe checkout must push the new cart total to the Payment Intent.' );
 
-		$payment_intent = array_merge( [ 'id' => 'pi_fake' ], $sent_body );
+		$payment_intent = array_merge( [ 'id' => 'pi_fake', 'status' => 'requires_payment_method' ], $sent_body );
 
 		$this->assertTrue(
 			Payment_Intent::is_valid_for_cart( $payment_intent, tribe( Cart::class ) ),
