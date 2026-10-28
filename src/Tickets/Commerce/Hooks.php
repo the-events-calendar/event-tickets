@@ -777,17 +777,16 @@ class Hooks extends Service_Provider {
 	 * If other modules are active, we should de prioritize this one (we want other commerce
 	 * modules to take priority over this one).
 	 *
-	 * @todo  Determine if this is still needed.
-	 *
 	 * @since 5.1.9
+	 * @since TBD Compares against the Tickets Commerce module, so the filter takes effect.
 	 *
-	 * @param string   $default_module
-	 * @param string[] $available_modules
+	 * @param string   $default_module    The default ticket module class name.
+	 * @param string[] $available_modules The active ticket module class names, RSVP excluded.
 	 *
-	 * @return string
+	 * @return string The default ticket module class name.
 	 */
 	public function filter_de_prioritize_module( $default_module, array $available_modules ) {
-		$tribe_commerce_module = get_class( $this );
+		$tribe_commerce_module = Module::class;
 
 		// If this isn't the default (or if there isn't a choice), no need to de prioritize.
 		if (
