@@ -1032,8 +1032,10 @@ class Tribe__Tickets__Attendees {
 	 * undo check-in attendees.
 	 *
 	 * @since 4.6.3
+	 * @since TBD Allows the author of the event, while they can edit it, without the default capabilities.
 	 *
-	 * @param int $user_id Optional. The ID of the user whose access we're checking.
+	 * @param int        $user_id  Optional. The ID of the user whose access we're checking.
+	 * @param int|string $event_id Optional. The event whose attendees are managed.
 	 *
 	 * @return boolean
 	 */
@@ -1067,6 +1069,11 @@ class Tribe__Tickets__Attendees {
 				// Break on first fail.
 				break;
 			}
+		}
+
+		// The filter below still has the final say, so a site can narrow this.
+		if ( ! $user_can && $event_id ) {
+			$user_can = $this->user_authored_editable_event( absint( $user_id ), absint( Event::filter_event_id( $event_id ) ) );
 		}
 
 		/**
@@ -1328,5 +1335,21 @@ class Tribe__Tickets__Attendees {
 		 * @param WP_Post $post The post object.
 		 */
 		return apply_filters( 'tec_tickets_attendees_page_role_access', $has_access, $post_id, $post );
+	}
+
+	/**
+	 * Whether the user is the author of an event they can still edit.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $user_id  The user ID.
+	 * @param int $event_id The event post ID.
+	 *
+	 * @return bool Whether the user authored the event and can edit it.
+	 */
+	private function user_authored_editable_event( int $user_id, int $event_id ): bool {
+		return $event_id
+			&& absint( get_post_field( 'post_author', $event_id ) ) === $user_id
+			&& user_can( $user_id, 'edit_post', $event_id );
 	}
 }
