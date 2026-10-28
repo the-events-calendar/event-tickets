@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets;
 
+use Tribe__Tickets__Tickets;
+
 /**
  * Class Event
  *
@@ -63,5 +65,31 @@ class Event {
 		$event_id = apply_filters( 'tec_tickets_filter_event_id', $event_id, $context, $original_id );
 
 		return is_numeric( $event_id ) ? (int) $event_id : null;
+	}
+
+	/**
+	 * Returns whether the ticket is attached to the post.
+	 *
+	 * Both IDs are normalized with `filter_event_id()` first, so a recurring event occurrence matches the
+	 * tickets of its event.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket ID.
+	 * @param int $post_id   The ID of the post the ticket should be attached to.
+	 *
+	 * @return bool Whether the ticket is attached to the post; false if the ID is not a ticket.
+	 */
+	public static function ticket_belongs_to_post( int $ticket_id, int $post_id ): bool {
+		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
+
+		// Attendees and orders resolve to a provider and an event too, but they are not tickets.
+		if ( ! $provider instanceof Tribe__Tickets__Tickets || get_post_type( $ticket_id ) !== $provider->ticket_object ) {
+			return false;
+		}
+
+		$parent_id = static::filter_event_id( current( tribe_tickets_get_event_ids( $ticket_id ) ) );
+
+		return $parent_id && static::filter_event_id( $post_id ) === $parent_id;
 	}
 }

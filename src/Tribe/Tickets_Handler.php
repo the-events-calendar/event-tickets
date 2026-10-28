@@ -1,5 +1,6 @@
 <?php
 
+use TEC\Tickets\Event;
 use Tribe__Tickets__REST__V1__Messages as Messages;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Utils__Array as Arr;
@@ -1681,6 +1682,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Save the the drag-n-drop ticket order
 	 *
 	 * @since 4.6
+	 * @since TBD Skips the IDs that are not tickets of the post.
 	 *
 	 * @param int $post
 	 */
@@ -1711,7 +1713,8 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		foreach ( $tickets as $id => $ticket ) {
-			if ( ! isset( $ticket['order'] ) ) {
+			// The list comes from the request, so only this post's tickets are reordered.
+			if ( ! isset( $ticket['order'] ) || ! Event::ticket_belongs_to_post( absint( $id ), $post->ID ) ) {
 				continue;
 			}
 
