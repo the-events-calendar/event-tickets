@@ -584,7 +584,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * moved (ie, you cannot move RSVP tickets to a WooCommerce ticket type, nor can
 	 * a mix of RSVP and WooCommerce tickets be moved to a new ticket type).
 	 *
-	 * @since TBD Moves nothing when the target ticket type is not attached to the target post.
+	 * @since TBD Moves nothing, and filters no Attendees, when the target ticket type is not attached to the target post.
 	 *
 	 * @param array $ticket_ids
 	 * @param int   $tgt_ticket_type_id
@@ -595,6 +595,21 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 */
 	public function move_tickets( array $ticket_ids, $tgt_ticket_type_id, $src_event_id, $tgt_event_id ) {
 		$ticket_ids = array_map( 'intval', $ticket_ids );
+
+		$instigator_id    = get_current_user_id();
+		$ticket_type      = Tribe__Tickets__Tickets::load_ticket_object( $tgt_ticket_type_id );
+		$successful_moves = 0;
+
+		if ( ! $ticket_type ) {
+			return 0;
+		}
+
+		$tgt_post_id = Event::filter_event_id( $tgt_event_id );
+
+		// The repository lists a Series Pass under each event of its Series, as the move dialog does.
+		if ( ! $tgt_post_id || ! tribe_tickets()->where( 'event', $tgt_post_id )->in( absint( $tgt_ticket_type_id ) )->found() ) {
+			return 0;
+		}
 
 		/**
 		 * Filters the set of Attendee IDs that will be moved following a user request to move Attendees.
@@ -612,21 +627,6 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		 * @param int $tgt_event_id       The ID of the ticket-able Post the Attendees will be moved to.
 		 */
 		$ticket_ids = apply_filters( 'tec_tickets_move_attendees_ids', $ticket_ids, $tgt_ticket_type_id, $src_event_id, $tgt_event_id );
-
-		$instigator_id    = get_current_user_id();
-		$ticket_type      = Tribe__Tickets__Tickets::load_ticket_object( $tgt_ticket_type_id );
-		$successful_moves = 0;
-
-		if ( ! $ticket_type ) {
-			return 0;
-		}
-
-		$tgt_post_id = Event::filter_event_id( $tgt_event_id );
-
-		// The repository lists a Series Pass under each event of its Series, as the move dialog does.
-		if ( ! $tgt_post_id || ! tribe_tickets()->where( 'event', $tgt_post_id )->in( absint( $tgt_ticket_type_id ) )->found() ) {
-			return 0;
-		}
 
 		$ticket_objects = [];
 		$providers      = [];
