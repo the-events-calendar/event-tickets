@@ -103,6 +103,23 @@ final class Views {
 	}
 
 	/**
+	 * Retires the cached ticket models of the dates of a row's event, once the row's stock changed.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $row_id The row ID.
+	 *
+	 * @return void
+	 */
+	public function forget_row_dates( int $row_id ): void {
+		$row = $this->rows->find( $row_id );
+
+		if ( $row ) {
+			$this->forget_dates( (int) $row->post_id );
+		}
+	}
+
+	/**
 	 * Reads, in one query, the rows of every date an events query found, before each event is decorated.
 	 *
 	 * The views fetch events by ID, then decorate them one by one: without this, each date reads its own rows.
