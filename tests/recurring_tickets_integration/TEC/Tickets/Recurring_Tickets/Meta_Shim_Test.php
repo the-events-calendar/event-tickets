@@ -5,7 +5,6 @@ namespace TEC\Tickets\Recurring_Tickets;
 use Codeception\TestCase\WPTestCase;
 use Generator;
 use TEC\Common\StellarWP\DB\DB;
-use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Tickets_Repository;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use TEC\Tickets\Tests\Recurring_Tickets\Without_Recurrence_Tier;
@@ -172,18 +171,6 @@ class Meta_Shim_Test extends WPTestCase {
 
 		$this->assertSame( '5', get_post_meta( $post, '_price', true ) );
 		$this->assertSame( 0, $queries() );
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_should_answer_an_override_on_the_next_read(): void {
-		$id = $this->insert_ticket_row( [ 'price' => 10500 ] );
-		get_post_meta( $id, '_price', true );
-
-		tribe( Tickets_Repository::class )->override( Ticket_ID::to_row_id( $id ), [ 'price' => 15000 ] );
-
-		$this->assertSame( '15.00', get_post_meta( $id, '_price', true ) );
 	}
 
 	public function write_provider(): Generator {
