@@ -123,15 +123,7 @@ class Orders extends WP_List_Table {
 			'total'            => __( 'Total', 'event-tickets' ),
 		];
 
-		/**
-		 * Filters the columns of the Tickets Commerce orders table.
-		 *
-		 * @since TBD
-		 *
-		 * @param array<string,string> $columns The columns, as [ <slug> => <title> ].
-		 * @param int                  $post_id The post whose orders are listed, 0 if none.
-		 */
-		return (array) apply_filters( 'tec_tickets_commerce_reports_orders_table_columns', $columns, (int) tribe_get_request_var( 'event_id', tribe_get_request_var( 'post_id', 0 ) ) );
+		return $columns;
 	}
 
 	/**
@@ -265,18 +257,7 @@ class Orders extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_default( $item, $column ) {
-		$value = empty( $item->$column ) ? '??' : $item->$column;
-
-		/**
-		 * Filters the value of a cell of the Tickets Commerce orders table without a column method of its own.
-		 *
-		 * @since TBD
-		 *
-		 * @param string  $value  The cell's value, as HTML.
-		 * @param WP_Post $item   The order.
-		 * @param string  $column The column.
-		 */
-		return apply_filters( 'tec_tickets_commerce_reports_orders_table_column', $value, $item, $column );
+		return empty( $item->$column ) ? '??' : $item->$column;
 	}
 
 	/**
@@ -338,6 +319,7 @@ class Orders extends WP_List_Table {
 	 *
 	 * @since 5.2.0
 	 * @since 5.30.1 Line items whose ticket no longer exists fall back to a generic label.
+	 * @since TBD Filters each ticket's name.
 	 *
 	 * @param WP_Post $item The current item.
 	 *
@@ -363,6 +345,17 @@ class Orders extends WP_List_Table {
 
 			/* An order keeps its items when the ticket behind them is deleted, so there may be no ticket to name. */
 			$name = $ticket ? $ticket->name : _n( 'Ticket', 'Tickets', $quantity, 'event-tickets' );
+
+			/**
+			 * Filters the name of a ticket purchased in an order, in the orders table.
+			 *
+			 * @since TBD
+			 *
+			 * @param string              $name      The ticket's name.
+			 * @param array<string,mixed> $cart_item The order's line of the ticket.
+			 * @param WP_Post             $item      The order.
+			 */
+			$name = apply_filters( 'tec_tickets_commerce_reports_orders_table_purchased_ticket_name', $name, $cart_item, $item );
 
 			$output .= sprintf( "<div class='tribe-line-item'>%1\$d - %2\$s</div>", $quantity, esc_html( $name ) );
 		}

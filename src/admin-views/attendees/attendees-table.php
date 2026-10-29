@@ -3,6 +3,7 @@
  * Attendees table template.
  *
  * @since 5.5.9
+ * @since TBD   Fires an action before the table.
  *
  * @var \Tribe__Template          $this      Current template object.
  * @var int                       $event_id  The event/post/page id.
@@ -27,5 +28,15 @@ $form_classes = [
 	<?php $this->template( 'attendees/attendees-table/form/fields' ); ?>
 
 	<?php $attendees->attendees_table->search_box( __( 'Search attendees', 'event-tickets' ), 'attendees-search' ); ?>
+	<?php
+	/**
+	 * Fires before the Attendees table, below its search box.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id The post the attendees are of.
+	 */
+	do_action( 'tec_tickets_attendees_table_before', $event_id );
+	?>
 	<?php $attendees->attendees_table->display(); ?>
 </form>

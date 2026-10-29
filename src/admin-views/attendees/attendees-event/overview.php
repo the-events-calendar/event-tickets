@@ -4,6 +4,7 @@
  *
  * @since 5.6.5
  * @since 5.8.0 Refactored logic out of the template into the `Tribe__Tickets__Attendees::render` method.
+ * @since TBD   A ticket's line can be given in the context.
  *
  * @var \Tribe__Template                              $this              Current template object.
  * @var int                                           $event_id          The event/post/page id.
@@ -12,6 +13,7 @@
  * @var array<string,string>                          $type_icon_classes A map from ticket types to their icon classes.
  * @var array<string,string>                          $type_labels       A map from ticket types to their labels.
  * @var array{sold: int, available: int}              $ticket_totals     The total number of tickets sold and available.
+ * @var array<int,string>|null                        $ticket_stats      A ticket's issued and available line, by ticket ID, in place of its stock message.
  */
 ?>
 
@@ -61,7 +63,7 @@
 					</div>
 					<div class="tec-tickets__admin-attendees-overview-ticket-type-list-item-stat">
 						<?php
-							echo esc_html( tribe_tickets_get_ticket_stock_message( $ticket, __( 'issued', 'event-tickets' ) ) );
+							echo esc_html( $ticket_stats[ $ticket->ID ] ?? tribe_tickets_get_ticket_stock_message( $ticket, __( 'issued', 'event-tickets' ) ) );
 
 							/**
 							 * Adds an entry point to inject additional info for ticket.

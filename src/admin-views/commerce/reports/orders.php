@@ -1,5 +1,7 @@
 <?php
 /**
+ * @since TBD Fires an action before the table.
+ *
  * @var int     $post_id             The current post ID.
  * @var WP_Post $post                The current post object.
  * @var string  $post_singular_label The post type singular label.
@@ -34,6 +36,16 @@ use TEC\Tickets\Commerce\Admin_Tables\Orders;
 		/>
 		<?php
 		$orders_table->search_box( __( 'Search Orders', 'event-tickets' ), 'tc-orders' );
+
+		/**
+		 * Fires before the Orders table of a post, below its search box.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $post_id The post the orders are of.
+		 */
+		do_action( 'tec_tickets_commerce_reports_orders_table_before', $post_id );
+
 		$orders_table->display();
 		?>
 	</form>
