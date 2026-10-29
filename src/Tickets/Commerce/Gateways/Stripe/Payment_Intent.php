@@ -212,10 +212,7 @@ class Payment_Intent {
 			return false;
 		}
 
-		$binding        = self::get_cart_binding( $cart );
-		$intent_binding = $payment_intent['metadata'][ self::CART_BINDING_KEY ] ?? '';
-
-		if ( ! $binding || ! is_string( $intent_binding ) || ! hash_equals( $binding, $intent_binding ) ) {
+		if ( ! self::is_bound_to_cart( $payment_intent, $cart ) ) {
 			return false;
 		}
 
@@ -285,6 +282,26 @@ class Payment_Intent {
 			'application_fee_amount' => sprintf( '%d', $fee->get_integer() ),
 			'currency'               => strtolower( $value->get_currency_code() ),
 		];
+	}
+
+	/**
+	 * Determines whether a Payment Intent was created for the given cart.
+	 *
+	 * The binding is the only value a third party knowing the Payment Intent ID cannot reproduce, so
+	 * it is what ties an intent to its cart independently of the amount, which coupons change.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $payment_intent Payment intent data from Stripe.
+	 * @param Cart  $cart           The cart used for checkout.
+	 *
+	 * @return bool
+	 */
+	public static function is_bound_to_cart( array $payment_intent, Cart $cart ): bool {
+		$binding        = self::get_cart_binding( $cart );
+		$intent_binding = $payment_intent['metadata'][ self::CART_BINDING_KEY ] ?? '';
+
+		return $binding && is_string( $intent_binding ) && hash_equals( $binding, $intent_binding );
 	}
 
 	/**

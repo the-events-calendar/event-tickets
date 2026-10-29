@@ -17,6 +17,7 @@ use TEC\Tickets\Commerce\Values\Currency_Value;
 use Tribe\Tests\Traits\With_Clock_Mock;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\OrderModifiers\Coupon_Creator;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Stripe_Payment_Intent_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use WP_Error;
 use WP_REST_Request as Request;
@@ -29,6 +30,7 @@ class Coupons_Test extends Controller_Test_Case {
 	use Ticket_Maker;
 	use With_Clock_Mock;
 	use With_Uopz;
+	use Stripe_Payment_Intent_Maker;
 
 	protected string $controller_class = Coupons::class;
 
@@ -220,6 +222,13 @@ class Coupons_Test extends Controller_Test_Case {
 		$coupon = $this->create_coupon( [ 'raw_amount' => 15 ] );
 		$cart   = $this->set_up_cart_with_ticket();
 
+		$intent_metadata = $this->mint_cart_binding_metadata();
+		$this->set_class_fn_return(
+			Payment_Intent::class,
+			'get',
+			[ 'id' => 'pi_fake', 'status' => 'requires_payment_method', 'metadata' => $intent_metadata ]
+		);
+
 		$sent_body = [];
 		$this->set_class_fn_return(
 			Payment_Intent::class,
@@ -246,7 +255,7 @@ class Coupons_Test extends Controller_Test_Case {
 
 		$this->assertNotEmpty( $sent_body, 'A Stripe checkout must push the new cart total to the Payment Intent.' );
 
-		$payment_intent = array_merge( [ 'id' => 'pi_fake', 'status' => 'requires_payment_method' ], $sent_body );
+		$payment_intent = array_merge( [ 'id' => 'pi_fake', 'status' => 'requires_payment_method', 'metadata' => $intent_metadata ], $sent_body );
 
 		$this->assertTrue(
 			Payment_Intent::is_valid_for_cart( $payment_intent, tribe( Cart::class ) ),

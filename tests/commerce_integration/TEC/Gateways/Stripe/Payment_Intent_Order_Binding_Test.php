@@ -32,6 +32,7 @@ use WP_Error;
  * @covers \TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent::is_valid_for_order
  * @covers \TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent_Handler::update_payment_intent
  * @covers \TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent::is_valid_for_cart
+ * @covers \TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent::is_bound_to_cart
  */
 class Payment_Intent_Order_Binding_Test extends WPTestCase {
 
@@ -566,6 +567,37 @@ class Payment_Intent_Order_Binding_Test extends WPTestCase {
 
 		$this->assertFalse(
 			Payment_Intent::is_valid_for_cart( $this->make_payment_intent( 'pi_unbound', [ 'metadata' => [] ] ), tribe( Cart::class ) )
+		);
+	}
+
+	/**
+	 * The coupon routes mutate an intent by its caller-supplied ID, so is_bound_to_cart() is what
+	 * keeps a known ID from pointing those routes at another buyer's intent.
+	 *
+	 * @test
+	 */
+	public function should_only_consider_an_intent_bound_to_the_cart_that_created_it(): void {
+		$this->set_class_fn_return( Settings::class, 'is_licensed_plugin', true );
+		$this->set_class_fn_return( Cart::class, 'get_cart_total', 100.0 );
+		$this->set_class_fn_return( Cart::class, 'get_cart_hash', 'buyercart001' );
+		tribe_update_option( Currency::$currency_code_option, 'USD' );
+
+		$bound = $this->make_payment_intent( 'pi_bound' );
+
+		$this->assertTrue(
+			Payment_Intent::is_bound_to_cart( $bound, tribe( Cart::class ) ),
+			'An intent created for this cart must be recognised as bound.'
+		);
+		$this->assertFalse(
+			Payment_Intent::is_bound_to_cart( $this->make_payment_intent( 'pi_none', [ 'metadata' => [] ] ), tribe( Cart::class ) ),
+			'An intent carrying no binding must not be treated as bound.'
+		);
+
+		// The same intent, judged against a different cart, must no longer match.
+		$this->set_class_fn_return( Cart::class, 'get_cart_hash', 'othercart002' );
+		$this->assertFalse(
+			Payment_Intent::is_bound_to_cart( $bound, tribe( Cart::class ) ),
+			'An intent created for another cart must not be treated as bound.'
 		);
 	}
 
