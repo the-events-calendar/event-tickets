@@ -35,14 +35,37 @@ class Sync_Task extends Task_Abstract {
 	}
 
 	/**
-	 * Syncs the event.
+	 * Syncs the event, again when it changed while the sync ran.
 	 *
 	 * @since TBD
 	 *
 	 * @return void
 	 */
 	public function process(): void {
-		tribe( Sync::class )->sync_event( $this->get_args()[0], true );
+		$post_id = (int) $this->get_args()[0];
+		$passes  = 0;
+
+		// ponytail: three passes; an event still changing after them is synced by its next save.
+		do {
+			$requested = $this->requested( $post_id );
+			tribe( Sync::class )->sync_event( $post_id, true );
+		} while ( $requested !== $this->requested( $post_id ) && ++$passes < 3 );
+	}
+
+	/**
+	 * Returns the event's latest sync request, as stored now.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The event's post ID.
+	 *
+	 * @return string The request's stamp, empty if none.
+	 */
+	private function requested( int $post_id ): string {
+		// Another request writes it while the task runs.
+		wp_cache_delete( $post_id, 'post_meta' );
+
+		return (string) get_post_meta( $post_id, Sync::REQUESTED_META_KEY, true );
 	}
 
 	/**
