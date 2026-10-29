@@ -42,7 +42,7 @@ class Sync_Task extends Task_Abstract {
 	 * @return void
 	 */
 	public function process(): void {
-		tribe( Sync::class )->sync_event_inline( ...$this->get_args() );
+		tribe( Sync::class )->sync_event( $this->get_args()[0], true );
 	}
 
 	/**

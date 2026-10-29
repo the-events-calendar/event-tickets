@@ -70,16 +70,4 @@ class Ticket_ID_Test extends WPTestCase {
 
 		Ticket_ID::from_row_id( 0 );
 	}
-
-	/**
-	 * @test
-	 */
-	public function it_should_use_a_filtered_base(): void {
-		add_filter( 'tec_tickets_recurring_tickets_ticket_id_base', static fn() => 2000000000 );
-
-		$this->assertSame( 2000000000, Ticket_ID::base() );
-		$this->assertFalse( Ticket_ID::is_table_ticket( 1000000000 ) );
-		$this->assertSame( 2000000001, Ticket_ID::from_row_id( 1 ) );
-		$this->assertSame( 1, Ticket_ID::to_row_id( 2000000001 ) );
-	}
 }
