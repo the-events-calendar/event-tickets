@@ -51,6 +51,17 @@ final class Sync {
 	public const INLINE_LIMIT = 1000;
 
 	/**
+	 * The event meta that changes each time a background sync of the event is asked for.
+	 *
+	 * Shepherd queues nothing while the event's task runs: the task compares it to see what it missed.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const REQUESTED_META_KEY = '_tec_tickets_recurring_sync_requested';
+
+	/**
 	 * The rows repository.
 	 *
 	 * @since TBD
@@ -138,6 +149,7 @@ final class Sync {
 		$limit = (int) apply_filters( 'tec_tickets_recurring_tickets_sync_inline_limit', self::INLINE_LIMIT, $post_id );
 
 		if ( ! $inline && count( $templates ) * count( $dates ) > $limit ) {
+			update_post_meta( $post_id, self::REQUESTED_META_KEY, uniqid( '', true ) );
 			shepherd()->dispatch( new Sync_Task( $post_id ) );
 
 			return;
