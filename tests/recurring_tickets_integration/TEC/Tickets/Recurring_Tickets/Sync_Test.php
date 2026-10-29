@@ -130,7 +130,7 @@ class Sync_Test extends WPTestCase {
 		$event    = $this->create_recurring_event();
 		$template = $this->create_template( $event, 'General Admission', '10.50', 20 );
 		$first    = $this->rows_of( $template )[0];
-		tribe( Rows::class )->override( (int) $first->id, [ 'price' => 5000 ] );
+		DB::update( Tickets::table_name(), [ 'price' => 5000, 'overrides' => wp_json_encode( [ 'price' ] ) ], [ 'id' => (int) $first->id ] );
 
 		$this->update_template( $event, $template, [ 'ticket_name' => 'VIP', 'ticket_price' => '25' ] );
 
