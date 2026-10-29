@@ -39,17 +39,7 @@ final class Ticket_ID {
 	 * @return int The base.
 	 */
 	public static function base(): int {
-		/**
-		 * Filters the base table ticket IDs are counted from.
-		 *
-		 * Set it before the first recurring event ticket is created and never change it afterwards: attendees,
-		 * orders and QR codes keep the ticket IDs they were given, and a new base would point them at other rows.
-		 *
-		 * @since TBD
-		 *
-		 * @param int $base The base. Default 1,000,000,000.
-		 */
-		return (int) apply_filters( 'tec_tickets_recurring_tickets_ticket_id_base', self::BASE );
+		return self::BASE;
 	}
 
 	/**
