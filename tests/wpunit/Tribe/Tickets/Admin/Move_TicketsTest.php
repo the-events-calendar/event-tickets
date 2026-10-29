@@ -455,10 +455,10 @@ class Move_TicketsTest extends WPTestCase {
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 
 		remove_filter( 'tribe_tickets_user_can_manage_attendees', '__return_true' );
-		/* Community denies attendee management when no event ID is given. */
+		/* Like Community, grant attendee management per event and deny it when no event ID is given. */
 		add_filter(
 			'tribe_tickets_user_can_manage_attendees',
-			static fn( $user_can, $user_id, $checked_event_id ) => empty( $checked_event_id ) ? false : $user_can,
+			static fn( $user_can, $user_id, $checked_event_id ) => $checked_event_id === $event_id ? $user_can : false,
 			10,
 			3
 		);
@@ -466,6 +466,11 @@ class Move_TicketsTest extends WPTestCase {
 		$actions = $this->get_bulk_actions( $this->get_event_attendees_page_request( $event_id ), WP_Screen::get( 'edit-' . TEC::POSTTYPE ) );
 
 		$this->assertArrayHasKey( 'move', $actions );
+
+		$other_event_id = $this->factory()->event->create();
+		$other_actions  = $this->get_bulk_actions( $this->get_event_attendees_page_request( $other_event_id ), WP_Screen::get( 'edit-' . TEC::POSTTYPE ) );
+
+		$this->assertArrayNotHasKey( 'move', $other_actions );
 	}
 
 	/**
