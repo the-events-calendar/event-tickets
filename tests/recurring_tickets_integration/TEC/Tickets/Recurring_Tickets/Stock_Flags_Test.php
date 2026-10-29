@@ -103,8 +103,7 @@ class Stock_Flags_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_should_not_oversell_a_row_sold_out_between_the_checkout_check_and_the_sale(): void {
-		$id   = $this->create_row( [ 'capacity' => 10, 'stock' => 2, 'sales' => 8 ] );
+	public function it_should_record_a_sale_that_lost_the_race_for_the_last_tickets(): void {
 		$logs = [];
 		add_action(
 			'tribe_log',
@@ -116,51 +115,45 @@ class Stock_Flags_Test extends WPTestCase {
 			10,
 			3
 		);
-		// Another buyer takes one ticket after this order's stock check, before its sale.
-		add_action(
-			'tec_tickets_commerce_order_status_flag_decrease_stock',
-			static function () use ( $id ) {
-				tribe( Stock::class )->sell( Ticket_ID::to_row_id( $id ), 1 );
-			},
-			9
-		);
 
-		$this->create_row_order( [ $id => 2 ] );
+		[ $id ] = $this->create_raced_sale();
 
-		$this->assertSame( [ 1, 9 ], $this->stock_and_sales( $id ) );
+		$this->assertSame( [ 0, 11 ], $this->stock_and_sales( $id ), 'Sold as many as attended, never below 0 left.' );
+		$this->assertCount( 2, tribe_attendees()->where( 'ticket', $id )->get_ids() );
 		$this->assertContains( $id, array_column( $logs, 'ticket_id' ) );
 	}
 
 	/**
 	 * @test
 	 */
-	public function it_should_give_nothing_back_for_a_refused_sale_that_is_refunded(): void {
-		[ $id, $order ] = $this->create_refused_sale();
+	public function it_should_give_back_a_refunded_sale_that_lost_the_race(): void {
+		[ $id, $order ] = $this->create_raced_sale();
 
 		tribe( Order::class )->modify_status( $order->ID, Refunded::SLUG );
-
-		$this->assertSame( [ 1, 9 ], $this->stock_and_sales( $id ), 'The refused tickets were never taken from the row.' );
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_should_give_nothing_back_when_an_attendee_of_a_refused_sale_is_deleted(): void {
-		[ $id, $order ] = $this->create_refused_sale();
-		$attendees      = tribe_attendees()->where( 'ticket', $id )->get_ids();
-		$this->assertNotEmpty( $attendees );
-
-		tribe( Attendee::class )->delete( $attendees[0] );
 
 		$this->assertSame( [ 1, 9 ], $this->stock_and_sales( $id ) );
 	}
 
 	/**
-	 * Creates an order whose sale the row refused: another buyer took a ticket after its stock check.
+	 * @test
+	 */
+	public function it_should_give_back_a_deleted_attendee_of_a_sale_that_lost_the_race(): void {
+		[ $id ]    = $this->create_raced_sale();
+		$attendees = tribe_attendees()->where( 'ticket', $id )->get_ids();
+		$this->assertNotEmpty( $attendees );
+
+		tribe( Attendee::class )->delete( $attendees[0] );
+
+		// Still one more sold than the capacity: nothing to sell yet.
+		$this->assertSame( [ 0, 10 ], $this->stock_and_sales( $id ) );
+	}
+
+	/**
+	 * Creates an order that lost the race for the last tickets: another buyer took one after its stock check.
 	 *
 	 * @return array{0: int, 1: \WP_Post} The table ticket ID and the order.
 	 */
-	private function create_refused_sale(): array {
+	private function create_raced_sale(): array {
 		$id = $this->create_row( [ 'capacity' => 10, 'stock' => 2, 'sales' => 8 ] );
 		add_action(
 			'tec_tickets_commerce_order_status_flag_decrease_stock',
@@ -170,10 +163,7 @@ class Stock_Flags_Test extends WPTestCase {
 			9
 		);
 
-		$order = $this->create_row_order( [ $id => 2 ] );
-		$this->assertSame( [ 1, 9 ], $this->stock_and_sales( $id ) );
-
-		return [ $id, $order ];
+		return [ $id, $this->create_row_order( [ $id => 2 ] ) ];
 	}
 
 	/**
