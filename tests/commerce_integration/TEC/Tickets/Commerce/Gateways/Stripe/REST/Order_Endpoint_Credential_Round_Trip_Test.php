@@ -199,10 +199,31 @@ class Order_Endpoint_Credential_Round_Trip_Test extends WPTestCase {
 		$result = $this->create_order();
 
 		$this->assertInstanceOf( WP_Error::class, $result );
-		$this->assertSame( 'tec-tickets-commerce-gateway-client-unexpected', $result->get_error_code() );
+		$this->assertSame( 'tec-tc-gateway-stripe-failed-creating-payment-intent', $result->get_error_code() );
 		$this->assertNotEmpty( $result->get_error_message(), 'A gateway error without a message must fall back to the generic one.' );
 		$this->assertStringNotContainsString(
 			'sk_live_leaked',
+			wp_json_encode( rest_convert_error_to_response( $result )->get_data() )
+		);
+	}
+
+	/**
+	 * Stripe's error messages are written for the merchant and can name the account's keys.
+	 */
+	public function test_create_does_not_return_stripe_error_message(): void {
+		$this->make_cart_with_ticket();
+		$this->set_class_fn_return(
+			Payment_Intent_Handler::class,
+			'update_payment_intent',
+			new WP_Error( 401, 'Invalid API Key provided: sk_test_****leak', (object) [ 'type' => 'invalid_request_error' ] )
+		);
+
+		$result = $this->create_order();
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'tec-tc-gateway-stripe-failed-creating-payment-intent', $result->get_error_code() );
+		$this->assertStringNotContainsString(
+			'sk_test_',
 			wp_json_encode( rest_convert_error_to_response( $result )->get_data() )
 		);
 	}

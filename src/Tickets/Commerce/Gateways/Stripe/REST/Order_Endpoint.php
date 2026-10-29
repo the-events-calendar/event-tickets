@@ -182,7 +182,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since 5.3.0
 	 * @since 5.29.0.1 Removed the cart hash query param from the return URL. See SVUL-L34.
-	 * @since TBD Return the handler's error code and message, without its data, so the buyer sees how to recover.
+	 * @since TBD Return the handler's own error code and message, without its data, so the buyer sees how to recover.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -241,13 +241,19 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$payment_intent = tribe( Payment_Intent_Handler::class )->update_payment_intent( $data, $order );
 
 		if ( is_wp_error( $payment_intent ) ) {
-			// Pass on the message only: a gateway error's data can carry the request, Authorization header included.
+			$code    = $payment_intent->get_error_code();
 			$message = $payment_intent->get_error_message();
 
-			return new WP_Error(
-				$payment_intent->get_error_code(),
-				$message ? $message : $messages['failed-creating-payment-intent']
-			);
+			/*
+			 * Only the handler's own errors are written for the buyer. Stripe's messages are written for
+			 * the merchant and can name the account's keys, and an error's data can carry the request,
+			 * Authorization header included, so neither is passed on.
+			 */
+			if ( ! is_string( $code ) || 0 !== strpos( $code, 'tec-tc-gateway-stripe-' ) || ! $message ) {
+				return new WP_Error( 'tec-tc-gateway-stripe-failed-creating-payment-intent', $messages['failed-creating-payment-intent'] );
+			}
+
+			return new WP_Error( $code, $message );
 		}
 
 		if ( empty( $payment_intent['id'] ) || empty( $payment_intent['created'] ) ) {

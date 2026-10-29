@@ -46,6 +46,15 @@ class Payment_Intent {
 	];
 
 	/**
+	 * The metadata key holding the cart a Payment Intent was created for.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const CART_BINDING_KEY = 'tec_tc_cart_binding';
+
+	/**
 	 * The key used to identify payment intents created to validate configurations.
 	 *
 	 * @since 5.3.0
@@ -132,36 +141,7 @@ class Payment_Intent {
 	 * @return mixed
 	 */
 	public static function create( Value $value, $retry = false ) {
-		// Format the value for Stripe API using the gateway formatter.
-		$formatter = new Gateway_Value_Formatter( tribe( Gateway::class ) );
-		$value     = $formatter->format( $value );
-
-		$fee = Application_Fee::calculate( $value );
-
-		$query_args = [];
-		$body       = [
-			'currency'               => $value->get_currency_code(),
-			'amount'                 => (string) $value->get_integer(),
-			'payment_method_types'   => tribe( Merchant::class )->get_payment_method_types( $retry ),
-			'application_fee_amount' => (string) $fee->get_integer(),
-			'metadata'               => [
-				static::$tc_metadata_identifier => true,
-			],
-		];
-
-		$stripe_statement_descriptor = tribe_get_option( Stripe_Settings::$option_statement_descriptor );
-
-		if ( ! empty( $stripe_statement_descriptor ) ) {
-			$body['statement_descriptor'] = substr( $stripe_statement_descriptor, 0, 22 );
-		}
-
-		$args = [
-			'body' => $body,
-		];
-
-		$url = 'payment_intents';
-
-		return Requests::post( $url, $query_args, $args );
+		return static::post_payment_intent( $value, $retry, [] );
 	}
 
 	/**
@@ -169,6 +149,7 @@ class Payment_Intent {
 	 *
 	 * @since 5.3.0
 	 * @since 5.26.4 Adjusted cart total calculations to ensure correct total is charged.
+	 * @since TBD    Stores the cart the Payment Intent was created for in its metadata.
 	 *
 	 * @param Cart $cart
 	 * @param bool $retry
@@ -203,7 +184,7 @@ class Payment_Intent {
 			throw new RuntimeException( esc_html__( 'Value object not returned from filter', 'event-tickets' ) );
 		}
 
-		return static::create( $value, $retry );
+		return static::post_payment_intent( $value, $retry, [ self::CART_BINDING_KEY => self::get_cart_binding( $cart ) ] );
 	}
 
 	/**
@@ -214,7 +195,7 @@ class Payment_Intent {
 	 *
 	 * @since 5.28.4.1
 	 * @since 5.29.5 Expected values now come from get_charge_values_for_cart().
-	 * @since TBD    Rejects a Payment Intent that can no longer take a payment, or is in another currency.
+	 * @since TBD    Rejects a Payment Intent that can no longer take a payment, is in another currency, or was created for another cart.
 	 *
 	 * @param array $payment_intent Payment intent data from Stripe.
 	 * @param Cart  $cart           The cart used for checkout.
@@ -228,6 +209,13 @@ class Payment_Intent {
 
 		// A paid or canceled intent must never be served to, or bound by, another checkout.
 		if ( ! in_array( $payment_intent['status'] ?? '', self::PAYABLE_STATUSES, true ) ) {
+			return false;
+		}
+
+		$binding        = self::get_cart_binding( $cart );
+		$intent_binding = $payment_intent['metadata'][ self::CART_BINDING_KEY ] ?? '';
+
+		if ( ! $binding || ! is_string( $intent_binding ) || ! hash_equals( $binding, $intent_binding ) ) {
 			return false;
 		}
 
@@ -489,5 +477,71 @@ class Payment_Intent {
 
 		// Revert value to the previous configuration.
 		return tribe_get_option( $field_id, [] );
+	}
+
+	/**
+	 * Calls the Stripe API to create a Payment Intent carrying the given metadata.
+	 *
+	 * @since TBD
+	 *
+	 * @param Value                $value    The value object to create a payment intent for.
+	 * @param bool                 $retry    Whether this is a retry.
+	 * @param array<string,string> $metadata Metadata to store on the Payment Intent.
+	 *
+	 * @return mixed
+	 */
+	private static function post_payment_intent( Value $value, $retry, array $metadata ) {
+		// Format the value for Stripe API using the gateway formatter.
+		$formatter = new Gateway_Value_Formatter( tribe( Gateway::class ) );
+		$value     = $formatter->format( $value );
+
+		$fee = Application_Fee::calculate( $value );
+
+		$query_args = [];
+		$body       = [
+			'currency'               => $value->get_currency_code(),
+			'amount'                 => (string) $value->get_integer(),
+			'payment_method_types'   => tribe( Merchant::class )->get_payment_method_types( $retry ),
+			'application_fee_amount' => (string) $fee->get_integer(),
+			'metadata'               => array_merge(
+				$metadata,
+				[
+					static::$tc_metadata_identifier => true,
+				]
+			),
+		];
+
+		$stripe_statement_descriptor = tribe_get_option( Stripe_Settings::$option_statement_descriptor );
+
+		if ( ! empty( $stripe_statement_descriptor ) ) {
+			$body['statement_descriptor'] = substr( $stripe_statement_descriptor, 0, 22 );
+		}
+
+		$args = [
+			'body' => $body,
+		];
+
+		$url = 'payment_intents';
+
+		return Requests::post( $url, $query_args, $args );
+	}
+
+	/**
+	 * Gets the value that ties a Payment Intent to the cart it was created for.
+	 *
+	 * The cart hash only ever lives in the buyer's cookie, so it is what a third party knowing the
+	 * Payment Intent ID cannot supply. It is salted before it reaches Stripe so the hash itself is
+	 * never readable from the Payment Intent.
+	 *
+	 * @since TBD
+	 *
+	 * @param Cart $cart The cart used for checkout.
+	 *
+	 * @return string Empty when the cart has no hash.
+	 */
+	private static function get_cart_binding( Cart $cart ): string {
+		$cart_hash = $cart->get_cart_hash();
+
+		return $cart_hash ? wp_hash( 'tec-tc-stripe-payment-intent|' . $cart_hash ) : '';
 	}
 }

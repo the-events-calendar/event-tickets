@@ -8,6 +8,7 @@ use TEC\Tickets\Commerce\Settings;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Commerce\Utils\Currency;
 use Tribe\Tests\Traits\With_Uopz;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Stripe_Payment_Intent_Maker;
 use Codeception\TestCase\WPTestCase;
 
 /**
@@ -18,6 +19,7 @@ use Codeception\TestCase\WPTestCase;
 class Payment_Intent_Precision_Test extends WPTestCase {
 
 	use With_Uopz;
+	use Stripe_Payment_Intent_Maker;
 
 	/**
 	 * Set up mocks before each test.
@@ -328,6 +330,7 @@ class Payment_Intent_Precision_Test extends WPTestCase {
 			'currency'               => 'usd',
 			'status'                 => 'requires_payment_method',
 			'application_fee_amount' => '20',
+			'metadata'               => $this->mint_cart_binding_metadata(),
 		];
 
 		$this->assertTrue(
