@@ -21,16 +21,17 @@ trait Ticket_Rows {
 	/**
 	 * Creates a recurring event with one date a day, starting tomorrow.
 	 *
-	 * @param int $dates How many dates.
+	 * @param int    $dates How many dates.
+	 * @param string $title The event's title.
 	 *
 	 * @return int The event post ID.
 	 */
-	protected function create_recurring_event( int $dates = 3 ): int {
+	protected function create_recurring_event( int $dates = 3, string $title = 'Recurring Event' ): int {
 		$start = gmdate( 'Y-m-d', strtotime( '+1 day' ) );
 
 		return tribe_events()->set_args(
 			[
-				'title'      => 'Recurring Event',
+				'title'      => $title,
 				'status'     => 'publish',
 				'start_date' => "{$start} 10:00:00",
 				'end_date'   => "{$start} 12:00:00",
