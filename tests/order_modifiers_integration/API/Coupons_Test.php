@@ -263,6 +263,60 @@ class Coupons_Test extends Controller_Test_Case {
 		);
 	}
 
+	/**
+	 * The coupon routes mutate a PaymentIntent by the ID the request names, so an ID belonging to a
+	 * different cart must never be written to. Deleting the binding guard makes this fail.
+	 *
+	 * @test
+	 */
+	public function it_should_not_update_a_payment_intent_from_another_cart() {
+		$this->set_class_fn_return( Settings::class, 'is_licensed_plugin', false );
+		$this->set_class_fn_return( Abstract_Gateway::class, 'should_show', true );
+		$this->set_class_fn_return( Abstract_Gateway::class, 'is_active', true );
+		$this->set_class_fn_return( Abstract_Gateway::class, 'is_enabled', true );
+
+		$this->make_controller()->register();
+
+		$coupon = $this->create_coupon( [ 'raw_amount' => 15 ] );
+		$cart   = $this->set_up_cart_with_ticket();
+
+		// A victim's intent carries a binding for its own cart; this attacker cart cannot reproduce it.
+		$this->set_class_fn_return(
+			Payment_Intent::class,
+			'get',
+			[ 'id' => 'pi_victim', 'status' => 'requires_payment_method', 'metadata' => [] ]
+		);
+
+		$update_called = false;
+		$this->set_class_fn_return(
+			Payment_Intent::class,
+			'update',
+			function () use ( &$update_called ) {
+				$update_called = true;
+
+				return true;
+			},
+			true
+		);
+
+		$this->assert_endpoint(
+			'/coupons/apply',
+			'POST',
+			false,
+			[
+				'coupon'            => $coupon->slug,
+				'cart_hash'         => $cart->get_hash(),
+				'payment_intent_id' => 'pi_victim',
+			],
+			200
+		);
+
+		$this->assertFalse(
+			$update_called,
+			'A PaymentIntent created for another cart must not be updated by a coupon request.'
+		);
+	}
+
 	protected function create_data() {
 		// Create 10 coupons that are flat rate discounts.
 		$coupons = $this->create_coupons(
