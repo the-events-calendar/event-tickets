@@ -226,6 +226,17 @@ final class Stock {
 		$changed = (int) DB::query( DB::prepare( $query, Tickets::table_name(), ...$args ) );
 		$this->rows->forget( $row_id );
 
+		if ( $changed ) {
+			/**
+			 * Fires after a recurring event ticket's row sold or released stock.
+			 *
+			 * @since TBD
+			 *
+			 * @param int $row_id The row ID.
+			 */
+			do_action( 'tec_tickets_recurring_tickets_stock_written', $row_id );
+		}
+
 		return $changed;
 	}
 
