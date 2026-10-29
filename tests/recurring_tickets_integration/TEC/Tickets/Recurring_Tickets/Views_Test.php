@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Recurring_Tickets;
 
 use Codeception\TestCase\WPTestCase;
+use Generator;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
@@ -85,6 +86,41 @@ class Views_Test extends WPTestCase {
 		// Read again, from the cache.
 		$this->assertTrue( ( new Ticket_Model( (int) $this->dates[1]->provisional_id ) )->sold_out() );
 		$this->assertFalse( ( new Ticket_Model( (int) $this->dates[2]->provisional_id ) )->sold_out() );
+	}
+
+	public function stock_write_provider(): Generator {
+		yield 'a sale sells the date out' => [ 0, 5, true ];
+		yield 'a release reopens a sold out date' => [ 5, -5, false ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider stock_write_provider
+	 *
+	 * @param int  $sold_before The tickets sold before the date is read.
+	 * @param int  $change      The tickets sold after it is read, negative for released.
+	 * @param bool $sold_out    Whether the date is sold out after the change.
+	 */
+	public function it_should_drop_a_dates_entry_when_its_stock_changes( int $sold_before, int $change, bool $sold_out ): void {
+		$this->skip_without_recurrence_tier();
+		$stock = tribe( Stock::class );
+		$row   = $this->row_of( 1 );
+
+		if ( $sold_before ) {
+			$this->assertTrue( $stock->sell( $row, $sold_before ) );
+		}
+
+		$this->assertSame( ! $sold_out, ( new Ticket_Model( (int) $this->dates[1]->provisional_id ) )->sold_out() );
+
+		if ( $change > 0 ) {
+			$this->assertTrue( $stock->sell( $row, $change ) );
+		} else {
+			$stock->release( $row, - $change );
+		}
+		// What the next request starts with.
+		tribe_cache()->reset();
+
+		$this->assertSame( $sold_out, ( new Ticket_Model( (int) $this->dates[1]->provisional_id ) )->sold_out() );
 	}
 
 	/**
