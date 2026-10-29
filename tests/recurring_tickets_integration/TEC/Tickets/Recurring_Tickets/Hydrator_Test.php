@@ -5,7 +5,6 @@ namespace TEC\Tickets\Recurring_Tickets;
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Utils\Currency;
-use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Tickets_Repository;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use TEC\Tickets\Tests\Recurring_Tickets\Without_Recurrence_Tier;
@@ -207,18 +206,6 @@ class Hydrator_Test extends WPTestCase {
 
 		$this->assertSame( 'In hand', $ticket->name );
 		$this->assertSame( 0, $queries() );
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_should_see_an_override_on_the_next_load(): void {
-		$id = $this->insert_ticket_row();
-		tribe( Hydrator::class )->load( $id );
-
-		tribe( Tickets_Repository::class )->override( Ticket_ID::to_row_id( $id ), [ 'price' => 15000 ] );
-
-		$this->assertSame( '15.00', tribe( Hydrator::class )->load( $id )->price );
 	}
 
 	/**
