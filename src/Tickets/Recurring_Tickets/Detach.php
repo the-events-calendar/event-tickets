@@ -264,9 +264,11 @@ final class Detach {
 			$items  = (array) get_post_meta( $order_id, Order::$items_meta_key, true );
 			$moved  = [];
 			$events = [];
+			$left   = [];
 
 			foreach ( $items as $key => $item ) {
 				if ( is_array( $item ) && (int) ( $item['ticket_id'] ?? 0 ) === $row_ticket_id ) {
+					$left[]            = (int) ( $item['event_id'] ?? 0 );
 					$item['ticket_id'] = $ticket_id;
 					$item['event_id']  = $post_id;
 					$key               = (int) $key === $row_ticket_id ? $ticket_id : $key;
@@ -280,10 +282,13 @@ final class Detach {
 			delete_post_meta( $order_id, Order::$tickets_in_order_meta_key, $row_ticket_id );
 			add_post_meta( $order_id, Order::$tickets_in_order_meta_key, $ticket_id );
 
-			// The events the order holds are its lines' events.
-			delete_post_meta( $order_id, Order::$events_in_order_meta_key );
-			foreach ( array_unique( array_filter( $events ) ) as $event_id ) {
-				add_post_meta( $order_id, Order::$events_in_order_meta_key, $event_id );
+			// Reconcile and Move index events no line holds: only the dates the moved lines left go, if no line holds them.
+			foreach ( array_diff( array_unique( $left ), $events ) as $event_id ) {
+				delete_post_meta( $order_id, Order::$events_in_order_meta_key, $event_id );
+			}
+
+			if ( ! in_array( (string) $post_id, (array) get_post_meta( $order_id, Order::$events_in_order_meta_key, false ), true ) ) {
+				add_post_meta( $order_id, Order::$events_in_order_meta_key, $post_id );
 			}
 
 			clean_post_cache( $order_id );
