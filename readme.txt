@@ -219,6 +219,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Security - Hardened the handling of admin requests for attendee details. Props to Elieve for reporting.
 * Security - Hardened the ticket editor and attendee check-in.
 * Security - Hardened the validation of ticket prices.
+* Language - 6 new strings added, 120 updated, 1 fuzzied, and 0 obsoleted.
 
 = [5.30.2] 2026-10-15 =
 
