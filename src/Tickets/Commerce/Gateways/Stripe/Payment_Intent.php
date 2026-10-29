@@ -134,14 +134,48 @@ class Payment_Intent {
 	 *
 	 * @since 5.3.0
 	 * @since 5.26.7 Use Gateway_Value_Formatter to normalize data for Stripe API.  [ET-2558]
+	 * @since TBD    Accepts metadata to store on the Payment Intent.
 	 *
-	 * @param Value $value The value object to create a payment intent for.
-	 * @param bool  $retry Is this a retry?
+	 * @param Value                $value    The value object to create a payment intent for.
+	 * @param bool                 $retry    Is this a retry?
+	 * @param array<string,string> $metadata Metadata to store on the Payment Intent.
 	 *
 	 * @return mixed
 	 */
-	public static function create( Value $value, $retry = false ) {
-		return static::post_payment_intent( $value, $retry, [] );
+	public static function create( Value $value, $retry = false, array $metadata = [] ) {
+		// Format the value for Stripe API using the gateway formatter.
+		$formatter = new Gateway_Value_Formatter( tribe( Gateway::class ) );
+		$value     = $formatter->format( $value );
+
+		$fee = Application_Fee::calculate( $value );
+
+		$query_args = [];
+		$body       = [
+			'currency'               => $value->get_currency_code(),
+			'amount'                 => (string) $value->get_integer(),
+			'payment_method_types'   => tribe( Merchant::class )->get_payment_method_types( $retry ),
+			'application_fee_amount' => (string) $fee->get_integer(),
+			'metadata'               => array_merge(
+				$metadata,
+				[
+					static::$tc_metadata_identifier => true,
+				]
+			),
+		];
+
+		$stripe_statement_descriptor = tribe_get_option( Stripe_Settings::$option_statement_descriptor );
+
+		if ( ! empty( $stripe_statement_descriptor ) ) {
+			$body['statement_descriptor'] = substr( $stripe_statement_descriptor, 0, 22 );
+		}
+
+		$args = [
+			'body' => $body,
+		];
+
+		$url = 'payment_intents';
+
+		return Requests::post( $url, $query_args, $args );
 	}
 
 	/**
@@ -184,7 +218,7 @@ class Payment_Intent {
 			throw new RuntimeException( esc_html__( 'Value object not returned from filter', 'event-tickets' ) );
 		}
 
-		return static::post_payment_intent( $value, $retry, [ self::CART_BINDING_KEY => self::get_cart_binding( $cart ) ] );
+		return static::create( $value, $retry, [ self::CART_BINDING_KEY => self::get_cart_binding( $cart ) ] );
 	}
 
 	/**
@@ -287,8 +321,7 @@ class Payment_Intent {
 	/**
 	 * Determines whether a Payment Intent was created for the given cart.
 	 *
-	 * The binding is the only value a third party knowing the Payment Intent ID cannot reproduce, so
-	 * it is what ties an intent to its cart independently of the amount, which coupons change.
+	 * Checks the stored binding, not the amount, so it still holds when a coupon changes the total.
 	 *
 	 * @since TBD
 	 *
@@ -494,53 +527,6 @@ class Payment_Intent {
 
 		// Revert value to the previous configuration.
 		return tribe_get_option( $field_id, [] );
-	}
-
-	/**
-	 * Calls the Stripe API to create a Payment Intent carrying the given metadata.
-	 *
-	 * @since TBD
-	 *
-	 * @param Value                $value    The value object to create a payment intent for.
-	 * @param bool                 $retry    Whether this is a retry.
-	 * @param array<string,string> $metadata Metadata to store on the Payment Intent.
-	 *
-	 * @return mixed
-	 */
-	private static function post_payment_intent( Value $value, $retry, array $metadata ) {
-		// Format the value for Stripe API using the gateway formatter.
-		$formatter = new Gateway_Value_Formatter( tribe( Gateway::class ) );
-		$value     = $formatter->format( $value );
-
-		$fee = Application_Fee::calculate( $value );
-
-		$query_args = [];
-		$body       = [
-			'currency'               => $value->get_currency_code(),
-			'amount'                 => (string) $value->get_integer(),
-			'payment_method_types'   => tribe( Merchant::class )->get_payment_method_types( $retry ),
-			'application_fee_amount' => (string) $fee->get_integer(),
-			'metadata'               => array_merge(
-				$metadata,
-				[
-					static::$tc_metadata_identifier => true,
-				]
-			),
-		];
-
-		$stripe_statement_descriptor = tribe_get_option( Stripe_Settings::$option_statement_descriptor );
-
-		if ( ! empty( $stripe_statement_descriptor ) ) {
-			$body['statement_descriptor'] = substr( $stripe_statement_descriptor, 0, 22 );
-		}
-
-		$args = [
-			'body' => $body,
-		];
-
-		$url = 'payment_intents';
-
-		return Requests::post( $url, $query_args, $args );
 	}
 
 	/**

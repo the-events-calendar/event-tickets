@@ -647,8 +647,7 @@ class Coupons extends Base_API {
 
 		/*
 		 * The Payment Intent ID is caller-supplied, so only push the new total to an intent created
-		 * for this cart. Otherwise anyone knowing another buyer's intent ID could change its amount
-		 * and break that buyer's checkout.
+		 * for this cart; otherwise a known ID could change another buyer's intent amount.
 		 */
 		if ( ! is_array( $payment_intent ) || ! Payment_Intent::is_bound_to_cart( $payment_intent, $cart ) ) {
 			return;
