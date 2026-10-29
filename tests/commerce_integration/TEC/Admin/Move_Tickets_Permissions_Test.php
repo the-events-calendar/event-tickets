@@ -26,10 +26,10 @@ class Move_Tickets_Permissions_Test extends WPTestCase {
 	private array $admin_attendee_ids;
 	private string $permission_error;
 
-	/**
-	 * @before
-	 */
-	public function create_fixtures(): void {
+	public function setUp(): void {
+		// Not a `@before` method: those run before the parent opens the transaction that rolls the fixtures back.
+		parent::setUp();
+
 		$this->permission_error = 'You do not have permission to perform this action. Please reload the page.';
 		$this->admin_id         = self::factory()->user->create( [ 'role' => 'administrator' ] );
 		$this->contributor_id   = self::factory()->user->create( [ 'role' => 'contributor' ] );
