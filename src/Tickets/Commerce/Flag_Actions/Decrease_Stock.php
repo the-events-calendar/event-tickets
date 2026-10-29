@@ -177,8 +177,9 @@ class Decrease_Stock extends Flag_Action_Abstract {
 	/**
 	 * Sells a recurring event ticket from its row.
 	 *
-	 * When the last tickets were sold between the checkout check and this status, nothing changes: the row is never
-	 * oversold, and the order is logged for the site owner.
+	 * When the last tickets were sold between the checkout check and this status, the sale is still recorded, as its
+	 * attendees exist: the row sells past its capacity, its stock stays at zero, and the order is logged for the site
+	 * owner.
 	 *
 	 * @since TBD
 	 *
@@ -189,14 +190,15 @@ class Decrease_Stock extends Flag_Action_Abstract {
 	 * @return void
 	 */
 	private function sell_from_row( Ticket_Object $ticket, int $quantity, \WP_Post $order ): void {
-		if ( ! tribe( Stock::class )->sell( Ticket_ID::to_row_id( (int) $ticket->ID ), $quantity ) ) {
-			// A refund or an attendee deletion must then give nothing back.
-			tribe( Stock::class )->record_refusal( $order->ID, (int) $ticket->ID );
+		$row_id = Ticket_ID::to_row_id( (int) $ticket->ID );
+
+		if ( ! tribe( Stock::class )->sell( $row_id, $quantity ) ) {
+			tribe( Stock::class )->oversell( $row_id, $quantity );
 
 			do_action(
 				'tribe_log',
 				'warning',
-				'A recurring event ticket sold out between the checkout check and the order; its stock was not changed.',
+				'A recurring event ticket sold out between the checkout check and the order; it was sold past its capacity.',
 				[
 					'order_id'  => $order->ID,
 					'ticket_id' => (int) $ticket->ID,

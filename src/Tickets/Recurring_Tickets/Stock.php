@@ -26,15 +26,6 @@ use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
  */
 final class Stock {
 	/**
-	 * The order meta that lists the table tickets whose sale the row refused, one value per ticket.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public const REFUSED_META_KEY = '_tec_tickets_recurring_refused_tickets';
-
-	/**
 	 * The rows.
 	 *
 	 * @since TBD
@@ -77,7 +68,9 @@ final class Stock {
 	}
 
 	/**
-	 * Returns tickets to a row: sales down, never below zero; stock up, never above capacity.
+	 * Returns tickets to a row: sales down, never below zero; stock what the capacity leaves, never below zero.
+	 *
+	 * MySQL sets columns left to right, so the stock reads the sales already lowered.
 	 *
 	 * @since TBD
 	 *
@@ -93,8 +86,33 @@ final class Stock {
 
 		$this->write(
 			$row_id,
-			'UPDATE %i SET stock = IF( capacity = -1, NULL, LEAST( COALESCE( stock, 0 ) + %d, capacity ) ), sales = IF( sales >= %d, sales - %d, 0 ) WHERE id = %d',
-			[ $quantity, $quantity, $quantity, $row_id ]
+			'UPDATE %i SET sales = IF( sales >= %d, sales - %d, 0 ), stock = IF( capacity = -1, NULL, IF( capacity > sales, capacity - sales, 0 ) ) WHERE id = %d',
+			[ $quantity, $quantity, $row_id ]
+		);
+	}
+
+	/**
+	 * Sells tickets of a row whatever its stock is left: sales up, stock what the capacity leaves, never below zero.
+	 *
+	 * For a sale that lost the race for the last tickets after its checkout check: its attendees exist, so its sales
+	 * must too, or the leftover seats would sell again.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $row_id   The row ID.
+	 * @param int $quantity How many tickets.
+	 *
+	 * @return void
+	 */
+	public function oversell( int $row_id, int $quantity ): void {
+		if ( $quantity < 1 ) {
+			return;
+		}
+
+		$this->write(
+			$row_id,
+			'UPDATE %i SET sales = sales + %d, stock = IF( capacity = -1, NULL, IF( capacity > sales, capacity - sales, 0 ) ) WHERE id = %d',
+			[ $quantity, $row_id ]
 		);
 	}
 
@@ -181,37 +199,6 @@ final class Stock {
 	}
 
 	/**
-	 * Records on an order that the sale of a table ticket was refused: nothing was taken from its row.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $order_id  The order ID.
-	 * @param int $ticket_id The table ticket ID.
-	 *
-	 * @return void
-	 */
-	public function record_refusal( int $order_id, int $ticket_id ): void {
-		if ( ! $this->was_refused( $order_id, $ticket_id ) ) {
-			add_post_meta( $order_id, self::REFUSED_META_KEY, $ticket_id );
-		}
-	}
-
-	/**
-	 * Whether an order's sale of a table ticket was refused, so a refund or an attendee deletion has nothing to give
-	 * back to the row.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $order_id  The order ID.
-	 * @param int $ticket_id The table ticket ID.
-	 *
-	 * @return bool Whether the sale was refused.
-	 */
-	public function was_refused( int $order_id, int $ticket_id ): bool {
-		return $order_id > 0 && in_array( (string) $ticket_id, (array) get_post_meta( $order_id, self::REFUSED_META_KEY, false ), true );
-	}
-
-	/**
 	 * Runs one write against a row and forgets what was read of it.
 	 *
 	 * @since TBD
@@ -225,6 +212,17 @@ final class Stock {
 	private function write( int $row_id, string $query, array $args ): int {
 		$changed = (int) DB::query( DB::prepare( $query, Tickets::table_name(), ...$args ) );
 		$this->rows->forget( $row_id );
+
+		if ( $changed ) {
+			/**
+			 * Fires after a recurring event ticket's row sold or released stock.
+			 *
+			 * @since TBD
+			 *
+			 * @param int $row_id The row ID.
+			 */
+			do_action( 'tec_tickets_recurring_tickets_stock_written', $row_id );
+		}
 
 		return $changed;
 	}
