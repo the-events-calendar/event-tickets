@@ -3,6 +3,7 @@
  * Help link for featured settings box.
  *
  * @since 5.3.0
+ * @since TBD Pointed the default link to the Tickets Commerce article.
  *
  * @var Tribe__Template $this  Template object.
  * @var array           $link  Array of link arguments.
@@ -11,7 +12,7 @@
 $defaults = [
 	'slug'     => 'help-1',
 	'priority' => 10,
-	'link'     => 'https://evnt.is/1axt',
+	'link'     => 'https://evnt.is/1axs',
 	'html'     => '',
 	'target'   => '_blank',
 	'classes'  => [],
