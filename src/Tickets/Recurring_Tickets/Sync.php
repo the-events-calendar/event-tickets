@@ -88,15 +88,17 @@ final class Sync {
 	 * exists; a row whose date moved to another event is left alone. Refreshes the other rows from their template,
 	 * then inserts a row for every template and date without one.
 	 *
-	 * An event with more template-date pairs than the inline limit is synced by a background task instead.
+	 * An event with more template-date pairs than the inline limit is synced by a background task instead, unless
+	 * the sync is that task.
 	 *
 	 * @since TBD
 	 *
-	 * @param int $post_id The event's post ID.
+	 * @param int  $post_id The event's post ID.
+	 * @param bool $inline  Whether to sync in this request whatever the number of pairs.
 	 *
 	 * @return void
 	 */
-	public function sync_event( $post_id ): void {
+	public function sync_event( $post_id, bool $inline = false ): void {
 		$post_id = (int) $post_id;
 
 		if ( TEC::POSTTYPE !== get_post_type( $post_id ) ) {
@@ -124,28 +126,13 @@ final class Sync {
 		 */
 		$limit = (int) apply_filters( 'tec_tickets_recurring_tickets_sync_inline_limit', self::INLINE_LIMIT, $post_id );
 
-		if ( count( $templates ) * count( $dates ) > $limit ) {
+		if ( ! $inline && count( $templates ) * count( $dates ) > $limit ) {
 			shepherd()->dispatch( new Sync_Task( $post_id ) );
 
 			return;
 		}
 
 		$this->apply( $post_id, $templates, $dates );
-	}
-
-	/**
-	 * Brings an event's rows in line with its templates and dates in this request, whatever their number.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $post_id The event's post ID.
-	 *
-	 * @return void
-	 */
-	public function sync_event_inline( int $post_id ): void {
-		if ( TEC::POSTTYPE === get_post_type( $post_id ) ) {
-			$this->apply( $post_id, $this->templates( $post_id ), $this->dates( $post_id ) );
-		}
 	}
 
 	/**
