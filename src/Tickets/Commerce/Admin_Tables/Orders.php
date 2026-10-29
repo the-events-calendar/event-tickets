@@ -562,18 +562,6 @@ class Orders extends WP_List_Table {
 				'rel'    => true,
 				'target' => true,
 			],
-			'label'  => [
-				'class' => true,
-				'for'   => true,
-			],
-			'select' => [
-				'id'   => true,
-				'name' => true,
-			],
-			'option' => [
-				'selected' => true,
-				'value'    => true,
-			],
 		];
 
 		$nav = [

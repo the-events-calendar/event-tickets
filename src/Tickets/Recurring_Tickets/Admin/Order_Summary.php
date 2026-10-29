@@ -86,6 +86,15 @@ final class Order_Summary extends Base_Order_Summary {
 	private array $template_quantities = [];
 
 	/**
+	 * The template of each of the event's rows, by row ID; null until first read.
+	 *
+	 * @since TBD
+	 *
+	 * @var array<int,int>|null
+	 */
+	private ?array $templates_by_row = null;
+
+	/**
 	 * The sales of the next date.
 	 *
 	 * @since TBD
@@ -333,10 +342,10 @@ final class Order_Summary extends Base_Order_Summary {
 			return 0;
 		}
 
-		// ponytail: a removed date's row is gone with its template link; its orders stay listed, but out of the sums.
-		$row = $this->rows->find( Ticket_ID::to_row_id( $ticket_id ) );
+		$this->templates_by_row ??= array_map( 'intval', array_column( $this->rows->get_by_post( $this->get_post_id() ), 'parent_id', 'id' ) );
 
-		return $row ? (int) $row->parent_id : 0;
+		// ponytail: a removed date's row is gone with its template link; its orders stay listed, but out of the sums.
+		return $this->templates_by_row[ Ticket_ID::to_row_id( $ticket_id ) ] ?? 0;
 	}
 
 	/**
