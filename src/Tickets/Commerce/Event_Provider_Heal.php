@@ -2,7 +2,7 @@
 /**
  * Heals the ticket provider of events wrongly stored as Tickets Commerce.
  *
- * @since TBD
+ * @since 5.30.3
  *
  * @package TEC\Tickets\Commerce
  */
@@ -18,7 +18,7 @@ use Tribe__Tickets__Tickets as Tickets;
  * Saving an RSVP v2 used to store Tickets Commerce as the event's provider, hiding the event's
  * tickets from any other provider. This restores the provider that owns the tickets.
  *
- * @since TBD
+ * @since 5.30.3
  *
  * @package TEC\Tickets\Commerce
  */
@@ -30,7 +30,7 @@ final class Event_Provider_Heal {
 	 * The event heals when it has no Tickets Commerce tickets, RSVPs aside, and its tickets all belong
 	 * to one other active provider. Otherwise it keeps Tickets Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.30.3
 	 *
 	 * @param int $post_id The ID of the post stored as Tickets Commerce.
 	 *

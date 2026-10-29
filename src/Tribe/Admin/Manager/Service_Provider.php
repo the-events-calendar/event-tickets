@@ -46,7 +46,7 @@ class Service_Provider extends Service_Provider_Contract {
 	 * Handle response
 	 *
 	 * @since 5.1.0
-	 * @since TBD Requires the capability of the requested type before any handler runs.
+	 * @since 5.30.3 Requires the capability of the requested type before any handler runs.
 	 */
 	public function ajax_handle_admin_manager() {
 		$response = [
@@ -105,7 +105,7 @@ class Service_Provider extends Service_Provider_Contract {
 	 * are not listed: whether the user may manage attendees depends on the attendee's event, which only its
 	 * handler loads, and plugins filtering that check deny it when no event is given.
 	 *
-	 * @since TBD
+	 * @since 5.30.3
 	 *
 	 * @param mixed $request The request type, as sent by the client.
 	 *

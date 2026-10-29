@@ -97,7 +97,7 @@ class Classic_Editor {
 	 * Processes TC-RSVP ticket data from metabox POST values.
 	 *
 	 * @since 5.30.0
-	 * @since TBD No longer changes the event's ticket provider to Tickets Commerce.
+	 * @since 5.30.3 No longer changes the event's ticket provider to Tickets Commerce.
 	 *
 	 * @param int                 $post_id   The post ID being saved.
 	 * @param array<string,mixed> $post_data The unslashed $_POST data from the metabox.

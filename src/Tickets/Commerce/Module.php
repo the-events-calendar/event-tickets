@@ -308,7 +308,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * Shows the tickets form in the front end
 	 *
 	 * @since 5.1.9
-	 * @since TBD Shows the TC-RSVP when another provider sells the event's tickets.
+	 * @since 5.30.3 Shows the TC-RSVP when another provider sells the event's tickets.
 	 *
 	 * @param string $unused_content Unused content.
 	 *
@@ -352,7 +352,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * The TC-RSVP counts even when another provider sells the post's tickets.
 	 *
-	 * @since TBD
+	 * @since 5.30.3
 	 *
 	 * @param int $post_id The post ID.
 	 *
@@ -365,7 +365,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Whether the post has a TC-RSVP, whichever provider sells its tickets.
 	 *
-	 * @since TBD
+	 * @since 5.30.3
 	 *
 	 * @param int $post_id The post ID.
 	 *

@@ -3771,7 +3771,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Whether the post has tickets of this provider to show in its content.
 		 *
-		 * @since TBD
+		 * @since 5.30.3
 		 *
 		 * @param int $post_id The post ID.
 		 *
@@ -4124,7 +4124,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Creates a ticket object and calls the child save_ticket function
 		 *
-		 * @since TBD Returns false, saving nothing, when the ID to update is not a ticket attached to the post.
+		 * @since 5.30.3 Returns false, saving nothing, when the ID to update is not a ticket attached to the post.
 		 *
 		 * @param int   $post_id ID of parent "event" post.
 		 * @param array $data    Raw post data.
@@ -4404,7 +4404,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @see get_ticket_provider_instance()
 		 *
 		 * @since 4.12.3
-		 * @since TBD A post wrongly stored as Tickets Commerce heals to the provider that owns its tickets.
+		 * @since 5.30.3 A post wrongly stored as Tickets Commerce heals to the provider that owns its tickets.
 		 *
 		 * @param int $post_id The post ID of the event to which the ticket is attached.
 		 *

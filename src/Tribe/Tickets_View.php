@@ -11,7 +11,7 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * The nonce action that guards attendee updates from the My Tickets page.
 	 *
-	 * @since TBD
+	 * @since 5.30.3
 	 *
 	 * @var string
 	 */
@@ -20,7 +20,7 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * The name of the field that carries the My Tickets nonce.
 	 *
-	 * @since TBD
+	 * @since 5.30.3
 	 *
 	 * @var string
 	 */
@@ -201,7 +201,7 @@ class Tribe__Tickets__Tickets_View {
 	 * Update the RSVP and Tickets values for each Attendee.
 	 *
 	 * @since 5.8.2 Removed optional param from get_tickets_page_url call.
-	 * @since TBD Refuses the update unless the user is logged in and the My Tickets nonce verifies.
+	 * @since 5.30.3 Refuses the update unless the user is logged in and the My Tickets nonce verifies.
 	 *
 	 * @return void
 	 */
@@ -288,7 +288,7 @@ class Tribe__Tickets__Tickets_View {
 	 *
 	 * Printed from an action rather than the template so theme overrides of `tickets/orders.php` get it too.
 	 *
-	 * @since TBD
+	 * @since 5.30.3
 	 *
 	 * @return void
 	 */

@@ -1183,7 +1183,7 @@ class Ticket extends Ticket_Data {
 	 * Process the sale price data.
 	 *
 	 * @since 5.9.0
-	 * @since TBD Discards a negative sale price.
+	 * @since 5.30.3 Discards a negative sale price.
 	 *
 	 * @param Ticket_Object       $ticket   The ticket post object.
 	 * @param array<string,mixed> $raw_data The raw data from the request.
@@ -1262,7 +1262,7 @@ class Ticket extends Ticket_Data {
 	 * Check if a ticket is on sale.
 	 *
 	 * @since 5.9.0
-	 * @since TBD A stored negative sale price is not on sale.
+	 * @since 5.30.3 A stored negative sale price is not on sale.
 	 *
 	 * @param Ticket_Object $ticket The ticket object.
 	 *

@@ -15,7 +15,7 @@ class Tribe__Tickets__Commerce__PayPal__Handler__IPN implements Tribe__Tickets__
 	 * Checks the request to see if payment data was communicated
 	 *
 	 * @since 4.7
-	 * @since TBD Maps PayPal's `Pending` to the stored pending status and any unknown status to `undefined`.
+	 * @since 5.30.3 Maps PayPal's `Pending` to the stored pending status and any unknown status to `undefined`.
 	 */
 	public function check_response() {
 		if ( empty( $_POST ) || ! isset( $_POST['txn_id'], $_POST['payer_email'] ) ) {

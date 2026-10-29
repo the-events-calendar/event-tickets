@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, stellarwp, nexcess, bordoni, deblynprado, dpantazis, filipecouto, jehromegriffiths1, jentheo, larodiel, leahkoerper, sdokus, vicskf
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.30.2
+Stable tag: 5.30.3
 Requires at least: 6.9
 Tested up to: 7.1
 Requires PHP: 7.4
@@ -205,6 +205,20 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.30.3] 2026-10-29 =
+
+* Fix - Kept an event's payment provider when an RSVP is saved in the Classic Editor or imported from CSV, showed the RSVP alongside tickets sold through another provider and on Classic Editor pages and posts, and restored the provider of events that had been switched to Tickets Commerce so their tickets show again.
+* Fix - Kept the Get Tickets button and ticket prices in calendar views for events saved in the block editor with an empty event price.
+* Fix - Made the Tickets block's Add a Ticket button open the new ticket form on the first click instead of leaving a blank ticket, and let keyboard users add and save tickets with Enter or Space.
+* Fix - Made WooCommerce or EDD, when active, the default payment provider for new events instead of Tickets Commerce, which RSVPs now turn on.
+* Security - Hardened how tickets and attendees are moved between posts. Props to awebitaL for reporting.
+* Security - Hardened PayPal payment confirmation.
+* Security - Hardened PayPal payment confirmation.
+* Security - Hardened the attendee updates submitted from the My Tickets page. Template overrides of `tickets/orders.php` must keep the `tribe_tickets_orders_before_submit` action.
+* Security - Hardened the handling of admin requests for attendee details. Props to Elieve for reporting.
+* Security - Hardened the ticket editor and attendee check-in.
+* Security - Hardened the validation of ticket prices.
 
 = [5.30.2] 2026-10-15 =
 

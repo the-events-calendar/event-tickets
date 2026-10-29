@@ -71,7 +71,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since 5.10.0
 	 * @since 5.26.6 Added cart validation to reject empty carts and carts containing paid tickets.
-	 * @since TBD Rejects carts containing a negative-priced ticket.
+	 * @since 5.30.3 Rejects carts containing a negative-priced ticket.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *

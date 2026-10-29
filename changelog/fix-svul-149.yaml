@@ -1,5 +1,0 @@
-significance: patch
-type: security
-entry: Hardened the handling of admin requests for attendee details. Props to
-  Elieve for reporting.
-timestamp: 2026-10-19T16:27:16.727Z

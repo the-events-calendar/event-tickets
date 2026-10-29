@@ -15,7 +15,7 @@ class Tribe__Tickets__Commerce__PayPal__Handler__PDT implements Tribe__Tickets__
 	 * Checks the request to see if payment data was communicated
 	 *
 	 * @since 4.7
-	 * @since TBD Generates tickets with the recognized payment status PayPal reports instead of always as completed.
+	 * @since 5.30.3 Generates tickets with the recognized payment status PayPal reports instead of always as completed.
 	 */
 	public function check_response() {
 		if ( ! isset( $_GET['tx'] ) ) {

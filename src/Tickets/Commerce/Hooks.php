@@ -778,7 +778,7 @@ class Hooks extends Service_Provider {
 	 * modules to take priority over this one).
 	 *
 	 * @since 5.1.9
-	 * @since TBD Compares against the Tickets Commerce module, so the filter takes effect.
+	 * @since 5.30.3 Compares against the Tickets Commerce module, so the filter takes effect.
 	 *
 	 * @param string   $default_module    The default ticket module class name.
 	 * @param string[] $available_modules The active ticket module class names, RSVP excluded.

@@ -184,7 +184,7 @@ class Modal {
 	 * depending on the request.
 	 *
 	 * @since 5.10.0
-	 * @since TBD Denies users who may not manage the attendee's own event, and reads the attendee's details from the stored record.
+	 * @since 5.30.3 Denies users who may not manage the attendee's own event, and reads the attendee's details from the stored record.
 	 *
 	 * @param string|\WP_Error $render_response The render response HTML content or WP_Error with list of errors.
 	 * @param array            $vars            The request variables.

@@ -1,4 +1,0 @@
-significance: patch
-type: security
-entry: Hardened how tickets and attendees are moved between posts. Props to awebitaL for reporting.
-timestamp: 2026-10-27T02:25:12.192Z

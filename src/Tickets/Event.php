@@ -73,7 +73,7 @@ class Event {
 	 * Both IDs are normalized with `filter_event_id()` first, so a recurring event occurrence matches the
 	 * tickets of its event.
 	 *
-	 * @since TBD
+	 * @since 5.30.3
 	 *
 	 * @param int $ticket_id The ticket ID.
 	 * @param int $post_id   The ID of the post the ticket should be attached to.

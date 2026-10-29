@@ -89,7 +89,7 @@ class Observer {
 	 *
 	 * @since 5.7.0
 	 * @since 5.30.0.2 Records the QR status here and passes an "already checked in" flag to the notice.
-	 * @since TBD Requires the user to manage the attendees of the attendee's event and of the requested event, or to be their author, instead of `edit_posts`.
+	 * @since 5.30.3 Requires the user to manage the attendees of the attendee's event and of the requested event, or to be their author, instead of `edit_posts`.
 	 *
 	 * @param int    $event_id      Event post ID.
 	 * @param int    $ticket_id     Ticket post ID.

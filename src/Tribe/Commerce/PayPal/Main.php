@@ -734,7 +734,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * Generate and store all the attendees information for a new order.
 	 *
 	 * @since 4.7
-	 * @since TBD Stores the order with the given payment status, counts the sale when an existing attendee completes, only fulfils a payment that matches its checkout and ignores a refund for an order the site does not have.
+	 * @since 5.30.3 Stores the order with the given payment status, counts the sale when an existing attendee completes, only fulfils a payment that matches its checkout and ignores a refund for an order the site does not have.
 	 *
 	 * @param string $payment_status The tickets payment status, defaults to completed.
 	 * @param bool   $redirect       Whether the client should be redirected or not.

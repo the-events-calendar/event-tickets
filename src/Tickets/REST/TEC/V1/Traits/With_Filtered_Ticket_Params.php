@@ -29,7 +29,7 @@ trait With_Filtered_Ticket_Params {
 	 *
 	 * @since 5.26.0
 	 * @since 5.29.3 Hardened sale price handling.
-	 * @since TBD Rejects a negative price or sale price.
+	 * @since 5.30.3 Rejects a negative price or sale price.
 	 *
 	 * @param array $params The params to filter.
 	 *
@@ -248,7 +248,7 @@ trait With_Filtered_Ticket_Params {
 	 *
 	 * Non-numeric values are left to the provider, which already strips them to a price.
 	 *
-	 * @since TBD
+	 * @since 5.30.3
 	 *
 	 * @param mixed  $price    The price to check.
 	 * @param string $argument The name of the REST argument the price came from.

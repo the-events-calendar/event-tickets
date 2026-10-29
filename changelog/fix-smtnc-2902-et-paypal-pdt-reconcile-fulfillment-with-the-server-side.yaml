@@ -1,4 +1,0 @@
-significance: patch
-type: security
-entry: Hardened PayPal payment confirmation.
-timestamp: 2026-10-22T16:09:29.228Z

@@ -1682,7 +1682,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Save the the drag-n-drop ticket order
 	 *
 	 * @since 4.6
-	 * @since TBD Skips the IDs that are not tickets of the post.
+	 * @since 5.30.3 Skips the IDs that are not tickets of the post.
 	 *
 	 * @param int $post
 	 */

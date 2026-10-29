@@ -53,7 +53,7 @@ class Ticket_Request_Body_Definition extends Definition {
 	 * Returns the documentation for the definition.
 	 *
 	 * @since 5.26.0
-	 * @since TBD Documented a minimum of 0 for the price and sale price.
+	 * @since 5.30.3 Documented a minimum of 0 for the price and sale price.
 	 *
 	 * @return array
 	 */

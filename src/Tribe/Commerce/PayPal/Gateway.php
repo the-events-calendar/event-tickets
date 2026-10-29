@@ -491,7 +491,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	 * Get the PayPal cart API URL.
 	 *
 	 * @since 4.11.0
-	 * @since TBD Records what is sent to PayPal, so the payment can be checked against it.
+	 * @since 5.30.3 Records what is sent to PayPal, so the payment can be checked against it.
 	 *
 	 * @param int $post_id The post ID.
 	 *

@@ -118,7 +118,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since 4.6.2
 	 * @since 5.26.4 Add user permission check.
-	 * @since TBD    Verifies the nonce the ticket editor sends.
+	 * @since 5.30.3    Verifies the nonce the ticket editor sends.
 	 *
 	 * @return string html content of the panels
 	 */
@@ -430,7 +430,7 @@ class Tribe__Tickets__Metabox {
 	 * @since 4.10.9 Use customizable ticket name functions.
 	 * @since 4.12.3 Update detecting ticket provider to account for possibly inactive provider. Remove unused vars.
 	 * @since 5.5.7 Added optional parameter to return values instead of echoing directly.
-	 * @since TBD   Rejects a ticket that is not attached to the requested post.
+	 * @since 5.30.3   Rejects a ticket that is not attached to the requested post.
 	 *
 	 * @param bool $return_value Optional, flags whether to JSON output directly or return results.
 	 *
@@ -620,7 +620,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since 5.2.3.
 	 * @since 5.5.7 Added optional parameter to return values instead of echoing directly.
-	 * @since TBD   Rejects a ticket that is not attached to the requested post.
+	 * @since 5.30.3   Rejects a ticket that is not attached to the requested post.
 	 *
 	 * @param bool $return_value Optional, flags whether to JSON output directly or return results.
 	 *
@@ -743,7 +743,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since 4.6.2
 	 * @since 4.12.3 Use new helper method to account for possibly inactive ticket provider.
-	 * @since TBD    Requires the user to manage the attendees of the attendee's event and of the requested event, or to be their author.
+	 * @since 5.30.3    Requires the user to manage the attendees of the attendee's event and of the requested event, or to be their author.
 	 */
 	public function ajax_attendee_checkin() {
 		$event_id    = Tribe__Utils__Array::get( $_POST, 'event_ID', false );
@@ -797,7 +797,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since 4.6.2
 	 * @since 4.12.3 Use new helper method to account for possibly inactive ticket provider.
-	 * @since TBD    Requires the user to manage the attendees of the attendee's event and of the requested event, or to be their author.
+	 * @since 5.30.3    Requires the user to manage the attendees of the attendee's event and of the requested event, or to be their author.
 	 */
 	public function ajax_attendee_uncheckin() {
 		$event_id    = Tribe__Utils__Array::get( $_POST, 'event_ID', false );

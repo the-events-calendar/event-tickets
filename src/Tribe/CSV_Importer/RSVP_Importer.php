@@ -293,7 +293,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	 * Create via Commerce (V2).
 	 *
 	 * @since 5.30.0
-	 * @since TBD No longer changes the event's ticket provider to Tickets Commerce.
+	 * @since 5.30.3 No longer changes the event's ticket provider to Tickets Commerce.
 	 *
 	 * @param array   $record The record data.
 	 * @param WP_Post $event  The event.

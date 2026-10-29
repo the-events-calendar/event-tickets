@@ -88,7 +88,7 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 	 * Listens out for ajax requests to move a ticket type to a new post.
 	 *
 	 * @since 4.10.9 Use customizable ticket name functions.
-	 * @since TBD    Requires the user to edit the ticket's current post and a ticketable destination.
+	 * @since 5.30.3    Requires the user to edit the ticket's current post and a ticketable destination.
 	 */
 	public function move_ticket_type_requests() {
 		$args = wp_parse_args( $_POST, array(

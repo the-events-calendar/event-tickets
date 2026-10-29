@@ -1,4 +1,0 @@
-significance: patch
-type: security
-entry: Hardened the validation of ticket prices.
-timestamp: 2026-10-20T11:47:20.644Z

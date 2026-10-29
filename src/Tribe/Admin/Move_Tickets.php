@@ -65,7 +65,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * would re-enter this method until the request times out.
 	 *
 	 * @since 5.29.5 Moved off `admin_init` so the admin screen is resolved before the iframe renders.
-	 * @since TBD    Requires the user to edit the post or manage its attendees.
+	 * @since 5.30.3    Requires the user to edit the post or manage its attendees.
 	 */
 	public function dialog() {
 		if ( ! $this->is_move_tickets_dialog() ) {
@@ -393,7 +393,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * Given an array of WP_Post objects, returns an array containing the post title
 	 * of each (with the post ID as the index).
 	 *
-	 * @since TBD Lists only the posts the current user can edit or manage the attendees of.
+	 * @since 5.30.3 Lists only the posts the current user can edit or manage the attendees of.
 	 *
 	 * @param array $query_results
 	 *
@@ -437,7 +437,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * Returns a list of ticket types available in a specific post
 	 * (belonging to a specific provider).
 	 *
-	 * @since TBD Requires the user to manage the attendees of the post.
+	 * @since 5.30.3 Requires the user to manage the attendees of the post.
 	 */
 	public function get_ticket_types() {
 		if ( ! wp_verify_nonce( $_POST['check'], 'move_tickets' ) ) {
@@ -493,7 +493,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * Listens for and handles requests to reassign tickets from one ticket type to another.
 	 *
 	 * @since 4.10.9 Use customizable ticket name functions.
-	 * @since TBD    Requires the user to manage the attendees of the source and destination posts and of each attendee's post.
+	 * @since 5.30.3    Requires the user to manage the attendees of the source and destination posts and of each attendee's post.
 	 */
 	public function move_tickets_request() {
 		if ( ! wp_verify_nonce( $_POST['check'], 'move_tickets' ) ) {
@@ -584,7 +584,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * moved (ie, you cannot move RSVP tickets to a WooCommerce ticket type, nor can
 	 * a mix of RSVP and WooCommerce tickets be moved to a new ticket type).
 	 *
-	 * @since TBD Moves nothing, and filters no Attendees, when the target ticket type is not attached to the target post.
+	 * @since 5.30.3 Moves nothing, and filters no Attendees, when the target ticket type is not attached to the target post.
 	 *
 	 * @param array $ticket_ids
 	 * @param int   $tgt_ticket_type_id
@@ -912,7 +912,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	/**
 	 * Returns whether the current user may move the attendees from the source to the target post.
 	 *
-	 * @since TBD
+	 * @since 5.30.3
 	 *
 	 * @param int[] $attendee_ids   The IDs of the attendees to move, as requested.
 	 * @param int   $src_post_id    The ID of the post the attendees are moved from, as requested.

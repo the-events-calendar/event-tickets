@@ -1032,7 +1032,7 @@ class Tribe__Tickets__Attendees {
 	 * undo check-in attendees.
 	 *
 	 * @since 4.6.3
-	 * @since TBD Allows the author of the event, while they can edit it, without the default capabilities.
+	 * @since 5.30.3 Allows the author of the event, while they can edit it, without the default capabilities.
 	 *
 	 * @param int        $user_id  Optional. The ID of the user whose access we're checking.
 	 * @param int|string $event_id Optional. The event whose attendees are managed.
@@ -1096,7 +1096,7 @@ class Tribe__Tickets__Attendees {
 	 * The event is read from the attendee, never from the request, so a user cannot pass an event they manage to act
 	 * on the attendee of another.
 	 *
-	 * @since TBD
+	 * @since 5.30.3
 	 *
 	 * @param int $attendee_id The attendee post ID.
 	 * @param int $event_id    Optional. The event the request checks the attendee in to, e.g. a Series Pass
@@ -1374,7 +1374,7 @@ class Tribe__Tickets__Attendees {
 	 * Plugins loosen `user_can_manage_attendees()` for any event, so `edit_post` is required on top of it. The
 	 * event's author keeps the check-in without the default `edit_others_posts`, as before.
 	 *
-	 * @since TBD
+	 * @since 5.30.3
 	 *
 	 * @param int|string $event_id The event ID, possibly a recurring event occurrence.
 	 *
@@ -1396,7 +1396,7 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Whether the user is the author of an event they can still edit.
 	 *
-	 * @since TBD
+	 * @since 5.30.3
 	 *
 	 * @param int $user_id  The user ID.
 	 * @param int $event_id The event post ID.

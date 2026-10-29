@@ -2,7 +2,7 @@
 /**
  * Checks a PayPal Standard payment against what the site's checkout sent to PayPal.
  *
- * @since TBD
+ * @since 5.30.3
  *
  * @package TEC\Tickets\Legacy_PayPal
  */
@@ -19,7 +19,7 @@ use Tribe__Utils__Array as Arr;
  * the checkout records what it sent under the invoice, and a payment is only fulfilled when it matches that record.
  * Paying more than the record is accepted: PayPal adds the tax, shipping and handling of the merchant's profile.
  *
- * @since TBD
+ * @since 5.30.3
  *
  * @package TEC\Tickets\Legacy_PayPal
  */
@@ -28,7 +28,7 @@ final class Cart_Reconciler {
 	/**
 	 * The prefix of the transient that holds what a checkout sent to PayPal.
 	 *
-	 * @since TBD
+	 * @since 5.30.3
 	 *
 	 * @var string
 	 */
@@ -37,7 +37,7 @@ final class Cart_Reconciler {
 	/**
 	 * Records what the checkout sends to PayPal for an invoice.
 	 *
-	 * @since TBD
+	 * @since 5.30.3
 	 *
 	 * @param string                         $invoice The invoice the cart is stored under.
 	 * @param array<string,string|int|float> $args    The PayPal cart URL arguments, as filtered.
@@ -72,7 +72,7 @@ final class Cart_Reconciler {
 	/**
 	 * Deletes the checkout record of an invoice, so no other payment can be matched against it.
 	 *
-	 * @since TBD
+	 * @since 5.30.3
 	 *
 	 * @param string $invoice The invoice.
 	 *
@@ -85,7 +85,7 @@ final class Cart_Reconciler {
 	/**
 	 * Returns why a parsed PayPal transaction does not match the checkout named by its invoice.
 	 *
-	 * @since TBD
+	 * @since 5.30.3
 	 *
 	 * @param array<string,mixed> $transaction The transaction as parsed by `Gateway::parse_transaction()`.
 	 *
@@ -159,7 +159,7 @@ final class Cart_Reconciler {
 	/**
 	 * Returns whether an amount PayPal reports covers the expected amount.
 	 *
-	 * @since TBD
+	 * @since 5.30.3
 	 *
 	 * @param mixed $paid     The amount PayPal reports, such as `'10.50'`.
 	 * @param float $expected The expected amount in hundredths.
@@ -175,7 +175,7 @@ final class Cart_Reconciler {
 	/**
 	 * Converts a decimal amount to hundredths, so amounts compare without float rounding.
 	 *
-	 * @since TBD
+	 * @since 5.30.3
 	 *
 	 * @param mixed $amount A numeric amount, such as `10`, `'10.50'`.
 	 *
@@ -188,7 +188,7 @@ final class Cart_Reconciler {
 	/**
 	 * Returns the name of the transient that holds what a checkout sent to PayPal.
 	 *
-	 * @since TBD
+	 * @since 5.30.3
 	 *
 	 * @param string $invoice The invoice.
 	 *

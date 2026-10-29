@@ -83,7 +83,7 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	/**
 	 * Casts the `payment_status` PayPal sends to one handled and recognized.
 	 *
-	 * @since TBD
+	 * @since 5.30.3
 	 *
 	 * @param string $paypal_status The payment status as PayPal reports it, e.g. `Pending`.
 	 *
