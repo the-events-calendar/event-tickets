@@ -49,6 +49,7 @@ class Ticket_Panel_Data {
 	 *
 	 * @since 5.8.0
 	 * @since 5.18.0 Removed start and end date help text.
+	 * @since TBD Removed the multiple providers help text.
 	 *
 	 * @return array<string,mixed> The data in array format.
 	 */
@@ -148,15 +149,6 @@ class Ticket_Panel_Data {
 			tribe_get_rsvp_label_singular( 'form_save_value' )
 		);
 
-		$multiple_providers_notice = sprintf(
-			__( 'It looks like you have multiple ecommerce plugins active. We recommend running only one at a time. However, if you need to run multiple, please select which one to use to sell %s for this event.', 'event-tickets' ),
-			tribe_get_ticket_label_plural_lowercase( 'multiple_providers' )
-		);
-		$multiple_providers_notice .= '<em>' . sprintf(
-				__( 'Note: adjusting this setting will only impact new %1$s. Existing %1$s will not change. We highly recommend that all %1$s for one event use the same ecommerce plugin.', 'event-tickets' ),
-				tribe_get_ticket_label_plural_lowercase( 'multiple_providers' )
-			) . '</em>';
-
 		$active_providers = tribe( 'tickets.editor.configuration' )->get_providers();
 
 		$data = [
@@ -184,7 +176,7 @@ class Ticket_Panel_Data {
 			'ticket_start_time'                => $ticket->start_time ?? '',
 			'timepicker_round'                 => '00:00:00',
 			'timepicker_step'                  => $timepicker_step,
-			'multiple_providers_notice'        => $multiple_providers_notice,
+			'multiple_providers_notice'        => '',
 			'active_providers'                 => $active_providers,
 		];
 
