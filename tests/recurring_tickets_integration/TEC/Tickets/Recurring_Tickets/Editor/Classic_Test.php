@@ -194,7 +194,8 @@ class Classic_Test extends WPTestCase {
 		tribe( Warnings::class )->render_hidden_recurring_warning_for_ticket_meta_box( $event );
 		$html = (string) ob_get_clean();
 
-		$this->assertStringContainsString( 'This event is part of the <a href="' . esc_url( get_edit_post_link( $series ) ) . '"', $html );
+		// Decoded: WordPress versions differ on how kses encodes the link's ampersand.
+		$this->assertStringContainsString( 'This event is part of the <a href="' . get_edit_post_link( $series, 'raw' ) . '"', html_entity_decode( $html ) );
 		$this->assertStringContainsString( 'To sell a pass that covers every event in the Series, add Series Passes on the Series edit screen.', $html );
 		$this->assertStringNotContainsString( 'Series admin', $html );
 	}
