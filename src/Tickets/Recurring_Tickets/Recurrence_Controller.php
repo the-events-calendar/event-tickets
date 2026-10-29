@@ -110,6 +110,7 @@ final class Recurrence_Controller extends Controller_Contract {
 		remove_filter( 'tec_tickets_editor_list_table_data_' . Template_Guard::TICKET_TYPE, $this->container->callback( Classic::class, 'title_list' ) );
 		remove_filter( 'tec_tickets_views_v2_ticket_model_cache_id', $this->container->callback( Views::class, 'cache_id' ) );
 		remove_action( 'tec_tickets_recurring_tickets_synced', $this->container->callback( Views::class, 'forget_dates' ) );
+		remove_action( 'tec_tickets_recurring_tickets_stock_written', $this->container->callback( Views::class, 'forget_row_dates' ) );
 		remove_action( 'tec_events_custom_tables_v1_custom_tables_query_results', $this->container->callback( Views::class, 'prime_dates' ) );
 		remove_filter( 'tec_tickets_seating_enabled', $this->container->callback( Seating::class, 'filter_enabled' ) );
 		foreach ( [ 'add', 'update' ] as $write ) {
@@ -168,6 +169,7 @@ final class Recurrence_Controller extends Controller_Contract {
 
 		add_filter( 'tec_tickets_views_v2_ticket_model_cache_id', $this->container->callback( Views::class, 'cache_id' ), 10, 2 );
 		add_action( 'tec_tickets_recurring_tickets_synced', $this->container->callback( Views::class, 'forget_dates' ) );
+		add_action( 'tec_tickets_recurring_tickets_stock_written', $this->container->callback( Views::class, 'forget_row_dates' ) );
 		add_action( 'tec_events_custom_tables_v1_custom_tables_query_results', $this->container->callback( Views::class, 'prime_dates' ) );
 
 		add_filter( 'tec_tickets_seating_enabled', $this->container->callback( Seating::class, 'filter_enabled' ), 10, 2 );
