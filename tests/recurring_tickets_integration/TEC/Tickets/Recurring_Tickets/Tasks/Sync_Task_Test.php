@@ -5,6 +5,7 @@ namespace TEC\Tickets\Recurring_Tickets\Tasks;
 use Codeception\TestCase\WPTestCase;
 use TEC\Common\StellarWP\Shepherd\Config;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
+use TEC\Tickets\Recurring_Tickets\Sync;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
 use TEC\Tickets\Tests\Recurring_Tickets\Recurrence_Tier_Check;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
@@ -61,6 +62,36 @@ class Sync_Task_Test extends WPTestCase {
 		$created[0]->process();
 
 		$this->assertCount( 9, tribe( Rows::class )->get_by_post( $event ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_sync_again_a_change_made_while_it_runs(): void {
+		$this->skip_without_recurrence_tier();
+
+		add_filter( 'tec_tickets_recurring_tickets_sync_inline_limit', static fn() => 1 );
+		$event    = $this->create_recurring_event();
+		$template = $this->create_tc_ticket( $event, 10 );
+		$changed  = false;
+		// A save of the event while the task runs: Shepherd will not queue it, the task is running.
+		add_filter(
+			'query',
+			static function ( string $query ) use ( &$changed, $event, $template ) {
+				if ( ! $changed && 0 === strpos( $query, 'INSERT INTO `' . Tickets::table_name() . '`' ) ) {
+					$changed = true;
+					update_post_meta( $template, '_price', '25' );
+					tribe( Sync::class )->sync_event( $event );
+				}
+
+				return $query;
+			}
+		);
+
+		( new Sync_Task( $event ) )->process();
+
+		$prices = array_unique( array_map( static fn( $row ) => (int) $row->price, tribe( Rows::class )->get_by_template( $template ) ) );
+		$this->assertSame( [ 25000 ], array_values( $prices ) );
 	}
 
 	/**
