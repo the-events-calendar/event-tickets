@@ -97,6 +97,26 @@ class Detach_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_keep_the_events_an_order_was_indexed_under_by_others(): void {
+		[ , $dates, $sold ] = $this->create_event_with_a_sale();
+		$row_ticket         = Ticket_ID::from_row_id( (int) $sold->id );
+		$order              = $this->create_row_order( [ $row_ticket => 1 ], Pending::SLUG );
+		// Reconcile and Move add events an order's lines do not hold.
+		$other = (int) $dates[3]->provisional_id;
+		add_post_meta( $order->ID, Order::$events_in_order_meta_key, $other );
+
+		$single = (int) tribe( Events::class )->detach_occurrence_from_event( $dates[2] );
+
+		$indexed = array_map( 'intval', get_post_meta( $order->ID, Order::$events_in_order_meta_key ) );
+		$this->assertContains( $other, $indexed );
+		$this->assertContains( $single, $indexed );
+		$this->assertNotContains( (int) $dates[2]->provisional_id, $indexed, 'No line holds the detached date any more.' );
+		$this->assertCount( count( array_unique( $indexed ) ), $indexed );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_leave_the_attendees_of_other_tickets_alone(): void {
 		$other        = tribe_events()->set_args( [ 'title' => 'Other', 'status' => 'publish', 'start_date' => '+1 week 10:00:00', 'end_date' => '+1 week 12:00:00' ] )->create()->ID;
 		$other_ticket = $this->create_tc_ticket( $other, 5 );
