@@ -80,7 +80,7 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 
 			// remove listeners
 			const removeListeners = () => {
-				iframeWindow.removeEventListener( 'unload', handleUnload ); // eslint-disable-line no-use-before-define,max-len
+				iframeWindow.removeEventListener( 'pagehide', handleUnload ); // eslint-disable-line no-use-before-define,max-len
 				form.removeEventListener( 'submit', showOverlay );
 			};
 
@@ -98,8 +98,8 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 				dispatch( actions.setTicketIsModalOpen( ownProps.clientId, false ) );
 			};
 
-			// add handler to iframe window unload
-			iframeWindow.addEventListener( 'unload', handleUnload );
+			// Browsers no longer reliably fire `unload` on a same-origin iframe's form submit; `pagehide` replaces it.
+			iframeWindow.addEventListener( 'pagehide', handleUnload );
 
 			// add target blank to "Learn more" link
 			const introLink = iframeWindow.document.querySelector( '.tribe-intro > a' );
