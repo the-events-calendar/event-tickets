@@ -377,6 +377,8 @@ class Payment_Intent_Order_Binding_Test extends WPTestCase {
 			'requires_payment_method' => [ 'requires_payment_method', true ],
 			'requires_confirmation'   => [ 'requires_confirmation', true ],
 			'requires_action'         => [ 'requires_action', true ],
+			'requires_source'         => [ 'requires_source', true ],
+			'requires_source_action'  => [ 'requires_source_action', true ],
 			'processing'              => [ 'processing', false ],
 			'requires_capture'        => [ 'requires_capture', false ],
 			'succeeded'               => [ 'succeeded', false ],

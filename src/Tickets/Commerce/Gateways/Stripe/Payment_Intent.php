@@ -31,14 +31,18 @@ class Payment_Intent {
 	/**
 	 * The Stripe statuses of a Payment Intent that can still take a payment.
 	 *
+	 * The `requires_source*` statuses are what older Stripe API versions emit for the same states.
+	 *
 	 * @since TBD
 	 *
 	 * @var string[]
 	 */
 	private const PAYABLE_STATUSES = [
-		'requires_payment_method',
-		'requires_confirmation',
-		'requires_action',
+		Status::REQUIRES_PAYMENT_METHOD,
+		Status::REQUIRES_SOURCE,
+		Status::REQUIRES_CONFIRMATION,
+		Status::REQUIRES_ACTION,
+		Status::REQUIRES_SOURCE_ACTION,
 	];
 
 	/**
