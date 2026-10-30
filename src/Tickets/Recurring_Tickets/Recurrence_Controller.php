@@ -111,6 +111,7 @@ final class Recurrence_Controller extends Controller_Contract {
 		remove_action( 'admin_init', $this->container->callback( Classic::class, 'hide_legacy_notice' ), 9 );
 		remove_filter( 'tec_tickets_editor_list_table_data_' . Template_Guard::TICKET_TYPE, $this->container->callback( Classic::class, 'title_list' ) );
 		remove_filter( 'tec_tickets_editor_list_tickets', $this->container->callback( Block_Editor::class, 'remove_date_copies' ) );
+		remove_action( 'rest_api_init', $this->container->callback( Block_Editor::class, 'register_tickets_by_date_field' ) );
 		remove_filter( 'tec_tickets_views_v2_ticket_model_cache_id', $this->container->callback( Views::class, 'cache_id' ) );
 		remove_action( 'tec_tickets_recurring_tickets_synced', $this->container->callback( Views::class, 'forget_dates' ) );
 		remove_action( 'tec_tickets_recurring_tickets_stock_written', $this->container->callback( Views::class, 'forget_row_dates' ) );
@@ -173,6 +174,7 @@ final class Recurrence_Controller extends Controller_Contract {
 		$this->container->singleton( Block_Editor::class );
 
 		add_filter( 'tec_tickets_editor_list_tickets', $this->container->callback( Block_Editor::class, 'remove_date_copies' ) );
+		add_action( 'rest_api_init', $this->container->callback( Block_Editor::class, 'register_tickets_by_date_field' ) );
 
 		$this->container->singleton( Views::class );
 

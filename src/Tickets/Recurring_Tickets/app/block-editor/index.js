@@ -11,6 +11,7 @@ import { addFilter } from '@wordpress/hooks';
 import { __, _x, sprintf } from '@wordpress/i18n';
 import { hasRecurrenceRules } from '@moderntribe/common/utils/recurrence';
 import { TICKET_LABELS } from '../../../../modules/data/blocks/ticket/constants';
+import './tickets-by-date';
 
 /**
  * The Tickets block's empty state on a recurring event, by the Series Passes notice it shows under the description.
