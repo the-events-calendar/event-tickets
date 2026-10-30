@@ -11,6 +11,7 @@ use TEC\Tickets\Tests\Recurring_Tickets\Recurrence_Tier_Check;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use Tribe\Tickets\Events\Views\V2\Models\Tickets as Ticket_Model;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe__Tickets__Tickets as Tribe_Tickets;
 
 /**
  * The calendar views show each date of a recurring event its own availability.
@@ -52,6 +53,22 @@ class Views_Test extends WPTestCase {
 		$this->template = $this->create_tc_ticket( $this->event, 10, [ 'tribe-ticket' => [ 'mode' => 'own', 'capacity' => 5 ] ] );
 		wp_set_current_user( 0 );
 		$this->dates = $this->get_dates( $this->event );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_call_a_date_of_an_unlimited_ticket_sold_out(): void {
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$event = $this->create_recurring_event();
+		// As the ticket editor saves a ticket with unlimited capacity.
+		$this->create_tc_ticket( $event, 10, [ 'tribe-ticket' => [ 'mode' => '', 'capacity' => '' ] ] );
+		wp_set_current_user( 0 );
+		$date = (int) $this->get_dates( $event )[0]->provisional_id;
+
+		$this->assertFalse( ( new Ticket_Model( $date ) )->sold_out() );
+		$counts = Tribe_Tickets::get_ticket_counts( $date );
+		$this->assertSame( 1, $counts['tickets']['unlimited'] );
 	}
 
 	/**

@@ -10,11 +10,13 @@
 namespace TEC\Tickets\Recurring_Tickets\Editor;
 
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
+use TEC\Tickets\Event;
 use TEC\Tickets\Recurring_Tickets\Template_Guard;
 use TEC\Tickets\Seating\Meta as Seating_Meta;
 use Tribe__Events__Main as TEC;
 use Tribe__Template as Template;
 use Tribe__Tickets__Tickets as Tickets;
+use WP_Post;
 
 /**
  * Offers the recurring event ticket in the tickets panel of a recurring event, and heads its form.
@@ -63,6 +65,30 @@ final class Classic {
 		}
 
 		tribe( 'tickets.admin.views' )->template( 'recurring-tickets/form-toggle', [ 'hidden' => ! tribe_is_recurring_event( $post_id ) ] );
+	}
+
+	/**
+	 * Renders the tickets panel of a date for its event: a date's rows can't be saved from it, the event's recurring
+	 * event tickets can, for every date.
+	 *
+	 * Runs after Flexible Tickets, which keeps a date's ID in the panel for its Series Passes.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|null|mixed $event_id    The event ID the panel would render for.
+	 * @param string|mixed   $context     The context of the lookup.
+	 * @param int|mixed      $original_id The ID the lookup started from.
+	 *
+	 * @return int|null|mixed The event's ID for a date's panel; `$event_id` otherwise.
+	 */
+	public function panel_event_id( $event_id, $context = 'default', $original_id = null ) {
+		if ( 'tickets-metabox-render' !== $context || ! is_numeric( $original_id ) ) {
+			return $event_id;
+		}
+
+		$event = (int) Event::filter_event_id( (int) $original_id );
+
+		return $event !== (int) $original_id && $this->offers_recurring_tickets( $event ) ? $event : $event_id;
 	}
 
 	/**
@@ -122,7 +148,8 @@ final class Classic {
 	}
 
 	/**
-	 * Says, where the panel says standard tickets are not supported on a recurring event, what it sells instead.
+	 * Says, where the panel says standard tickets are not supported on a recurring event, what it sells instead, and
+	 * where the Series Passes of its Series are sold.
 	 *
 	 * @since TBD
 	 *
@@ -135,13 +162,53 @@ final class Classic {
 			return (array) $context;
 		}
 
+		$event = tribe_get_event_label_singular_lowercase();
+
 		unset( $context['messages']['et-warning'] );
 		$context['messages'] = array_merge(
-			[ 'recurring-event-tickets' => esc_html__( 'Recurring events sell recurring event tickets: each is sold for every date, with its own availability. Standard tickets and RSVPs are not available on recurring events.', 'event-tickets' ) ],
+			[
+				'recurring-event-tickets' => esc_html(
+					sprintf(
+						// translators: %s is the lowercase singular label for an event.
+						__( 'Tickets you add here are offered on every date of this %1$s. Each date has its own capacity. You can\'t add standard tickets or RSVPs to a recurring %1$s.', 'event-tickets' ),
+						$event
+					)
+				),
+			],
 			$context['messages']
 		);
 
+		$series = isset( $context['post_id'] ) && function_exists( 'tec_series' ) ? tec_series()->where( 'event_post_id', (int) $context['post_id'] )->first() : null;
+
+		// Flexible Tickets says where Series Passes are sold; only an event in a Series has one to name.
+		if ( $series instanceof WP_Post && isset( $context['messages']['recurring-warning-message'] ) ) {
+			$context['messages']['recurring-warning-message'] = $this->series_passes_message( $series, $event );
+		}
+
 		return $context;
+	}
+
+	/**
+	 * Adds, where the recurrence rules of an event with standard tickets or RSVPs would be, how to sell tickets for
+	 * every date instead: an existing ticket never becomes a recurring event ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|mixed $message The message saying the event can't be made recurring.
+	 *
+	 * @return string The message, with the way to sell tickets for every date.
+	 */
+	public function filter_recurrence_not_supported_message( $message ): string {
+		$event = tribe_get_event_label_singular_lowercase();
+
+		return trim(
+			sprintf(
+				// translators: %1$s is the message saying the event can't be made recurring, %2$s the lowercase singular label for an event.
+				__( '%1$s To sell tickets for every date, create a new recurring %2$s and add recurring %2$s tickets there.', 'event-tickets' ),
+				is_string( $message ) ? $message : '',
+				$event
+			)
+		);
 	}
 
 	/**
@@ -171,5 +238,44 @@ final class Classic {
 		}
 
 		remove_action( 'admin_init', [ tribe( 'tickets.admin.notices' ), 'maybe_display_classic_editor_ecp_recurring_tickets_notice' ] );
+	}
+
+	/**
+	 * Returns the line that says where the Series Passes of an event's Series are sold.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $series The event's Series.
+	 * @param string  $event  The lowercase singular label for an event.
+	 *
+	 * @return string The line, as HTML.
+	 */
+	private function series_passes_message( WP_Post $series, string $event ): string {
+		$series_link = sprintf(
+			'<a href="%1$s" target="_blank" rel="noreferrer noopener">%2$s</a>',
+			esc_url( get_edit_post_link( $series ) ?? '' ),
+			esc_html( get_the_title( $series ) )
+		);
+
+		$learn_more_link = sprintf(
+			'<a href="%1$s" target="_blank" rel="noreferrer noopener">%2$s</a>',
+			esc_url( 'https://evnt.is/-series-passes' ),
+			esc_html(
+				sprintf(
+					// translators: %s is the plural label for Series Passes.
+					__( 'Learn more about %s', 'event-tickets' ),
+					tec_tickets_get_series_pass_plural_uppercase()
+				)
+			)
+		);
+
+		return sprintf(
+			// translators: %1$s is the lowercase singular label for an event, %2$s a link to the Series, %3$s the plural label for Series Passes, %4$s a link to the documentation.
+			__( 'This %1$s is part of the %2$s Series. To sell a pass that covers every %1$s in the Series, add %3$s on the Series edit screen. %4$s', 'event-tickets' ),
+			esc_html( $event ),
+			$series_link,
+			esc_html( tec_tickets_get_series_pass_plural_uppercase( 'ticket editor message' ) ),
+			$learn_more_link
+		);
 	}
 }

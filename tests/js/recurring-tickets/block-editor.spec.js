@@ -37,4 +37,14 @@ describe( 'Recurring event tickets in the block editor', () => {
 
 		expect( props ).toEqual( single );
 	} );
+	test( 'the recurrence block says how to sell tickets for every date instead', () => {
+		const message = applyFilters(
+			'tec.eventsPro.recurrence.notSupportedWithTicketsMessage',
+			"This event has tickets or RSVPs, so it can't be made a recurring event."
+		);
+
+		expect( message ).toBe(
+			"This event has tickets or RSVPs, so it can't be made a recurring event. To sell tickets for every date, create a new recurring event and add recurring event tickets there."
+		);
+	} );
 } );

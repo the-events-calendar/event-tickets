@@ -104,6 +104,8 @@ final class Recurrence_Controller extends Controller_Contract {
 		remove_action( 'tribe_events_tickets_new_ticket_buttons', $this->container->callback( Classic::class, 'render_button' ) );
 		remove_action( self::TYPE_HEADER_ACTION, $this->container->callback( Classic::class, 'render_type_header' ) );
 		remove_filter( self::WARNING_CONTEXT_FILTER, $this->container->callback( Classic::class, 'filter_warning' ), 20 );
+		remove_filter( 'tec_events_pro_custom_tables_v1_recurrence_not_supported_with_tickets_message', $this->container->callback( Classic::class, 'filter_recurrence_not_supported_message' ) );
+		remove_filter( 'tec_tickets_filter_event_id', $this->container->callback( Classic::class, 'panel_event_id' ), 600 );
 		remove_action( 'admin_init', $this->container->callback( Classic::class, 'hide_legacy_notice' ), 9 );
 		remove_filter( 'tec_tickets_editor_list_table_data_' . Template_Guard::TICKET_TYPE, $this->container->callback( Classic::class, 'title_list' ) );
 		remove_filter( 'tec_tickets_views_v2_ticket_model_cache_id', $this->container->callback( Views::class, 'cache_id' ) );
@@ -157,6 +159,9 @@ final class Recurrence_Controller extends Controller_Contract {
 		add_action( self::TYPE_HEADER_ACTION, $this->container->callback( Classic::class, 'render_type_header' ), 10, 3 );
 		// After Flexible Tickets adds its message, at 10.
 		add_filter( self::WARNING_CONTEXT_FILTER, $this->container->callback( Classic::class, 'filter_warning' ), 20 );
+		add_filter( 'tec_events_pro_custom_tables_v1_recurrence_not_supported_with_tickets_message', $this->container->callback( Classic::class, 'filter_recurrence_not_supported_message' ) );
+		// After Flexible Tickets, which keeps a date's ID in the tickets panel.
+		add_filter( 'tec_tickets_filter_event_id', $this->container->callback( Classic::class, 'panel_event_id' ), 600, 3 );
 		// Before the notice, at 10.
 		add_action( 'admin_init', $this->container->callback( Classic::class, 'hide_legacy_notice' ), 9 );
 		add_filter( 'tec_tickets_editor_list_table_data_' . Template_Guard::TICKET_TYPE, $this->container->callback( Classic::class, 'title_list' ) );
