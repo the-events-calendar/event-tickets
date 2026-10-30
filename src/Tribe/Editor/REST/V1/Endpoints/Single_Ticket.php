@@ -1,5 +1,7 @@
 <?php
 
+use TEC\Tickets\Event;
+
 class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 	extends Tribe__Tickets__REST__V1__Endpoints__Base
 	implements Tribe__REST__Endpoints__DELETE_Endpoint_Interface,
@@ -224,6 +226,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 	 * @since 4.12.3 Update detecting ticket provider to account for possibly inactive provider.
 	 * @since 5.6.5  Validates if price is greater than 0 when provider is PayPal or Tickets Commerce
 	 * @since 5.9.0    Added support for sale price for Tickets Commerce.
+	 * @since 5.30.3      Rejects saving a ticket that is not attached to the requested post.
 	 *
 	 * @param WP_REST_Request $request      The request object.
 	 * @param string          $nonce_action The nonce action.
@@ -251,6 +254,20 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 			return new WP_Error(
 				'forbidden',
 				__( 'Invalid nonce', 'event-tickets' ),
+				[ 'status' => 403 ]
+			);
+		}
+
+		if ( $ticket_id && ! Event::ticket_belongs_to_post( absint( $ticket_id ), absint( $post_id ) ) ) {
+			return new WP_Error(
+				'forbidden',
+				esc_html(
+					sprintf(
+						/* translators: %s: The singular, lowercase ticket label. */
+						__( 'This %s can only be edited from the post it belongs to.', 'event-tickets' ),
+						tribe_get_ticket_label_singular_lowercase( 'rest_edit_ticket_error' )
+					)
+				),
 				[ 'status' => 403 ]
 			);
 		}

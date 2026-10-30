@@ -3,6 +3,7 @@ namespace Tribe\Tickets;
 
 use Closure;
 use Generator;
+use RuntimeException;
 use Codeception\TestCase\WPTestCase;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Tickets\Commerce\Module as Commerce;
@@ -22,6 +23,14 @@ class Tickets_ViewTest extends WPTestCase {
 	use RSVP_V2_Ticket_Maker;
 	use Attendee_Maker;
 	use Commerce_Ticket_Maker;
+
+	/*
+	 * The nonce action and field the My Tickets form is expected to use. They mirror the private
+	 * constants on Tickets_View on purpose: asserting the rendered form against literals here makes a
+	 * silent change to that wire contract fail the test instead of tracking it.
+	 */
+	private const NONCE_ACTION = 'tec_tickets_my_tickets_update';
+	private const NONCE_FIELD  = 'tec_tickets_my_tickets_nonce';
 
 	/**
 	 * Low-level registration of the Commerce provider. There is no need for a full-blown registration
@@ -57,6 +66,7 @@ class Tickets_ViewTest extends WPTestCase {
 		set_query_var( 'p', null );
 		wp_reset_query();
 		wp_set_current_user( 0 );
+		$_POST = [];
 
 		// then
 		parent::tearDown();
@@ -84,15 +94,17 @@ class Tickets_ViewTest extends WPTestCase {
 
 	/**
 	 * Hooks the `wp_redirect` filter so `wp_safe_redirect()` calls are captured
-	 * instead of exiting, then runs `authorization_redirect()`.
+	 * instead of exiting, then runs the given `Tickets_View` method.
 	 *
 	 * The filter throws after recording the location: `authorization_redirect()`
-	 * calls `exit` unconditionally after `wp_safe_redirect()`, which would kill the
-	 * test process. Throwing unwinds the stack before `exit` runs.
+	 * and `update_tickets()` call `exit` unconditionally after `wp_safe_redirect()`,
+	 * which would kill the test process. Throwing unwinds the stack before `exit` runs.
+	 *
+	 * @param string $method The `Tickets_View` method to run.
 	 *
 	 * @return array{redirected: bool, location: ?string}
 	 */
-	private function run_authorization_redirect(): array {
+	private function run_capturing_redirect( string $method ): array {
 		$captured = [
 			'redirected' => false,
 			'location'   => null,
@@ -103,17 +115,141 @@ class Tickets_ViewTest extends WPTestCase {
 				$captured['redirected'] = true;
 				$captured['location']   = $location;
 
-				throw new \RuntimeException( 'Redirect intercepted for authorization_redirect().' );
+				throw new RuntimeException( "Redirect intercepted for {$method}()." );
 			}
 		);
 
 		try {
-			$this->make_instance()->authorization_redirect();
-		} catch ( \RuntimeException $e ) {
+			$this->make_instance()->{$method}();
+		} catch ( RuntimeException $e ) {
 			// Expected: the redirect was intercepted.
 		}
 
 		return $captured;
+	}
+
+	/**
+	 * Simulates a My Tickets form submission that changes one attendee on a post.
+	 *
+	 * @return int The ID of the post the request is made on.
+	 */
+	private function given_a_my_tickets_update_request(): int {
+		$post_id = $this->factory()->post->create();
+
+		$this->setup_tickets_query( $post_id, [ 'tribe-edit-orders' => 1 ] );
+
+		$_POST = [
+			'process-tickets' => 1,
+			'attendee'        => [
+				$this->factory()->post->create() => [ 'optout' => 1 ],
+			],
+		];
+
+		return $post_id;
+	}
+
+	/*
+	 * Each fixture sets up the visitor and returns the nonce to post, or null to post none.
+	 * A nonce created for user 0 verifies for every logged-out visitor, so the nonce alone cannot gate the update.
+	 */
+	public function provide_refused_my_tickets_update_data(): Generator {
+		yield 'logged out with a valid nonce' => [
+			function (): ?string {
+				return wp_create_nonce( self::NONCE_ACTION );
+			},
+		];
+
+		yield 'logged in without a nonce' => [
+			function (): ?string {
+				wp_set_current_user( $this->factory()->user->create() );
+
+				return null;
+			},
+		];
+
+		yield 'logged in with a nonce for another action' => [
+			function (): ?string {
+				wp_set_current_user( $this->factory()->user->create() );
+
+				return wp_create_nonce( 'some-other-action' );
+			},
+		];
+	}
+
+	/**
+	 * @dataProvider provide_refused_my_tickets_update_data
+	 *
+	 * @test
+	 *
+	 * it should not update attendees for a request that is not logged in or has no valid nonce
+	 */
+	public function it_should_not_update_attendees_for_a_refused_request( Closure $fixture ): void {
+		// Arrange.
+		$nonce   = $fixture();
+		$post_id = $this->given_a_my_tickets_update_request();
+
+		if ( null !== $nonce ) {
+			$_POST[ self::NONCE_FIELD ] = $nonce;
+		}
+
+		$attendee_updates = did_action( 'event_tickets_attendee_update' );
+		$after_updates    = did_action( 'event_tickets_after_attendees_update' );
+
+		// Act.
+		$captured = $this->run_capturing_redirect( 'update_tickets' );
+
+		// Assert.
+		$this->assertSame( $attendee_updates, did_action( 'event_tickets_attendee_update' ) );
+		$this->assertSame( $after_updates, did_action( 'event_tickets_after_attendees_update' ) );
+		$this->assertSame( $this->make_instance()->get_tickets_page_url( $post_id ), $captured['location'] );
+	}
+
+	/**
+	 * @test
+	 * it should update attendees for a logged in request with a valid nonce
+	 */
+	public function it_should_update_attendees_for_a_logged_in_request_with_a_valid_nonce(): void {
+		// Arrange.
+		wp_set_current_user( $this->factory()->user->create() );
+
+		$post_id = $this->given_a_my_tickets_update_request();
+
+		$_POST[ self::NONCE_FIELD ] = wp_create_nonce( self::NONCE_ACTION );
+
+		$attendee_updates = did_action( 'event_tickets_attendee_update' );
+		$after_updates    = did_action( 'event_tickets_after_attendees_update' );
+
+		// Act.
+		$captured = $this->run_capturing_redirect( 'update_tickets' );
+
+		// Assert.
+		$this->assertSame( $attendee_updates + count( $_POST['attendee'] ), did_action( 'event_tickets_attendee_update' ) );
+		$this->assertSame( $after_updates + 1, did_action( 'event_tickets_after_attendees_update' ) );
+		$this->assertSame(
+			add_query_arg( 'tribe_updated', 1, $this->make_instance()->get_tickets_page_url( $post_id ) ),
+			$captured['location']
+		);
+	}
+
+	/**
+	 * @test
+	 * it should print a valid nonce inside the My Tickets form
+	 */
+	public function it_should_print_a_valid_nonce_inside_the_my_tickets_form(): void {
+		// Arrange.
+		wp_set_current_user( $this->factory()->user->create() );
+
+		// Act.
+		ob_start();
+		do_action( 'tribe_tickets_orders_before_submit' );
+		$html = ob_get_clean();
+
+		// Assert.
+		$this->assertSame(
+			1,
+			preg_match( '/name="' . self::NONCE_FIELD . '" value="([^"]+)"/', $html, $matches )
+		);
+		$this->assertSame( 1, wp_verify_nonce( $matches[1], self::NONCE_ACTION ) );
 	}
 
 	/**
@@ -143,7 +279,7 @@ class Tickets_ViewTest extends WPTestCase {
 		);
 
 		// Act.
-		$captured = $this->run_authorization_redirect();
+		$captured = $this->run_capturing_redirect( 'authorization_redirect' );
 
 		// Assert.
 		$this->assertTrue( $captured['redirected'] );
@@ -180,7 +316,7 @@ class Tickets_ViewTest extends WPTestCase {
 		);
 
 		// Act.
-		$captured = $this->run_authorization_redirect();
+		$captured = $this->run_capturing_redirect( 'authorization_redirect' );
 
 		// Assert.
 		$this->assertTrue( $captured['redirected'] );
@@ -216,7 +352,7 @@ class Tickets_ViewTest extends WPTestCase {
 		);
 
 		// Act.
-		$captured = $this->run_authorization_redirect();
+		$captured = $this->run_capturing_redirect( 'authorization_redirect' );
 
 		// Assert.
 		$this->assertFalse( $captured['redirected'] );
@@ -240,7 +376,7 @@ class Tickets_ViewTest extends WPTestCase {
 		$this->setup_tickets_query( $post_id, [ 'tribe_is_event_query' => false ] );
 
 		// Act.
-		$captured = $this->run_authorization_redirect();
+		$captured = $this->run_capturing_redirect( 'authorization_redirect' );
 
 		// Assert.
 		$this->assertFalse( $captured['redirected'] );
