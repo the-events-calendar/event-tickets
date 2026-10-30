@@ -30,6 +30,8 @@ class Move_TicketsTest extends WPTestCase {
 		// before
 		parent::setUp();
 
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+
 		$this->factory()->event = new Event();
 
 		// let's avoid confirmation emails
