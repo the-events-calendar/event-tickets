@@ -44,12 +44,23 @@ const ActionDashboard = ( {
 		</Button>
 	);
 
+	/*
+	 * A mouse runs the action on mouse-down, before the editor's selection can move. Enter and Space fire only a
+	 * click, with a detail of 0, so the click runs it for the keyboard; a mouse click already ran it on mouse-down.
+	 */
+	const onConfirmKeyboardClick = ( event ) => {
+		if ( event?.detail === 0 ) {
+			onConfirmClick( event );
+		}
+	};
+
 	/* eslint-disable max-len */
 	const confirmButton = showConfirm && (
 		<Button
 			className="tribe-editor__action-dashboard__confirm-button tribe-editor__button--sm tribe-common-c-btn"
 			isDisabled={ isConfirmDisabled }
 			onMouseDown={ onConfirmClick }
+			onClick={ onConfirmKeyboardClick }
 		>
 			{ confirmLabel }
 		</Button>

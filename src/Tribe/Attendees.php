@@ -1032,8 +1032,10 @@ class Tribe__Tickets__Attendees {
 	 * undo check-in attendees.
 	 *
 	 * @since 4.6.3
+	 * @since 5.30.3 Allows the author of the event, while they can edit it, without the default capabilities.
 	 *
-	 * @param int $user_id Optional. The ID of the user whose access we're checking.
+	 * @param int        $user_id  Optional. The ID of the user whose access we're checking.
+	 * @param int|string $event_id Optional. The event whose attendees are managed.
 	 *
 	 * @return boolean
 	 */
@@ -1069,6 +1071,11 @@ class Tribe__Tickets__Attendees {
 			}
 		}
 
+		// The filter below still has the final say, so a site can narrow this.
+		if ( ! $user_can && $event_id ) {
+			$user_can = $this->user_authored_editable_event( absint( $user_id ), absint( Event::filter_event_id( $event_id ) ) );
+		}
+
 		/**
 		 * Filter our return value to let other plugins hook in and alter things
 		 *
@@ -1081,6 +1088,37 @@ class Tribe__Tickets__Attendees {
 		$user_can = apply_filters( 'tribe_tickets_user_can_manage_attendees', $user_can, $user_id, $event_id );
 
 		return $user_can;
+	}
+
+	/**
+	 * Determines if the current user is allowed to check in, or undo the check-in of, an attendee.
+	 *
+	 * The event is read from the attendee, never from the request, so a user cannot pass an event they manage to act
+	 * on the attendee of another.
+	 *
+	 * @since 5.30.3
+	 *
+	 * @param int $attendee_id The attendee post ID.
+	 * @param int $event_id    Optional. The event the request checks the attendee in to, e.g. a Series Pass
+	 *                         occurrence; the user must be allowed to check in for it too.
+	 *
+	 * @return bool Whether the ID is an attendee and the current user can check in for its event and the requested one.
+	 */
+	public function user_can_check_in_attendee( $attendee_id, $event_id = 0 ): bool {
+		$attendee_id = absint( $attendee_id );
+
+		if ( ! $attendee_id || ! in_array( get_post_type( $attendee_id ), tribe_attendees()->attendee_types(), true ) ) {
+			return false;
+		}
+
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		if ( ! $this->user_can_check_in_for_event( $tickets_handler->get_object_connections( $attendee_id )->event ) ) {
+			return false;
+		}
+
+		return ! $event_id || $this->user_can_check_in_for_event( $event_id );
 	}
 
 	/**
@@ -1328,5 +1366,46 @@ class Tribe__Tickets__Attendees {
 		 * @param WP_Post $post The post object.
 		 */
 		return apply_filters( 'tec_tickets_attendees_page_role_access', $has_access, $post_id, $post );
+	}
+
+	/**
+	 * Determines if the current user can check in attendees for an event.
+	 *
+	 * Plugins loosen `user_can_manage_attendees()` for any event, so `edit_post` is required on top of it. The
+	 * event's author keeps the check-in without the default `edit_others_posts`, as before.
+	 *
+	 * @since 5.30.3
+	 *
+	 * @param int|string $event_id The event ID, possibly a recurring event occurrence.
+	 *
+	 * @return bool Whether the current user can check in attendees for the event.
+	 */
+	private function user_can_check_in_for_event( $event_id ): bool {
+		$event_id = Event::filter_event_id( $event_id );
+
+		if ( ! $event_id || ! current_user_can( 'edit_post', $event_id ) ) {
+			return false;
+		}
+
+		$user_id = get_current_user_id();
+
+		return absint( get_post_field( 'post_author', $event_id ) ) === $user_id
+			|| $this->user_can_manage_attendees( $user_id, $event_id );
+	}
+
+	/**
+	 * Whether the user is the author of an event they can still edit.
+	 *
+	 * @since 5.30.3
+	 *
+	 * @param int $user_id  The user ID.
+	 * @param int $event_id The event post ID.
+	 *
+	 * @return bool Whether the user authored the event and can edit it.
+	 */
+	private function user_authored_editable_event( int $user_id, int $event_id ): bool {
+		return $event_id
+			&& absint( get_post_field( 'post_author', $event_id ) ) === $user_id
+			&& user_can( $user_id, 'edit_post', $event_id );
 	}
 }
