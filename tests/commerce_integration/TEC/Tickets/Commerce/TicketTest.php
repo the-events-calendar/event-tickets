@@ -41,6 +41,38 @@ class TicketTest extends WPTestCase {
 			},
 		];
 
+		yield 'ticket with a stored negative sale price value => false' => [
+			function (): array {
+				$post_id   = static::factory()->post->create();
+				$ticket_id = $this->create_tc_ticket( $post_id, 20 );
+
+				update_post_meta( $ticket_id, Ticket::$sale_price_checked_key, true );
+				update_post_meta( $ticket_id, Ticket::$sale_price_key, Value::create( -10 ) );
+
+				return [
+					$post_id,
+					$ticket_id,
+					false,
+				];
+			},
+		];
+
+		yield 'ticket with a stored negative sale price number => false' => [
+			function (): array {
+				$post_id   = static::factory()->post->create();
+				$ticket_id = $this->create_tc_ticket( $post_id, 20 );
+
+				update_post_meta( $ticket_id, Ticket::$sale_price_checked_key, true );
+				update_post_meta( $ticket_id, Ticket::$sale_price_key, -10 );
+
+				return [
+					$post_id,
+					$ticket_id,
+					false,
+				];
+			},
+		];
+
 		yield 'ticket has sale price but inactive sale check => false' => [
 			function (): array {
 				$post_id   = static::factory()->post->create();
@@ -309,6 +341,31 @@ class TicketTest extends WPTestCase {
 				);
 
 				// The sale price is greater than the regular price, so it should be ignored and not saved.
+				return [
+					$post_id,
+					$ticket_id,
+					false,
+					false,
+					false,
+					false,
+				];
+			},
+		];
+
+		yield 'added a ticket with negative sale price' => [
+			function (): array {
+				$post_id   = static::factory()->post->create();
+				$ticket_id = $this->create_tc_ticket(
+					$post_id,
+					20,
+					[
+						'ticket_add_sale_price'  => 'on',
+						'ticket_sale_price'      => -5,
+						'ticket_sale_start_date' => '2010-03-01',
+						'ticket_sale_end_date'   => '2040-03-01',
+					]
+				);
+
 				return [
 					$post_id,
 					$ticket_id,
