@@ -34,9 +34,11 @@ $has_tickets    = tribe( Provider_Lock::class )->is_locked( absint( $current_pos
 				<legend id="default_ticket_provider_legend" class="ticket_form_left">
 					<?php esc_html_e( 'Payment provider:', 'event-tickets' ); ?>
 				</legend>
-				<p class="ticket_form_right">
-					<?php echo wp_kses_post( $multiple_providers_notice ); ?>
-				</p>
+				<?php if ( $multiple_providers_notice ) : ?>
+					<p class="ticket_form_right">
+						<?php echo wp_kses_post( $multiple_providers_notice ); ?>
+					</p>
+				<?php endif; ?>
 				<?php foreach ( $active_providers as $active_provider ) : ?>
 					<label class="ticket_form_right" for="provider_<?php echo esc_attr( $active_provider['html_safe_class'] . '_radio' ); ?>">
 						<input

@@ -93,6 +93,7 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 	 * Variables attached into the group that is used to localize values into the client
 	 *
 	 * @since 4.9
+	 * @since TBD Removed the multiple providers help text.
 	 *
 	 * @return array<string,mixed> The data to be localized for the Tickets Block Editor components.
 	 */
@@ -101,17 +102,7 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 			'providers'                 => $this->get_providers(),
 			'default_provider'          => Tribe__Tickets__Tickets::get_default_module(),
 			'default_currency'          => tribe_get_option( 'defaultCurrencySymbol', '$' ),
-			'multiple_providers_notice' => _x(
-					'It looks like you have multiple ecommerce plugins active. ' .
-					'We recommend running only one at a time. However, if you need to run multiple, please select which ' .
-					'one to use to sell tickets for this event. ',
-					'The notice displayed when multiple ecommerce plugins are active in Block Editor context.',
-					'event-tickets'
-				) . '<em> ' . _x(
-					'Note: adjusting this setting will only impact new tickets. Existing tickets will not change. We highly recommend that all tickets for one event use the same ecommerce plugin.',
-					'The note displayed when multiple ecommerce plugins are active in Block Editor context.',
-					'event-tickets'
-				) . '</em>',
+			'multiple_providers_notice' => '',
 			'choice_disabled'           => false,
 			'ticketTypes' => [
 				'default' => [
