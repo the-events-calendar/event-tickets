@@ -5,6 +5,7 @@ namespace TEC\Tickets\Recurring_Tickets\Admin;
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
+use TEC\Tickets\Recurring_Tickets\Template_Guard;
 use TEC\Tickets\Recurring_Tickets\Ticket_ID;
 use TEC\Tickets\Tests\Recurring_Tickets\Requires_Recurrence_Tier;
 use TEC\Tickets\Tests\Recurring_Tickets\Row_Orders;
@@ -49,7 +50,9 @@ class Attendees_Page_Test extends WPTestCase {
 		( new Tickets() )->empty_table();
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 		$this->event = $this->create_recurring_event();
-		$this->create_tc_ticket( $this->event, 10, [ 'ticket_name' => 'General Admission' ] );
+		$template = $this->create_tc_ticket( $this->event, 10, [ 'ticket_name' => 'General Admission' ] );
+		// As the ticket editor saves a ticket on a recurring event.
+		update_post_meta( $template, '_type', Template_Guard::TICKET_TYPE );
 		$dates = $this->get_dates( $this->event );
 		$rows  = [];
 		foreach ( tribe( Rows::class )->get_by_post( $this->event ) as $row ) {
@@ -135,17 +138,20 @@ class Attendees_Page_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_offer_the_dates_its_attendees_hold_to_filter_by(): void {
-		$_GET['event_id'] = $this->event;
-
-		$nav    = apply_filters( 'tribe_events_tickets_attendees_table_nav', [ 'left' => [], 'right' => [] ], 'top' );
-		$select = implode( '', $nav['left'] );
+		ob_start();
+		do_action( 'tec_tickets_attendees_table_before', $this->event );
+		$select = (string) ob_get_clean();
 
 		foreach ( [ $this->kept, $this->stranded ] as $attendee ) {
 			$date = (int) get_post_meta( $attendee, '_tec_tickets_commerce_event', true );
 			$this->assertStringContainsString( 'value="' . $date . '"', $select, 'A removed date stays listed.' );
-			$this->assertStringContainsString( esc_html( tribe_format_date( get_post_meta( $attendee, '_tec_tickets_recurring_occurrence_start', true ), true ) ), $select );
+			$this->assertStringContainsString( esc_html( tribe_format_date( get_post_meta( $attendee, '_tec_tickets_recurring_occurrence_start', true ), true, tribe_get_datetime_format( true ) ) ), $select );
 		}
-		$this->assertSame( [ 'left' => [], 'right' => [] ], apply_filters( 'tribe_events_tickets_attendees_table_nav', [ 'left' => [], 'right' => [] ], 'bottom' ) );
+		$stranded = esc_html( tribe_format_date( get_post_meta( $this->stranded, '_tec_tickets_recurring_occurrence_start', true ), true, tribe_get_datetime_format( true ) ) );
+		$this->assertStringContainsString( $stranded . ' (removed)', $select );
+		$this->assertStringContainsString( 'Attendees for:', $select );
+		$this->assertStringContainsString( 'value="' . Date_Filter::UPCOMING . '"', $select );
+		$this->assertRegExp( '#</select>\s*<input type="submit"#', $select, 'The Filter button sits right after the select.' );
 	}
 
 	/**
@@ -161,6 +167,87 @@ class Attendees_Page_Test extends WPTestCase {
 		$_GET[ Date_Filter::NAME ] = (string) static::factory()->post->create();
 
 		$this->assertSame( [ $this->kept, $this->stranded ], $this->table_attendees() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_count_the_recurring_event_tickets_sold_on_every_date_in_the_overview(): void {
+		// Only an admin screen lists a template among the event's tickets.
+		set_current_screen( 'tribe_events_page_tickets-attendees' );
+
+		try {
+			$context = tribe( 'tickets.attendees' )->get_render_context( $this->event );
+		} finally {
+			set_current_screen( 'front' );
+		}
+
+		$template = $context['tickets_by_type'][ Template_Guard::TICKET_TYPE ][0];
+
+		// The second date's row is gone, and its sale with it.
+		$this->assertSame( 1, $context['ticket_totals']['sold'] );
+		$this->assertStringStartsWith( '1 issued (', $context['ticket_stats'][ $template->ID ] );
+		$this->assertSame( 'Recurring Event Tickets · all dates', $context['type_labels'][ Template_Guard::TICKET_TYPE ] );
+		$this->assertSame( 'Recurring Event', $context['post_singular_label'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_list_only_every_dates_tickets_on_the_overview_whatever_date_is_chosen(): void {
+		$_GET[ Date_Filter::NAME ] = (string) get_post_meta( $this->kept, '_tec_tickets_commerce_event', true );
+
+		$context = $this->admin_render_context( $this->event );
+
+		$this->assertSame( [ Template_Guard::TICKET_TYPE ], array_keys( array_filter( $context['tickets_by_type'] ) ) );
+		$this->assertSame( 1, $context['ticket_totals']['sold'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_leave_the_rows_on_a_dates_overview_their_own_counts(): void {
+		$date = (int) get_post_meta( $this->kept, '_tec_tickets_commerce_event', true );
+
+		$context = $this->admin_render_context( $date );
+
+		$this->assertTrue( Ticket_ID::is_table_ticket( (int) $context['tickets_by_type'][ Template_Guard::TICKET_TYPE ][0]->ID ) );
+		$this->assertArrayNotHasKey( 'ticket_stats', $context, 'A row counts its own sales.' );
+		$this->assertSame( 1, $context['ticket_totals']['sold'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_print_the_next_dates_attendance_above_that_of_every_date(): void {
+		$next = (int) get_post_meta( $this->kept, '_tec_tickets_commerce_event', true );
+		update_post_meta( $this->kept, '_tec_tickets_commerce_checked_in', 1 );
+		$_GET[ Date_Filter::NAME ] = (string) get_post_meta( $this->stranded, '_tec_tickets_commerce_event', true );
+
+		ob_start();
+		tribe( Attendees_Page::class )->render_next_date( $this->event );
+		$html = preg_replace( '/\s+/', ' ', wp_strip_all_tags( ob_get_clean() ) );
+
+		$this->assertStringContainsString( 'Next Date: ' . tribe( Date_Filter::class )->label( $next ), $html, 'The filter narrows the table only.' );
+		$this->assertRegExp( '/Total 1 Complete: 1 Cancelled: 0 Total Checked in 1 \(100%\) All Dates/', $html );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_print_no_next_date_attendance_on_a_post_that_does_not_recur(): void {
+		ob_start();
+		tribe( Attendees_Page::class )->render_next_date( static::factory()->post->create() );
+
+		$this->assertSame( '', ob_get_clean() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_count_the_recurring_event_tickets_sold_on_every_date_as_paid(): void {
+		$this->assertSame( 1, apply_filters( 'tribe_tickets_get_total_paid', 0, 0, $this->event ) );
+		$this->assertSame( 0, apply_filters( 'tribe_tickets_get_total_paid', 0, 0, static::factory()->post->create() ) );
 	}
 
 	/**
@@ -199,6 +286,17 @@ class Attendees_Page_Test extends WPTestCase {
 	/**
 	 * @return int[] The attendees the event's Attendees table lists, sorted.
 	 */
+	private function admin_render_context( int $post_id ): array {
+		// Only an admin screen lists a template, or a date's rows, among the tickets.
+		set_current_screen( 'tribe_events_page_tickets-attendees' );
+
+		try {
+			return tribe( 'tickets.attendees' )->get_render_context( $post_id );
+		} finally {
+			set_current_screen( 'front' );
+		}
+	}
+
 	private function table_attendees(): array {
 		// An administrator's first admin screen redirects to TEC's first-time setup, and exits.
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'editor' ] ) );
