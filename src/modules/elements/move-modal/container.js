@@ -14,6 +14,7 @@ import { hideModal, setModalData } from '../../data/shared/move/actions';
 import Template from './template';
 
 const mapStateToProps = ( state ) => ( {
+	errorMessage: selectors.getModalErrorMessage( state ),
 	hasSelectedPost: selectors.hasSelectedPost( state ),
 	isFetchingPosts: selectors.isFetchingPosts( state ),
 	isFetchingPostTypes: selectors.isFetchingPostTypes( state ),

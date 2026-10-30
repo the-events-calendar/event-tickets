@@ -44,12 +44,20 @@ const { UNLIMITED, SHARED, TICKET_TYPES, PROVIDER_CLASS_TO_PROVIDER_MAPPING } = 
 const { restNonce, tecDateSettings } = globals;
 const { wpREST } = api;
 
+/**
+ * Inserts a ticket block for each ticket the Tickets block does not hold yet.
+ *
+ * @since TBD Tickets the Tickets block already holds are skipped.
+ *
+ * @yield
+ * @param {number[]} tickets The IDs of the tickets to insert.
+ */
 export function* createMissingTicketBlocks( tickets ) {
 	const { insertBlock, updateBlockListSettings } = yield call( wpDispatch, 'core/block-editor' );
 	const { getBlockCount, getBlocks } = yield call( wpSelect, 'core/block-editor' );
 	const ticketsBlocks = yield call( [ getBlocks(), 'filter' ], ( block ) => block.name === 'tribe/tickets' );
 
-	ticketsBlocks.forEach( ( { clientId } ) => {
+	ticketsBlocks.forEach( ( { clientId, innerBlocks } ) => {
 		// Since we're not using the store provided by WordPress, we need to update the block list
 		// settings for the Tickets block here to allow the tickets-item block to be inserted.
 		// If the WP store did not initialize yet when the `insertBlock` function is called, the
@@ -57,15 +65,23 @@ export function* createMissingTicketBlocks( tickets ) {
 		updateBlockListSettings( clientId, {
 			allowedBlocks: [ 'tribe/tickets-item' ],
 		} );
-		tickets.forEach( ( ticketId ) => {
-			const attributes = {
-				hasBeenCreated: true,
-				ticketId,
-			};
-			const nextChildPosition = getBlockCount( clientId );
-			const block = createBlock( 'tribe/tickets-item', attributes );
-			insertBlock( block, nextChildPosition, clientId, false );
-		} );
+		/*
+		 * A newly inserted Tickets block remounts before its first ticket blocks reach this
+		 * store, so the store alone cannot tell which tickets the block already holds.
+		 */
+		const ticketIdsInBlock = innerBlocks.map( ( { attributes } ) => attributes.ticketId );
+
+		tickets
+			.filter( ( ticketId ) => ! ticketIdsInBlock.includes( ticketId ) )
+			.forEach( ( ticketId ) => {
+				const attributes = {
+					hasBeenCreated: true,
+					ticketId,
+				};
+				const nextChildPosition = getBlockCount( clientId );
+				const block = createBlock( 'tribe/tickets-item', attributes );
+				insertBlock( block, nextChildPosition, clientId, false );
+			} );
 	} );
 }
 

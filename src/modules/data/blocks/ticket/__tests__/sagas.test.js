@@ -62,6 +62,10 @@ const {
 	WOO_CLASS,
 } = constants;
 
+jest.mock( '@wordpress/blocks', () => ( {
+	createBlock: ( name, attributes ) => ( { name, attributes } ),
+} ) );
+
 jest.mock( '@wordpress/data', () => {
 	return {
 		select: ( key ) => {
@@ -369,6 +373,25 @@ describe( 'Ticket Block sagas', () => {
 			);
 			expect( gen.next( wpSelectCoreEditor ).value ).toMatchSnapshot();
 			expect( gen.next( [] ).done ).toEqual( true );
+		} );
+
+		const runWithTicketsBlock = ( tickets, innerBlocks ) => {
+			const insertBlock = jest.fn();
+			const gen = sagas.createMissingTicketBlocks( tickets );
+			gen.next();
+			gen.next( { insertBlock, updateBlockListSettings: () => {} } );
+			gen.next( { getBlockCount: () => innerBlocks.length, getBlocks: () => [] } );
+			gen.next( [ { clientId: 'tickets-block', innerBlocks } ] );
+			return insertBlock.mock.calls.map( ( [ block ] ) => block.attributes.ticketId );
+		};
+
+		it( 'should create a ticket block for each ticket when the Tickets block is empty', () => {
+			expect( runWithTicketsBlock( [ 10, 20 ], [] ) ).toEqual( [ 10, 20 ] );
+		} );
+
+		it( 'should not create a ticket block the Tickets block already holds', () => {
+			const innerBlocks = [ { attributes: { ticketId: 10 } } ];
+			expect( runWithTicketsBlock( [ 10, 20 ], innerBlocks ) ).toEqual( [ 20 ] );
 		} );
 	} );
 
