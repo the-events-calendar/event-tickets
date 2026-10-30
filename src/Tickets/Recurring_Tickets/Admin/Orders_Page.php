@@ -9,11 +9,12 @@
 
 namespace TEC\Tickets\Recurring_Tickets\Admin;
 
+use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use Tribe__Date_Utils as Dates;
 
 /**
  * Lists a recurring event's orders of every date on the event's Orders page and its export, gives each ordered
- * ticket its date and narrows the list to the dates chosen.
+ * ticket its date, narrows the list to the dates chosen and sums the sales over every date and on the next.
  *
  * An order of a row holds its date's ID; the event's Orders page looks orders up by the event's own ID.
  *
@@ -30,6 +31,15 @@ final class Orders_Page {
 	 * @var int
 	 */
 	private const NO_EVENT = -1;
+
+	/**
+	 * The rows repository.
+	 *
+	 * @since TBD
+	 *
+	 * @var Rows
+	 */
+	private Rows $rows;
 
 	/**
 	 * The event's dates.
@@ -50,16 +60,29 @@ final class Orders_Page {
 	private Date_Filter $date_filter;
 
 	/**
+	 * The sales of each recurring event ticket over every date.
+	 *
+	 * @since TBD
+	 *
+	 * @var Template_Sales
+	 */
+	private Template_Sales $template_sales;
+
+	/**
 	 * Orders_Page constructor.
 	 *
 	 * @since TBD
 	 *
-	 * @param Event_Dates $event_dates    The event's dates.
-	 * @param Date_Filter $date_filter    The select that narrows the table to one date.
+	 * @param Rows           $rows           The rows repository.
+	 * @param Event_Dates    $event_dates    The event's dates.
+	 * @param Date_Filter    $date_filter    The select that narrows the table to one date.
+	 * @param Template_Sales $template_sales The sales of each recurring event ticket over every date.
 	 */
-	public function __construct( Event_Dates $event_dates, Date_Filter $date_filter ) {
-		$this->event_dates = $event_dates;
-		$this->date_filter = $date_filter;
+	public function __construct( Rows $rows, Event_Dates $event_dates, Date_Filter $date_filter, Template_Sales $template_sales ) {
+		$this->rows           = $rows;
+		$this->event_dates    = $event_dates;
+		$this->date_filter    = $date_filter;
+		$this->template_sales = $template_sales;
 	}
 
 	/**
@@ -126,6 +149,59 @@ final class Orders_Page {
 
 		// phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscaped -- Escaped as it is built.
 		echo $this->date_filter->render( $dates, $this->event_dates->removed( $event_id ), __( 'Orders for:', 'event-tickets' ) );
+	}
+
+	/**
+	 * Gives a recurring event's Orders page, and a date's, the summary of the sales of every date and of the next.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed>|mixed $vars The Orders page's template variables.
+	 *
+	 * @return array<string,mixed> The variables.
+	 */
+	public function summarize( $vars ): array {
+		$vars     = (array) $vars;
+		$post_id  = (int) ( $vars['post_id'] ?? 0 );
+		$event_id = $this->event_dates->event_of( $post_id );
+		$dates    = $this->event_dates->all( $event_id );
+
+		if ( ! $dates ) {
+			return $vars;
+		}
+
+		$next_date = $this->event_dates->next( $event_id );
+		$summary   = new Order_Summary( $event_id, $this->rows, $this->template_sales, $dates, $next_date, $this->date_filter->label( $next_date ) );
+		$summary->init();
+
+		$vars['order_summary']       = $summary;
+		$vars['post_singular_label'] = __( 'Recurring Event', 'event-tickets' );
+
+		return $vars;
+	}
+
+	/**
+	 * Prints, above the sales totals of every date, those of the next date.
+	 *
+	 * @since TBD
+	 *
+	 * @param object|mixed $summary The Orders page's summary.
+	 *
+	 * @return void
+	 */
+	public function render_next_date( $summary ): void {
+		if ( ! $summary instanceof Order_Summary || ! $summary->get_next_date() ) {
+			return;
+		}
+
+		tribe( 'tickets.admin.views' )->template(
+			'recurring-tickets/orders/next-date',
+			[
+				// translators: %s is the date the sales are of, e.g. "October 22".
+				'title' => sprintf( __( 'Next Date: %s', 'event-tickets' ), $summary->get_next_date_label() ),
+				'sales' => $summary->get_next_date_sales(),
+			]
+		);
 	}
 
 	/**
