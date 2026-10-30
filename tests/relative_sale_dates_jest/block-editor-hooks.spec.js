@@ -1,6 +1,7 @@
 import React from 'react';
 import { addFilter, applyFilters, doAction, filters, removeFilter } from '@wordpress/hooks';
 import { dispatch, getStoreState, select } from '@wordpress/data';
+import { getSettings, setSettings } from '@wordpress/date';
 import { STORE_NAME } from '@tec/tickets/relative-sale-dates/block-editor/store/constants';
 import SalesWindow from '@tec/tickets/relative-sale-dates/block-editor/sales-window';
 import SalePriceWindow from '@tec/tickets/relative-sale-dates/block-editor/sale-price-window';
@@ -745,7 +746,8 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 	} );
 
 	describe( 'on tec.tickets.blocks.Ticket.SaleWindow.dates', () => {
-		const ticketDates = { fromDate: 'September 1, 2040', toDate: 'December 31, 2040' };
+		const ticketDates = { fromDate: 'September 1, 2040 10:00 am', toDate: 'December 31, 2040 11:00 pm' };
+		const packageSettings = getSettings();
 
 		/**
 		 * Filters the sale dates the ticket header shows for a ticket block.
@@ -758,23 +760,44 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 			return applyFilters( 'tec.tickets.blocks.Ticket.SaleWindow.dates', ticketDates, clientId );
 		}
 
+		/*
+		 * WordPress sets the site's formats before the block loads; the package's own default time format is `g: i a`.
+		 * The `datetime` format WordPress sets is its own, not the site's, so it differs here to show it is not read.
+		 */
+		beforeAll( () => {
+			setSettings( {
+				...packageSettings,
+				formats: { ...packageSettings.formats, time: 'g:i a', datetime: 'M j, Y H:i' },
+			} );
+		} );
+
+		afterAll( () => {
+			setSettings( packageSettings );
+		} );
+
 		beforeEach( () => {
 			setBlockEditorData();
 			setEventState( DEFAULT_EVENT ).dispatch( legacyActions.setTicketsProvider( TICKETS_COMMERCE ) );
 		} );
 
-		it( 'should show the dates the rule of a ticket works out to', () => {
+		it( 'should show the dates and times the rule of a ticket works out to', () => {
 			const clientId = newClientId();
 			dispatch( STORE_NAME ).setDraftRule( clientId, { start: storedRule.start, end: { mode: 'default' } } );
 
-			expect( filterDates( clientId ) ).toStrictEqual( { fromDate: 'October 6, 2040', toDate: 'October 20, 2040' } );
+			expect( filterDates( clientId ) ).toStrictEqual( {
+				fromDate: 'October 6, 2040 7:00 pm',
+				toDate: 'October 20, 2040 7:00 pm',
+			} );
 		} );
 
 		it( 'should keep the ticket\'s own start when sales start now', () => {
 			const clientId = newClientId();
 			dispatch( STORE_NAME ).setDraftRule( clientId, { start: { mode: 'default' }, end: storedRule.end } );
 
-			expect( filterDates( clientId ) ).toStrictEqual( { fromDate: ticketDates.fromDate, toDate: 'October 20, 2040' } );
+			expect( filterDates( clientId ) ).toStrictEqual( {
+				fromDate: ticketDates.fromDate,
+				toDate: 'October 20, 2040 9:30 pm',
+			} );
 		} );
 
 		it( 'should keep the ticket date of a relative end whose number is cleared', () => {
@@ -786,7 +809,7 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 
 			expect( filterDates( clientId ) ).toStrictEqual( {
 				fromDate: ticketDates.fromDate,
-				toDate: 'October 20, 2040',
+				toDate: 'October 20, 2040 9:30 pm',
 			} );
 		} );
 
@@ -1245,6 +1268,54 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 			expect( followsEventStart( clientId ) ).toBe( true );
 			expect( followsEventStart( clientId, false ) ).toBe( false );
 			expect( followsEventStart( newClientId() ) ).toBe( true );
+		} );
+	} );
+
+	describe( 'on tec.tickets.blocks.updateTicketWithPostSave', () => {
+		const updatesTicket = ( clientId, value = true ) =>
+			applyFilters( 'tec.tickets.blocks.updateTicketWithPostSave', value, clientId );
+
+		// The event the ticket below was created for, moved to the day before the ticket was created.
+		const movedEvent = { ...DEFAULT_EVENT, start: '2020-01-01 19:00:00', end: '2020-01-01 22:30:00' };
+
+		beforeEach( () => {
+			setBlockEditorData();
+			setEventState( movedEvent ).dispatch( legacyActions.setTicketsProvider( TICKETS_COMMERCE ) );
+		} );
+
+		it( 'should not update a ticket whose sales from Now end before they start once the event moves before them', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setRule( clientId, { start: { mode: 'default' }, end: { mode: 'default' } } );
+			// The start of Now the ticket was saved with, and its end synced to the moved event start.
+			legacyTicketState( clientId, '2020-01-02 10:00:00', movedEvent.start );
+
+			expect( updatesTicket( clientId ) ).toBe( false );
+		} );
+
+		it( 'should update a ticket whose windows are valid', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setRule( clientId, { start: { mode: 'default' }, end: { mode: 'default' } } );
+			legacyTicketState( clientId, '2019-12-01 10:00:00', movedEvent.start );
+
+			expect( updatesTicket( clientId ) ).toBe( true );
+			expect( updatesTicket( clientId, false ) ).toBe( false );
+		} );
+
+		it( 'should leave the update of a ticket not sold through a provider the sales window applies to alone', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setRule( clientId, { start: { mode: 'default' }, end: { mode: 'default' } } );
+			legacyTicketState( clientId, '2020-01-02 10:00:00', movedEvent.start );
+			window.__tribe_common_store__.dispatch( legacyActions.setTicketsProvider( WOO_PROVIDER ) );
+
+			expect( updatesTicket( clientId ) ).toBe( true );
+		} );
+
+		it( 'should update a ticket without a rule', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setRule( clientId, null );
+			legacyTicketState( clientId, '2020-01-02 10:00:00', movedEvent.start );
+
+			expect( updatesTicket( clientId ) ).toBe( true );
 		} );
 	} );
 

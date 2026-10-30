@@ -10,7 +10,7 @@ import { includes } from 'lodash';
  * Wordpress dependencies
  */
 import { dispatch as wpDispatch, select as wpSelect } from '@wordpress/data';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { createBlock } from '@wordpress/blocks';
 import { applyFilters, doAction } from '@wordpress/hooks';
 
@@ -43,6 +43,17 @@ import { isTicketEditableFromPost } from './utils';
 const { UNLIMITED, SHARED, TICKET_TYPES, PROVIDER_CLASS_TO_PROVIDER_MAPPING } = constants;
 const { restNonce, tecDateSettings } = globals;
 const { wpREST } = api;
+
+/**
+ * Returns the ID of the notice that warns a post save left a ticket's changes unsaved.
+ *
+ * @since TBD
+ *
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {string} The notice ID.
+ */
+const getTicketNotUpdatedNoticeId = ( clientId ) => `tec-tickets-ticket-not-updated-${ clientId }`;
 
 export function* createMissingTicketBlocks( tickets ) {
 	const { insertBlock, updateBlockListSettings } = yield call( wpDispatch, 'core/block-editor' );
@@ -889,6 +900,9 @@ export function* updateTicket( action ) {
 				put( actions.setTicketTempDetails( clientId, ticketDetails ) ),
 			] );
 
+			const { removeNotice } = yield call( wpDispatch, 'core/notices' );
+			yield call( removeNotice, getTicketNotUpdatedNoticeId( clientId ) );
+
 			/**
 			 * Fires after the ticket has been updated.
 			 *
@@ -1239,6 +1253,33 @@ export function* setTicketTempDetails( action ) {
 }
 
 /**
+ * Warns that saving the post left a ticket's changes unsaved. The notice is one per ticket, so saving the post again
+ * does not stack it, and updating the ticket removes it.
+ *
+ * @since TBD
+ *
+ * @param {string} clientId The client ID of the ticket block.
+ * @yield
+ */
+export function* noticeTicketNotUpdated( clientId ) {
+	const title = yield select( selectors.getTicketTitle, { clientId } );
+	const { createWarningNotice } = yield call( wpDispatch, 'core/notices' );
+
+	yield call(
+		createWarningNotice,
+		sprintf(
+			/* translators: %s: the ticket name. */
+			__(
+				'The changes to the ticket "%s" were not saved with the post. Review them in the ticket block, then click Update.',
+				'event-tickets'
+			),
+			title
+		),
+		{ id: getTicketNotUpdatedNoticeId( clientId ) }
+	);
+}
+
+/**
  * Allows the Ticket to be saved at the same time a post is being saved.
  * Avoids the user having to open up the Ticket block, and then click update again there,
  * when changing the event start date.
@@ -1262,7 +1303,27 @@ export function* saveTicketWithPostSave( clientId ) {
 				// Wait for channel to finish saving: a ticket with a relative rule is resolved against the saved event dates.
 				yield take( notSavingChannel );
 
-				yield call( updateTicket, { payload: { clientId } } );
+				/**
+				 * Filters whether saving the post updates the ticket too. Returning false skips the update, for example
+				 * when the server would reject it.
+				 *
+				 * @since TBD
+				 * @param {boolean} updatesTicket Whether saving the post updates the ticket.
+				 * @param {string}  clientId      The client ID of the ticket block.
+				 */
+				const updatesTicket = yield call(
+					applyFilters,
+					'tec.tickets.blocks.updateTicketWithPostSave',
+					true,
+					clientId
+				);
+
+				if ( updatesTicket ) {
+					yield call( updateTicket, { payload: { clientId } } );
+				} else if ( yield select( selectors.getTicketHasChanges, { clientId } ) ) {
+					// The edits stay in the block, unsaved, while the post reads as saved.
+					yield call( noticeTicketNotUpdated, clientId );
+				}
 			}
 		}
 	} catch ( error ) {

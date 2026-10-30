@@ -1,7 +1,7 @@
 /**
  * Hooks the Relative Sale Dates store into the Ticket block's fetch, save, cancel, request body, Sale Duration section,
- * sale price dates, header sale window, header on sale state, Create or Update button and the sync of its sale end with
- * the event start.
+ * sale price dates, header sale window, header on sale state, Create or Update button, the sync of its sale end with
+ * the event start and its update with the post save.
  *
  * @since TBD
  */
@@ -22,6 +22,7 @@ import {
 	filterSyncSaleEndWithEventStart,
 	filterTicketDuration,
 	filterTicketOnSale,
+	filterUpdateTicketWithPostSave,
 	loadTicketRule,
 	resetTicketRule,
 	saveTicketRule,
@@ -37,6 +38,7 @@ addFilter( 'tec.tickets.blocks.Ticket.onSale', namespace, filterTicketOnSale );
 // Ahead of other extensions, so it only overrides the core value and never re-enables a button one of them disabled.
 addFilter( 'tec.tickets.blocks.confirmButton.isDisabled', namespace, filterConfirmDisabled, 5 );
 addFilter( 'tec.tickets.blocks.syncSaleEndWithEventStart', namespace, filterSyncSaleEndWithEventStart );
+addFilter( 'tec.tickets.blocks.updateTicketWithPostSave', namespace, filterUpdateTicketWithPostSave );
 addAction( 'tec.tickets.blocks.fetchTicket', namespace, loadTicketRule );
 addAction( 'tec.tickets.blocks.ticketCreated', namespace, saveTicketRule );
 addAction( 'tec.tickets.blocks.ticketUpdated', namespace, saveTicketRule );
