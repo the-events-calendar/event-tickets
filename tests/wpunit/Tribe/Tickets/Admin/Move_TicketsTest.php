@@ -467,6 +467,10 @@ class Move_TicketsTest extends WPTestCase {
 
 		$this->assertArrayHasKey( 'move', $actions );
 
+		$post_actions = $this->get_bulk_actions( [ 'post' => $event_id ], WP_Screen::get( TEC::POSTTYPE ) );
+
+		$this->assertArrayHasKey( 'move', $post_actions );
+
 		$other_event_id = $this->factory()->event->create();
 		$other_actions  = $this->get_bulk_actions( $this->get_event_attendees_page_request( $other_event_id ), WP_Screen::get( 'edit-' . TEC::POSTTYPE ) );
 
