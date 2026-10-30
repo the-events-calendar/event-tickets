@@ -12,6 +12,12 @@ use Tribe__Events__Main as TEC;
 class Move_TicketsTest extends \Codeception\TestCase\WPTestCase {
 	use With_Uopz;
 
+	public function setUp(): void {
+		parent::setUp();
+
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+	}
+
 	public function get_post_choices_provider(): Generator {
 		yield 'looking for posts' => [
 			function (): array {
