@@ -9,26 +9,55 @@
 
 namespace TEC\Tickets\Recurring_Tickets;
 
-use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 use TEC\Events_Pro\Custom_Tables\V1\Events\Provisional\ID_Generator;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
-use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\Recurring_Tickets\Models\Ticket;
-use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
+use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
  * Class Hydrator.
  *
- * Everything comes from the row: no query per ticket for its counts, and no post meta read. The object is cached
- * under the ticket ID in the group and shape Tickets Commerce uses for ticket posts; every row writer clears it.
+ * Everything comes from the row: no query per ticket for its counts. The sale price is the template's, read the way
+ * Tickets Commerce reads it for a post, through post meta the meta shim answers.
  *
  * @since TBD
  *
  * @package TEC\Tickets\Recurring_Tickets
  */
 final class Hydrator {
+	/**
+	 * The rows.
+	 *
+	 * @since TBD
+	 *
+	 * @var Rows
+	 */
+	private Rows $rows;
+
+	/**
+	 * The Tickets Commerce ticket service, for the sale price.
+	 *
+	 * @since TBD
+	 *
+	 * @var Commerce_Ticket
+	 */
+	private Commerce_Ticket $commerce;
+
+	/**
+	 * Hydrator constructor.
+	 *
+	 * @since TBD
+	 *
+	 * @param Rows            $rows     The rows.
+	 * @param Commerce_Ticket $commerce The Tickets Commerce ticket service.
+	 */
+	public function __construct( Rows $rows, Commerce_Ticket $commerce ) {
+		$this->rows     = $rows;
+		$this->commerce = $commerce;
+	}
+
 	/**
 	 * Returns the ticket object of a table ticket ID.
 	 *
@@ -39,20 +68,9 @@ final class Hydrator {
 	 * @return Ticket_Object|null The ticket, or null when the ID has no row, as for a deleted ticket.
 	 */
 	public function load( int $ticket_id ): ?Ticket_Object {
-		$cached = wp_cache_get( $ticket_id, 'tec_tickets' );
+		$row = $this->rows->find( Ticket_ID::to_row_id( $ticket_id ) );
 
-		if ( is_array( $cached ) && $cached ) {
-			return new Ticket_Object( $cached );
-		}
-
-		try {
-			$row = Tickets::get_by_id( Ticket_ID::to_row_id( $ticket_id ) );
-		} catch ( DatabaseQueryException $e ) {
-			// No table, no rows: the ID names a ticket that does not exist.
-			return null;
-		}
-
-		if ( ! $row instanceof Ticket ) {
+		if ( ! $row ) {
 			return null;
 		}
 
@@ -60,15 +78,12 @@ final class Hydrator {
 
 		/** This filter is documented in src/Tickets/Commerce/Ticket.php */
 		$filtered = apply_filters( 'tec_tickets_commerce_get_ticket_legacy', $ticket, $ticket->get_event_id(), $ticket_id );
-		$ticket   = $filtered instanceof Ticket_Object ? $filtered : $ticket;
 
-		wp_cache_set( $ticket_id, $ticket->to_array(), 'tec_tickets' );
-
-		return $ticket;
+		return $filtered instanceof Ticket_Object ? $filtered : $ticket;
 	}
 
 	/**
-	 * Builds the ticket object of a row already read, without a query.
+	 * Builds the ticket object of a row already read.
 	 *
 	 * The type is left to `type()`, which reads it through post meta: assigning it would write post meta for an
 	 * ID that is not a post.
@@ -80,32 +95,31 @@ final class Hydrator {
 	 * @return Ticket_Object The ticket.
 	 */
 	public function hydrate( Ticket $row ): Ticket_Object {
-		$price                       = $this->to_decimal( (int) $row->price );
-		$unlimited                   = -1 === (int) $row->capacity;
-		[ $start_date, $start_time ] = $this->split( $row->start_date );
-		[ $end_date, $end_time ]     = $this->split( $row->end_date );
+		// The meta shim reads the row again for the sale price below: it is the row in hand.
+		$this->rows->prime( $row );
+
+		$price     = Price::to_decimal( (int) $row->price );
+		$unlimited = -1 === (int) $row->capacity;
 
 		$ticket = new Ticket_Object(
-			[
-				'ID'               => Ticket_ID::from_row_id( (int) $row->id ),
-				'name'             => (string) $row->name,
-				'description'      => (string) $row->description,
-				'show_description' => (bool) $row->show_description,
-				'menu_order'       => (int) $row->menu_order,
-				'sku'              => (string) $row->sku,
-				'post_type'        => Commerce_Ticket::POSTTYPE,
-				'provider_class'   => Module::class,
-				'admin_link'       => '',
-				'price'            => $price,
-				'regular_price'    => $price,
-				'on_sale'          => false,
-				'start_date'       => $start_date,
-				'start_time'       => $start_time,
-				'end_date'         => $end_date,
-				'end_time'         => $end_time,
-				'capacity'         => (int) $row->capacity,
-				'event_id'         => $this->event_id( $row ),
-			]
+			array_merge(
+				$this->sale_window( $row ),
+				[
+					'ID'               => Ticket_ID::from_row_id( (int) $row->id ),
+					'name'             => (string) $row->name,
+					'description'      => (string) $row->description,
+					'show_description' => (bool) $row->show_description,
+					'menu_order'       => (int) $row->menu_order,
+					'sku'              => (string) $row->sku,
+					'post_type'        => Commerce_Ticket::POSTTYPE,
+					'provider_class'   => Module::class,
+					'admin_link'       => '',
+					'price'            => $price,
+					'regular_price'    => $price,
+					'capacity'         => (int) $row->capacity,
+					'event_id'         => $this->event_id( $row ),
+				]
+			)
 		);
 
 		$ticket->manage_stock( ! $unlimited );
@@ -114,6 +128,10 @@ final class Hydrator {
 		$ticket->qty_sold( (int) $row->sales );
 		$ticket->qty_pending( 0 );
 		$ticket->qty_cancelled( 0 );
+
+		// As Tickets Commerce does for a post, once the ticket has its ID and event.
+		$ticket->on_sale = $this->commerce->is_on_sale( $ticket );
+		$ticket->price   = $this->commerce->get_price( $ticket );
 
 		return $ticket;
 	}
@@ -127,7 +145,7 @@ final class Hydrator {
 	 *
 	 * @return int The event ID.
 	 */
-	private function event_id( Ticket $row ): int {
+	public function event_id( Ticket $row ): int {
 		if ( $row->occurrence_id && did_action( 'tec_events_pro_custom_tables_v1_fully_activated' ) ) {
 			return (int) tribe( ID_Generator::class )->provide_id( (int) $row->occurrence_id );
 		}
@@ -136,23 +154,30 @@ final class Hydrator {
 	}
 
 	/**
-	 * Converts a row's price, in thousandths of the currency's unit, to the decimal string a ticket carries.
+	 * Returns the row's event-local sale window as a ticket post carries it, date and time apart.
 	 *
 	 * @since TBD
 	 *
-	 * @param int $thousandths The stored price.
+	 * @param Ticket $row The row.
 	 *
-	 * @return string The amount with the Tickets Commerce currency's own decimals, e.g. `10.50`.
+	 * @return array{start_date: string, start_time: string, end_date: string, end_time: string} `Y-m-d` dates and
+	 *                                                                                           `H:i:s` times, empty
+	 *                                                                                           without a date.
 	 */
-	private function to_decimal( int $thousandths ): string {
-		// The currency's own decimals, not the site's display setting, as Order Line Items stores money.
-		$decimals = (int) ( Currency::get_default_currency_map()[ Currency::get_currency_code() ]['decimal_precision'] ?? 2 );
+	public function sale_window( Ticket $row ): array {
+		[ $start_date, $start_time ] = $this->split( $row->start_date );
+		[ $end_date, $end_time ]     = $this->split( $row->end_date );
 
-		return number_format( $thousandths / 1000, $decimals, '.', '' );
+		return [
+			'start_date' => $start_date,
+			'start_time' => $start_time,
+			'end_date'   => $end_date,
+			'end_time'   => $end_time,
+		];
 	}
 
 	/**
-	 * Splits a date into the date and time a ticket carries separately.
+	 * Splits a date into the date and the time.
 	 *
 	 * @since TBD
 	 *
