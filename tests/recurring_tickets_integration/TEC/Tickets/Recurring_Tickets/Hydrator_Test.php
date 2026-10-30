@@ -7,6 +7,7 @@ use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
+use TEC\Tickets\Tests\Recurring_Tickets\Without_Recurrence_Tier;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
@@ -14,6 +15,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
  * A row becomes the ticket object Event Tickets expects, built from the row alone and cached.
  */
 class Hydrator_Test extends WPTestCase {
+	use Without_Recurrence_Tier;
 	use Ticket_Rows;
 	use Ticket_Maker;
 
