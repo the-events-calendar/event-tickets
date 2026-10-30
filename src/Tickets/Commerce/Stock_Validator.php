@@ -20,6 +20,8 @@ use Tribe__Utils__Array as Arr;
 use Tribe__Tickets__Tickets;
 use WP_Error;
 use WP_Post;
+use TEC\Tickets\Recurring_Tickets\Stock;
+use TEC\Tickets\Recurring_Tickets\Ticket_ID;
 
 /**
  * Class Stock_Validator.
@@ -143,6 +145,7 @@ class Stock_Validator {
 	 * Acquires a row-level lock on the ticket's stock meta using SELECT FOR UPDATE.
 	 *
 	 * @since 5.26.7
+	 * @since TBD Locks a recurring event ticket's row.
 	 *
 	 * @param int $ticket_id The ticket ID.
 	 * @param int $quantity  The requested quantity.
@@ -151,6 +154,11 @@ class Stock_Validator {
 	 */
 	protected function validate_ticket_stock_with_lock( int $ticket_id, int $quantity ) {
 		try {
+			// A recurring event ticket keeps its stock on its row: lock the row.
+			if ( Ticket_ID::is_table_ticket( $ticket_id ) ) {
+				return $this->validate_ticket_stock( $ticket_id, $quantity, tribe( Stock::class )->lock( Ticket_ID::to_row_id( $ticket_id ) ) );
+			}
+
 			$stock_meta_key = Ticket::$stock_meta_key;
 
 			// In test environments with fake transactions, skip the FOR UPDATE clause.
