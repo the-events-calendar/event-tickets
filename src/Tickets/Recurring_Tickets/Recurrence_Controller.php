@@ -100,6 +100,7 @@ final class Recurrence_Controller extends Controller_Contract {
 		remove_action( 'tec_events_custom_tables_v1_after_save_occurrences', $this->container->callback( Sync::class, 'sync_event' ), 20 );
 		remove_action( 'tribe_tickets_ticket_add', $this->container->callback( Sync::class, 'sync_saved_ticket' ) );
 		remove_action( 'tec_tickets_commerce_ticket_deleted', $this->container->callback( Sync::class, 'sync_deleted_ticket' ) );
+		remove_action( 'before_delete_post', $this->container->callback( Sync::class, 'delete_event' ) );
 		remove_action( 'tribe_events_tickets_new_ticket_buttons', $this->container->callback( Classic::class, 'render_button' ) );
 		remove_action( self::TYPE_HEADER_ACTION, $this->container->callback( Classic::class, 'render_type_header' ) );
 		remove_filter( self::WARNING_CONTEXT_FILTER, $this->container->callback( Classic::class, 'filter_warning' ), 20 );
@@ -119,6 +120,7 @@ final class Recurrence_Controller extends Controller_Contract {
 		// The tier is never registered on an ECP that lacks these actions, and naming a missing constant is fatal.
 		if ( self::ecp_has_hooks() ) {
 			remove_action( Events::AFTER_TRANSFER_OCCURRENCES_ACTION, $this->container->callback( Detach::class, 'move_rows' ) );
+			remove_action( Events::AFTER_DETACH_OCCURRENCE_ACTION, $this->container->callback( Detach::class, 'detach_rows' ) );
 		}
 	}
 
@@ -143,6 +145,7 @@ final class Recurrence_Controller extends Controller_Contract {
 		add_action( 'tec_events_custom_tables_v1_after_save_occurrences', $this->container->callback( Sync::class, 'sync_event' ), 20 );
 		add_action( 'tribe_tickets_ticket_add', $this->container->callback( Sync::class, 'sync_saved_ticket' ), 10, 2 );
 		add_action( 'tec_tickets_commerce_ticket_deleted', $this->container->callback( Sync::class, 'sync_deleted_ticket' ), 10, 2 );
+		add_action( 'before_delete_post', $this->container->callback( Sync::class, 'delete_event' ) );
 
 		$this->container->singleton( Classic::class );
 
@@ -173,6 +176,7 @@ final class Recurrence_Controller extends Controller_Contract {
 
 		add_action( 'tec_tickets_tickets_duplicated', $this->container->callback( Detach::class, 'remember_clones' ), 10, 3 );
 		add_action( Events::AFTER_TRANSFER_OCCURRENCES_ACTION, $this->container->callback( Detach::class, 'move_rows' ), 10, 3 );
+		add_action( Events::AFTER_DETACH_OCCURRENCE_ACTION, $this->container->callback( Detach::class, 'detach_rows' ), 10, 3 );
 
 		$this->container->make( Assets::class )->register();
 	}
