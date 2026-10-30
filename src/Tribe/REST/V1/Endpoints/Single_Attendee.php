@@ -433,6 +433,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	 * or hides attendees from public listing.
 	 *
 	 * @since 5.27.6
+	 * @since TBD Corrected the attendee list visibility check.
 	 *
 	 * @param int $attendee_id The attendee post ID.
 	 *
@@ -474,7 +475,6 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 			return false;
 		}
 
-		// Event must not hide attendees from public listing.
-		return ! tribe_is_truthy( get_post_meta( $event_id, '_tribe_hide_attendees_list', true ) );
+		return ! \Tribe\Tickets\Events\Attendees_List::is_hidden_on( $event );
 	}
 }
