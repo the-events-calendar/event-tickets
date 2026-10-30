@@ -8,9 +8,12 @@
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use Tribe__Cache_Listener as Cache;
 use Tribe__Utils__Array as Arr;
+use TEC\Tickets\Event;
 use TEC\Tickets\RSVP\V2\Constants;
 use TEC\Tickets\Recurring_Tickets\Hydrator;
 use TEC\Tickets\Recurring_Tickets\Ticket_ID;
+use TEC\Tickets\Commerce\Event_Provider_Heal;
+use TEC\Tickets\Commerce\Module as Commerce_Module;
 
 // phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
 
@@ -3122,6 +3125,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public function get_ticket_prices( array $prices, $post_id ) {
+			// The block editor saves an empty Event Price block as an empty cost, which is no cost at all.
+			$prices = array_filter( $prices, static fn( $price ) => '' !== $price && null !== $price );
+
 			// If value already exists, do not override it. Return it.
 			if ( ! empty( $prices ) ) {
 				return $prices;
@@ -3792,8 +3798,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			// Bail if there aren't any tickets.
-			$tickets = $this->get_tickets( $post->ID );
-			if ( empty( $tickets ) ) {
+			if ( ! $this->has_tickets_for_post_content( $post->ID ) ) {
 				return false;
 			}
 
@@ -3806,6 +3811,19 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			return true;
+		}
+
+		/**
+		 * Whether the post has tickets of this provider to show in its content.
+		 *
+		 * @since 5.30.3
+		 *
+		 * @param int $post_id The post ID.
+		 *
+		 * @return bool Whether the post has tickets of this provider to show in its content.
+		 */
+		protected function has_tickets_for_post_content( int $post_id ): bool {
+			return ! empty( $this->get_tickets( $post_id ) );
 		}
 
 		/**
@@ -4151,6 +4169,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Creates a ticket object and calls the child save_ticket function
 		 *
+		 * @since 5.30.3 Returns false, saving nothing, when the ID to update is not a ticket attached to the post.
+		 *
 		 * @param int   $post_id ID of parent "event" post.
 		 * @param array $data    Raw post data.
 		 *
@@ -4168,6 +4188,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$ticket->start_date       = null;
 			$ticket->end_date         = null;
 			$ticket->menu_order       = isset( $data['ticket_menu_order'] ) ? intval( $data['ticket_menu_order'] ) : null;
+
+			// Every save path takes the ticket ID from the request, and the caller only checked its rights on the post.
+			if ( $update && ! Event::ticket_belongs_to_post( $ticket->ID, absint( $post_id ) ) ) {
+				return false;
+			}
 
 			/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
 			$tickets_handler = tribe( 'tickets.handler' );
@@ -4424,6 +4449,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @see get_ticket_provider_instance()
 		 *
 		 * @since 4.12.3
+		 * @since 5.30.3 A post wrongly stored as Tickets Commerce heals to the provider that owns its tickets.
 		 *
 		 * @param int $post_id The post ID of the event to which the ticket is attached.
 		 *
@@ -4441,7 +4467,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$saved = get_post_meta( $post_id, $tickets_handler->key_provider_field, true );
 
 				if ( ! empty( $saved ) ) {
-					$provider = $saved;
+					// Saving an RSVP v2 used to store Tickets Commerce over the event's real provider.
+					$provider = Commerce_Module::class === $saved
+						? tribe( Event_Provider_Heal::class )->heal( (int) $post_id )
+						: $saved;
 				}
 			}
 
