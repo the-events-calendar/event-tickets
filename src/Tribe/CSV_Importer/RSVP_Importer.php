@@ -293,6 +293,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	 * Create via Commerce (V2).
 	 *
 	 * @since 5.30.0
+	 * @since 5.30.3 No longer changes the event's ticket provider to Tickets Commerce.
 	 *
 	 * @param array   $record The record data.
 	 * @param WP_Post $event  The event.
@@ -305,9 +306,6 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 
 		if ( $ticket_id ) {
 			self::$ticket_name_cache[ 'v2-' . $event->ID ] = true;
-
-			$tickets_handler = tribe( 'tickets.handler' );
-			update_post_meta( $event->ID, $tickets_handler->key_provider_field, Commerce_Module::class );
 		}
 
 		return (int) $ticket_id;

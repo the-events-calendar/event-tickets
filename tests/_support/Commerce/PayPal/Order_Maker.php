@@ -3,6 +3,7 @@
 namespace Tribe\Tickets\Test\Commerce\PayPal;
 
 use Faker;
+use TEC\Tickets\Legacy_PayPal\Cart_Reconciler;
 use Tribe__Tickets__Commerce__PayPal__Stati as Stati;
 use Tribe__Tickets__Commerce__PayPal__Main as Main;
 use Tribe__Tickets__Commerce__PayPal__Gateway as Gateway;
@@ -38,9 +39,14 @@ trait Order_Maker {
 				$ticket_qty[ $ticket_id ] = $ticket_count;
 			}
 
-			$items_data    = [];
-			$items_index   = 1;
-			$payment_gross = 0;
+			$items_data     = [];
+			$items_index    = 1;
+			$payment_gross  = 0;
+			$receiver_email = 'merchant@' . parse_url( home_url(), PHP_URL_HOST );
+			$checkout_args  = [
+				'business'      => $receiver_email,
+				'currency_code' => 'USD',
+			];
 
 			/** @var Main $paypal */
 			$paypal = tribe( 'tickets.commerce.paypal' );
@@ -78,6 +84,11 @@ trait Order_Maker {
 					"tax{$items_index}"         => '0.00',
 					"quantity{$items_index}"    => $this_ticket_qty,
 				];
+
+				$checkout_args[ "item_number_{$items_index}" ] = "{$post_id}:{$ticket_id}";
+				$checkout_args[ "quantity_{$items_index}" ]    = $this_ticket_qty;
+				$checkout_args[ "amount_{$items_index}" ]      = $ticket->price;
+
 				$items_index ++;
 			}
 
@@ -96,16 +107,19 @@ trait Order_Maker {
 			$receiver_id    = strtoupper( substr( md5( $faker->sentence ), 0, 13 ) );
 			$payer_id       = strtoupper( substr( md5( $faker->sentence ), 0, 13 ) );
 			$ipn_track_id   = substr( md5( $faker->sentence ), 0, 13 );
+			$invoice        = $faker->regexify( '[A-Za-z0-9]{12}' );
 
-			$receiver_email = 'merchant@' . parse_url( home_url(), PHP_URL_HOST );
-			$payment_date   = $faker->date( 'H:i:s M d, Y e' );
+			$payment_date = $faker->date( 'H:i:s M d, Y e' );
+
+			// The checkout records what it sends PayPal before the buyer pays.
+			tribe( Cart_Reconciler::class )->remember_checkout( $invoice, $checkout_args );
 
 			$data = [
 				'last_name'              => $faker->lastName(),
 				'shipping_method'        => 'Default',
 				'address_state'          => $faker->stateAbbr,
 				'receiver_email'         => $receiver_email,
-				'custom'                 => '{"user_id":' . $user_id . ',"tribe_handler":"tpp"}',
+				'custom'                 => '{"user_id":' . $user_id . ',"tribe_handler":"tpp","invoice":"' . $invoice . '"}',
 				'shipping_discount'      => '0.00',
 				'receiver_id'            => $receiver_id,
 				'charset'                => 'windows-1252',

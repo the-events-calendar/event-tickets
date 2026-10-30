@@ -1,5 +1,7 @@
 <?php
 
+use TEC\Tickets\Legacy_PayPal\Cart_Reconciler;
+
 class Tribe__Tickets__Commerce__PayPal__Gateway {
 
 	/**
@@ -489,6 +491,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	 * Get the PayPal cart API URL.
 	 *
 	 * @since 4.11.0
+	 * @since 5.30.3 Records what is sent to PayPal, so the payment can be checked against it.
 	 *
 	 * @param int $post_id The post ID.
 	 *
@@ -681,6 +684,9 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		 * @param WP_Post $post Post object that has tickets attached to it.
 		 */
 		$args = apply_filters( 'tribe_tickets_commerce_paypal_add_to_cart_args', $args, [], $post );
+
+		// The payment is checked against what PayPal is sent, after stock capping and filtering.
+		tribe( Cart_Reconciler::class )->remember_checkout( $invoice_number, $args );
 
 		$cart_url = add_query_arg( $args, $cart_url );
 
