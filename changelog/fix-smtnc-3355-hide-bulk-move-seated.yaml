@@ -1,0 +1,5 @@
+significance: patch
+type: fix
+entry: Hid the Move bulk action on an event's attendee list when the event has
+  seated attendees, matching the Move link already hidden on their rows.
+timestamp: 2026-10-30T22:25:55.080Z
