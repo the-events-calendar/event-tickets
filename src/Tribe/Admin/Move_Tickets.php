@@ -7,6 +7,7 @@ use Tribe__Events__Main as TEC;
 use TEC\Tickets\Admin\Attendees\Page as Attendees_Page;
 use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
 use TEC\Tickets\Event;
+use TEC\Tickets\Recurring_Tickets\Ticket_ID;
 
 /**
  * Handles moving attendees from a post to another.
@@ -609,8 +610,13 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 		$tgt_post_id = Event::filter_event_id( $tgt_event_id );
 
-		// The repository lists a Series Pass under each event of its Series, as the move dialog does.
-		if ( ! $tgt_post_id || ! tribe_tickets()->where( 'event', $tgt_post_id )->in( absint( $tgt_ticket_type_id ) )->found() ) {
+		// The repository lists a Series Pass under each event of its Series, as the move dialog does. A date's ticket is
+		// no post the repository can find: it is on the event its date belongs to.
+		$on_target = Ticket_ID::is_table_ticket( $tgt_ticket_type_id )
+			? Event::filter_event_id( $ticket_type->get_event_id() ) === $tgt_post_id
+			: tribe_tickets()->where( 'event', $tgt_post_id )->in( absint( $tgt_ticket_type_id ) )->found();
+
+		if ( ! $tgt_post_id || ! $on_target ) {
 			return 0;
 		}
 
@@ -922,7 +928,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * @return string The ticket's name.
 	 */
 	protected function ticket_title( $ticket_id ) {
-		if ( \TEC\Tickets\Recurring_Tickets\Ticket_ID::is_table_ticket( $ticket_id ) ) {
+		if ( Ticket_ID::is_table_ticket( $ticket_id ) ) {
 			$ticket = Tribe__Tickets__Tickets::load_ticket_object( (int) $ticket_id );
 
 			return $ticket ? (string) $ticket->name : '';
