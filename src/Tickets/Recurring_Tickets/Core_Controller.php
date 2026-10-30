@@ -27,6 +27,17 @@ use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
  */
 final class Core_Controller extends Controller_Contract {
 	/**
+	 * The container variable that is true once the table is registered.
+	 *
+	 * Code that reads the table in SQL of its own, rather than through the repository, checks it first.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const TABLE_READY = 'tec_tickets_recurring_tickets_table_ready';
+
+	/**
 	 * Unregisters the controller. The table and its rows are never dropped: they are tickets customers bought.
 	 *
 	 * @since TBD
@@ -65,6 +76,8 @@ final class Core_Controller extends Controller_Contract {
 
 			return;
 		}
+
+		$this->container->setVar( self::TABLE_READY, true );
 
 		/*
 		 * Hooked through container callbacks: they resolve the current instance when called, and a second
