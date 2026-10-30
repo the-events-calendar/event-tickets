@@ -6,6 +6,7 @@ use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Commerce\Order_Modifiers\Admin\Order_Modifier_Fee_Metabox;
+use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Tests\Recurring_Tickets\Recurrence_Tier_Check;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use Tribe\Tickets\Test\Commerce\OrderModifiers\Fee_Creator;
@@ -70,6 +71,73 @@ class Ticket_Type_Test extends WPTestCase {
 		$this->assertSame( 202, $edited->get_status(), wp_json_encode( $edited->get_data() ) );
 		$this->assertSame( 'General Admission, renamed', get_post( $ticket_id )->post_title );
 		$this->assertSame( Template_Guard::TICKET_TYPE, get_post_meta( $ticket_id, '_type', true ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_give_a_ticket_created_on_one_date_in_the_block_editor_to_every_date(): void {
+		$this->skip_without_recurrence_tier();
+
+		$event = $this->create_recurring_event();
+		$dates = $this->get_dates( $event );
+
+		// The block editor sends the ID in the address bar, which is the date's when editing one date.
+		$created = $this->block_editor_save( absint( $dates[1]->provisional_id ), null, 'Added from a date' );
+		$this->assertSame( 202, $created->get_status(), wp_json_encode( $created->get_data() ) );
+
+		$ticket_id = absint( get_posts(
+			[
+				'post_type' => Ticket::POSTTYPE,
+				'fields'    => 'ids',
+				's'         => 'Added from a date',
+			]
+		)[0] );
+		$this->assertSame( $event, absint( get_post_meta( $ticket_id, Ticket::$event_relation_meta_key, true ) ) );
+		$this->assertSame( Template_Guard::TICKET_TYPE, get_post_meta( $ticket_id, '_type', true ) );
+		$this->assertCount( count( $dates ), tribe( Rows::class )->get_by_template( $ticket_id ) );
+
+		$edited = $this->block_editor_save( absint( $dates[1]->provisional_id ), $ticket_id, 'Added from a date, renamed' );
+		$this->assertSame( 202, $edited->get_status(), wp_json_encode( $edited->get_data() ) );
+		$this->assertSame( $event, absint( get_post_meta( $ticket_id, Ticket::$event_relation_meta_key, true ) ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_store_a_new_ticket_sent_as_recurring_before_the_event_recurs(): void {
+		$this->skip_without_recurrence_tier();
+
+		// A new event's recurrence is only saved with the event, after its first tickets.
+		$event = tribe_events()->set_args(
+			[
+				'title'      => 'Not saved as recurring yet',
+				'status'     => 'draft',
+				'start_date' => '+1 week 10:00:00',
+				'end_date'   => '+1 week 12:00:00',
+			]
+		)->create()->ID;
+
+		$created = $this->block_editor_save( $event, null, 'Made before the recurrence', [ 'ticket_type' => Template_Guard::TICKET_TYPE ] );
+		$this->assertSame( 202, $created->get_status(), wp_json_encode( $created->get_data() ) );
+
+		$ticket_id = absint( get_posts( [ 'post_type' => Ticket::POSTTYPE, 'fields' => 'ids', 's' => 'Made before the recurrence' ] )[0] );
+		$this->assertSame( Template_Guard::TICKET_TYPE, get_post_meta( $ticket_id, '_type', true ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_change_the_type_of_a_ticket_edited_with_one(): void {
+		$event    = $this->create_recurring_event();
+		$standard = $this->create_tc_ticket( $event, 10 );
+		// A standard ticket made before the event recurred.
+		update_post_meta( $standard, '_type', 'default' );
+
+		$edited = $this->block_editor_save( $event, $standard, 'Renamed', [ 'ticket_type' => Template_Guard::TICKET_TYPE ] );
+		$this->assertSame( 202, $edited->get_status(), wp_json_encode( $edited->get_data() ) );
+
+		$this->assertSame( 'default', get_post_meta( $standard, '_type', true ) );
 	}
 
 	/**
@@ -184,10 +252,11 @@ class Ticket_Type_Test extends WPTestCase {
 	 * @param int      $event     The event.
 	 * @param int|null $ticket_id The ticket to edit, or null to create one.
 	 * @param string   $name      The ticket's name.
+	 * @param array    $extra     More body parameters, as the block editor's filters add them.
 	 *
 	 * @return \WP_REST_Response The response.
 	 */
-	private function block_editor_save( int $event, ?int $ticket_id, string $name ) {
+	private function block_editor_save( int $event, ?int $ticket_id, string $name, array $extra = [] ) {
 		$nonce_action = $ticket_id ? 'edit_ticket_nonce' : 'add_ticket_nonce';
 		$request      = new WP_REST_Request( $ticket_id ? 'PUT' : 'POST', '/tribe/tickets/v1/tickets' . ( $ticket_id ? "/{$ticket_id}" : '' ) );
 		$request->set_header( 'Content-Type', 'application/x-www-form-urlencoded' );
@@ -209,7 +278,7 @@ class Ticket_Type_Test extends WPTestCase {
 					'capacity' => 10,
 				],
 				$nonce_action => wp_create_nonce( $nonce_action ),
-			]
+			] + $extra
 		);
 
 		return rest_do_request( $request );
