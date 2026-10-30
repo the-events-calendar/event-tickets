@@ -130,6 +130,7 @@ final class Recurrence_Controller extends Controller_Contract {
 		remove_filter( 'tec_tickets_find_ticket_type_host_posts_query_args', $this->container->callback( Admin\Move::class, 'allow_dates' ), 20 );
 		remove_action( 'tribe_tickets_ticket_moved', $this->container->callback( Admin\Move::class, 'follow' ), 20 );
 		remove_filter( 'tec_events_pro_custom_tables_v1_editor_dialog_data', $this->container->callback( Admin\Dialog_Warning::class, 'add_notice' ) );
+		remove_filter( 'tec_tickets_filter_event_id', $this->container->callback( Commerce\Attendees::class, 'removed_date_event' ), 700 );
 	}
 
 	/**
@@ -203,6 +204,8 @@ final class Recurrence_Controller extends Controller_Contract {
 
 		$this->container->singleton( Admin\Dialog_Warning::class );
 		add_filter( 'tec_events_pro_custom_tables_v1_editor_dialog_data', $this->container->callback( Admin\Dialog_Warning::class, 'add_notice' ), 10, 2 );
+		// Late: no other mapping knows a removed date.
+		add_filter( 'tec_tickets_filter_event_id', $this->container->callback( Commerce\Attendees::class, 'removed_date_event' ), 700 );
 
 		$this->container->make( Assets::class )->register();
 	}
