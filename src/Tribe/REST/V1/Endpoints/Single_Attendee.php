@@ -1,5 +1,7 @@
 <?php
 
+use Tribe\Tickets\Events\Attendees_List;
+
 class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	extends Tribe__Tickets__REST__V1__Endpoints__Base
 	implements Tribe__REST__Endpoints__READ_Endpoint_Interface,
@@ -475,6 +477,6 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 			return false;
 		}
 
-		return ! \Tribe\Tickets\Events\Attendees_List::is_hidden_on( $event );
+		return ! Attendees_List::is_hidden_on( $event );
 	}
 }
