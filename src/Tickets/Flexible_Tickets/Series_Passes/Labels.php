@@ -10,6 +10,8 @@
 
 namespace TEC\Tickets\Flexible_Tickets\Series_Passes;
 
+use Error;
+
 /**
  * Class Labels.
  *
@@ -18,6 +20,15 @@ namespace TEC\Tickets\Flexible_Tickets\Series_Passes;
  * @package TEC\Tickets\Flexible_Tickets;
  */
 class Labels {
+	/**
+	 * The English help text for the default ticket type of an Event in a Series, used when its translation is malformed.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const EVENT_IN_SERIES_TEMPLATE = 'A %1$s is specific to this %2$s. You can add a %3$s from the %%s Series page.';
+
 	public function start_filtering_labels(): void {
 		add_filter( 'tribe_get_ticket_label_plural_lowercase', [
 			$this,
@@ -171,21 +182,58 @@ class Labels {
 	 * of a Series.
 	 *
 	 * @since 5.8.0
+	 * @since TBD Falls back to the English template when the translation cannot be formatted.
 	 *
 	 * @return string The template for the help text for the default ticket type in the ticket form when the Event
-	 *                is part of a Series.
+	 *                is part of a Series, with a `%s` placeholder for the Series edit link.
 	 */
 	public function get_default_ticket_type_event_in_series_template(): string {
-		return sprintf(
-			// Translators: %1$s is the ticket type label, %2$s is the Event type label, %3$s is the Series Pass type label, %4$s is the Series edit link.
+		$labels = [
+			tec_tickets_get_default_ticket_type_label_lowercase( 'ticket_type_default_header_description' ),
+			tribe_get_event_label_singular_lowercase(),
+			tec_tickets_get_series_pass_singular_uppercase( 'ticket_type_default_header_description' ),
+		];
+
+		$template = $this->format(
+			// Translators: %1$s is the ticket type label, %2$s is the Event type label, %3$s is the Series Pass type label. Keep %%s exactly as written: it becomes the Series edit link.
 			_x(
 				'A %1$s is specific to this %2$s. You can add a %3$s from the %%s Series page.',
 				'The help text for the default ticket type in the ticket form.',
 				'event-tickets'
 			),
-			tec_tickets_get_default_ticket_type_label_lowercase( 'ticket_type_default_header_description' ),
-			tribe_get_event_label_singular_lowercase(),
-			tec_tickets_get_series_pass_singular_uppercase( 'ticket_type_default_header_description' ),
+			$labels
 		);
+
+		/*
+		 * The template is formatted again with the Series edit link, here and by the block editor,
+		 * so a translation that cannot place the link falls back to English.
+		 */
+		$link_probe = '{series_link}';
+		if ( false === strpos( $this->format( $template, [ $link_probe ] ), $link_probe ) ) {
+			$template = sprintf( self::EVENT_IN_SERIES_TEMPLATE, ...$labels );
+		}
+
+		return $template;
+	}
+
+	/**
+	 * Formats a template, returning an empty string when its placeholders do not match the values.
+	 *
+	 * @since TBD
+	 *
+	 * @param string   $format The template to format.
+	 * @param string[] $values The values of the template placeholders.
+	 *
+	 * @return string The formatted template, or an empty string if the template cannot be formatted.
+	 */
+	private function format( string $format, array $values ): string {
+		try {
+			// phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- PHP 7.4 warns and returns false where PHP 8 throws.
+			$formatted = @sprintf( $format, ...$values );
+		} catch ( Error $e ) {
+			return '';
+		}
+
+		return false === $formatted ? '' : $formatted;
 	}
 }
