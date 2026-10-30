@@ -161,6 +161,27 @@ class Move_Test extends WPTestCase {
 	}
 
 	/**
+	 * @test
+	 */
+	public function it_should_refuse_a_dates_ticket_of_another_event(): void {
+		$this->skip_without_recurrence_tier();
+
+		$event = $this->create_recurring_event();
+		$this->create_tc_ticket( $event, 10 );
+		$other = $this->create_recurring_event();
+		$this->create_tc_ticket( $other, 10 );
+		$dates    = $this->get_dates( $event );
+		$order    = $this->create_row_order( [ Ticket_ID::from_row_id( (int) $this->row_on( $event, $dates[1] )->id ) => 1 ] );
+		$attendee = (int) get_posts( [ 'post_type' => 'tec_tc_attendee', 'post_parent' => $order->ID, 'post_status' => 'any', 'fields' => 'ids' ] )[0];
+		$elsewhere = Ticket_ID::from_row_id( (int) $this->row_on( $other, $this->get_dates( $other )[0] )->id );
+
+		$moved = Main::instance()->move_tickets()->move_tickets( [ $attendee ], $elsewhere, $event, (int) $dates[0]->provisional_id );
+
+		$this->assertSame( 0, $moved );
+		$this->assertSame( (string) $dates[1]->provisional_id, get_post_meta( $attendee, '_tec_tickets_commerce_event', true ) );
+	}
+
+	/**
 	 * Calls one of Move Tickets' protected methods.
 	 *
 	 * @param string $method    The method.
