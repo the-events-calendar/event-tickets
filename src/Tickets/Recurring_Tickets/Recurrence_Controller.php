@@ -122,6 +122,9 @@ final class Recurrence_Controller extends Controller_Contract {
 			remove_action( Events::AFTER_TRANSFER_OCCURRENCES_ACTION, $this->container->callback( Detach::class, 'move_rows' ) );
 			remove_action( Events::AFTER_DETACH_OCCURRENCE_ACTION, $this->container->callback( Detach::class, 'detach_rows' ) );
 		}
+		remove_filter( 'tec_tickets_find_ticket_type_host_posts_query_args', $this->container->callback( Admin\Move::class, 'allow_dates' ), 20 );
+		remove_action( 'tribe_tickets_ticket_moved', $this->container->callback( Admin\Move::class, 'follow' ), 20 );
+		remove_filter( 'tec_tickets_filter_event_id', $this->container->callback( Commerce\Attendees::class, 'removed_date_event' ), 700 );
 	}
 
 	/**
@@ -177,6 +180,16 @@ final class Recurrence_Controller extends Controller_Contract {
 		add_action( 'tec_tickets_tickets_duplicated', $this->container->callback( Detach::class, 'remember_clones' ), 10, 3 );
 		add_action( Events::AFTER_TRANSFER_OCCURRENCES_ACTION, $this->container->callback( Detach::class, 'move_rows' ), 10, 3 );
 		add_action( Events::AFTER_DETACH_OCCURRENCE_ACTION, $this->container->callback( Detach::class, 'detach_rows' ), 10, 3 );
+
+		$this->container->singleton( Admin\Move::class );
+
+		// After Series Passes, which also lets recurring events in.
+		add_filter( 'tec_tickets_find_ticket_type_host_posts_query_args', $this->container->callback( Admin\Move::class, 'allow_dates' ), 20 );
+		// After Tickets Commerce moves the attendee, at 10.
+		add_action( 'tribe_tickets_ticket_moved', $this->container->callback( Admin\Move::class, 'follow' ), 20, 3 );
+
+		// Late: no other mapping knows a removed date.
+		add_filter( 'tec_tickets_filter_event_id', $this->container->callback( Commerce\Attendees::class, 'removed_date_event' ), 700 );
 
 		$this->container->make( Assets::class )->register();
 	}

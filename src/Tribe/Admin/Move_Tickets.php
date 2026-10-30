@@ -7,6 +7,7 @@ use Tribe__Events__Main as TEC;
 use TEC\Tickets\Admin\Attendees\Page as Attendees_Page;
 use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
 use TEC\Tickets\Event;
+use TEC\Tickets\Recurring_Tickets\Ticket_ID;
 
 /**
  * Handles moving attendees from a post to another.
@@ -474,7 +475,10 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		$ticket_types = array();
 		$ticket_ids   = array_map( 'absint', array_filter( $ticket_ids, 'is_numeric' ) );
 
-		foreach ( Tribe__Tickets__Tickets::get_event_tickets( $target_post_id ) as $ticket ) {
+		// A recurring event offers its dates' tickets, never its templates.
+		$tickets = tribe( \TEC\Tickets\Recurring_Tickets\Admin\Move::class )->ticket_types( (int) $target_post_id, Tribe__Tickets__Tickets::get_event_tickets( $target_post_id ) );
+
+		foreach ( $tickets as $ticket ) {
 			if ( stripslashes( $provider ) !== $ticket->provider_class ) {
 				continue;
 			}
@@ -548,7 +552,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		$moved_to = sprintf(
 			// translators: %s is the linked title of the ticket type the tickets were assigned to.
 			_x( 'assigned to %s', 'moved tickets success message fragment', 'event-tickets' ),
-			'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $target_type_id . '&action=edit' ) ) . '" target="_blank">' . esc_html( get_the_title( $target_type_id ) ) . '</a>'
+			'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $target_type_id . '&action=edit' ) ) . '" target="_blank">' . esc_html( $this->ticket_title( $target_type_id ) ) . '</a>'
 		);
 
 		// If that ticket type is hosted by a different event post, prepend details of that also
@@ -606,8 +610,13 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 		$tgt_post_id = Event::filter_event_id( $tgt_event_id );
 
-		// The repository lists a Series Pass under each event of its Series, as the move dialog does.
-		if ( ! $tgt_post_id || ! tribe_tickets()->where( 'event', $tgt_post_id )->in( absint( $tgt_ticket_type_id ) )->found() ) {
+		// The repository lists a Series Pass under each event of its Series, as the move dialog does. A date's ticket is
+		// no post the repository can find: it is on the event its date belongs to.
+		$on_target = Ticket_ID::is_table_ticket( $tgt_ticket_type_id )
+			? Event::filter_event_id( $ticket_type->get_event_id() ) === $tgt_post_id
+			: tribe_tickets()->where( 'event', $tgt_post_id )->in( absint( $tgt_ticket_type_id ) )->found();
+
+		if ( ! $tgt_post_id || ! $on_target ) {
 			return 0;
 		}
 
@@ -709,9 +718,9 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			$history_message = sprintf(
 				__( 'This ticket was moved to %1$s %2$s from %3$s %4$s', 'event-tickets' ),
 				'<a href="' . esc_url( get_the_permalink( $tgt_event_id ) ) . '" target="_blank">' . esc_html( get_the_title( $tgt_event_id ) ) . '</a>',
-				'<a href="' . esc_url( get_the_permalink( $tgt_ticket_type_id ) ) . '" target="_blank">(' . esc_html( get_the_title( $tgt_ticket_type_id ) ) . ')</a>',
+				'<a href="' . esc_url( get_the_permalink( $tgt_ticket_type_id ) ) . '" target="_blank">(' . esc_html( $this->ticket_title( $tgt_ticket_type_id ) ) . ')</a>',
 				'<a href="' . esc_url( get_the_permalink( $src_event_id ) ) . '" target="_blank">' . esc_html( get_the_title( $src_event_id ) ) . '</a>',
-				'<a href="' . esc_url( get_the_permalink( $src_ticket_type_id ) ) . '" target="_blank">(' . esc_html( get_the_title( $src_ticket_type_id ) ) . ')</a>'
+				'<a href="' . esc_url( get_the_permalink( $src_ticket_type_id ) ) . '" target="_blank">(' . esc_html( $this->ticket_title( $src_ticket_type_id ) ) . ')</a>'
 			);
 
 			$history_data = array(
@@ -854,7 +863,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			'new_event_id'        => $tgt_event_id,
 			'new_event_name'      => get_the_title( $tgt_event_id ),
 			'ticket_type_id'      => $tgt_ticket_type_id,
-			'ticket_type_name'    => get_the_title( $tgt_ticket_type_id ),
+			'ticket_type_name'    => $this->ticket_title( $tgt_ticket_type_id ),
 			'affected_tickets'    => $affected_tickets,
 		);
 
@@ -907,6 +916,25 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 			Tribe__Post_History::load( $issued_ticket_id )->add_entry( $history_message, $history_data );
 		}
+	}
+
+	/**
+	 * Returns a ticket's name, from its ticket object when it has no post, as a recurring event ticket has not.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|string $ticket_id The ticket ID.
+	 *
+	 * @return string The ticket's name.
+	 */
+	protected function ticket_title( $ticket_id ) {
+		if ( Ticket_ID::is_table_ticket( $ticket_id ) ) {
+			$ticket = Tribe__Tickets__Tickets::load_ticket_object( (int) $ticket_id );
+
+			return $ticket ? (string) $ticket->name : '';
+		}
+
+		return get_the_title( $ticket_id );
 	}
 
 	/**
