@@ -5,6 +5,7 @@ namespace TEC\Tickets\Recurring_Tickets\Editor;
 use Codeception\TestCase\WPTestCase;
 use TEC\Events_Pro\Custom_Tables\V1\Editors\Classic\Recurrence;
 use TEC\Tickets\Event;
+use TEC\Tickets\Recurring_Tickets\Admin\Tickets_By_Date;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Template_Guard;
 use TEC\Tickets\Recurring_Tickets\Ticket_ID;
@@ -37,6 +38,40 @@ class Classic_Test extends WPTestCase {
 	public function leave_the_admin(): void {
 		set_current_screen( 'front' );
 		unset( $_GET['post'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_print_tickets_by_date_under_a_recurring_events_tickets(): void {
+		$this->skip_without_recurrence_tier();
+		$event    = $this->create_recurring_event();
+		$template = $this->create_tc_ticket( $event, 10 );
+		// As the ticket editor saves a ticket on a recurring event.
+		update_post_meta( $template, '_type', Template_Guard::TICKET_TYPE );
+
+		ob_start();
+		do_action( 'tribe_events_tickets_after_new_ticket_panel', $event );
+		$html = (string) ob_get_clean();
+
+		$this->assertSame( 1, preg_match( '#<div class="tec-tickets-by-date-root" data-tickets-by-date="([^"]+)"></div>#', $html, $matches ) );
+		$this->assertSame( tribe( Tickets_By_Date::class )->for_event( $event ), json_decode( html_entity_decode( $matches[1], ENT_QUOTES ), true ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_print_no_tickets_by_date_without_recurring_event_tickets(): void {
+		$this->skip_without_recurrence_tier();
+		$single = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$this->create_tc_ticket( $single, 10 );
+
+		foreach ( [ $single, $this->create_recurring_event() ] as $post_id ) {
+			ob_start();
+			do_action( 'tribe_events_tickets_after_new_ticket_panel', $post_id );
+
+			$this->assertStringNotContainsString( 'tec-tickets-by-date-root', (string) ob_get_clean() );
+		}
 	}
 
 	/**

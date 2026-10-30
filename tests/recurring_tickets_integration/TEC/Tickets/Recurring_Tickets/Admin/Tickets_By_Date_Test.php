@@ -97,7 +97,8 @@ class Tickets_By_Date_Test extends WPTestCase {
 		$this->assertFalse( $date['past'] );
 		$this->assertSame( 'General Admission', $ticket['name'] );
 		$this->assertSame( Ticket_ID::from_row_id( (int) $this->row_on( 0 )->id ), $ticket['id'] );
-		$this->assertSame( Value::create( 20 )->get_currency(), $ticket['price'] );
+		$this->assertSame( html_entity_decode( Value::create( 20 )->get_currency(), ENT_QUOTES, 'UTF-8' ), $ticket['price'], 'Plain text, as the section prints it.' );
+		$this->assertStringNotContainsString( '&', $ticket['price'] );
 		$this->assertNull( $ticket['regular_price'], 'No sale price.' );
 		$this->assertSame( [], $ticket['fields'], 'No attendee fields without Event Tickets Plus.' );
 	}
