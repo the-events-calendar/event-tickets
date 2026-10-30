@@ -65,6 +65,11 @@ final class Core_Controller extends Controller_Contract {
 		remove_filter( 'tribe_events_tickets_attendees_table_nav', $this->container->callback( Admin\Attendees_Page::class, 'add_date_filter' ) );
 		remove_filter( 'tec_tickets_attendees_table_query_args', $this->container->callback( Admin\Attendees_Page::class, 'narrow_to_date' ) );
 		remove_action( 'tribe_delete_post_meta_transient_' . \Tribe__Tickets__Tickets::ATTENDEES_CACHE, $this->container->callback( Admin\Attendees_Page::class, 'forget_event_cache' ) );
+		remove_filter( 'tec_tc_order_report_args', $this->container->callback( Admin\Orders_Page::class, 'filter_events' ) );
+		remove_filter( 'tec_tc_order_report_export_args', $this->container->callback( Admin\Orders_Page::class, 'filter_events' ) );
+		remove_filter( 'tec_tickets_commerce_reports_orders_table_columns', $this->container->callback( Admin\Orders_Page::class, 'add_date_column' ) );
+		remove_filter( 'tec_tickets_commerce_reports_orders_table_column', $this->container->callback( Admin\Orders_Page::class, 'render_date_column' ) );
+		remove_filter( 'tribe_events_tickets_orders_table_nav', $this->container->callback( Admin\Orders_Page::class, 'add_date_filter' ) );
 	}
 
 	/**
@@ -133,5 +138,12 @@ final class Core_Controller extends Controller_Contract {
 		add_filter( 'tribe_events_tickets_attendees_table_nav', $this->container->callback( Admin\Attendees_Page::class, 'add_date_filter' ), 10, 2 );
 		add_filter( 'tec_tickets_attendees_table_query_args', $this->container->callback( Admin\Attendees_Page::class, 'narrow_to_date' ), 10, 2 );
 		add_action( 'tribe_delete_post_meta_transient_' . \Tribe__Tickets__Tickets::ATTENDEES_CACHE, $this->container->callback( Admin\Attendees_Page::class, 'forget_event_cache' ) );
+
+		$this->container->singleton( Admin\Orders_Page::class );
+		add_filter( 'tec_tc_order_report_args', $this->container->callback( Admin\Orders_Page::class, 'filter_events' ) );
+		add_filter( 'tec_tc_order_report_export_args', $this->container->callback( Admin\Orders_Page::class, 'filter_events' ) );
+		add_filter( 'tec_tickets_commerce_reports_orders_table_columns', $this->container->callback( Admin\Orders_Page::class, 'add_date_column' ), 10, 2 );
+		add_filter( 'tec_tickets_commerce_reports_orders_table_column', $this->container->callback( Admin\Orders_Page::class, 'render_date_column' ), 10, 3 );
+		add_filter( 'tribe_events_tickets_orders_table_nav', $this->container->callback( Admin\Orders_Page::class, 'add_date_filter' ), 10, 2 );
 	}
 }
