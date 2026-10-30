@@ -1,0 +1,6 @@
+significance: patch
+type: fix
+entry: Re-enabled the Move option in the Bulk actions menu of an event's
+  attendee list when Community is active, so several attendees can be moved at
+  once again.
+timestamp: 2026-10-29T15:52:46.896Z

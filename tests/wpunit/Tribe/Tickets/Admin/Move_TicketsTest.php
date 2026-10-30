@@ -15,9 +15,11 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker as Commerce_Ticket_
 use Tribe\Tickets\Test\Commerce\Attendee_Maker as Attendee_Maker;
 use Tribe__Tickets__RSVP__Attendance_Totals as Tickets_Attendance;
 use Tribe__Tickets__Admin__Move_Tickets as Move_Tickets;
+use TEC\Tickets\Admin\Attendees\Page as Attendees_Page;
 use TEC\Tickets\Commerce\Module as Commerce;
 use TEC\Tickets\Commerce\Provider as Commerce_Provider;
 use WP_Hook;
+use WP_Screen;
 
 
 class Move_TicketsTest extends WPTestCase {
@@ -443,5 +445,101 @@ class Move_TicketsTest extends WPTestCase {
 		}
 
 		$this->assertSame( [ 'edit.php' ], $received );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_offer_bulk_move_when_the_permission_depends_on_the_event(): void {
+		$event_id = $this->factory()->event->create();
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+
+		remove_filter( 'tribe_tickets_user_can_manage_attendees', '__return_true' );
+		/* Like Community, grant attendee management per event and deny it when no event ID is given. */
+		add_filter(
+			'tribe_tickets_user_can_manage_attendees',
+			static fn( $user_can, $user_id, $checked_event_id ) => $checked_event_id === $event_id ? $user_can : false,
+			10,
+			3
+		);
+
+		$actions = $this->get_bulk_actions( $this->get_event_attendees_page_request( $event_id ), WP_Screen::get( 'edit-' . TEC::POSTTYPE ) );
+
+		$this->assertArrayHasKey( 'move', $actions );
+
+		$post_actions = $this->get_bulk_actions( [ 'post' => $event_id ], WP_Screen::get( TEC::POSTTYPE ) );
+
+		$this->assertArrayHasKey( 'move', $post_actions );
+
+		$other_event_id = $this->factory()->event->create();
+		$other_actions  = $this->get_bulk_actions( $this->get_event_attendees_page_request( $other_event_id ), WP_Screen::get( 'edit-' . TEC::POSTTYPE ) );
+
+		$this->assertArrayNotHasKey( 'move', $other_actions );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_offer_bulk_move_to_a_user_who_cannot_manage_attendees(): void {
+		$event_id = $this->factory()->event->create();
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'subscriber' ] ) );
+
+		remove_filter( 'tribe_tickets_user_can_manage_attendees', '__return_true' );
+
+		$actions = $this->get_bulk_actions( $this->get_event_attendees_page_request( $event_id ), WP_Screen::get( 'edit-' . TEC::POSTTYPE ) );
+
+		$this->assertArrayNotHasKey( 'move', $actions );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_offer_bulk_move_on_the_all_attendees_page(): void {
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+
+		$actions = $this->get_bulk_actions( [ 'page' => Attendees_Page::$slug ], WP_Screen::get( Attendees_Page::$slug ) );
+
+		$this->assertArrayNotHasKey( 'move', $actions );
+	}
+
+	/**
+	 * Returns the request variables of a single event's attendees page.
+	 *
+	 * @param int $event_id The ID of the event whose attendees page is being viewed.
+	 *
+	 * @return array{post_type: string, page: string, event_id: int} The request variables.
+	 */
+	private function get_event_attendees_page_request( int $event_id ): array {
+		return [
+			'post_type' => TEC::POSTTYPE,
+			'page'      => tribe( 'tickets.attendees' )->slug(),
+			'event_id'  => $event_id,
+		];
+	}
+
+	/**
+	 * Returns the bulk actions Move_Tickets adds on the admin page described by the request and screen.
+	 *
+	 * @param array<string,int|string> $request The request variables of the page being viewed.
+	 * @param WP_Screen                $screen  The screen of the page being viewed.
+	 *
+	 * @return array<string,string> The bulk actions, keyed by action slug.
+	 */
+	private function get_bulk_actions( array $request, WP_Screen $screen ): array {
+		$get_backup    = $_GET;
+		$screen_backup = $GLOBALS['current_screen'] ?? null;
+		$admin_pages   = tribe( 'admin.pages' );
+
+		$_GET                      = $request;
+		$GLOBALS['current_screen'] = $screen;
+		$admin_pages->determine_current_page();
+
+		try {
+			return ( new Move_Tickets() )->bulk_actions( [] );
+		} finally {
+			$_GET                      = $get_backup;
+			$GLOBALS['current_screen'] = $screen_backup;
+			$admin_pages->determine_current_page();
+		}
 	}
 }
