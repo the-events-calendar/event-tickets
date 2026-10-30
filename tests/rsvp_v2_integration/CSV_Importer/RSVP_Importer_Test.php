@@ -157,6 +157,20 @@ class RSVP_Importer_Test extends WPTestCase {
 		$this->assertEquals( '17:30:00', $ticket->end_time );
 	}
 
+	/**
+	 * @test
+	 */
+	public function it_should_keep_the_event_ticket_provider_v2(): void {
+		$event_id     = \Tribe__Events__API::createEvent( [ 'post_title' => 'V2 Event Provider' ] );
+		$provider_key = tribe( 'tickets.handler' )->key_provider_field;
+		update_post_meta( $event_id, $provider_key, 'Tribe__Tickets__Commerce__PayPal__Main' );
+
+		$ticket_id = $this->make_instance()->create_post( $this->make_record( [ 'event_name' => 'V2 Event Provider' ] ) );
+
+		$this->assertNotFalse( $ticket_id, 'Importer should create a ticket' );
+		$this->assertSame( 'Tribe__Tickets__Commerce__PayPal__Main', get_post_meta( $event_id, $provider_key, true ) );
+	}
+
 	private function make_instance(): \Tribe__Tickets__CSV_Importer__RSVP_Importer {
 		$instance = new \Tribe__Tickets__CSV_Importer__RSVP_Importer( $this->file_reader->reveal(), $this->image_uploader->reveal() );
 		$map = [
