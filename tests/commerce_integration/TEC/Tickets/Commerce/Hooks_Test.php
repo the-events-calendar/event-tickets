@@ -7,6 +7,8 @@ use TEC\Tickets\Commerce\Hooks;
 use TEC\Tickets\Commerce\Manager;
 use \TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
 use Tribe\Tests\Traits\With_Uopz;
+use TEC\Tickets\Commerce\Module;
+use Tribe__Tickets__Tickets as Tickets;
 
 class Hooks_Test extends WPTestCase {
 	use With_Uopz;
@@ -165,5 +167,33 @@ class Hooks_Test extends WPTestCase {
 
 		$this->assertTrue( $general_action_called, 'General action should be called' );
 		$this->assertTrue( $specific_action_called, 'Specific action should be called' );
+	}
+
+	/**
+	 * Another active commerce provider is the default for new events, ahead of Tickets Commerce.
+	 *
+	 * Legacy PayPal stands in for WooCommerce: it is the only other commerce provider ET's suites can load.
+	 *
+	 * @test
+	 */
+	public function it_should_default_to_another_active_commerce_provider() {
+		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
+		add_filter(
+			'tribe_tickets_get_modules',
+			static function ( array $modules ): array {
+				$modules['Tribe__Tickets__Commerce__PayPal__Main'] = tribe( 'tickets.commerce.paypal' )->plugin_name;
+
+				return $modules;
+			}
+		);
+
+		$this->assertSame( 'Tribe__Tickets__Commerce__PayPal__Main', Tickets::get_default_module() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_default_to_tickets_commerce_when_it_is_the_only_commerce_provider() {
+		$this->assertSame( Module::class, Tickets::get_default_module() );
 	}
 }
