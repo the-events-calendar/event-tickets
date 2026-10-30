@@ -31,6 +31,8 @@ class Tribe__Tickets__Commerce__PayPal__Errors {
 			'102' => esc_html( sprintf( __( 'You can\'t add more %1$s than the total remaining %1$s.', 'event-tickets' ), tribe_get_ticket_label_plural_lowercase( 'paypal_error_added_too_many' ) ) ),
 			'103' => esc_html( sprintf( __( 'You should add at least one %s.', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'paypal_error_zero_added' ) ) ),
 
+			'104' => esc_html__( 'Your payment could not be matched with your order, so no tickets were issued. Please contact the site owner.', 'event-tickets' ),
+
 			// a numeric namespace reserved for front-end messages
 			'201' => esc_html( sprintf( __( "Your order is currently processing. Once completed, you'll receive your %s(s) in an email.", 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'paypal_error_order_processing' ) ) ),
 		);
