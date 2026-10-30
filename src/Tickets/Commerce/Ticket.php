@@ -1229,6 +1229,7 @@ class Ticket extends Ticket_Data {
 	 * Process the sale price data.
 	 *
 	 * @since 5.9.0
+	 * @since 5.30.3 Discards a negative sale price.
 	 *
 	 * @param Ticket_Object       $ticket   The ticket post object.
 	 * @param array<string,mixed> $raw_data The raw data from the request.
@@ -1247,7 +1248,7 @@ class Ticket extends Ticket_Data {
 		$sale_price    = Arr::get( $raw_data, 'ticket_sale_price', false );
 		$regular_price = Arr::get( $raw_data, 'ticket_price', false );
 
-		if ( $sale_price >= $regular_price ) {
+		if ( $sale_price >= $regular_price || Value::create( $sale_price )->get_decimal() < 0 ) {
 			$this->remove_sale_price_data( $ticket );
 			return;
 		}
@@ -1307,6 +1308,7 @@ class Ticket extends Ticket_Data {
 	 * Check if a ticket is on sale.
 	 *
 	 * @since 5.9.0
+	 * @since 5.30.3 A stored negative sale price is not on sale.
 	 *
 	 * @param Ticket_Object $ticket The ticket object.
 	 *
@@ -1322,6 +1324,13 @@ class Ticket extends Ticket_Data {
 		$sale_price = get_post_meta( $ticket->ID, static::$sale_price_key, true );
 
 		if ( empty( $sale_price ) ) {
+			return false;
+		}
+
+		// A negative value saved before the save paths rejected it must not lower the price.
+		$sale_amount = $sale_price instanceof Value ? $sale_price->get_decimal() : $sale_price;
+
+		if ( is_numeric( $sale_amount ) && $sale_amount < 0 ) {
 			return false;
 		}
 
