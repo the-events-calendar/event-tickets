@@ -19,7 +19,7 @@ import { withStore } from '@moderntribe/common/hoc';
 import { selectors, constants } from '../../../../../../modules/data/blocks/ticket';
 import { hasRecurrenceRules } from '@moderntribe/common/utils/recurrence';
 
-const mapStateToProps = ( state, ownProps ) => {
+export const mapStateToProps = ( state, ownProps ) => {
 	const provider = selectors.getTicketsProvider( state );
 	const page = constants.TICKET_ORDERS_PAGE_SLUG[ provider ];
 	const isRecurring = hasRecurrenceRules( state );
@@ -33,7 +33,10 @@ const mapStateToProps = ( state, ownProps ) => {
 		showConfirm: true,
 		disableSettings: false,
 		clientId: ownProps.clientId,
-		onConfirmClick: () => {
+		onConfirmClick: ( event ) => {
+			// Focusing the button would select the Tickets block again and close the new ticket's form.
+			event?.preventDefault();
+
 			const { clientId } = ownProps;
 			const { getBlockCount } = select( 'core/block-editor' );
 			const { insertBlock } = dispatch( 'core/block-editor' );
