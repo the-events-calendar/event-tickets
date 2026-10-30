@@ -1,0 +1,5 @@
+significance: patch
+type: security
+entry: Hardened the filtering of attendee and ticket data. Props to Aaron -
+  WellKnown for reporting.
+timestamp: 2026-10-30T13:57:05.118Z

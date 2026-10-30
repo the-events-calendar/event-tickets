@@ -454,6 +454,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * Filters tickets to only get those related to posts with a specific status.
 	 *
 	 * @since 4.8
+	 * @since TBD Restricted the query to the post statuses the user can read.
 	 *
 	 * @param string|array $event_status
 	 *
@@ -476,10 +477,10 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 		}
 
 		if ( ! $can_read_private_posts ) {
-			$event_status = array_intersect( $statuses, [ 'publish' ] );
+			$statuses = array_values( array_intersect( $statuses, [ 'publish' ] ) );
 		}
 
-		if ( empty( $event_status ) ) {
+		if ( ! $statuses ) {
 			throw Tribe__Repository__Void_Query_Exception::because_the_query_would_yield_no_results( 'The user cannot read posts with the requested post statuses.' );
 		}
 
