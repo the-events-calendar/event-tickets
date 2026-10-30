@@ -88,6 +88,7 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 	 * Listens out for ajax requests to move a ticket type to a new post.
 	 *
 	 * @since 4.10.9 Use customizable ticket name functions.
+	 * @since 5.30.3    Requires the user to edit the ticket's current post and a ticketable destination.
 	 */
 	public function move_ticket_type_requests() {
 		$args = wp_parse_args( $_POST, array(
@@ -103,7 +104,6 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 
 		$ticket_type_id = absint( $args['ticket_type_id'] );
 		$destination_id = absint( $args['target_post_id'] );
-		$src_post_id    = absint( $args['src_post_id'] );
 
 		if ( ! $ticket_type_id || ! $destination_id ) {
 			wp_send_json_error(
@@ -116,6 +116,23 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 							tribe_get_ticket_label_singular_lowercase( 'move_ticket_type_error' )
 						)
 					),
+				]
+			);
+		}
+
+		// The nonce is printed for every editor user, so the move is authorized against the ticket's stored post, not the request's.
+		$ticket_type    = Tribe__Tickets__Tickets::load_ticket_object( $ticket_type_id );
+		$current_parent = $ticket_type ? absint( $ticket_type->get_event_id() ) : 0;
+
+		if (
+			! $current_parent
+			|| ! current_user_can( 'edit_post', $current_parent )
+			|| ! current_user_can( 'edit_post', $destination_id )
+			|| ! in_array( get_post_type( $destination_id ), Tribe__Tickets__Main::instance()->post_types(), true )
+		) {
+			wp_send_json_error(
+				[
+					'message' => esc_html__( 'You do not have permission to perform this action. Please reload the page.', 'event-tickets' ),
 				]
 			);
 		}
@@ -146,7 +163,7 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 					. '</p>',
 					esc_html( tribe_get_ticket_label_singular( 'move_ticket_type_success' ) ),
 					'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $ticket_type_id . '&action=edit' ) ) . '" target="_blank">' . esc_html( get_the_title( $ticket_type_id ) ) . '</a>',
-					'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $src_post_id . '&action=edit' ) ) . '" target="_blank">' . esc_html( get_the_title( $src_post_id ) ) . '</a>',
+					'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $current_parent . '&action=edit' ) ) . '" target="_blank">' . esc_html( get_the_title( $current_parent ) ) . '</a>',
 					'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $destination_id . '&action=edit' ) ) . '" target="_blank">' . esc_html( get_the_title( $destination_id ) ) . '</a>',
 					esc_html( tribe_get_ticket_label_plural_lowercase( 'move_ticket_type_success' ) ),
 					esc_html( tribe_get_ticket_label_singular_lowercase( 'move_ticket_type_success' ) )
