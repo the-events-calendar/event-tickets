@@ -278,6 +278,69 @@ final class Tickets extends Custom_Table_Repository {
 	}
 
 	/**
+	 * Points an event's rows of one date to another date.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $post_id   The event's post ID.
+	 * @param int    $from      The occurrence ID the rows point to.
+	 * @param int    $to        The occurrence ID they point to next.
+	 * @param string $start     The new date's local start.
+	 * @param string $start_utc The new date's UTC start.
+	 *
+	 * @return void
+	 */
+	public function repoint( int $post_id, int $from, int $to, string $start, string $start_utc ): void {
+		$rows = $this->get_by( 'occurrence_id', $from );
+
+		DB::update(
+			Tickets_Table::table_name(),
+			[
+				'occurrence_id'        => $to,
+				'occurrence_start'     => $start,
+				'occurrence_start_utc' => $start_utc,
+			],
+			[
+				'post_id'       => $post_id,
+				'occurrence_id' => $from,
+			]
+		);
+
+		foreach ( $rows as $row ) {
+			$this->forget( (int) $row->id );
+		}
+
+		$this->occurrence_rows = [];
+	}
+
+	/**
+	 * Moves rows to another event and template.
+	 *
+	 * @since TBD
+	 *
+	 * @param int[] $row_ids     The row IDs.
+	 * @param int   $post_id     The event they belong to next.
+	 * @param int   $template_id The template they belong to next.
+	 *
+	 * @return void
+	 */
+	public function move( array $row_ids, int $post_id, int $template_id ): void {
+		$row_ids = array_values( array_filter( array_map( 'intval', $row_ids ) ) );
+
+		if ( ! $row_ids ) {
+			return;
+		}
+
+		$placeholders = implode( ', ', array_fill( 0, count( $row_ids ), '%d' ) );
+		DB::query(
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- One placeholder per ID.
+			DB::prepare( "UPDATE %i SET post_id = %d, parent_id = %d WHERE id IN ({$placeholders})", Tickets_Table::table_name(), $post_id, $template_id, ...$row_ids )
+		);
+
+		array_map( [ $this, 'forget' ], $row_ids );
+	}
+
+	/**
 	 * Deletes rows by ID.
 	 *
 	 * @since TBD

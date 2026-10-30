@@ -15,6 +15,7 @@ use Tribe\Tickets\Promoter\Triggers\Dispatcher;
 $plugins_dir = dirname( __DIR__, 3 );
 Autoload::addNamespace( 'Tribe\Events\Test', $plugins_dir . '/the-events-calendar/tests/_support' );
 Autoload::addNamespace( 'Tribe\Events_Pro\Tests', $plugins_dir . '/events-pro/tests/_support' );
+Autoload::addNamespace( 'TEC\Events_Pro\Custom_Tables\V1', $plugins_dir . '/events-pro/tests/_support/ct1' );
 
 // Every recurring event sits in a Series: make Series ticketable, so Series Passes sell next to recurring event tickets.
 $ticketable_post_types   = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
