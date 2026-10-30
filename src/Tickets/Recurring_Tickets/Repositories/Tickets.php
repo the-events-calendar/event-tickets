@@ -37,6 +37,15 @@ final class Tickets extends Custom_Table_Repository {
 	 */
 	private const PAGE_SIZE = 200;
 
+	/**
+	 * How many dates one priming query reads.
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	private const PRIME_CHUNK = 500;
+
 
 	/**
 	 * The rows read in this request, by ID; null for an ID without a row.
@@ -227,6 +236,45 @@ final class Tickets extends Custom_Table_Repository {
 	 */
 	public function delete_by_post( int $post_id ): int {
 		return $this->delete_by( 'post_id', $post_id );
+	}
+
+	/**
+	 * Reads the rows of many dates in one query, so that `get_by_occurrence()` finds them in memory.
+	 *
+	 * @since TBD
+	 *
+	 * @param int[] $occurrence_ids The occurrence IDs; those already read in this request are skipped.
+	 *
+	 * @return void
+	 */
+	public function prime_occurrences( array $occurrence_ids ): void {
+		$occurrence_ids = array_values( array_diff( array_unique( array_map( 'intval', $occurrence_ids ) ), array_keys( $this->occurrence_rows ), [ 0 ] ) );
+
+		foreach ( array_chunk( $occurrence_ids, self::PRIME_CHUNK ) as $chunk ) {
+			foreach ( $chunk as $occurrence_id ) {
+				$this->occurrence_rows[ $occurrence_id ] = [];
+			}
+
+			$where = [
+				[
+					'column'   => 'occurrence_id',
+					'value'    => $chunk,
+					'operator' => 'IN',
+				],
+			];
+			$page  = 1;
+
+			do {
+				$batch = Tickets_Table::paginate( $where, self::PAGE_SIZE, $page++ );
+
+				foreach ( $batch as $row ) {
+					$this->prime( $row );
+					$this->occurrence_rows[ (int) $row->occurrence_id ][] = (int) $row->id;
+				}
+
+				$full = count( $batch ) === self::PAGE_SIZE;
+			} while ( $full );
+		}
 	}
 
 	/**
