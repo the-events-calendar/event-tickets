@@ -164,26 +164,24 @@ class Assets_Test extends Controller_Test_Case {
 	}
 
 	/**
-	 * @return Generator<string,array{0: string, 1: string, 2: string, 3: string}>
+	 * @return Generator<string,array{0: string, 1: string}>
 	 */
 	public function tec_date_formats_provider(): Generator {
-		yield 'set' => [ 'j/n/Y', 'j/n', 'j/n/Y', 'j/n' ];
-		// The block editor falls back to the same formats, so both editors show the same text.
-		yield 'blank' => [ '', '', 'F j, Y', 'F j' ];
+		yield 'set' => [ 'j/n/Y', 'j/n/Y' ];
+		// The block editor falls back to the same format, so both editors show the same text.
+		yield 'blank' => [ '', 'F j, Y' ];
 	}
 
 	/**
 	 * @test
 	 * @dataProvider tec_date_formats_provider
 	 */
-	public function should_localize_the_tec_date_formats( string $with_year, string $no_year, string $expected_with_year, string $expected_no_year ): void {
+	public function should_localize_the_tec_date_format_with_the_year( string $with_year, string $expected ): void {
 		tribe_update_option( 'dateWithYearFormat', $with_year );
-		tribe_update_option( 'dateWithoutYearFormat', $no_year );
 
 		$data = $this->get_localized_data();
 
-		$this->assertSame( $expected_with_year, $data['dateWithYear'] );
-		$this->assertSame( $expected_no_year, $data['dateNoYear'] );
+		$this->assertSame( $expected, $data['dateWithYear'] );
 	}
 
 	/**
@@ -430,21 +428,17 @@ class Assets_Test extends Controller_Test_Case {
 	 */
 	public function should_localize_the_helper_text_formats_to_the_block_editor(): void {
 		tribe_update_option( 'dateWithYearFormat', 'd/m/Y' );
-		tribe_update_option( 'dateWithoutYearFormat', 'd/m' );
 		update_option( 'time_format', 'H:i' );
 
 		$data = $this->get_block_editor_localized_data();
 
 		$this->assertSame(
 			[
-				'dateWithYear' => tribe_get_date_format( true ),
-				'dateNoYear'   => tribe_get_date_format( false ),
+				'dateWithYear' => 'd/m/Y',
 				'time'         => 'H:i',
 			],
 			$data['formats']
 		);
-		$this->assertSame( 'd/m/Y', $data['formats']['dateWithYear'] );
-		$this->assertSame( 'd/m', $data['formats']['dateNoYear'] );
 	}
 
 	/**
@@ -499,7 +493,7 @@ class Assets_Test extends Controller_Test_Case {
 	 * The data is read from the registered asset: the library prints each localized object once per request, so
 	 * printing the script would only show it to the first test.
 	 *
-	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, windows: array<string,array{endsBeforeStart: string, outsideParent?: string, valueOutOfRange: string}>}} The localized data.
+	 * @return array{timeFormat: string, dateWithYear: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, windows: array<string,array{endsBeforeStart: string, outsideParent?: string, valueOutOfRange: string}>}} The localized data.
 	 */
 	private function get_localized_data(): array {
 		$this->make_controller()->register();
@@ -515,7 +509,7 @@ class Assets_Test extends Controller_Test_Case {
 	/**
 	 * Builds the data the Ticket block script is localized with, as the browser receives it.
 	 *
-	 * @return array{windowDefaults: array<string,array{start: array{mode: string, value: int, unit: int, anchor?: string}, end: array{mode: string, value: int, unit: int, anchor?: string}}>, windowErrorTexts: array<string,array{endsBeforeStart: string, outsideParent?: string, valueOutOfRange: string}>, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, dateNoYear: string, time: string}} The localized data.
+	 * @return array{windowDefaults: array<string,array{start: array{mode: string, value: int, unit: int, anchor?: string}, end: array{mode: string, value: int, unit: int, anchor?: string}}>, windowErrorTexts: array<string,array{endsBeforeStart: string, outsideParent?: string, valueOutOfRange: string}>, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, time: string}} The localized data.
 	 */
 	private function get_block_editor_localized_data(): array {
 		$this->make_controller()->register();
@@ -529,7 +523,7 @@ class Assets_Test extends Controller_Test_Case {
 	 * @param string $handle      The script handle.
 	 * @param string $object_name The name of the localized object.
 	 *
-	 * @return array{timeFormat: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, windows: array<string,array{endsBeforeStart: string, outsideParent?: string, valueOutOfRange: string}>}}|array{windowDefaults: array<string,array{start: array{mode: string, value: int, unit: int, anchor?: string}, end: array{mode: string, value: int, unit: int, anchor?: string}}>, windowErrorTexts: array<string,array{endsBeforeStart: string, outsideParent?: string, valueOutOfRange: string}>, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, dateNoYear: string, time: string}} The localized data of the classic or the Ticket block script.
+	 * @return array{timeFormat: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, windows: array<string,array{endsBeforeStart: string, outsideParent?: string, valueOutOfRange: string}>}}|array{windowDefaults: array<string,array{start: array{mode: string, value: int, unit: int, anchor?: string}, end: array{mode: string, value: int, unit: int, anchor?: string}}>, windowErrorTexts: array<string,array{endsBeforeStart: string, outsideParent?: string, valueOutOfRange: string}>, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, time: string}} The localized data of the classic or the Ticket block script.
 	 */
 	private function read_localized_data( string $handle, string $object_name ): array {
 		$asset     = Asset_Registry::init()->get( $handle );

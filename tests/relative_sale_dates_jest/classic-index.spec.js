@@ -81,7 +81,7 @@ function renderListRow() {
 		end: { mode: 'default' },
 	} ).replace( /"/g, '&quot;' );
 
-	return `<div id="list-row-dates" data-relative-sale-dates="${ rule }" data-sale-start="2099-06-10" data-sale-end="2099-06-24">stored</div>`;
+	return `<div id="list-row-dates" data-relative-sale-dates="${ rule }" data-sale-start="2099-06-10 19:00:00" data-sale-end="2099-06-24 19:00:00">stored</div>`;
 }
 
 /**
@@ -349,7 +349,6 @@ describe( 'classic editor script', () => {
 		window.tec.tickets.relativeSaleDates.classicData = {
 			timeFormat: 'g:i a',
 			dateWithYear: 'F j, Y',
-			dateNoYear: 'F j',
 			timezones: {},
 			allDay: { start: '00:00:00', end: '23:59:59', endDays: 0 },
 			text: {
@@ -636,15 +635,16 @@ describe( 'classic editor script', () => {
 		renderEventForm();
 		await loadScript();
 
-		expect( getListRowText() ).toBe( 'June 10, 2099 - June 24, 2099' );
+		expect( getListRowText() ).toBe( 'June 10, 2099 7:00 pm - June 24, 2099 7:00 pm' );
 	} );
 
-	it( 'should write the sale dates of a listed ticket in the TEC date format with the year', async () => {
+	it( 'should write the sale dates of a listed ticket in the TEC date format with the year and the site time format', async () => {
 		window.tec.tickets.relativeSaleDates.classicData.dateWithYear = 'j F Y';
+		window.tec.tickets.relativeSaleDates.classicData.timeFormat = 'H:i';
 		renderEventForm();
 		await loadScript();
 
-		expect( getListRowText() ).toBe( '10 June 2099 - 24 June 2099' );
+		expect( getListRowText() ).toBe( '10 June 2099 19:00 - 24 June 2099 19:00' );
 	} );
 
 	it( 'should update the sale dates of a listed ticket when the event date changes', async () => {
@@ -653,7 +653,7 @@ describe( 'classic editor script', () => {
 
 		jQuery( '#EventStartDate' ).val( '6/30/2099' ).trigger( 'change' );
 
-		expect( getListRowText() ).toBe( 'June 16, 2099 - June 30, 2099' );
+		expect( getListRowText() ).toBe( 'June 16, 2099 7:00 pm - June 30, 2099 7:00 pm' );
 	} );
 
 	it( 'should keep the sale dates of a listed ticket when a field of the ticket form changes', async () => {
@@ -662,7 +662,7 @@ describe( 'classic editor script', () => {
 
 		jQuery( '#ticket_sales_start_value' ).val( '3' ).trigger( 'change' );
 
-		expect( getListRowText() ).toBe( 'June 10, 2099 - June 24, 2099' );
+		expect( getListRowText() ).toBe( 'June 10, 2099 7:00 pm - June 24, 2099 7:00 pm' );
 	} );
 
 	it( 'should keep the server text of a row whose rule cannot be read, and still update the other rows', async () => {
@@ -671,7 +671,7 @@ describe( 'classic editor script', () => {
 		await loadScript();
 
 		expect( document.getElementById( 'broken-row' ).textContent ).toBe( 'Server text' );
-		expect( getListRowText() ).toBe( 'June 10, 2099 - June 24, 2099' );
+		expect( getListRowText() ).toBe( 'June 10, 2099 7:00 pm - June 24, 2099 7:00 pm' );
 	} );
 
 	it( 'should write the sale dates of a list the editor replaced', async () => {
@@ -682,7 +682,7 @@ describe( 'classic editor script', () => {
 		jQuery( '#EventStartDate' ).val( '6/30/2099' );
 		hooks.doAction( 'tec.tickets.admin.panels.refreshed', {} );
 
-		expect( getListRowText() ).toBe( 'June 16, 2099 - June 30, 2099' );
+		expect( getListRowText() ).toBe( 'June 16, 2099 7:00 pm - June 30, 2099 7:00 pm' );
 	} );
 
 	it( 'should show the sale price of a listed ticket on a day its relative sale price applies', async () => {

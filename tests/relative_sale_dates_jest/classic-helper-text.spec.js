@@ -9,7 +9,6 @@ global.DateFormatter = require( 'php-date-formatter' );
 
 const SETTINGS = {
 	dateWithYear: 'F j, Y',
-	dateNoYear: 'F j',
 	timeFormat: 'g:i a',
 	dateSettings: {},
 };
@@ -21,28 +20,20 @@ const SETTINGS = {
 const TIMEZONE = 'Pacific/Kiritimati';
 
 describe( 'formatHelperText', () => {
-	it( 'should leave the year out of a date in the current year', () => {
-		const date = moment.tz( '2027-06-10 19:00:00', TIMEZONE );
-
-		expect( formatHelperText( 'Sales start %1$s at %2$s', date, SETTINGS, 2027 ) ).toBe(
-			'Sales start June 10 at 7:00 pm'
-		);
-	} );
-
-	it( 'should show the year of a date in another year', () => {
+	it( 'should show the date with its year, and the time', () => {
 		const date = moment.tz( '2028-01-05 08:30:00', TIMEZONE );
 
-		expect( formatHelperText( 'Sales end %1$s at %2$s', date, SETTINGS, 2027 ) ).toBe(
+		expect( formatHelperText( 'Sales end %1$s at %2$s', date, SETTINGS ) ).toBe(
 			'Sales end January 5, 2028 at 8:30 am'
 		);
 	} );
 
 	it( 'should follow the date and time formats of the site', () => {
 		const date = moment.tz( '2027-06-10 19:00:00', TIMEZONE );
-		const settings = { ...SETTINGS, dateNoYear: 'd/m', timeFormat: 'H:i' };
+		const settings = { ...SETTINGS, dateWithYear: 'd/m/Y', timeFormat: 'H:i' };
 
-		expect( formatHelperText( 'Sales start %1$s at %2$s', date, settings, 2027 ) ).toBe(
-			'Sales start 10/06 at 19:00'
+		expect( formatHelperText( 'Sales start %1$s at %2$s', date, settings ) ).toBe(
+			'Sales start 10/06/2027 at 19:00'
 		);
 	} );
 
@@ -50,8 +41,8 @@ describe( 'formatHelperText', () => {
 		// This file runs in New York, which skips from 02:00 to 03:00 that night; London does not.
 		const date = moment.tz( '2027-03-14 02:30:00', 'Europe/London' );
 
-		expect( formatHelperText( 'Sales start %1$s at %2$s', date, SETTINGS, 2027 ) ).toBe(
-			'Sales start March 14 at 2:30 am'
+		expect( formatHelperText( 'Sales start %1$s at %2$s', date, SETTINGS ) ).toBe(
+			'Sales start March 14, 2027 at 2:30 am'
 		);
 	} );
 } );

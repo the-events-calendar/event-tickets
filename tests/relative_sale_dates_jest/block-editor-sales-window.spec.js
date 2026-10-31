@@ -417,13 +417,13 @@ describe( 'the Ticket block sales window options', () => {
 			expect( getHelperTexts() ).toStrictEqual( [ 'Sales end October 20, 2040 at 6:00 pm' ] );
 		} );
 
-		it( 'should leave the year out of a date in the current year', () => {
+		it( 'should show the year of a date in the current year', () => {
 			jest.useFakeTimers( { now: new Date( '2040-03-01T12:00:00Z' ) } );
 			renderSalesWindow( newClientId() );
 
 			change( SelectControl, START_LABELS.mode, 'relative' );
 
-			expect( getHelperTexts() ).toStrictEqual( [ 'Sales start October 6 at 7:00 pm' ] );
+			expect( getHelperTexts() ).toStrictEqual( [ 'Sales start October 6, 2040 at 7:00 pm' ] );
 		} );
 
 		it( 'should work the date out again when the event date changes, without saving', () => {
@@ -448,22 +448,6 @@ describe( 'the Ticket block sales window options', () => {
 			change( SelectControl, START_LABELS.mode, 'relative' );
 
 			expect( getHelperTexts() ).toStrictEqual( [ 'Sales start October 6, 2040 at 7:00 pm' ] );
-		} );
-
-		it( 'should take the current year in the event timezone', () => {
-			// Still 2040 in the browser's UTC, already 2041 on Kiritimati, 14 hours ahead.
-			jest.useFakeTimers( { now: new Date( '2040-12-31T12:00:00Z' ) } );
-			commonStore = setEventState( {
-				...DEFAULT_EVENT,
-				start: '2041-01-20 19:00:00',
-				end: '2041-01-20 22:00:00',
-				timeZone: 'Pacific/Kiritimati',
-			} );
-			renderSalesWindow( newClientId() );
-
-			change( SelectControl, START_LABELS.mode, 'relative' );
-
-			expect( getHelperTexts() ).toStrictEqual( [ 'Sales start January 6 at 7:00 pm' ] );
 		} );
 
 		it( 'should keep the helper region mounted, so screen readers announce the date when it appears', () => {

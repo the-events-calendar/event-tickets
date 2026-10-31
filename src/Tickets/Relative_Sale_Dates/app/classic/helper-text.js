@@ -4,18 +4,12 @@
  * @since TBD
  */
 
-/**
- * Internal dependencies
- */
-import { getHelperDateFormat } from '../helper-date-format';
-
 /** @typedef {import( 'moment' ).Moment} Moment */
 
 /**
  * @typedef {Object} HelperTextSettings
  *
- * @property {string} dateWithYear The date format of a date in another year, in PHP date format.
- * @property {string} dateNoYear   The date format of a date in the current year, in PHP date format.
+ * @property {string} dateWithYear The TEC date format with the year, in PHP date format.
  * @property {string} timeFormat   The site time format, in PHP date format.
  * @property {Object} dateSettings The translated day and month names `DateFormatter` formats with.
  */
@@ -23,29 +17,25 @@ import { getHelperDateFormat } from '../helper-date-format';
 /**
  * Fills a helper text template with a sales date.
  *
- * The year is left out of a date in the current year, as the server formats dates.
- *
  * @since TBD
  *
- * @param {string}             template    The text, with `%1$s` for the date and `%2$s` for the time.
- * @param {Moment}             date        The sales date, in the event timezone.
- * @param {HelperTextSettings} settings    The date and time formats.
- * @param {number}             currentYear The current year.
+ * @param {string}             template The text, with `%1$s` for the date and `%2$s` for the time.
+ * @param {Moment}             date     The sales date, in the event timezone.
+ * @param {HelperTextSettings} settings The date and time formats.
  *
  * @return {string} The helper text.
  */
-export function formatHelperText( template, date, settings, currentYear ) {
+export function formatHelperText( template, date, settings ) {
 	const formatter = new window.DateFormatter( { dateSettings: settings.dateSettings } );
 	const wallClock = toWallClockDate( date );
-	const dateFormat = getHelperDateFormat( date, settings, currentYear );
 
 	return template
-		.replace( '%1$s', formatter.formatDate( wallClock, dateFormat ) )
+		.replace( '%1$s', formatter.formatDate( wallClock, settings.dateWithYear ) )
 		.replace( '%2$s', formatter.formatDate( wallClock, settings.timeFormat ) );
 }
 
 /**
- * Builds the `Date` `DateFormatter` reads the event's wall-clock time from.
+ * Builds the `Date` `DateFormatter` reads a date's wall-clock time from.
  *
  * `DateFormatter` reads a date through its local getters. A `Date` built from the wall-clock time in the browser's own
  * timezone moves a time that timezone's clocks skip, so the date is built in UTC, which skips none, and its local
@@ -53,11 +43,11 @@ export function formatHelperText( template, date, settings, currentYear ) {
  *
  * @since TBD
  *
- * @param {Moment} date The date, in the event timezone.
+ * @param {Moment} date The date, in the event timezone, or in UTC for a stored ticket date.
  *
- * @return {Date} A date whose local getters give the event's wall-clock date and time.
+ * @return {Date} A date whose local getters give the wall-clock date and time of `date`.
  */
-function toWallClockDate( date ) {
+export function toWallClockDate( date ) {
 	const wallClock = new Date(
 		Date.UTC( date.year(), date.month(), date.date(), date.hours(), date.minutes(), date.seconds() )
 	);
