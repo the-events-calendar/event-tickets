@@ -11,6 +11,7 @@ export const DEFAULT_STATE = {
 	ticketId: null,
 	clientId: null,
 	isSubmitting: false,
+	errorMessage: '',
 };
 
 export default function modal( state = DEFAULT_STATE, action ) {
@@ -19,15 +20,23 @@ export default function modal( state = DEFAULT_STATE, action ) {
 			return {
 				...state,
 				...action.payload,
+				errorMessage: '',
 			};
 
 		case types.MOVE_TICKET:
 			return {
 				...state,
 				isSubmitting: true,
+				errorMessage: '',
 			};
 
 		case types.MOVE_TICKET_ERROR:
+			return {
+				...state,
+				isSubmitting: false,
+				errorMessage: action.message || '',
+			};
+
 		case types.MOVE_TICKET_SUCCESS:
 			return {
 				...state,

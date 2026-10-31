@@ -2,6 +2,7 @@
  * External Dependencies
  */
 import { Modal, MenuGroup, MenuItemsChoice, Button, Notice, Spinner } from '@wordpress/components';
+import { decodeEntities } from '@wordpress/html-entities';
 import { __ } from '@wordpress/i18n';
 import { Input, Select } from '@moderntribe/common/elements';
 import React, { PureComponent } from 'react';
@@ -10,6 +11,7 @@ import './style.pcss';
 
 export default class MoveModal extends PureComponent {
 	static propTypes = {
+		errorMessage: PropTypes.string,
 		hasSelectedPost: PropTypes.bool.isRequired,
 		hideModal: PropTypes.func.isRequired,
 		initialize: PropTypes.func.isRequired,
@@ -83,6 +85,12 @@ export default class MoveModal extends PureComponent {
 				{ /* eslint-disable-next-line jsx-a11y/label-has-associated-control -- label heads a choice group, not a single control */ }
 				<label>{ __( 'Select the post you wish to move the ticket type to:', 'event-tickets' ) }</label>
 				{ this.renderPostTypes() }
+
+				{ this.props.errorMessage && (
+					<Notice isDismissible={ false } status="error">
+						{ decodeEntities( this.props.errorMessage ) }
+					</Notice>
+				) }
 
 				<footer>
 					<Button

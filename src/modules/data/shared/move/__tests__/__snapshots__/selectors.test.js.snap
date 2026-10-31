@@ -3,6 +3,7 @@
 exports[`Move Selectors Default - _getModal 1`] = `
 {
   "clientId": null,
+  "errorMessage": "",
   "isSubmitting": false,
   "post_type": "all",
   "search_terms": "",
@@ -33,6 +34,8 @@ exports[`Move Selectors Default - _getUI 1`] = `
 
 exports[`Move Selectors Default - getModalClientId 1`] = `null`;
 
+exports[`Move Selectors Default - getModalErrorMessage 1`] = `""`;
+
 exports[`Move Selectors Default - getModalPostType 1`] = `"all"`;
 
 exports[`Move Selectors Default - getModalSearch 1`] = `""`;
@@ -45,6 +48,7 @@ exports[`Move Selectors Default - getMove 1`] = `
 {
   "modal": {
     "clientId": null,
+    "errorMessage": "",
     "isSubmitting": false,
     "post_type": "all",
     "search_terms": "",
@@ -106,5 +110,3 @@ exports[`Move Selectors getPostTypeOptions 1`] = `
   },
 ]
 `;
-
-exports[`Move Selectors hasSelectedPost 1`] = `true`;

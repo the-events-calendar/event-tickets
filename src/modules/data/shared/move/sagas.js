@@ -9,6 +9,7 @@ import { delay } from 'redux-saga';
  * Wordpress dependencies
  */
 import { select as wpSelect } from '@wordpress/data';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -108,6 +109,8 @@ export function* fetchPostChoices( { ignore, post_type, search_terms = '' } ) {
 /**
  * Moves ticket/RSVP from one post to another
  *
+ * @since TBD A move the server rejects is reported as an error, with a message for the user.
+ *
  * @yield
  * @param {Object} args                The move arguments.
  * @param {number} args.src_post_id    The source post ID.
@@ -115,16 +118,30 @@ export function* fetchPostChoices( { ignore, post_type, search_terms = '' } ) {
  * @param {number} args.target_post_id The target post ID.
  */
 export function* moveTicket( { src_post_id, ticket_type_id, target_post_id } ) {
+	const defaultErrorMessage = __(
+		'The move could not be completed. Please reload the page and try again.',
+		'event-tickets'
+	);
+
 	try {
 		yield put( {
 			type: types.MOVE_TICKET,
 		} );
-		const { data } = yield call( _fetch, {
+		const { success, data } = yield call( _fetch, {
 			action: 'move_ticket_type',
 			src_post_id,
 			ticket_type_id,
 			target_post_id,
 		} );
+
+		if ( ! success ) {
+			yield put( {
+				type: types.MOVE_TICKET_ERROR,
+				message: data?.message || defaultErrorMessage,
+			} );
+			return;
+		}
+
 		yield put( {
 			type: types.MOVE_TICKET_SUCCESS,
 			data,
@@ -134,6 +151,7 @@ export function* moveTicket( { src_post_id, ticket_type_id, target_post_id } ) {
 		yield put( {
 			type: types.MOVE_TICKET_ERROR,
 			error,
+			message: defaultErrorMessage,
 		} );
 	}
 }
