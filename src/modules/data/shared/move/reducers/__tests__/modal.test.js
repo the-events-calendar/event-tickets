@@ -43,4 +43,10 @@ describe( 'Move modal reducer', () => {
 		const state = { ...DEFAULT_STATE, errorMessage: 'The move failed.' };
 		expect( reducer( state, { type: types.MOVE_TICKET } ).errorMessage ).toBe( '' );
 	} );
+	it( 'should clear the error message when the modal data changes', () => {
+		const state = { ...DEFAULT_STATE, errorMessage: 'The move failed.' };
+		const newState = reducer( state, actions.setModalData( { target_post_id: '12' } ) );
+		expect( newState.errorMessage ).toBe( '' );
+		expect( newState.target_post_id ).toBe( '12' );
+	} );
 } );
