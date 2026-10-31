@@ -513,7 +513,7 @@ class Attendee {
 	 */
 	private function event_has_seated_attendees( int $event_id ): bool {
 		$seated_ticket_ids = array_filter(
-			tribe_tickets()->where( 'event', $event_id )->get_ids(),
+			tribe_tickets()->where( 'event', $event_id )->per_page( -1 )->get_ids(),
 			static fn( int $ticket_id ): bool => tribe_is_truthy( get_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true ) )
 		);
 

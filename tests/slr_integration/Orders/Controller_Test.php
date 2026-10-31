@@ -369,6 +369,32 @@ class Controller_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 *
+	 * It should remove the bulk Move action when the seated ticket is past the first page of the event's tickets.
+	 */
+	public function it_should_remove_bulk_move_for_a_seated_ticket_past_the_first_page_of_tickets(): void {
+		$_GET['page'] = 'tickets-attendees';
+		$this->make_controller()->register();
+
+		$event_id = $this->create_event_for_bulk_move( true );
+
+		$tickets_per_page = get_option( 'posts_per_page' );
+
+		for ( $i = 0; $i < $tickets_per_page; $i++ ) {
+			$this->create_tc_ticket( $event_id );
+		}
+
+		$this->create_attendee_for_ticket( $this->create_seated_ticket( $event_id ), $event_id );
+
+		$_GET['event_id'] = $event_id;
+
+		$actions = apply_filters( 'tribe_events_tickets_attendees_table_bulk_actions', [ 'move' => 'Move' ] );
+
+		$this->assertArrayNotHasKey( 'move', $actions );
+	}
+
+	/**
+	 * @test
+	 *
 	 * It should keep the bulk Move action when an Attendee keeps a seat label after moving to a regular ticket.
 	 */
 	public function it_should_keep_bulk_move_for_a_seat_label_on_a_regular_ticket_attendee(): void {
