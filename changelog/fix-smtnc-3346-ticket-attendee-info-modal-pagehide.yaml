@@ -1,0 +1,5 @@
+significance: patch
+type: fix
+entry: Closed the block editor's Attendee Information modal after its fields are
+  saved, which kept showing a loading spinner in current browsers.
+timestamp: 2026-10-29T18:44:48.418Z
