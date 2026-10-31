@@ -174,6 +174,29 @@ class Attendee {
 	}
 
 	/**
+	 * Removes the Move bulk action from the attendee list of an event that has seated attendees.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,string> $actions The bulk actions available on the Attendees table.
+	 *
+	 * @return array<string,string> The filtered bulk actions.
+	 */
+	public function remove_move_bulk_action( array $actions ): array {
+		if ( ! isset( $actions['move'] ) ) {
+			return $actions;
+		}
+
+		$event_id = absint( tribe_get_request_var( 'event_id', tribe_get_request_var( 'post', 0 ) ) );
+
+		if ( $event_id && $this->event_has_seated_attendees( $event_id ) ) {
+			unset( $actions['move'] );
+		}
+
+		return $actions;
+	}
+
+	/**
 	 * Handle attendee delete.
 	 *
 	 * @param int          $attendee_id The Attendee ID.
@@ -475,5 +498,29 @@ class Attendee {
 		$cache[ $key ]        = $has_seated_attendees ? '1' : '0';
 
 		return $has_seated_attendees;
+	}
+
+	/**
+	 * Whether an event has Attendees holding a seated ticket.
+	 *
+	 * The test is the ticket, as in the row action: a seat label stays on an Attendee moved to a regular ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id The event ID.
+	 *
+	 * @return bool Whether the event has Attendees holding a seated ticket.
+	 */
+	private function event_has_seated_attendees( int $event_id ): bool {
+		$seated_ticket_ids = array_filter(
+			tribe_tickets()->where( 'event', $event_id )->per_page( -1 )->get_ids(),
+			static fn( int $ticket_id ): bool => tribe_is_truthy( get_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true ) )
+		);
+
+		if ( ! $seated_ticket_ids ) {
+			return false;
+		}
+
+		return tribe_attendees()->where( 'event', $event_id )->where( 'ticket', $seated_ticket_ids )->found() > 0;
 	}
 }
