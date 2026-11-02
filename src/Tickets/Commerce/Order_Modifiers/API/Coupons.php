@@ -625,7 +625,7 @@ class Coupons extends Base_API {
 	 * Updates the Stripe payment intent so it matches the current cart.
 	 *
 	 * @since 5.29.5
-	 * @since TBD Only updates an intent created for this cart.
+	 * @since 5.30.3.1 Only updates an intent created for this cart.
 	 *
 	 * @param string $id   The payment intent ID.
 	 * @param Cart   $cart The cart the payment intent is being charged for.

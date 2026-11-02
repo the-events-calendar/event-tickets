@@ -435,7 +435,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	 * or hides attendees from public listing.
 	 *
 	 * @since 5.27.6
-	 * @since TBD Corrected the attendee list visibility check.
+	 * @since 5.30.3.1 Corrected the attendee list visibility check.
 	 *
 	 * @param int $attendee_id The attendee post ID.
 	 *

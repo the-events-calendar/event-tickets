@@ -210,7 +210,7 @@ class Payment_Intent_Handler {
 	 * @since 5.3.0
 	 * @since 5.8.1   Added customer's name / event name to the payment intent description
 	 * @since 5.28.5.1     Added validation to ensure the PaymentIntent amount matches the order total
-	 * @since TBD     Reject a PaymentIntent not issued to this browser's checkout, or already bound to another order.
+	 * @since 5.30.3.1     Reject a PaymentIntent not issued to this browser's checkout, or already bound to another order.
 	 *
 	 * @param array    $data  The purchase data received from the front-end.
 	 * @param \WP_Post $order The order object.
@@ -415,7 +415,7 @@ class Payment_Intent_Handler {
 	/**
 	 * Whether the given PaymentIntent is already bound to a local order other than the one provided.
 	 *
-	 * @since TBD
+	 * @since 5.30.3.1
 	 *
 	 * @param string   $payment_intent_id The Stripe PaymentIntent ID.
 	 * @param \WP_Post $order             The order the intent is about to be bound to.

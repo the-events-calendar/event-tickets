@@ -33,7 +33,7 @@ class Payment_Intent {
 	 *
 	 * The `requires_source*` statuses are what older Stripe API versions emit for the same states.
 	 *
-	 * @since TBD
+	 * @since 5.30.3.1
 	 *
 	 * @var string[]
 	 */
@@ -48,7 +48,7 @@ class Payment_Intent {
 	/**
 	 * The metadata key holding the cart a Payment Intent was created for.
 	 *
-	 * @since TBD
+	 * @since 5.30.3.1
 	 *
 	 * @var string
 	 */
@@ -134,7 +134,7 @@ class Payment_Intent {
 	 *
 	 * @since 5.3.0
 	 * @since 5.26.7 Use Gateway_Value_Formatter to normalize data for Stripe API.  [ET-2558]
-	 * @since TBD    Accepts metadata to store on the Payment Intent.
+	 * @since 5.30.3.1    Accepts metadata to store on the Payment Intent.
 	 *
 	 * @param Value                $value    The value object to create a payment intent for.
 	 * @param bool                 $retry    Is this a retry.
@@ -183,7 +183,7 @@ class Payment_Intent {
 	 *
 	 * @since 5.3.0
 	 * @since 5.26.4 Adjusted cart total calculations to ensure correct total is charged.
-	 * @since TBD    Stores the cart the Payment Intent was created for in its metadata.
+	 * @since 5.30.3.1    Stores the cart the Payment Intent was created for in its metadata.
 	 *
 	 * @param Cart $cart
 	 * @param bool $retry
@@ -229,7 +229,7 @@ class Payment_Intent {
 	 *
 	 * @since 5.28.4.1
 	 * @since 5.29.5 Expected values now come from get_charge_values_for_cart().
-	 * @since TBD    Rejects a Payment Intent that can no longer take a payment, is in another currency, or was created for another cart.
+	 * @since 5.30.3.1    Rejects a Payment Intent that can no longer take a payment, is in another currency, or was created for another cart.
 	 *
 	 * @param array $payment_intent Payment intent data from Stripe.
 	 * @param Cart  $cart           The cart used for checkout.
@@ -274,7 +274,7 @@ class Payment_Intent {
 	 * application fee cannot drift apart when the cart total changes mid-checkout.
 	 *
 	 * @since 5.29.5
-	 * @since TBD Includes the currency, lower case as Stripe reports it.
+	 * @since 5.30.3.1 Includes the currency, lower case as Stripe reports it.
 	 *
 	 * @param Cart $cart The cart used for checkout.
 	 *
@@ -323,7 +323,7 @@ class Payment_Intent {
 	 *
 	 * Checks the stored binding, not the amount, so it still holds when a coupon changes the total.
 	 *
-	 * @since TBD
+	 * @since 5.30.3.1
 	 *
 	 * @param array $payment_intent Payment intent data from Stripe.
 	 * @param Cart  $cart           The cart used for checkout.
@@ -536,7 +536,7 @@ class Payment_Intent {
 	 * Payment Intent ID cannot supply. It is salted before it reaches Stripe so the hash itself is
 	 * never readable from the Payment Intent.
 	 *
-	 * @since TBD
+	 * @since 5.30.3.1
 	 *
 	 * @param Cart $cart The cart used for checkout.
 	 *

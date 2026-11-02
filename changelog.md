@@ -1,5 +1,13 @@
 # Changelog
 
+### [5.30.3.1] 2026-11-02
+
+* Language - 1 new strings added, 37 updated, 0 fuzzied, and 0 obsoleted.
+* Security - Hardened how Stripe payments are matched to orders.
+* Security - Hardened the filtering of attendee and ticket data. Props to Aaron - WellKnown for reporting.
+* Security - Hardened the visibility checks for attendee data. Props to Aaron - WellKnown for reporting.
+* Security - Hardened the visibility rules for public attendee lists.
+
 ### [5.30.3] 2026-10-29
 
 * Fix - Kept an event's payment provider when an RSVP is saved in the Classic Editor or imported from CSV, showed the RSVP alongside tickets sold through another provider and on Classic Editor pages and posts, and restored the provider of events that had been switched to Tickets Commerce so their tickets show again.

@@ -451,7 +451,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * Filters attendee to only get those related to posts with a specific status.
 	 *
 	 * @since 4.8
-	 * @since TBD Restricted the query to the post statuses the user can read.
+	 * @since 5.30.3.1 Restricted the query to the post statuses the user can read.
 	 *
 	 * @param string|array $event_status
 	 *

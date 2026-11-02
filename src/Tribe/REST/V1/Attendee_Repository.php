@@ -36,7 +36,7 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 	 * An override of the default query building process to add clauses
 	 * specific to REST API queries
 	 *
-	 * @since TBD Excluded attendees of password-protected posts for requests that cannot view hidden attendees.
+	 * @since 5.30.3.1 Excluded attendees of password-protected posts for requests that cannot view hidden attendees.
 	 *
 	 * @param bool $use_query_builder Whether to use the query builder, if set, or not.
 	 *
@@ -186,7 +186,7 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 	/**
 	 * Excludes attendees whose post is password-protected.
 	 *
-	 * @since TBD
+	 * @since 5.30.3.1
 	 *
 	 * @return void
 	 */

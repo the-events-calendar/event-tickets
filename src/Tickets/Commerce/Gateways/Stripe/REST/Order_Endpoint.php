@@ -182,7 +182,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since 5.3.0
 	 * @since 5.29.0.1 Removed the cart hash query param from the return URL. See SVUL-L34.
-	 * @since TBD Return the handler's own error code and message, without its data, so the buyer sees how to recover.
+	 * @since 5.30.3.1 Return the handler's own error code and message, without its data, so the buyer sees how to recover.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -359,7 +359,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Handles the request that creates an order with Tickets Commerce and the Stripe gateway.
 	 *
 	 * @since 5.3.0
-	 * @since TBD Refuse to complete a gateway order id held by more than one local order.
+	 * @since 5.30.3.1 Refuse to complete a gateway order id held by more than one local order.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
