@@ -208,11 +208,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.30.3.1] 2026-11-02 =
 
-* Language - 1 new strings added, 37 updated, 0 fuzzied, and 0 obsoleted.
 * Security - Hardened how Stripe payments are matched to orders.
 * Security - Hardened the filtering of attendee and ticket data. Props to Aaron - WellKnown for reporting.
 * Security - Hardened the visibility checks for attendee data. Props to Aaron - WellKnown for reporting.
 * Security - Hardened the visibility rules for public attendee lists.
+* Language - 1 new strings added, 37 updated, 0 fuzzied, and 0 obsoleted.
 
 = [5.30.3] 2026-10-29 =
 
