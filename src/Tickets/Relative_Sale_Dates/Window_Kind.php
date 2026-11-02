@@ -615,8 +615,8 @@ final class Window_Kind {
 	}
 
 	/**
-	 * Returns whether a save of the ticket data keeps the window: Tickets Commerce drops a sale price that is unchecked
-	 * or not lower than the price.
+	 * Returns whether a save of the ticket data keeps the window: Tickets Commerce drops a sale price that is unchecked,
+	 * negative, or not lower than the price.
 	 *
 	 * @since TBD
 	 *
