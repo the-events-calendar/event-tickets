@@ -182,6 +182,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since 5.3.0
 	 * @since 5.29.0.1 Removed the cart hash query param from the return URL. See SVUL-L34.
+	 * @since TBD Return the handler's own error code and message, without its data, so the buyer sees how to recover.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -240,7 +241,19 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$payment_intent = tribe( Payment_Intent_Handler::class )->update_payment_intent( $data, $order );
 
 		if ( is_wp_error( $payment_intent ) ) {
-			return new WP_Error( 'tec-tc-gateway-stripe-failed-creating-payment-intent', $messages['failed-creating-payment-intent'], $order );
+			$code    = $payment_intent->get_error_code();
+			$message = $payment_intent->get_error_message();
+
+			/*
+			 * Only the handler's own errors are written for the buyer. Stripe's messages are written for
+			 * the merchant and can name the account's keys, and an error's data can carry the request,
+			 * Authorization header included, so neither is passed on.
+			 */
+			if ( ! is_string( $code ) || 0 !== strpos( $code, 'tec-tc-gateway-stripe-' ) || ! $message ) {
+				return new WP_Error( 'tec-tc-gateway-stripe-failed-creating-payment-intent', $messages['failed-creating-payment-intent'] );
+			}
+
+			return new WP_Error( $code, $message );
 		}
 
 		if ( empty( $payment_intent['id'] ) || empty( $payment_intent['created'] ) ) {
@@ -346,6 +359,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Handles the request that creates an order with Tickets Commerce and the Stripe gateway.
 	 *
 	 * @since 5.3.0
+	 * @since TBD Refuse to complete a gateway order id held by more than one local order.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -374,6 +388,11 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		$orders = tribe( Order::class );
+
+		// A gateway order id must map to exactly one local order; never complete one of several sharing it.
+		if ( 1 !== count( $orders->get_order_ids_from_gateway_order_id( $gateway_order_id ) ) ) {
+			return new WP_Error( 'tec-tc-gateway-stripe-payment-intent-order-mismatch', $messages['payment-intent-order-mismatch'], $order );
+		}
 
 		// Flag the order as on checkout screen hold.
 		$orders->set_on_checkout_screen_hold( $order->ID );
