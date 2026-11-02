@@ -137,7 +137,7 @@ class Payment_Intent {
 	 * @since TBD    Accepts metadata to store on the Payment Intent.
 	 *
 	 * @param Value                $value    The value object to create a payment intent for.
-	 * @param bool                 $retry    Is this a retry?
+	 * @param bool                 $retry    Is this a retry.
 	 * @param array<string,string> $metadata Metadata to store on the Payment Intent.
 	 *
 	 * @return mixed
