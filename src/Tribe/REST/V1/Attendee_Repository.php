@@ -1,5 +1,7 @@
 <?php
 
+use TEC\Common\StellarWP\DB\DB;
+
 /**
  * Class Tribe__Tickets__REST__V1__Attendee_Repository
  *
@@ -34,6 +36,8 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 	 * An override of the default query building process to add clauses
 	 * specific to REST API queries
 	 *
+	 * @since TBD Excluded attendees of password-protected posts for requests that cannot view hidden attendees.
+	 *
 	 * @param bool $use_query_builder Whether to use the query builder, if set, or not.
 	 *
 	 * @return WP_Query
@@ -63,6 +67,7 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 			$this->decorated->by( 'post_status', 'publish' );
 			$this->decorated->by( 'rsvp_status__or_none', 'yes' );
 			$this->decorated->by( 'event__show_attendees' );
+			$this->exclude_password_protected_events();
 		}
 
 		$this->decorated->set_query_builder( null );
@@ -176,5 +181,26 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 		$formatted = $repository->get_attendee_data( $id );
 
 		return $formatted instanceof WP_Error ? null : $formatted;
+	}
+
+	/**
+	 * Excludes attendees whose post is password-protected.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	private function exclude_password_protected_events(): void {
+		$keys         = array_values( $this->decorated->attendee_to_event_keys() );
+		$placeholders = implode( ', ', array_fill( 0, count( $keys ), '%s' ) );
+		$posts        = DB::prefix( 'posts' );
+		$postmeta     = DB::prefix( 'postmeta' );
+
+		$this->decorated->where_clause(
+			DB::prepare(
+				"NOT EXISTS ( SELECT 1 FROM {$postmeta} tec_pw_pm INNER JOIN {$posts} tec_pw_p ON tec_pw_p.ID = tec_pw_pm.meta_value WHERE tec_pw_pm.post_id = {$posts}.ID AND tec_pw_pm.meta_key IN ( {$placeholders} ) AND tec_pw_p.post_password != '' )",
+				...$keys
+			)
+		);
 	}
 }
