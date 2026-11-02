@@ -81,6 +81,58 @@ class Tickets_Test extends Ticket_Test {
 	}
 
 	/**
+	 * Prices a ticket can never be created with.
+	 *
+	 * @return Generator
+	 */
+	public function negative_price_provider(): Generator {
+		yield 'negative price'                  => [ [ 'price' => -10 ] ];
+		yield 'negative fractional price'       => [ [ 'price' => -0.01 ] ];
+		yield 'negative sale price'             => [ [ 'price' => 10, 'sale_price' => -10 ] ];
+		yield 'negative fractional sale price'  => [ [ 'price' => 10, 'sale_price' => -0.01 ] ];
+		yield 'negative price and sale price'   => [ [ 'price' => -5, 'sale_price' => -10 ] ];
+	}
+
+	/**
+	 * @dataProvider negative_price_provider
+	 */
+	public function test_create_rejects_negative_prices( array $prices ): void {
+		$author = $this->factory()->user->create( [ 'role' => 'author' ] );
+		$event  = self::factory()->post->create(
+			[
+				'post_type'   => 'post',
+				'post_status' => 'publish',
+				'post_author' => $author,
+			]
+		);
+
+		wp_set_current_user( $author );
+
+		$this->assert_endpoint( '/tickets', 'POST', 400, array_merge( [ 'event' => $event, 'title' => 'Negative ticket' ], $prices ) );
+
+		$this->assertEmpty( Tickets_API::get_all_event_tickets( $event ), 'No ticket must be created.' );
+	}
+
+	public function test_create_accepts_a_zero_sale_price(): void {
+		$author = $this->factory()->user->create( [ 'role' => 'author' ] );
+		$event  = self::factory()->post->create(
+			[
+				'post_type'   => 'post',
+				'post_status' => 'publish',
+				'post_author' => $author,
+			]
+		);
+
+		wp_set_current_user( $author );
+
+		$response = $this->assert_endpoint( '/tickets', 'POST', 201, [ 'event' => $event, 'title' => 'Free on sale', 'price' => 10, 'sale_price' => 0 ] );
+
+		$this->assertSame( 0.0, get_post_meta( $response['id'], Ticket_CPT::$sale_price_key, true )->get_decimal() );
+
+		wp_delete_post( $response['id'], true );
+	}
+
+	/**
 	 * An editor holds `edit_others_posts`, so may create a ticket on another user's event. SVUL-133.
 	 */
 	public function test_create_allowed_for_editor_on_others_event(): void {
