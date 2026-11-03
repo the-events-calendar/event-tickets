@@ -19,6 +19,7 @@ use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use Tribe__Date_Utils as Dates;
 use Tribe__Events__Main as TEC;
 use Tribe__Events__Timezones as Timezones;
+use Tribe__Tickets__Global_Stock as Global_Stock;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
@@ -55,6 +56,18 @@ final class Sync {
 	 * @var Template_Guard
 	 */
 	private Template_Guard $guard;
+
+	/**
+	 * Whether a ticket save is under way: it syncs its event once done.
+	 *
+	 * Mid-save, Tickets Commerce has written the ticket's type back to `default`: a sync then would take the template
+	 * for a deleted one, and delete its rows and their sales.
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
+	 */
+	private bool $saving_ticket = false;
 
 	/**
 	 * Sync constructor.
@@ -106,6 +119,36 @@ final class Sync {
 		}
 
 		$this->insert_missing( $post_id, $values, $dates, $rows );
+		$this->sync_pools( $post_id, $values, $dates );
+	}
+
+	/**
+	 * Syncs an event's dates once its shared capacity changed outside a ticket save: the ticket settings, or the block
+	 * editor's post save.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|mixed    $meta_id  Unused.
+	 * @param int|mixed    $post_id  The post whose meta changed.
+	 * @param string|mixed $meta_key The meta key.
+	 *
+	 * @return void
+	 */
+	public function sync_capacity( $meta_id, $post_id, $meta_key ): void {
+		if ( ! $this->saving_ticket && tribe( 'tickets.handler' )->key_capacity === $meta_key ) {
+			$this->sync_event( $post_id );
+		}
+	}
+
+	/**
+	 * Notes that a ticket save starts: the event's capacity it writes is synced once the save is done.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function start_ticket_save(): void {
+		$this->saving_ticket = true;
 	}
 
 	/**
@@ -119,6 +162,8 @@ final class Sync {
 	 * @return void
 	 */
 	public function sync_saved_ticket( $post_id, $ticket ): void {
+		$this->saving_ticket = false;
+
 		if ( $ticket instanceof Ticket_Object && $this->guard->is_template( (int) $ticket->ID ) ) {
 			$this->sync_event( $post_id );
 		}
@@ -179,6 +224,35 @@ final class Sync {
 				]
 			)
 		);
+	}
+
+	/**
+	 * Gives every date a pool of the event's shared capacity while a template shares it, and none otherwise.
+	 *
+	 * A pool counts its date's shared sales, so a ticket turned shared on a date with sales takes them along.
+	 *
+	 * @since TBD
+	 *
+	 * @param int                                      $post_id The event's post ID.
+	 * @param array<int,array<string,int|string|null>> $values  The templates' values, by template ID.
+	 * @param array<int,object>                        $dates   The event's dates, by occurrence ID.
+	 *
+	 * @return void
+	 */
+	private function sync_pools( int $post_id, array $values, array $dates ): void {
+		$shared   = array_intersect( [ Global_Stock::GLOBAL_STOCK_MODE, Global_Stock::CAPPED_STOCK_MODE ], array_column( $values, 'stock_mode' ) );
+		$capacity = get_post_meta( $post_id, tribe( 'tickets.handler' )->key_capacity, true );
+
+		// Unlimited shared capacity has nothing to pool.
+		if ( ! $shared || ! is_numeric( $capacity ) || (int) $capacity < 0 || ! $dates ) {
+			$this->rows->delete_pools( $post_id );
+
+			return;
+		}
+
+		$this->rows->upsert_pools( $post_id, (int) $capacity, array_keys( $dates ) );
+		$this->rows->delete_pools( $post_id, array_keys( $dates ) );
+		$this->rows->refresh_pools( $post_id );
 	}
 
 	/**
@@ -374,7 +448,7 @@ final class Sync {
 			'sku'              => '' === $sku ? null : $sku,
 			'price'            => Price::from_decimal( get_post_meta( $template_id, Commerce_Ticket::$price_meta_key, true ) ),
 			'capacity'         => $capacity,
-			'stock_mode'       => -1 === $capacity ? 'unlimited' : 'own',
+			'stock_mode'       => $this->stock_mode( $template_id, $capacity ),
 			'start_date'       => $start_date,
 			'start_date_utc'   => $start_date_utc,
 			'end_date'         => $end_date,
@@ -383,6 +457,26 @@ final class Sync {
 			'status'           => 'publish',
 			'iac_settings'     => '' === $iac ? null : (string) wp_json_encode( [ 'iac' => $iac ] ),
 		];
+	}
+
+	/**
+	 * Returns the stock mode a template's rows sell with.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $template_id The template.
+	 * @param int $capacity    Its capacity, -1 when unlimited.
+	 *
+	 * @return string The stock mode.
+	 */
+	private function stock_mode( int $template_id, int $capacity ): string {
+		if ( -1 === $capacity ) {
+			return 'unlimited';
+		}
+
+		$mode = get_post_meta( $template_id, Global_Stock::TICKET_STOCK_MODE, true );
+
+		return in_array( $mode, [ Global_Stock::GLOBAL_STOCK_MODE, Global_Stock::CAPPED_STOCK_MODE ], true ) ? $mode : Global_Stock::OWN_STOCK_MODE;
 	}
 
 	/**
