@@ -18,7 +18,6 @@ import { Card, Notice } from '../../../elements';
  *
  * @since 5.20.0
  * @since 5.30.0 Matches the disabled state of the Tickets block.
- * @since TBD Removed the link to the planned features article.
  * @return {Node} The not-supported message.
  */
 export const renderBlockNotSupported = () => (
@@ -29,7 +28,17 @@ export const renderBlockNotSupported = () => (
 		<div className="tribe-editor__title__help-messages">
 			<Notice
 				description={
-					<p>{ __( 'RSVPs are not supported on recurring events.', 'event-tickets' ) }</p>
+					<p>
+						{ __( 'RSVPs are not yet supported on recurring events.', 'event-tickets' ) }{ ' ' }
+						<a
+							className="helper-link"
+							href="https://evnt.is/1b7a"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							{ __( 'Read about our plans for future features', 'event-tickets' ) }
+						</a>
+					</p>
 				}
 			/>
 		</div>
