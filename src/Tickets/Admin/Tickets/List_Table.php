@@ -1341,28 +1341,34 @@ class List_Table extends WP_List_Table {
 	 * @return array<string,string> The query clauses.
 	 */
 	private function add_sale_price_date_clauses( array $clauses ): array {
-		global $wpdb;
+		$postmeta = DB::prefix( 'postmeta' );
+		$posts    = DB::prefix( 'posts' );
 
-		$clauses['join'] .= $wpdb->prepare(
-			" LEFT JOIN {$wpdb->postmeta} AS sale_price_start ON ( sale_price_start.post_id = {$wpdb->posts}.ID AND sale_price_start.meta_key = %s )
-			LEFT JOIN {$wpdb->postmeta} AS sale_price_end ON ( sale_price_end.post_id = {$wpdb->posts}.ID AND sale_price_end.meta_key = %s ) ",
+		$clauses['join'] .= DB::prepare(
+			' LEFT JOIN %i AS sale_price_start ON ( sale_price_start.post_id = %i.ID AND sale_price_start.meta_key = %s )
+			LEFT JOIN %i AS sale_price_end ON ( sale_price_end.post_id = %i.ID AND sale_price_end.meta_key = %s ) ',
+			$postmeta,
+			$posts,
 			TicketsCommerce\Ticket::$sale_price_start_date_key,
+			$postmeta,
+			$posts,
 			TicketsCommerce\Ticket::$sale_price_end_date_key
 		);
 
-		$today          = $wpdb->prepare( '%s', current_time( 'Y-m-d' ) );
+		$today          = DB::prepare( '%s', current_time( 'Y-m-d' ) );
 		$other_todays   = $this->get_other_todays_by_event_timezone();
 		$today_by_event = $today;
 
 		if ( $other_todays ) {
-			$clauses['join'] .= $wpdb->prepare(
-				" LEFT JOIN {$wpdb->postmeta} AS event_timezone ON ( event_timezone.post_id = event_data.ID AND event_timezone.meta_key = %s ) ",
+			$clauses['join'] .= DB::prepare(
+				' LEFT JOIN %i AS event_timezone ON ( event_timezone.post_id = event_data.ID AND event_timezone.meta_key = %s ) ',
+				$postmeta,
 				'_EventTimezone'
 			);
 
 			$cases = '';
 			foreach ( $other_todays as $timezone => $other_today ) {
-				$cases .= $wpdb->prepare( ' WHEN %s THEN %s', $timezone, $other_today );
+				$cases .= DB::prepare( ' WHEN %s THEN %s', $timezone, $other_today );
 			}
 
 			$today_by_event = "CASE event_timezone.meta_value{$cases} ELSE {$today} END";
