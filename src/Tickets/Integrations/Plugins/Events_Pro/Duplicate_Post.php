@@ -131,7 +131,7 @@ class Duplicate_Post extends Integration_Abstract {
 	 * Fix post fields pointing to old tickets.
 	 *
 	 * @since 5.14.0
-	 * @since TBD Skips the tickets that could not be cloned.
+	 * @since TBD Skips the tickets that could not be cloned, and remaps whole ticket IDs only.
 	 *
 	 * @param array<int,int|false> $duplicated_ticket_maps The duplicated ticket IDs, keyed by the original ticket IDs;
 	 *                                                     `false` for a ticket that could not be cloned.
@@ -149,11 +149,10 @@ class Duplicate_Post extends Integration_Abstract {
 			return;
 		}
 
-		$tickets_block_locator = static fn( $v ) => '"ticketId":' . $v;
-
-		$new_post_content = str_replace(
-			array_map( $tickets_block_locator, array_keys( $duplicated_ticket_maps ) ),
-			array_map( $tickets_block_locator, array_values( $duplicated_ticket_maps ) ),
+		// One pass over whole IDs: replacing pairs in turn would rewrite `12` inside `123`.
+		$new_post_content = preg_replace_callback(
+			'/"ticketId":(\d+)/',
+			static fn( array $matches ): string => '"ticketId":' . ( $duplicated_ticket_maps[ $matches[1] ] ?? $matches[1] ),
 			$duplicated_post->post_content
 		);
 

@@ -170,4 +170,43 @@ class Duplicate_PostTest extends WPTestCase {
 			get_post( $duplicate_id )->post_content
 		);
 	}
+
+	/**
+	 * @test
+	 * it should only remap whole ticket IDs
+	 */
+	public function it_should_only_remap_whole_ticket_ids() {
+		$event_args = [
+			'title'      => 'Test Event',
+			'status'     => 'publish',
+			'start_date' => '2020-01-01 12:00:00',
+			'duration'   => 2 * HOUR_IN_SECONDS,
+		];
+
+		$event_id            = tribe_events()->set_args( $event_args )->create()->ID;
+		$ticket_id           = $this->create_tc_ticket( $event_id );
+		$duplicate_id        = tribe_events()->set_args( $event_args )->create()->ID;
+		$duplicate_ticket_id = $this->create_tc_ticket( $duplicate_id );
+		// An ID that starts with the digits of the remapped one.
+		$longer_ticket_id = $ticket_id * 10 + 1;
+		$content          = '"ticketId":%d,"ticketId":%d';
+
+		wp_update_post(
+			[
+				'ID'           => $duplicate_id,
+				'post_content' => sprintf( $content, $ticket_id, $longer_ticket_id ),
+			]
+		);
+
+		tribe( Duplicate_Post::class )->remap_fields_pointing_to_old_tickets_after_duplicate(
+			[ $ticket_id => $duplicate_ticket_id ],
+			$duplicate_id,
+			$event_id
+		);
+
+		$this->assertEquals(
+			sprintf( $content, $duplicate_ticket_id, $longer_ticket_id ),
+			get_post( $duplicate_id )->post_content
+		);
+	}
 }
