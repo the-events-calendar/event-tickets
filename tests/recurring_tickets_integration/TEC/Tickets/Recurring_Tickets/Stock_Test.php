@@ -18,6 +18,7 @@ class Stock_Test extends WPTestCase {
 	 */
 	public function empty_table(): void {
 		( new Tickets() )->empty_table();
+		$this->forget_rows_read();
 	}
 
 	/**
@@ -146,6 +147,134 @@ class Stock_Test extends WPTestCase {
 		$this->assertSame( 6, $ticket->stock() );
 		$this->assertSame( 4, $ticket->qty_sold() );
 		$this->assertSame( '6', get_post_meta( $id, '_stock', true ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_sell_a_shared_row_from_its_dates_pool_too(): void {
+		$shared = $this->row( [ 'stock_mode' => 'global' ] );
+		$own    = $this->row( [ 'stock_mode' => 'own' ] );
+		$this->pools( 100, [ 1, 2 ] );
+
+		$this->assertTrue( tribe( Stock::class )->sell( $shared, 3 ) );
+		$this->assertTrue( tribe( Stock::class )->sell( $own, 4 ) );
+
+		$this->assertSame( [ 97, 3 ], $this->stock_and_sales( $shared ) );
+		$this->assertSame( [ 97, 3 ], $this->pool( 1 ), 'Own capacity is no part of the pool.' );
+		$this->assertSame( [ 100, 0 ], $this->pool( 2 ), 'Another date keeps its pool.' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_refuse_a_shared_sale_the_pool_cannot_cover(): void {
+		$first  = $this->row( [ 'stock_mode' => 'global' ] );
+		$second = $this->row( [ 'stock_mode' => 'global' ] );
+		$this->pools( 5, [ 1 ] );
+		$this->assertTrue( tribe( Stock::class )->sell( $first, 4 ) );
+
+		$this->assertFalse( tribe( Stock::class )->sell( $second, 2 ), 'One seat left in the pool.' );
+
+		$this->assertSame( [ 100, 0 ], $this->stock_and_sales( $second ) );
+		$this->assertSame( [ 1, 4 ], $this->pool( 1 ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_refuse_a_capped_sale_past_its_cap_and_leave_the_pool_alone(): void {
+		$capped = $this->row( [ 'stock_mode' => 'capped', 'capacity' => 2, 'stock' => 2 ] );
+		$this->pools( 100, [ 1 ] );
+
+		$this->assertFalse( tribe( Stock::class )->sell( $capped, 3 ) );
+
+		$this->assertSame( [ 2, 0 ], $this->stock_and_sales( $capped ) );
+		$this->assertSame( [ 100, 0 ], $this->pool( 1 ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_give_the_pool_back_what_a_shared_row_returns(): void {
+		$shared = $this->row( [ 'stock_mode' => 'global' ] );
+		$this->pools( 100, [ 1 ] );
+		tribe( Stock::class )->sell( $shared, 5 );
+
+		tribe( Stock::class )->release( $shared, 2 );
+		$this->assertSame( [ 97, 3 ], $this->pool( 1 ) );
+
+		// More than the row sold: only what it sold goes back.
+		tribe( Stock::class )->release( $shared, 10 );
+		$this->assertSame( [ 100, 0 ], $this->stock_and_sales( $shared ) );
+		$this->assertSame( [ 100, 0 ], $this->pool( 1 ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_keep_the_pool_in_step_when_a_ticket_moves_between_shared_rows(): void {
+		$from = $this->row( [ 'stock_mode' => 'global' ] );
+		$to   = $this->row( [ 'stock_mode' => 'global', 'occurrence_id' => 2 ] );
+		$this->pools( 100, [ 1, 2 ] );
+		tribe( Stock::class )->sell( $from, 3 );
+
+		// As core's Move does, one column at a time.
+		$stock = tribe( Stock::class );
+		$stock->remove_sales( $from, 1 );
+		$stock->add_stock( $from, 1 );
+		$stock->add_sales( $to, 1 );
+		$stock->remove_stock( $to, 1 );
+
+		$this->assertSame( [ 98, 2 ], $this->pool( 1 ) );
+		$this->assertSame( [ 99, 1 ], $this->pool( 2 ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_lock_the_lower_of_a_shared_rows_stock_and_its_pools(): void {
+		$first  = $this->row( [ 'stock_mode' => 'global' ] );
+		$second = $this->row( [ 'stock_mode' => 'global' ] );
+		$this->pools( 10, [ 1 ] );
+		tribe( Stock::class )->sell( $first, 7 );
+
+		$this->assertSame( 3, tribe( Stock::class )->lock( $second ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_count_a_shared_sale_that_lost_the_race_in_the_pool(): void {
+		$shared = $this->row( [ 'stock_mode' => 'global' ] );
+		$this->pools( 2, [ 1 ] );
+
+		tribe( Stock::class )->oversell( $shared, 3 );
+
+		$this->assertSame( [ 0, 3 ], $this->pool( 1 ), 'Sold as many as attended, never below 0 left.' );
+	}
+
+	/**
+	 * Gives dates a pool of the event's shared capacity.
+	 *
+	 * @param int   $capacity       The capacity.
+	 * @param int[] $occurrence_ids The dates.
+	 */
+	private function pools( int $capacity, array $occurrence_ids ): void {
+		tribe( Rows::class )->upsert_pools( 1, $capacity, $occurrence_ids );
+		tribe( Rows::class )->refresh_pools( 1 );
+	}
+
+	/**
+	 * @param int $occurrence_id The date.
+	 *
+	 * @return array{0: int, 1: int} Its pool's stock and sales.
+	 */
+	private function pool( int $occurrence_id ): array {
+		$this->forget_rows_read();
+		$pool = tribe( Rows::class )->get_pool( $occurrence_id );
+
+		return [ (int) $pool->stock, (int) $pool->sales ];
 	}
 
 	/**
