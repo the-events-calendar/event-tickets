@@ -14,6 +14,7 @@ use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
 use TEC\Tickets\Recurring_Tickets\Models\Ticket;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
+use Tribe__Tickets__Global_Stock as Global_Stock;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
@@ -101,30 +102,44 @@ final class Hydrator {
 		$price     = Price::to_decimal( (int) $row->price );
 		$unlimited = -1 === (int) $row->capacity;
 
-		$ticket = new Ticket_Object(
-			array_merge(
-				$this->sale_window( $row ),
-				[
-					'ID'               => Ticket_ID::from_row_id( (int) $row->id ),
-					'name'             => (string) $row->name,
-					'description'      => (string) $row->description,
-					'show_description' => (bool) $row->show_description,
-					'menu_order'       => (int) $row->menu_order,
-					'sku'              => (string) $row->sku,
-					'post_type'        => Commerce_Ticket::POSTTYPE,
-					'provider_class'   => Module::class,
-					'admin_link'       => '',
-					'price'            => $price,
-					'regular_price'    => $price,
-					'capacity'         => (int) $row->capacity,
-					'event_id'         => $this->event_id( $row ),
-				]
-			)
+		$data = array_merge(
+			$this->sale_window( $row ),
+			[
+				'ID'               => Ticket_ID::from_row_id( (int) $row->id ),
+				'name'             => (string) $row->name,
+				'description'      => (string) $row->description,
+				'show_description' => (bool) $row->show_description,
+				'menu_order'       => (int) $row->menu_order,
+				'sku'              => (string) $row->sku,
+				'post_type'        => Commerce_Ticket::POSTTYPE,
+				'provider_class'   => Module::class,
+				'admin_link'       => '',
+				'price'            => $price,
+				'regular_price'    => $price,
+				'capacity'         => (int) $row->capacity,
+				'event_id'         => $this->event_id( $row ),
+			]
 		);
+		$mode      = (string) $row->stock_mode;
+		$pool_mode = ! $unlimited && in_array( $mode, [ Global_Stock::GLOBAL_STOCK_MODE, Global_Stock::CAPPED_STOCK_MODE ], true );
+		$pool      = $pool_mode ? $this->rows->get_pool( (int) $row->occurrence_id ) : null;
+
+		if ( $pool ) {
+			$capacity = Global_Stock::GLOBAL_STOCK_MODE === $mode ? (int) $pool->capacity : (int) $row->capacity;
+			$ticket   = new Shared_Ticket( $data, $capacity, min( (int) $row->stock, (int) $pool->stock ) );
+		} else {
+			$ticket = new Ticket_Object( $data );
+			$ticket->manage_stock( ! $unlimited );
+			$ticket->stock( $unlimited || null === $row->stock ? -1 : (int) $row->stock );
+
+			// Without a pool yet, a shared row sells from its own capacity.
+			if ( $pool_mode ) {
+				$mode = Global_Stock::OWN_STOCK_MODE;
+			}
+		}
 
 		$ticket->manage_stock( ! $unlimited );
-		$ticket->stock( $unlimited || null === $row->stock ? -1 : (int) $row->stock );
-		$ticket->global_stock_mode( (string) $row->stock_mode );
+		$ticket->global_stock_mode( $mode );
 		$ticket->qty_sold( (int) $row->sales );
 		$ticket->qty_pending( 0 );
 		$ticket->qty_cancelled( 0 );
