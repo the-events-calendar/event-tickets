@@ -102,7 +102,7 @@ final class Hydrator {
 		$price     = Price::to_decimal( (int) $row->price );
 		$unlimited = -1 === (int) $row->capacity;
 
-		$data = array_merge(
+		$data    = array_merge(
 			$this->sale_window( $row ),
 			[
 				'ID'               => Ticket_ID::from_row_id( (int) $row->id ),
@@ -120,26 +120,18 @@ final class Hydrator {
 				'event_id'         => $this->event_id( $row ),
 			]
 		);
-		$mode      = (string) $row->stock_mode;
-		$pool_mode = ! $unlimited && in_array( $mode, [ Global_Stock::GLOBAL_STOCK_MODE, Global_Stock::CAPPED_STOCK_MODE ], true );
-		$pool      = $pool_mode ? $this->rows->get_pool( (int) $row->occurrence_id ) : null;
+		$numbers = $this->pool_numbers( $row );
 
-		if ( $pool ) {
-			$capacity = Global_Stock::GLOBAL_STOCK_MODE === $mode ? (int) $pool->capacity : (int) $row->capacity;
-			$ticket   = new Shared_Ticket( $data, $capacity, min( (int) $row->stock, (int) $pool->stock ) );
+		if ( $numbers ) {
+			$ticket = new Shared_Ticket( $data, ...$numbers );
 		} else {
 			$ticket = new Ticket_Object( $data );
 			$ticket->manage_stock( ! $unlimited );
 			$ticket->stock( $unlimited || null === $row->stock ? -1 : (int) $row->stock );
-
-			// Without a pool yet, a shared row sells from its own capacity.
-			if ( $pool_mode ) {
-				$mode = Global_Stock::OWN_STOCK_MODE;
-			}
 		}
 
 		$ticket->manage_stock( ! $unlimited );
-		$ticket->global_stock_mode( $mode );
+		$ticket->global_stock_mode( $this->stock_mode( $row ) );
 		$ticket->qty_sold( (int) $row->sales );
 		$ticket->qty_pending( 0 );
 		$ticket->qty_cancelled( 0 );
@@ -149,6 +141,62 @@ final class Hydrator {
 		$ticket->price   = $this->commerce->get_price( $ticket );
 
 		return $ticket;
+	}
+
+	/**
+	 * Returns the capacity and stock a shared row sells from, when its date has a shared capacity pool.
+	 *
+	 * The capacity is the pool's for a shared row, the cap for a capped one; the stock is the lower of the row's and
+	 * the pool's.
+	 *
+	 * @since TBD
+	 *
+	 * @param Ticket $row The row.
+	 *
+	 * @return array{0: int, 1: int}|null The capacity and stock, or null for a row that does not sell from a pool.
+	 */
+	public function pool_numbers( Ticket $row ): ?array {
+		if ( ! $this->is_shared( $row ) ) {
+			return null;
+		}
+
+		$pool = $this->rows->get_pool( (int) $row->occurrence_id );
+
+		if ( ! $pool ) {
+			return null;
+		}
+
+		$capacity = Global_Stock::GLOBAL_STOCK_MODE === $row->stock_mode ? (int) $pool->capacity : (int) $row->capacity;
+
+		return [ $capacity, max( 0, min( (int) $row->stock, (int) $pool->stock ) ) ];
+	}
+
+	/**
+	 * Returns a row's stock mode: a shared row whose date has no pool yet sells from its own capacity.
+	 *
+	 * @since TBD
+	 *
+	 * @param Ticket $row The row.
+	 *
+	 * @return string The stock mode.
+	 */
+	public function stock_mode( Ticket $row ): string {
+		return $this->is_shared( $row ) && ! $this->rows->get_pool( (int) $row->occurrence_id )
+			? Global_Stock::OWN_STOCK_MODE
+			: (string) $row->stock_mode;
+	}
+
+	/**
+	 * Whether a row is set to sell from its date's shared capacity.
+	 *
+	 * @since TBD
+	 *
+	 * @param Ticket $row The row.
+	 *
+	 * @return bool Whether the row is shared or capped, and limited.
+	 */
+	private function is_shared( Ticket $row ): bool {
+		return -1 !== (int) $row->capacity && in_array( $row->stock_mode, [ Global_Stock::GLOBAL_STOCK_MODE, Global_Stock::CAPPED_STOCK_MODE ], true );
 	}
 
 	/**

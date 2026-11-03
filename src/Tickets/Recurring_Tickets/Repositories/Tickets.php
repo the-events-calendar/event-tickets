@@ -69,6 +69,15 @@ final class Tickets extends Custom_Table_Repository {
 	private array $found = [];
 
 	/**
+	 * The shared capacity pools read in this request, by occurrence ID; null for a date without one.
+	 *
+	 * @since TBD
+	 *
+	 * @var array<int,Ticket|null>
+	 */
+	private array $pools = [];
+
+	/**
 	 * Returns the model class.
 	 *
 	 * @since TBD
@@ -173,6 +182,8 @@ final class Tickets extends Custom_Table_Repository {
 	 */
 	public function forget( int $row_id ): void {
 		unset( $this->found[ $row_id ] );
+		// A row's stock moves its date's pool.
+		$this->pools = [];
 		tribe( Ticket_Cache_Controller::class )->clean_ticket_cache( Ticket_ID::from_row_id( $row_id ) );
 	}
 
@@ -242,6 +253,10 @@ final class Tickets extends Custom_Table_Repository {
 	 * @return Ticket|null The pool, or null when the date has none.
 	 */
 	public function get_pool( int $occurrence_id ): ?Ticket {
+		if ( array_key_exists( $occurrence_id, $this->pools ) ) {
+			return $this->pools[ $occurrence_id ];
+		}
+
 		$pools = Tickets_Table::paginate(
 			[
 				[
@@ -257,7 +272,9 @@ final class Tickets extends Custom_Table_Repository {
 			1
 		);
 
-		return $pools ? reset( $pools ) : null;
+		$this->pools[ $occurrence_id ] = $pools ? reset( $pools ) : null;
+
+		return $this->pools[ $occurrence_id ];
 	}
 
 	/**
@@ -274,6 +291,8 @@ final class Tickets extends Custom_Table_Repository {
 	 * @return void
 	 */
 	public function upsert_pools( int $post_id, int $capacity, array $occurrence_ids ): void {
+		$this->pools = [];
+
 		if ( ! $occurrence_ids ) {
 			return;
 		}
@@ -301,6 +320,8 @@ final class Tickets extends Custom_Table_Repository {
 	 * @return void
 	 */
 	public function refresh_pools( int $post_id ): void {
+		$this->pools = [];
+
 		DB::query(
 			DB::prepare(
 				"UPDATE %i pool LEFT JOIN ( SELECT occurrence_id, SUM( sales ) AS sold FROM %i WHERE post_id = %d AND type = %s AND stock_mode IN ( 'global', 'capped' ) GROUP BY occurrence_id ) shared ON shared.occurrence_id = pool.occurrence_id SET pool.sales = COALESCE( shared.sold, 0 ), pool.stock = IF( pool.capacity > COALESCE( shared.sold, 0 ), pool.capacity - COALESCE( shared.sold, 0 ), 0 ) WHERE pool.post_id = %d AND pool.type = %s",
@@ -325,6 +346,8 @@ final class Tickets extends Custom_Table_Repository {
 	 * @return void
 	 */
 	public function delete_pools( int $post_id, array $keep = [] ): void {
+		$this->pools = [];
+
 		$keep = $keep ? array_map( 'intval', $keep ) : [ 0 ];
 
 		DB::query(

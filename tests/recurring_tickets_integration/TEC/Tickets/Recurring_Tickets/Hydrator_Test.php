@@ -23,6 +23,7 @@ class Hydrator_Test extends WPTestCase {
 	 */
 	public function empty_table(): void {
 		( new Tickets() )->empty_table();
+		$this->forget_rows_read();
 	}
 
 	/**
