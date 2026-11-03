@@ -302,7 +302,7 @@ export function filterConfirmDisabled( isDisabled, state, { clientId } ) {
  * relative or the default: the error judges the picker's dates, which are hidden and left stale then.
  * `filterConfirmDisabled()` judges the window itself.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {boolean} hasDurationError  Whether the ticket has a sales duration error.
  * @param {Object}  state             The legacy ticket state.

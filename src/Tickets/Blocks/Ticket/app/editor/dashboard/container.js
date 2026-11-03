@@ -21,7 +21,7 @@ import { withStore } from '@moderntribe/common/hoc';
  * Whether the confirm button should be disabled.
  *
  * @since 5.16.0
- * @since TBD Filtered the sales duration error through `tec.tickets.blocks.confirmButton.hasDurationError`.
+ * @since 5.31.0 Filtered the sales duration error through `tec.tickets.blocks.confirmButton.hasDurationError`.
  *
  * @param {Object} state    The state of the store.
  * @param {Object} ownProps The own props of the component.
@@ -33,7 +33,7 @@ const getIsConfirmDisabled = ( state, ownProps ) => {
 	 * Filters whether the ticket's sales duration error disables the confirm button, for an extension that replaces
 	 * the dates the error judges.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param {boolean} hasDurationError Whether the ticket has a sales duration error.
 	 * @param {Object}  state            The state of the store.

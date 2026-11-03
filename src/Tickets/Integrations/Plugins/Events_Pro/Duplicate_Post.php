@@ -131,7 +131,7 @@ class Duplicate_Post extends Integration_Abstract {
 	 * Fix post fields pointing to old tickets.
 	 *
 	 * @since 5.14.0
-	 * @since TBD Skips the tickets that could not be cloned, and remaps whole ticket IDs only.
+	 * @since 5.31.0 Skips the tickets that could not be cloned, and remaps whole ticket IDs only.
 	 *
 	 * @param array<int,int|false> $duplicated_ticket_maps The duplicated ticket IDs, keyed by the original ticket IDs;
 	 *                                                     `false` for a ticket that could not be cloned.
