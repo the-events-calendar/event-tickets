@@ -95,8 +95,8 @@ final class Tickets_By_Date {
 				[
 					'id'            => $date_id,
 					'past'          => $past,
-					'capacity'      => $this->total( array_column( $tickets, 'capacity' ) ),
-					'available'     => $this->total( array_column( $tickets, 'available' ) ),
+					'capacity'      => $this->date_total( $tickets, (int) $occurrence->occurrence_id, 'capacity' ),
+					'available'     => $this->date_total( $tickets, (int) $occurrence->occurrence_id, 'available' ),
 					'attendees_url' => add_query_arg( Date_Filter::NAME, $date_id, $attendees_url ),
 					'orders_url'    => add_query_arg( Date_Filter::NAME, $date_id, $orders_url ),
 					'tickets'       => array_values( $tickets ),
@@ -148,6 +148,7 @@ final class Tickets_By_Date {
 		$ticket    = $this->hydrator->hydrate( $row );
 		$regular   = Price::to_decimal( (int) $row->price );
 		$unlimited = -1 === (int) $row->capacity;
+		$numbers   = $this->hydrator->pool_numbers( $row );
 
 		/**
 		 * Filters the attendee registration fields named under a recurring event ticket in Tickets by Date.
@@ -165,8 +166,9 @@ final class Tickets_By_Date {
 			'name'          => (string) $ticket->name,
 			'price'         => Value::create( $ticket->price )->get_currency(),
 			'regular_price' => (float) $ticket->price < (float) $regular ? Value::create( $regular )->get_currency() : null,
-			'capacity'      => $unlimited ? -1 : (int) $row->capacity,
-			'available'     => $unlimited ? -1 : max( 0, (int) $row->stock ),
+			'capacity'      => $unlimited ? -1 : ( $numbers ? $numbers[0] : (int) $row->capacity ),
+			'available'     => $unlimited ? -1 : ( $numbers ? $numbers[1] : max( 0, (int) $row->stock ) ),
+			'shared'        => null !== $numbers,
 			'sales_window'  => $this->sales_window( $row ),
 			'fields'        => array_values( array_map( 'strval', $fields ) ),
 		];
@@ -243,5 +245,28 @@ final class Tickets_By_Date {
 	 */
 	private function total( array $values ): int {
 		return in_array( -1, $values, true ) ? -1 : (int) array_sum( $values );
+	}
+
+	/**
+	 * Returns a date's capacity or availability: its own-capacity tickets', and its shared capacity pool's once.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int,array{capacity: int, available: int, shared: bool}> $tickets       The date's tickets.
+	 * @param int                                                           $occurrence_id The date.
+	 * @param string                                                        $key           `capacity` or `available`.
+	 *
+	 * @return int The total, -1 when a ticket is unlimited.
+	 */
+	private function date_total( array $tickets, int $occurrence_id, string $key ): int {
+		$own   = array_filter( $tickets, static fn( array $ticket ) => ! $ticket['shared'] );
+		$total = $this->total( array_column( $own, $key ) );
+		$pool  = count( $own ) < count( $tickets ) ? $this->rows->get_pool( $occurrence_id ) : null;
+
+		if ( -1 === $total || ! $pool ) {
+			return $total;
+		}
+
+		return $total + max( 0, (int) ( 'capacity' === $key ? $pool->capacity : $pool->stock ) );
 	}
 }
