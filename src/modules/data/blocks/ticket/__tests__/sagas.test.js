@@ -1540,6 +1540,51 @@ describe( 'Ticket Block sagas', () => {
 		} );
 	} );
 
+	describe( 'noticeTicketNotSaved', () => {
+		const clientId = 'ticket-not-saved';
+		const title = 'General admission';
+		const response = { ok: false, status: 400, json: jest.fn() };
+
+		/**
+		 * Runs the saga from the reading of the response body to the notice it adds.
+		 *
+		 * @param {Function} answerBody Steps the saga past the reading of the body.
+		 *
+		 * @return {Array} The arguments the error notice is created with.
+		 */
+		const getNoticeArgs = ( answerBody ) => {
+			const createErrorNotice = jest.fn();
+			const gen = sagas.noticeTicketNotSaved( clientId, response );
+
+			expect( gen.next().value ).toEqual( call( [ response, 'json' ] ) );
+			expect( answerBody( gen ).value ).toEqual( select( selectors.getTicketTempTitle, { clientId } ) );
+			expect( gen.next( title ).value ).toEqual( call( wpDispatch, 'core/notices' ) );
+
+			const { fn, args } = gen.next( { createErrorNotice } ).value.CALL;
+
+			expect( fn ).toBe( createErrorNotice );
+			expect( gen.next().done ).toEqual( true );
+
+			return args;
+		};
+
+		it( 'should add the reason the server gave as an error notice, one per ticket', () => {
+			const reason = 'Ticket sales cannot end before they start. Please adjust the sales window.';
+
+			const [ message, options ] = getNoticeArgs( ( gen ) => gen.next( { code: 'invalid', message: reason } ) );
+
+			expect( message ).toContain( `"${ title }"` );
+			expect( message ).toContain( reason );
+			expect( options ).toEqual( { id: `tec-tickets-ticket-not-updated-${ clientId }` } );
+		} );
+
+		it( 'should still add the notice when the answer has no JSON body to read', () => {
+			const [ message ] = getNoticeArgs( ( gen ) => gen.throw( new SyntaxError( 'Unexpected end of JSON input' ) ) );
+
+			expect( message ).toContain( `"${ title }"` );
+		} );
+	} );
+
 	describe( 'getTicketSaleDates', () => {
 		/**
 		 * Runs a saga that only yields call effects, answering each with what its function returns.
@@ -1876,6 +1921,12 @@ describe( 'Ticket Block sagas', () => {
 				] ),
 			);
 
+			const removeNotice = jest.fn();
+
+			expect( gen.next().value ).toEqual( call( wpDispatch, 'core/notices' ) );
+			expect( gen.next( { removeNotice } ).value ).toEqual(
+				call( removeNotice, `tec-tickets-ticket-not-updated-${ action.payload.clientId }` )
+			);
 			expect( gen.next().value ).toEqual(
 				fork( sagas.saveTicketWithPostSave, action.payload.clientId ),
 			);
@@ -1927,7 +1978,47 @@ describe( 'Ticket Block sagas', () => {
 					put( actions.setTicketTempDetails( clientId, ticketDetails ) ),
 				] )
 			);
+			gen.next();
+			gen.next( { removeNotice: jest.fn() } );
+
 			expect( gen.next().value ).toEqual( fork( sagas.saveTicketWithPostSave, clientId ) );
+		} );
+
+		it( 'should remove the notice a rejected save added once the ticket is created', () => {
+			const clientId = 'created-after-a-rejected-save';
+			const removeNotice = jest.fn();
+			const gen = sagas.createNewTicket( { payload: { clientId } } );
+
+			gen.next();
+			gen.next( { append: jest.fn() } );
+			gen.next();
+			gen.next( { response: { ok: true }, data: ticketStoredWithoutEnd } );
+			gen.next( '' );
+			gen.next( 0 );
+			gen.next( stepSavedTicketSaleDates( ticketStoredWithoutEnd, clientId, parsedSaleDatesWithoutEnd, tempEnd ) );
+			gen.next( salePriceDatesWithoutDates );
+			gen.next( Object.values( tempFields ) );
+
+			expect( gen.next().value ).toEqual( call( wpDispatch, 'core/notices' ) );
+			expect( gen.next( { removeNotice } ).value ).toEqual(
+				call( removeNotice, `tec-tickets-ticket-not-updated-${ clientId }` )
+			);
+		} );
+
+		it( 'should show why the server rejected the ticket, and keep the form as it is', () => {
+			const clientId = 'rejected-on-create';
+			const rejected = { ok: false, status: 400 };
+			const gen = sagas.createNewTicket( { payload: { clientId } } );
+
+			gen.next();
+			gen.next( { append: jest.fn() } );
+			gen.next();
+
+			expect( gen.next( { response: rejected, data: {} } ).value ).toEqual(
+				call( sagas.noticeTicketNotSaved, clientId, rejected )
+			);
+			expect( gen.next().value ).toEqual( put( actions.setTicketIsLoading( clientId, false ) ) );
+			expect( gen.next().done ).toEqual( true );
 		} );
 	} );
 
@@ -2051,6 +2142,23 @@ describe( 'Ticket Block sagas', () => {
 			expect( gen.next( { removeNotice } ).value ).toEqual(
 				call( removeNotice, `tec-tickets-ticket-not-updated-${ clientId }` )
 			);
+		} );
+
+		it( 'should show why the server rejected the ticket, and keep the form as it is', () => {
+			const clientId = 'rejected-on-update';
+			const rejected = { ok: false, status: 400 };
+			const gen = sagas.updateTicket( { payload: { clientId } } );
+
+			gen.next();
+			gen.next( { append: jest.fn(), entries: () => [] } );
+			gen.next( 123 );
+			gen.next();
+
+			expect( gen.next( { response: rejected, data: {} } ).value ).toEqual(
+				call( sagas.noticeTicketNotSaved, clientId, rejected )
+			);
+			expect( gen.next().value ).toEqual( put( actions.setTicketIsLoading( clientId, false ) ) );
+			expect( gen.next().done ).toEqual( true );
 		} );
 	} );
 
