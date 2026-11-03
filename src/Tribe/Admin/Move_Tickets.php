@@ -254,17 +254,13 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * is selected further handling will be managed via JS (and interaction will be
 	 * through a modal interface).
 	 *
-	 * @since TBD Checks whether the user can manage the attendees of the event being viewed.
-	 *
 	 * @param array $actions
 	 *
 	 * @return array
 	 */
 	public function bulk_actions( array $actions ) {
-		$event_id = absint( tribe_get_request_var( 'event_id', tribe_get_request_var( 'post', 0 ) ) );
-
 		if (
-			tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $event_id )
+			tribe( 'tickets.attendees' )->user_can_manage_attendees()
 			&& is_admin()
 			&& ! tribe( Attendees_Page::class )->is_on_page()
 		) {
