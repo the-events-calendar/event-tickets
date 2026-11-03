@@ -38,6 +38,19 @@ const PAGE_BUTTONS = 4;
 const amount = ( value ) => ( -1 === value ? __( 'Unlimited', 'event-tickets' ) : String( value ) );
 
 /**
+ * Returns a ticket's amount as shown: in parentheses when the ticket shares its date's capacity, as the ticket list
+ * shows shared capacity.
+ *
+ * @since TBD
+ *
+ * @param {Object} ticket The ticket.
+ * @param {string} shown  The amount as shown.
+ *
+ * @return {string} The amount shown.
+ */
+const shared = ( ticket, shown ) => ( ticket.shared ? `(${ shown })` : shown );
+
+/**
  * Returns the dates of a view: the upcoming ones, or all of them.
  *
  * @since TBD
@@ -97,8 +110,8 @@ function TicketRow( { ticket } ) {
 				{ ticket.price }
 				{ ticket.regular_price && <del className="tec-tickets-by-date__regular-price">{ ticket.regular_price }</del> }
 			</div>
-			<div>{ amount( ticket.capacity ) }</div>
-			<div>{ amount( ticket.available ) }</div>
+			<div>{ shared( ticket, amount( ticket.capacity ) ) }</div>
+			<div>{ shared( ticket, amount( ticket.available ) ) }</div>
 		</div>
 	);
 }

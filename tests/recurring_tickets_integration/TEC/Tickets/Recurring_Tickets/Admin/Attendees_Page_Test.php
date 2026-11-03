@@ -172,6 +172,34 @@ class Attendees_Page_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_count_a_dates_shared_capacity_once_in_the_overview(): void {
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$event  = $this->create_recurring_event();
+		$shared = [ 'mode' => 'global', 'event_capacity' => 10, 'capacity' => 10 ];
+		$adult  = $this->create_tc_ticket( $event, 10, [ 'ticket_name' => 'Adult', 'tribe-ticket' => $shared ] );
+		$child  = $this->create_tc_ticket( $event, 5, [ 'ticket_name' => 'Child', 'tribe-ticket' => $shared ] );
+		$dates  = $this->get_dates( $event );
+		$rows   = array_filter( tribe( Rows::class )->get_by_template( $adult ), static fn( $row ) => (int) $row->occurrence_id === (int) $dates[0]->occurrence_id );
+		$this->create_row_order( [ Ticket_ID::from_row_id( (int) reset( $rows )->id ) => 2 ] );
+		$this->forget_rows_read();
+		set_current_screen( 'tribe_events_page_tickets-attendees' );
+
+		try {
+			$context = tribe( 'tickets.attendees' )->get_render_context( $event );
+		} finally {
+			set_current_screen( 'front' );
+		}
+
+		// Three dates of 10 seats, 2 sold on the first: whichever ticket sells them.
+		$left = 3 * 10 - 2;
+		$this->assertSame( "2 issued ({$left} available)", $context['ticket_stats'][ $adult ] );
+		$this->assertSame( "0 issued ({$left} available)", $context['ticket_stats'][ $child ] );
+		$this->assertSame( [ 2, $left ], [ $context['ticket_totals']['sold'], $context['ticket_totals']['available'] ] );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_count_the_recurring_event_tickets_sold_on_every_date_in_the_overview(): void {
 		// Only an admin screen lists a template among the event's tickets.
 		set_current_screen( 'tribe_events_page_tickets-attendees' );
