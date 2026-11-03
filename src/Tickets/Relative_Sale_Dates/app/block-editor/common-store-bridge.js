@@ -185,27 +185,6 @@ export function hasTicketDurationError( clientId ) {
 }
 
 /**
- * Returns whether the legacy checks would let a ticket be created or updated, leaving aside its sales duration error.
- *
- * @since 5.31.0
- *
- * @param {Object} state    The legacy ticket state.
- * @param {string} clientId The client ID of the ticket block.
- *
- * @return {boolean} Whether the ticket passes every other legacy check.
- */
-export function isTicketReadyBesidesDuration( state, clientId ) {
-	const { selectors } = getTicketData();
-	const props = { clientId };
-
-	return (
-		! selectors.isTicketDisabled( state, props ) &&
-		Boolean( selectors.getTicketHasChanges( state, props ) ) &&
-		selectors.isTicketValid( state, props )
-	);
-}
-
-/**
  * Returns whether the legacy ticket code keeps a ticket's fields disabled: while the ticket saves, while another ticket
  * is selected, or while the tickets settings are open.
  *
