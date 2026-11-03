@@ -283,6 +283,7 @@ final class Tickets extends Custom_Table_Repository {
 		foreach ( array_chunk( $occurrence_ids, self::PRIME_CHUNK ) as $chunk ) {
 			foreach ( $chunk as $occurrence_id ) {
 				$this->occurrence_rows[ $occurrence_id ] = [];
+				$this->pools[ $occurrence_id ]           = null;
 			}
 
 			$where = [
@@ -298,6 +299,12 @@ final class Tickets extends Custom_Table_Repository {
 				$batch = Tickets_Table::paginate( $where, self::PAGE_SIZE, $page++ );
 
 				foreach ( $batch as $row ) {
+					// A date's pool is read with its rows, but kept apart: it is no ticket.
+					if ( self::POOL_TYPE === $row->type ) {
+						$this->pools[ (int) $row->occurrence_id ] = $row;
+						continue;
+					}
+
 					$this->prime( $row );
 					$this->occurrence_rows[ (int) $row->occurrence_id ][] = (int) $row->id;
 				}
