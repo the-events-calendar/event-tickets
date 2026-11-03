@@ -7,8 +7,10 @@
 
 namespace TEC\Tickets\Tests\Recurring_Tickets;
 
+use Closure;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
+use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
 use TEC\Tickets\Recurring_Tickets\Ticket_ID;
 
@@ -49,6 +51,25 @@ trait Ticket_Rows {
 	 */
 	protected function get_dates( int $post_id ): array {
 		return iterator_to_array( Occurrence::where( 'post_id', $post_id )->order_by( 'start_date', 'ASC' )->all(), false );
+	}
+
+	/**
+	 * Forgets the rows and pools read so far, as a new request starts.
+	 */
+	protected function forget_rows_read(): void {
+		$rows = tribe( Rows::class );
+		Closure::bind(
+			function () {
+				$this->found = [];
+				$this->pools = [];
+
+				if ( property_exists( $this, 'occurrence_rows' ) ) {
+					$this->occurrence_rows = [];
+				}
+			},
+			$rows,
+			Rows::class
+		)();
 	}
 
 	/**

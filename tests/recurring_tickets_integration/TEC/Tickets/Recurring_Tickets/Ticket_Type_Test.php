@@ -3,14 +3,16 @@
 namespace TEC\Tickets\Recurring_Tickets;
 
 use Codeception\TestCase\WPTestCase;
+use Generator;
 use TEC\Tickets\Commerce\Module;
-use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Commerce\Order_Modifiers\Admin\Order_Modifier_Fee_Metabox;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
+use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Tests\Recurring_Tickets\Recurrence_Tier_Check;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use Tribe\Tickets\Test\Commerce\OrderModifiers\Fee_Creator;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe__Tickets__Global_Stock as Global_Stock;
 use WP_REST_Request;
 
 /**
@@ -186,8 +188,12 @@ class Ticket_Type_Test extends WPTestCase {
 
 	/**
 	 * @test
+	 * @dataProvider shared_mode_provider
+	 *
+	 * @param string $mode     The stock mode.
+	 * @param int    $capacity The ticket's capacity: the event's when shared, the cap when capped.
 	 */
-	public function it_should_give_a_template_its_own_capacity_instead_of_a_shared_one(): void {
+	public function it_should_keep_a_templates_shared_capacity( string $mode, int $capacity ): void {
 		$this->skip_without_recurrence_tier();
 
 		$event    = $this->create_recurring_event();
@@ -196,14 +202,20 @@ class Ticket_Type_Test extends WPTestCase {
 			10,
 			[
 				'tribe-ticket' => [
-					'mode'           => \Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE,
+					'mode'           => $mode,
 					'event_capacity' => 100,
-					'capacity'       => 100,
+					'capacity'       => $capacity,
 				],
 			]
 		);
 
-		$this->assertSame( \Tribe__Tickets__Global_Stock::OWN_STOCK_MODE, get_post_meta( $template, \Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true ), 'Each date sells its own capacity.' );
+		$this->assertSame( $mode, get_post_meta( $template, Global_Stock::TICKET_STOCK_MODE, true ), 'Each date sells from its own pool.' );
+		$this->assertSame( (string) $capacity, get_post_meta( $template, '_tribe_ticket_capacity', true ) );
+	}
+
+	public function shared_mode_provider(): Generator {
+		yield 'shared' => [ Global_Stock::GLOBAL_STOCK_MODE, 100 ];
+		yield 'capped' => [ Global_Stock::CAPPED_STOCK_MODE, 30 ];
 	}
 
 	/**

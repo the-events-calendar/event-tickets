@@ -27,6 +27,7 @@ class Sync_Test extends WPTestCase {
 	 */
 	public function empty_table(): void {
 		( new Tickets() )->empty_table();
+		$this->forget_rows_read();
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 	}
 
@@ -258,6 +259,105 @@ class Sync_Test extends WPTestCase {
 		$rows = $this->rows_of( $template );
 		$this->assertCount( 3, $rows );
 		$this->assertCount( 3, array_unique( array_map( static fn( Ticket $row ) => (int) $row->occurrence_id, $rows ) ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_give_each_date_a_pool_of_the_events_shared_capacity(): void {
+		$this->skip_without_recurrence_tier();
+
+		$event    = $this->create_recurring_event();
+		$template = $this->create_shared_template( $event, 100 );
+
+		$rows = $this->rows_of( $template );
+		$this->assertSame( [ 'global' ], array_values( array_unique( array_map( static fn( $row ) => (string) $row->stock_mode, $rows ) ) ) );
+		foreach ( $rows as $row ) {
+			$this->assertSame( [ 100, 100 ], $this->pool_of( (int) $row->occurrence_id ) );
+		}
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_count_a_dates_sales_in_its_pool_when_a_ticket_turns_shared(): void {
+		$this->skip_without_recurrence_tier();
+
+		$event    = $this->create_recurring_event();
+		$template = $this->create_template( $event, 'General Admission', '10', 20 );
+		$first    = $this->rows_of( $template )[0];
+		$this->assertTrue( tribe( Stock::class )->sell( (int) $first->id, 4 ) );
+
+		$this->update_template( $event, $template, [ 'tribe-ticket' => [ 'mode' => 'global', 'event_capacity' => 100, 'capacity' => 100 ] ] );
+
+		$this->assertSame( [ 96, 100 ], [ $this->pool_of( (int) $first->occurrence_id )[0], $this->pool_of( (int) $this->rows_of( $template )[1]->occurrence_id )[0] ], 'Its sales count, nothing is refunded.' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_follow_the_events_capacity_wherever_it_is_saved(): void {
+		$this->skip_without_recurrence_tier();
+
+		$event    = $this->create_recurring_event();
+		$template = $this->create_shared_template( $event, 100 );
+		$first    = (int) $this->rows_of( $template )[0]->occurrence_id;
+		tribe( Stock::class )->sell( (int) $this->rows_of( $template )[0]->id, 5 );
+
+		// As the ticket settings or the block editor save it: no ticket is saved.
+		update_post_meta( $event, '_tribe_ticket_capacity', 120 );
+
+		$this->assertSame( [ 115, 120 ], $this->pool_of( $first ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_remove_the_pools_once_no_ticket_shares_capacity(): void {
+		$this->skip_without_recurrence_tier();
+
+		$event    = $this->create_recurring_event();
+		$template = $this->create_shared_template( $event, 100 );
+		$first    = (int) $this->rows_of( $template )[0]->occurrence_id;
+
+		$this->update_template( $event, $template, [ 'tribe-ticket' => [ 'mode' => 'own', 'capacity' => 10 ] ] );
+
+		$this->assertNull( $this->pool_of( $first ) );
+	}
+
+	/**
+	 * Creates a template sharing the event's capacity.
+	 *
+	 * @param int $event    The event.
+	 * @param int $capacity The event's shared capacity.
+	 *
+	 * @return int The template.
+	 */
+	private function create_shared_template( int $event, int $capacity ): int {
+		return $this->create_tc_ticket(
+			$event,
+			'10',
+			[
+				'ticket_name'  => 'Shared',
+				'tribe-ticket' => [
+					'mode'           => 'global',
+					'event_capacity' => $capacity,
+					'capacity'       => $capacity,
+				],
+			]
+		);
+	}
+
+	/**
+	 * @param int $occurrence_id The date.
+	 *
+	 * @return array{0: int, 1: int}|null Its pool's stock and capacity, or null without a pool.
+	 */
+	private function pool_of( int $occurrence_id ): ?array {
+		$this->forget_rows_read();
+		$pool = tribe( Rows::class )->get_pool( $occurrence_id );
+
+		return $pool ? [ (int) $pool->stock, (int) $pool->capacity ] : null;
 	}
 
 	/**

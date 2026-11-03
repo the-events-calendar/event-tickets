@@ -183,6 +183,57 @@ class Move_Test extends WPTestCase {
 	}
 
 	/**
+	 * @test
+	 */
+	public function it_should_move_a_seat_from_one_dates_pool_to_the_others(): void {
+		$this->skip_without_recurrence_tier();
+
+		$event = $this->create_recurring_event();
+		$this->create_tc_ticket( $event, 10, [ 'tribe-ticket' => [ 'mode' => 'global', 'event_capacity' => 10, 'capacity' => 10 ] ] );
+		$dates    = $this->get_dates( $event );
+		$order    = $this->create_row_order( [ Ticket_ID::from_row_id( (int) $this->row_on( $event, $dates[1] )->id ) => 1 ] );
+		$attendee = (int) get_posts( [ 'post_type' => 'tec_tc_attendee', 'post_parent' => $order->ID, 'post_status' => 'any', 'fields' => 'ids' ] )[0];
+		$target   = Ticket_ID::from_row_id( (int) $this->row_on( $event, $dates[2] )->id );
+
+		$this->assertSame( 1, Main::instance()->move_tickets()->move_tickets( [ $attendee ], $target, $event, (int) $dates[2]->provisional_id ) );
+
+		$this->forget_rows_read();
+		$this->assertSame( [ 10, 0 ], $this->pool_on( $dates[1] ) );
+		$this->assertSame( [ 9, 1 ], $this->pool_on( $dates[2] ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_leave_the_series_shared_capacity_alone_when_an_unlimited_ticket_moves(): void {
+		$this->skip_without_recurrence_tier();
+
+		$event = $this->create_recurring_event();
+		$this->create_tc_ticket( $event, 10, [ 'tribe-ticket' => [ 'mode' => 'own', 'capacity' => -1 ] ] );
+		$dates    = $this->get_dates( $event );
+		$series   = (int) tec_series()->where( 'event_post_id', $event )->first_id();
+		$order    = $this->create_row_order( [ Ticket_ID::from_row_id( (int) $this->row_on( $event, $dates[1] )->id ) => 1 ] );
+		$attendee = (int) get_posts( [ 'post_type' => 'tec_tc_attendee', 'post_parent' => $order->ID, 'post_status' => 'any', 'fields' => 'ids' ] )[0];
+		$before   = [ get_post_meta( $series, '_tribe_ticket_use_global_stock', true ), get_post_meta( $series, '_tribe_ticket_capacity', true ) ];
+
+		Main::instance()->move_tickets()->move_tickets( [ $attendee ], Ticket_ID::from_row_id( (int) $this->row_on( $event, $dates[2] )->id ), $event, (int) $dates[2]->provisional_id );
+
+		// The date's ID stands for its Series: a write through it would give the Series shared capacity.
+		$this->assertSame( $before, [ get_post_meta( $series, '_tribe_ticket_use_global_stock', true ), get_post_meta( $series, '_tribe_ticket_capacity', true ) ] );
+	}
+
+	/**
+	 * @param object $date The date.
+	 *
+	 * @return array{0: int, 1: int} Its pool's stock and sales.
+	 */
+	private function pool_on( object $date ): array {
+		$pool = tribe( Rows::class )->get_pool( (int) $date->occurrence_id );
+
+		return [ (int) $pool->stock, (int) $pool->sales ];
+	}
+
+	/**
 	 * Calls one of Move Tickets' protected methods.
 	 *
 	 * @param string $method    The method.
