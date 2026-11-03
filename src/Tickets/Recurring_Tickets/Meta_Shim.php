@@ -162,6 +162,8 @@ final class Meta_Shim {
 	private function row_meta( Ticket $row ): array {
 		$unlimited = -1 === (int) $row->capacity;
 		$window    = $this->hydrator->sale_window( $row );
+		$numbers   = $this->hydrator->pool_numbers( $row );
+		$stock     = $numbers ? $numbers[1] : $row->stock;
 		$handler   = tribe( 'tickets.handler' );
 
 		$meta = [
@@ -169,8 +171,9 @@ final class Meta_Shim {
 			$handler->key_capacity                         => (string) (int) $row->capacity,
 			Commerce_Ticket::$should_manage_stock_meta_key => $unlimited ? 'no' : 'yes',
 			// Tickets Commerce deletes stock and stock mode for an unlimited ticket.
-			Commerce_Ticket::$stock_meta_key               => $unlimited || null === $row->stock ? null : (string) (int) $row->stock,
-			Global_Stock::TICKET_STOCK_MODE                => $unlimited ? null : (string) $row->stock_mode,
+			Commerce_Ticket::$stock_meta_key               => $unlimited || null === $stock ? null : (string) (int) $stock,
+			Global_Stock::TICKET_STOCK_MODE                => $unlimited ? null : $this->hydrator->stock_mode( $row ),
+			Global_Stock::TICKET_STOCK_CAP                 => Global_Stock::CAPPED_STOCK_MODE === $row->stock_mode ? (string) (int) $row->capacity : null,
 			Commerce_Ticket::$sales_meta_key               => (string) (int) $row->sales,
 			Commerce_Ticket::$type_meta_key                => (string) $row->type,
 			Commerce_Ticket::$sku_meta_key                 => '' === (string) $row->sku ? null : (string) $row->sku,

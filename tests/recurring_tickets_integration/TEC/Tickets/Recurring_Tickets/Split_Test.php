@@ -96,6 +96,25 @@ class Split_Test extends WPTestCase {
 	}
 
 	/**
+	 * @test
+	 */
+	public function it_should_move_the_later_dates_pools_with_their_shared_sales(): void {
+		$event = $this->create_recurring_event( 5 );
+		$this->create_tc_ticket( $event, 10, [ 'tribe-ticket' => [ 'mode' => 'global', 'event_capacity' => 10, 'capacity' => 10 ] ] );
+		$dates = $this->get_dates( $event );
+		$sold  = array_values( array_filter( $this->rows_of( $event ), static fn( $row ) => (int) $row->occurrence_id === (int) $dates[3]->occurrence_id ) )[0];
+		$this->create_row_order( [ Ticket_ID::from_row_id( (int) $sold->id ) => 2 ] );
+
+		$new = $this->split_at( $event, $dates[2] );
+		tribe( Sync::class )->sync_event( $new );
+		$this->forget_rows_read();
+
+		$pool = tribe( Rows::class )->get_pool( (int) $dates[3]->occurrence_id );
+		$this->assertSame( [ $new, 2, 8 ], [ (int) $pool->post_id, (int) $pool->sales, (int) $pool->stock ] );
+		$this->assertSame( $event, (int) tribe( Rows::class )->get_pool( (int) $dates[0]->occurrence_id )->post_id );
+	}
+
+	/**
 	 * @return array{0: int, 1: int, 2: object[], 3: object, 4: int[]} The event, its template, its dates, the fourth
 	 *                                                                  date's row and its two attendees.
 	 */
