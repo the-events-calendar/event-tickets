@@ -571,6 +571,34 @@ final class Tickets extends Custom_Table_Repository {
 	}
 
 	/**
+	 * Deletes the shared capacity pools of dates, whatever event they belong to.
+	 *
+	 * @since TBD
+	 *
+	 * @param int[] $occurrence_ids The dates' occurrence IDs.
+	 *
+	 * @return void
+	 */
+	public function delete_date_pools( array $occurrence_ids ): void {
+		$this->pools = [];
+
+		if ( ! $occurrence_ids ) {
+			return;
+		}
+
+		$occurrence_ids = array_map( 'intval', $occurrence_ids );
+
+		DB::query(
+			DB::prepare(
+				'DELETE FROM %i WHERE type = %s AND occurrence_id IN ( ' . implode( ', ', array_fill( 0, count( $occurrence_ids ), '%d' ) ) . ' )',
+				Tickets_Table::table_name(),
+				self::POOL_TYPE,
+				...$occurrence_ids
+			)
+		);
+	}
+
+	/**
 	 * Deletes an event's shared capacity pools, but those of the dates kept.
 	 *
 	 * @since TBD

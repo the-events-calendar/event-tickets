@@ -14,6 +14,7 @@ use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
 use TEC\Tickets\Recurring_Tickets\Models\Ticket;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
+use Tribe__Tickets__Global_Stock as Global_Stock;
 
 /**
  * Keeps a date's rows with the date when ECP moves it to another event: "This and following" splits the event and
@@ -151,13 +152,20 @@ final class Detach {
 			static fn( Ticket $row ) => in_array( (int) $row->occurrence_id, $occurrence_ids, true )
 		);
 
+		$pool = $this->shared_pool( $rows );
+
 		if ( ! doing_action( 'trashed_post' ) ) {
 			foreach ( $rows as $row ) {
 				$this->become_ticket( $row, $new_post_id );
 			}
+
+			if ( $pool ) {
+				$this->share_capacity( $new_post_id, (int) $pool->capacity );
+			}
 		}
 
 		$this->rows->delete_ids( array_map( static fn( Ticket $row ) => (int) $row->id, $rows ) );
+		$this->rows->delete_date_pools( $occurrence_ids );
 	}
 
 	/**
@@ -193,6 +201,14 @@ final class Detach {
 		update_post_meta( $ticket_id, Commerce_Ticket::$should_manage_stock_meta_key, $unlimited ? 'no' : 'yes' );
 		update_post_meta( $ticket_id, Commerce_Ticket::$sales_meta_key, (int) $row->sales );
 
+		if ( ! $unlimited ) {
+			update_post_meta( $ticket_id, Global_Stock::TICKET_STOCK_MODE, (string) $row->stock_mode );
+		}
+
+		if ( Global_Stock::CAPPED_STOCK_MODE === $row->stock_mode ) {
+			update_post_meta( $ticket_id, Global_Stock::TICKET_STOCK_CAP, $capacity );
+		}
+
 		if ( $unlimited ) {
 			delete_post_meta( $ticket_id, Commerce_Ticket::$stock_meta_key );
 		} else {
@@ -205,6 +221,42 @@ final class Detach {
 		}
 
 		$this->move_orders( Ticket_ID::from_row_id( (int) $row->id ), $ticket_id, $post_id );
+	}
+
+	/**
+	 * Returns the shared capacity pool the rows of a date sold from, if any did.
+	 *
+	 * @since TBD
+	 *
+	 * @param Ticket[] $rows The date's rows.
+	 *
+	 * @return Ticket|null The pool, or null when no row is shared.
+	 */
+	private function shared_pool( array $rows ): ?Ticket {
+		foreach ( $rows as $row ) {
+			if ( -1 !== (int) $row->capacity && in_array( $row->stock_mode, [ Global_Stock::GLOBAL_STOCK_MODE, Global_Stock::CAPPED_STOCK_MODE ], true ) ) {
+				return $this->rows->get_pool( (int) $row->occurrence_id );
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Gives a detached date's single event the shared capacity its pool had, counted from its orders.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id  The single event.
+	 * @param int $capacity The pool's capacity.
+	 *
+	 * @return void
+	 */
+	private function share_capacity( int $post_id, int $capacity ): void {
+		( new Global_Stock( $post_id ) )->enable();
+		update_post_meta( $post_id, tribe( 'tickets.handler' )->key_capacity, $capacity );
+		// Explicitly: the duplication already wrote the same capacity, and an unchanged value fires no update.
+		tribe( 'tickets.handler' )->sync_shared_capacity( $post_id, $capacity );
 	}
 
 	/**
