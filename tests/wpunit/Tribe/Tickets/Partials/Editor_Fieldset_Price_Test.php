@@ -12,15 +12,16 @@ class Editor_Fieldset_Price_Test extends WPTestCase {
 	use With_Uopz;
 
 	/**
-	 * Event Tickets Plus 6.11.2 writes the posted `ticket_sale_price` to the WooCommerce product on every classic save,
-	 * an empty one when the field is not posted, so the field must post the sale price that is running.
+	 * In the classic editor Event Tickets Plus gives a WooCommerce ticket the product's regular price as its `price`,
+	 * so a posted field would write the regular price over the sale price on every save and end the sale.
 	 *
 	 * @test
 	 */
-	public function should_post_the_sale_price_of_another_provider_ticket_on_sale(): void {
+	public function should_not_post_the_sale_price_of_another_provider_ticket_on_sale(): void {
 		$html = $this->render_on_sale_ticket( false );
 
-		$this->assertRegExp( '/<input[^>]*id="ticket_sale_price"[^>]*name="ticket_sale_price"/s', $html );
+		$this->assertRegExp( '/<input[^>]*id="ticket_sale_price"[^>]*readonly/s', $html );
+		$this->assertStringNotContainsString( 'name="ticket_sale_price"', $html );
 	}
 
 	/**
