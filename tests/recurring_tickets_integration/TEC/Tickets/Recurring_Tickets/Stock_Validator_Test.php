@@ -5,6 +5,7 @@ namespace TEC\Tickets\Recurring_Tickets;
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Stock_Validator;
+use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 
@@ -24,6 +25,7 @@ class Stock_Validator_Test extends WPTestCase {
 	 */
 	public function start_cart(): void {
 		$this->cart = new Cart();
+		$this->forget_rows_read();
 	}
 
 	/**
@@ -84,5 +86,49 @@ class Stock_Validator_Test extends WPTestCase {
 		$this->cart->get_repository()->upsert_item( $unlimited, 50 );
 
 		$this->assertTrue( tribe( Stock_Validator::class )->validate_cart_stock_with_lock( $this->cart ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_check_a_shared_row_against_its_dates_pool(): void {
+		$id = $this->insert_ticket_row( [ 'name' => 'Adult', 'parent_id' => 1, 'occurrence_id' => 30, 'stock_mode' => 'global' ] );
+		$this->pool( 30, 3 );
+		$this->cart->get_repository()->upsert_item( $id, 4 );
+
+		$result = tribe( Stock_Validator::class )->validate_cart_stock_with_lock( $this->cart );
+
+		$this->assertWPError( $result );
+		$this->assertStringContainsString( 'there are only 3 available', $result->get_error_message() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_refuse_shared_tickets_of_one_date_that_add_up_past_its_pool(): void {
+		$adult = $this->insert_ticket_row( [ 'name' => 'Adult', 'parent_id' => 1, 'occurrence_id' => 30, 'stock_mode' => 'global' ] );
+		$child = $this->insert_ticket_row( [ 'name' => 'Child', 'parent_id' => 2, 'occurrence_id' => 30, 'stock_mode' => 'global' ] );
+		$other = $this->insert_ticket_row( [ 'name' => 'Other date', 'parent_id' => 1, 'occurrence_id' => 31, 'stock_mode' => 'global' ] );
+		$this->pool( 30, 3 );
+		$this->pool( 31, 3 );
+		$this->cart->get_repository()->upsert_item( $adult, 2 );
+		$this->cart->get_repository()->upsert_item( $child, 2 );
+		$this->cart->get_repository()->upsert_item( $other, 3 );
+
+		$result = tribe( Stock_Validator::class )->validate_cart_stock_with_lock( $this->cart );
+
+		$this->assertWPError( $result, 'Each fits alone; together they take 4 of 3.' );
+		$this->assertStringNotContainsString( 'Other date', $result->get_error_message() );
+	}
+
+	/**
+	 * Gives a date a pool.
+	 *
+	 * @param int $occurrence_id The date.
+	 * @param int $capacity      The pool's capacity.
+	 */
+	private function pool( int $occurrence_id, int $capacity ): void {
+		tribe( Rows::class )->upsert_pools( 1, $capacity, [ $occurrence_id ] );
+		tribe( Rows::class )->refresh_pools( 1 );
 	}
 }

@@ -126,6 +126,8 @@ final class Stock {
 			return;
 		}
 
+		$this->in_pool( $row_id, 'UPDATE %i SET sales = sales + %d, stock = IF( capacity > sales, capacity - sales, 0 ) WHERE id = %d', $quantity );
+
 		$this->write(
 			$row_id,
 			'UPDATE %i SET sales = sales + %d, stock = IF( capacity = -1, NULL, IF( capacity > sales, capacity - sales, 0 ) ) WHERE id = %d',
@@ -225,6 +227,27 @@ final class Stock {
 		}
 
 		return null === $left ? (int) $stock : min( (int) $stock, (int) $left );
+	}
+
+	/**
+	 * Returns the pool a row sells from, and what it has left, as stored.
+	 *
+	 * Read after `lock()`, it is what the pool holds for this checkout.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $row_id The row ID.
+	 *
+	 * @return array{0: int, 1: int}|null The pool's row ID and stock, or null for a row that sells from its own capacity.
+	 */
+	public function pool_left( int $row_id ): ?array {
+		$pool = $this->pool_of( $row_id );
+
+		if ( ! $pool ) {
+			return null;
+		}
+
+		return [ $pool, (int) DB::get_var( DB::prepare( 'SELECT stock FROM %i WHERE id = %d', Tickets::table_name(), $pool ) ) ];
 	}
 
 	/**
