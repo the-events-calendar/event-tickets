@@ -166,6 +166,30 @@ class Tickets_By_Date_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_count_a_dates_shared_capacity_once(): void {
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$event  = $this->create_recurring_event( 2 );
+		$shared = [ 'mode' => 'global', 'event_capacity' => 100, 'capacity' => 100 ];
+		$adult  = $this->create_tc_ticket( $event, 10, [ 'ticket_name' => 'Adult', 'tribe-ticket' => $shared ] );
+		$this->create_tc_ticket( $event, 5, [ 'ticket_name' => 'Child', 'tribe-ticket' => $shared ] );
+		$this->create_tc_ticket( $event, 50, [ 'ticket_name' => 'VIP', 'tribe-ticket' => [ 'mode' => 'own', 'capacity' => 10 ] ] );
+		$date = $this->get_dates( $event )[0];
+		$rows = array_filter( tribe( Rows::class )->get_by_template( $adult ), static fn( $row ) => (int) $row->occurrence_id === (int) $date->occurrence_id );
+		$this->create_row_order( [ Ticket_ID::from_row_id( (int) reset( $rows )->id ) => 3 ] );
+		$this->forget_rows_read();
+
+		$first   = tribe( Tickets_By_Date::class )->for_event( $event )['dates'][0];
+		$tickets = array_column( $first['tickets'], null, 'name' );
+
+		$this->assertSame( [ 110, 107 ], [ $first['capacity'], $first['available'] ], 'The pool of 100 once, and the own 10.' );
+		$this->assertSame( [ 100, 97, true ], [ $tickets['Adult']['capacity'], $tickets['Adult']['available'], $tickets['Adult']['shared'] ] );
+		$this->assertSame( [ 100, 97, true ], [ $tickets['Child']['capacity'], $tickets['Child']['available'], $tickets['Child']['shared'] ] );
+		$this->assertSame( [ 10, 10, false ], [ $tickets['VIP']['capacity'], $tickets['VIP']['available'], $tickets['VIP']['shared'] ] );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_have_nothing_for_an_event_without_recurring_event_tickets(): void {
 		$single = tribe_events()->set_args(
 			[
