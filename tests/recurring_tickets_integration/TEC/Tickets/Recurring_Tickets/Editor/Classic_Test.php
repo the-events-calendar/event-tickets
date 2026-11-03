@@ -175,6 +175,25 @@ class Classic_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_show_a_shared_recurring_event_tickets_capacity_in_parentheses(): void {
+		$event = $this->create_recurring_event();
+		$this->create_tc_ticket( $event, 10, [ 'tribe-ticket' => [ 'mode' => 'global', 'event_capacity' => 100, 'capacity' => 100 ] ] );
+		set_current_screen( 'tribe_events' );
+
+		try {
+			ob_start();
+			tribe( 'tickets.metabox' )->render( $event );
+			$html = (string) ob_get_clean();
+		} finally {
+			set_current_screen( 'front' );
+		}
+
+		$this->assertStringContainsString( '(100)', $html );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_say_what_to_do_with_an_event_that_has_standard_tickets_in_place_of_its_recurrence_rules(): void {
 		ob_start();
 		tribe( Recurrence::class )->add_recurrence_not_supported_with_tickets_message( '' );
