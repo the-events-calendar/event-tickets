@@ -18,6 +18,7 @@ use TEC\Tickets\Recurring_Tickets\Ticket_ID;
 use Tribe__Events__Main as TEC;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
+use Tribe__Tickets__Global_Stock as Global_Stock;
 
 /**
  * Lists a recurring event's attendees of every date on the event, marks those whose date is gone, shows each one's
@@ -308,9 +309,12 @@ final class Attendees_Page {
 		$context['type_icon_classes'][ Template_Guard::TICKET_TYPE ] = 'tec-tickets__admin-attendees-overview-ticket-type-icon--ticket';
 		$context['post_singular_label']                              = __( 'Recurring Event', 'event-tickets' );
 
-		$sales     = $this->template_sales->for_event( $this->event_dates->event_of( $post_id ) );
-		$sold      = (int) ( $context['ticket_totals']['sold'] ?? 0 );
-		$available = (int) ( $context['ticket_totals']['available'] ?? 0 );
+		$event_id       = $this->event_dates->event_of( $post_id );
+		$sales          = $this->template_sales->for_event( $event_id );
+		$sold           = (int) ( $context['ticket_totals']['sold'] ?? 0 );
+		$available      = (int) ( $context['ticket_totals']['available'] ?? 0 );
+		$counted        = 0;
+		$counted_shared = 0;
 		foreach ( $templates as $template ) {
 			// Without Events Calendar Pro a row names its event, and counts its own sales.
 			if ( Ticket_ID::is_table_ticket( (int) $template->ID ) ) {
@@ -332,12 +336,17 @@ final class Attendees_Page {
 			// The page counted the template; its rows are what was sold.
 			$sold += $template_sales['sold'] - (int) $template->qty_sold();
 
-			if ( -1 === $available ) {
-				continue;
+			// What the page counted for the template: its own stock, or once per event for shared capacity.
+			if ( Global_Stock::OWN_STOCK_MODE === $template->global_stock_mode() ) {
+				$counted += max( 0, (int) $template->available() );
+			} else {
+				$counted_shared = max( $counted_shared, (int) $template->available() );
 			}
+		}
 
-			// ponytail: assumes the template's own stock; a shared-capacity template was counted once per event instead.
-			$available = -1 === $template_sales['available'] ? -1 : $available + $template_sales['available'] - max( 0, (int) $template->available() );
+		if ( -1 !== $available ) {
+			$left      = $this->template_sales->available( $event_id );
+			$available = -1 === $left ? -1 : $available - $counted - $counted_shared + $left;
 		}
 
 		$context['ticket_totals'] = [
