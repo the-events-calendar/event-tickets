@@ -29,6 +29,24 @@ use TEC\Tickets\Recurring_Tickets\Tables\Tickets as Tickets_Table;
  */
 final class Tickets extends Custom_Table_Repository {
 	/**
+	 * The type of a date's shared capacity pool: one row per date, sold from by the date's shared tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const POOL_TYPE = 'shared-capacity';
+
+	/**
+	 * The type of a recurring event ticket's row.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const TICKET_TYPE = 'recurring';
+
+	/**
 	 * The most rows the table returns per query.
 	 *
 	 * @since TBD
@@ -67,6 +85,15 @@ final class Tickets extends Custom_Table_Repository {
 	 * @var array<int,int[]>
 	 */
 	private array $occurrence_rows = [];
+
+	/**
+	 * The shared capacity pools read in this request, by occurrence ID; null for a date without one.
+	 *
+	 * @since TBD
+	 *
+	 * @var array<int,Ticket|null>
+	 */
+	private array $pools = [];
 
 	/**
 	 * Returns the model class.
@@ -142,8 +169,9 @@ final class Tickets extends Custom_Table_Repository {
 			$row = null;
 		}
 
-		// A missing row is remembered too: deleted rows are read on every page that lists their attendees.
-		$this->found[ $row_id ] = $row instanceof Ticket ? $row : null;
+		// A missing row is remembered too: deleted rows are read on every page that lists their attendees. A date's
+		// shared capacity pool is a row, but no ticket.
+		$this->found[ $row_id ] = $row instanceof Ticket && self::TICKET_TYPE === $row->type ? $row : null;
 
 		return $this->found[ $row_id ];
 	}
@@ -172,6 +200,8 @@ final class Tickets extends Custom_Table_Repository {
 	 */
 	public function forget( int $row_id ): void {
 		unset( $this->found[ $row_id ] );
+		// A row's stock moves its date's pool.
+		$this->pools = [];
 		tribe( Ticket_Cache_Controller::class )->clean_ticket_cache( Ticket_ID::from_row_id( $row_id ) );
 	}
 
@@ -379,7 +409,125 @@ final class Tickets extends Custom_Table_Repository {
 	}
 
 	/**
-	 * Forgets every row and date read in this request.
+	 * Returns a date's shared capacity pool.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $occurrence_id The occurrence ID.
+	 *
+	 * @return Ticket|null The pool, or null when the date has none.
+	 */
+	public function get_pool( int $occurrence_id ): ?Ticket {
+		if ( array_key_exists( $occurrence_id, $this->pools ) ) {
+			return $this->pools[ $occurrence_id ];
+		}
+
+		$pools = Tickets_Table::paginate(
+			[
+				[
+					'column' => 'occurrence_id',
+					'value'  => $occurrence_id,
+				],
+				[
+					'column' => 'type',
+					'value'  => self::POOL_TYPE,
+				],
+			],
+			1,
+			1
+		);
+
+		$this->pools[ $occurrence_id ] = $pools ? reset( $pools ) : null;
+
+		return $this->pools[ $occurrence_id ];
+	}
+
+	/**
+	 * Gives dates a shared capacity pool of the event's capacity, or updates theirs.
+	 *
+	 * A date keeps its pool's sales; a date moved to another event takes its pool along.
+	 *
+	 * @since TBD
+	 *
+	 * @param int   $post_id        The real event post ID.
+	 * @param int   $capacity       The event's shared capacity.
+	 * @param int[] $occurrence_ids The dates' occurrence IDs.
+	 *
+	 * @return void
+	 */
+	public function upsert_pools( int $post_id, int $capacity, array $occurrence_ids ): void {
+		$this->pools = [];
+
+		if ( ! $occurrence_ids ) {
+			return;
+		}
+
+		$now    = gmdate( 'Y-m-d H:i:s' );
+		$values = [];
+		foreach ( array_unique( array_map( 'intval', $occurrence_ids ) ) as $occurrence_id ) {
+			$values[] = DB::prepare( "( %s, 0, %d, %d, '', 0, %d, %d, 0, 'global', 0, 'publish', %s )", self::POOL_TYPE, $post_id, $occurrence_id, $capacity, $capacity, $now );
+		}
+
+		DB::query(
+			DB::prepare( 'INSERT INTO %i ( type, parent_id, post_id, occurrence_id, name, price, capacity, stock, sales, stock_mode, menu_order, status, created_at ) VALUES ', Tickets_Table::table_name() )
+			. implode( ', ', $values )
+			. ' ON DUPLICATE KEY UPDATE post_id = VALUES( post_id ), capacity = VALUES( capacity )'
+		);
+	}
+
+	/**
+	 * Sets every pool of an event to its date's shared sales, and its stock to what its capacity leaves, never below 0.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The real event post ID.
+	 *
+	 * @return void
+	 */
+	public function refresh_pools( int $post_id ): void {
+		$this->pools = [];
+
+		DB::query(
+			DB::prepare(
+				"UPDATE %i pool LEFT JOIN ( SELECT occurrence_id, SUM( sales ) AS sold FROM %i WHERE post_id = %d AND type = %s AND stock_mode IN ( 'global', 'capped' ) GROUP BY occurrence_id ) shared ON shared.occurrence_id = pool.occurrence_id SET pool.sales = COALESCE( shared.sold, 0 ), pool.stock = IF( pool.capacity > COALESCE( shared.sold, 0 ), pool.capacity - COALESCE( shared.sold, 0 ), 0 ) WHERE pool.post_id = %d AND pool.type = %s",
+				Tickets_Table::table_name(),
+				Tickets_Table::table_name(),
+				$post_id,
+				self::TICKET_TYPE,
+				$post_id,
+				self::POOL_TYPE
+			)
+		);
+	}
+
+	/**
+	 * Deletes an event's shared capacity pools, but those of the dates kept.
+	 *
+	 * @since TBD
+	 *
+	 * @param int   $post_id The real event post ID.
+	 * @param int[] $keep    The occurrence IDs of the dates whose pool stays.
+	 *
+	 * @return void
+	 */
+	public function delete_pools( int $post_id, array $keep = [] ): void {
+		$this->pools = [];
+
+		$keep = $keep ? array_map( 'intval', $keep ) : [ 0 ];
+
+		DB::query(
+			DB::prepare(
+				'DELETE FROM %i WHERE post_id = %d AND type = %s AND occurrence_id NOT IN ( ' . implode( ', ', array_fill( 0, count( $keep ), '%d' ) ) . ' )',
+				Tickets_Table::table_name(),
+				$post_id,
+				self::POOL_TYPE,
+				...$keep
+			)
+		);
+	}
+
+	/**
+	 * Forgets every row, date and pool read in this request.
 	 *
 	 * @since TBD
 	 *
@@ -388,10 +536,12 @@ final class Tickets extends Custom_Table_Repository {
 	private function forget_all(): void {
 		$this->found           = [];
 		$this->occurrence_rows = [];
+		$this->pools           = [];
 	}
 
+
 	/**
-	 * Returns the rows whose column holds a value, paging by ID so every page is stable.
+	 * Returns the ticket rows whose column holds a value, paging by ID so every page is stable: never a pool.
 	 *
 	 * @since TBD
 	 *
@@ -405,6 +555,10 @@ final class Tickets extends Custom_Table_Repository {
 			[
 				'column' => $column,
 				'value'  => $value,
+			],
+			[
+				'column' => 'type',
+				'value'  => self::TICKET_TYPE,
 			],
 		];
 		$rows  = [];
