@@ -151,6 +151,27 @@ class Detach_Test extends WPTestCase {
 	}
 
 	/**
+	 * @test
+	 */
+	public function it_should_give_a_detached_shared_date_the_single_events_shared_capacity(): void {
+		$event = $this->create_recurring_event( 5 );
+		$this->create_tc_ticket( $event, 10, [ 'tribe-ticket' => [ 'mode' => 'global', 'event_capacity' => 10, 'capacity' => 10 ] ] );
+		$dates = $this->get_dates( $event );
+		$rows  = array_filter( tribe( Rows::class )->get_by_post( $event ), static fn( $row ) => (int) $row->occurrence_id === (int) $dates[2]->occurrence_id );
+		$this->create_row_order( [ Ticket_ID::from_row_id( (int) reset( $rows )->id ) => 2 ] );
+
+		$single = (int) tribe( Events::class )->detach_occurrence_from_event( $dates[2] );
+		$ticket = (int) get_posts( [ 'post_type' => Ticket::POSTTYPE, 'fields' => 'ids', 'meta_key' => Ticket::$event_relation_meta_key, 'meta_value' => $single ] )[0];
+
+		$this->assertSame( 'global', get_post_meta( $ticket, '_global_stock_mode', true ) );
+		$this->assertSame( [ '1', '10', '8' ], [ get_post_meta( $single, '_tribe_ticket_use_global_stock', true ), get_post_meta( $single, '_tribe_ticket_capacity', true ), get_post_meta( $single, '_tribe_ticket_global_stock_level', true ) ] );
+		$this->assertSame( '8', get_post_meta( $ticket, '_stock', true ) );
+		$this->forget_rows_read();
+		$this->assertNull( tribe( Rows::class )->get_pool( (int) $dates[2]->occurrence_id ), 'The date sells from the single event now.' );
+		$this->assertNotNull( tribe( Rows::class )->get_pool( (int) $dates[3]->occurrence_id ) );
+	}
+
+	/**
 	 * @return array{0: int, 1: object[], 2: object, 3: int[]} The event, its dates, the third date's row and its two
 	 *                                                         attendees.
 	 */
