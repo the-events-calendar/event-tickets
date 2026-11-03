@@ -15,7 +15,9 @@ use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
 use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\Recurring_Tickets\Models\Ticket;
+use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
+use Tribe__Tickets__Global_Stock as Global_Stock;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
@@ -29,6 +31,26 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
  * @package TEC\Tickets\Recurring_Tickets
  */
 final class Hydrator {
+	/**
+	 * The rows repository.
+	 *
+	 * @since TBD
+	 *
+	 * @var Rows
+	 */
+	private Rows $rows;
+
+	/**
+	 * Hydrator constructor.
+	 *
+	 * @since TBD
+	 *
+	 * @param Rows $rows The rows repository.
+	 */
+	public function __construct( Rows $rows ) {
+		$this->rows = $rows;
+	}
+
 	/**
 	 * Returns the ticket object of a table ticket ID.
 	 *
@@ -52,7 +74,8 @@ final class Hydrator {
 			return null;
 		}
 
-		if ( ! $row instanceof Ticket ) {
+		// A date's shared capacity pool is a row, but no ticket.
+		if ( ! $row instanceof Ticket || Rows::POOL_TYPE === $row->type ) {
 			return null;
 		}
 
@@ -62,7 +85,10 @@ final class Hydrator {
 		$filtered = apply_filters( 'tec_tickets_commerce_get_ticket_legacy', $ticket, $ticket->get_event_id(), $ticket_id );
 		$ticket   = $filtered instanceof Ticket_Object ? $filtered : $ticket;
 
-		wp_cache_set( $ticket_id, $ticket->to_array(), 'tec_tickets' );
+		// A sale of another ticket on the pool changes a shared ticket's stock.
+		if ( ! $ticket instanceof Shared_Ticket ) {
+			wp_cache_set( $ticket_id, $ticket->to_array(), 'tec_tickets' );
+		}
 
 		return $ticket;
 	}
@@ -85,32 +111,46 @@ final class Hydrator {
 		[ $start_date, $start_time ] = $this->split( $row->start_date );
 		[ $end_date, $end_time ]     = $this->split( $row->end_date );
 
-		$ticket = new Ticket_Object(
-			[
-				'ID'               => Ticket_ID::from_row_id( (int) $row->id ),
-				'name'             => (string) $row->name,
-				'description'      => (string) $row->description,
-				'show_description' => (bool) $row->show_description,
-				'menu_order'       => (int) $row->menu_order,
-				'sku'              => (string) $row->sku,
-				'post_type'        => Commerce_Ticket::POSTTYPE,
-				'provider_class'   => Module::class,
-				'admin_link'       => '',
-				'price'            => $price,
-				'regular_price'    => $price,
-				'on_sale'          => false,
-				'start_date'       => $start_date,
-				'start_time'       => $start_time,
-				'end_date'         => $end_date,
-				'end_time'         => $end_time,
-				'capacity'         => (int) $row->capacity,
-				'event_id'         => $this->event_id( $row ),
-			]
-		);
+		$data      = [
+			'ID'               => Ticket_ID::from_row_id( (int) $row->id ),
+			'name'             => (string) $row->name,
+			'description'      => (string) $row->description,
+			'show_description' => (bool) $row->show_description,
+			'menu_order'       => (int) $row->menu_order,
+			'sku'              => (string) $row->sku,
+			'post_type'        => Commerce_Ticket::POSTTYPE,
+			'provider_class'   => Module::class,
+			'admin_link'       => '',
+			'price'            => $price,
+			'regular_price'    => $price,
+			'on_sale'          => false,
+			'start_date'       => $start_date,
+			'start_time'       => $start_time,
+			'end_date'         => $end_date,
+			'end_time'         => $end_time,
+			'capacity'         => (int) $row->capacity,
+			'event_id'         => $this->event_id( $row ),
+		];
+		$mode      = (string) $row->stock_mode;
+		$pool_mode = ! $unlimited && in_array( $mode, [ Global_Stock::GLOBAL_STOCK_MODE, Global_Stock::CAPPED_STOCK_MODE ], true );
+		$pool      = $pool_mode ? $this->rows->get_pool( (int) $row->occurrence_id ) : null;
+
+		if ( $pool ) {
+			$capacity = Global_Stock::GLOBAL_STOCK_MODE === $mode ? (int) $pool->capacity : (int) $row->capacity;
+			$ticket   = new Shared_Ticket( $data, $capacity, min( (int) $row->stock, (int) $pool->stock ) );
+		} else {
+			$ticket = new Ticket_Object( $data );
+			$ticket->manage_stock( ! $unlimited );
+			$ticket->stock( $unlimited || null === $row->stock ? -1 : (int) $row->stock );
+
+			// Without a pool yet, a shared row sells from its own capacity.
+			if ( $pool_mode ) {
+				$mode = Global_Stock::OWN_STOCK_MODE;
+			}
+		}
 
 		$ticket->manage_stock( ! $unlimited );
-		$ticket->stock( $unlimited || null === $row->stock ? -1 : (int) $row->stock );
-		$ticket->global_stock_mode( (string) $row->stock_mode );
+		$ticket->global_stock_mode( $mode );
 		$ticket->qty_sold( (int) $row->sales );
 		$ticket->qty_pending( 0 );
 		$ticket->qty_cancelled( 0 );
