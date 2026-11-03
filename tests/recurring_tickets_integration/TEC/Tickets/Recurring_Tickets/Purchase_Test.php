@@ -15,6 +15,7 @@ use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
 use TEC\Tickets\Tests\Recurring_Tickets\Requires_Recurrence_Tier;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe__Tickets__Tickets;
 use WP_REST_Request;
 
 /**
@@ -146,6 +147,43 @@ class Purchase_Test extends WPTestCase {
 		$missing = tribe( 'tickets.handler' )->is_ticket_readable( Ticket_ID::from_row_id( 999999 ) );
 		$this->assertInstanceOf( \WP_Error::class, $missing );
 		$this->assertSame( 404, $missing->get_error_data()['status'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_sell_two_shared_tickets_of_a_date_from_one_pool(): void {
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$event  = $this->create_recurring_event();
+		$shared = [ 'mode' => 'global', 'event_capacity' => 3, 'capacity' => 3 ];
+		$adult  = $this->create_tc_ticket( $event, 10, [ 'ticket_name' => 'Adult', 'tribe-ticket' => $shared ] );
+		$child  = $this->create_tc_ticket( $event, 5, [ 'ticket_name' => 'Child', 'tribe-ticket' => $shared ] );
+		wp_set_current_user( 0 );
+		$dates = $this->get_dates( $event );
+		$cart  = tribe( Cart::class );
+		$cart->clear_cart();
+		$cart->set_cart_hash( uniqid( 'cart-', true ) );
+		$cart->add_ticket( $this->row_ticket( $adult, $dates[0] ), 2 );
+
+		$this->complete_order();
+		$this->forget_rows_read();
+
+		$available = static fn( int $ticket ) => Tribe__Tickets__Tickets::load_ticket_object( $ticket )->available();
+		$this->assertSame( 1, $available( $this->row_ticket( $adult, $dates[0] ) ) );
+		$this->assertSame( 1, $available( $this->row_ticket( $child, $dates[0] ) ), 'The child ticket sells from the same seats.' );
+		$this->assertSame( 3, $available( $this->row_ticket( $child, $dates[1] ) ), 'Another date has its own pool.' );
+	}
+
+	/**
+	 * @param int    $template The template.
+	 * @param object $date     The date.
+	 *
+	 * @return int The ticket ID of the template's row on the date.
+	 */
+	private function row_ticket( int $template, object $date ): int {
+		$rows = array_filter( tribe( Rows::class )->get_by_template( $template ), static fn( $row ) => (int) $row->occurrence_id === (int) $date->occurrence_id );
+
+		return Ticket_ID::from_row_id( (int) reset( $rows )->id );
 	}
 
 	/**
