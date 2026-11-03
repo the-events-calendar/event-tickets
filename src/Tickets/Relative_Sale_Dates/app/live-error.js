@@ -1,13 +1,13 @@
 /**
  * When a window error found while the admin edits the window shows, the same in both editors.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /**
  * How long, in milliseconds, the admin stops typing before a new error shows.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @type {number}
  */
@@ -20,7 +20,7 @@ export const TYPING_SETTLE_DELAY = 800;
  * changed, is not called out. An error already shown follows every keystroke, so it clears as soon as the window is
  * fixed.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @template T
  *
@@ -37,7 +37,7 @@ export function getShownError( shown, error, isTyping ) {
 /**
  * Creates a tracker of whether the admin is typing in a window field.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {function(): void} onSettle Called once the admin stops typing for the settle delay.
  *

@@ -287,7 +287,7 @@ class Tribe__Tickets__Metabox {
 	 * @since 4.6.2
 	 * @since 4.10.9 Use customizable ticket name functions.
 	 * @since 5.5.7 Added optional parameter to return values instead of echoing directly.
-	 * @since TBD Rejects ticket data that `validate_ticket_data()` rejects, and passes on in the ticket data whether the
+	 * @since 5.31.0 Rejects ticket data that `validate_ticket_data()` rejects, and passes on in the ticket data whether the
 	 *            form is the wp-admin one.
 	 *
 	 * @param bool $return_value Optional, flags whether to JSON output directly or return results.

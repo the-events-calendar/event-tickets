@@ -2,7 +2,7 @@
  * Reads what every part of the classic ticket form script works from: the data it is localized with, the event dates
  * and the dates the form sends.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /**
@@ -26,7 +26,7 @@ import { readDateTime, readEventDates } from './event-dates';
  * Every window check, helper text and length reads the event dates, several of them on each key the admin types; the
  * fields change far less often.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @type {{key: string|null, dates: EventDates|null}}
  */
@@ -35,7 +35,7 @@ let lastEventDates = { key: null, dates: null };
 /**
  * Gets the data this script and TEC's helper text are localized with.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @return {FormContext|null} The data, or `null` on a page without either.
  */
@@ -53,7 +53,7 @@ export function getContext() {
  * form shows. The server judges a ticket save against the event as saved: a ticket saved before the event's new dates
  * can be accepted here and rejected there, which shows the server's message.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {FormContext} context The data this script is localized with.
  *
@@ -92,7 +92,7 @@ export function getEventDates( { settings, dynamic } ) {
  * that cannot be read is told apart from one not sent: the server rejects it rather than leave the boundary without a
  * date.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {ClassicWindowKind} kind    The kind of the window.
  * @param {FormContext}       context The data this script is localized with.

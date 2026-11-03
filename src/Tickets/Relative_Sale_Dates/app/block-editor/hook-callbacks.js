@@ -41,7 +41,7 @@ import { BLOCK_WINDOW_KINDS } from './window-kinds';
  * The store knows nothing of a ticket another provider sells, so its requests carry no rule. A ticket without a sale
  * price has no sale price rule to load, so checking its sale price opens on the defaults.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string} clientId The client ID of the ticket block.
  * @param {Object} ticket   The ticket, as the block editor tickets REST API returns it.
@@ -65,7 +65,7 @@ export function loadTicketRule( clientId, ticket ) {
  * answer arrives. Without an answer to read, only the rule the request carried counts: a draft held back from it was
  * never stored, so Cancel still goes back to the rule the ticket has.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string} clientId The client ID of the ticket block.
  * @param {number} ticketId The ticket ID.
@@ -89,7 +89,7 @@ export function saveTicketRule( clientId, ticketId, details, ticket ) {
 /**
  * Discards the rules a ticket block was being edited to when its edits are cancelled.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string} clientId The client ID of the ticket block.
  *
@@ -107,7 +107,7 @@ export function resetTicketRule( clientId ) {
  * whose parent window is rejected: the server would reject the ticket's other changes with it. Nor does the rule of a
  * window the ticket form does not add.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string}                        clientId   The client ID of the ticket block.
  * @param {BlockWindowKind}               kind       The window kind.
@@ -137,7 +137,7 @@ function getSentValue( clientId, kind, rule, readWindow, eventDates ) {
  *
  * The rules are recorded here, as the body is built: no later step of the save sees the body.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {FormData} body     The request body.
  * @param {string}   clientId The client ID of the ticket block.
@@ -175,7 +175,7 @@ export function filterSetBodyDetails( body, clientId ) {
 /**
  * Renders the sales window options of a ticket in place of its Sale Duration picker, for a provider they apply to.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Object} picker   The date and time range picker element.
  * @param {string} clientId The client ID of the ticket block.
@@ -193,7 +193,7 @@ export function filterTicketDuration( picker, clientId ) {
 /**
  * Renders the sale price window options of a Tickets Commerce ticket in place of its sale dates row.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Object}                       dates    The sale dates row element.
  * @param {string}                       clientId The client ID of the ticket block.
@@ -214,7 +214,7 @@ export function filterSalePricePickers( dates, clientId, pickers ) {
  *
  * A start of `Now` or a specific date, and a specific end, keep the ticket's own date.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {{fromDate: string, toDate: string}} dates    The sale dates the header shows, in the site date and time
  *                                                      formats.
@@ -249,7 +249,7 @@ export function filterSaleWindowDates( dates, clientId ) {
  *
  * A ticket without one, or whose rule or event dates cannot be read, keeps what the server said.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {boolean} onSale   Whether the ticket is on sale, as the server last said.
  * @param {string}  clientId The client ID of the ticket block.
@@ -284,7 +284,7 @@ export function filterTicketOnSale( onSale, clientId ) {
  * The button follows the window at once, while the window holds a new error back until the admin stops typing: a
  * click in that pause would send a window the server rejects. The error shows within the settle delay.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {boolean} isDisabled        Whether the Create or Update button is disabled already.
  * @param {Object}  state             The legacy ticket state.
@@ -319,7 +319,7 @@ export function filterConfirmDisabled( isDisabled, state, { clientId } ) {
  * The server judges the rule it stores, and saving the event resolves that rule against the new event dates without
  * the update, so the update is skipped rather than sent without the draft rule.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {boolean} updatesTicket Whether saving the post updates the ticket.
  * @param {string}  clientId      The client ID of the ticket block.
@@ -343,7 +343,7 @@ export function filterUpdateTicketWithPostSave( updatesTicket, clientId ) {
  * which could fall after an end moved to the event start. An end of *When the event starts* follows the event start, as
  * the server resolves it.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {boolean} followsEventStart Whether the sale end follows the event start.
  * @param {string}  clientId          The client ID of the ticket block.
@@ -370,7 +370,7 @@ export function filterSyncSaleEndWithEventStart( followsEventStart, clientId ) {
 /**
  * Returns whether a window of a ticket has an error the server would reject a save of the ticket for.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string} clientId The client ID of the ticket block.
  * @param {Object} [state]  The legacy ticket state, such as the one the dashboard is rendered with; the common store's

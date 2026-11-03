@@ -60,7 +60,7 @@ export const IS_FREE_TC_TICKET_ALLOWED = window?.tribe_editor_config?.tickets?.c
 /**
  * A sale price date as the store holds a real one, `YYYY-MM-DD`: it holds an empty one as `Invalid date`.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @type {RegExp}
  */

@@ -331,7 +331,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * if it wasn't manually updated
 	 *
 	 * @since 4.6
-	 * @since TBD Skips tickets whose sale end date no longer follows the event start.
+	 * @since 5.31.0 Skips tickets whose sale end date no longer follows the event start.
 	 *
 	 * @param int    $meta_id    MID
 	 * @param int    $object_id  Which Post we are dealing with
@@ -370,7 +370,7 @@ class Tribe__Tickets__Tickets_Handler {
 			/**
 			 * Filters whether a ticket's sale end date is moved to its event's new start date.
 			 *
-			 * @since TBD
+			 * @since 5.31.0
 			 *
 			 * @param bool $follows   Whether the ticket's sale end date follows the event start. Default `true`.
 			 * @param int  $ticket_id The ticket post ID.

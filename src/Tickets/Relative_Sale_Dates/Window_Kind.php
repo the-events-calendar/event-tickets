@@ -2,7 +2,7 @@
 /**
  * The kinds of window a ticket's relative sale dates describe: its sales window and its sale price window.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -21,7 +21,7 @@ use WP_Error;
  *
  * The rules, boundaries, resolver, writer, save and validation work the same for every kind; only these differ.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -29,7 +29,7 @@ final class Window_Kind {
 	/**
 	 * The ticket's sales window.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var string
 	 */
@@ -38,7 +38,7 @@ final class Window_Kind {
 	/**
 	 * The ticket's sale price window.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var string
 	 */
@@ -49,7 +49,7 @@ final class Window_Kind {
 	 *
 	 * The sales window takes up to `Boundary::MAX_VALUE`.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var int
 	 */
@@ -58,7 +58,7 @@ final class Window_Kind {
 	/**
 	 * The kinds built so far, keyed by their ID, so each kind has a single instance.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var array<string,self>
 	 */
@@ -67,7 +67,7 @@ final class Window_Kind {
 	/**
 	 * The kind's ID, one of the class constants.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var string
 	 */
@@ -76,7 +76,7 @@ final class Window_Kind {
 	/**
 	 * The modes each end of the window accepts, keyed by the end, `start` or `end`.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var array{start: string[], end: string[]}
 	 */
@@ -85,7 +85,7 @@ final class Window_Kind {
 	/**
 	 * The start mode that opens the window at once.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var string
 	 */
@@ -94,7 +94,7 @@ final class Window_Kind {
 	/**
 	 * The highest number of units a relative boundary accepts.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var int
 	 */
@@ -103,7 +103,7 @@ final class Window_Kind {
 	/**
 	 * The units a relative boundary accepts, as their length in seconds.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var int[]
 	 */
@@ -112,7 +112,7 @@ final class Window_Kind {
 	/**
 	 * The event dates a relative boundary may be counted from, the implied one first.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var string[]
 	 */
@@ -121,7 +121,7 @@ final class Window_Kind {
 	/**
 	 * The key the rule is stored under in the shared rules meta, or `null` for its top level.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var string|null
 	 */
@@ -130,7 +130,7 @@ final class Window_Kind {
 	/**
 	 * The kind whose window this one is judged against, or `null` for none.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var self|null
 	 */
@@ -141,7 +141,7 @@ final class Window_Kind {
 	 * ticket field; and `block_editor_request` and `block_editor_response`, the paths of keys to the rule in the
 	 * `ticket` param of a block editor ticket save and in the ticket data the block editor reads.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var array{data: string, tec_rest: string, block_editor_request: string[], block_editor_response: string[]}
 	 */
@@ -150,7 +150,7 @@ final class Window_Kind {
 	/**
 	 * The ticket metas each end of the window is written to: its date and, for a kind that stores times, its time.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var array{start: array{date: string, time: ?string}, end: array{date: string, time: ?string}}
 	 */
@@ -159,7 +159,7 @@ final class Window_Kind {
 	/**
 	 * The value an open start is written as, or `null` to leave the ticket's own start.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var string|null
 	 */
@@ -169,7 +169,7 @@ final class Window_Kind {
 	 * The keys of the sale the window belongs to, or `null` for a window every ticket has: `enabled_meta`, the ticket
 	 * meta that turns the sale on.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var array{enabled_meta: string}|null
 	 */
@@ -179,7 +179,7 @@ final class Window_Kind {
 	 * Whether the window's dates are the ticket's own sales dates: the ones the ticket is on sale between, which
 	 * `ticket_add()` fills in, the sales actions announce and the event start moves.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var bool
 	 */
@@ -188,7 +188,7 @@ final class Window_Kind {
 	/**
 	 * The ticket data fields each end of the window is submitted in: its date and, for a kind that stores times, its time.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var array{start: array{date: string, time: ?string}, end: array{date: string, time: ?string}}
 	 */
@@ -197,7 +197,7 @@ final class Window_Kind {
 	/**
 	 * Whether a specific boundary sent without a date leaves the window without one, which the save rejects.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var bool
 	 */
@@ -211,7 +211,7 @@ final class Window_Kind {
 	 * Each message is a closure, translated when the error is built: a kind can be built before the text domain loads,
 	 * and it lasts the whole request.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var array<string,array{code: string, message: Closure(): string}>
 	 */
@@ -220,7 +220,7 @@ final class Window_Kind {
 	/**
 	 * Gets the sales window kind.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return self The sales window kind.
 	 */
@@ -304,7 +304,7 @@ final class Window_Kind {
 	 * A relative boundary is 1 to 30 days or weeks before the event start, which it always counts from. The window is
 	 * stored as whole days, and an empty start means the sale price has started.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return self The sale price window kind.
 	 */
@@ -388,7 +388,7 @@ final class Window_Kind {
 	/**
 	 * Gets every kind.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return self[] The kinds, the sales window first: the sale price is judged against it.
 	 */
@@ -399,7 +399,7 @@ final class Window_Kind {
 	/**
 	 * Gets the kind's ID.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return string The ID, one of the class constants.
 	 */
@@ -410,7 +410,7 @@ final class Window_Kind {
 	/**
 	 * Gets the modes one edge of the window accepts.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param string $edge The edge of the window, `Boundary::EDGE_START` or `Boundary::EDGE_END`.
 	 *
@@ -423,7 +423,7 @@ final class Window_Kind {
 	/**
 	 * Gets the start mode that opens the window at once.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return string The mode, `Rule::MODE_DEFAULT` or `Rule::MODE_NOW`.
 	 */
@@ -434,7 +434,7 @@ final class Window_Kind {
 	/**
 	 * Gets the highest number of units a relative boundary accepts.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return int The highest value.
 	 */
@@ -445,7 +445,7 @@ final class Window_Kind {
 	/**
 	 * Gets the units a relative boundary accepts.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return int[] The units, as their length in seconds: `*_IN_SECONDS` constants.
 	 */
@@ -456,7 +456,7 @@ final class Window_Kind {
 	/**
 	 * Gets the event dates a relative boundary may be counted from.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return string[] The anchors, `Rule::ANCHOR_*` constants; the first is the one a kind that takes no anchor implies.
 	 */
@@ -467,7 +467,7 @@ final class Window_Kind {
 	/**
 	 * Returns whether a relative boundary names its anchor, which it does when it may be counted from more than one.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return bool Whether the anchor is sent and stored; when it is not, it is implied and must not be sent.
 	 */
@@ -478,7 +478,7 @@ final class Window_Kind {
 	/**
 	 * Gets the key the rule is stored under in the shared rules meta.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return string|null The key, or `null` when the rule is the meta's top level.
 	 */
@@ -489,7 +489,7 @@ final class Window_Kind {
 	/**
 	 * Gets the kind whose window this one is judged against.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return self|null The parent kind, or `null` for none.
 	 */
@@ -510,7 +510,7 @@ final class Window_Kind {
 	 * - has an empty date filled in the way `ticket_add()` fills it in: the day the event was published for the start,
 	 *   the event start for the end.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return bool Whether the window's dates are the ticket's sales dates.
 	 */
@@ -521,7 +521,7 @@ final class Window_Kind {
 	/**
 	 * Gets the keys that carry the rule.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return array{data: string, tec_rest: string, block_editor_request: string[], block_editor_response: string[]} The keys:
 	 *         - `data`, the ticket data key a save sends the rule under, as a JSON string, an array, or `null` or `''`
@@ -542,7 +542,7 @@ final class Window_Kind {
 	 *
 	 * A `null` time means the kind stores whole days.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return array{start: array{date: string, time: ?string}, end: array{date: string, time: ?string}} The meta keys.
 	 */
@@ -553,7 +553,7 @@ final class Window_Kind {
 	/**
 	 * Gets the value an open start is written as.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return string|null The value, or `null` to leave the ticket's own start, which a kind that
 	 *                     `owns_ticket_sales_dates()` may move to now.
@@ -565,7 +565,7 @@ final class Window_Kind {
 	/**
 	 * Returns whether the window is on for a ticket.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int $ticket_id The ticket post ID.
 	 *
@@ -581,7 +581,7 @@ final class Window_Kind {
 	 *
 	 * A `null` time means the kind is submitted as whole days.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return array{start: array{date: string, time: ?string}, end: array{date: string, time: ?string}} The field keys.
 	 */
@@ -595,7 +595,7 @@ final class Window_Kind {
 	 * Where it is not, as for the sale price, whose dates are stored empty when none is set, an empty start counts as
 	 * the day the parent window opens, and an empty end as no end.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return bool Whether the save rejects a specific boundary without a date.
 	 */
@@ -606,7 +606,7 @@ final class Window_Kind {
 	/**
 	 * Returns whether the window's dates are compared as days, the way they are stored and read, rather than instants.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return bool Whether the window is judged by the day.
 	 */
@@ -618,7 +618,7 @@ final class Window_Kind {
 	 * Returns whether a save of the ticket data keeps the window: Tickets Commerce drops a sale price that is unchecked,
 	 * negative, or not lower than the price.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param array<string,mixed> $data The ticket data about to be saved.
 	 *
@@ -631,7 +631,7 @@ final class Window_Kind {
 	/**
 	 * Gets the code of an error that rejects the window, which the editors tell the errors apart by.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param string $key The error, as the editors key it: `invalidRule`, `invalidDate`, `endsBeforeStart` or
 	 *                    `outsideParent`.
@@ -645,7 +645,7 @@ final class Window_Kind {
 	/**
 	 * Gets an error that rejects the window.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param string $key The error, as the editors key it: `invalidRule`, `invalidDate`, `endsBeforeStart` or
 	 *                    `outsideParent`.
@@ -674,7 +674,7 @@ final class Window_Kind {
 	 *
 	 * Private: each factory builds its kind and sets every property by name.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 */
 	private function __construct() {
 	}

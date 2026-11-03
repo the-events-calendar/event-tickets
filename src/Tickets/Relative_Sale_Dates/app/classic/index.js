@@ -2,7 +2,7 @@
  * The sales window and sale price options of the classic ticket form: binds each part of the script to the form and
  * the editor events it follows.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /**
@@ -31,7 +31,7 @@ import { CLASSIC_SALES_WINDOW, CLASSIC_WINDOW_KINDS, getFieldSelector } from './
 /**
  * The TEC event fields the event dates are read from.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @type {string}
  */
@@ -40,7 +40,7 @@ const EVENT_FIELDS = '#EventStartDate, #EventStartTime, #EventEndDate, #EventEnd
 /**
  * The number fields of the relative boundaries of every window, whose unit names follow the number typed.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @type {string}
  */
@@ -51,7 +51,7 @@ const RELATIVE_VALUE_FIELDS = CLASSIC_WINDOW_KINDS.flatMap( ( kind ) =>
 /**
  * Updates everything that follows the event dates once an event field changes.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @return {void}
  */
@@ -66,7 +66,7 @@ function onEventChange() {
 /**
  * Updates everything that follows the event dates once the editor replaces the panels.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @return {void}
  */

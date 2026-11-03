@@ -2,7 +2,7 @@
 /**
  * Stores a ticket's rules, its sales window rule and its sale price rule, and writes the dates they resolve to.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -26,7 +26,7 @@ use WP_Error;
  * stored one; a save that does not send the rule keeps the stored one and applies it again, and an empty rule removes
  * it. A rule whose window the ticket does not have, such as a sale price rule without a sale price, is removed.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -34,7 +34,7 @@ final class Ticket_Save {
 	/**
 	 * The ticket types relative sale dates never apply to: Series Passes, and RSVPs stored as Tickets Commerce tickets.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var string[]
 	 */
@@ -43,7 +43,7 @@ final class Ticket_Save {
 	/**
 	 * The store of the ticket rules.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var Rule_Store
 	 */
@@ -52,7 +52,7 @@ final class Ticket_Save {
 	/**
 	 * The writer of the ticket dates.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var Ticket_Dates
 	 */
@@ -61,7 +61,7 @@ final class Ticket_Save {
 	/**
 	 * The sales window resolver.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var Sale_Window
 	 */
@@ -70,7 +70,7 @@ final class Ticket_Save {
 	/**
 	 * The effects only the sales window has.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var Sales_Window_Effects
 	 */
@@ -79,7 +79,7 @@ final class Ticket_Save {
 	/**
 	 * The judge of the windows a save would store.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var Window_Validator
 	 */
@@ -88,7 +88,7 @@ final class Ticket_Save {
 	/**
 	 * The providers the relative sales window applies to.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var Providers
 	 */
@@ -97,7 +97,7 @@ final class Ticket_Save {
 	/**
 	 * Ticket_Save constructor.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param Rule_Store           $rule_store           The store of the ticket rules.
 	 * @param Sale_Window          $sale_window          The resolver of every kind of window.
@@ -121,7 +121,7 @@ final class Ticket_Save {
 	 * The block editor sends the start it loaded for a ticket whose start was relative before; a Now start resolves
 	 * it to now.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int                 $post_id The ticket parent post ID.
 	 * @param Ticket_Object       $ticket  The ticket that is being saved.
@@ -164,7 +164,7 @@ final class Ticket_Save {
 	 *
 	 * Tickets Commerce has saved the sale price by now, and removed it when it is unchecked or not lower than the price.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int                 $ticket_id The ticket post ID.
 	 * @param int                 $post_id   The ticket parent post ID.
@@ -208,7 +208,7 @@ final class Ticket_Save {
 	 * `tec_tickets_relative_sale_dates_ticket_providers`, gets the dates `set_ticket_dates()` set only here, so a start
 	 * that opens the window at once moves a later start to now here too.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int $ticket_id The ticket post ID.
 	 * @param int $post_id   The ticket parent post ID.
@@ -239,7 +239,7 @@ final class Ticket_Save {
 	 * judged again as the parent of the sale price. A kind the save drops, such as a sale price that is unchecked or not
 	 * lower than the price, is not judged.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param true|WP_Error       $valid   `true`, or the error an earlier callback rejected the data with.
 	 * @param int                 $post_id The ticket parent post ID.
@@ -273,7 +273,7 @@ final class Ticket_Save {
 	/**
 	 * Returns whether relative sale dates apply to a ticket of the given type on the given post.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int    $post_id     The ticket parent post ID.
 	 * @param string $ticket_type The ticket type.
@@ -287,7 +287,7 @@ final class Ticket_Save {
 	/**
 	 * Returns whether relative sale dates apply to a saved ticket.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int $ticket_id The ticket post ID.
 	 * @param int $post_id   The ticket parent post ID.
@@ -307,7 +307,7 @@ final class Ticket_Save {
 	 * editor save passes on the `is_admin` that `tickets.js` sends, false for such a form, in the ticket data; a REST
 	 * request carries none, so leaving the rule out keeps it, whatever its query string holds.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param array<string,mixed> $data The ticket data.
 	 * @param Window_Kind         $kind The kind of the rule.
@@ -330,7 +330,7 @@ final class Ticket_Save {
 	 * A save that does not know about rules, like a plugin calling `ticket_add()` or an update of the price only, does
 	 * not send one, and an invalid rule is not a request to remove the valid one already stored.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int                 $ticket_id The ticket post ID, or `0` for a ticket not saved yet.
 	 * @param array<string,mixed> $data      The ticket data.
@@ -358,7 +358,7 @@ final class Ticket_Save {
 	 * The rule judged is the one the save applies: the one sent, or else the one stored for the ticket. A rule sent that
 	 * cannot be read is rejected, as the save would keep the stored one while the admin who sent it expects it to apply.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int                 $post_id The ticket parent post ID.
 	 * @param array<string,mixed> $data    The ticket data about to be saved.

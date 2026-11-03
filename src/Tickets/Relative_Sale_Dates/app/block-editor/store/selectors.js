@@ -10,7 +10,7 @@ import { SALES_WINDOW } from '../../window-kinds';
 /**
  * Gets the rule the ticket block is being edited to.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {State}      state    The store state.
  * @param {string}     clientId The client ID of the ticket block.

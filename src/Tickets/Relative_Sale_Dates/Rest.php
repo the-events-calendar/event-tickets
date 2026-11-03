@@ -2,7 +2,7 @@
 /**
  * Accepts and returns the relative sale dates rules through the ticket REST APIs.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -26,7 +26,7 @@ use WP_REST_Request;
  * Each kind names the keys that carry its rule in each API, and which tickets the block editor gets its rule for; the
  * code that reads and writes them is the same for every kind.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -34,7 +34,7 @@ final class Rest {
 	/**
 	 * The store of the ticket rules.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var Rule_Store
 	 */
@@ -43,7 +43,7 @@ final class Rest {
 	/**
 	 * The providers the relative sales window applies to.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var Providers
 	 */
@@ -52,7 +52,7 @@ final class Rest {
 	/**
 	 * Rest constructor.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param Rule_Store $rule_store The store of the ticket rules.
 	 * @param Providers  $providers  The providers the relative sales window applies to.
@@ -68,7 +68,7 @@ final class Rest {
 	 *
 	 * A rule the request does not send is left out, so the save keeps the stored one.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param array<string,mixed>|mixed $ticket_data The ticket data built from the request body.
 	 * @param WP_REST_Request           $request     The request.
@@ -111,7 +111,7 @@ final class Rest {
 	/**
 	 * Names the TEC REST API params the rules are sent in, so the ticket upsert passes them on as ticket data.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param array<string,string>|mixed $ticket_data_keys The ticket data keys, keyed by the REST param they are sent in.
 	 *
@@ -138,7 +138,7 @@ final class Rest {
 	 * nested in the provider's own data, as `sale_price_data.relative`, only for a Tickets Commerce ticket, and only
 	 * where that data is an array.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param array<string,mixed>|mixed $data The ticket data.
 	 *
@@ -173,7 +173,7 @@ final class Rest {
 	 * Documents the rule of every window kind, such as `relative_sale_dates` and `sale_price_relative`, in the TEC REST
 	 * API ticket request body and ticket definitions.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param array<string,mixed>|mixed $documentation The definition's documentation, in the format supported by Swagger.
 	 *
@@ -203,7 +203,7 @@ final class Rest {
 	 * Every TEC REST API endpoint runs this filter, so a rule is only put back for a request whose schema documents it:
 	 * an event, a venue or an organizer would save the key as post meta.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param array<string,mixed>|mixed $filtered_data The request data the schema keeps.
 	 * @param array<string,mixed>       $data          The request data as it was sent.
@@ -232,7 +232,7 @@ final class Rest {
 	 * A provider added through `tec_tickets_relative_sale_dates_ticket_providers` hooks this to its own ticket entity;
 	 * only a Tickets Commerce ticket has a sale price rule.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param array<string,mixed>|mixed $entity The ticket entity.
 	 *
@@ -260,7 +260,7 @@ final class Rest {
 	/**
 	 * Returns whether the request body of a schema documents a field, directly or through a definition.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param OpenAPI_Schema $schema The schema of the request.
 	 * @param string         $field  The field name.
@@ -286,7 +286,7 @@ final class Rest {
 	/**
 	 * Gets a ticket's stored rule of a kind in its canonical form.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int         $ticket_id The ticket post ID.
 	 * @param Window_Kind $kind      The kind of the rule.

@@ -1,7 +1,7 @@
 /**
  * Reads the data the server localizes the Ticket block script with.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /** @typedef {import( '../sale-window' ).SaleWindowRule} SaleWindowRule */
@@ -41,7 +41,7 @@
 /**
  * Gets the data the server localizes the Ticket block script with.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @return {BlockEditorData} The localized data.
  */
@@ -52,7 +52,7 @@ export function getLocalizedData() {
 /**
  * Gets the active providers the sales window applies to, as the server localizes them.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @return {TicketProviders|undefined} The providers, or `undefined` when the script is not localized with them.
  */

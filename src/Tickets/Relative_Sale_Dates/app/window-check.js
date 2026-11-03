@@ -1,7 +1,7 @@
 /**
  * Checks a window of a ticket form, of any kind, the way the server checks it on save.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /**
@@ -60,7 +60,7 @@ export { ENDS_BEFORE_START, INVALID_DATE, OUTSIDE_PARENT, RELATIVE_VALUE_OUT_OF_
  * has none, as the server takes the day the event was published, which the form does not know. A kind that stores its
  * open start itself, the sale price, opens now.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {import( './sale-window' ).SaleWindowRule}           rule                The rule the form expresses.
  * @param {import( './server-event-dates' ).EventDates}        eventDates          The event dates, as the server
@@ -111,7 +111,7 @@ export function getFormWindow( rule, eventDates, formDates, kind = SALES_WINDOW 
 /**
  * Returns whether one boundary of a rule is valid for a kind, as the server's `Boundary` judges it.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {*}          boundary The boundary, not yet validated.
  * @param {string}     key      The boundary, `start` or `end`.
@@ -136,7 +136,7 @@ function isValidBoundary( boundary, key, kind ) {
 /**
  * Returns whether a rule is valid for a kind, as the server's `Rule` judges it.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {*}          rule                The rule, not yet validated.
  * @param {WindowKind} [kind=SALES_WINDOW] The kind of the window.
@@ -154,7 +154,7 @@ export function isValidRule( rule, kind = SALES_WINDOW ) {
 /**
  * Returns the boundary whose relative number is out of the range of a kind, the start first.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {import( './sale-window' ).SaleWindowRule} rule                The rule the form expresses.
  * @param {WindowKind}                               [kind=SALES_WINDOW] The kind of the window.
@@ -172,7 +172,7 @@ export function getOutOfRangeBoundary( rule, kind = SALES_WINDOW ) {
 /**
  * Returns whether one date is before another at the precision a kind is kept at.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Moment}     date  The date.
  * @param {Moment}     other The date to compare it with.
@@ -203,7 +203,7 @@ function isBefore( date, other, kind ) {
  * Each boundary takes the date `getFormWindow()` gives it. A date that is not known, such as a default start sent
  * without one, leaves what it is part of unjudged: the server judges it with the day the event was published.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {import( './sale-window' ).SaleWindowRule}           rule                The rule the form expresses.
  * @param {import( './server-event-dates' ).EventDates}        eventDates          The event dates, as the server
@@ -280,7 +280,7 @@ export function getWindowError( rule, eventDates, formDates, kind = SALES_WINDOW
  * shows. Without the event dates, only what the server rejects whatever the dates is judged: a relative number out of
  * range, or a rule it does not take.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {WindowKind}                                  kind       The kind of the window.
  * @param {WindowReader}                                readWindow Reads what the form holds for a window of a kind.

@@ -33,7 +33,7 @@ import { useTicketTyping } from './use-ticket-typing';
  * A new rule's defaults are kept as the draft at once, so the ticket is saved with them as the classic editor saves its
  * form; a window saved without a rule keeps no draft until the admin changes an option.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string}          clientId The client ID of the ticket block.
  * @param {BlockWindowKind} kind     The window kind.

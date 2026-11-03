@@ -4,9 +4,9 @@
  *
  * @since 5.8.0
  * @since 5.18.0 Removed start and end date tooltips.
- * @since TBD Moved the date and time inputs to `editor/panel/fields/date-inputs`.
+ * @since 5.31.0 Moved the date and time inputs to `editor/panel/fields/date-inputs`.
  *
- * @version TBD
+ * @version 5.31.0
  *
  * @var string $ticket_start_date The start date of the ticket.
  * @var string $ticket_end_date The end date of the ticket.

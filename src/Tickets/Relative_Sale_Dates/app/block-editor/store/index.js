@@ -1,7 +1,7 @@
 /**
  * The store of the rule of each window of each ticket in the block editor.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /**

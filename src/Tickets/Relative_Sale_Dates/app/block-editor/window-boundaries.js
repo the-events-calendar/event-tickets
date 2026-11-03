@@ -10,7 +10,7 @@ import WindowBoundary from './window-boundary';
 /**
  * Renders the options of both boundaries of a ticket block's window, the start first.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Object}                                       props                  The component props.
  * @param {BlockWindowKind}                              props.kind             The window kind.

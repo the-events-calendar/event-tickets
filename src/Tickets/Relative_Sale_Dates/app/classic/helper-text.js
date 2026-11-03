@@ -1,7 +1,7 @@
 /**
  * Writes the text that tells the admin when a relative sales window works out to.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /**
@@ -25,7 +25,7 @@ import { getHelperDateFormat } from '../helper-date-format';
  *
  * The year is left out of a date in the current year, as the server formats dates.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string}             template    The text, with `%1$s` for the date and `%2$s` for the time.
  * @param {Moment}             date        The sales date, in the event timezone.
@@ -51,7 +51,7 @@ export function formatHelperText( template, date, settings, currentYear ) {
  * timezone moves a time that timezone's clocks skip, so the date is built in UTC, which skips none, and its local
  * getters read the UTC ones.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Moment} date The date, in the event timezone.
  *

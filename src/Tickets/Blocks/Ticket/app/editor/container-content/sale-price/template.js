@@ -220,7 +220,7 @@ class SalePrice extends PureComponent {
 							/**
 							 * Filters what the sale price section renders in place of its sale dates row.
 							 *
-							 * @since TBD
+							 * @since 5.31.0
 							 *
 							 * @param {Object} dates         The sale dates row, with its label and both date pickers.
 							 * @param {string} clientId      The client ID of the ticket block.

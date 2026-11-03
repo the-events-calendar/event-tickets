@@ -1,7 +1,7 @@
 /**
  * Reads the event dates from The Events Calendar's block editor, the way the server reads the saved event.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /**
@@ -22,7 +22,7 @@ import { useCommonStoreValue } from './use-common-store-value';
 /**
  * Reads the event start, end and timezone the server reads once the event is saved.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Object|null} fields The event dates as The Events Calendar holds them; read from its store when not given.
  *
@@ -45,7 +45,7 @@ export function readEventDates( fields = getEventDateFields() ) {
 /**
  * Returns the event dates, read again whenever the admin changes them in the editor.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @return {EventDates|null} The event dates, or `null` when they cannot be read.
  */

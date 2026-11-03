@@ -2,7 +2,7 @@
 /**
  * Registers the Relative Sale Dates scripts.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -22,7 +22,7 @@ use WP_Screen;
  * Registers the scripts of the sales window options in the classic ticket editor and in the Ticket block, and the
  * Ticket block's style.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -30,7 +30,7 @@ final class Assets extends Controller_Contract {
 	/**
 	 * The handle of the classic ticket editor script.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var string
 	 */
@@ -39,7 +39,7 @@ final class Assets extends Controller_Contract {
 	/**
 	 * The handle of the Ticket block script.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var string
 	 */
@@ -48,7 +48,7 @@ final class Assets extends Controller_Contract {
 	/**
 	 * The handle of the Ticket block style.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var string
 	 */
@@ -57,7 +57,7 @@ final class Assets extends Controller_Contract {
 	/**
 	 * The manual UTC offsets the WordPress timezone field offers, in hours, as `wp_timezone_choice()` lists them.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var array<int|float>
 	 */
@@ -122,7 +122,7 @@ final class Assets extends Controller_Contract {
 	/**
 	 * Unregisters the controller.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return void
 	 */
@@ -135,7 +135,7 @@ final class Assets extends Controller_Contract {
 	/**
 	 * Registers the controller.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return void
 	 */
@@ -200,7 +200,7 @@ final class Assets extends Controller_Contract {
 	 * Returns whether the current admin screen edits an event in the classic editor, where the classic ticket form shows
 	 * the sales window options: only for the tickets of a provider they apply to, so only with such a provider on.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return bool Whether the current screen is the classic event edit screen, with a provider the options apply to on.
 	 */
@@ -212,7 +212,7 @@ final class Assets extends Controller_Contract {
 	 * Returns whether the current admin screen edits an event in the block editor, where the Ticket block shows the sales
 	 * window options: only for the tickets of a provider they apply to, so only with such a provider on.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return bool Whether the current screen is the block editor event edit screen, with a provider the options apply
 	 *              to on.
@@ -224,7 +224,7 @@ final class Assets extends Controller_Contract {
 	/**
 	 * Gets the data the classic ticket editor script reads the event dates and writes the helper text with.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, windows: array<string,array{endsBeforeStart: string, outsideParent?: string, invalidDate: string, valueOutOfRange: string}>}, errorCodes: array<string,array{endsBeforeStart: string, outsideParent?: string, invalidRule: string, invalidDate: string}>} The script data.
 	 */
@@ -251,7 +251,7 @@ final class Assets extends Controller_Contract {
 	 *
 	 * The errors the server rejects a save with carry the server's own text.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return array<string,array{endsBeforeStart: string, outsideParent?: string, invalidDate: string, valueOutOfRange: string}> The texts of
 	 *         each kind, keyed by the error as the editors key it; `outsideParent` only for a kind with a parent window.
@@ -289,7 +289,7 @@ final class Assets extends Controller_Contract {
 	 * The classic script tells the window a rejected save was about by its code: the text can be translated or escaped
 	 * differently, or be another validator's.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return array<string,array{endsBeforeStart: string, outsideParent?: string, invalidRule: string, invalidDate: string}> The
 	 *         codes of each kind, keyed by the error as the editors key it; `outsideParent` only for a kind with a parent
@@ -316,7 +316,7 @@ final class Assets extends Controller_Contract {
 	 * Gets the data the Ticket block script reads the defaults and the error texts of each window kind, the event date
 	 * settings and the helper text formats from.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return array{windowDefaults: array<string,array{start: array{mode: string, value: int, unit: int, anchor?: string}, end: array{mode: string, value: int, unit: int, anchor?: string}}>, windowErrorTexts: array<string,array{endsBeforeStart: string, outsideParent?: string, invalidDate: string, valueOutOfRange: string}>, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, dateNoYear: string, time: string}, ticketProviders: array{classes: string[], slugs: string[]}} The script data, with the defaults and the error texts keyed by the kind's ID.
 	 */
@@ -350,7 +350,7 @@ final class Assets extends Controller_Contract {
 	 * The block holds the provider of the tickets block as a class, and that of a ticket fetched from the server as the
 	 * slug the block editor tickets REST API gives it.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return array{classes: string[], slugs: string[]} The provider classes and their REST API slugs.
 	 */
@@ -370,7 +370,7 @@ final class Assets extends Controller_Contract {
 	 * The server does not read a manual offset as a fixed one: it guesses a named zone, which may keep daylight saving
 	 * time, so the browser needs the same zone to calculate the same dates.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return array<string,string> The zone names, keyed by the offset option value.
 	 */
@@ -388,7 +388,7 @@ final class Assets extends Controller_Contract {
 	/**
 	 * Gets the times TEC saves for an all-day event, which follow the multi-day cutoff setting.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return array{start: string, end: string, endDays: int} The start and end times, `H:i:s`, and the days the end
 	 *                                                         falls after the event's last day.
@@ -410,7 +410,7 @@ final class Assets extends Controller_Contract {
 	 *
 	 * Both editors read it from here; the classic editor's `tribe_dynamic_help_text` leaves a blank setting blank.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param bool $with_year Whether the format shows the year.
 	 *
@@ -429,7 +429,7 @@ final class Assets extends Controller_Contract {
 	/**
 	 * Gets the TEC time format, which follows the site one unless the `tribe_time_format` filter changes it.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return string The time format, in PHP date format.
 	 */
@@ -442,7 +442,7 @@ final class Assets extends Controller_Contract {
 	/**
 	 * Returns whether the current admin screen edits an event, where the classic ticket form or the Ticket block can show.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return bool Whether the current screen is the event edit screen.
 	 */

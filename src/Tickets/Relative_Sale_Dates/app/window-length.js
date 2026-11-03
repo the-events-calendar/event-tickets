@@ -1,7 +1,7 @@
 /**
  * Says how long a window lasts.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /**
@@ -24,7 +24,7 @@ import { getFormWindow, isValidRule } from './window-check';
  * The length counts the days the window's dates fall on, each in its own timezone, as a kind kept at the precision of a
  * day stores them.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {{start: Moment|null, end: Moment|null}|null} window The window, or `null` when it is not known.
  * @param {import( './window-kinds' ).WindowKind}       kind   The kind of the window.
@@ -56,7 +56,7 @@ export function getWindowLengthText( window, kind ) {
  * A rule the server would reject, such as one with a cleared or out-of-range number, has no length: the save keeps
  * the stored window.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {import( './sale-window' ).SaleWindowRule}           rule       The rule the form expresses.
  * @param {import( './server-event-dates' ).EventDates|null}   eventDates The event dates, as the server reads them,

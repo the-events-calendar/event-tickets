@@ -4,9 +4,9 @@
  *
  * Shared by `commerce/metabox/sale-price` and `relative-sale-dates/sale-price`.
  *
- * @since TBD
+ * @since 5.31.0
  *
- * @version TBD
+ * @version 5.31.0
  *
  * @var bool $sale_checkbox_on Whether the ticket has a sale price.
  */

@@ -10,9 +10,9 @@
  * text, and its form sends the rule in a field of its own. Its script judges the window itself, with the message the
  * error carries.
  *
- * @since TBD
+ * @since 5.31.0
  *
- * @version TBD
+ * @version 5.31.0
  *
  * @var string                                                                                   $ticket_start_date            The start date of the ticket.
  * @var string                                                                                   $ticket_end_date              The end date of the ticket.

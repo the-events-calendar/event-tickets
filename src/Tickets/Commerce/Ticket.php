@@ -374,7 +374,7 @@ class Ticket extends Ticket_Data {
 	 * @todo TribeCommerceLegacy: This method needs to make use of the Ticket Model.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Set the provider before judging the sale price, so its dates are read in the event timezone.
+	 * @since 5.31.0 Set the provider before judging the sale price, so its dates are read in the event timezone.
 	 *
 	 * @param int|\WP_Post $ticket_id
 	 *
@@ -1185,7 +1185,7 @@ class Ticket extends Ticket_Data {
 	 *
 	 * Relative sale dates judge the sale price window only when the save keeps the sale price.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @internal
 	 *

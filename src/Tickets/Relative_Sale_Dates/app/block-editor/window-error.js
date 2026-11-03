@@ -1,7 +1,7 @@
 /**
  * Checks a ticket block's windows, of every kind, the way the server checks them on save.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /**
@@ -48,7 +48,7 @@ import { useCommonStoreValue } from './use-common-store-value';
 /**
  * Returns a kind followed by the windows it must start inside, its parent first.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {BlockWindowKind} kind The window kind.
  *
@@ -62,7 +62,7 @@ function getKindLineage( kind ) {
  * Returns whether the server would reject a save of a ticket's window of a kind: the window or one it must start
  * inside has an error.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {BlockWindowKind}    kind       The window kind.
  * @param {TicketWindowReader} readWindow Reads the draft rule and form of a window of the ticket.
@@ -78,7 +78,7 @@ export function hasTicketWindowSaveError( kind, readWindow, eventDates ) {
  * Builds the reader of a ticket's windows: each one's draft rule, as the request carries it and as the options show it,
  * with its form as another reader gives it.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string}                                        clientId    The client ID of the ticket block.
  * @param {Function}                                      selectStore The `select()` of `@wordpress/data`, or the one
@@ -106,7 +106,7 @@ export function getTicketWindowReader( clientId, selectStore, readForm ) {
 /**
  * Reads the form of a ticket's window of a kind from the legacy ticket state.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string}          clientId The client ID of the ticket block.
  * @param {BlockWindowKind} kind     The window kind.
@@ -123,7 +123,7 @@ export function readTicketWindowForm( clientId, kind, state = getLegacyState() )
  * Returns the error of a ticket block's window of a kind, checked again whenever the rules, the event dates or what
  * the ticket form holds change, the parent window's included.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string}          clientId The client ID of the ticket block.
  * @param {BlockWindowKind} kind     The window kind.
@@ -149,7 +149,7 @@ export function useWindowError( clientId, kind ) {
 /**
  * Gets the message of a window error, as the server words it for the kind.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string|null}     key  The error key, or `null`.
  * @param {BlockWindowKind} kind The window kind.
@@ -164,7 +164,7 @@ function getWindowErrorMessage( key, kind ) {
  * Gets the messages each boundary of a window shows for its error: a relative number out of range on that number, and
  * any other error under the end.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string|null}     error The error key, or `null`.
  * @param {SaleWindowRule}  rule  The rule the options show.
@@ -187,7 +187,7 @@ export function getBoundaryErrors( error, rule, kind ) {
  * Returns the error a ticket block's window shows while the admin edits it: a new error waits until the admin stops
  * typing, and an error already shown follows every keystroke.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string|null} error    The error key the window has now, or `null`.
  * @param {boolean}     isTyping Whether the admin is typing in a window field of the ticket.
@@ -209,7 +209,7 @@ export function useShownError( error, isTyping ) {
  * Returns the messages each boundary of a ticket block's window shows for its error, checked again as the form
  * changes, a new error held back while the admin types.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string}          clientId The client ID of the ticket block.
  * @param {BlockWindowKind} kind     The window kind.

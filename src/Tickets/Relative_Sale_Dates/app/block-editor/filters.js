@@ -3,7 +3,7 @@
  * sale price dates, header sale window, header on sale state, Create or Update button, the sync of its sale end with
  * the event start and its update with the post save.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /**

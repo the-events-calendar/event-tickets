@@ -2,7 +2,7 @@
 /**
  * Reads and writes the rules stored on a ticket.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -14,7 +14,7 @@ namespace TEC\Tickets\Relative_Sale_Dates;
 /**
  * Keeps the ticket's rules in one JSON meta, writing only the keys it is given so one rule never drops another.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -22,7 +22,7 @@ final class Rule_Store {
 	/**
 	 * The ticket meta that holds the rules, as a JSON object.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var string
 	 */
@@ -31,7 +31,7 @@ final class Rule_Store {
 	/**
 	 * The most ruled tickets the query for one event returns, so an event with thousands of tickets cannot run it unbounded.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var int
 	 */
@@ -40,7 +40,7 @@ final class Rule_Store {
 	/**
 	 * How many times a write is tried against fresh meta when another request changed the rules since they were read.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var int
 	 */
@@ -49,7 +49,7 @@ final class Rule_Store {
 	/**
 	 * Gets everything stored for a ticket.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int $ticket_id The ticket post ID.
 	 *
@@ -63,7 +63,7 @@ final class Rule_Store {
 	 * Gets the tickets of an event that have stored rules: the Tickets Commerce ones, at most `TICKETS_QUERY_LIMIT` of
 	 * them, and those of the other providers the relative sales window applies to.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int $event_id The event post ID.
 	 *
@@ -76,7 +76,7 @@ final class Rule_Store {
 		 * A provider added through `tec_tickets_relative_sale_dates_ticket_providers` adds its own tickets of the event
 		 * that have the rules meta, `TEC\Tickets\Relative_Sale_Dates\Rule_Store::META_KEY`.
 		 *
-		 * @since TBD
+		 * @since 5.31.0
 		 *
 		 * @param int[] $ticket_ids The ticket post IDs, Tickets Commerce's.
 		 * @param int   $event_id   The event post ID.
@@ -89,7 +89,7 @@ final class Rule_Store {
 	/**
 	 * Writes the given top-level keys, leaving the other stored keys as they are.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int                                                                                             $ticket_id The ticket post ID.
 	 * @param array{start?: array<string,mixed>, end?: array<string,mixed>, sale_price?: array<string,mixed>} $values    The values to write, keyed by their top-level key.
@@ -103,7 +103,7 @@ final class Rule_Store {
 	/**
 	 * Removes the given top-level keys, and the meta once nothing is left in it.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int      $ticket_id The ticket post ID.
 	 * @param string[] $keys      The top-level keys to remove.
@@ -128,7 +128,7 @@ final class Rule_Store {
 	/**
 	 * Saves a rule of any kind under the keys its kind stores it in, leaving the rules of the other kinds as they are.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int  $ticket_id The ticket post ID.
 	 * @param Rule $rule      The rule.
@@ -144,7 +144,7 @@ final class Rule_Store {
 	/**
 	 * Removes the rule of a kind, leaving the rules of the other kinds as they are.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int         $ticket_id The ticket post ID.
 	 * @param Window_Kind $kind      The kind of the rule to remove.
@@ -160,7 +160,7 @@ final class Rule_Store {
 	/**
 	 * Gets the Tickets Commerce tickets of an event that have stored rules, at most `TICKETS_QUERY_LIMIT` of them.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int $event_id The event post ID.
 	 *
@@ -206,7 +206,7 @@ final class Rule_Store {
 	 * Two saves of one ticket can overlap, and a write of what one read would drop the other's rule or bring back one it
 	 * removed. On such a conflict the rules are read again, from the database, and changed again.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int                                                      $ticket_id The ticket post ID.
 	 * @param callable(array<string,mixed>):(array<string,mixed>|null) $change    Returns the rules to write from the stored
@@ -242,7 +242,7 @@ final class Rule_Store {
 	/**
 	 * Writes the rules, or deletes the meta when there are none, if the meta still holds what was read.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int                                                                                             $ticket_id The ticket post ID.
 	 * @param string                                                                                          $read      The meta as it was read, `''` for none.
@@ -279,7 +279,7 @@ final class Rule_Store {
 	/**
 	 * Reads the stored meta.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int $ticket_id The ticket post ID.
 	 *
@@ -294,7 +294,7 @@ final class Rule_Store {
 	/**
 	 * Decodes the stored meta.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param string $json The stored JSON.
 	 *

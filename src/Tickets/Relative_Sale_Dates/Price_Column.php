@@ -2,7 +2,7 @@
 /**
  * Hands the price column of the classic tickets list what its script needs to follow a relative sale price.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -17,7 +17,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 /**
  * Class Price_Column.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -25,7 +25,7 @@ final class Price_Column {
 	/**
 	 * The markup the price column keeps of a price, as `editor/column-body-price` filters it.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var array<string,array<string,array{}>>
 	 */
@@ -45,7 +45,7 @@ final class Price_Column {
 	/**
 	 * The store of the ticket rules.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var Rule_Store
 	 */
@@ -54,7 +54,7 @@ final class Price_Column {
 	/**
 	 * Price_Column constructor.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param Rule_Store $rule_store The store of the ticket rules.
 	 */
@@ -69,7 +69,7 @@ final class Price_Column {
 	 * row, empty for a ticket without a sale price rule: the template merges each row's context into the values the
 	 * next row inherits.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param array<string,mixed>|mixed $context The context of the price column template.
 	 *
@@ -111,7 +111,7 @@ final class Price_Column {
 	/**
 	 * Reads a stored sale price date of a ticket.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int    $ticket_id The ticket post ID.
 	 * @param string $meta_key  The meta key of the date.
@@ -127,7 +127,7 @@ final class Price_Column {
 	/**
 	 * Draws the price of a ticket as the price column does, on sale or not.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param bool $on_sale   Whether to draw the sale price.
 	 * @param int  $ticket_id The ticket post ID.

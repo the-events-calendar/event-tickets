@@ -2,7 +2,7 @@
 /**
  * A relative sale dates rule as a TEC REST API parameter.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -26,7 +26,7 @@ use TEC\Common\REST\TEC\V1\Parameter_Types\Text;
  * An `Entity` would suit the documentation, but request body collections register an entity's leaf properties as
  * separate arguments, and its sanitizer does not accept `null`.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -34,7 +34,7 @@ final class Rule_Parameter extends Parameter {
 	/**
 	 * Builds the parameter of a window kind's rule, named after the kind's TEC REST API field.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param Window_Kind $kind The kind of the rule.
 	 *
@@ -47,7 +47,7 @@ final class Rule_Parameter extends Parameter {
 	/**
 	 * Rule_Parameter constructor.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param Window_Kind $kind The kind of the rule.
 	 */
@@ -66,7 +66,7 @@ final class Rule_Parameter extends Parameter {
 	/**
 	 * Gets the parameter type.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return string The parameter type.
 	 */
@@ -77,7 +77,7 @@ final class Rule_Parameter extends Parameter {
 	/**
 	 * Gets the parameter default.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return null There is no default: a request without the rule leaves it out.
 	 */
@@ -91,7 +91,7 @@ final class Rule_Parameter extends Parameter {
 	 * The inner properties carry the examples. The rule is not an ORM field, and the shared TEC REST API endpoint tests
 	 * round-trip every documented example through the ORM.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return null There is no example.
 	 */
@@ -102,7 +102,7 @@ final class Rule_Parameter extends Parameter {
 	/**
 	 * Gets the validator, which only checks the value is an object or `null`: the ticket save validates the rule.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return Closure The validator.
 	 */
@@ -122,7 +122,7 @@ final class Rule_Parameter extends Parameter {
 	/**
 	 * Gets the sanitizer, which keeps the value as sent so the rule's integers stay integers.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return Closure The sanitizer.
 	 */
@@ -134,7 +134,7 @@ final class Rule_Parameter extends Parameter {
 	 * Gets the documentation of one boundary of the window: its mode and, for a relative boundary, its value, its unit
 	 * and, for a kind that takes one, its anchor.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param Window_Kind           $kind         The kind of the rule.
 	 * @param string                $name         The boundary, `start` or `end`.
@@ -174,7 +174,7 @@ final class Rule_Parameter extends Parameter {
 	 * Gets the copy the TEC REST API documents a kind's rule with, each a closure translated when it is read: the rule,
 	 * its `start` and `end` boundaries and their modes, and the value and unit, which take the kind's range and units.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param Window_Kind $kind The kind of the rule.
 	 *

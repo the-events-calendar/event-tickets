@@ -227,7 +227,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 	 * @since 5.6.5  Validates if price is greater than 0 when provider is PayPal or Tickets Commerce
 	 * @since 5.9.0    Added support for sale price for Tickets Commerce.
 	 * @since 5.30.3      Rejects saving a ticket that is not attached to the requested post.
-	 * @since TBD      Rejects ticket data that `validate_ticket_data()` rejects, and filters the ticket data through
+	 * @since 5.31.0      Rejects ticket data that `validate_ticket_data()` rejects, and filters the ticket data through
 	 *                 `tec_tickets_rest_single_ticket_add_data`.
 	 *
 	 * @param WP_REST_Request $request      The request object.
@@ -347,7 +347,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 		/**
 		 * Filters the ticket data the block editor sends, before it is validated and saved.
 		 *
-		 * @since TBD
+		 * @since 5.31.0
 		 *
 		 * @param array<string,mixed>     $ticket_data The ticket data built from the request body.
 		 * @param WP_REST_Request         $request     The request.

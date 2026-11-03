@@ -2,7 +2,7 @@
 /**
  * The sale dates a rule resolves to for one event.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -17,7 +17,7 @@ use DateTimeZone;
 /**
  * An immutable resolved sales window. A `null` start or end means the resolver has no date for it.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -25,7 +25,7 @@ final class Resolved_Window {
 	/**
 	 * The sales start in the event timezone, or `null` when there is no date for it.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var DateTimeImmutable|null
 	 */
@@ -34,7 +34,7 @@ final class Resolved_Window {
 	/**
 	 * The sales end in the event timezone, or `null` when there is no date for it.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var DateTimeImmutable|null
 	 */
@@ -43,7 +43,7 @@ final class Resolved_Window {
 	/**
 	 * The event timezone the window was resolved in.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var DateTimeZone
 	 */
@@ -52,7 +52,7 @@ final class Resolved_Window {
 	/**
 	 * Resolved_Window constructor.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param DateTimeImmutable|null $start    The sales start in the event timezone, or `null` when there is no date for it.
 	 * @param DateTimeImmutable|null $end      The sales end in the event timezone, or `null` when there is no date for it.
@@ -67,7 +67,7 @@ final class Resolved_Window {
 	/**
 	 * Gets the sales start in the event timezone.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return DateTimeImmutable|null The sales start, or `null` when sales open at once or keep the ticket's own date.
 	 */
@@ -78,7 +78,7 @@ final class Resolved_Window {
 	/**
 	 * Gets the sales end in the event timezone.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return DateTimeImmutable|null The sales end, or `null` when the ticket keeps its own date.
 	 */
@@ -89,7 +89,7 @@ final class Resolved_Window {
 	/**
 	 * Gets the event timezone the window was resolved in, which its dates are written in.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return DateTimeZone The event timezone.
 	 */

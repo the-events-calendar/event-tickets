@@ -4,9 +4,9 @@
  *
  * Shared by `editor/panel/fields/dates` and `relative-sale-dates/sales-window`.
  *
- * @since TBD
+ * @since 5.31.0
  *
- * @version TBD
+ * @version 5.31.0
  *
  * @var string                             $sales_end                    The end of the window, `start` or `end`.
  * @var Tribe__Tickets__Ticket_Object|null $ticket                       The ticket, or `null` for a new ticket.

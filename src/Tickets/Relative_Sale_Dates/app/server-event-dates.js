@@ -1,7 +1,7 @@
 /**
  * Builds the event dates the server reads once the event is saved, from the dates and times an editor holds.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /**
@@ -37,7 +37,7 @@ import { FIXED_OFFSET } from './sale-window';
  * An all-day event takes the times the server saves for one, and a manual UTC offset takes the zone the server
  * resolves it to.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Object}            dates           The event dates as the editor holds them.
  * @param {string}            dates.startDate The start date, `YYYY-MM-DD`.

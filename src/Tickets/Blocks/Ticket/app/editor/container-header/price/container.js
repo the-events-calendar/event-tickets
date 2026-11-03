@@ -28,7 +28,7 @@ const mapStateToProps = ( state, ownProps ) => ( {
 	/**
 	 * Filters whether the ticket header shows the ticket's sale price.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param {boolean} onSale   Whether the ticket is on sale, as the server last said.
 	 * @param {string}  clientId The client ID of the ticket block.

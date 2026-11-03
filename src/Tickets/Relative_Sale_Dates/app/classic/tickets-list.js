@@ -1,7 +1,7 @@
 /**
  * Writes the sale dates a ticket row of the classic tickets list shows.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /**
@@ -19,7 +19,7 @@ import { MODE_DEFAULT, MODE_RELATIVE } from '../rule-constants';
 /**
  * Formats a `YYYY-MM-DD` date in the tickets list format.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string}       date     The date.
  * @param {ListSettings} settings The list date format.
@@ -38,7 +38,7 @@ function formatDate( date, settings ) {
  * A relative end takes the date it works out to, and a default end the event start; a default start and a specific
  * end keep the date stored for the ticket.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {import( '../sale-window' ).SaleWindowRule}          rule       The ticket's rule.
  * @param {import( '../sale-window' ).ResolvedSaleWindow|null} saleWindow The window the rule resolves to for the

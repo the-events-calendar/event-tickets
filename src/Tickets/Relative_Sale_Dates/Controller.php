@@ -2,7 +2,7 @@
 /**
  * Relative Sale Dates controller.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -17,7 +17,7 @@ use TEC\Tickets\Ticket_Actions;
 /**
  * Registers the Relative Sale Dates feature and holds the switch that turns all of it off.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -25,7 +25,7 @@ final class Controller extends Controller_Contract {
 	/**
 	 * The name of the constant, and of the environment variable, that disables the feature when truthy.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var string
 	 */
@@ -34,7 +34,7 @@ final class Controller extends Controller_Contract {
 	/**
 	 * Unregisters the controller.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return void
 	 */
@@ -74,7 +74,7 @@ final class Controller extends Controller_Contract {
 	 * longer resolve them, so the tickets keep the dates last written. Switched back on, the next save or event move
 	 * resolves them again from those stored rules.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return bool Whether the feature is active.
 	 */
@@ -94,7 +94,7 @@ final class Controller extends Controller_Contract {
 		 * plugins load, so add it from a plugin or a must-use plugin: one added in a theme's `functions.php` comes too
 		 * late and is ignored.
 		 *
-		 * @since TBD
+		 * @since 5.31.0
 		 *
 		 * @param bool $active Whether the feature is active. Default `true`.
 		 */
@@ -106,7 +106,7 @@ final class Controller extends Controller_Contract {
 	 *
 	 * `Ticket_Save` is bound as a singleton so the container returns the same callbacks to `unregister()`.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return void
 	 */

@@ -1,7 +1,7 @@
 /**
  * Works out a ticket's sales window in the block editor and writes its dates the way the admin reads them.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /**
@@ -24,7 +24,7 @@ import { getLocalizedData } from './localized-data';
  *
  * A manual UTC offset the server resolves to a fixed offset has no zone name, so the offset stands in for it.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string} format The format, in PHP date format.
  * @param {Moment} date   The date.
@@ -40,7 +40,7 @@ export function formatSaleDate( format, date ) {
  *
  * The year is left out of a date in the current year of the event timezone, as the server formats dates.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string}      name The end of the window, `start` or `end`.
  * @param {Moment|null} date The sales date, in the event timezone, or `null` when it cannot be worked out.

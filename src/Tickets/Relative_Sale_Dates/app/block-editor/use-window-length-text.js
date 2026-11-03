@@ -13,7 +13,7 @@ import { useCommonStoreValue } from './use-common-store-value';
  * Returns the text that says how long a ticket block's window lasts, worked out again whenever the rule, the event
  * dates or the dates the ticket form holds change.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string}          clientId   The client ID of the ticket block.
  * @param {SaleWindowRule}  rule       The rule the options show.

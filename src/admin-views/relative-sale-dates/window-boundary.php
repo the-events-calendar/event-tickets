@@ -5,9 +5,9 @@
  * Every window kind renders its boundaries with this markup; the kind's template gives the copy and the date inputs. The
  * mode and relative inputs have no `name`: the kind's template sends the rule as JSON in its own field.
  *
- * @since TBD
+ * @since 5.31.0
  *
- * @version TBD
+ * @version 5.31.0
  *
  * @var Window_Kind                                                      $window_kind       The kind of the window.
  * @var string                                                           $boundary_end      The boundary, `start` or `end`.

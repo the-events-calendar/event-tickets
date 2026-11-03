@@ -21,7 +21,7 @@
 /**
  * Returns the state with the rules of one ticket replaced, leaving the other tickets' rules as they were.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {State}       state    The current state.
  * @param {string}      clientId The client ID of the ticket block.
@@ -36,7 +36,7 @@ function withRules( state, clientId, rules ) {
 /**
  * Returns the state with the rules of one window of a ticket replaced, leaving its other windows as they were.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {State}       state    The current state.
  * @param {string}      clientId The client ID of the ticket block.
@@ -52,7 +52,7 @@ function withWindowRules( state, clientId, kindId, rules ) {
 /**
  * Returns the state with every window of a ticket changed the same way: a ticket is saved or cancelled whole.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {State}                                state    The current state.
  * @param {string}                               clientId The client ID of the ticket block.
@@ -79,7 +79,7 @@ function withEveryWindow( state, clientId, change ) {
  *
  * A request that carried no rule leaves the stored one, so the saved rule stays as it was.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {WindowRules} rules The window's rules.
  *
@@ -92,7 +92,7 @@ function withSentSaved( rules ) {
 /**
  * Returns a window's rules with the draft restored to the saved rule.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {WindowRules} rules The window's rules.
  *
@@ -105,7 +105,7 @@ function withDraftReset( rules ) {
 /**
  * Reduces the Relative Sale Dates block editor store.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {State}  state  The current state.
  * @param {Object} action The dispatched action.

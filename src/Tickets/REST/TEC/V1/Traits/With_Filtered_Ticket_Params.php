@@ -30,7 +30,7 @@ trait With_Filtered_Ticket_Params {
 	 * @since 5.26.0
 	 * @since 5.29.3 Hardened sale price handling.
 	 * @since 5.30.3 Rejects a negative price or sale price.
-	 * @since TBD Moves the params the `tec_tickets_rest_ticket_data_params` filter names into the ticket data.
+	 * @since 5.31.0 Moves the params the `tec_tickets_rest_ticket_data_params` filter names into the ticket data.
 	 *
 	 * @param array $params The params to filter.
 	 *
@@ -162,7 +162,7 @@ trait With_Filtered_Ticket_Params {
 		 * A param sent as `null` is passed on as `''` and one left out is not passed on, so the save can tell a removal
 		 * from a field the update does not touch. The params are taken out of the post params.
 		 *
-		 * @since TBD
+		 * @since 5.31.0
 		 *
 		 * @param array<string,string> $ticket_data_keys The ticket data keys, keyed by the REST param they are sent in.
 		 * @param array<string,mixed>  $params           The REST params.

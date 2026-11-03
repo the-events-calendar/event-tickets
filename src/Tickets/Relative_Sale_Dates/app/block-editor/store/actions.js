@@ -9,7 +9,7 @@ import { SALES_WINDOW } from '../../window-kinds';
 /**
  * Sets the rule a ticket was loaded with, as both its saved rule and its draft.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string}                        clientId The client ID of the ticket block.
  * @param {SaleWindowRule|null|undefined} rule     The ticket's stored rule, `null` when it has none, or `undefined` for
@@ -25,7 +25,7 @@ export function setRule( clientId, rule, kind = SALES_WINDOW ) {
 /**
  * Sets the rule the ticket block is being edited to, without touching the saved one.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string}              clientId The client ID of the ticket block.
  * @param {SaleWindowRule|null} rule     The edited rule, or `null` to remove the ticket's rule.
@@ -40,7 +40,7 @@ export function setDraftRule( clientId, rule, kind = SALES_WINDOW ) {
 /**
  * Records the rule the request that creates or updates a ticket carries.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string}                        clientId The client ID of the ticket block.
  * @param {SaleWindowRule|null|undefined} rule     The rule the request carries: `null` for an empty one, `undefined`
@@ -56,7 +56,7 @@ export function setSentRule( clientId, rule, kind = SALES_WINDOW ) {
 /**
  * Keeps the rules the last request carried as the saved rules, once the ticket they were sent with has been saved.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string} clientId The client ID of the ticket block.
  *
@@ -71,7 +71,7 @@ export function saveSentRule( clientId ) {
  *
  * Saves can overlap, and the rule the latest request carried is not the one an earlier answer confirms.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string}                        clientId The client ID of the ticket block.
  * @param {SaleWindowRule|null|undefined} rule     The rule the server stored, `null` for none, or `undefined` for a
@@ -87,7 +87,7 @@ export function saveConfirmedRule( clientId, rule, kind = SALES_WINDOW ) {
 /**
  * Discards the drafts, restoring the saved rules.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string} clientId The client ID of the ticket block.
  *

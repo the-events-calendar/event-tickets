@@ -2,7 +2,7 @@
 /**
  * What a window whose dates are the ticket's own sales dates does beyond resolving and storing them.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -23,7 +23,7 @@ use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
  * The sales window's dates are the ones the ticket is on sale between: `ticket_add()` fills them in, the sales actions
  * announce them, and the legacy event start sync moves the end. Every method here leaves another kind's window as it is.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -31,7 +31,7 @@ final class Sales_Window_Effects {
 	/**
 	 * The tickets handler, which keeps the manual-update flags of the ticket dates.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var Tickets_Handler
 	 */
@@ -40,7 +40,7 @@ final class Sales_Window_Effects {
 	/**
 	 * The scheduler of the "sales started" and "sales ended" actions.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var Ticket_Actions
 	 */
@@ -49,7 +49,7 @@ final class Sales_Window_Effects {
 	/**
 	 * Sales_Window_Effects constructor.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param Tickets_Handler $tickets_handler The tickets handler.
 	 * @param Ticket_Actions  $ticket_actions  The scheduler of the sales actions.
@@ -65,7 +65,7 @@ final class Sales_Window_Effects {
 	 * A Now start puts the ticket on sale. A start that has already passed, or no start, is left to the ticket, so saving
 	 * a ticket on sale again does not move its start.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param Resolved_Window $window       The resolved window.
 	 * @param Rule            $rule         The rule the window was resolved from.
@@ -89,7 +89,7 @@ final class Sales_Window_Effects {
 	 * The sales dates are wall-clock times in the event timezone, so the timezone is kept with them: an event moved to
 	 * another timezone with the same times changes the instants the sales actions announce.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param Resolved_Window $window The resolved window.
 	 * @param Window_Kind     $kind   The kind of the window.
@@ -111,7 +111,7 @@ final class Sales_Window_Effects {
 	 * The start fallback applies to an open start or a ticket without a rule, and the end fallback only to a ticket
 	 * without a rule, so a `specific` boundary sent without its date has none.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param Window_Kind            $kind        The kind of window.
 	 * @param Rule|null              $rule        The rule of the kind the save applies, or `null` for none.
@@ -140,7 +140,7 @@ final class Sales_Window_Effects {
 	 * but Ticket_Actions skips it before unscheduling, which would leave the old sales actions behind. Every pending
 	 * action goes, not only the next one: overlapping saves can leave two.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int         $ticket_id The ticket post ID.
 	 * @param Window_Kind $kind      The kind of the window whose dates changed.
@@ -164,7 +164,7 @@ final class Sales_Window_Effects {
 	 * rule the first time it saves a ticket made before the feature. The end stays put when the start counts back from
 	 * the event end, which could fall after an end moved to the event start.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param Rule $rule The ticket's rule.
 	 *
@@ -183,7 +183,7 @@ final class Sales_Window_Effects {
 	 * to a specific end on the same date writes no new end date that would add one. Without the flag, the next event
 	 * move would give that end the event start.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int       $ticket_id The ticket post ID.
 	 * @param Rule|null $previous  The rule of the same kind stored before this save, or `null` for none.
@@ -211,7 +211,7 @@ final class Sales_Window_Effects {
 	 * The end the rule resolved was flagged as a manual one when the ticket was saved, which stops it from following the
 	 * event start; unless the save that removes the rule keeps an end of its own, the flag goes with the rule.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int         $ticket_id The ticket post ID.
 	 * @param Window_Kind $kind      The kind of the removed rule.
@@ -231,7 +231,7 @@ final class Sales_Window_Effects {
 	 * Deletes the timezone the sales window dates were written in once the sales window rule is removed, as nothing
 	 * reads it without the rule.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int         $ticket_id The ticket post ID.
 	 * @param Window_Kind $kind      The kind of the removed rule.
@@ -249,7 +249,7 @@ final class Sales_Window_Effects {
 	/**
 	 * Gets the start a Now boundary moves the ticket to: now, when the ticket start is later.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param string       $ticket_start The start the ticket is saved with, as `Y-m-d H:i:s` in the event timezone, or `''`.
 	 * @param DateTimeZone $timezone     The event timezone.
@@ -275,7 +275,7 @@ final class Sales_Window_Effects {
 	/**
 	 * Gets the day the event was published, which `ticket_add()` stores as the start of a ticket sent without one.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int          $post_id  The event post ID.
 	 * @param DateTimeZone $timezone The event timezone.

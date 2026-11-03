@@ -1,7 +1,7 @@
 /**
  * Keeps the limits `tickets.js` puts on the classic date pickers in step with the modes of each window.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /**
@@ -13,7 +13,7 @@ import { CLASSIC_WINDOW_KINDS } from './window-kinds';
 /**
  * The pairs of date pickers that limit each other, with the mode select of the window end each picker belongs to.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @type {Array<{start: {mode: string, date: string}, end: {mode: string, date: string}}>}
  */
@@ -26,7 +26,7 @@ const DATE_PAIRS = CLASSIC_WINDOW_KINDS.map( ( kind ) => {
 /**
  * Sets a limit of a date picker to the date of the other end of its window, or clears it when that end is not specific.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Document}                     root     The document holding the form.
  * @param {string}                       pickerId The id of the date input whose picker is limited.
@@ -54,7 +54,7 @@ function setLimit( root, pickerId, option, other ) {
  * `tickets.js` limits each picker to the date picked in the other one. An end that leaves the specific mode hides its
  * date, which is then no part of the window, so the limit it put on the other picker goes; it comes back with the mode.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Document} root   The document holding the form.
  * @param {string}   modeId The id of the mode select that changed.

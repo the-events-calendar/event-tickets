@@ -2,7 +2,7 @@
 /**
  * A ticket's sales or sale price window expressed relative to its event.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -17,7 +17,7 @@ use JsonSerializable;
 /**
  * An immutable window rule: a boundary for each end of the window, `start` and `end`, of one kind of window.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -25,7 +25,7 @@ final class Rule implements JsonSerializable {
 	/**
 	 * At the start of the window, sales open at once; at its end, they close when the event starts.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var string
 	 */
@@ -34,7 +34,7 @@ final class Rule implements JsonSerializable {
 	/**
 	 * At the start of the sale price window, the sale price applies as soon as the ticket's sales window opens.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var string
 	 */
@@ -43,7 +43,7 @@ final class Rule implements JsonSerializable {
 	/**
 	 * This end of the window is a number of units before an anchor on the event.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var string
 	 */
@@ -52,7 +52,7 @@ final class Rule implements JsonSerializable {
 	/**
 	 * The admin picked a date; the rule does not hold it.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var string
 	 */
@@ -61,7 +61,7 @@ final class Rule implements JsonSerializable {
 	/**
 	 * Measured from the event start.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var string
 	 */
@@ -70,7 +70,7 @@ final class Rule implements JsonSerializable {
 	/**
 	 * Measured from the event end.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var string
 	 */
@@ -79,7 +79,7 @@ final class Rule implements JsonSerializable {
 	/**
 	 * The kind of window the rule describes.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var Window_Kind
 	 */
@@ -88,7 +88,7 @@ final class Rule implements JsonSerializable {
 	/**
 	 * The start of the window.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var Boundary
 	 */
@@ -97,7 +97,7 @@ final class Rule implements JsonSerializable {
 	/**
 	 * The end of the window.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var Boundary
 	 */
@@ -108,7 +108,7 @@ final class Rule implements JsonSerializable {
 	 *
 	 * Top-level keys other than `start` and `end` are ignored, and so are the keys a boundary's mode does not use.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param array{start?: mixed, end?: mixed} $data The rule, in the shape `['start' => [...], 'end' => [...]]`.
 	 * @param Window_Kind                       $kind The kind of window.
@@ -136,7 +136,7 @@ final class Rule implements JsonSerializable {
 	 *
 	 * An invalid rule is not a request to remove the valid one already stored, so it builds nothing.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param mixed       $raw  The rule as sent, a JSON string or an array.
 	 * @param Window_Kind $kind The kind of window.
@@ -164,7 +164,7 @@ final class Rule implements JsonSerializable {
 	 *
 	 * The sales window rule is its top level; another kind's rule sits under the kind's store key.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param array<string,mixed> $stored The stored rules, keyed by their top-level key.
 	 * @param Window_Kind         $kind   The kind of window.
@@ -192,7 +192,7 @@ final class Rule implements JsonSerializable {
 	/**
 	 * Gets the kind of window the rule describes.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return Window_Kind The kind.
 	 */
@@ -203,7 +203,7 @@ final class Rule implements JsonSerializable {
 	/**
 	 * Gets the start of the window.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return Boundary The start.
 	 */
@@ -214,7 +214,7 @@ final class Rule implements JsonSerializable {
 	/**
 	 * Gets the end of the window.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return Boundary The end.
 	 */
@@ -225,7 +225,7 @@ final class Rule implements JsonSerializable {
 	/**
 	 * Returns whether the window opens at once: its start is the kind's open start, which has no date of its own.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return bool Whether the start opens the window at once.
 	 */
@@ -243,7 +243,7 @@ final class Rule implements JsonSerializable {
 	 * an end before the event end fit a long enough event. A default start, or a specific date, is only judged once
 	 * the event's dates are known. Lengths compare in seconds, a day as 24 hours.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return bool Whether no event's dates would make the window end after it starts.
 	 */
@@ -265,7 +265,7 @@ final class Rule implements JsonSerializable {
 	/**
 	 * Returns the rule's canonical array form, for storage and for the editors.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return array{start: array{mode: string, value?: int, unit?: int, anchor?: string}, end: array{mode: string, value?: int, unit?: int, anchor?: string}} The rule.
 	 */
@@ -279,7 +279,7 @@ final class Rule implements JsonSerializable {
 	/**
 	 * Returns the rule's canonical JSON form.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return string The rule, as JSON.
 	 */
@@ -293,7 +293,7 @@ final class Rule implements JsonSerializable {
 	/**
 	 * Returns the data to encode as the rule's canonical JSON form.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return array{start: array{mode: string, value?: int, unit?: int, anchor?: string}, end: array{mode: string, value?: int, unit?: int, anchor?: string}} The rule, in canonical form.
 	 */
@@ -304,7 +304,7 @@ final class Rule implements JsonSerializable {
 	/**
 	 * Rule constructor.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param Window_Kind $kind  The kind of window the rule describes.
 	 * @param Boundary    $start The start of the window.
@@ -319,7 +319,7 @@ final class Rule implements JsonSerializable {
 	/**
 	 * Builds a rule from its JSON form.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param string      $json The rule, as JSON.
 	 * @param Window_Kind $kind The kind of window.
@@ -341,7 +341,7 @@ final class Rule implements JsonSerializable {
 	/**
 	 * Gets how long before its anchor a relative boundary falls.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param Boundary $boundary The boundary.
 	 *

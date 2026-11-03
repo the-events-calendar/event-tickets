@@ -2,7 +2,7 @@
 /**
  * Tells which ticket providers the relative sales window applies to.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -20,7 +20,7 @@ use Tribe__Tickets__Tickets as Tickets;
  * Tickets Commerce does; another plugin adds its own provider through the filter. The sale price window stays Tickets
  * Commerce's: only its tickets have the sale price fields it is resolved into.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -28,7 +28,7 @@ final class Providers {
 	/**
 	 * Gets the classes of the providers whose tickets take the relative sales window.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return string[] The provider classes.
 	 */
@@ -40,7 +40,7 @@ final class Providers {
 		 * their event moves. Its tickets are found for an event through `tec_tickets_relative_sale_dates_event_ticket_ids`,
 		 * and their dates are written in the format `tec_tickets_relative_sale_dates_ticket_date_format` names.
 		 *
-		 * @since TBD
+		 * @since 5.31.0
 		 *
 		 * @param string[] $classes The provider classes. Default Tickets Commerce's.
 		 */
@@ -52,7 +52,7 @@ final class Providers {
 	/**
 	 * Returns whether a provider's tickets take the relative sales window.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param string $provider_class The provider class.
 	 *
@@ -65,7 +65,7 @@ final class Providers {
 	/**
 	 * Returns whether a saved ticket takes the relative sales window, by its provider.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int $ticket_id The ticket post ID.
 	 *
@@ -80,7 +80,7 @@ final class Providers {
 	/**
 	 * Gets the active providers whose tickets take the relative sales window.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return Tickets[] The provider instances, keyed by their class.
 	 */
@@ -102,7 +102,7 @@ final class Providers {
 	/**
 	 * Returns whether any provider whose tickets take the relative sales window is active.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return bool Whether such a provider is active.
 	 */

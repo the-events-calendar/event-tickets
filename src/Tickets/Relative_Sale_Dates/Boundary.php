@@ -2,7 +2,7 @@
 /**
  * A boundary of a ticket's sales or sale price window, its start or its end, as a rule describes it.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -19,7 +19,7 @@ use InvalidArgumentException;
  *
  * The window kind sets the modes, values, units and anchors the boundary accepts.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -27,7 +27,7 @@ final class Boundary {
 	/**
 	 * The lowest number of units a relative boundary of any window accepts.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var int
 	 */
@@ -36,7 +36,7 @@ final class Boundary {
 	/**
 	 * The highest number of units a relative boundary of the sales window accepts.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var int
 	 */
@@ -45,7 +45,7 @@ final class Boundary {
 	/**
 	 * The edge of the window that opens it.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var string
 	 */
@@ -54,7 +54,7 @@ final class Boundary {
 	/**
 	 * The edge of the window that closes it.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var string
 	 */
@@ -63,7 +63,7 @@ final class Boundary {
 	/**
 	 * The `DateInterval` format of each unit a relative boundary accepts, keyed by the unit's length in seconds.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var array<int,string>
 	 */
@@ -77,7 +77,7 @@ final class Boundary {
 	/**
 	 * The kind of window the boundary belongs to.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var Window_Kind
 	 */
@@ -86,7 +86,7 @@ final class Boundary {
 	/**
 	 * The mode, one of the `Rule::MODE_*` constants.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var string
 	 */
@@ -95,7 +95,7 @@ final class Boundary {
 	/**
 	 * The number of units before the anchor, for a relative boundary.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var int|null
 	 */
@@ -106,7 +106,7 @@ final class Boundary {
 	 *
 	 * It only identifies the unit: days and weeks are resolved as calendar days, never as a number of seconds.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var int|null
 	 */
@@ -115,7 +115,7 @@ final class Boundary {
 	/**
 	 * The event date the boundary is counted from, one of the `Rule::ANCHOR_*` constants, for a relative boundary.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var string|null
 	 */
@@ -127,7 +127,7 @@ final class Boundary {
 	 * Keys the mode does not use are ignored. A kind that takes no anchor implies it, so a relative boundary of that
 	 * kind that names one is rejected rather than read as something it cannot be.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param array{mode?: mixed, value?: mixed, unit?: mixed, anchor?: mixed} $data The boundary, not yet validated.
 	 * @param Window_Kind                                                      $kind The kind of window.
@@ -182,7 +182,7 @@ final class Boundary {
 	/**
 	 * Returns the boundary's canonical array form, which holds only the keys its mode and its kind use.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return array{mode: string, value?: int, unit?: int, anchor?: string} The boundary, in canonical form.
 	 */
@@ -207,7 +207,7 @@ final class Boundary {
 	/**
 	 * Gets the mode.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return string The mode, one of the `Rule::MODE_*` constants.
 	 */
@@ -218,7 +218,7 @@ final class Boundary {
 	/**
 	 * Gets the event date a relative boundary is counted from.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return string|null The anchor, one of the `Rule::ANCHOR_*` constants, or `null` when the boundary is not relative. A kind that takes no anchor gives the one it implies.
 	 */
@@ -229,7 +229,7 @@ final class Boundary {
 	/**
 	 * Gets how far before its anchor a relative boundary falls.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return DateInterval|null The interval, or `null` when the boundary is not relative.
 	 */
@@ -244,7 +244,7 @@ final class Boundary {
 	/**
 	 * Boundary constructor.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param Window_Kind $kind   The kind of window the boundary belongs to.
 	 * @param string      $mode   The mode, one of the `Rule::MODE_*` constants.

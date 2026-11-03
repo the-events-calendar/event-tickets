@@ -1,7 +1,7 @@
 /**
  * Shapes the ends of a rule the way the server takes them.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /**
@@ -18,7 +18,7 @@ import { MODE_RELATIVE } from './rule-constants';
  * The controls hold strings, and the server only takes a relative `value` and `unit` that are integers. A kind that
  * takes no anchor counts every relative end from the event start, so its end carries none.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {{mode: string, value?: (string|number), unit?: (string|number), anchor?: string}} end  The values of the end.
  * @param {WindowKind}                                                                       kind The kind of the window.

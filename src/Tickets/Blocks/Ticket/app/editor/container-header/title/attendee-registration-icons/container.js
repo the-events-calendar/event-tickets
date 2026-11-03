@@ -91,7 +91,7 @@ const mapStateToProps = ( state, ownProps ) => {
 	/**
 	 * Filters the sale dates the ticket header shows in its sale window tooltip.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param {Object} dates          The sale dates.
 	 * @param {string} dates.fromDate The date and time sales start, in the site date and time formats.

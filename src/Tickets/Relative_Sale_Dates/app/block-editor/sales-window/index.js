@@ -20,7 +20,7 @@ import { BLOCK_SALES_WINDOW } from '../window-kinds';
 /**
  * Renders the sales window options of a ticket block in place of its date and time range picker.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Object} props          The component props.
  * @param {string} props.clientId The client ID of the ticket block.

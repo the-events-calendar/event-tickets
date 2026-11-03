@@ -14,7 +14,7 @@ import { subscribeToCommonStore } from './common-store-bridge';
  * The value is compared as JSON, so a read that builds a new object each time re-renders only when what it holds
  * changes.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @template T
  *
