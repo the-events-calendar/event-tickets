@@ -10,7 +10,6 @@
 namespace TEC\Tickets\Recurring_Tickets;
 
 use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
-use Tribe__Tickets__Global_Stock as Global_Stock;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Events__Main as TEC;
 
@@ -101,8 +100,6 @@ final class Ticket_Type {
 		$type = get_post_meta( $ticket_id, '_type', true );
 
 		if ( Template_Guard::TICKET_TYPE === $type ) {
-			$this->own_capacity( $ticket_id );
-
 			return;
 		}
 
@@ -112,24 +109,6 @@ final class Ticket_Type {
 
 		if ( $was_template || ( ! $update && $this->is_recurring_event( (int) $post_id ) ) ) {
 			update_post_meta( $ticket_id, '_type', Template_Guard::TICKET_TYPE );
-			$this->own_capacity( $ticket_id );
-		}
-	}
-
-	/**
-	 * Makes a template's shared or capped capacity its own: each date sells its own, and no pool spans dates.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $ticket_id The template.
-	 *
-	 * @return void
-	 */
-	private function own_capacity( int $ticket_id ): void {
-		$mode = get_post_meta( $ticket_id, Global_Stock::TICKET_STOCK_MODE, true );
-
-		if ( in_array( $mode, [ Global_Stock::GLOBAL_STOCK_MODE, Global_Stock::CAPPED_STOCK_MODE ], true ) ) {
-			update_post_meta( $ticket_id, Global_Stock::TICKET_STOCK_MODE, Global_Stock::OWN_STOCK_MODE );
 		}
 	}
 
