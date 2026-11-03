@@ -141,6 +141,7 @@ class Controller_Test extends Controller_Test_Case {
 		yield 'sales window fields rendered' => [ 'tribe_template_include_html:tickets/admin-views/editor/panel/fields/dates', Editor::class, 'render_sales_window_fields', 10 ];
 		yield 'sale price fields rendered' => [ 'tribe_template_include_html:tickets/admin-views/commerce/metabox/sale-price', Editor::class, 'render_sale_price_fields', 10 ];
 		yield 'tickets list dates context filtered' => [ 'tribe_template_context:tickets/admin-views/editor/list-row/available-dates', Editor::class, 'filter_available_dates_context', 10 ];
+		yield 'price column context filtered' => [ 'tribe_template_context:tickets/admin-views/editor/column-body-price', Price_Column::class, 'filter_context', 10 ];
 	}
 
 	/**
