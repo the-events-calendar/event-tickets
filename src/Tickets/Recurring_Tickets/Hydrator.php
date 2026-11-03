@@ -14,6 +14,7 @@ use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
 use TEC\Tickets\Recurring_Tickets\Models\Ticket;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
+use Tribe__Tickets__Global_Stock as Global_Stock;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
@@ -101,30 +102,36 @@ final class Hydrator {
 		$price     = Price::to_decimal( (int) $row->price );
 		$unlimited = -1 === (int) $row->capacity;
 
-		$ticket = new Ticket_Object(
-			array_merge(
-				$this->sale_window( $row ),
-				[
-					'ID'               => Ticket_ID::from_row_id( (int) $row->id ),
-					'name'             => (string) $row->name,
-					'description'      => (string) $row->description,
-					'show_description' => (bool) $row->show_description,
-					'menu_order'       => (int) $row->menu_order,
-					'sku'              => (string) $row->sku,
-					'post_type'        => Commerce_Ticket::POSTTYPE,
-					'provider_class'   => Module::class,
-					'admin_link'       => '',
-					'price'            => $price,
-					'regular_price'    => $price,
-					'capacity'         => (int) $row->capacity,
-					'event_id'         => $this->event_id( $row ),
-				]
-			)
+		$data    = array_merge(
+			$this->sale_window( $row ),
+			[
+				'ID'               => Ticket_ID::from_row_id( (int) $row->id ),
+				'name'             => (string) $row->name,
+				'description'      => (string) $row->description,
+				'show_description' => (bool) $row->show_description,
+				'menu_order'       => (int) $row->menu_order,
+				'sku'              => (string) $row->sku,
+				'post_type'        => Commerce_Ticket::POSTTYPE,
+				'provider_class'   => Module::class,
+				'admin_link'       => '',
+				'price'            => $price,
+				'regular_price'    => $price,
+				'capacity'         => (int) $row->capacity,
+				'event_id'         => $this->event_id( $row ),
+			]
 		);
+		$numbers = $this->pool_numbers( $row );
+
+		if ( $numbers ) {
+			$ticket = new Shared_Ticket( $data, ...$numbers );
+		} else {
+			$ticket = new Ticket_Object( $data );
+			$ticket->manage_stock( ! $unlimited );
+			$ticket->stock( $unlimited || null === $row->stock ? -1 : (int) $row->stock );
+		}
 
 		$ticket->manage_stock( ! $unlimited );
-		$ticket->stock( $unlimited || null === $row->stock ? -1 : (int) $row->stock );
-		$ticket->global_stock_mode( (string) $row->stock_mode );
+		$ticket->global_stock_mode( $this->stock_mode( $row ) );
 		$ticket->qty_sold( (int) $row->sales );
 		$ticket->qty_pending( 0 );
 		$ticket->qty_cancelled( 0 );
@@ -134,6 +141,62 @@ final class Hydrator {
 		$ticket->price   = $this->commerce->get_price( $ticket );
 
 		return $ticket;
+	}
+
+	/**
+	 * Returns the capacity and stock a shared row sells from, when its date has a shared capacity pool.
+	 *
+	 * The capacity is the pool's for a shared row, the cap for a capped one; the stock is the lower of the row's and
+	 * the pool's.
+	 *
+	 * @since TBD
+	 *
+	 * @param Ticket $row The row.
+	 *
+	 * @return array{0: int, 1: int}|null The capacity and stock, or null for a row that does not sell from a pool.
+	 */
+	public function pool_numbers( Ticket $row ): ?array {
+		if ( ! $this->is_shared( $row ) ) {
+			return null;
+		}
+
+		$pool = $this->rows->get_pool( (int) $row->occurrence_id );
+
+		if ( ! $pool ) {
+			return null;
+		}
+
+		$capacity = Global_Stock::GLOBAL_STOCK_MODE === $row->stock_mode ? (int) $pool->capacity : (int) $row->capacity;
+
+		return [ $capacity, max( 0, min( (int) $row->stock, (int) $pool->stock ) ) ];
+	}
+
+	/**
+	 * Returns a row's stock mode: a shared row whose date has no pool yet sells from its own capacity.
+	 *
+	 * @since TBD
+	 *
+	 * @param Ticket $row The row.
+	 *
+	 * @return string The stock mode.
+	 */
+	public function stock_mode( Ticket $row ): string {
+		return $this->is_shared( $row ) && ! $this->rows->get_pool( (int) $row->occurrence_id )
+			? Global_Stock::OWN_STOCK_MODE
+			: (string) $row->stock_mode;
+	}
+
+	/**
+	 * Whether a row is set to sell from its date's shared capacity.
+	 *
+	 * @since TBD
+	 *
+	 * @param Ticket $row The row.
+	 *
+	 * @return bool Whether the row is shared or capped, and limited.
+	 */
+	private function is_shared( Ticket $row ): bool {
+		return -1 !== (int) $row->capacity && in_array( $row->stock_mode, [ Global_Stock::GLOBAL_STOCK_MODE, Global_Stock::CAPPED_STOCK_MODE ], true );
 	}
 
 	/**

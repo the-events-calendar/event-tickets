@@ -148,6 +148,92 @@ class Tickets_Test extends WPTestCase {
 	}
 
 	/**
+	 * @test
+	 */
+	public function it_should_leave_the_shared_capacity_pools_out_of_every_list_of_rows(): void {
+		$repository = tribe( Tickets::class );
+		$repository->insert_many( [ $this->row( [ 'occurrence_id' => 30 ] ), $this->row( [ 'occurrence_id' => 31 ] ) ] );
+
+		$repository->upsert_pools( 20, 100, [ 30, 31 ] );
+
+		$this->assertCount( 2, $repository->get_by_post( 20 ) );
+		$this->assertCount( 2, $repository->get_by_template( 10 ) );
+		$this->assertCount( 1, $repository->get_by_occurrence( 30 ) );
+		$this->assertSame( 0, (int) $repository->get_pool( 30 )->parent_id );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_keep_one_pool_per_date_and_move_it_with_its_date(): void {
+		$repository = tribe( Tickets::class );
+
+		$repository->upsert_pools( 20, 100, [ 30, 31 ] );
+		// A split moves the date to another event, whose capacity is the same or changed.
+		$repository->upsert_pools( 21, 120, [ 30 ] );
+
+		$this->assertSame( 2, $this->count_pools() );
+		$this->assertSame( [ 21, 120 ], [ (int) $repository->get_pool( 30 )->post_id, (int) $repository->get_pool( 30 )->capacity ] );
+		$this->assertSame( [ 20, 100 ], [ (int) $repository->get_pool( 31 )->post_id, (int) $repository->get_pool( 31 )->capacity ] );
+		$this->assertNull( $repository->get_pool( 32 ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_count_a_dates_shared_sales_in_its_pool(): void {
+		$repository = tribe( Tickets::class );
+		$repository->insert_many(
+			[
+				$this->row( [ 'parent_id' => 1, 'occurrence_id' => 30, 'stock_mode' => 'global', 'sales' => 3 ] ),
+				$this->row( [ 'parent_id' => 2, 'occurrence_id' => 30, 'stock_mode' => 'capped', 'sales' => 2 ] ),
+				$this->row( [ 'parent_id' => 3, 'occurrence_id' => 30, 'stock_mode' => 'own', 'sales' => 5 ] ),
+				$this->row( [ 'parent_id' => 1, 'occurrence_id' => 32, 'stock_mode' => 'global', 'sales' => 104 ] ),
+			]
+		);
+		$repository->upsert_pools( 20, 100, [ 30, 31, 32 ] );
+
+		$repository->refresh_pools( 20 );
+
+		$this->assertSame( [ 5, 95 ], $this->sales_and_stock( $repository->get_pool( 30 ) ), 'Own capacity is no part of the pool.' );
+		$this->assertSame( [ 0, 100 ], $this->sales_and_stock( $repository->get_pool( 31 ) ) );
+		$this->assertSame( [ 104, 0 ], $this->sales_and_stock( $repository->get_pool( 32 ) ), 'More sold than the pool holds leaves none.' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_delete_the_pools_of_an_event_but_the_dates_kept(): void {
+		$repository = tribe( Tickets::class );
+		$repository->upsert_pools( 20, 100, [ 30, 31, 32 ] );
+		$repository->upsert_pools( 21, 100, [ 40 ] );
+
+		$repository->delete_pools( 20, [ 31 ] );
+
+		$this->assertSame( [ null, 31, null, 40 ], [ $repository->get_pool( 30 ), (int) $repository->get_pool( 31 )->occurrence_id, $repository->get_pool( 32 ), (int) $repository->get_pool( 40 )->occurrence_id ] );
+
+		$repository->delete_pools( 20 );
+
+		$this->assertSame( 1, $this->count_pools(), 'Another event keeps its pools.' );
+	}
+
+	/**
+	 * @return int The number of pools in the table.
+	 */
+	private function count_pools(): int {
+		return (int) DB::get_var( DB::prepare( 'SELECT COUNT(*) FROM %i WHERE type = %s', Tickets_Table::table_name(), Tickets::POOL_TYPE ) );
+	}
+
+	/**
+	 * @param Ticket $pool A pool.
+	 *
+	 * @return array{0: int, 1: int} Its sales and stock.
+	 */
+	private function sales_and_stock( Ticket $pool ): array {
+		return [ (int) $pool->sales, (int) $pool->stock ];
+	}
+
+	/**
 	 * @return array<string,mixed> The attributes of the one row in the table.
 	 */
 	private function only_row(): array {
