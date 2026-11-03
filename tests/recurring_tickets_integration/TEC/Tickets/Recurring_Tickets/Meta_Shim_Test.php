@@ -5,6 +5,7 @@ namespace TEC\Tickets\Recurring_Tickets;
 use Codeception\TestCase\WPTestCase;
 use Generator;
 use TEC\Common\StellarWP\DB\DB;
+use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -21,6 +22,7 @@ class Meta_Shim_Test extends WPTestCase {
 	 */
 	public function empty_table(): void {
 		( new Tickets() )->empty_table();
+		$this->forget_rows_read();
 	}
 
 	/**
@@ -169,6 +171,29 @@ class Meta_Shim_Test extends WPTestCase {
 
 		$this->assertSame( '5', get_post_meta( $post, '_price', true ) );
 		$this->assertSame( 0, $queries() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_answer_a_shared_rows_stock_from_its_dates_pool(): void {
+		$shared = $this->insert_ticket_row( [ 'parent_id' => 1, 'occurrence_id' => 30, 'stock_mode' => 'global', 'stock' => 97, 'sales' => 3 ] );
+		$capped = $this->insert_ticket_row( [ 'parent_id' => 2, 'occurrence_id' => 30, 'stock_mode' => 'capped', 'capacity' => 30, 'stock' => 20, 'sales' => 10 ] );
+		tribe( Rows::class )->upsert_pools( 1, 100, [ 30 ] );
+		tribe( Rows::class )->refresh_pools( 1 );
+
+		// 100 less the 13 shared sales: the shared row is short of its own 97.
+		$this->assertSame( [ '87', 'global', '' ], [ get_post_meta( $shared, '_stock', true ), get_post_meta( $shared, '_global_stock_mode', true ), get_post_meta( $shared, '_global_stock_cap', true ) ] );
+		$this->assertSame( [ '20', 'capped', '30' ], [ get_post_meta( $capped, '_stock', true ), get_post_meta( $capped, '_global_stock_mode', true ), get_post_meta( $capped, '_global_stock_cap', true ) ] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_answer_a_shared_row_without_a_pool_as_its_own_capacity(): void {
+		$shared = $this->insert_ticket_row( [ 'parent_id' => 1, 'occurrence_id' => 30, 'stock_mode' => 'global', 'stock' => 97, 'sales' => 3 ] );
+
+		$this->assertSame( [ '97', 'own' ], [ get_post_meta( $shared, '_stock', true ), get_post_meta( $shared, '_global_stock_mode', true ) ] );
 	}
 
 	public function write_provider(): Generator {
