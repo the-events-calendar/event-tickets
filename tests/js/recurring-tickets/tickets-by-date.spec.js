@@ -145,6 +145,23 @@ describe( 'Tickets by Date', () => {
 		expect( all ).toContain( 'Unlimited' );
 	} );
 
+	test( 'shows a shared ticket\'s capacity and availability in parentheses', () => {
+		const shared = data( 1 );
+		shared.dates[ 0 ].tickets = [
+			ticket( { name: 'Adult', capacity: 100, available: 97, shared: true } ),
+			ticket( { name: 'VIP', capacity: 10, available: 10, shared: false } ),
+		];
+
+		const cells = render( { data: shared } )
+			.root.findAll( ( n ) => n.props.className === 'tec-tickets-by-date__row' )
+			.map( ( row ) => row.children.slice( -2 ).map( text ) );
+
+		expect( cells ).toEqual( [
+			[ '(100)', '(97)' ],
+			[ '10', '10' ],
+		] );
+	} );
+
 	test( 'says when tickets or dates have unsaved changes', () => {
 		const message = 'You have unsaved changes to tickets or dates. Save the event to update this list.';
 
