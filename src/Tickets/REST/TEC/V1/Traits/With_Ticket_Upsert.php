@@ -26,7 +26,7 @@ trait With_Ticket_Upsert {
 	 * Creates a ticket.
 	 *
 	 * @since 5.26.0
-	 * @since TBD Throws when `validate_ticket_data()` rejects the ticket data.
+	 * @since 5.31.0 Throws when `validate_ticket_data()` rejects the ticket data.
 	 *
 	 * @param array $params The parameters for the ticket.
 	 *
@@ -42,7 +42,7 @@ trait With_Ticket_Upsert {
 	 * Updates a ticket.
 	 *
 	 * @since 5.26.0
-	 * @since TBD Throws when `validate_ticket_data()` rejects the ticket data.
+	 * @since 5.31.0 Throws when `validate_ticket_data()` rejects the ticket data.
 	 *
 	 * @param array $params The parameters for the ticket.
 	 *
@@ -83,7 +83,7 @@ trait With_Ticket_Upsert {
 	 * This method will create a ticket if it doesn't exist, or update it if it does.
 	 *
 	 * @since 5.26.0
-	 * @since TBD Rejects ticket data that `validate_ticket_data()` rejects.
+	 * @since 5.31.0 Rejects ticket data that `validate_ticket_data()` rejects.
 	 *
 	 * @param array  $params    The parameters for the ticket.
 	 * @param string $operation The operation to perform: create or update.

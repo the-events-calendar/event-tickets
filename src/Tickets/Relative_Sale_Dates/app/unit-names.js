@@ -1,7 +1,7 @@
 /**
  * The names of the units of a relative ticket sale date, shared by the classic and the block editor.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /**
@@ -18,7 +18,7 @@ import { UNIT_DAYS, UNIT_HOURS, UNIT_MINUTES, UNIT_WEEKS } from './rule-constant
  * The name of each unit for a number of it, keyed by the unit in seconds. The msgids and context match
  * `Editor::get_unit_name()`'s, so one translation serves both editors.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @type {Object<number|string, function( number ): string>}
  */

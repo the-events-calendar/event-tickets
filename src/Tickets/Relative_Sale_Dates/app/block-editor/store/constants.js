@@ -1,7 +1,7 @@
 /**
  * The name the Relative Sale Dates block editor store is registered under.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @type {string}
  */

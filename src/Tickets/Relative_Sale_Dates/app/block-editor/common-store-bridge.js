@@ -4,7 +4,7 @@
  * The actions and selectors come from the Ticket block's own script at runtime, so this bundle does not carry a second
  * copy of the legacy ticket code. The store is common's shared one.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /**
@@ -19,7 +19,7 @@ import { getLocalizedTicketProviders } from './localized-data';
 /**
  * The provider slug the block editor tickets REST API gives a Tickets Commerce ticket, which a fetched ticket keeps.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @type {string}
  */
@@ -28,7 +28,7 @@ export const TICKETS_COMMERCE_PROVIDER = 'tc';
 /**
  * Returns the state of common's shared store, which holds the legacy ticket data.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @return {Object} The state.
  */
@@ -39,7 +39,7 @@ export function getLegacyState() {
 /**
  * Returns the legacy ticket actions and selectors.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @return {{actions: Object, selectors: Object}} The actions and selectors.
  */
@@ -54,7 +54,7 @@ function getTicketData() {
  * block; the server judges the ticket by it. A new ticket has none yet and is created with the block's, which the admin
  * can change while editing, so both are read from the store rather than from localized data.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string} clientId The client ID of the ticket block.
  *
@@ -76,7 +76,7 @@ export function isTicketsCommerce( clientId ) {
  * Returns whether a ticket is sold through a provider the sales window applies to, read as `isTicketsCommerce()` reads
  * Tickets Commerce.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string} clientId The client ID of the ticket block.
  *
@@ -98,7 +98,7 @@ export function isAcceptedProvider( clientId ) {
 /**
  * Returns whether a ticket fetched from the server is sold through a provider the sales window applies to.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Object} [ticket] The ticket, as the block editor tickets REST API returns it.
  *
@@ -111,7 +111,7 @@ export function isAcceptedTicket( ticket ) {
 /**
  * Returns whether a ticket's form has its sale price checked, which is when the form sends one.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string} clientId The client ID of the ticket block.
  *
@@ -127,7 +127,7 @@ export function isSalePriceChecked( clientId ) {
  * The save drops a sale price that is at least the price, comparing the two strings the request sends as PHP does, and
  * judges its window only when it keeps it.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Object} state    The legacy ticket state.
  * @param {string} clientId The client ID of the ticket block.
@@ -148,7 +148,7 @@ export function isSalePriceKept( state, clientId ) {
 /**
  * Marks a ticket as changed, which enables its Create or Update button.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string} clientId The client ID of the ticket block.
  *
@@ -161,7 +161,7 @@ export function markTicketChanged( clientId ) {
 /**
  * Clears the error the legacy ticket code keeps for a sales duration whose specific dates do not start before they end.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string} clientId The client ID of the ticket block.
  *
@@ -174,7 +174,7 @@ export function clearTicketDurationError( clientId ) {
 /**
  * Returns whether the legacy ticket code holds a sales duration error for a ticket.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string} clientId The client ID of the ticket block.
  *
@@ -187,7 +187,7 @@ export function hasTicketDurationError( clientId ) {
 /**
  * Returns whether the legacy checks would let a ticket be created or updated, leaving aside its sales duration error.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Object} state    The legacy ticket state.
  * @param {string} clientId The client ID of the ticket block.
@@ -209,7 +209,7 @@ export function isTicketReadyBesidesDuration( state, clientId ) {
  * Returns whether the legacy ticket code keeps a ticket's fields disabled: while the ticket saves, while another ticket
  * is selected, or while the tickets settings are open.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string} clientId The client ID of the ticket block.
  *
@@ -222,7 +222,7 @@ export function isTicketDisabled( clientId ) {
 /**
  * Subscribes to the common store, which holds the event dates The Events Calendar edits.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Function} listener Called after every change to the store.
  *
@@ -235,7 +235,7 @@ export function subscribeToCommonStore( listener ) {
 /**
  * Reads the event dates as The Events Calendar's block editor holds them.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @return {{start: string, end: string, allDay: boolean, timeZone: string}|null} The start and end,
  *                                                                              `YYYY-MM-DD HH:mm:ss`, whether the
@@ -263,7 +263,7 @@ export function getEventDateFields() {
 /**
  * Reads the sale start and end a ticket's form sends, from the legacy ticket state.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Object} state    The legacy ticket state.
  * @param {string} clientId The client ID of the ticket block.
@@ -290,7 +290,7 @@ export function getTicketFormDates( state, clientId ) {
  *
  * The legacy code keeps an empty sale price date it loads or saves as the string `Invalid date`.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string|null|undefined} date The date the legacy ticket state holds.
  *
@@ -305,7 +305,7 @@ function toSalePriceFormDate( date ) {
  *
  * The sale price dates are whole days, so each is read as the start of its day.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Object} state    The legacy ticket state.
  * @param {string} clientId The client ID of the ticket block.
@@ -326,7 +326,7 @@ export function getTicketSalePriceFormDates( state, clientId ) {
 /**
  * Gets the active providers the sales window applies to: Tickets Commerce, unless the server names others.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @return {TicketProviders} The provider classes and slugs.
  */

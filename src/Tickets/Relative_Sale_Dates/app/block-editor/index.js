@@ -2,7 +2,7 @@
  * Entry point of the Ticket block script: registers the rule store and the hooks that carry the rule through the
  * ticket REST requests.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 // First, so every date the script resolves reads current zone data.

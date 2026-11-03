@@ -2,7 +2,7 @@
 /**
  * Writes the dates a ticket's rule resolves to.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -17,7 +17,7 @@ use Tribe__Date_Utils as Dates;
 /**
  * Writes the dates a rule of any kind resolves to against its event into the date metas the kind names.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -28,7 +28,7 @@ final class Ticket_Dates {
 	 * The dates are stored as wall-clock times, so the same times in another timezone fall at other instants, and the
 	 * sales actions that announce them must move.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var string
 	 */
@@ -37,7 +37,7 @@ final class Ticket_Dates {
 	/**
 	 * The format that writes a date and its time to separate metas, as Tickets Commerce stores its sales dates.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var string
 	 */
@@ -46,7 +46,7 @@ final class Ticket_Dates {
 	/**
 	 * The format that writes a date and its time, `Y-m-d H:i:s`, to the date meta alone.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var string
 	 */
@@ -55,7 +55,7 @@ final class Ticket_Dates {
 	/**
 	 * The sales window resolver.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var Sale_Window
 	 */
@@ -64,7 +64,7 @@ final class Ticket_Dates {
 	/**
 	 * The effects only the sales window has.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var Sales_Window_Effects
 	 */
@@ -73,7 +73,7 @@ final class Ticket_Dates {
 	/**
 	 * Ticket_Dates constructor.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param Sale_Window          $sale_window          The resolver of every kind of window.
 	 * @param Sales_Window_Effects $sales_window_effects The effects only the sales window has.
@@ -92,7 +92,7 @@ final class Ticket_Dates {
 	 * as a later instant. A new event timezone counts as a change of the sales window even when its dates stay the same:
 	 * they now fall at other instants, and the sales actions announce them.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int  $ticket_id The ticket post ID.
 	 * @param int  $post_id   The event post ID.
@@ -150,7 +150,7 @@ final class Ticket_Dates {
 	 * A window stored with times ends before it starts when its end is not after its start; one stored as whole days,
 	 * such as the sale price, when its end day is before its start day.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int         $ticket_id The ticket post ID.
 	 * @param Window_Kind $kind      The kind of window.
@@ -179,7 +179,7 @@ final class Ticket_Dates {
 	/**
 	 * Gets the format a ticket's dates of a window are written in.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int         $ticket_id The ticket post ID.
 	 * @param Window_Kind $kind      The kind of window.
@@ -198,7 +198,7 @@ final class Ticket_Dates {
 		 * Tickets Commerce reads a date and its time from separate metas; a provider that reads both from the date meta,
 		 * such as one added through `tec_tickets_relative_sale_dates_ticket_providers`, asks for `datetime`.
 		 *
-		 * @since TBD
+		 * @since 5.31.0
 		 *
 		 * @param string $format    The format, `split` or `datetime`. Default `split`.
 		 * @param int    $ticket_id The ticket post ID.
@@ -211,7 +211,7 @@ final class Ticket_Dates {
 	/**
 	 * Gets the values one end of the window is written as.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param array{date: string, time: ?string} $metas  The date and time meta keys of the end; a `null` time stores the
 	 *                                                   date alone.
@@ -237,7 +237,7 @@ final class Ticket_Dates {
 	/**
 	 * Reads the date and time one end of a window is written as.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int                                $ticket_id The ticket post ID.
 	 * @param array{date: string, time: ?string} $metas     The date and time meta keys of the end.
@@ -269,7 +269,7 @@ final class Ticket_Dates {
 	/**
 	 * Reads one end of a window as a wall-clock time in the event timezone.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int                                $ticket_id The ticket post ID.
 	 * @param array{date: string, time: ?string} $metas     The date and time meta keys of the end.

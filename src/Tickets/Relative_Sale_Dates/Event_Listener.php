@@ -2,7 +2,7 @@
 /**
  * Resolves ticket dates again when an event's dates change.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -21,7 +21,7 @@ use TEC\Tickets\Ticket_Actions;
  * its dates is written, and its tickets are resolved once the save is done, or on shutdown for a change made outside a
  * post save.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -29,7 +29,7 @@ final class Event_Listener {
 	/**
 	 * The event metas the sales window is resolved from.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var string[]
 	 */
@@ -38,7 +38,7 @@ final class Event_Listener {
 	/**
 	 * The store of the ticket rules.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var Rule_Store
 	 */
@@ -47,7 +47,7 @@ final class Event_Listener {
 	/**
 	 * The writer of the dates of every kind of window.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var Ticket_Dates
 	 */
@@ -56,7 +56,7 @@ final class Event_Listener {
 	/**
 	 * The writer of the event cost.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var Ticket_Actions
 	 */
@@ -65,7 +65,7 @@ final class Event_Listener {
 	/**
 	 * The effects only the sales window has.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var Sales_Window_Effects
 	 */
@@ -74,7 +74,7 @@ final class Event_Listener {
 	/**
 	 * The providers the relative sales window applies to.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var Providers
 	 */
@@ -83,7 +83,7 @@ final class Event_Listener {
 	/**
 	 * The events whose dates changed in this request and whose tickets are not resolved yet, as keys.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var array<int,true>
 	 */
@@ -92,7 +92,7 @@ final class Event_Listener {
 	/**
 	 * Event_Listener constructor.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param Rule_Store           $rule_store           The store of the ticket rules.
 	 * @param Ticket_Dates         $ticket_dates         The writer of the dates of every kind of window.
@@ -114,7 +114,7 @@ final class Event_Listener {
 	 *
 	 * A window the move inverts keeps no sales action: the ticket is off sale until its dates are fixed.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int $post_id The event post ID.
 	 *
@@ -127,7 +127,7 @@ final class Event_Listener {
 	/**
 	 * Marks an event whose start, end or timezone was written while The Events Calendar's custom tables are not active.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int    $meta_id  The meta ID.
 	 * @param int    $post_id  The post ID.
@@ -148,7 +148,7 @@ final class Event_Listener {
 	/**
 	 * Rewrites the dates of the ruled tickets of a marked event once its save, meta included, is done.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int $post_id The saved post ID.
 	 *
@@ -166,7 +166,7 @@ final class Event_Listener {
 	/**
 	 * Rewrites the dates of the ruled tickets of the events marked outside a post save, such as by `tribe_update_event()`.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return void
 	 */
@@ -181,7 +181,7 @@ final class Event_Listener {
 	 * Resolves a ruled ticket moved to another event against that event, or removes its rules when it moves to a post
 	 * that is not an event, where the dates they resolved stay as the ticket's own.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int $ticket_id           The moved ticket post ID.
 	 * @param int $destination_post_id The post the ticket moved to.
@@ -208,7 +208,7 @@ final class Event_Listener {
 	/**
 	 * Returns whether a ticket's sale end date follows its event's start: not when the ticket's rule resolves the end.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param bool $follows   Whether the ticket's sale end date follows the event start.
 	 * @param int  $ticket_id The ticket post ID.
@@ -224,7 +224,7 @@ final class Event_Listener {
 	/**
 	 * Copies the rules of the tickets duplicated to another event.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param array<int,int|false> $duplicated_ticket_ids The duplicated ticket IDs, keyed by the original ticket IDs; `false`
 	 *                                                    for a ticket that could not be cloned.
@@ -252,7 +252,7 @@ final class Event_Listener {
 	 *
 	 * Cloning a ticket copies its dates only, so without this a duplicate would keep the original event's dates.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param array<int,int|false> $duplicated_ticket_ids The duplicated ticket IDs, keyed by the original ticket IDs; `false`
 	 *                                                    for a ticket that could not be cloned.
@@ -273,7 +273,7 @@ final class Event_Listener {
 	/**
 	 * Rewrites the resolved dates of the given ruled tickets of an event.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int   $post_id    The event post ID.
 	 * @param int[] $ticket_ids The ruled ticket post IDs.
@@ -307,7 +307,7 @@ final class Event_Listener {
 	 * Rewrites the resolved dates of every rule of a ticket and reschedules its sales actions when its sales window
 	 * dates changed.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int $ticket_id The ticket post ID.
 	 * @param int $post_id   The event post ID.
@@ -342,7 +342,7 @@ final class Event_Listener {
 	 *
 	 * The save of the ticket rejects such a window, but nothing rejects an event move.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int         $ticket_id The ticket post ID.
 	 * @param int         $post_id   The event post ID.
@@ -369,7 +369,7 @@ final class Event_Listener {
 		 * The dates are written as the rule resolves them, so the ticket is off sale, or off its sale price, until they
 		 * are fixed.
 		 *
-		 * @since TBD
+		 * @since 5.31.0
 		 *
 		 * @param int    $ticket_id The ticket post ID.
 		 * @param int    $post_id   The event post ID.
@@ -381,7 +381,7 @@ final class Event_Listener {
 	/**
 	 * Returns whether The Events Calendar saves the event occurrences, which it does only with its custom tables active.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return bool Whether the occurrences save resolves the tickets.
 	 */

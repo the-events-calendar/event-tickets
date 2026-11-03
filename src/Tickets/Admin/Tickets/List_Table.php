@@ -912,7 +912,7 @@ class List_Table extends WP_List_Table {
 	 * Modify the filter arguments.
 	 *
 	 * @since 5.14.0
-	 * @since TBD Counted a sale price without a start or end date as discounted.
+	 * @since 5.31.0 Counted a sale price without a start or end date as discounted.
 	 *
 	 * @param array $args The arguments used to query the tickets for the Admin Tickets Table.
 	 *

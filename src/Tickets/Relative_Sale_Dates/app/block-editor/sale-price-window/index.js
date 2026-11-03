@@ -19,7 +19,7 @@ import { BLOCK_SALE_PRICE_WINDOW } from '../window-kinds';
 /**
  * The date picker settings the legacy sale price section derives from the other boundary's date.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @type {string[]}
  */
@@ -28,7 +28,7 @@ const OTHER_DATE_BOUNDS = [ 'disabledDays', 'fromMonth', 'toMonth', 'month' ];
 /**
  * Removes from a date picker's settings the bounds the legacy section derives from the other boundary's date.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Object} dayPickerProps The date picker's settings.
  *
@@ -43,7 +43,7 @@ function withoutOtherDateBounds( dayPickerProps = {} ) {
 /**
  * Prepares the legacy date picker of one boundary of the sale price window.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Object}         picker   The boundary's date picker element.
  * @param {string}         name     The boundary, `start` or `end`.
@@ -70,7 +70,7 @@ function preparePicker( picker, name, label, formRule ) {
  * Renders the sale price window options of a ticket block in place of its sale dates row, with how long the sale price
  * lasts, or why the window cannot be saved, under *Sale Ends*.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Object}                       props          The component props.
  * @param {string}                       props.clientId The client ID of the ticket block.

@@ -1,7 +1,7 @@
 /**
  * Reads the event dates from the classic event fields the way the server reads the saved event.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /**
@@ -19,7 +19,7 @@ import { toServerEventDates } from '../server-event-dates';
  *
  * Strict parsing does not take a leading zero for `h` or `H`, so each has its two-digit twin.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @type {string[]}
  */
@@ -46,7 +46,7 @@ const TIME_FORMATS = [ 'h:mma', 'hh:mma', 'h:mm a', 'hh:mm a', 'H:mm', 'HH:mm', 
 /**
  * Reads a date typed in the datepicker format.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string} value  The date.
  * @param {string} format The datepicker format, in PHP date format.
@@ -63,7 +63,7 @@ function readDate( value, format ) {
 /**
  * Reads a time as the event timepickers show it.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string} value The time.
  *
@@ -84,7 +84,7 @@ function readTime( value ) {
  *
  * A date sent without a time is midnight, as the server saves it.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string} date   The date, in the datepicker format.
  * @param {string} time   The time, as the timepicker shows it.
@@ -105,7 +105,7 @@ export function readDateTime( date, time, format ) {
  * An all-day event takes the times the server saves for one, and a manual UTC offset takes the zone the server
  * resolves it to, so the result matches what the server reads once the event is saved.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {EventFields}       fields   The values of the event fields.
  * @param {EventDateSettings} settings The settings the script is localized with.

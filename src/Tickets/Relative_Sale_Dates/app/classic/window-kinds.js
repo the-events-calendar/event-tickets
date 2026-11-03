@@ -1,7 +1,7 @@
 /**
  * The window kinds as the classic ticket form uses them: the shared kinds, with the ids of their fields.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /**
@@ -42,7 +42,7 @@ import { SALE_PRICE_WINDOW, SALES_WINDOW } from '../window-kinds';
 /**
  * The ids of the fields the sale price is kept by.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @type {{enabled: string, price: string, regularPrice: string}}
  */
@@ -55,7 +55,7 @@ const SALE_PRICE_FIELDS = Object.freeze( {
 /**
  * Returns whether a save of the form keeps the sale price, as the server judges it.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Document} root The document holding the form.
  *
@@ -74,7 +74,7 @@ function isSalePriceSaved( root ) {
 /**
  * The ticket's sales window, as the classic form holds it.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @type {ClassicWindowKind}
  */
@@ -95,7 +95,7 @@ export const CLASSIC_SALES_WINDOW = Object.freeze( {
 /**
  * The ticket's sale price window, as the classic form holds it.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @type {ClassicWindowKind}
  */
@@ -117,7 +117,7 @@ export const CLASSIC_SALE_PRICE_WINDOW = Object.freeze( {
 /**
  * Every kind, the sales window first, in the order the server judges them.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @type {ClassicWindowKind[]}
  */
@@ -127,7 +127,7 @@ export const CLASSIC_WINDOW_KINDS = Object.freeze( [ CLASSIC_SALES_WINDOW, CLASS
  * Gets the selector of every field a window of a kind is read from: the mode and relative fields of each boundary, the
  * fields of its specific date, and the field that adds the window to the ticket.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {ClassicWindowKind} kind The kind of the window.
  *

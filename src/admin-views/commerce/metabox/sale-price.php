@@ -4,9 +4,9 @@
  *
  * @since 5.9.0
  * @since 5.10.0 Added the $is_free_ticket_allowed parameter and updated validation for the Sale Price input field.
- * @since TBD Moved the checkbox, the sale price and the date inputs to `commerce/metabox/sale-price/*`.
+ * @since 5.31.0 Moved the checkbox, the sale price and the date inputs to `commerce/metabox/sale-price/*`.
  *
- * @version TBD
+ * @version 5.31.0
  *
  * @var Ticket_Object $ticket The ticket object.
  * @var string        $sale_price The sale price.

@@ -1,7 +1,7 @@
 /**
  * The modes, anchors, units and range of a window rule, as the server's `Rule` and `Boundary` define them.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 export const MODE_DEFAULT = 'default';
@@ -33,7 +33,7 @@ export const MAX_VALUE = 60;
  * The highest number of days or weeks a relative boundary of the sale price window accepts, as the server's
  * `Window_Kind::SALE_PRICE_MAX_VALUE` defines it.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @type {number}
  */

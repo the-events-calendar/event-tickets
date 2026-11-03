@@ -1,7 +1,7 @@
 /**
  * The rule the Ticket block's window options show, the relative number they keep and the rule its requests carry.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /**
@@ -20,7 +20,7 @@ import { getLocalizedData } from './localized-data';
  * Builds the rule the options show for a ticket, with relative values on every end so a switch to a relative mode
  * finds them.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {SaleWindowRule|null|undefined} rule The ticket's draft rule: `undefined` for a new ticket or a window it does
  *                                             not have yet, `null` for one saved without a rule.
@@ -51,7 +51,7 @@ export function getFormRule( rule, kind = SALES_WINDOW ) {
  * Returns whether both ends of a rule are specific dates, the only window the Ticket block's date and time range picker
  * holds whole.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {SaleWindowRule} rule The rule the options show.
  *
@@ -67,7 +67,7 @@ export function isSpecificWindow( rule ) {
  * A number out of range is kept as typed, so the window check names it and the save waits for a number the server
  * accepts, as in the classic editor. A cleared field stays empty, so the admin can type a new number.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string} typed The number as the field reports it.
  *
@@ -82,7 +82,7 @@ export function toRelativeValue( typed ) {
 /**
  * Builds the rule a ticket request carries, as the server accepts it.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {SaleWindowRule} rule The ticket's draft rule.
  * @param {WindowKind}     kind The window kind.

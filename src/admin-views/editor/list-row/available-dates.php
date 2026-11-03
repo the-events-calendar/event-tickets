@@ -4,7 +4,7 @@
  *
  * Displays the available dates of tickets below the ticket title.
  *
- * @since TBD Prints the attributes the Relative Sale Dates classic script reads.
+ * @since 5.31.0 Prints the attributes the Relative Sale Dates classic script reads.
  *
  * @var \Tribe__Template              $this                           [Global] Template object.
  * @var Tribe__Tickets__Ticket_Object $ticket                         [Global] The tickets provider instance.

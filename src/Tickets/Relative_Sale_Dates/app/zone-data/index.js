@@ -6,7 +6,7 @@
  * the window could block a save the server accepts. Loading onto the same `moment.tz` keeps every zone WordPress added,
  * and both editors read it, so neither bundles moment-timezone and its data of its own.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /**

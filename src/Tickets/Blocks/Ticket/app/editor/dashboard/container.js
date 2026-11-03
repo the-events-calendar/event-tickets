@@ -83,7 +83,7 @@ const onCancelClick = ( state, dispatch, ownProps ) => () => {
 		/**
 		 * Fires after the edits of a saved ticket have been discarded with the Cancel button.
 		 *
-		 * @since TBD
+		 * @since 5.31.0
 		 *
 		 * @param {string} clientId The client ID of the ticket block.
 		 */

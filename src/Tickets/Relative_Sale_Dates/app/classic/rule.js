@@ -1,7 +1,7 @@
 /**
  * Writes the rule of each window of the classic ticket form into the field the form submits.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /**
@@ -18,7 +18,7 @@ import { CLASSIC_SALE_PRICE_WINDOW, CLASSIC_SALES_WINDOW } from './window-kinds'
 /**
  * Reads one end of a window from its fields.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Document}          root The document holding the form.
  * @param {ClassicWindowKind} kind The kind of the window.
@@ -38,7 +38,7 @@ function readEnd( root, kind, key ) {
 /**
  * Reads the rule the fields of a window express.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Document}          root                        The document holding the form.
  * @param {ClassicWindowKind} [kind=CLASSIC_SALES_WINDOW] The kind of the window.
@@ -60,7 +60,7 @@ export function readRule( root, kind = CLASSIC_SALES_WINDOW ) {
  * as the form renders only for a ticket saved with a sale price. Whether a rule is stored is read from the rule field's
  * marker: its value, and on a hidden field its default value too, changes once a save writes the rule in it.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Document}          root The document holding the form.
  * @param {ClassicWindowKind} kind The kind of the window.
@@ -90,7 +90,7 @@ export function keepsSalePriceWithoutRule( root, kind ) {
  * Does nothing when the form has no fields for the window, as on a ticket they do not apply to. A sale price saved
  * before relative dates, still on its own dates, is written without a rule.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Document}          root                        The document holding the form.
  * @param {ClassicWindowKind} [kind=CLASSIC_SALES_WINDOW] The kind of the window.

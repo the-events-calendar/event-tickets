@@ -2,7 +2,7 @@
  * Judges each window of the classic ticket form as the server judges a ticket save, as the admin edits it and on the
  * save click, and shows why the server rejected a save.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /**
@@ -34,7 +34,7 @@ import { CLASSIC_SALES_WINDOW, CLASSIC_WINDOW_KINDS } from './window-kinds';
  * outside the parent window is about the end: its date when the end is specific, where the admin typed the date that
  * does not fit, and its mode otherwise.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {ClassicWindowKind}                                  kind        The kind of the window.
  * @param {SaleWindowRule}                                     rule        The rule the form expresses.
@@ -62,7 +62,7 @@ function getErrorFieldId( kind, rule, error, formDates = { start: null, end: nul
  * A sale price saved before relative dates, still on its own dates, is saved without a rule, so the server judges it
  * as it did then.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {ClassicWindowKind} kind    The kind of the window.
  * @param {FormContext}       context The data this script is localized with.
@@ -88,7 +88,7 @@ function readWindow( kind, context ) {
  * Reads why a window of a kind in the form cannot be saved: its relative number is out of range, a specific date cannot
  * be read, it does not end after it starts, or it starts outside its parent window.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {ClassicWindowKind} kind The kind of the window.
  *
@@ -124,7 +124,7 @@ function readWindowError( kind ) {
  * against its parent is not judged once the parent is invalid. A window the save does not keep is not judged, and its
  * error is cleared.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {ClassicWindowKind} kind  The kind of the window.
  * @param {jQuery.Event}      event The validation event.
@@ -155,7 +155,7 @@ export function validateWindow( kind, event, valid ) {
  *
  * The focus stays where the admin is typing; only the save click moves it to the field that blocks the save.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {ClassicWindowKind} kind The kind of the window.
  *
@@ -174,7 +174,7 @@ export function checkWindow( kind ) {
 /**
  * Whether the admin is typing in a window field, checking every window again once they stop.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @type {{type: function(): void, settle: function(): void, isTyping: function(): boolean}}
  */
@@ -183,7 +183,7 @@ export const typing = createTypingTracker( () => CLASSIC_WINDOW_KINDS.forEach( c
 /**
  * Checks a window of a kind again, and every window judged against it, once a field they depend on changes.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {ClassicWindowKind} kind The kind of the window.
  *
@@ -200,7 +200,7 @@ export function checkWindows( kind ) {
  * A typed field fires its own change once it loses the focus, which does not: a new error shown then moves the form
  * under the click that took the focus away, and the click misses.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {jQuery.Event} event The change event.
  *
@@ -213,7 +213,7 @@ export function endsEdit( event ) {
 /**
  * Shows the message of a ticket save the server rejected.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Object} response The `tribe-ticket-add` response.
  *

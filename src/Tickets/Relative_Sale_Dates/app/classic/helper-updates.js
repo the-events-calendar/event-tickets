@@ -2,7 +2,7 @@
  * Keeps the text around the classic ticket form's windows in step with the form: the dates relative ends work out to,
  * how long a window lasts, the unit names and the tickets list, its sale dates and its prices.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /**
@@ -29,7 +29,7 @@ import { CLASSIC_SALES_WINDOW, CLASSIC_WINDOW_KINDS } from './window-kinds';
 /**
  * The kinds whose window the form says the length of.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @type {ClassicWindowKind[]}
  */
@@ -38,7 +38,7 @@ export const LENGTH_KINDS = CLASSIC_WINDOW_KINDS.filter( ( kind ) => kind.length
 /**
  * Gets the translated day and month names TEC localizes, for `DateFormatter`.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Object} dynamic The date formats and names TEC localizes for its own helper text.
  *
@@ -56,7 +56,7 @@ function getDateSettings( dynamic ) {
 /**
  * Reads the rule a tickets list row carries.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string} json The rule, as JSON.
  *
@@ -75,7 +75,7 @@ function parseRule( json ) {
 /**
  * Writes, under each relative end of the sales window, the date it works out to for the event dates in the form.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @return {void}
  */
@@ -117,7 +117,7 @@ export function updateHelperText() {
 /**
  * Writes how long the window of a kind lasts for the event dates in the form.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {ClassicWindowKind} kind The kind of the window.
  *
@@ -147,7 +147,7 @@ export function updateWindowLength( kind ) {
 /**
  * Writes how long the window of every kind that shows its length lasts.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @return {void}
  */
@@ -158,7 +158,7 @@ export function updateWindowLengths() {
 /**
  * Names the units of each relative end of every window in the plural form of the number typed for it.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @return {void}
  */
@@ -190,7 +190,7 @@ export function updateUnitNames() {
  * Only the text follows the form: the row's icon, which tells an upcoming, on-sale or past ticket apart, is the one the
  * server drew, and changes once the event and ticket are saved.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @return {void}
  */
@@ -229,7 +229,7 @@ export function updateTicketsList() {
  * Both prices are the ones the server drew for the ticket. A cell drawn without a rule, or whose rule or event dates
  * cannot be read, keeps its price.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @return {void}
  */

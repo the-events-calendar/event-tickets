@@ -18,7 +18,7 @@ import { toRelativeValue } from './rule';
 /**
  * Builds the options of the units a window takes, named in the form the number takes.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {number[]}      units The units the window takes, in seconds.
  * @param {number|string} value The relative number, as the admin typed it.
@@ -36,7 +36,7 @@ function getUnitOptions( units, value ) {
  *
  * The msgids and context match the classic editor's, so one translation serves both.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string[]} anchors The event dates the window counts from.
  *
@@ -63,7 +63,7 @@ function getAnchorOptions( anchors ) {
  * Renders the options of one boundary of a window: its mode, and the relative number, unit and anchor, or its date
  * picker.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Object}                           props                     The component props.
  * @param {BlockWindowKind}                  props.kind                The window kind.

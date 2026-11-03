@@ -4,9 +4,9 @@
  *
  * Shared by `commerce/metabox/sale-price` and `relative-sale-dates/sale-price`.
  *
- * @since TBD
+ * @since 5.31.0
  *
- * @version TBD
+ * @version 5.31.0
  *
  * @var string               $sale_end          The end of the sale price, `start` or `end`.
  * @var string               $sale_start_date   The sale start date.

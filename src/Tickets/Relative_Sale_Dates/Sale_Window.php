@@ -2,7 +2,7 @@
 /**
  * Resolves a sales or sale price window rule into dates for an event.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -24,7 +24,7 @@ use Tribe__Timezones as Timezones;
  * takes the occurrence PHP reads it as, the one the stored `Y-m-d H:i:s` strings are read back with and the editors'
  * JavaScript takes too, so a window is judged at the instants the ticket is sold and its sales actions scheduled at.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -35,7 +35,7 @@ final class Sale_Window {
 	 * The resolver works the same for every kind of window; what only the sales window does with its dates, such as
 	 * moving a Now start, is `Sales_Window_Effects`'.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param Rule $rule     The rule.
 	 * @param int  $event_id The event post ID.
@@ -51,7 +51,7 @@ final class Sale_Window {
 	/**
 	 * Gets the event's start and end in the event timezone.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int $event_id The event post ID.
 	 *
@@ -79,7 +79,7 @@ final class Sale_Window {
 	 *
 	 * A start that opens the window at once has no date of its own, and a default end closes it when the event starts.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param Rule              $rule        The rule.
 	 * @param DateTimeImmutable $event_start The event start, in the event's named timezone: only a named timezone, such as `Europe/Athens`, knows its clock changes.
@@ -103,7 +103,7 @@ final class Sale_Window {
 	/**
 	 * Resolves one boundary of the window.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param Boundary                                                $boundary     The boundary to resolve.
 	 * @param array{start: DateTimeImmutable, end: DateTimeImmutable} $anchors      The event start and end, in the event timezone.
@@ -143,7 +143,7 @@ final class Sale_Window {
 	 * both give 01:30 EST on 14 March 2027 in New York, and the save rejects that window as ending when it starts; move
 	 * the boundary off the instant only when it would not keep its order against the other one, if admins hit it.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param DateTimeImmutable $anchor   The date to move back.
 	 * @param DateInterval      $interval How far to move it back.

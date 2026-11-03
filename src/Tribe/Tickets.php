@@ -4332,7 +4332,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * with a message they show. The classic editor's ajax save, the block editor's REST V1 save and the TEC REST API
 		 * call it; other callers of `ticket_add()`, such as imports and the RSVP V2 editor, save without it.
 		 *
-		 * @since TBD
+		 * @since 5.31.0
 		 *
 		 * @param int|string          $post_id The ticket parent post ID.
 		 * @param array<string,mixed> $data    The ticket data about to be saved.
@@ -4346,7 +4346,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * Return a `WP_Error` to reject the save: its message is shown to the user, and nothing is saved. Only the
 			 * classic editor's ajax save, the block editor's REST V1 save and the TEC REST API apply it.
 			 *
-			 * @since TBD
+			 * @since 5.31.0
 			 *
 			 * @param true|WP_Error       $valid   `true`, or the error an earlier callback rejected the data with.
 			 * @param int                 $post_id The ticket parent post ID.

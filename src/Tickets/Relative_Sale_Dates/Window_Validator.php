@@ -2,7 +2,7 @@
 /**
  * Judges the window of a kind that a ticket save would store.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -24,7 +24,7 @@ use WP_Error;
  * Every kind is judged alike, at the precision of its dates; what only the sales window does is
  * `Sales_Window_Effects`'.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -32,7 +32,7 @@ final class Window_Validator {
 	/**
 	 * The resolver of every kind of window.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var Sale_Window
 	 */
@@ -41,7 +41,7 @@ final class Window_Validator {
 	/**
 	 * The effects only the sales window has.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var Sales_Window_Effects
 	 */
@@ -50,7 +50,7 @@ final class Window_Validator {
 	/**
 	 * Window_Validator constructor.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param Sale_Window          $sale_window          The resolver of every kind of window.
 	 * @param Sales_Window_Effects $sales_window_effects The effects only the sales window has.
@@ -70,7 +70,7 @@ final class Window_Validator {
 	 * window. A start with its own date must fall within the parent window, which is judged only once both ends of the
 	 * parent window are known.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int                 $post_id     The ticket parent post ID.
 	 * @param array<string,mixed> $data        The ticket data about to be saved.
@@ -131,7 +131,7 @@ final class Window_Validator {
 	 * value of its own has no date: the window opens with its parent. The dates `ticket_add()` fills in for the
 	 * ticket's own sales dates are `Sales_Window_Effects`'.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int                                               $post_id     The ticket parent post ID.
 	 * @param array<string,mixed>                               $data        The ticket data about to be saved.
@@ -179,7 +179,7 @@ final class Window_Validator {
 	/**
 	 * Compares two dates of a window at the precision of its kind.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param DateTimeImmutable $date  The date to compare.
 	 * @param DateTimeImmutable $other The date to compare it with.
@@ -198,7 +198,7 @@ final class Window_Validator {
 	/**
 	 * Gets the date submitted for one end of a window, read the way `ticket_add()` reads it.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param array<string,mixed>                $data     The ticket data.
 	 * @param array{date: string, time: ?string} $field    The fields of the end, its date and, for a kind that submits
@@ -232,7 +232,7 @@ final class Window_Validator {
 	/**
 	 * Returns whether the ticket data sends a date for one end of a window that cannot be read.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param array<string,mixed>                $data     The ticket data.
 	 * @param array{date: string, time: ?string} $field    The fields of the end, its date and, for a kind that submits

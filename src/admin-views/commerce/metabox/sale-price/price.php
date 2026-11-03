@@ -4,9 +4,9 @@
  *
  * Shared by `commerce/metabox/sale-price` and `relative-sale-dates/sale-price`.
  *
- * @since TBD
+ * @since 5.31.0
  *
- * @version TBD
+ * @version 5.31.0
  *
  * @var string               $sale_price             The sale price.
  * @var array<string,string> $sale_price_errors      The errors for the sale price.

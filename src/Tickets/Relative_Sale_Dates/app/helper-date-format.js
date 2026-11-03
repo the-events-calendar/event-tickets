@@ -1,7 +1,7 @@
 /**
  * Picks the date format of a helper text date, as the server formats dates.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /** @typedef {import( 'moment' ).Moment} Moment */
@@ -9,7 +9,7 @@
 /**
  * Picks the date format of a helper text date: without the year for a date in the current year, with it otherwise.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Moment} date                 The sales date.
  * @param {Object} formats              The date formats, in PHP date format.

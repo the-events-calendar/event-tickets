@@ -1,7 +1,7 @@
 /**
  * Resolves a sales window rule into sale dates for an event, as the server does.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /**
@@ -59,7 +59,7 @@ export const FIXED_OFFSET = /^[+-]\d{2}:\d{2}$/;
  *
  * Only the given timezone is used: the browser's own timezone is never read.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {SaleWindowRule} rule       The sales window rule.
  * @param {string}         eventStart The event start, `YYYY-MM-DD HH:mm:ss` in the event timezone.
@@ -90,7 +90,7 @@ export function resolveSaleWindow( rule, eventStart, eventEnd, timezone ) {
  * save rejects, as a cleared field reads, has no date: subtracting it would put the boundary on its anchor, or on a date
  * the ticket is never saved with.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {SaleWindowRule|null}                         rule       The rule of the window, or `null` for none.
  * @param {import( './server-event-dates' ).EventDates} eventDates The event dates, or `null` when they are not known.
@@ -123,7 +123,7 @@ export function resolveWindow( rule, eventDates, kind ) {
 /**
  * Returns whether a relative boundary's number is one the server takes for a kind of window.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {number}                                value The number, `NaN` for a cleared field.
  * @param {import( './window-kinds' ).WindowKind} kind  The kind of the window.
@@ -138,7 +138,7 @@ export function isRelativeValueInRange( value, kind ) {
  * Returns whether a rule opens a window of a kind whose open start the server stores as a value of its own, such as
  * the sale price's Now, rather than as the date the form sends.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {SaleWindowRule}                        rule The rule of the window.
  * @param {import( './window-kinds' ).WindowKind} kind The kind of the window.
@@ -152,7 +152,7 @@ export function isStoredOpenStart( rule, kind ) {
 /**
  * Resolves one end of the window, or returns `null` when the end is not relative.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {SaleWindowEnd}                              end      The end of the window.
  * @param {{start: moment.Moment, end: moment.Moment}} anchors  The event start and end, in the event timezone.
@@ -179,7 +179,7 @@ function resolveRelative( end, anchors, timezone ) {
  * A number of minutes or hours that lands on a time skipped by a clock change comes off the instant instead, as the
  * next valid time can fall on or after the anchor: 30 minutes before 03:15 would otherwise be 03:45.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {moment.Moment} anchor   The date to move back, in the event timezone.
  * @param {number}        value    The number of units to move back.
@@ -212,7 +212,7 @@ function before( anchor, value, unit, timezone ) {
  * the second occurrence east of UTC and the first west of it. The Events Calendar stores the event's UTC dates the same
  * way, so the window is judged against the event the server has.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string} dateTime The date and time, `YYYY-MM-DD HH:mm:ss`.
  * @param {string} timezone The event timezone.
@@ -237,7 +237,7 @@ export function fromEventLocal( dateTime, timezone ) {
 /**
  * Builds a date from a wall-clock date and time in the event timezone.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string} dateTime The date and time, `YYYY-MM-DD HH:mm:ss`.
  * @param {string} timezone The event timezone.
@@ -255,7 +255,7 @@ export function fromLocal( dateTime, timezone ) {
 /**
  * Gets the wall-clock time of an instant in the event timezone.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {moment.Moment} instant  The instant, which is left as it is.
  * @param {string}        timezone The event timezone: an IANA name, or a fixed offset such as `+03:00`.

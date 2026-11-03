@@ -4,7 +4,7 @@
  *
  * Run it again whenever moment-timezone is updated: `npm run build:relative-sale-dates-zone-data`.
  *
- * @since TBD
+ * @since 5.31.0
  */
 const fs = require( 'fs' );
 const path = require( 'path' );

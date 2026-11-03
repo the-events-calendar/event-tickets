@@ -1,6 +1,6 @@
 <?php
 /**
- * @since TBD Prints the attributes the Relative Sale Dates classic script reads.
+ * @since 5.31.0 Prints the attributes the Relative Sale Dates classic script reads.
  *
  * @var Tribe__Tickets__Ticket_Object $ticket The ticket object the price column is being rendered for.
  * @var Tribe__Tickets__Tickets $provider_obj The ticket provider object for this ticket.

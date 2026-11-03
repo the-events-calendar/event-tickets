@@ -160,7 +160,7 @@ class Metabox {
 	 * Renders the sale price fields for TicketsCommerce.
 	 *
 	 * @since 5.9.0
-	 * @since TBD Judged a saved ticket by its own provider, not the post's.
+	 * @since 5.31.0 Judged a saved ticket by its own provider, not the post's.
 	 *
 	 * @param int                 $ticket_id The ticket ID.
 	 * @param int                 $post_id The post ID.

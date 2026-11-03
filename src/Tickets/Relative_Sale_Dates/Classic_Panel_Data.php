@@ -2,7 +2,7 @@
 /**
  * Hands the relative sale dates rules to the classic ticket editor.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -14,7 +14,7 @@ namespace TEC\Tickets\Relative_Sale_Dates;
 /**
  * Adds the ticket's stored rules to the data the classic ticket edit panel is built from.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -22,7 +22,7 @@ final class Classic_Panel_Data {
 	/**
 	 * The store of the ticket rules.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var Rule_Store
 	 */
@@ -31,7 +31,7 @@ final class Classic_Panel_Data {
 	/**
 	 * Classic_Panel_Data constructor.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param Rule_Store $rule_store The store of the ticket rules.
 	 */
@@ -43,7 +43,7 @@ final class Classic_Panel_Data {
 	 * Adds the ticket's stored rule of each window kind, or `null` for a new ticket or one without that rule, to the panel
 	 * data.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param array<string,mixed>|mixed $data      The data the ticket panel is built from.
 	 * @param int                       $post_id   The ID of the post being edited.

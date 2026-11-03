@@ -6,9 +6,9 @@
  * `commerce/metabox/sale-price/*`, the dates shown for a specific date. Each end of the window is rendered by
  * `relative-sale-dates/window-boundary`; the rule is sent as JSON in the `ticket_sale_price_relative` field.
  *
- * @since TBD
+ * @since 5.31.0
  *
- * @version TBD
+ * @version 5.31.0
  *
  * @var string                                                                                     $sale_price             The sale price.
  * @var bool                                                                                       $sale_checkbox_on       Whether the ticket has a sale price.

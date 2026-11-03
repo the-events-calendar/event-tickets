@@ -1,7 +1,7 @@
 /**
  * Shows the error of a window in the classic ticket form, and marks the field it is about.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /** @typedef {import( './window-kinds' ).ClassicWindowKind} ClassicWindowKind */
@@ -9,7 +9,7 @@
 /**
  * Removes an id from a field's `aria-describedby`, keeping every other description, such as its helper text.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {HTMLElement} field The field.
  * @param {string}      id    The id to remove.
@@ -31,7 +31,7 @@ function removeDescription( field, id ) {
 /**
  * Adds an id to a field's `aria-describedby`, ahead of its other descriptions so the error is read first.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {HTMLElement} field The field.
  * @param {string}      id    The id to add.
@@ -52,7 +52,7 @@ function addDescription( field, id ) {
  * The field is marked with `aria-invalid` rather than common's `tribe-validation-error` class: common validates the
  * form again after the save click and strips that class from every field it does not flag itself.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {ClassicWindowKind} kind           The kind of the window.
  * @param {string}            message        The error, or an empty string to clear it.

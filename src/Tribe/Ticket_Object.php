@@ -446,7 +446,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * Return a DateTimeZone associated with the parent Event of the current ticket
 		 *
 		 * @since 4.7.1
-		 * @since TBD Stopped keeping the site timezone it falls back to while the ticket does not know its event.
+		 * @since 5.31.0 Stopped keeping the site timezone it falls back to while the ticket does not know its event.
 		 *
 		 * @return DateTimeZone|null
 		 */

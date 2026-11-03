@@ -1,7 +1,7 @@
 /**
  * Tells whether a ticket's sale price applies today, as the server does.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /**
@@ -24,7 +24,7 @@ import { SALE_PRICE_WINDOW } from './window-kinds';
  * stores it, whatever date it is given: a form can still hold one picked before the admin chose *Now*. A specific
  * boundary keeps the day it is given. A relative boundary whose number the server would reject leaves it untold.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {import( './sale-window' ).SaleWindowRule|null}    rule       The sale price rule, or `null` for none.
  * @param {import( './server-event-dates' ).EventDates|null} eventDates The event dates, or `null` when not known.

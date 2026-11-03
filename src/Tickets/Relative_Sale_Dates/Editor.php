@@ -2,7 +2,7 @@
 /**
  * Offers the sales window and sale price window options in the classic ticket editor.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -21,7 +21,7 @@ use Tribe__Tickets__Tickets as Ticket_Provider;
 /**
  * Replaces the sale dates and sale price fields of the classic ticket form with the options of each window kind.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
@@ -31,7 +31,7 @@ final class Editor {
 	 *
 	 * The Ticket block offers it too, from the data its script is localized with.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var array{mode: string, value: int, unit: int, anchor: string}
 	 */
@@ -47,7 +47,7 @@ final class Editor {
 	 *
 	 * The Ticket block offers it too, from the data its script is localized with.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var array{mode: string, value: int, unit: int, anchor: string}
 	 */
@@ -63,7 +63,7 @@ final class Editor {
 	 *
 	 * Event Tickets Plus checks the rule a preset form posts against them.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var string[]
 	 */
@@ -72,7 +72,7 @@ final class Editor {
 	/**
 	 * The relative start the sale price form offers when the ticket has none: 2 weeks before the event starts.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var array{mode: string, value: int, unit: int}
 	 */
@@ -85,7 +85,7 @@ final class Editor {
 	/**
 	 * The relative end the sale price form offers when the ticket has none: 1 week before the event starts.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var array{mode: string, value: int, unit: int}
 	 */
@@ -99,7 +99,7 @@ final class Editor {
 	/**
 	 * The store of the ticket rules.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var Rule_Store
 	 */
@@ -108,7 +108,7 @@ final class Editor {
 	/**
 	 * The providers the relative sales window applies to.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @var Providers
 	 */
@@ -117,7 +117,7 @@ final class Editor {
 	/**
 	 * Editor constructor.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param Rule_Store $rule_store The store of the ticket rules.
 	 * @param Providers  $providers  The providers the relative sales window applies to.
@@ -133,7 +133,7 @@ final class Editor {
 	 * The attributes are set on every row, empty for a ticket without a rule: the template merges each row's context
 	 * into the values the next row inherits.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param array<string,mixed>|mixed $context The context of the ticket row's sale dates template.
 	 *
@@ -166,7 +166,7 @@ final class Editor {
 	 *
 	 * Only the fields template's own output is replaced, so what other code renders before and after it stays.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param string|mixed $html     The HTML of the sale dates fields, as an earlier callback may have filtered it.
 	 * @param string       $file     The path of the sale dates fields template.
@@ -184,7 +184,7 @@ final class Editor {
 	 *
 	 * Only the fields template's own output is replaced, so what other code renders before and after it stays.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param string|mixed $html     The HTML of the sale price fields, as an earlier callback may have filtered it.
 	 * @param string       $file     The path of the sale price fields template.
@@ -203,7 +203,7 @@ final class Editor {
 	 *
 	 * The Ticket block opens a new window on the same boundaries.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param Window_Kind $kind The kind of the window.
 	 *
@@ -237,7 +237,7 @@ final class Editor {
 	 * Render the view with an admin views template of its own, not the shared `tickets.admin.views` one: that one
 	 * carries each render's context into the next, and renders the ticket form on the screen where a preset can be saved.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param array{start?: array<string,int|string>|null, end?: array<string,int|string>|null} $rule         The preset's sales window rule, each
 	 *                                                                                           boundary in its array form.
@@ -272,7 +272,7 @@ final class Editor {
 	 *
 	 * The msgids and context match the scripts' (`app/unit-names.js`), so one translation serves both.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int $unit   The unit, in seconds.
 	 * @param int $number The number of units.
@@ -305,7 +305,7 @@ final class Editor {
 	 * says it is not in wp-admin with an `is_admin` request var, which the ticket controls read the same way
 	 * (`Tribe__Tickets__Metabox::get_ticket_controls()`).
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param array<string,mixed> $context The ticket panel data, as the template holds it.
 	 * @param Window_Kind         $kind    The kind of the window.
@@ -334,7 +334,7 @@ final class Editor {
 	 * A ticket created on a page and moved to an event, or created by code, can have no end date. Saving it without one
 	 * gave it the event start, which is what the default end resolves to.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param int         $ticket_id The ticket post ID.
 	 * @param Window_Kind $kind      The kind of the window.
@@ -349,7 +349,7 @@ final class Editor {
 	/**
 	 * Gets a ticket sale date as the classic script reads it.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param string|null $date The ticket sale date.
 	 *
@@ -365,7 +365,7 @@ final class Editor {
 	 * A ticket saved with the window but without a rule has dates of its own, so it opens on them rather than on the
 	 * defaults.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param Boundary|null $boundary     The boundary in the stored rule, or `null` when there is none.
 	 * @param bool          $has_own_date Whether the ticket has a date of its own for the boundary.
@@ -392,7 +392,7 @@ final class Editor {
 	/**
 	 * Renders a window's options in place of the fields a template rendered for it.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param string|mixed $html     The HTML of the fields, as an earlier callback may have filtered it.
 	 * @param Template     $template The admin views template, holding the ticket panel data.
@@ -437,7 +437,7 @@ final class Editor {
 	/**
 	 * Gets the values a ticket preset's sales window shows for one boundary.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param array<string,int|string>|mixed $data The boundary in its array form, as the preset stores it.
 	 * @param Window_Kind                    $kind The sales window kind.
@@ -468,7 +468,7 @@ final class Editor {
 	 * Gets the name of each unit of a kind for every number its relative boundaries take, for a form that names the unit
 	 * after the number with no script of Event Tickets', such as a ticket preset's.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param Window_Kind $kind The kind of the window.
 	 *
@@ -488,7 +488,7 @@ final class Editor {
 	/**
 	 * Gets the admin view that renders a window's options in the classic ticket form.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param Window_Kind $kind The kind of the window.
 	 *

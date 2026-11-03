@@ -47,7 +47,7 @@ const { wpREST } = api;
 /**
  * Returns the ID of the notice that warns a post save left a ticket's changes unsaved.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string} clientId The client ID of the ticket block.
  *
@@ -362,7 +362,7 @@ export function* setTicketInitialState( action ) {
  * The store keeps an empty sale price date it loads or saves as the string `Invalid date`, which the server rejects
  * as a date it cannot read; it is sent empty, as it was when the ticket was created.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string} date The sale price date the store holds.
  *
@@ -449,7 +449,7 @@ export function* removeTicketBlock( clientId ) {
 /**
  * Gets a sale date a ticket was stored with, in each form the ticket details hold it.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string} value            The date, `YYYY-MM-DD HH:mm:ss`.
  * @param {string} datePickerFormat The date picker format the date input shows, or an empty string for the default.
@@ -475,7 +475,7 @@ const toSaleDateDetails = ( value, datePickerFormat ) => {
  * "Invalid date" texts are left out: the duration check cannot read them, and its uncaught error would stop every
  * ticket saga of the block.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @return {{date: string, input: string, moment: Object, time: string, timeInput: string}} The empty date.
  */
@@ -490,7 +490,7 @@ const toNoSaleDateDetails = () => ( {
 /**
  * Gets the sale dates a ticket was stored with, in each form the ticket details hold them.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Object} ticket The ticket, as the tickets REST API returns it.
  *
@@ -524,7 +524,7 @@ export function* getTicketSaleDates( ticket ) {
 /**
  * Gets the dates a ticket's sale price was stored with, in each form the ticket details hold them.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Object} ticket The ticket, as the tickets REST API returns it.
  *
@@ -556,7 +556,7 @@ export function* getTicketSalePriceDates( ticket ) {
  * A ticket stored without an end gives no end to read, which would empty the end the form holds and send it empty with
  * the next update, so the end is taken from the form instead.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {Object} ticket   The ticket, as the tickets REST API returns it.
  * @param {string} clientId The ticket's client ID.
@@ -806,7 +806,7 @@ export function* createNewTicket( action ) {
 			 *
 			 * @since 5.16.0
 			 * @since 5.20.0 The `ticketId` and `ticketDetails` parameters were added.
-			 * @since TBD The `ticket` parameter was added.
+			 * @since 5.31.0 The `ticket` parameter was added.
 			 * @param {string} clientId      The ticket's client ID.
 			 * @param {number} ticketId      The ticket's ID.
 			 * @param {Object} ticketDetails The ticket details.
@@ -908,7 +908,7 @@ export function* updateTicket( action ) {
 			 *
 			 * @since 5.16.0
 			 * @since 5.20.0 The `ticketId and `ticketDetails` parameters were added
-			 * @since TBD The `ticket` parameter was added.
+			 * @since 5.31.0 The `ticket` parameter was added.
 			 * @param {string} clientId      The ticket's client ID.
 			 * @param {number} ticketId      The ticket's ID.
 			 * @param {Object} ticketDetails The ticket details.
@@ -1256,7 +1256,7 @@ export function* setTicketTempDetails( action ) {
  * Warns that saving the post left a ticket's changes unsaved. The notice is one per ticket, so saving the post again
  * does not stack it, and updating the ticket removes it.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string} clientId The client ID of the ticket block.
  * @yield
@@ -1307,7 +1307,7 @@ export function* saveTicketWithPostSave( clientId ) {
 				 * Filters whether saving the post updates the ticket too. Returning false skips the update, for example
 				 * when the server would reject it.
 				 *
-				 * @since TBD
+				 * @since 5.31.0
 				 * @param {boolean} updatesTicket Whether saving the post updates the ticket.
 				 * @param {string}  clientId      The client ID of the ticket block.
 				 */
@@ -1401,7 +1401,7 @@ export function* syncTicketSaleEndWithEventStart( prevStartDate, clientId ) {
 		 * Filters whether a ticket's sale end may follow the event start when the event start changes. Returning false
 		 * stops the sync; returning true does not force it.
 		 *
-		 * @since TBD
+		 * @since 5.31.0
 		 * @param {boolean} followsEventStart Whether the sale end follows the event start.
 		 * @param {string}  clientId          The client ID of the ticket block.
 		 */

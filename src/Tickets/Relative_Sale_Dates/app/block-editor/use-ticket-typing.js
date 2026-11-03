@@ -1,7 +1,7 @@
 /**
  * Whether the admin is typing in a window field of a ticket block.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /**
@@ -26,7 +26,7 @@ import { createTypingTracker } from '../live-error';
 /**
  * The typing of each ticket block, by client ID, shared by every window of the ticket.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @type {Map<string, TicketTyping>}
  */
@@ -35,7 +35,7 @@ const typings = new Map();
 /**
  * Returns the typing of a ticket block.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string} clientId The client ID of the ticket block.
  *
@@ -86,7 +86,7 @@ function getTicketTyping( clientId ) {
 /**
  * Returns whether the admin is typing in a window field of a ticket block, and the calls that tell it.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string} clientId The client ID of the ticket block.
  *

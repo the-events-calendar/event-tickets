@@ -480,7 +480,7 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 				 * jQuery UI fires no `change` after a pick when there is an `onSelect`, and firing one here would reach
 				 * every other script that listens for it.
 				 *
-				 * @since TBD
+				 * @since 5.31.0
 				 *
 				 * @param {HTMLInputElement} input The date field the date was picked for.
 				 */
@@ -785,7 +785,7 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 					/**
 					 * Fires when the server rejects a ticket save from the classic editor.
 					 *
-					 * @since TBD
+					 * @since 5.31.0
 					 *
 					 * @param {Object} response The response, with the reason in `data.message` when the server gave one.
 					 */

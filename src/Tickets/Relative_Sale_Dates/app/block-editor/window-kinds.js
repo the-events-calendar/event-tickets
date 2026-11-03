@@ -2,7 +2,7 @@
  * The window kinds as the Ticket block uses them: the shared kinds, with the labels of their options and what the
  * block reads from its legacy store for each.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /**
@@ -82,7 +82,7 @@ import {
  * Where a msgid is the classic editor's (Now, When the event starts and the relative labels), its context is too, so
  * one translation serves both.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @return {{start: BoundarySettings, end: BoundarySettings}} The labels and mode options, keyed by end.
  */
@@ -131,7 +131,7 @@ function getSalesWindowSettings() {
  *
  * The msgids and contexts are the classic editor's, so one translation serves both.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @return {{start: BoundarySettings, end: BoundarySettings}} The labels and mode options, keyed by boundary.
  */
@@ -186,7 +186,7 @@ function getSalePriceSettings() {
 /**
  * The ticket's sales window, as the Ticket block shows and sends it.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @type {BlockWindowKind}
  */
@@ -208,7 +208,7 @@ export const BLOCK_SALES_WINDOW = Object.freeze( {
 /**
  * The ticket's sale price window, as the Ticket block shows and sends it.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @type {BlockWindowKind}
  */
@@ -239,7 +239,7 @@ export const BLOCK_SALE_PRICE_WINDOW = Object.freeze( {
 /**
  * Every kind the Ticket block shows, the sales window first: the sale price is judged against it.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @type {BlockWindowKind[]}
  */

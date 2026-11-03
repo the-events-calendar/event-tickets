@@ -39,7 +39,7 @@ const TicketDuration = ( { hasDurationError, ...props } ) => (
 			/**
 			 * Filters what the Sale Duration section renders in place of its date and time range picker.
 			 *
-			 * @since TBD
+			 * @since 5.31.0
 			 *
 			 * @param {Object} picker   The date and time range picker element.
 			 * @param {string} clientId The client ID of the ticket block.

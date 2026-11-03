@@ -1,7 +1,7 @@
 /**
  * The kinds of window a ticket's relative sale dates describe, as the server's `Window_Kind` defines them.
  *
- * @since TBD
+ * @since 5.31.0
  */
 
 /**
@@ -62,7 +62,7 @@ import {
 /**
  * The ticket's sales window.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @type {WindowKind}
  */
@@ -90,7 +90,7 @@ export const SALES_WINDOW = Object.freeze( {
  * Its relative boundaries take 1 to 30 days or weeks, and the server stores an open start empty, as a sale price that
  * has started. It must start inside the sales window, and is judged only when the ticket keeps a sale price.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @type {WindowKind}
  */
@@ -128,7 +128,7 @@ export const SALE_PRICE_WINDOW = Object.freeze( {
 /**
  * Every kind, the sales window first.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @type {WindowKind[]}
  */
