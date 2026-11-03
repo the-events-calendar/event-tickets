@@ -226,13 +226,12 @@ final class Assets extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, windows: array<string,array{endsBeforeStart: string, outsideParent?: string, invalidDate: string, valueOutOfRange: string}>}, errorCodes: array<string,array{endsBeforeStart: string, outsideParent?: string, invalidRule: string, invalidDate: string}>} The script data.
+	 * @return array{timeFormat: string, dateWithYear: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, windows: array<string,array{endsBeforeStart: string, outsideParent?: string, invalidDate: string, valueOutOfRange: string}>}, errorCodes: array<string,array{endsBeforeStart: string, outsideParent?: string, invalidRule: string, invalidDate: string}>} The script data.
 	 */
 	private function get_classic_script_data(): array {
 		return [
 			'timeFormat'   => $this->get_time_format(),
-			'dateWithYear' => $this->get_date_format( true ),
-			'dateNoYear'   => $this->get_date_format( false ),
+			'dateWithYear' => $this->get_date_format(),
 			'timezones'    => $this->get_manual_offset_zones(),
 			'allDay'       => $this->get_all_day_times(),
 			'text'         => [
@@ -318,7 +317,7 @@ final class Assets extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @return array{windowDefaults: array<string,array{start: array{mode: string, value: int, unit: int, anchor?: string}, end: array{mode: string, value: int, unit: int, anchor?: string}}>, windowErrorTexts: array<string,array{endsBeforeStart: string, outsideParent?: string, invalidDate: string, valueOutOfRange: string}>, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, dateNoYear: string, time: string}, ticketProviders: array{classes: string[], slugs: string[]}} The script data, with the defaults and the error texts keyed by the kind's ID.
+	 * @return array{windowDefaults: array<string,array{start: array{mode: string, value: int, unit: int, anchor?: string}, end: array{mode: string, value: int, unit: int, anchor?: string}}>, windowErrorTexts: array<string,array{endsBeforeStart: string, outsideParent?: string, invalidDate: string, valueOutOfRange: string}>, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, time: string}, ticketProviders: array{classes: string[], slugs: string[]}} The script data, with the defaults and the error texts keyed by the kind's ID.
 	 */
 	private function get_block_editor_script_data(): array {
 		$editor          = $this->container->get( Editor::class );
@@ -336,8 +335,7 @@ final class Assets extends Controller_Contract {
 			'timezones'        => $this->get_manual_offset_zones(),
 			'allDay'           => $this->get_all_day_times(),
 			'formats'          => [
-				'dateWithYear' => $this->get_date_format( true ),
-				'dateNoYear'   => $this->get_date_format( false ),
+				'dateWithYear' => $this->get_date_format(),
 				'time'         => $this->get_time_format(),
 			],
 			'ticketProviders'  => $this->get_ticket_providers(),
@@ -406,24 +404,18 @@ final class Assets extends Controller_Contract {
 	}
 
 	/**
-	 * Gets the TEC date format of a date in another year, or in the current one.
+	 * Gets the TEC date format with the year.
 	 *
 	 * Both editors read it from here; the classic editor's `tribe_dynamic_help_text` leaves a blank setting blank.
 	 *
 	 * @since TBD
 	 *
-	 * @param bool $with_year Whether the format shows the year.
-	 *
 	 * @return string The date format, in PHP date format.
 	 */
-	private function get_date_format( bool $with_year ): string {
-		$format = tribe_get_date_format( $with_year );
+	private function get_date_format(): string {
+		$format = tribe_get_date_format( true );
 
-		if ( is_string( $format ) && '' !== $format ) {
-			return $format;
-		}
-
-		return $with_year ? 'F j, Y' : 'F j';
+		return is_string( $format ) && '' !== $format ? $format : 'F j, Y';
 	}
 
 	/**

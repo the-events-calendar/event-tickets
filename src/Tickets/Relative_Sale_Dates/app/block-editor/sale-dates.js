@@ -7,14 +7,12 @@
 /**
  * External dependencies
  */
-import moment from 'moment';
 import { dateI18n } from '@wordpress/date';
 import { __, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import { getHelperDateFormat } from '../helper-date-format';
 import { getLocalizedData } from './localized-data';
 
 /** @typedef {import( 'moment' ).Moment} Moment */
@@ -38,8 +36,6 @@ export function formatSaleDate( format, date ) {
 /**
  * Writes the helper text that tells the admin when one end of a relative sales window works out to.
  *
- * The year is left out of a date in the current year of the event timezone, as the server formats dates.
- *
  * @since TBD
  *
  * @param {string}      name The end of the window, `start` or `end`.
@@ -53,7 +49,6 @@ export function getHelperText( name, date ) {
 	}
 
 	const { formats } = getLocalizedData();
-	const dateFormat = getHelperDateFormat( date, formats, moment().utcOffset( date.utcOffset() ).year() );
 	const template =
 		'start' === name
 			? // translators: %1$s is the date sales start on, %2$s the time.
@@ -61,5 +56,5 @@ export function getHelperText( name, date ) {
 			: // translators: %1$s is the date sales end on, %2$s the time.
 			  __( 'Sales end %1$s at %2$s', 'event-tickets' );
 
-	return sprintf( template, formatSaleDate( dateFormat, date ), formatSaleDate( formats.time, date ) );
+	return sprintf( template, formatSaleDate( formats.dateWithYear, date ), formatSaleDate( formats.time, date ) );
 }

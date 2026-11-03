@@ -9,8 +9,7 @@
 /**
  * @typedef {Object} HelperTextFormats
  *
- * @property {string} dateWithYear The date format of a date in another year, in PHP date format.
- * @property {string} dateNoYear   The date format of a date in the current year, in PHP date format.
+ * @property {string} dateWithYear The TEC date format with the year, in PHP date format.
  * @property {string} time         The site time format, in PHP date format.
  */
 

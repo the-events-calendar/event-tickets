@@ -1,0 +1,6 @@
+significance: patch
+type: fix
+entry: Showed the time of each sales date in the classic editor tickets list,
+  and stopped marking a ticket whose sales start or end later today as already
+  on sale or expired.
+timestamp: 2026-10-23T19:48:35.558Z
