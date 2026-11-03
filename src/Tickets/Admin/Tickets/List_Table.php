@@ -917,7 +917,7 @@ class List_Table extends WP_List_Table {
 	 *
 	 * @since 5.14.0
 	 * @since 5.31.0 Counted a sale price without a start or end date as discounted.
-	 * @since TBD Left the sale price dates of the discounted filter to `filter_query_clauses()`.
+	 * @since 5.31.0 Left the sale price dates of the discounted filter to `filter_query_clauses()`.
 	 *
 	 * @param array $args The arguments used to query the tickets for the Admin Tickets Table.
 	 *
@@ -1148,7 +1148,7 @@ class List_Table extends WP_List_Table {
 	 * Filter the query clauses.
 	 *
 	 * @since 5.14.0
-	 * @since TBD Kept a discounted ticket only while its sale price runs, its days read in the event timezone.
+	 * @since 5.31.0 Kept a discounted ticket only while its sale price runs, its days read in the event timezone.
 	 *
 	 * @param array    $clauses The query clauses.
 	 * @param WP_Query $query   The WP_Query object.
@@ -1334,7 +1334,7 @@ class List_Table extends WP_List_Table {
 	 * included. It reads an empty or missing start as started and an empty or missing end as no end; casting an empty
 	 * date matches no row on MySQL, so those are tested apart.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @param array<string,string> $clauses The query clauses, with the ticket's event joined as `event_data`.
 	 *
@@ -1389,7 +1389,7 @@ class List_Table extends WP_List_Table {
 	 * Any other value, such as a `UTC+2` offset, falls back on the site timezone, as does every event without The
 	 * Events Calendar active.
 	 *
-	 * @since TBD
+	 * @since 5.31.0
 	 *
 	 * @return array<string,string> Today's date, as `Y-m-d`, by stored event timezone.
 	 */

@@ -1291,7 +1291,7 @@ export function* noticeTicketNotUpdated( clientId ) {
  * Shows why the tickets REST API rejected a ticket save, such as the sales window it judges against the saved event
  * dates. The form keeps its changes, so the admin can correct them and save again.
  *
- * @since TBD
+ * @since 5.31.0
  *
  * @param {string}   clientId The client ID of the ticket block.
  * @param {Response} response The response of the rejected save, its body not read yet.
