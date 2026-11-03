@@ -97,8 +97,12 @@ final class Recurrence_Controller extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		remove_action( 'tec_tickets_ticket_pre_save', $this->container->callback( Ticket_Type::class, 'remember' ) );
+		remove_action( 'tec_tickets_ticket_pre_save', $this->container->callback( Sync::class, 'start_ticket_save' ) );
 		remove_action( 'tribe_tickets_ticket_add', $this->container->callback( Ticket_Type::class, 'assign' ), 5 );
 		remove_action( 'tec_events_custom_tables_v1_after_save_occurrences', $this->container->callback( Sync::class, 'sync_event' ), 20 );
+		foreach ( [ 'added_post_meta', 'updated_post_meta' ] as $write ) {
+			remove_action( $write, $this->container->callback( Sync::class, 'sync_capacity' ), 20 );
+		}
 		remove_action( 'tribe_tickets_ticket_add', $this->container->callback( Sync::class, 'sync_saved_ticket' ) );
 		remove_action( 'tec_tickets_commerce_ticket_deleted', $this->container->callback( Sync::class, 'sync_deleted_ticket' ) );
 		remove_action( 'before_delete_post', $this->container->callback( Sync::class, 'delete_event' ) );
@@ -144,6 +148,7 @@ final class Recurrence_Controller extends Controller_Contract {
 		$this->container->singleton( Ticket_Type::class );
 
 		add_action( 'tec_tickets_ticket_pre_save', $this->container->callback( Ticket_Type::class, 'remember' ), 10, 2 );
+		add_action( 'tec_tickets_ticket_pre_save', $this->container->callback( Sync::class, 'start_ticket_save' ) );
 		// Before anything else reads the type of the ticket just saved.
 		add_action( 'tribe_tickets_ticket_add', $this->container->callback( Ticket_Type::class, 'assign' ), 5, 5 );
 
@@ -151,6 +156,10 @@ final class Recurrence_Controller extends Controller_Contract {
 
 		// After ECP has pruned the dates it no longer generates, at 10.
 		add_action( 'tec_events_custom_tables_v1_after_save_occurrences', $this->container->callback( Sync::class, 'sync_event' ), 20 );
+		// After core syncs a single event's shared capacity, at 15.
+		foreach ( [ 'added_post_meta', 'updated_post_meta' ] as $write ) {
+			add_action( $write, $this->container->callback( Sync::class, 'sync_capacity' ), 20, 3 );
+		}
 		add_action( 'tribe_tickets_ticket_add', $this->container->callback( Sync::class, 'sync_saved_ticket' ), 10, 2 );
 		add_action( 'tec_tickets_commerce_ticket_deleted', $this->container->callback( Sync::class, 'sync_deleted_ticket' ), 10, 2 );
 		add_action( 'before_delete_post', $this->container->callback( Sync::class, 'delete_event' ) );
