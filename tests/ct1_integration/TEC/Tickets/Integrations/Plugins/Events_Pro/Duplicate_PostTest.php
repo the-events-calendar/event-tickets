@@ -128,4 +128,46 @@ class Duplicate_PostTest extends WPTestCase {
 			$this->assertEquals( $capacity, $ticket->capacity(), 'duplicated ticket capacity' );
 		}
 	}
+
+	/**
+	 * @test
+	 * it should keep the ticket ID of a ticket that could not be cloned
+	 */
+	public function it_should_keep_the_ticket_id_of_a_ticket_that_could_not_be_cloned() {
+		$event_args = [
+			'title'      => 'Test Event',
+			'status'     => 'publish',
+			'start_date' => '2020-01-01 12:00:00',
+			'duration'   => 2 * HOUR_IN_SECONDS,
+		];
+
+		$event_id            = tribe_events()->set_args( $event_args )->create()->ID;
+		$cloned_ticket_id    = $this->create_tc_ticket( $event_id );
+		$failed_ticket_id    = $this->create_tc_ticket( $event_id );
+		$duplicate_id        = tribe_events()->set_args( $event_args )->create()->ID;
+		$duplicate_ticket_id = $this->create_tc_ticket( $duplicate_id );
+		$content             = '"ticketId":%d,"ticketId":%d';
+
+		wp_update_post(
+			[
+				'ID'           => $duplicate_id,
+				'post_content' => sprintf( $content, $cloned_ticket_id, $failed_ticket_id ),
+			]
+		);
+
+		// Called directly: the integration only hooks in when Events Pro starts a duplication.
+		tribe( Duplicate_Post::class )->remap_fields_pointing_to_old_tickets_after_duplicate(
+			[
+				$cloned_ticket_id => $duplicate_ticket_id,
+				$failed_ticket_id => false,
+			],
+			$duplicate_id,
+			$event_id
+		);
+
+		$this->assertEquals(
+			sprintf( $content, $duplicate_ticket_id, $failed_ticket_id ),
+			get_post( $duplicate_id )->post_content
+		);
+	}
 }

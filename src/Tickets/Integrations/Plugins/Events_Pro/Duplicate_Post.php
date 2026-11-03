@@ -131,14 +131,19 @@ class Duplicate_Post extends Integration_Abstract {
 	 * Fix post fields pointing to old tickets.
 	 *
 	 * @since 5.14.0
+	 * @since TBD Skips the tickets that could not be cloned.
 	 *
-	 * @param array $duplicated_ticket_maps An array of ticket IDs that were duplicated.
-	 * @param int   $new_post_id The ID of the new post.
-	 * @param int   $original_post_id The ID of the original post.
+	 * @param array<int,int|false> $duplicated_ticket_maps The duplicated ticket IDs, keyed by the original ticket IDs;
+	 *                                                     `false` for a ticket that could not be cloned.
+	 * @param int                  $new_post_id            The ID of the new post.
+	 * @param int                  $original_post_id       The ID of the original post.
 	 *
 	 * @return void
 	 */
 	public function remap_fields_pointing_to_old_tickets_after_duplicate( array $duplicated_ticket_maps, int $new_post_id, int $original_post_id ) {
+		// Remapping a ticket that could not be cloned would leave its block with an empty `ticketId`.
+		$duplicated_ticket_maps = array_filter( $duplicated_ticket_maps );
+
 		$duplicated_post = get_post( $new_post_id );
 		if ( ! ( $duplicated_post && $duplicated_post->ID && $duplicated_post->post_content ) ) {
 			return;
