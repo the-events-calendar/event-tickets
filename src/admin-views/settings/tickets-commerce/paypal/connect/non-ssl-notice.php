@@ -2,10 +2,9 @@
 /**
  * The Template for displaying the Tickets Commerce PayPal Settings notice when `https` is not being used.
  *
- * @version TBD
+ * @version 5.6.4
  *
  * @since 5.6.4
- * @since TBD Removed the "Learn more" link.
  *
  * @var Tribe__Tickets__Admin__Views                  $this                  [Global] Template object.
  * @var string                                        $plugin_url            [Global] The plugin URL.
@@ -20,7 +19,17 @@ if ( is_ssl() ) {
 	return;
 }
 
-$notice = esc_html__( 'A valid SSL certificate and secure (https) connection are required to connect with PayPal.', 'event-tickets' );
+$link_element = sprintf(
+	'<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
+	esc_url( 'https://evnt.is/1axw' ),
+	esc_html__( 'Learn more', 'event-tickets' )
+);
+
+$notice = sprintf(
+	// Translators: %s: link to Knowledgebase article.
+	esc_html__( 'A valid SSL certificate and secure (https) connection are required to connect with PayPal. %s', 'event-tickets' ),
+	$link_element
+);
 
 ?>
 <div class="event-tickets">

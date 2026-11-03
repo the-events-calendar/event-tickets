@@ -3,9 +3,8 @@
  * The Template for displaying the Tickets Commerce Stripe help links.
  *
  * @since 5.3.0
- * @since TBD Removed the troubleshooting link.
  *
- * @version TBD
+ * @version 5.3.0
  *
  * @var string                                        $plugin_url      [Global] The plugin URL.
  * @var TEC\Tickets\Commerce\Gateways\Stripe\Signup   $signup          [Global] The Signup class.
@@ -18,5 +17,7 @@
 <div class="tec-tickets__admin-settings-tickets-commerce-gateway-help-links">
 
 	<?php $this->template( 'settings/tickets-commerce/stripe/connect/help-links/configuring' ); ?>
+
+	<?php $this->template( 'settings/tickets-commerce/stripe/connect/help-links/troubleshooting' ); ?>
 
 </div>

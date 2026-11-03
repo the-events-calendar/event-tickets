@@ -254,7 +254,6 @@ class Settings {
 	 * Get the list of settings for Tickets Commerce.
 	 *
 	 * @since 5.1.6
-	 * @since TBD Pointed the payment options help link to the Tickets Commerce article.
 	 *
 	 * @return array The list of settings for Tickets Commerce.
 	 */
@@ -522,7 +521,7 @@ class Settings {
 							[
 								'slug'     => 'help-1',
 								'priority' => 10,
-								'link'     => 'https://evnt.is/1axs',
+								'link'     => 'https://evnt.is/1axt',
 								'html'     => __( 'Learn more about configuring payment options with Tickets Commerce', 'event-tickets' ),
 								'target'   => '_blank',
 								'classes'  => [],

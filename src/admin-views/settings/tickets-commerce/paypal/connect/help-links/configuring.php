@@ -2,10 +2,9 @@
 /**
  * The Template for displaying the Tickets Commerce PayPal help links (configuring).
  *
- * @version TBD
+ * @version 5.2.0
  *
  * @since 5.2.0
- * @since TBD Linked the PayPal setup article.
  *
  * @var Tribe__Tickets__Admin__Views                  $this                  [Global] Template object.
  * @var string                                        $plugin_url            [Global] The plugin URL.
@@ -25,7 +24,7 @@ if ( ! empty( $is_merchant_connected ) ) {
 <div class="tec-tickets__admin-settings-tickets-commerce-gateway-help-link">
 	<?php $this->template( 'components/icons/lightbulb' ); ?>
 	<a
-		href="https://evnt.is/tickets-paypal"
+		href="https://evnt.is/1axt"
 		target="_blank"
 		rel="noopener noreferrer"
 		class="tec-tickets__admin-settings-tickets-commerce-gateway-help-link-url"
