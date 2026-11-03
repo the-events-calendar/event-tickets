@@ -13,7 +13,6 @@ import {
 	isAcceptedProvider,
 	isAcceptedTicket,
 	isSalePriceChecked,
-	isTicketReadyBesidesDuration,
 	isTicketsCommerce,
 } from './common-store-bridge';
 import { readEventDates } from './event-dates';
@@ -276,10 +275,7 @@ export function filterTicketOnSale( onSale, clientId ) {
 /**
  * Keeps a ticket from being created or updated while a window the server judges is invalid: it does not end after it
  * starts, starts outside its parent window, or a relative number is missing or out of range. The sales window is
- * judged first, and the sale price only when the save keeps it.
- *
- * The legacy sales duration error alone does not keep the button disabled once an end is relative or the default, since
- * the dates it checks are hidden then.
+ * judged first, and the sale price only when the save keeps it. It never enables a button already disabled.
  *
  * The button follows the window at once, while the window holds a new error back until the admin stops typing: a
  * click in that pause would send a window the server rejects. The error shows within the settle delay.
@@ -294,21 +290,33 @@ export function filterTicketOnSale( onSale, clientId ) {
  * @return {boolean} Whether the button is disabled.
  */
 export function filterConfirmDisabled( isDisabled, state, { clientId } ) {
-	if ( ! isAcceptedProvider( clientId ) ) {
+	if ( isDisabled || ! isAcceptedProvider( clientId ) ) {
 		return isDisabled;
 	}
 
-	const rule = select( STORE_NAME ).getDraftRule( clientId );
+	return hasTicketWindowError( clientId, state );
+}
 
-	// The legacy duration error judges the picker's dates, which mean nothing once an end is relative or the default.
-	const onlyDurationError =
-		! isSpecificWindow( getFormRule( rule ) ) && isTicketReadyBesidesDuration( state, clientId );
-
-	if ( isDisabled && ! onlyDurationError ) {
-		return true;
+/**
+ * Keeps the legacy sales duration error from disabling the Create or Update button once an end of the sales window is
+ * relative or the default: the error judges the picker's dates, which are hidden and left stale then.
+ * `filterConfirmDisabled()` judges the window itself.
+ *
+ * @since TBD
+ *
+ * @param {boolean} hasDurationError  Whether the ticket has a sales duration error.
+ * @param {Object}  state             The legacy ticket state.
+ * @param {Object}  ownProps          The props of the ticket block's dashboard.
+ * @param {string}  ownProps.clientId The client ID of the ticket block.
+ *
+ * @return {boolean} Whether the duration error disables the button.
+ */
+export function filterConfirmHasDurationError( hasDurationError, state, { clientId } ) {
+	if ( ! hasDurationError || ! isAcceptedProvider( clientId ) ) {
+		return hasDurationError;
 	}
 
-	return hasTicketWindowError( clientId, state );
+	return isSpecificWindow( getFormRule( select( STORE_NAME ).getDraftRule( clientId ) ) );
 }
 
 /**

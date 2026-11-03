@@ -1,5 +1,5 @@
 import React from 'react';
-import { addFilter, applyFilters, doAction, filters, removeFilter } from '@wordpress/hooks';
+import { addFilter, applyFilters, doAction, removeFilter } from '@wordpress/hooks';
 import { dispatch, getStoreState, select } from '@wordpress/data';
 import { getSettings, setSettings } from '@wordpress/date';
 import { STORE_NAME } from '@tec/tickets/relative-sale-dates/block-editor/store/constants';
@@ -990,14 +990,10 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 			expect( isConfirmDisabled( clientId, false, state ) ).toBe( false );
 		} );
 
-		it( 'should run ahead of the filters of other extensions, so it never enables a button one of them disabled', () => {
+		it( 'should never enable a button another extension disabled ahead of it', () => {
 			const hook = 'tec.tickets.blocks.confirmButton.isDisabled';
-			const namespace = 'tec.tickets.relative-sale-dates';
-			const { callback, priority } = filters[ hook ].handlers.find( ( handler ) => namespace === handler.namespace );
-			// As Seating does for a seated ticket without a seat type, from a script that registers its filter first.
-			removeFilter( hook, namespace );
-			addFilter( hook, 'tests/seating', () => true );
-			addFilter( hook, namespace, callback, priority );
+			// As Seating does for a seated ticket without a seat type.
+			addFilter( hook, 'tests/seating', () => true, 1 );
 			const clientId = newClientId();
 			dispatch( STORE_NAME ).setDraftRule( clientId, { start: relative( 2, UNIT_WEEKS ), end: relative( 1, UNIT_HOURS ) } );
 
@@ -1007,14 +1003,7 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 			expect( isDisabled ).toBe( true );
 		} );
 
-		it( 'should judge a rule that hides the specific dates by the rule, not by their legacy duration error', () => {
-			const clientId = newClientId();
-			dispatch( STORE_NAME ).setDraftRule( clientId, { start: relative( 2, UNIT_WEEKS ), end: relative( 1, UNIT_HOURS ) } );
-
-			expect( isConfirmDisabled( clientId, true, durationErrorState( clientId ) ) ).toBe( false );
-		} );
-
-		it( 'should keep the button disabled for another reason the legacy checks give', () => {
+		it( 'should keep the button disabled for a reason the legacy checks give', () => {
 			const clientId = newClientId();
 			dispatch( STORE_NAME ).setDraftRule( clientId, { start: relative( 2, UNIT_WEEKS ), end: relative( 1, UNIT_HOURS ) } );
 
@@ -1027,6 +1016,53 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 			window.__tribe_common_store__.dispatch( legacyActions.setTicketProvider( clientId, 'woo' ) );
 
 			expect( isConfirmDisabled( clientId, false ) ).toBe( false );
+		} );
+
+		describe( 'with a legacy sales duration error, on tec.tickets.blocks.confirmButton.hasDurationError', () => {
+			/**
+			 * Asks whether the legacy sales duration error of a ticket block disables its Create or Update button.
+			 *
+			 * @param {string} clientId The client ID of the ticket block.
+			 *
+			 * @return {boolean} Whether the error disables the button.
+			 */
+			function hasDurationError( clientId ) {
+				return applyFilters( 'tec.tickets.blocks.confirmButton.hasDurationError', true, durationErrorState( clientId ), {
+					clientId,
+				} );
+			}
+
+			// The error judges the picker's dates, hidden and stale once an end is relative or the default.
+			it.each( [
+				[ 'a relative start and end', { start: relative( 2, UNIT_WEEKS ), end: relative( 1, UNIT_HOURS ) } ],
+				[ 'a default start', { start: { mode: 'default' }, end: relative( 1, UNIT_HOURS ) } ],
+			] )( 'should clear the error for %s', ( label, rule ) => {
+				const clientId = newClientId();
+				dispatch( STORE_NAME ).setDraftRule( clientId, rule );
+
+				expect( hasDurationError( clientId ) ).toBe( false );
+			} );
+
+			it( 'should keep the error while both ends are specific dates', () => {
+				const clientId = newClientId();
+				dispatch( STORE_NAME ).setDraftRule( clientId, {
+					start: { mode: 'specific' },
+					end: { mode: 'specific' },
+				} );
+
+				expect( hasDurationError( clientId ) ).toBe( true );
+			} );
+
+			it( 'should keep the error for a ticket another provider sells', () => {
+				const clientId = newClientId();
+				dispatch( STORE_NAME ).setDraftRule( clientId, { start: relative( 2, UNIT_WEEKS ), end: relative( 1, UNIT_HOURS ) } );
+				const state = durationErrorState( clientId );
+				window.__tribe_common_store__.dispatch( legacyActions.setTicketProvider( clientId, 'woo' ) );
+
+				expect(
+					applyFilters( 'tec.tickets.blocks.confirmButton.hasDurationError', true, state, { clientId } )
+				).toBe( true );
+			} );
 		} );
 
 		describe.each( VALIDATION_CASES )( 'for $title', ( kindCase ) => {

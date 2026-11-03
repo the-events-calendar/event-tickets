@@ -45,7 +45,8 @@ const { restNonce, tecDateSettings } = globals;
 const { wpREST } = api;
 
 /**
- * Returns the ID of the notice that warns a post save left a ticket's changes unsaved.
+ * Returns the ID of the notice that says a ticket's changes are not saved: the warning of a post save that left them
+ * unsaved, or the error of a save the server rejected. Saving the ticket removes it.
  *
  * @since 5.31.0
  *
@@ -801,6 +802,9 @@ export function* createNewTicket( action ) {
 				put( actions.setTicketHasChanges( clientId, false ) ),
 			] );
 
+			const { removeNotice } = yield call( wpDispatch, 'core/notices' );
+			yield call( removeNotice, getTicketNotUpdatedNoticeId( clientId ) );
+
 			/**
 			 * Fires after the ticket has been created.
 			 *
@@ -815,6 +819,8 @@ export function* createNewTicket( action ) {
 			doAction( 'tec.tickets.blocks.ticketCreated', clientId, ticket.id, ticketDetails, ticket );
 
 			yield fork( saveTicketWithPostSave, clientId );
+		} else {
+			yield call( noticeTicketNotSaved, clientId, response );
 		}
 	} catch ( e ) {
 		// eslint-disable-next-line no-console
@@ -915,6 +921,8 @@ export function* updateTicket( action ) {
 			 * @param {Object} ticket        The ticket, as the tickets REST API answered the save.
 			 */
 			doAction( 'tec.tickets.blocks.ticketUpdated', clientId, ticketId, ticketDetails, ticket );
+		} else {
+			yield call( noticeTicketNotSaved, clientId, response );
 		}
 	} catch ( e ) {
 		// eslint-disable-next-line no-console
@@ -1277,6 +1285,41 @@ export function* noticeTicketNotUpdated( clientId ) {
 		),
 		{ id: getTicketNotUpdatedNoticeId( clientId ) }
 	);
+}
+
+/**
+ * Shows why the tickets REST API rejected a ticket save, such as the sales window it judges against the saved event
+ * dates. The form keeps its changes, so the admin can correct them and save again.
+ *
+ * @since TBD
+ *
+ * @param {string}   clientId The client ID of the ticket block.
+ * @param {Response} response The response of the rejected save, its body not read yet.
+ * @yield
+ */
+export function* noticeTicketNotSaved( clientId, response ) {
+	let reason = '';
+
+	try {
+		const body = yield call( [ response, 'json' ] );
+		reason = 'string' === typeof body?.message ? body.message : '';
+	} catch ( e ) {
+		// An answer without a JSON body, such as a proxy error page, gives no reason; the notice still names the ticket.
+	}
+
+	const title = yield select( selectors.getTicketTempTitle, { clientId } );
+	const { createErrorNotice } = yield call( wpDispatch, 'core/notices' );
+
+	const notSaved = sprintf(
+		/* translators: %s: the ticket name. */
+		__( 'The ticket "%s" was not saved.', 'event-tickets' ),
+		title
+	);
+
+	// The server translates its reason as a sentence of its own.
+	yield call( createErrorNotice, [ notSaved, reason ].filter( Boolean ).join( ' ' ), {
+		id: getTicketNotUpdatedNoticeId( clientId ),
+	} );
 }
 
 /**

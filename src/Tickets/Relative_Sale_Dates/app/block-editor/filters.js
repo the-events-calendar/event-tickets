@@ -16,6 +16,7 @@ import { addAction, addFilter } from '@wordpress/hooks';
  */
 import {
 	filterConfirmDisabled,
+	filterConfirmHasDurationError,
 	filterSalePricePickers,
 	filterSaleWindowDates,
 	filterSetBodyDetails,
@@ -35,8 +36,8 @@ addFilter( 'tec.tickets.blocks.Ticket.Duration.renderPicker', namespace, filterT
 addFilter( 'tec.tickets.blocks.Ticket.SalePrice.renderPickers', namespace, filterSalePricePickers );
 addFilter( 'tec.tickets.blocks.Ticket.SaleWindow.dates', namespace, filterSaleWindowDates );
 addFilter( 'tec.tickets.blocks.Ticket.onSale', namespace, filterTicketOnSale );
-// Ahead of other extensions, so it only overrides the core value and never re-enables a button one of them disabled.
-addFilter( 'tec.tickets.blocks.confirmButton.isDisabled', namespace, filterConfirmDisabled, 5 );
+addFilter( 'tec.tickets.blocks.confirmButton.hasDurationError', namespace, filterConfirmHasDurationError );
+addFilter( 'tec.tickets.blocks.confirmButton.isDisabled', namespace, filterConfirmDisabled );
 addFilter( 'tec.tickets.blocks.syncSaleEndWithEventStart', namespace, filterSyncSaleEndWithEventStart );
 addFilter( 'tec.tickets.blocks.updateTicketWithPostSave', namespace, filterUpdateTicketWithPostSave );
 addAction( 'tec.tickets.blocks.fetchTicket', namespace, loadTicketRule );

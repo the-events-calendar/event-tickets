@@ -31,7 +31,7 @@ export function isAtLeast( value, other ) {
 
 /**
  * Returns whether a save keeps the sale price, as the server's `Window_Kind::is_saved_with()` judges it, the way
- * `Ticket::process_sale_price_data()` keeps it: added, and lower than the price.
+ * `Ticket::keeps_sale_price()` keeps it: added, lower than the price, and not negative.
  *
  * @since 5.31.0
  *
@@ -42,5 +42,8 @@ export function isAtLeast( value, other ) {
  * @return {boolean} Whether the sale price is kept.
  */
 export function isSalePriceKept( isAdded, salePrice, regularPrice ) {
-	return isAdded && ! isAtLeast( salePrice, regularPrice );
+	// The server reads a sign only on a numeric sale price; it strips one from any other value.
+	const isNegative = NUMERIC.test( salePrice ) && Number( salePrice ) < 0;
+
+	return isAdded && ! isAtLeast( salePrice, regularPrice ) && ! isNegative;
 }

@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets\Admin\Tickets;
 
+use DateTimeImmutable;
+use DateTimeZone;
 use TEC\Tickets\Admin\Tickets\List_Table;
 use TEC\Tickets\Commerce as TicketsCommerce;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -344,21 +346,84 @@ class List_TableTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
-	 * `is_on_sale()` reads an empty sale price start as started and an empty end as open-ended.
+	 * `is_on_sale()` reads a missing sale price start as started and a missing end as open-ended.
 	 */
-	public function test_counts_a_sale_price_without_a_start_or_end_date_as_discounted() {
-		$_GET['status-filter'] = 'discounted';
+	public function test_lists_a_sale_price_without_a_start_or_end_date_as_discounted() {
+		$event_id  = tribe_events()->set_args(
+			[
+				'title'      => 'Discounted event',
+				'status'     => 'publish',
+				'start_date' => gmdate( 'Y-m-d H:i:s', strtotime( '+10 days' ) ),
+				'duration'   => HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+		$ticket_id = $this->create_tc_ticket( $event_id, 20 );
+		update_post_meta( $ticket_id, TicketsCommerce\Ticket::$sale_price_checked_key, '1' );
+		update_post_meta( $ticket_id, TicketsCommerce\Ticket::$sale_price_key, '10' );
+		delete_post_meta( $ticket_id, TicketsCommerce\Ticket::$sale_price_start_date_key );
+		delete_post_meta( $ticket_id, TicketsCommerce\Ticket::$sale_price_end_date_key );
+		$this->ticket_ids[]      = $ticket_id;
+		$this->event_ids[]       = $event_id;
+		$_GET['status-filter']   = 'discounted';
+		$_GET['provider-filter'] = addslashes( TicketsCommerce\Module::class );
 
-		$clauses = array_filter( $this->list_table->modify_filter_args( [] )['meta_query'], 'is_array' );
-		$by_key  = [];
-		foreach ( $clauses as $clause ) {
-			$by_key[ $clause['key'] ?? $clause[0]['key'] ] = $clause;
+		$this->list_table->prepare_items();
+
+		$this->assertContains( $ticket_id, array_map( static fn( $item ) => absint( $item->ID ), $this->list_table->items ?: [] ) );
+	}
+
+	/**
+	 * `is_on_sale()` judges the sale price days in the event timezone. Kiritimati, UTC+14, and Pago Pago, UTC-11, are 25
+	 * hours apart, so their days always differ, and at least one of them differs from the site's.
+	 */
+	public function test_lists_a_sale_price_by_the_day_in_the_event_timezone() {
+		$sale_timezones = [ 'Pacific/Kiritimati', 'Pacific/Pago_Pago' ];
+		// The stored event timezone, and the one `get_event_timezone()` reads: a `UTC+N` offset falls back on the site's.
+		$event_timezones = [
+			'Pacific/Kiritimati' => 'Pacific/Kiritimati',
+			'Pacific/Pago_Pago'  => 'Pacific/Pago_Pago',
+			'UTC+14'             => wp_timezone_string(),
+		];
+		$expected        = [];
+
+		foreach ( $event_timezones as $stored_timezone => $read_timezone ) {
+			$event_id = tribe_events()->set_args(
+				[
+					'title'      => "Discounted event in {$stored_timezone}",
+					'status'     => 'publish',
+					'start_date' => gmdate( 'Y-m-d H:i:s', strtotime( '+10 days' ) ),
+					'duration'   => HOUR_IN_SECONDS,
+				]
+			)->create()->ID;
+			update_post_meta( $event_id, '_EventTimezone', $stored_timezone );
+			$this->event_ids[] = $event_id;
+			$event_day         = ( new DateTimeImmutable( 'now', new DateTimeZone( $read_timezone ) ) )->format( 'Y-m-d' );
+
+			foreach ( $sale_timezones as $sale_timezone ) {
+				$sale_day  = ( new DateTimeImmutable( 'now', new DateTimeZone( $sale_timezone ) ) )->format( 'Y-m-d' );
+				$ticket_id = $this->create_tc_ticket( $event_id, 20 );
+				update_post_meta( $ticket_id, TicketsCommerce\Ticket::$sale_price_checked_key, '1' );
+				update_post_meta( $ticket_id, TicketsCommerce\Ticket::$sale_price_key, '10' );
+				update_post_meta( $ticket_id, TicketsCommerce\Ticket::$sale_price_start_date_key, $sale_day );
+				update_post_meta( $ticket_id, TicketsCommerce\Ticket::$sale_price_end_date_key, $sale_day );
+				$this->ticket_ids[]     = $ticket_id;
+				$expected[ $ticket_id ] = $event_day === $sale_day;
+			}
+		}
+		$_GET['status-filter']   = 'discounted';
+		$_GET['provider-filter'] = addslashes( TicketsCommerce\Module::class );
+
+		$this->list_table->prepare_items();
+		$listed  = array_map( static fn( $item ) => absint( $item->ID ), $this->list_table->items ?: [] );
+		$on_sale = [];
+		$in_list = [];
+		foreach ( array_keys( $expected ) as $ticket_id ) {
+			$on_sale[ $ticket_id ] = tribe( TicketsCommerce\Module::class )->get_ticket( 0, $ticket_id )->on_sale;
+			$in_list[ $ticket_id ] = in_array( $ticket_id, $listed, true );
 		}
 
-		foreach ( [ '_sale_price_start_date', '_sale_price_end_date' ] as $key ) {
-			$this->assertSame( 'OR', $by_key[ $key ]['relation'] ?? null, $key );
-			$this->assertContains( 'NOT EXISTS', array_column( array_filter( $by_key[ $key ], 'is_array' ), 'compare' ), $key );
-		}
+		$this->assertSame( $expected, $on_sale, 'is_on_sale() judges the days in the event timezone.' );
+		$this->assertSame( $expected, $in_list );
 	}
 
 	/**

@@ -36,6 +36,9 @@ describe( 'isSalePriceKept', () => {
 		[ 'not added', false, '5', '10', false ],
 		[ 'equal to the price', true, '10', '10.00', false ],
 		[ 'higher than the price', true, '11', '10', false ],
+		[ 'negative', true, '-1', '10', false ],
+		[ 'negative in exponent notation', true, '-1e1', '10', false ],
+		[ 'of zero', true, '0', '10', true ],
 	] )( 'should keep a sale price %s as the server does', ( label, isAdded, salePrice, regularPrice, expected ) => {
 		expect( isSalePriceKept( isAdded, salePrice, regularPrice ) ).toBe( expected );
 	} );
