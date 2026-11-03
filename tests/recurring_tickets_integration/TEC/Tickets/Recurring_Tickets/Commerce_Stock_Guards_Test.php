@@ -10,6 +10,7 @@ use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe__Tickets__Tickets;
 
 /**
  * The Tickets Commerce stock functions move a table ticket's stock and sales on its row, never in post meta.
@@ -23,6 +24,7 @@ class Commerce_Stock_Guards_Test extends WPTestCase {
 	 */
 	public function empty_table(): void {
 		( new Tickets() )->empty_table();
+		$this->forget_rows_read();
 	}
 
 	/**
@@ -86,6 +88,32 @@ class Commerce_Stock_Guards_Test extends WPTestCase {
 
 		$this->assertSame( '7', get_post_meta( $ticket, 'total_sales', true ) );
 		$this->assertSame( '3', get_post_meta( $ticket, '_stock', true ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_leave_a_shared_rows_siblings_to_its_pool_when_it_returns_tickets(): void {
+		$event   = $this->create_recurring_event();
+		$date    = $this->get_dates( $event )[0];
+		$shared  = $this->insert_ticket_row( [ 'parent_id' => 1, 'post_id' => $event, 'occurrence_id' => $date->occurrence_id, 'stock_mode' => 'global', 'stock' => 97, 'sales' => 3 ] );
+		$sibling = $this->insert_ticket_row( [ 'parent_id' => 2, 'post_id' => $event, 'occurrence_id' => $date->occurrence_id, 'stock_mode' => 'global', 'stock' => 99, 'sales' => 1 ] );
+		tribe( Rows::class )->upsert_pools( $event, 100, [ (int) $date->occurrence_id ] );
+		tribe( Rows::class )->refresh_pools( $event );
+		$logs = [];
+		add_action(
+			'tribe_log',
+			static function ( $level, $message ) use ( &$logs ) {
+				$logs[] = $message;
+			},
+			10,
+			2
+		);
+
+		tribe( 'tickets.handler' )->decrease_stock_of_shared_tickets( Tribe__Tickets__Tickets::load_ticket_object( $shared ), 2 );
+
+		$this->assertSame( [ 99, 1 ], $this->stock_and_sales( $sibling ) );
+		$this->assertSame( [], $logs, 'No refused post meta write.' );
 	}
 
 	/**

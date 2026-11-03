@@ -12,6 +12,7 @@ namespace TEC\Tickets\Recurring_Tickets;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
+use Tribe__Tickets__Global_Stock as Global_Stock;
 
 /**
  * Class Stock.
@@ -60,11 +61,24 @@ final class Stock {
 			return false;
 		}
 
-		return $this->write(
+		$pool = $this->pool_of( $row_id );
+
+		// The pool first: its guard is what stops two shared tickets of one date from overselling it.
+		if ( $pool && ! $this->write( $pool, 'UPDATE %i SET sales = sales + %d, stock = stock - %d WHERE id = %d AND stock >= %d', [ $quantity, $quantity, $pool, $quantity ] ) ) {
+			return false;
+		}
+
+		$sold = $this->write(
 			$row_id,
 			'UPDATE %i SET sales = sales + %d, stock = IF( capacity = -1, NULL, stock - %d ) WHERE id = %d AND ( capacity = -1 OR stock >= %d )',
 			[ $quantity, $quantity, $row_id, $quantity ]
 		) > 0;
+
+		if ( $pool && ! $sold ) {
+			$this->write( $pool, 'UPDATE %i SET stock = stock + %d, sales = IF( sales >= %d, sales - %d, 0 ) WHERE id = %d', [ $quantity, $quantity, $quantity, $pool ] );
+		}
+
+		return $sold;
 	}
 
 	/**
@@ -83,6 +97,9 @@ final class Stock {
 		if ( $quantity < 1 ) {
 			return;
 		}
+
+		// A row gives back no more than it sold.
+		$this->in_pool( $row_id, 'UPDATE %i SET sales = IF( sales >= %d, sales - %d, 0 ), stock = IF( capacity > sales, capacity - sales, 0 ) WHERE id = %d', min( $quantity, $this->sales( $row_id ) ) );
 
 		$this->write(
 			$row_id,
@@ -127,6 +144,7 @@ final class Stock {
 	 * @return int The row's sales afterwards.
 	 */
 	public function add_sales( int $row_id, int $quantity ): int {
+		$this->in_pool( $row_id, 'UPDATE %i SET sales = sales + %d WHERE id = %d', max( 0, $quantity ) );
 		$this->write( $row_id, 'UPDATE %i SET sales = sales + %d WHERE id = %d', [ max( 0, $quantity ), $row_id ] );
 
 		return $this->sales( $row_id );
@@ -144,6 +162,7 @@ final class Stock {
 	 */
 	public function remove_sales( int $row_id, int $quantity ): int {
 		$quantity = max( 0, $quantity );
+		$this->in_pool( $row_id, 'UPDATE %i SET sales = IF( sales >= %d, sales - %d, 0 ) WHERE id = %d', min( $quantity, $this->sales( $row_id ) ) );
 		$this->write( $row_id, 'UPDATE %i SET sales = IF( sales >= %d, sales - %d, 0 ) WHERE id = %d', [ $quantity, $quantity, $row_id ] );
 
 		return $this->sales( $row_id );
@@ -161,6 +180,7 @@ final class Stock {
 	 * @return bool Whether the row exists.
 	 */
 	public function add_stock( int $row_id, int $quantity ): bool {
+		$this->in_pool( $row_id, 'UPDATE %i SET stock = LEAST( stock + %d, capacity ) WHERE id = %d', max( 0, $quantity ) );
 		$this->write( $row_id, 'UPDATE %i SET stock = IF( capacity = -1, NULL, COALESCE( stock, 0 ) + %d ) WHERE id = %d', [ max( 0, $quantity ), $row_id ] );
 
 		return null !== $this->rows->find( $row_id );
@@ -178,6 +198,7 @@ final class Stock {
 	 */
 	public function remove_stock( int $row_id, int $quantity ): bool {
 		$quantity = max( 0, $quantity );
+		$this->in_pool( $row_id, 'UPDATE %i SET stock = IF( stock >= %d, stock - %d, 0 ) WHERE id = %d', $quantity );
 		$this->write( $row_id, 'UPDATE %i SET stock = IF( capacity = -1, NULL, IF( stock >= %d, stock - %d, 0 ) ) WHERE id = %d', [ $quantity, $quantity, $row_id ] );
 
 		return null !== $this->rows->find( $row_id );
@@ -193,9 +214,58 @@ final class Stock {
 	 * @return int|null The stock, or null when the row has none (unlimited) or is missing.
 	 */
 	public function lock( int $row_id ): ?int {
+		$pool = $this->pool_of( $row_id );
+		// The pool before the row, as every shared sale takes them: two carts never wait on each other in a circle.
+		$left = $pool ? DB::get_var( DB::prepare( 'SELECT stock FROM %i WHERE id = %d FOR UPDATE', Tickets::table_name(), $pool ) ) : null;
+
 		$stock = DB::get_var( DB::prepare( 'SELECT stock FROM %i WHERE id = %d FOR UPDATE', Tickets::table_name(), $row_id ) );
 
-		return null === $stock ? null : (int) $stock;
+		if ( null === $stock ) {
+			return null;
+		}
+
+		return null === $left ? (int) $stock : min( (int) $stock, (int) $left );
+	}
+
+	/**
+	 * Returns the ID of the pool a row sells from: its date's, for a shared or capped row.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $row_id The row ID.
+	 *
+	 * @return int|null The pool's row ID, or null for a row that sells from its own capacity.
+	 */
+	private function pool_of( int $row_id ): ?int {
+		$row = $this->rows->find( $row_id );
+
+		if ( ! $row || -1 === (int) $row->capacity || ! in_array( $row->stock_mode, [ Global_Stock::GLOBAL_STOCK_MODE, Global_Stock::CAPPED_STOCK_MODE ], true ) ) {
+			return null;
+		}
+
+		$pool = $this->rows->get_pool( (int) $row->occurrence_id );
+
+		return $pool ? (int) $pool->id : null;
+	}
+
+	/**
+	 * Runs one write against the pool a row sells from, if it sells from one.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $row_id   The row ID.
+	 * @param string $query    The query, with `%i` for the table, the quantity once per `%d` but the last, and the
+	 *                         pool's ID last.
+	 * @param int    $quantity How many.
+	 *
+	 * @return void
+	 */
+	private function in_pool( int $row_id, string $query, int $quantity ): void {
+		$pool = $this->pool_of( $row_id );
+
+		if ( $pool && $quantity > 0 ) {
+			$this->write( $pool, $query, array_merge( array_fill( 0, substr_count( $query, '%d' ) - 1, $quantity ), [ $pool ] ) );
+		}
 	}
 
 	/**
