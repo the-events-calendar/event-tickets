@@ -5,6 +5,7 @@ namespace TEC\Tickets\Recurring_Tickets;
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Utils\Currency;
+use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use TEC\Tickets\Tests\Recurring_Tickets\Without_Recurrence_Tier;
@@ -24,6 +25,7 @@ class Hydrator_Test extends WPTestCase {
 	 */
 	public function empty_table(): void {
 		( new Tickets() )->empty_table();
+		$this->forget_rows_read();
 	}
 
 	/**
@@ -239,6 +241,80 @@ class Hydrator_Test extends WPTestCase {
 
 		$this->assertFalse( $ticket->on_sale );
 		$this->assertSame( '10.50', $ticket->price );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_sell_a_shared_ticket_from_its_dates_pool(): void {
+		$shared = $this->insert_ticket_row( [ 'parent_id' => 1, 'occurrence_id' => 30, 'stock_mode' => 'global', 'stock' => 97, 'sales' => 3 ] );
+		$this->insert_ticket_row( [ 'parent_id' => 2, 'occurrence_id' => 30, 'stock_mode' => 'global', 'stock' => 90, 'sales' => 10 ] );
+		$this->pool( 30 );
+
+		$ticket = tribe( Hydrator::class )->load( $shared );
+
+		$this->assertInstanceOf( Shared_Ticket::class, $ticket );
+		$this->assertSame( 'global', $ticket->global_stock_mode() );
+		$this->assertSame( [ 100, 87, 87, 87 ], [ $ticket->capacity(), $ticket->stock(), $ticket->inventory(), $ticket->available() ] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_sell_a_capped_ticket_up_to_its_cap_and_its_dates_pool(): void {
+		$capped = $this->insert_ticket_row( [ 'parent_id' => 1, 'occurrence_id' => 30, 'stock_mode' => 'capped', 'capacity' => 30, 'stock' => 5, 'sales' => 25 ] );
+		$roomy  = $this->insert_ticket_row( [ 'parent_id' => 2, 'occurrence_id' => 30, 'stock_mode' => 'capped', 'capacity' => 90, 'stock' => 90, 'sales' => 0 ] );
+		$this->pool( 30, 40 );
+
+		$this->assertSame( [ 30, 5 ], [ tribe( Hydrator::class )->load( $capped )->capacity(), tribe( Hydrator::class )->load( $capped )->available() ] );
+		$this->assertSame( [ 90, 15 ], [ tribe( Hydrator::class )->load( $roomy )->capacity(), tribe( Hydrator::class )->load( $roomy )->available() ], 'The pool has 15 left.' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_never_read_the_events_shared_level_for_a_dates_pool(): void {
+		$event  = static::factory()->post->create();
+		$shared = $this->insert_ticket_row( [ 'post_id' => $event, 'parent_id' => 1, 'occurrence_id' => 30, 'stock_mode' => 'global' ] );
+		$this->pool( 30, 100, $event );
+		// On a recurring event this is the Series' level, shared by every date.
+		update_post_meta( $event, '_tribe_ticket_global_stock_level', 0 );
+
+		$this->assertSame( 100, tribe( Hydrator::class )->load( $shared )->available() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_sell_a_shared_ticket_without_a_pool_from_its_own_capacity(): void {
+		$shared = $this->insert_ticket_row( [ 'parent_id' => 1, 'occurrence_id' => 30, 'stock_mode' => 'global', 'stock' => 97, 'sales' => 3 ] );
+
+		$ticket = tribe( Hydrator::class )->load( $shared );
+
+		$this->assertNotInstanceOf( Shared_Ticket::class, $ticket );
+		$this->assertSame( [ 'own', 97 ], [ $ticket->global_stock_mode(), $ticket->available() ] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_load_nothing_for_a_pools_id(): void {
+		$this->pool( 30 );
+		$pool = (int) tribe( Rows::class )->get_pool( 30 )->id;
+
+		$this->assertNull( tribe( Hydrator::class )->load( Ticket_ID::from_row_id( $pool ) ) );
+	}
+
+	/**
+	 * Gives a date a pool of the event's shared capacity, counting the date's shared sales.
+	 *
+	 * @param int $occurrence_id The occurrence ID.
+	 * @param int $capacity      The event's shared capacity.
+	 * @param int $post_id       The event.
+	 */
+	private function pool( int $occurrence_id, int $capacity = 100, int $post_id = 1 ): void {
+		tribe( Rows::class )->upsert_pools( $post_id, $capacity, [ $occurrence_id ] );
+		tribe( Rows::class )->refresh_pools( $post_id );
 	}
 
 	/**
