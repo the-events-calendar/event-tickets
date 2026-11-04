@@ -29,6 +29,7 @@ trait With_Filtered_Ticket_Params {
 	 *
 	 * @since 5.26.0
 	 * @since 5.29.3 Hardened sale price handling.
+	 * @since 5.30.3 Rejects a negative price or sale price.
 	 *
 	 * @param array $params The params to filter.
 	 *
@@ -37,6 +38,7 @@ trait With_Filtered_Ticket_Params {
 	 * @throws InvalidRestArgumentException If the event ID is missing.
 	 * @throws InvalidRestArgumentException If the event's post type is not enabled for tickets.
 	 * @throws InvalidRestArgumentException If the ticket price is not a number.
+	 * @throws InvalidRestArgumentException If the ticket price or sale price is negative.
 	 */
 	public function filter_upsert_params( array $params ): array {
 		$ticket_post = ! empty( $params['id'] ) ? get_post( $params['id'] ) : new stdClass();
@@ -177,6 +179,9 @@ trait With_Filtered_Ticket_Params {
 			);
 		}
 
+		$this->assert_non_negative_price( $new_params['ticket_price'], 'price' );
+		$this->assert_non_negative_price( $new_params['ticket_sale_price'], 'sale_price' );
+
 		unset(
 			$params['sku'],
 			$params['end_date'],
@@ -236,5 +241,38 @@ trait With_Filtered_Ticket_Params {
 	 */
 	public function filter_create_params( array $params ): array {
 		return $this->filter_upsert_params( $params );
+	}
+
+	/**
+	 * Throws when a numeric price is negative or not finite.
+	 *
+	 * Non-numeric values are left to the provider, which already strips them to a price.
+	 *
+	 * @since 5.30.3
+	 *
+	 * @param mixed  $price    The price to check.
+	 * @param string $argument The name of the REST argument the price came from.
+	 *
+	 * @return void
+	 *
+	 * @throws InvalidRestArgumentException If the price is negative or not finite.
+	 */
+	private function assert_non_negative_price( $price, string $argument ): void {
+		if ( ! is_numeric( $price ) ) {
+			return;
+		}
+
+		if ( $price >= 0 && is_finite( $price + 0 ) ) {
+			return;
+		}
+
+		throw InvalidRestArgumentException::create(
+			// translators: 1) is the name of the parameter.
+			sprintf( __( 'The argument `{%1$s}` must be a number greater than or equal to 0.', 'event-tickets' ), $argument ),
+			$argument,
+			'tec_rest_invalid_' . $argument . '_argument',
+			// translators: 1) is the name of the parameter.
+			sprintf( __( 'The argument `{%1$s}` must be a number greater than or equal to 0.', 'event-tickets' ), $argument )
+		);
 	}
 }

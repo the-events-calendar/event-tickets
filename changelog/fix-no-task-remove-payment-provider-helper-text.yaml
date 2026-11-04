@@ -1,0 +1,6 @@
+significance: patch
+type: tweak
+entry: Simplified the Payment provider ticket setting by removing the helper
+  text about running multiple ecommerce plugins, in both the classic and block
+  editors.
+timestamp: 2026-10-29T15:57:35.029Z
