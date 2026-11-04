@@ -11,8 +11,11 @@ namespace TEC\Tickets\Recurring_Tickets\Repositories;
 
 use InvalidArgumentException;
 use TEC\Common\Abstracts\Custom_Table_Repository;
+use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 use TEC\Common\StellarWP\DB\DB;
+use TEC\Tickets\Ticket_Cache_Controller;
 use TEC\Tickets\Recurring_Tickets\Models\Ticket;
+use TEC\Tickets\Recurring_Tickets\Ticket_ID;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets as Tickets_Table;
 
 /**
@@ -51,6 +54,28 @@ final class Tickets extends Custom_Table_Repository {
 	 * @var int
 	 */
 	private const PAGE_SIZE = 200;
+
+
+	/**
+	 * The rows read in this request, by ID; null for an ID without a row.
+	 *
+	 * Held here, not in the object cache: a row is never served from another request, and clearing it never
+	 * depends on what the object cache supports. The repository is a singleton.
+	 *
+	 * @since TBD
+	 *
+	 * @var array<int,Ticket|null>
+	 */
+	private array $found = [];
+
+	/**
+	 * The shared capacity pools read in this request, by occurrence ID; null for a date without one.
+	 *
+	 * @since TBD
+	 *
+	 * @var array<int,Ticket|null>
+	 */
+	private array $pools = [];
 
 	/**
 	 * Returns the model class.
@@ -98,7 +123,68 @@ final class Tickets extends Custom_Table_Repository {
 			$rows[ $index ] = array_replace( $columns, $defaults, $row );
 		}
 
-		return (int) Tickets_Table::insert_many( array_values( $rows ) );
+		$inserted = (int) Tickets_Table::insert_many( array_values( $rows ) );
+		// An ID read as missing may name one of these rows now.
+		$this->found = [];
+
+		return $inserted;
+	}
+
+	/**
+	 * Returns a row by ID, read once per request.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $row_id The row ID.
+	 *
+	 * @return Ticket|null The row, or null when there is none, or no table.
+	 */
+	public function find( int $row_id ): ?Ticket {
+		if ( array_key_exists( $row_id, $this->found ) ) {
+			return $this->found[ $row_id ];
+		}
+
+		try {
+			$row = Tickets_Table::get_by_id( $row_id );
+		} catch ( DatabaseQueryException $e ) {
+			// No table, no rows.
+			$row = null;
+		}
+
+		// A missing row is remembered too: deleted rows are read on every page that lists their attendees. A date's
+		// shared capacity pool is a row, but no ticket.
+		$this->found[ $row_id ] = $row instanceof Ticket && self::TICKET_TYPE === $row->type ? $row : null;
+
+		return $this->found[ $row_id ];
+	}
+
+	/**
+	 * Remembers a row just read, so reading it again by ID runs no query.
+	 *
+	 * @since TBD
+	 *
+	 * @param Ticket $row The row.
+	 *
+	 * @return void
+	 */
+	public function prime( Ticket $row ): void {
+		$this->found[ (int) $row->id ] = $row;
+	}
+
+	/**
+	 * Forgets a row after it was written: the row and every cache of its ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $row_id The row ID.
+	 *
+	 * @return void
+	 */
+	public function forget( int $row_id ): void {
+		unset( $this->found[ $row_id ] );
+		// A row's stock moves its date's pool.
+		$this->pools = [];
+		tribe( Ticket_Cache_Controller::class )->clean_ticket_cache( Ticket_ID::from_row_id( $row_id ) );
 	}
 
 	/**
@@ -167,6 +253,10 @@ final class Tickets extends Custom_Table_Repository {
 	 * @return Ticket|null The pool, or null when the date has none.
 	 */
 	public function get_pool( int $occurrence_id ): ?Ticket {
+		if ( array_key_exists( $occurrence_id, $this->pools ) ) {
+			return $this->pools[ $occurrence_id ];
+		}
+
 		$pools = Tickets_Table::paginate(
 			[
 				[
@@ -182,7 +272,9 @@ final class Tickets extends Custom_Table_Repository {
 			1
 		);
 
-		return $pools ? reset( $pools ) : null;
+		$this->pools[ $occurrence_id ] = $pools ? reset( $pools ) : null;
+
+		return $this->pools[ $occurrence_id ];
 	}
 
 	/**
@@ -199,6 +291,8 @@ final class Tickets extends Custom_Table_Repository {
 	 * @return void
 	 */
 	public function upsert_pools( int $post_id, int $capacity, array $occurrence_ids ): void {
+		$this->pools = [];
+
 		if ( ! $occurrence_ids ) {
 			return;
 		}
@@ -226,6 +320,8 @@ final class Tickets extends Custom_Table_Repository {
 	 * @return void
 	 */
 	public function refresh_pools( int $post_id ): void {
+		$this->pools = [];
+
 		DB::query(
 			DB::prepare(
 				"UPDATE %i pool LEFT JOIN ( SELECT occurrence_id, SUM( sales ) AS sold FROM %i WHERE post_id = %d AND type = %s AND stock_mode IN ( 'global', 'capped' ) GROUP BY occurrence_id ) shared ON shared.occurrence_id = pool.occurrence_id SET pool.sales = COALESCE( shared.sold, 0 ), pool.stock = IF( pool.capacity > COALESCE( shared.sold, 0 ), pool.capacity - COALESCE( shared.sold, 0 ), 0 ) WHERE pool.post_id = %d AND pool.type = %s",
@@ -250,6 +346,8 @@ final class Tickets extends Custom_Table_Repository {
 	 * @return void
 	 */
 	public function delete_pools( int $post_id, array $keep = [] ): void {
+		$this->pools = [];
+
 		$keep = $keep ? array_map( 'intval', $keep ) : [ 0 ];
 
 		DB::query(
@@ -307,6 +405,14 @@ final class Tickets extends Custom_Table_Repository {
 	 * @return int The number of rows deleted.
 	 */
 	private function delete_by( string $column, int $value ): int {
-		return $value > 0 ? (int) Tickets_Table::delete_many( [ $value ], $column ) : 0;
+		if ( $value < 1 ) {
+			return 0;
+		}
+
+		$deleted = (int) Tickets_Table::delete_many( [ $value ], $column );
+		// Which rows went is not known without another query: forget every row read in this request.
+		$this->found = [];
+
+		return $deleted;
 	}
 }
