@@ -17,10 +17,13 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe\REST;
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent_Handler;
+use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Status\Created;
 use TEC\Tickets\Commerce\Utils\Currency;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Settings_Manager;
+use WP_Error;
 use WP_REST_Request;
 
 class Order_Endpoint_Credential_Round_Trip_Test extends WPTestCase {
@@ -157,5 +160,109 @@ class Order_Endpoint_Credential_Round_Trip_Test extends WPTestCase {
 			tribe( Order_Endpoint::class )->current_user_can_edit_order( $update_request ),
 			'A mismatched client secret must still be refused.'
 		);
+	}
+
+	/**
+	 * When more than one local order holds the same gateway order id, the update route must refuse to
+	 * complete any of them, so a payment made once cannot drive a duplicate order to paid.
+	 */
+	public function test_update_refuses_payment_intent_shared_by_multiple_orders(): void {
+		$this->make_created_order_bound_to( 'pi_shared' );
+		$this->make_created_order_bound_to( 'pi_shared' );
+
+		$request = new WP_REST_Request( 'POST', '/tec-tickets/v1/commerce/stripe/order' );
+		$request->set_param( 'order_id', 'pi_shared' );
+		$request->set_param( 'client_secret', 'pi_shared_secret' );
+
+		$result = tribe( Order_Endpoint::class )->handle_update_order( $request );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertEquals( 'tec-tc-gateway-stripe-payment-intent-order-mismatch', $result->get_error_code() );
+	}
+
+	/**
+	 * A gateway error carries the request it made, Authorization header included, and the REST server
+	 * would print that data to an anonymous buyer. Only the code and a message may go out.
+	 */
+	public function test_create_does_not_return_the_gateway_error_data(): void {
+		$this->make_cart_with_ticket();
+		$this->set_class_fn_return(
+			Payment_Intent_Handler::class,
+			'update_payment_intent',
+			new WP_Error(
+				'tec-tickets-commerce-gateway-client-unexpected',
+				null,
+				[ 'request_arguments' => [ 'headers' => [ 'Authorization' => 'Bearer sk_live_leaked' ] ] ]
+			)
+		);
+
+		$result = $this->create_order();
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'tec-tc-gateway-stripe-failed-creating-payment-intent', $result->get_error_code() );
+		$this->assertNotEmpty( $result->get_error_message(), 'A gateway error without a message must fall back to the generic one.' );
+		$this->assertStringNotContainsString(
+			'sk_live_leaked',
+			wp_json_encode( rest_convert_error_to_response( $result )->get_data() )
+		);
+	}
+
+	/**
+	 * Stripe's error messages are written for the merchant and can name the account's keys.
+	 */
+	public function test_create_does_not_return_stripe_error_message(): void {
+		$this->make_cart_with_ticket();
+		$this->set_class_fn_return(
+			Payment_Intent_Handler::class,
+			'update_payment_intent',
+			new WP_Error( 401, 'Invalid API Key provided: sk_test_****leak', (object) [ 'type' => 'invalid_request_error' ] )
+		);
+
+		$result = $this->create_order();
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'tec-tc-gateway-stripe-failed-creating-payment-intent', $result->get_error_code() );
+		$this->assertStringNotContainsString(
+			'sk_test_',
+			wp_json_encode( rest_convert_error_to_response( $result )->get_data() )
+		);
+	}
+
+	/**
+	 * The handler's own recovery message must reach the buyer.
+	 */
+	public function test_create_returns_the_handler_error_message(): void {
+		$this->make_cart_with_ticket();
+		$this->set_class_fn_return(
+			Payment_Intent_Handler::class,
+			'update_payment_intent',
+			new WP_Error( 'tec-tc-gateway-stripe-payment-intent-already-bound', 'Please refresh checkout and try again.' )
+		);
+
+		$result = $this->create_order();
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'tec-tc-gateway-stripe-payment-intent-already-bound', $result->get_error_code() );
+		$this->assertSame( 'Please refresh checkout and try again.', $result->get_error_message() );
+	}
+
+	/**
+	 * Create a Created-status Tickets Commerce order holding the given gateway order id.
+	 *
+	 * @param string $gateway_order_id The gateway order id to bind.
+	 *
+	 * @return int The created order id.
+	 */
+	private function make_created_order_bound_to( string $gateway_order_id ): int {
+		$order_id = static::factory()->post->create(
+			[
+				'post_type'   => Order::POSTTYPE,
+				'post_status' => tribe( Created::class )->get_wp_slug(),
+			]
+		);
+
+		update_post_meta( $order_id, Order::$gateway_order_id_meta_key, $gateway_order_id );
+
+		return $order_id;
 	}
 }
