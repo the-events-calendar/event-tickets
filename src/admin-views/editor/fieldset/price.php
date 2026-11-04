@@ -124,21 +124,13 @@ if ( ! empty( $ticket ) ) {
 			$sale_price_label = esc_html__( 'Sale/Member Price:', 'event-tickets' );
 			$sale_price_desc  = esc_html__( 'Current sale or member price. This can be managed via the product editor.', 'event-tickets' );
 		}
-
-		/*
-		 * Event Tickets Plus 6.11.2 and earlier write the posted sale price to the WooCommerce product on every save, and
-		 * an empty one when the field is not posted, so the field posts the running sale price. A member price it shows
-		 * must not become the product's sale price, so then the field has no name.
-		 */
 		?>
+		<?php // The field has no name: the provider manages the sale price, which a save must not overwrite with it. ?>
 		<div class="input_block tec-tickets-field-row">
 			<label for="ticket_sale_price" class="ticket_form_label ticket_form_left"><?php echo esc_html( $sale_price_label ); ?></label>
 			<input
 				type="text"
 				id="ticket_sale_price"
-				<?php if ( ! $ticket_has_wc_member_discount ) : ?>
-				name="ticket_sale_price"
-				<?php endif; ?>
 				class="ticket_field ticket_form_right"
 				size="7"
 				value="<?php echo esc_attr( $sale_price ); ?>"
