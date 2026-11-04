@@ -243,6 +243,18 @@ class Stock_Test extends WPTestCase {
 	}
 
 	/**
+	 * @test
+	 */
+	public function it_should_count_a_shared_sale_that_lost_the_race_in_the_pool(): void {
+		$shared = $this->row( [ 'stock_mode' => 'global' ] );
+		$this->pools( 2, [ 1 ] );
+
+		tribe( Stock::class )->oversell( $shared, 3 );
+
+		$this->assertSame( [ 0, 3 ], $this->pool( 1 ), 'Sold as many as attended, never below 0 left.' );
+	}
+
+	/**
 	 * Gives dates a pool of the event's shared capacity.
 	 *
 	 * @param int   $capacity       The capacity.

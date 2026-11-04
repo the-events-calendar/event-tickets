@@ -20,6 +20,8 @@ use Tribe__Utils__Array as Arr;
 use Tribe__Tickets__Tickets;
 use WP_Error;
 use WP_Post;
+use TEC\Tickets\Recurring_Tickets\Stock;
+use TEC\Tickets\Recurring_Tickets\Ticket_ID;
 
 /**
  * Class Stock_Validator.
@@ -40,6 +42,7 @@ class Stock_Validator {
 	 * during validation.
 	 *
 	 * @since 5.26.7
+	 * @since TBD Refuses the shared tickets of one recurring event date that together exceed its pool.
 	 *
 	 * @param Cart $cart The cart to validate.
 	 *
@@ -54,6 +57,7 @@ class Stock_Validator {
 		}
 
 		$validation_errors = [];
+		$pools             = [];
 
 		foreach ( $items as $item ) {
 			// Skip non-ticket items.
@@ -76,6 +80,15 @@ class Stock_Validator {
 			// Collect any validation errors.
 			if ( is_wp_error( $validation_result ) ) {
 				$validation_errors[] = $validation_result->get_error_data();
+			} elseif ( Ticket_ID::is_table_ticket( (int) $ticket_id ) ) {
+				$this->add_to_pool( $pools, (int) $ticket_id, $quantity );
+			}
+		}
+
+		// The shared tickets of one date each fit, but may not fit together.
+		foreach ( $pools as $pool ) {
+			if ( $pool['requested'] > $pool['available'] ) {
+				$validation_errors[] = $pool;
 			}
 		}
 
@@ -93,6 +106,7 @@ class Stock_Validator {
 	 * Used during order status transitions to provide secondary validation.
 	 *
 	 * @since 5.26.7
+	 * @since TBD Refuses the shared tickets of one recurring event date that together exceed its pool.
 	 *
 	 * @param WP_Post $order The order to validate.
 	 *
@@ -105,6 +119,7 @@ class Stock_Validator {
 		}
 
 		$validation_errors = [];
+		$pools             = [];
 
 		foreach ( $order->items as $item ) {
 			// Skip non-ticket items.
@@ -126,6 +141,15 @@ class Stock_Validator {
 			// Collect any validation errors.
 			if ( is_wp_error( $validation_result ) ) {
 				$validation_errors[] = $validation_result->get_error_data();
+			} elseif ( Ticket_ID::is_table_ticket( (int) $ticket_id ) ) {
+				$this->add_to_pool( $pools, (int) $ticket_id, $quantity );
+			}
+		}
+
+		// The shared tickets of one date each fit, but may not fit together.
+		foreach ( $pools as $pool ) {
+			if ( $pool['requested'] > $pool['available'] ) {
+				$validation_errors[] = $pool;
 			}
 		}
 
@@ -143,6 +167,7 @@ class Stock_Validator {
 	 * Acquires a row-level lock on the ticket's stock meta using SELECT FOR UPDATE.
 	 *
 	 * @since 5.26.7
+	 * @since TBD Locks a recurring event ticket's row.
 	 *
 	 * @param int $ticket_id The ticket ID.
 	 * @param int $quantity  The requested quantity.
@@ -151,6 +176,11 @@ class Stock_Validator {
 	 */
 	protected function validate_ticket_stock_with_lock( int $ticket_id, int $quantity ) {
 		try {
+			// A recurring event ticket keeps its stock on its row: lock the row.
+			if ( Ticket_ID::is_table_ticket( $ticket_id ) ) {
+				return $this->validate_ticket_stock( $ticket_id, $quantity, tribe( Stock::class )->lock( Ticket_ID::to_row_id( $ticket_id ) ) );
+			}
+
 			$stock_meta_key = Ticket::$stock_meta_key;
 
 			// In test environments with fake transactions, skip the FOR UPDATE clause.
@@ -207,6 +237,7 @@ class Stock_Validator {
 	 * Used when validation occurs within an existing transaction/lock context.
 	 *
 	 * @since 5.26.7
+	 * @since TBD Checks a shared recurring event ticket against its locked stock.
 	 *
 	 * @param int      $ticket_id    The ticket ID.
 	 * @param int      $quantity     The requested quantity.
@@ -244,10 +275,10 @@ class Stock_Validator {
 			return true;
 		}
 
-		// Bail early for shared capacity (global stock) tickets.
+		// Bail early for shared capacity (global stock) tickets; a recurring event ticket's date has its own pool, locked.
 		$global_stock_mode  = $ticket->global_stock_mode();
 		$is_shared_capacity = ! empty( $global_stock_mode ) && 'own' !== $global_stock_mode;
-		if ( $is_shared_capacity ) {
+		if ( $is_shared_capacity && ! Ticket_ID::is_table_ticket( $ticket_id ) ) {
 			return true;
 		}
 
@@ -357,5 +388,36 @@ class Stock_Validator {
 
 		// Additional check: ensure this status actually has the decrease_stock flag.
 		return $new_status->has_flags( [ 'decrease_stock' ], 'AND' );
+	}
+
+	/**
+	 * Counts a recurring event ticket's quantity against its date's shared capacity pool, if it sells from one.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int,array{ticket_id: int, ticket_name: string, requested: int, available: int, insufficient: bool}> $pools     The pools so far, by pool ID.
+	 * @param int                                                                                                       $ticket_id The table ticket ID.
+	 * @param int                                                                                                       $quantity  The quantity in the cart.
+	 *
+	 * @return void
+	 */
+	private function add_to_pool( array &$pools, int $ticket_id, int $quantity ): void {
+		$pool = tribe( Stock::class )->pool_left( Ticket_ID::to_row_id( $ticket_id ) );
+
+		if ( ! $pool ) {
+			return;
+		}
+
+		[ $pool_id, $left ] = $pool;
+
+		$pools[ $pool_id ] ??= [
+			'ticket_id'    => $ticket_id,
+			'ticket_name'  => Tribe__Tickets__Tickets::load_ticket_object( $ticket_id )->name ?? '',
+			'requested'    => 0,
+			'available'    => max( 0, $left ),
+			'insufficient' => true,
+		];
+
+		$pools[ $pool_id ]['requested'] += $quantity;
 	}
 }
