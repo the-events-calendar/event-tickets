@@ -66,7 +66,7 @@ const Availability = ( { available, total } ) => {
 	return (
 		<div className="tribe-editor__tickets__availability">
 			<>
-				{ Available }
+				{ null !== available && Available }
 				{ available ? (
 					<IconWithTooltip
 						// eslint-disable-next-line no-undef

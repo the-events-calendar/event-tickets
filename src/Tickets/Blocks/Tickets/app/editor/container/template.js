@@ -24,6 +24,9 @@ import Uneditable from '../uneditable/container';
 const TicketsOverlay = () => <div className="tribe-editor__tickets__overlay" />;
 
 const TicketsContainer = ( {
+	header = TICKET_LABELS.ticket.plural,
+	headerActions = null,
+	headerDescription = '',
 	Warning,
 	canCreateTickets,
 	hasATicketSelected,
@@ -67,7 +70,12 @@ const TicketsContainer = ( {
 	return (
 		<div className="tribe-editor__tickets__container">
 			<div className={ innerBlocksClassName }>
-				<Card className={ cardClassName } header={ TICKET_LABELS.ticket.plural }>
+				<Card
+					className={ cardClassName }
+					header={ header }
+					description={ headerDescription }
+					actions={ headerActions }
+				>
 					{ injectedComponentsTicketsBeforeHeader }
 					{ canCreateTickets && <InnerBlocks allowedBlocks={ [ 'tribe/tickets-item' ] } /> }
 				</Card>
@@ -98,6 +106,9 @@ const TicketsContainer = ( {
 };
 
 TicketsContainer.propTypes = {
+	header: PropTypes.string,
+	headerActions: PropTypes.node,
+	headerDescription: PropTypes.string,
 	Warning: PropTypes.elementType,
 	canCreateTickets: PropTypes.bool,
 	hasATicketSelected: PropTypes.bool,

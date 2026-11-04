@@ -3,6 +3,7 @@
  */
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
@@ -16,7 +17,7 @@ const getSharedSold = ( state, isShared ) => ( isShared ? selectors.getSharedTic
 const mapStateToProps = ( state, ownProps ) => {
 	const isShared = selectors.isSharedTicket( state, ownProps );
 
-	return {
+	const mappedProps = {
 		isDisabled: selectors.isTicketDisabled( state, ownProps ),
 		isShared,
 		isUnlimited: selectors.isUnlimitedTicket( state, ownProps ),
@@ -24,7 +25,19 @@ const mapStateToProps = ( state, ownProps ) => {
 		capacity: selectors.getTicketCapacityInt( state, ownProps ),
 		sharedSold: getSharedSold( state, isShared ),
 		sharedCapacity: selectors.getTicketsSharedCapacityInt( state ),
+		isHidden: false,
 	};
+
+	/**
+	 * Filters the properties mapped from the state for a ticket's sold count and bar.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object} mappedProps      The mapped props; `isHidden` leaves the count and bar out.
+	 * @param {Object} context.state    The state of the block.
+	 * @param {Object} context.ownProps The props passed to the block.
+	 */
+	return applyFilters( 'tec.tickets.blocks.Ticket.Quantity.mappedProps', mappedProps, { state, ownProps } );
 };
 
 export default compose( withStore(), connect( mapStateToProps ) )( Template );

@@ -144,20 +144,4 @@ export function TicketsByDateAction() {
 	);
 }
 
-/**
- * Adds the "Tickets by Date" button to the Tickets block's dashboard.
- *
- * @since TBD
- *
- * @param {Array} actions The dashboard's buttons.
- *
- * @return {Array} The buttons.
- */
-export const addTicketsByDateAction = ( actions ) => [ ...actions, <TicketsByDateAction key="tickets-by-date" /> ];
-
-addFilter(
-	'tec.tickets.blocks.Tickets.TicketsDashboardAction.actions',
-	'tec.tickets.recurringTickets.ticketsByDate',
-	addTicketsByDateAction
-);
 addFilter( 'tec.tickets.blocks.setBodyDetails', 'tec.tickets.recurringTickets.ticketsByDate', countTicketSave );

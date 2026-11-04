@@ -122,10 +122,7 @@ describe( 'Tickets by Date in the block editor', () => {
 		expect( text( rendered.root.findByProps( { role: 'dialog' } ) ) ).toContain( 'You have unsaved changes to tickets or dates.' );
 	} );
 
-	test( 'adds its button to the Tickets block dashboard', () => {
-		const actions = applyFilters( 'tec.tickets.blocks.Tickets.TicketsDashboardAction.actions', [ 'settings' ], {} );
-
-		expect( actions ).toHaveLength( 2 );
-		expect( actions[ 1 ].type ).toBe( TicketsByDateAction );
+	test( 'leaves its button out of the Tickets block dashboard: it is in the header', () => {
+		expect( applyFilters( 'tec.tickets.blocks.Tickets.TicketsDashboardAction.actions', [ 'settings' ], {} ) ).toEqual( [ 'settings' ] );
 	} );
 } );

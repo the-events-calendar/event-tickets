@@ -38,7 +38,7 @@ describe( 'Recurring event tickets in the block editor', () => {
 		expect( props.hasRecurrenceRules ).toBe( true );
 	} );
 
-	test( 'the dashboard offers "Add a Ticket" on a recurring event, without the not-supported message', () => {
+	test( 'the dashboard leaves "Add a Ticket" to the header on a recurring event, without the not-supported message', () => {
 		// As core and Flexible Tickets leave them on a recurring event.
 		const blocked = { showConfirm: false, showNotSupportedMessage: true, showWarning: true, disableSettings: true };
 
@@ -48,7 +48,7 @@ describe( 'Recurring event tickets in the block editor', () => {
 			isRecurring: true,
 		} );
 
-		expect( props ).toMatchObject( { showConfirm: true, showNotSupportedMessage: false, showWarning: false, disableSettings: false } );
+		expect( props ).toMatchObject( { showConfirm: false, showNotSupportedMessage: false, showWarning: false, disableSettings: false } );
 	} );
 
 	test( 'the dashboard links to the attendees and orders of a recurring event with tickets of its own', () => {

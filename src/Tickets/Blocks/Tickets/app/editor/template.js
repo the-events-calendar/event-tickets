@@ -57,7 +57,7 @@ class Tickets extends PureComponent {
 
 		return (
 			<Fragment>
-				<TicketsContainer isSelected={ isSelected } tickets={ tickets } />
+				<TicketsContainer isSelected={ isSelected } tickets={ tickets } clientId={ clientId } />
 				{ canCreateTickets && <TicketsDashboard isSelected={ isSelected } clientId={ clientId } /> }
 				<TicketControls />
 			</Fragment>
