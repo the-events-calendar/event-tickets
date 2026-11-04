@@ -15,6 +15,8 @@ module.exports = {
 		// Seating feature.
 		'^@tec/tickets/seating/tests/(.*)': '<rootDir>/tests/slr_jest/$1',
 		'^@tec/tickets/seating/(.*)': '<rootDir>/src/Tickets/Seating/app/$1',
+		// Relative Sale Dates feature.
+		'^@tec/tickets/relative-sale-dates/(.*)': '<rootDir>/src/Tickets/Relative_Sale_Dates/app/$1',
 	},
 	// Modules that should not be transformed by Jest.
 	transformIgnorePatterns: [ '/node_modules/(?!date-fns/)' ],

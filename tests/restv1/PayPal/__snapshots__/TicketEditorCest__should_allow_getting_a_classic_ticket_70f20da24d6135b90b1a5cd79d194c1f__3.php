@@ -254,7 +254,7 @@
 		data-depends="#Tribe__Tickets__RSVP_radio"
 	data-condition-is-not-checked
 	>
-	<div class="input_block">
+	<div class="input_block tec-tickets-field-row">
 		<label for="ticket_price" class="ticket_form_label ticket_form_left">Price:</label>
 		<input
 			type="text"
