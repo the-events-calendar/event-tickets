@@ -330,8 +330,9 @@ final class Sync {
 	 * Returns the templates of an event's rows that another request is saving.
 	 *
 	 * A save writes the template's type back to `default` until it ends, and the block editor saves every ticket
-	 * alongside the event. A template keeps its type through every save, so a published ticket of the event typed
-	 * `default` that has rows is one mid-save, not one removed.
+	 * alongside the event. A template keeps its type through every save, so a published ticket of the event with
+	 * rows is removed only once it has another type. The type is read from the request's cache, which can be either
+	 * side of the other request's save.
 	 *
 	 * @since TBD
 	 *
@@ -349,7 +350,7 @@ final class Sync {
 				$parents,
 				static fn( int $ticket_id ) => Commerce_Ticket::POSTTYPE === get_post_type( $ticket_id )
 					&& 'publish' === get_post_status( $ticket_id )
-					&& in_array( get_post_meta( $ticket_id, '_type', true ), [ '', 'default' ], true )
+					&& in_array( get_post_meta( $ticket_id, '_type', true ), [ '', 'default', Template_Guard::TICKET_TYPE ], true )
 					&& $post_id === (int) get_post_meta( $ticket_id, Commerce_Ticket::$event_relation_meta_key, true )
 			)
 		);
