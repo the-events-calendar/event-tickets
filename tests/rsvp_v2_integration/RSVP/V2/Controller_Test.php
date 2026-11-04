@@ -35,6 +35,8 @@ class Controller_Test extends Controller_Test_Case {
 	 * @test
 	 */
 	public function it_should_render_the_header_image_option_for_posts_without_tc_rsvp_tickets(): void {
+		// Tickets Emails hides the option on its own, so turn it off to test only the RSVP condition.
+		add_filter( 'tec_tickets_emails_is_enabled', '__return_false' );
 		$post_id = static::factory()->post->create( [ 'post_status' => 'publish' ] );
 
 		$controller = $this->make_controller();

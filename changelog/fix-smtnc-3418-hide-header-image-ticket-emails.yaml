@@ -1,0 +1,6 @@
+significance: patch
+type: tweak
+entry: Hid the per-event Ticket Header Image setting in the classic and block
+  editors when Tickets Emails is enabled, because Tickets Emails only uses the
+  header image set under Tickets > Settings > Emails.
+timestamp: 2026-11-04T21:36:23.577Z
