@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Recurring_Tickets\Editor;
 
 use TEC\Tickets\Event;
+use TEC\Tickets\Recurring_Tickets\Admin\Template_Sales;
 use TEC\Tickets\Recurring_Tickets\Admin\Tickets_By_Date;
 use TEC\Tickets\Recurring_Tickets\Ticket_ID;
 use Tribe__Events__Main as TEC;
@@ -44,14 +45,25 @@ final class Block_Editor {
 	private Tickets_By_Date $tickets_by_date;
 
 	/**
+	 * The sales of each recurring event ticket over every date.
+	 *
+	 * @since TBD
+	 *
+	 * @var Template_Sales
+	 */
+	private Template_Sales $template_sales;
+
+	/**
 	 * Block_Editor constructor.
 	 *
 	 * @since TBD
 	 *
 	 * @param Tickets_By_Date $tickets_by_date The Tickets by Date section's data.
+	 * @param Template_Sales  $template_sales  The sales of each recurring event ticket over every date.
 	 */
-	public function __construct( Tickets_By_Date $tickets_by_date ) {
+	public function __construct( Tickets_By_Date $tickets_by_date, Template_Sales $template_sales ) {
 		$this->tickets_by_date = $tickets_by_date;
+		$this->template_sales  = $template_sales;
 	}
 
 	/**
@@ -68,10 +80,10 @@ final class Block_Editor {
 			self::FIELD,
 			[
 				'get_callback' => fn( $post, $field, $request ) => $request instanceof WP_REST_Request && 'edit' === $request['context']
-					? $this->tickets_by_date->for_event( (int) Event::filter_event_id( (int) ( $post['id'] ?? 0 ), 'recurring-tickets-by-date' ) )
+					? $this->section( (int) Event::filter_event_id( (int) ( $post['id'] ?? 0 ), 'recurring-tickets-by-date' ) )
 					: null,
 				'schema'       => [
-					'description' => __( 'The Tickets by Date section of a recurring event, as of its last save.', 'event-tickets' ),
+					'description' => __( 'The Tickets by Date section of a recurring event, and the sales of its tickets over every date, as of its last save.', 'event-tickets' ),
 					'type'        => [ 'object', 'null' ],
 					'context'     => [ 'edit' ],
 					'readonly'    => true,
@@ -102,5 +114,31 @@ final class Block_Editor {
 				static fn( $ticket ) => ! ( $ticket instanceof Ticket_Object && Ticket_ID::is_table_ticket( $ticket->ID ) )
 			)
 		);
+	}
+
+	/**
+	 * Returns the Tickets by Date section of an event, with the sales of its tickets over every date, as its
+	 * Attendees page counts them.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id The event.
+	 *
+	 * @return array<string,mixed>|null The section, or null for an event without recurring event tickets.
+	 */
+	private function section( int $event_id ): ?array {
+		$section = $this->tickets_by_date->for_event( $event_id );
+
+		if ( null === $section ) {
+			return null;
+		}
+
+		$section['sales'] = [
+			'tickets'   => $this->template_sales->for_event( $event_id ),
+			'sold'      => $this->template_sales->sold( $event_id ),
+			'available' => $this->template_sales->available( $event_id ),
+		];
+
+		return $section;
 	}
 }

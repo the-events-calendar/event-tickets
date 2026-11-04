@@ -11,10 +11,19 @@ jest.mock( '@moderntribe/common/utils/recurrence', () => ( { hasRecurrenceRules:
 
 const insertBlock = jest.fn();
 
+// The event's tickets over its 5 dates of a pool of 100: Ticket A sold 4, Ticket B 3.
+const sales = {
+	tickets: { 11: { sold: 4, available: 493 }, 12: { sold: 3, available: 493 } },
+	sold: 7,
+	available: 493,
+};
+let post = { tec_tickets_by_date: { sales } };
+
 jest.mock(
 	'@wordpress/data',
 	() => ( {
-		select: () => ( { getBlockCount: () => 2 } ),
+		select: ( store ) =>
+			'core/editor' === store ? { getCurrentPost: () => post } : { getBlockCount: () => 2 },
 		dispatch: jest.fn( () => ( { insertBlock } ) ),
 	} ),
 	{ virtual: true }
@@ -32,6 +41,7 @@ jest.mock( '../../../src/Tickets/Recurring_Tickets/app/block-editor/tickets-by-d
 
 jest.mock( '../../../src/modules/data/blocks/ticket', () => ( {
 	selectors: {
+		getTicketId: jest.fn( () => 11 ),
 		getTicketCapacityInt: jest.fn( () => 50 ),
 		getTicketsSharedCapacityInt: jest.fn( () => 100 ),
 		isSharedTicket: jest.fn( () => false ),
@@ -45,6 +55,8 @@ describe( 'The Tickets block of a recurring event', () => {
 		hasRecurrenceRules.mockReturnValue( true );
 		selectors.isSharedTicket.mockReturnValue( false );
 		selectors.getTicketCapacityInt.mockReturnValue( 50 );
+		selectors.getTicketId.mockReturnValue( 11 );
+		post = { tec_tickets_by_date: { sales } };
 	} );
 
 	test( 'is titled for every date, with its buttons in the header', () => {
@@ -55,22 +67,38 @@ describe( 'The Tickets block of a recurring event', () => {
 		expect( props.headerActions.props.clientId ).toBe( 'tickets-block' );
 	} );
 
-	test( 'shows a ticket\'s capacity, in parentheses when shared, in place of what is available', () => {
+	test( 'shows what a ticket has available over every date, in parentheses when shared', () => {
 		const own = applyFilters( 'tec.tickets.blocks.Ticket.Price.mappedProps', { available: 100 }, context );
 
 		selectors.isSharedTicket.mockReturnValue( true );
-		selectors.getTicketCapacityInt.mockReturnValue( 0 );
 		const shared = applyFilters( 'tec.tickets.blocks.Ticket.Price.mappedProps', { available: 95 }, context );
 
-		expect( [ own.available, own.amountLabel ] ).toEqual( [ 50, 'capacity' ] );
-		expect( [ shared.available, shared.amountLabel ] ).toEqual( [ '(100)', 'capacity' ] );
+		expect( own.available ).toBe( 493 );
+		expect( shared.available ).toBe( '(493)' );
+		expect( shared.amountLabel ).toBeUndefined();
 	} );
 
-	test( 'leaves out what a date sold and has available', () => {
+	test( 'shows the capacity of a ticket not saved with the event yet', () => {
+		selectors.getTicketId.mockReturnValue( 99 );
+
+		const props = applyFilters( 'tec.tickets.blocks.Ticket.Price.mappedProps', { available: 0 }, context );
+
+		expect( [ props.available, props.amountLabel ] ).toEqual( [ 50, 'capacity' ] );
 		expect( applyFilters( 'tec.tickets.blocks.Ticket.Quantity.mappedProps', { isHidden: false }, context ).isHidden ).toBe( true );
+	} );
+
+	test( 'counts a ticket\'s sales over every date, against the shared total when shared', () => {
+		const own = applyFilters( 'tec.tickets.blocks.Ticket.Quantity.mappedProps', { isShared: false, isHidden: false }, context );
+		const shared = applyFilters( 'tec.tickets.blocks.Ticket.Quantity.mappedProps', { isShared: true, isHidden: false }, context );
+
+		expect( [ own.isHidden, own.sold, own.capacity ] ).toEqual( [ false, 4, 497 ] );
+		expect( [ shared.sold, shared.capacity, shared.sharedSold, shared.sharedCapacity ] ).toEqual( [ 4, 500, 7, 500 ] );
+	} );
+
+	test( 'counts the tickets available and the capacity over every date', () => {
 		expect( applyFilters( 'tec.tickets.blocks.Tickets.Availability.mappedProps', { available: 95, total: 100 }, context ) ).toEqual( {
-			available: null,
-			total: 100,
+			available: 493,
+			total: 500,
 		} );
 	} );
 

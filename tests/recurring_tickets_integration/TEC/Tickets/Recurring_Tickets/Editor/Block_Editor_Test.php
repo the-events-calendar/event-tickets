@@ -4,6 +4,8 @@ namespace TEC\Tickets\Recurring_Tickets\Editor;
 
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Recurring_Tickets\Admin\Tickets_By_Date;
+use TEC\Tickets\Tests\Recurring_Tickets\Row_Orders;
+use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Template_Guard;
 use TEC\Tickets\Recurring_Tickets\Ticket_ID;
 use TEC\Tickets\Tests\Recurring_Tickets\Recurrence_Tier_Check;
@@ -14,6 +16,7 @@ use WP_REST_Request;
 class Block_Editor_Test extends WPTestCase {
 	use Ticket_Rows;
 	use Ticket_Maker;
+	use Row_Orders;
 	use Recurrence_Tier_Check;
 
 	/**
@@ -52,7 +55,9 @@ class Block_Editor_Test extends WPTestCase {
 		$data = $this->rest_event( $event, 'edit' );
 
 		$this->assertArrayHasKey( 'tec_tickets_by_date', $data );
-		$this->assertSame( tribe( Tickets_By_Date::class )->for_event( $event ), $data['tec_tickets_by_date'] );
+		$section = $data['tec_tickets_by_date'];
+		unset( $section['sales'] );
+		$this->assertSame( tribe( Tickets_By_Date::class )->for_event( $event ), $section );
 		$date = (int) $this->get_dates( $event )[1]->provisional_id;
 		$this->assertSame( $data['tec_tickets_by_date'], $this->rest_event( $date, 'edit' )['tec_tickets_by_date'], 'A date\'s editor shows its event\'s dates.' );
 	}
@@ -76,6 +81,37 @@ class Block_Editor_Test extends WPTestCase {
 		update_post_meta( $template, '_type', Template_Guard::TICKET_TYPE );
 
 		$this->assertArrayNotHasKey( 'tec_tickets_by_date', $this->rest_event( $event, 'view' ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_send_each_tickets_sales_over_every_date_as_the_attendees_page_counts_them(): void {
+		$this->skip_without_recurrence_tier();
+		$event  = $this->create_recurring_event();
+		$shared = [ 'mode' => 'global', 'event_capacity' => 10, 'capacity' => 10 ];
+		$adult  = $this->create_tc_ticket( $event, 10, [ 'ticket_name' => 'Adult', 'tribe-ticket' => $shared ] );
+		$child  = $this->create_tc_ticket( $event, 5, [ 'ticket_name' => 'Child', 'tribe-ticket' => $shared ] );
+		$dates  = $this->get_dates( $event );
+		$rows   = array_filter( tribe( Rows::class )->get_by_template( $adult ), static fn( $row ) => (int) $row->occurrence_id === (int) $dates[0]->occurrence_id );
+		$this->create_row_order( [ Ticket_ID::from_row_id( (int) reset( $rows )->id ) => 2 ] );
+		$this->forget_rows_read();
+
+		$sales = $this->rest_event( $event, 'edit' )['tec_tickets_by_date']['sales'];
+
+		// A pool of 10 on each of the 3 dates, 2 sold.
+		$left = 3 * 10 - 2;
+		$this->assertSame(
+			[
+				'tickets'   => [
+					$adult => [ 'sold' => 2, 'available' => $left ],
+					$child => [ 'sold' => 0, 'available' => $left ],
+				],
+				'sold'      => 2,
+				'available' => $left,
+			],
+			$sales
+		);
 	}
 
 	private function rest_event( int $event, string $context ): array {
