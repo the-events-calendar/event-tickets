@@ -3,6 +3,7 @@ import renderer from 'react-test-renderer';
 import { applyFilters } from '@wordpress/hooks';
 import { select } from '@wordpress/data';
 import { hasRecurrenceRules } from '@moderntribe/common/utils/recurrence';
+import { selectors } from '../../../src/modules/data/blocks/ticket';
 import '../../../src/Tickets/Recurring_Tickets/app/block-editor';
 
 // Reads Events Calendar Pro's recurrence store, which is not loaded in tests.
@@ -13,6 +14,16 @@ jest.mock( '@wordpress/data', () => ( { select: jest.fn() } ), { virtual: true }
 
 // The shared stub has no _x() and no numbered placeholders; with no translations loaded, the real one returns English.
 jest.mock( '@wordpress/i18n', () => jest.requireActual( '@wordpress/i18n' ) );
+
+jest.mock( '../../../src/modules/data/blocks/ticket', () => ( {
+	selectors: {
+		hasCreatedTickets: jest.fn( () => false ),
+		getTicketsProvider: jest.fn( () => 'TEC\\Tickets\\Commerce\\Module' ),
+	},
+	constants: {
+		TICKET_ORDERS_PAGE_SLUG: { 'TEC\\Tickets\\Commerce\\Module': 'tickets-commerce-orders' },
+	},
+} ) );
 
 
 describe( 'Recurring event tickets in the block editor', () => {
@@ -37,7 +48,21 @@ describe( 'Recurring event tickets in the block editor', () => {
 			isRecurring: true,
 		} );
 
-		expect( props ).toEqual( { showConfirm: true, showNotSupportedMessage: false, showWarning: false, disableSettings: true } );
+		expect( props ).toMatchObject( { showConfirm: true, showNotSupportedMessage: false, showWarning: false, disableSettings: false } );
+	} );
+
+	test( 'the dashboard links to the attendees and orders of a recurring event with tickets of its own', () => {
+		selectors.hasCreatedTickets.mockReturnValueOnce( true );
+		// As Flexible Tickets leaves them on a recurring event in a Series without Series Passes.
+		const series = { hasCreatedTickets: false, hasOrdersPage: true, disableSettings: true };
+
+		const props = applyFilters( 'tec.tickets.blocks.Tickets.TicketsDashboardAction.mappedProps', series, {
+			state: {},
+			ownProps: {},
+			isRecurring: true,
+		} );
+
+		expect( props ).toMatchObject( { hasCreatedTickets: true, hasOrdersPage: true, disableSettings: false } );
 	} );
 
 	test( 'a single event keeps its dashboard as it is', () => {
