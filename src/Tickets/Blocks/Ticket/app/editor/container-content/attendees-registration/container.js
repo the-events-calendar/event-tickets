@@ -89,12 +89,17 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 				// remove listeners
 				removeListeners( iframeWindow );
 
-				// check if there are meta fields
+				// A page without the fields, an error page for one, says nothing about them: the modal still closes.
 				const metaFields = iframeWindow.document.querySelector( '#tribe-tickets-attendee-sortables' );
-				const hasFields = Boolean( metaFields.firstElementChild );
+				if ( metaFields ) {
+					dispatch(
+						actions.setTicketHasAttendeeInfoFields(
+							ownProps.clientId,
+							Boolean( metaFields.firstElementChild )
+						)
+					);
+				}
 
-				// dispatch actions
-				dispatch( actions.setTicketHasAttendeeInfoFields( ownProps.clientId, hasFields ) );
 				dispatch( actions.setTicketIsModalOpen( ownProps.clientId, false ) );
 			};
 
