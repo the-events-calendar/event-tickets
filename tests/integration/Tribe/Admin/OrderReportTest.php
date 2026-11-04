@@ -316,8 +316,11 @@ class OrderReportTest extends WPTestCase {
 		// Replace the order gateway ID, a random hash, with a placeholder.
 		$html = str_replace( $gateway_order_ids, '{{gateway_order_id}}', $html );
 
-		// Replace the post IDs with placeholders to avoid snapshot mismatches.
-		$html = str_replace( $post_ids, '{{ID}}', $html );
+		/*
+		 * Replace the post IDs with placeholders to avoid snapshot mismatches. Only whole numbers are replaced: an ID such
+		 * as 6543 would otherwise be replaced inside the mocked nonce, 0987654321.
+		 */
+		$html = preg_replace( '/(?<!\d)(?:' . implode( '|', $post_ids ) . ')(?!\d)/', '{{ID}}', $html );
 
 		/**
 		 * Stabilize order dates column.
