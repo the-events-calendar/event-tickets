@@ -1,5 +1,16 @@
 import { applyFilters } from '@wordpress/hooks';
+import { selectors } from '../../../src/modules/data/blocks/ticket';
 import '../../../src/Tickets/Recurring_Tickets/app/block-editor';
+
+jest.mock( '../../../src/modules/data/blocks/ticket', () => ( {
+	selectors: {
+		hasCreatedTickets: jest.fn( () => false ),
+		getTicketsProvider: jest.fn( () => 'TEC\\Tickets\\Commerce\\Module' ),
+	},
+	constants: {
+		TICKET_ORDERS_PAGE_SLUG: { 'TEC\\Tickets\\Commerce\\Module': 'tickets-commerce-orders' },
+	},
+} ) );
 
 describe( 'Recurring event tickets in the block editor', () => {
 	test( 'the Tickets block shows its dashboard on a recurring event', () => {
@@ -23,7 +34,21 @@ describe( 'Recurring event tickets in the block editor', () => {
 			isRecurring: true,
 		} );
 
-		expect( props ).toEqual( { showConfirm: true, showNotSupportedMessage: false, showWarning: false, disableSettings: true } );
+		expect( props ).toMatchObject( { showConfirm: true, showNotSupportedMessage: false, showWarning: false, disableSettings: false } );
+	} );
+
+	test( 'the dashboard links to the attendees and orders of a recurring event with tickets of its own', () => {
+		selectors.hasCreatedTickets.mockReturnValueOnce( true );
+		// As Flexible Tickets leaves them on a recurring event in a Series without Series Passes.
+		const series = { hasCreatedTickets: false, hasOrdersPage: true, disableSettings: true };
+
+		const props = applyFilters( 'tec.tickets.blocks.Tickets.TicketsDashboardAction.mappedProps', series, {
+			state: {},
+			ownProps: {},
+			isRecurring: true,
+		} );
+
+		expect( props ).toMatchObject( { hasCreatedTickets: true, hasOrdersPage: true, disableSettings: false } );
 	} );
 
 	test( 'a single event keeps its dashboard as it is', () => {
