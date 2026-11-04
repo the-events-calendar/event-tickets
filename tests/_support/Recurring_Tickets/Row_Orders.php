@@ -55,6 +55,18 @@ trait Row_Orders {
 			];
 		}
 
+		$purchaser = [
+			'purchaser_user_id'    => 0,
+			'purchaser_full_name'  => 'Row Buyer',
+			'purchaser_first_name' => 'Row',
+			'purchaser_last_name'  => 'Buyer',
+			'purchaser_email'      => 'row-buyer-' . uniqid() . '@test.com',
+		];
+
+		// As Order::create_from_cart() does: fees and coupons join the order here.
+		$items = apply_filters( 'tec_tickets_commerce_create_order_from_cart_items', $items, $total, tribe( Gateway::class ), $purchaser );
+		$total = Value::create( array_sum( array_map( static fn( array $item ) => (float) $item['sub_total'], $items ) ) );
+
 		$order = tribe( Order::class )->create(
 			tribe( Gateway::class ),
 			[
@@ -65,12 +77,7 @@ trait Row_Orders {
 				'gateway'              => Gateway::get_key(),
 				'hash'                 => uniqid( 'row-order-', true ),
 				'currency'             => Currency::get_currency_code(),
-				'purchaser_user_id'    => 0,
-				'purchaser_full_name'  => 'Row Buyer',
-				'purchaser_first_name' => 'Row',
-				'purchaser_last_name'  => 'Buyer',
-				'purchaser_email'      => 'row-buyer-' . uniqid() . '@test.com',
-			]
+			] + $purchaser
 		);
 
 		tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );

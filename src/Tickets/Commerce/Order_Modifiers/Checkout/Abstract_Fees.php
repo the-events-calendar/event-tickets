@@ -29,6 +29,7 @@ use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Template as Template;
 use Tribe__Tickets__Tickets as Tickets;
 use WP_Post;
+use TEC\Tickets\Recurring_Tickets\Fees as Recurring_Fees;
 
 /**
  * Class Fees
@@ -217,6 +218,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 * Retrieves and combines the fees for the given cart items.
 	 *
 	 * @since 5.18.0
+	 * @since TBD Looks up a recurring event ticket's fees on its template.
 	 *
 	 * @param array $items    The items in the cart.
 	 * @param bool  $per_item Whether to return calculated fees per item or all together in a single dimension array.
@@ -246,8 +248,9 @@ abstract class Abstract_Fees extends Controller_Contract {
 				continue;
 			}
 
+			// A recurring event ticket's fees are attached to its template; the item keeps its own ticket ID.
 			$ticket_fees = $this->order_modifiers_repository->find_relationship_by_post_ids(
-				[ $item['ticket_id'] ],
+				[ tribe( Recurring_Fees::class )->lookup_id( (int) $item['ticket_id'] ) ],
 				$this->modifier_type
 			);
 
