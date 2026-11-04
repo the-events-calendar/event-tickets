@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, stellarwp, nexcess, bordoni, deblynprado, dpantazis, filipecouto, jehromegriffiths1, jentheo, larodiel, leahkoerper, sdokus, vicskf
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.30.3.1
+Stable tag: 5.31.0
 Requires at least: 6.9
 Tested up to: 7.1
 Requires PHP: 7.4
@@ -205,6 +205,18 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.31.0] 2026-11-04 =
+
+* Feature - Added relative sale dates for Tickets Commerce tickets on events in the classic and block editors, so ticket sales and the sale price can start and end a set time before the event and follow the event when its date changes, and blocked saving a ticket whose sales window or sale price window ends before it starts, or whose sale price window starts outside the sales window, with the reason shown under the window.
+* Fix - Gave an event copied with Yoast Duplicate Post its own seating ID, and its tickets their seat settings and relative sale dates.
+* Fix - Included Tickets Commerce tickets whose sale price has no start or end date, or ends today, in the Discounted Tickets filter of the admin tickets list, and judged their sale price days in the event's timezone.
+* Fix - Kept the Ticket block from saving 1970-01-01 as the date of a sale price saved without dates when the ticket was updated.
+* Fix - Kept the Ticket block working for a ticket saved without an end date, whose form showed an invalid date and stopped the block from creating or updating any ticket on that post.
+* Fix - Made a Tickets Commerce ticket with a sale price read its sales dates and sale price days in the event's timezone instead of the site's, so it went on and off sale and showed its sale price at the right time.
+* Fix - Prevented the classic editor ticket form from breaking when it opens a ticket on sale from another provider, such as WooCommerce, on an event that sells through Tickets Commerce.
+* Language - 69 new strings added, 61 updated, 0 fuzzied, and 0 obsoleted.
+* Tweak - Rendered the sale dates and sale price fields of Tickets Commerce tickets on events from new templates that add the relative date options, so theme overrides of the original templates no longer change those fields on events.
 
 = [5.30.3.1] 2026-11-02 =
 
