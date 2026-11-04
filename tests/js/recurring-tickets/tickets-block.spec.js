@@ -9,7 +9,7 @@ import Card from '../../../src/modules/elements/card/element';
 
 jest.mock( '@moderntribe/common/utils/recurrence', () => ( { hasRecurrenceRules: jest.fn( () => true ) } ) );
 
-const insertBlock = jest.fn();
+const mockInsertBlock = jest.fn();
 
 // The event's tickets over its 5 dates of a pool of 100: Ticket A sold 4, Ticket B 3.
 const sales = {
@@ -17,14 +17,14 @@ const sales = {
 	sold: 7,
 	available: 493,
 };
-let post = { tec_tickets_by_date: { sales } };
+let mockPost = { tec_tickets_by_date: { sales } };
 
 jest.mock(
 	'@wordpress/data',
 	() => ( {
 		select: ( store ) =>
-			'core/editor' === store ? { getCurrentPost: () => post } : { getBlockCount: () => 2 },
-		dispatch: jest.fn( () => ( { insertBlock } ) ),
+			'core/editor' === store ? { getCurrentPost: () => mockPost } : { getBlockCount: () => 2 },
+		dispatch: jest.fn( () => ( { insertBlock: mockInsertBlock } ) ),
 	} ),
 	{ virtual: true }
 );
@@ -37,6 +37,10 @@ jest.mock( '@moderntribe/common/elements', () => ( {
 
 jest.mock( '../../../src/Tickets/Recurring_Tickets/app/block-editor/tickets-by-date', () => ( {
 	TicketsByDateAction: () => <button>Tickets by Date</button>,
+} ) );
+
+jest.mock( '../../../src/modules/data/blocks/ticket/constants', () => ( {
+	TICKET_LABELS: { ticket: { singular: 'Ticket' } },
 } ) );
 
 jest.mock( '../../../src/modules/data/blocks/ticket', () => ( {
@@ -56,7 +60,7 @@ describe( 'The Tickets block of a recurring event', () => {
 		selectors.isSharedTicket.mockReturnValue( false );
 		selectors.getTicketCapacityInt.mockReturnValue( 50 );
 		selectors.getTicketId.mockReturnValue( 11 );
-		post = { tec_tickets_by_date: { sales } };
+		mockPost = { tec_tickets_by_date: { sales } };
 	} );
 
 	test( 'is titled for every date, with its buttons in the header', () => {
@@ -91,7 +95,7 @@ describe( 'The Tickets block of a recurring event', () => {
 		const own = applyFilters( 'tec.tickets.blocks.Ticket.Quantity.mappedProps', { isShared: false, isHidden: false }, context );
 		const shared = applyFilters( 'tec.tickets.blocks.Ticket.Quantity.mappedProps', { isShared: true, isHidden: false }, context );
 
-		expect( [ own.isHidden, own.sold, own.capacity ] ).toEqual( [ false, 4, 497 ] );
+		expect( [ own.isHidden, own.sold, own.capacity, own.sharedSold ] ).toEqual( [ false, 4, 497, 0 ] );
 		expect( [ shared.sold, shared.capacity, shared.sharedSold, shared.sharedCapacity ] ).toEqual( [ 4, 500, 7, 500 ] );
 	} );
 
@@ -120,7 +124,7 @@ describe( 'The Tickets block of a recurring event', () => {
 
 		expect( event.preventDefault ).toHaveBeenCalled();
 		expect( dispatch ).toHaveBeenCalledWith( 'core/block-editor' );
-		expect( insertBlock ).toHaveBeenCalledWith( { name: 'tribe/tickets-item' }, 2, 'tickets-block' );
+		expect( mockInsertBlock ).toHaveBeenCalledWith( { name: 'tribe/tickets-item' }, 2, 'tickets-block' );
 	} );
 
 	test( 'puts the buttons beside the card\'s title and description', () => {

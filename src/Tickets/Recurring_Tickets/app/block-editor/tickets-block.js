@@ -173,7 +173,7 @@ export function countRecurringTicketSales( mappedProps, { state, ownProps } ) {
 		...mappedProps,
 		sold: sales.sold,
 		capacity: mappedProps.isShared ? sharedCapacity : sales.sold + sales.available,
-		sharedSold: all.sold,
+		sharedSold: mappedProps.isShared ? all.sold : 0,
 		sharedCapacity,
 	};
 }
