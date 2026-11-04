@@ -61,6 +61,10 @@ trait Ticket_Rows {
 			function () {
 				$this->found = [];
 				$this->pools = [];
+
+				if ( property_exists( $this, 'occurrence_rows' ) ) {
+					$this->occurrence_rows = [];
+				}
 			},
 			$rows,
 			Rows::class
