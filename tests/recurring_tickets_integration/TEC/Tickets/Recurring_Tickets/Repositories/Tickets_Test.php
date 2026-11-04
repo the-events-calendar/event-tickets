@@ -1,0 +1,296 @@
+<?php
+
+namespace TEC\Tickets\Recurring_Tickets\Repositories;
+
+use Codeception\TestCase\WPTestCase;
+use InvalidArgumentException;
+use TEC\Common\StellarWP\DB\DB;
+use TEC\Tickets\Recurring_Tickets\Models\Ticket;
+use TEC\Tickets\Recurring_Tickets\Tables\Tickets as Tickets_Table;
+
+/**
+ * The rows of a date, a post or a template can be stored, listed and removed in one query each.
+ */
+class Tickets_Test extends WPTestCase {
+	/**
+	 * @after
+	 */
+	public function empty_table(): void {
+		( new Tickets_Table() )->empty_table();
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_insert_many_rows_in_one_query(): void {
+		$inserts = $this->count_inserts();
+
+		$inserted = tribe( Tickets::class )->insert_many(
+			array_map( fn( int $occurrence_id ) => $this->row( [ 'occurrence_id' => $occurrence_id ] ), range( 1, 5 ) )
+		);
+
+		$this->assertSame( 5, $inserted );
+		$this->assertSame( 1, $inserts() );
+		$this->assertSame( 5, Tickets_Table::get_total_items() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_return_the_rows_of_a_date_in_menu_order(): void {
+		$repository = tribe( Tickets::class );
+		$repository->insert_many(
+			[
+				$this->row( [ 'parent_id' => 1, 'menu_order' => 2, 'name' => 'Third' ] ),
+				$this->row( [ 'parent_id' => 2, 'menu_order' => 0, 'name' => 'First' ] ),
+				$this->row( [ 'parent_id' => 3, 'menu_order' => 1, 'name' => 'Second' ] ),
+				$this->row( [ 'parent_id' => 1, 'occurrence_id' => 31, 'menu_order' => 0, 'name' => 'Another date' ] ),
+			]
+		);
+
+		$rows = $repository->get_by_occurrence( 30 );
+
+		$this->assertContainsOnlyInstancesOf( Ticket::class, $rows );
+		$this->assertSame( [ 'First', 'Second', 'Third' ], array_column( $this->to_arrays( $rows ), 'name' ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_return_the_rows_of_a_post_and_of_a_template(): void {
+		$repository = tribe( Tickets::class );
+		$repository->insert_many(
+			[
+				$this->row( [ 'parent_id' => 1, 'occurrence_id' => 30, 'name' => 'A30' ] ),
+				$this->row( [ 'parent_id' => 1, 'occurrence_id' => 31, 'name' => 'A31' ] ),
+				$this->row( [ 'parent_id' => 2, 'occurrence_id' => 30, 'name' => 'B30' ] ),
+				$this->row( [ 'parent_id' => 3, 'post_id' => 21, 'occurrence_id' => 40, 'name' => 'Other post' ] ),
+			]
+		);
+
+		$this->assertSame( [ 'A30', 'A31', 'B30' ], array_column( $this->to_arrays( $repository->get_by_post( 20 ) ), 'name' ) );
+		$this->assertSame( [ 'A30', 'A31' ], array_column( $this->to_arrays( $repository->get_by_template( 1 ) ), 'name' ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_page_through_more_rows_than_one_query_returns(): void {
+		$repository = tribe( Tickets::class );
+		$repository->insert_many( array_map( fn( int $occurrence_id ) => $this->row( [ 'occurrence_id' => $occurrence_id ] ), range( 1, 450 ) ) );
+
+		$this->assertCount( 450, $repository->get_by_post( 20 ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_delete_the_rows_of_a_post_only(): void {
+		$repository = tribe( Tickets::class );
+		$repository->insert_many(
+			[
+				$this->row( [ 'parent_id' => 1, 'occurrence_id' => 30 ] ),
+				$this->row( [ 'parent_id' => 2, 'occurrence_id' => 30 ] ),
+				$this->row( [ 'parent_id' => 1, 'occurrence_id' => 31 ] ),
+				$this->row( [ 'parent_id' => 3, 'occurrence_id' => 32 ] ),
+				$this->row( [ 'parent_id' => 4, 'post_id' => 21, 'occurrence_id' => 40 ] ),
+			]
+		);
+
+		$this->assertSame( 4, $repository->delete_by_post( 20 ) );
+		$this->assertSame( [ 40 ], $this->occurrence_ids() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_fill_the_defaults_a_writer_leaves_out(): void {
+		$row = $this->row();
+		unset( $row['sales'], $row['menu_order'], $row['created_at'] );
+		$before = time();
+
+		tribe( Tickets::class )->insert_many( [ $row ] );
+
+		$stored = $this->to_arrays( tribe( Tickets::class )->get_by_occurrence( 30 ) )[0];
+		$this->assertSame( 0, $stored['sales'] );
+		$this->assertSame( 0, $stored['menu_order'] );
+		$this->assertEqualsWithDelta( $before, strtotime( $this->format_date( $stored['created_at'] ) . ' UTC' ), 5 );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_refuse_rows_that_set_different_columns(): void {
+		$second = $this->row( [ 'occurrence_id' => 31 ] );
+		unset( $second['sku'] );
+
+		$this->expectException( InvalidArgumentException::class );
+
+		try {
+			tribe( Tickets::class )->insert_many( [ $this->row(), $second ] );
+		} finally {
+			$this->assertSame( 0, Tickets_Table::get_total_items() );
+		}
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_leave_the_shared_capacity_pools_out_of_every_list_of_rows(): void {
+		$repository = tribe( Tickets::class );
+		$repository->insert_many( [ $this->row( [ 'occurrence_id' => 30 ] ), $this->row( [ 'occurrence_id' => 31 ] ) ] );
+
+		$repository->upsert_pools( 20, 100, [ 30, 31 ] );
+
+		$this->assertCount( 2, $repository->get_by_post( 20 ) );
+		$this->assertCount( 2, $repository->get_by_template( 10 ) );
+		$this->assertCount( 1, $repository->get_by_occurrence( 30 ) );
+		$this->assertSame( 0, (int) $repository->get_pool( 30 )->parent_id );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_keep_one_pool_per_date_and_move_it_with_its_date(): void {
+		$repository = tribe( Tickets::class );
+
+		$repository->upsert_pools( 20, 100, [ 30, 31 ] );
+		// A split moves the date to another event, whose capacity is the same or changed.
+		$repository->upsert_pools( 21, 120, [ 30 ] );
+
+		$this->assertSame( 2, $this->count_pools() );
+		$this->assertSame( [ 21, 120 ], [ (int) $repository->get_pool( 30 )->post_id, (int) $repository->get_pool( 30 )->capacity ] );
+		$this->assertSame( [ 20, 100 ], [ (int) $repository->get_pool( 31 )->post_id, (int) $repository->get_pool( 31 )->capacity ] );
+		$this->assertNull( $repository->get_pool( 32 ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_count_a_dates_shared_sales_in_its_pool(): void {
+		$repository = tribe( Tickets::class );
+		$repository->insert_many(
+			[
+				$this->row( [ 'parent_id' => 1, 'occurrence_id' => 30, 'stock_mode' => 'global', 'sales' => 3 ] ),
+				$this->row( [ 'parent_id' => 2, 'occurrence_id' => 30, 'stock_mode' => 'capped', 'sales' => 2 ] ),
+				$this->row( [ 'parent_id' => 3, 'occurrence_id' => 30, 'stock_mode' => 'own', 'sales' => 5 ] ),
+				$this->row( [ 'parent_id' => 1, 'occurrence_id' => 32, 'stock_mode' => 'global', 'sales' => 104 ] ),
+			]
+		);
+		$repository->upsert_pools( 20, 100, [ 30, 31, 32 ] );
+
+		$repository->refresh_pools( 20 );
+
+		$this->assertSame( [ 5, 95 ], $this->sales_and_stock( $repository->get_pool( 30 ) ), 'Own capacity is no part of the pool.' );
+		$this->assertSame( [ 0, 100 ], $this->sales_and_stock( $repository->get_pool( 31 ) ) );
+		$this->assertSame( [ 104, 0 ], $this->sales_and_stock( $repository->get_pool( 32 ) ), 'More sold than the pool holds leaves none.' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_delete_the_pools_of_an_event_but_the_dates_kept(): void {
+		$repository = tribe( Tickets::class );
+		$repository->upsert_pools( 20, 100, [ 30, 31, 32 ] );
+		$repository->upsert_pools( 21, 100, [ 40 ] );
+
+		$repository->delete_pools( 20, [ 31 ] );
+
+		$this->assertSame( [ null, 31, null, 40 ], [ $repository->get_pool( 30 ), (int) $repository->get_pool( 31 )->occurrence_id, $repository->get_pool( 32 ), (int) $repository->get_pool( 40 )->occurrence_id ] );
+
+		$repository->delete_pools( 20 );
+
+		$this->assertSame( 1, $this->count_pools(), 'Another event keeps its pools.' );
+	}
+
+	/**
+	 * @return int The number of pools in the table.
+	 */
+	private function count_pools(): int {
+		return (int) DB::get_var( DB::prepare( 'SELECT COUNT(*) FROM %i WHERE type = %s', Tickets_Table::table_name(), Tickets::POOL_TYPE ) );
+	}
+
+	/**
+	 * @param Ticket $pool A pool.
+	 *
+	 * @return array{0: int, 1: int} Its sales and stock.
+	 */
+	private function sales_and_stock( Ticket $pool ): array {
+		return [ (int) $pool->sales, (int) $pool->stock ];
+	}
+
+	/**
+	 * Counts the insert queries run against the table from now on.
+	 *
+	 * @return callable(): int Returns the count so far.
+	 */
+	private function count_inserts(): callable {
+		$count = 0;
+		add_filter(
+			'query',
+			static function ( string $query ) use ( &$count ) {
+				if ( 0 === stripos( ltrim( $query ), 'INSERT INTO `' . Tickets_Table::table_name() . '`' ) ) {
+					++$count;
+				}
+
+				return $query;
+			}
+		);
+
+		return static function () use ( &$count ): int {
+			return $count;
+		};
+	}
+
+	/**
+	 * @return int[] The occurrence IDs of the rows left, ascending.
+	 */
+	private function occurrence_ids(): array {
+		$ids = array_column( $this->to_arrays( tribe( Tickets::class )->get_by_post( 20 ) ), 'occurrence_id' );
+		$ids = array_merge( $ids, array_column( $this->to_arrays( tribe( Tickets::class )->get_by_post( 21 ) ), 'occurrence_id' ) );
+		sort( $ids );
+
+		return $ids;
+	}
+
+	/**
+	 * @param Ticket[] $rows The models.
+	 *
+	 * @return array<int,array<string,mixed>> The models' attributes.
+	 */
+	private function to_arrays( array $rows ): array {
+		return array_map( static fn( Ticket $row ) => $row->toArray(), $rows );
+	}
+
+	/**
+	 * @param mixed $date A date as the model returns it.
+	 */
+	private function format_date( $date ): string {
+		return $date instanceof \DateTimeInterface ? $date->format( 'Y-m-d H:i:s' ) : (string) $date;
+	}
+
+	/**
+	 * @param array<string,mixed> $overrides Column values to replace the defaults with.
+	 *
+	 * @return array<string,mixed>
+	 */
+	private function row( array $overrides = [] ): array {
+		return array_merge(
+			[
+				'type'          => 'recurring',
+				'parent_id'     => 10,
+				'post_id'       => 20,
+				'occurrence_id' => 30,
+				'name'          => 'General Admission',
+				'sku'           => 'GA',
+				'price'         => 1050,
+				'capacity'      => 100,
+				'stock'         => 100,
+				'sales'         => 0,
+				'menu_order'    => 0,
+				'created_at'    => '2026-10-01 00:00:00',
+			],
+			$overrides
+		);
+	}
+}
