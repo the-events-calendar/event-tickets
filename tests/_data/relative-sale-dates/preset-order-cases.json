@@ -1,0 +1,121 @@
+{
+	"cases": [
+		{
+			"name": "now to when the event starts",
+			"rule": { "start": { "mode": "default" }, "end": { "mode": "default" } },
+			"ends_before_start": false
+		},
+		{
+			"name": "now to a week before the event ends",
+			"rule": {
+				"start": { "mode": "default" },
+				"end": { "mode": "relative", "value": 1, "unit": 604800, "anchor": "end" }
+			},
+			"ends_before_start": false
+		},
+		{
+			"name": "2 days before the start to when the event starts",
+			"rule": {
+				"start": { "mode": "relative", "value": 2, "unit": 86400, "anchor": "start" },
+				"end": { "mode": "default" }
+			},
+			"ends_before_start": false
+		},
+		{
+			"name": "1 hour before the end to when the event starts",
+			"rule": {
+				"start": { "mode": "relative", "value": 1, "unit": 3600, "anchor": "end" },
+				"end": { "mode": "default" }
+			},
+			"ends_before_start": false
+		},
+		{
+			"name": "2 days to 1 day before the start",
+			"rule": {
+				"start": { "mode": "relative", "value": 2, "unit": 86400, "anchor": "start" },
+				"end": { "mode": "relative", "value": 1, "unit": 86400, "anchor": "start" }
+			},
+			"ends_before_start": false
+		},
+		{
+			"name": "1 day to 2 days before the start",
+			"rule": {
+				"start": { "mode": "relative", "value": 1, "unit": 86400, "anchor": "start" },
+				"end": { "mode": "relative", "value": 2, "unit": 86400, "anchor": "start" }
+			},
+			"ends_before_start": true
+		},
+		{
+			"name": "1 day to 1 day before the start",
+			"rule": {
+				"start": { "mode": "relative", "value": 1, "unit": 86400, "anchor": "start" },
+				"end": { "mode": "relative", "value": 1, "unit": 86400, "anchor": "start" }
+			},
+			"ends_before_start": true
+		},
+		{
+			"name": "60 minutes to 1 hour before the start",
+			"rule": {
+				"start": { "mode": "relative", "value": 60, "unit": 60, "anchor": "start" },
+				"end": { "mode": "relative", "value": 1, "unit": 3600, "anchor": "start" }
+			},
+			"ends_before_start": true
+		},
+		{
+			"name": "1 hour to 2 hours before the end",
+			"rule": {
+				"start": { "mode": "relative", "value": 1, "unit": 3600, "anchor": "end" },
+				"end": { "mode": "relative", "value": 2, "unit": 3600, "anchor": "end" }
+			},
+			"ends_before_start": true
+		},
+		{
+			"name": "1 day before the start to 2 days before the end, valid for an event of more than a day",
+			"rule": {
+				"start": { "mode": "relative", "value": 1, "unit": 86400, "anchor": "start" },
+				"end": { "mode": "relative", "value": 2, "unit": 86400, "anchor": "end" }
+			},
+			"ends_before_start": false
+		},
+		{
+			"name": "3 days before the end to 2 days before the start, valid for an event of less than a day",
+			"rule": {
+				"start": { "mode": "relative", "value": 3, "unit": 86400, "anchor": "end" },
+				"end": { "mode": "relative", "value": 2, "unit": 86400, "anchor": "start" }
+			},
+			"ends_before_start": false
+		},
+		{
+			"name": "2 days before the end to 2 days before the start",
+			"rule": {
+				"start": { "mode": "relative", "value": 2, "unit": 86400, "anchor": "end" },
+				"end": { "mode": "relative", "value": 2, "unit": 86400, "anchor": "start" }
+			},
+			"ends_before_start": true
+		},
+		{
+			"name": "1 day before the end to 2 days before the start",
+			"rule": {
+				"start": { "mode": "relative", "value": 1, "unit": 86400, "anchor": "end" },
+				"end": { "mode": "relative", "value": 2, "unit": 86400, "anchor": "start" }
+			},
+			"ends_before_start": true
+		},
+		{
+			"name": "a specific start, judged with the event's dates only",
+			"rule": {
+				"start": { "mode": "specific" },
+				"end": { "mode": "relative", "value": 2, "unit": 86400, "anchor": "start" }
+			},
+			"ends_before_start": false
+		},
+		{
+			"name": "a specific end, judged with the event's dates only",
+			"rule": {
+				"start": { "mode": "relative", "value": 1, "unit": 86400, "anchor": "start" },
+				"end": { "mode": "specific" }
+			},
+			"ends_before_start": false
+		}
+	]
+}
