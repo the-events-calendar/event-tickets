@@ -485,6 +485,9 @@
 	margin-bottom: 1em;
 	position: relative;
 
+	/* The label column of the form, which every control lines up after. */
+	--tec-tickets-form-label-width: 132px;
+
 	.ticket_form_left {
 		box-sizing: border-box;
 		display: block;
@@ -502,7 +505,7 @@
 
 	input,
 	textarea {
-		max-width: calc(100% - 132px);
+		max-width: calc(100% - var(--tec-tickets-form-label-width));
 	}
 
 	.ticket_field {
@@ -525,7 +528,7 @@
 		}
 
 		@media (min-width: 782px) {
-			margin-left: 132px;
+			margin-left: var(--tec-tickets-form-label-width);
 		}
 
 		&:last-child {
@@ -549,7 +552,7 @@
 			display: flex;
 
 			.ticket_form_left {
-				flex: 0 0 132px;
+				flex: 0 0 var(--tec-tickets-form-label-width);
 			}
 
 			.ticket_form_right {
@@ -930,4 +933,133 @@ p.description {
 .tec-tickets-provider-locked {
 	bottom: var(--tec-spacer-0);
 	position: relative;
+}
+
+/*
+ * A label floated at the top of its row sits above the text of a control taller than it, as WordPress 7's 40px ones
+ * are. These rows line the label up with the first line of their control instead, whatever the control's height.
+ */
+@media (min-width: 782px) {
+
+	.input_block.tec-tickets-field-row {
+		align-items: baseline;
+		display: grid;
+		grid-template-columns: var(--tec-tickets-form-label-width) minmax(0, 1fr);
+
+		/* A row nested in another `.input_block`, as the price row is when its field is disabled, starts the grid itself. */
+		margin-left: 0;
+
+		> :not(.ticket_form_left) {
+			grid-column: 2;
+			margin-left: 0;
+		}
+
+		> input {
+			justify-self: start;
+			max-width: 100%;
+		}
+	}
+}
+
+.tec-tickets-relative-sale-dates {
+	/* The width of the Name field, so both ends line up whatever option their mode select shows. */
+	--tec-tickets-relative-sale-dates-select-width: 280px;
+}
+
+.ticket_sale_price_wrapper {
+	/* The label column of the sale price fields, as wide as the Sale Price label. */
+	--tec-tickets-relative-sale-dates-label-width: 100px;
+}
+
+.tec-tickets-relative-sale-dates select[id$="_mode"] {
+	max-width: 100%;
+	width: var(--tec-tickets-relative-sale-dates-select-width);
+}
+
+.tec-tickets-relative-sale-dates__relative,
+.tec-tickets-relative-sale-dates__specific {
+	margin-top: var(--tec-spacer-1);
+}
+
+/* Room for three digits and the spinner. */
+.tec-tickets-relative-sale-dates__relative input[type="number"] {
+	width: var(--tec-spacer-11);
+}
+
+/* The date a relative end works out to goes under its options, in the form's description style. */
+.tec-tickets-relative-sale-dates__relative .tec-tickets-relative-sale-dates__helper {
+	color: var(--tec-admin-core-grey-50);
+	display: block;
+	margin-top: var(--tec-spacer-0);
+
+	&:empty {
+		display: none;
+	}
+}
+
+.tec-tickets-relative-sale-dates :is(input, select)[aria-invalid="true"] {
+	border-color: var(--tec-error-border-color, #dc3232);
+}
+
+.tec-tickets-relative-sale-dates__error {
+	color: var(--tec-color-wp-error, #d63638);
+
+	/*
+	 * An empty alert stays rendered, out of sight: several screen readers do not announce text written into an alert
+	 * that shows in the same step.
+	 */
+	&:empty {
+		border: 0;
+		clip-path: inset(50%);
+		height: 1px;
+		margin: -1px;
+		overflow: hidden;
+		padding: 0;
+		position: absolute;
+		white-space: nowrap;
+		width: 1px;
+	}
+}
+
+/*
+ * The sales window error sits outside the `.input_block` of each end, so it lines up with their fields itself, past the
+ * form's label column.
+ */
+.tec-tickets-relative-sale-dates__error--sales-window {
+	margin-top: 0;
+
+	@media (min-width: 782px) {
+		margin-left: 132px;
+	}
+}
+
+/*
+ * The sale price fields line up in two columns, their labels and then their controls, with the rest of a boundary under
+ * its mode select.
+ */
+.ticket_sale_price_wrapper .ticket_sale_price:has(.tec-tickets-relative-sale-dates) div.ticket_sale_price-field {
+	align-items: center;
+	column-gap: var(--tec-spacer-1);
+	display: grid;
+	grid-template-columns: var(--tec-tickets-relative-sale-dates-label-width) minmax(0, 1fr);
+
+	> :not(label) {
+		grid-column: 2;
+	}
+
+	input#ticket_sale_price {
+		justify-self: start;
+		margin-left: 0;
+	}
+}
+
+/* How long the sale price lasts, under the sale end, in the form's description gray. */
+.ticket_sale_price_wrapper .tec-tickets-relative-sale-dates__helper {
+	color: var(--tec-admin-core-grey-50);
+	font-style: italic;
+}
+
+/* The sale price error lines up with the sale price controls, past the label column and its gap. */
+.tec-tickets-relative-sale-dates__error--sale-price {
+	margin-left: calc(var(--tec-tickets-relative-sale-dates-label-width) + var(--tec-spacer-1));
 }
