@@ -172,7 +172,8 @@ final class Sync {
 	 * @return void
 	 */
 	private function apply( int $post_id, array $templates, array $dates ): void {
-		$rows   = $this->delete_stale( $this->rows->get_by_post( $post_id ), $templates, $dates );
+		$rows   = $this->rows->get_by_post( $post_id );
+		$rows   = $this->delete_stale( $rows, array_merge( $templates, $this->templates_being_saved( $post_id, $rows, $templates ) ), $dates );
 		$values = [];
 
 		foreach ( $templates as $template_id ) {
@@ -284,6 +285,35 @@ final class Sync {
 						],
 					],
 				]
+			)
+		);
+	}
+
+	/**
+	 * Returns the templates of an event's rows that another request is saving.
+	 *
+	 * A save writes the template's type back to `default` until it ends, and the block editor saves every ticket
+	 * alongside the event. A template keeps its type through every save, so a published ticket of the event typed
+	 * `default` that has rows is one mid-save, not one removed.
+	 *
+	 * @since TBD
+	 *
+	 * @param int      $post_id   The event's post ID.
+	 * @param Ticket[] $rows      The event's rows.
+	 * @param int[]    $templates The event's templates.
+	 *
+	 * @return int[] The IDs of the templates being saved.
+	 */
+	private function templates_being_saved( int $post_id, array $rows, array $templates ): array {
+		$parents = array_diff( array_unique( array_map( static fn( Ticket $row ) => (int) $row->parent_id, $rows ) ), $templates );
+
+		return array_values(
+			array_filter(
+				$parents,
+				static fn( int $ticket_id ) => Commerce_Ticket::POSTTYPE === get_post_type( $ticket_id )
+					&& 'publish' === get_post_status( $ticket_id )
+					&& in_array( get_post_meta( $ticket_id, '_type', true ), [ '', 'default' ], true )
+					&& $post_id === (int) get_post_meta( $ticket_id, Commerce_Ticket::$event_relation_meta_key, true )
 			)
 		);
 	}
