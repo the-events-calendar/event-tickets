@@ -15,6 +15,8 @@ use Tribe__Utils__Array as Arr;
 use Tribe__Date_Utils as Date_Utils;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use TEC\Tickets\Ticket_Data;
+use TEC\Tickets\Recurring_Tickets\Hydrator;
+use TEC\Tickets\Recurring_Tickets\Ticket_ID;
 
 /**
  * Class Ticket.
@@ -375,6 +377,7 @@ class Ticket extends Ticket_Data {
 	 *
 	 * @since 5.1.9
 	 * @since 5.31.0 Set the provider before judging the sale price, so its dates are read in the event timezone.
+	 * @since TBD Loads a recurring event ticket from its row.
 	 *
 	 * @param int|\WP_Post $ticket_id
 	 *
@@ -385,6 +388,10 @@ class Ticket extends Ticket_Data {
 
 		if ( ! is_numeric( $ticket_id ) ) {
 			return null;
+		}
+
+		if ( Ticket_ID::is_table_ticket( $ticket_id ) ) {
+			return tribe( Hydrator::class )->load( (int) $ticket_id );
 		}
 
 		$cached = wp_cache_get( (int) $ticket_id, 'tec_tickets' );
@@ -1102,12 +1109,19 @@ class Ticket extends Ticket_Data {
 	 * Get the event ID for the ticket.
 	 *
 	 * @since 5.5.0
+	 * @since TBD A recurring event ticket answers the date it belongs to.
 	 *
 	 * @param int $ticket_id The ticket post ID.
 	 *
 	 * @return mixed
 	 */
 	public function get_related_event_id( $ticket_id ) {
+		if ( Ticket_ID::is_table_ticket( $ticket_id ) ) {
+			$ticket = tribe( Hydrator::class )->load( (int) $ticket_id );
+
+			return $ticket ? $ticket->get_event_id() : '';
+		}
+
 		return get_post_meta( $ticket_id, static::$event_relation_meta_key, true );
 	}
 

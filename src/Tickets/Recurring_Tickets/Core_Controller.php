@@ -32,10 +32,13 @@ final class Core_Controller extends Controller_Contract {
 	 *
 	 * @return void
 	 */
-	public function unregister(): void {}
+	public function unregister(): void {
+		remove_filter( Occurrence_Guard::FILTER, $this->container->callback( Occurrence_Guard::class, 'remember' ), 9 );
+		remove_filter( Occurrence_Guard::FILTER, $this->container->callback( Occurrence_Guard::class, 'restore' ), PHP_INT_MAX );
+	}
 
 	/**
-	 * Registers the table.
+	 * Registers the table, then what needs it.
 	 *
 	 * @since TBD
 	 *
@@ -52,6 +55,17 @@ final class Core_Controller extends Controller_Contract {
 					'query' => $e->getQuery(),
 				]
 			);
+
+			return;
 		}
+
+		/*
+		 * Hooked through container callbacks: they resolve the current instance when called, and a second
+		 * registration, which binds the singleton again, still removes the hooks of the first.
+		 */
+		$this->container->singleton( Occurrence_Guard::class );
+		// Before ECP's callback at 10, and after every other one.
+		add_filter( Occurrence_Guard::FILTER, $this->container->callback( Occurrence_Guard::class, 'remember' ), 9 );
+		add_filter( Occurrence_Guard::FILTER, $this->container->callback( Occurrence_Guard::class, 'restore' ), PHP_INT_MAX );
 	}
 }
