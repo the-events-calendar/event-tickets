@@ -180,6 +180,28 @@ class Sync_Test extends WPTestCase {
 	}
 
 	/**
+	 * The block editor saves every ticket alongside the event: a sync of the event runs while another request saves a
+	 * template, whose save writes its type back to `default` until it ends.
+	 *
+	 * @test
+	 */
+	public function it_should_keep_the_rows_and_sales_of_a_template_another_request_is_saving(): void {
+		$this->skip_without_recurrence_tier();
+
+		$event    = $this->create_recurring_event();
+		$template = $this->create_template( $event, 'General Admission', '10.50', 20 );
+		$rows     = $this->rows_of( $template );
+		$this->assertTrue( tribe( Stock::class )->sell( (int) $rows[0]->id, 3 ) );
+
+		update_post_meta( $template, '_type', 'default' );
+		tribe( Sync::class )->sync_event( $event );
+
+		$kept = $this->rows_of( $template );
+		$this->assertSame( array_map( static fn( Ticket $row ) => (int) $row->id, $rows ), array_map( static fn( Ticket $row ) => (int) $row->id, $kept ) );
+		$this->assertSame( 3, (int) $kept[0]->sales );
+	}
+
+	/**
 	 * @test
 	 */
 	public function it_should_leave_a_row_whose_date_moved_to_another_event(): void {
