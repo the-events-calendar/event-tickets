@@ -202,6 +202,29 @@ class Sync_Test extends WPTestCase {
 	}
 
 	/**
+	 * The sync reads the event's templates from the database, and a template's type from the request's cache: the
+	 * other request's save can flip it between the two.
+	 *
+	 * @test
+	 */
+	public function it_should_keep_the_rows_of_a_template_whose_cached_type_disagrees_with_the_database(): void {
+		$this->skip_without_recurrence_tier();
+
+		$event    = $this->create_recurring_event();
+		$template = $this->create_template( $event, 'General Admission', '10.50', 20 );
+		$rows     = $this->rows_of( $template );
+		$this->assertTrue( tribe( Stock::class )->sell( (int) $rows[0]->id, 3 ) );
+
+		$this->assertSame( 'recurring', get_post_meta( $template, '_type', true ) );
+		DB::update( DB::prefix( 'postmeta' ), [ 'meta_value' => 'default' ], [ 'post_id' => $template, 'meta_key' => '_type' ] );
+		tribe( Sync::class )->sync_event( $event );
+
+		$kept = $this->rows_of( $template );
+		$this->assertSame( array_map( static fn( Ticket $row ) => (int) $row->id, $rows ), array_map( static fn( Ticket $row ) => (int) $row->id, $kept ) );
+		$this->assertSame( 3, (int) $kept[0]->sales );
+	}
+
+	/**
 	 * @test
 	 */
 	public function it_should_leave_a_row_whose_date_moved_to_another_event(): void {
