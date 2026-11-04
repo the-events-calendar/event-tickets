@@ -1,6 +1,6 @@
 {
 	"name": "event-tickets",
-	"version": "5.30.3",
+	"version": "5.31.0",
 	"repository": "git@github.com:the-events-calendar/event-tickets.git",
 	"_zipname": "event-tickets",
 	"_zipfoldername": "event-tickets",
@@ -69,6 +69,7 @@
 		"format:css": "wp-scripts lint-style --fix",
 		"format:js": "wp-scripts lint-js src/ --fix",
 		"build": "wp-scripts build",
+		"build:relative-sale-dates-zone-data": "node src/Tickets/Relative_Sale_Dates/app/zone-data/build.js",
 		"start": "wp-scripts start --mode=development --devtool=source-map",
 		"dev": "WP_DEVTOOL=eval-source-map wp-scripts start",
 		"jest": "jest",

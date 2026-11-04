@@ -625,6 +625,7 @@ class Coupons extends Base_API {
 	 * Updates the Stripe payment intent so it matches the current cart.
 	 *
 	 * @since 5.29.5
+	 * @since 5.30.3.1 Only updates an intent created for this cart.
 	 *
 	 * @param string $id   The payment intent ID.
 	 * @param Cart   $cart The cart the payment intent is being charged for.
@@ -639,6 +640,16 @@ class Coupons extends Base_API {
 		 * rather than writing an amount Stripe would reject.
 		 */
 		if ( ! $values ) {
+			return;
+		}
+
+		$payment_intent = Payment_Intent::get( $id );
+
+		/*
+		 * The Payment Intent ID is caller-supplied, so only push the new total to an intent created
+		 * for this cart; otherwise a known ID could change another buyer's intent amount.
+		 */
+		if ( ! is_array( $payment_intent ) || ! Payment_Intent::is_bound_to_cart( $payment_intent, $cart ) ) {
 			return;
 		}
 
