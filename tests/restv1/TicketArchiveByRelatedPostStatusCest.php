@@ -67,6 +67,17 @@ class TicketArchiveByRelatedPostStatusCest extends BaseRestCest {
 			'tickets'     => [],
 		] );
 
+		// explicitly publish, private
+		$I->sendGET( $this->tickets_url, [ 'post_status' => 'publish,private' ] );
+		$I->seeResponseIsJson();
+		$I->seeResponseCodeIs( 200 );
+		$I->seeResponseContainsJson( [
+			'rest_url'    => add_query_arg( [ 'post_status' => 'publish,private' ], $this->tickets_url . '/' ),
+			'total_pages' => 1,
+			'total'       => 1,
+			'tickets'     => $expected_tickets,
+		] );
+
 		$I->generate_nonce_for_role( 'administrator' );
 
 		// implicitly any
