@@ -14,8 +14,10 @@ use TEC\Tickets\Commerce\Reports\Orders as Order_Report;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use TEC\Tickets\Commerce\Admin_Tables\Orders as Orders_Table;
+use Tribe\Tickets\Test\Traits\With_Version_Independent_List_Table;
 
 class OrderReportTest extends WPTestCase {
+	use With_Version_Independent_List_Table;
 
 	use SnapshotAssertions;
 	use With_Uopz;
@@ -244,6 +246,7 @@ class OrderReportTest extends WPTestCase {
 
 		// Replace the order date with a placeholder.
 		$html = str_replace( $order_date, '{{order_date}}', $html );
+		$html = $this->remove_core_list_table_navigation( $html );
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}

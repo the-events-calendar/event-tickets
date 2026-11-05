@@ -5,6 +5,7 @@ namespace Tribe\Tickets\Commerce\PayPal;
 use Codeception\TestCase\WPTestCase;
 use ReflectionClass;
 use ReflectionException;
+use TEC\Tickets\Legacy_PayPal\Cart_Reconciler;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker;
 use Tribe__Post_Transient as Post_Transient;
@@ -122,6 +123,23 @@ class PayPalTest extends WPTestCase {
 		$ticket_1_id = $this->create_paypal_ticket_basic( $event_1_id, $ticket_1_price );
 		$ticket_2_id = $this->create_paypal_ticket_basic( $event_2_id, $ticket_2_price );
 
+		// Fulfillment requires the checkout the transaction was paid for.
+		$invoice = 'pdt-test-invoice';
+		tribe( Cart_Reconciler::class )->remember_checkout(
+			$invoice,
+			[
+				'business'      => 'seller@paypalsandbox.com',
+				'currency_code' => 'USD',
+				'item_number_1' => "{$event_1_id}:{$ticket_1_id}",
+				'quantity_1'    => $ticket_1_quantity,
+				'amount_1'      => $ticket_1_price,
+				'item_number_2' => "{$event_2_id}:{$ticket_2_id}",
+				'quantity_2'    => $ticket_2_quantity,
+				'amount_2'      => $ticket_2_price,
+			]
+		);
+		$custom = rawurlencode( wp_json_encode( [ 'user_id' => 1, 'tribe_handler' => 'tpp', 'invoice' => $invoice ] ) );
+
 		$body = <<<EOT
 SUCCESS
 mc_gross={$total_in_cart}
@@ -142,7 +160,7 @@ first_name=Test
 mc_fee=0.36
 address_country_code=US
 address_name=Test+Buyer
-custom=%7B%22user_id%22%3A1%2C%22tribe_handler%22%3A%22tpp%22%7D
+custom={$custom}
 payer_status=verified
 business=seller%40paypalsandbox.com
 address_country=United+States
