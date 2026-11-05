@@ -75,14 +75,20 @@ final class Block_Save {
 	 *
 	 * @since TBD
 	 *
-	 * @param WP_Post         $post     The saved post.
-	 * @param WP_REST_Request $request  The request that saved it.
-	 * @param bool            $creating Whether the post was created by this request.
+	 * Untyped, as `rest_after_insert_{$post_type}` is core's: anything but a post and a request is ignored.
+	 *
+	 * @param WP_Post|mixed         $post     The saved post.
+	 * @param WP_REST_Request|mixed $request  The request that saved it.
+	 * @param bool|mixed            $creating Whether the post was created by this request.
 	 *
 	 * @return Result|null The commit result, or `null` when nothing was committed.
 	 */
-	public function on_rest_after_insert( WP_Post $post, WP_REST_Request $request, bool $creating ): ?Result {
+	public function on_rest_after_insert( $post, $request = null, $creating = null ): ?Result {
 		unset( $creating );
+
+		if ( ! $post instanceof WP_Post || ! $request instanceof WP_REST_Request ) {
+			return null;
+		}
 
 		$raw = $request->get_param( 'tec_tickets' );
 

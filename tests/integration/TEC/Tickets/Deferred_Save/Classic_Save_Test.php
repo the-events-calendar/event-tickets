@@ -79,6 +79,33 @@ class Classic_Save_Test extends WPTestCase {
 	}
 
 	/**
+	 * Some plugins fire `save_post` with the post ID alone.
+	 *
+	 * @test
+	 */
+	public function it_should_save_the_payload_when_save_post_passes_only_the_post_id(): void {
+		$this->log_in_as_admin();
+		$post_id = $this->create_deferred_post();
+		$this->post_payload( [ 'create' => [ $this->ticket_data( 'From the form' ) ] ] );
+
+		$result = tribe( Classic_Save::class )->on_save_post( $post_id );
+
+		$this->assertInstanceOf( Result::class, $result );
+		$this->assertSame( [ 'From the form' ], $this->ticket_names( $post_id ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_do_nothing_when_save_post_passes_something_that_is_not_a_post(): void {
+		$this->log_in_as_admin();
+		$this->create_deferred_post();
+		$this->post_payload( [ 'create' => [ $this->ticket_data( 'From the form' ) ] ] );
+
+		$this->assertNull( tribe( Classic_Save::class )->on_save_post( 'not-a-post-id', 'not-a-post' ) );
+	}
+
+	/**
 	 * @test
 	 */
 	public function it_should_apply_the_payload_only_to_the_post_the_form_is_for(): void {
