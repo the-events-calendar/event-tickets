@@ -61,12 +61,10 @@ final class Fallbacks {
 	 * @param int|string $key   The item's key in the order's item list.
 	 * @param array      $item  The order item.
 	 *
-	 * @return array{name: string, type: string, stored: bool} The name, followed by the marker, the ticket type, and
-	 *                                                         whether the name was stored rather than made from the
-	 *                                                         ticket ID.
+	 * @return array{name: string, type: string} The name, followed by the marker, and the ticket type.
 	 */
 	public function get_missing_ticket( WP_Post $order, $key, array $item ): array {
-		$stored   = $this->get_stored_rows( $order->ID )[ (string) $key ] ?? [];
+		$stored   = $this->get_stored_rows( $order->ID )[ $key ] ?? [];
 		$snapshot = is_array( $item['snapshot'] ?? null ) ? $item['snapshot'] : [];
 		$name     = $this->first_string( $stored['name'] ?? null, $snapshot['name'] ?? null );
 		$type     = $this->first_string(
@@ -75,9 +73,7 @@ final class Fallbacks {
 			Constants::TC_RSVP_TYPE === ( $item['type'] ?? '' ) ? Constants::TC_RSVP_TYPE : null
 		);
 
-		$stored_name = '' !== $name;
-
-		if ( ! $stored_name ) {
+		if ( '' === $name ) {
 			$name = sprintf(
 				// translators: 1) is the singular ticket label, 2) is the ID of a ticket that no longer exists.
 				_x( '%1$s #%2$d', 'The name of an order line whose ticket no longer exists.', 'event-tickets' ),
@@ -87,13 +83,12 @@ final class Fallbacks {
 		}
 
 		return [
-			'name'   => sprintf(
+			'name' => sprintf(
 				// translators: %s is the name of a ticket that no longer exists.
 				_x( '%s (no longer exists)', 'An order line whose ticket has been deleted.', 'event-tickets' ),
 				$name
 			),
-			'type'   => '' === $type ? 'default' : $type,
-			'stored' => $stored_name,
+			'type' => '' === $type ? 'default' : $type,
 		];
 	}
 
