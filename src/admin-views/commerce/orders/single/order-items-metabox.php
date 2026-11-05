@@ -50,12 +50,13 @@ use TEC\Tickets\Commerce\Order_Items\Fallbacks;
 
 				$ticket = tribe( Module::class )->get_ticket( 0, $ticket_id );
 
-				// The order total still counts a line whose ticket was deleted, so the line is shown too.
-				$missing_ticket = $ticket ? null : tribe( Fallbacks::class )->get_missing_ticket( $order, $key, $item );
-
-				// A stand-in keeps `$ticket` an object, as theme overrides of the item template written before this expect.
-				if ( $missing_ticket ) {
-					$ticket = new Tribe__Tickets__Ticket_Object(
+				/*
+				 * The order total still counts a line whose ticket was deleted, so the line is shown from what the
+				 * order stored. A stand-in keeps `$ticket` an object, as theme overrides of the item template expect.
+				 */
+				if ( ! $ticket ) {
+					$missing_ticket = tribe( Fallbacks::class )->get_missing_ticket( $order, $key, $item );
+					$ticket         = new Tribe__Tickets__Ticket_Object(
 						[
 							'ID'   => absint( $ticket_id ),
 							'name' => $missing_ticket['name'],
@@ -71,11 +72,10 @@ use TEC\Tickets\Commerce\Order_Items\Fallbacks;
 						$this->template(
 							'order-items-metabox-item',
 							[
-								'order'          => $order,
-								'ticket'         => $ticket,
-								'missing_ticket' => $missing_ticket,
-								'item'           => $item,
-								'attendee'       => null,
+								'order'    => $order,
+								'ticket'   => $ticket,
+								'item'     => $item,
+								'attendee' => null,
 							]
 						);
 					}
@@ -84,11 +84,10 @@ use TEC\Tickets\Commerce\Order_Items\Fallbacks;
 					$this->template(
 						'order-items-metabox-item',
 						[
-							'order'          => $order,
-							'ticket'         => $ticket,
-							'missing_ticket' => $missing_ticket,
-							'item'           => $item,
-							'attendee'       => $attendee,
+							'order'    => $order,
+							'ticket'   => $ticket,
+							'item'     => $item,
+							'attendee' => $attendee,
 						]
 					);
 				}
