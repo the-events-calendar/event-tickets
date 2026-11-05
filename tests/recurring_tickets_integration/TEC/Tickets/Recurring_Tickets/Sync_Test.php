@@ -6,10 +6,14 @@ use Codeception\TestCase\WPTestCase;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Events\Custom_Tables\V1\Tables\Occurrences;
 use TEC\Events\Custom_Tables\V1\Updates\Controller as Updates_Controller;
+use DateTimeImmutable;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Recurring_Tickets\Models\Ticket;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
+use TEC\Tickets\Relative_Sale_Dates\Rule;
+use TEC\Tickets\Relative_Sale_Dates\Rule_Store;
+use TEC\Tickets\Relative_Sale_Dates\Window_Kind;
 use TEC\Tickets\Tests\Recurring_Tickets\Recurrence_Tier_Check;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -222,6 +226,60 @@ class Sync_Test extends WPTestCase {
 		$kept = $this->rows_of( $template );
 		$this->assertSame( array_map( static fn( Ticket $row ) => (int) $row->id, $rows ), array_map( static fn( Ticket $row ) => (int) $row->id, $kept ) );
 		$this->assertSame( 3, (int) $kept[0]->sales );
+	}
+
+	/**
+	 * A sales window relative to its event resolves against each date of a recurring event, not its first date.
+	 *
+	 * @test
+	 */
+	public function it_should_resolve_a_relative_sales_window_against_each_date(): void {
+		$this->skip_without_recurrence_tier();
+
+		$event    = $this->create_recurring_event();
+		$relative = $this->create_template( $event, 'General Admission', '10', 20 );
+		$default  = $this->create_template( $event, 'VIP', '25', 5 );
+		$store    = tribe( Rule_Store::class );
+		$store->save_rule(
+			$relative,
+			Rule::from_array(
+				[
+					'start' => [ 'mode' => 'relative', 'value' => 2, 'unit' => DAY_IN_SECONDS, 'anchor' => 'start' ],
+					'end'   => [ 'mode' => 'relative', 'value' => 1, 'unit' => HOUR_IN_SECONDS, 'anchor' => 'end' ],
+				],
+				Window_Kind::sales()
+			)
+		);
+		$store->save_rule( $default, Rule::from_array( [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ], Window_Kind::sales() ) );
+
+		// A fourth date: the rows of the first three are refreshed, the new one's inserted.
+		$recurrence                          = get_post_meta( $event, '_EventRecurrence', true );
+		$recurrence['rules'][0]['end-count'] = 4;
+		update_post_meta( $event, '_EventRecurrence', $recurrence );
+		tribe( Updates_Controller::class )->commit_updates();
+
+		$dates = $this->get_dates( $event );
+		$this->assertCount( 4, $dates );
+
+		foreach ( [ $relative, $default ] as $template ) {
+			$rows = $this->rows_of( $template );
+			$this->assertCount( 4, $rows );
+
+			foreach ( $dates as $i => $date ) {
+				$start = new DateTimeImmutable( $date->start_date );
+				$end   = new DateTimeImmutable( $date->end_date );
+
+				if ( $relative === $template ) {
+					$this->assertSame(
+						[ $start->modify( '-2 days' )->format( 'Y-m-d H:i:s' ), $end->modify( '-1 hour' )->format( 'Y-m-d H:i:s' ) ],
+						[ $this->datetime( $rows[ $i ]->start_date ), $this->datetime( $rows[ $i ]->end_date ) ],
+						"Date {$i} of the relative window."
+					);
+				} else {
+					$this->assertSame( $start->format( 'Y-m-d H:i:s' ), $this->datetime( $rows[ $i ]->end_date ), "Date {$i} of the default window." );
+				}
+			}
+		}
 	}
 
 	/**
