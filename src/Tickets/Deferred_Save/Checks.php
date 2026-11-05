@@ -123,7 +123,7 @@ final class Checks {
 			$destination_id     = (int) Event::filter_event_id( $destination_id, 'deferred_save' );
 			$move[ $ticket_id ] = $destination_id;
 
-			// Whether the destination can hold this ticket is the move's concern (SOFT-4825); that the user may edit its tickets is ours.
+			// Whether the destination can hold tickets at all is checked by Commit's move; that the user may edit its tickets is checked here.
 			if ( ! $this->permissions->user_can_edit_tickets_of( $destination_id ) ) {
 				$rejections = $rejections->with(
 					Parser::MOVE,
