@@ -149,17 +149,21 @@ class Ticket_Cache_Controller extends Controller {
 	 * Clean the ticket cache when a related post is created, updated or deleted.
 	 *
 	 * @since 5.6.4
+	 * @since TBD The post is optional and loaded from the ID when it is not a post: some plugins fire `save_post` with the ID alone.
 	 *
-	 * @param int     $post_id The ID of the post being deleted.
-	 * @param WP_Post $post    The post object being deleted.
+	 * @param int|mixed          $post_id The ID of the post being deleted.
+	 * @param WP_Post|mixed|null $post    The post object being deleted.
 	 *
 	 * @return void The ticket cache is cleaned if the post is related to a ticket.
 	 */
-	public function clean_ticket_cache_from_related_post( $post_id, $post ): void {
-		if ( ! is_int( $post_id ) && $post instanceof WP_Post ) {
+	public function clean_ticket_cache_from_related_post( $post_id, $post = null ): void {
+		$post = $post instanceof WP_Post ? $post : get_post( absint( $post_id ) );
+
+		if ( ! $post instanceof WP_Post ) {
 			return;
 		}
 
+		$post_id   = $post->ID;
 		$post_type = $post->post_type;
 
 		$ticket_related_post_types = [
