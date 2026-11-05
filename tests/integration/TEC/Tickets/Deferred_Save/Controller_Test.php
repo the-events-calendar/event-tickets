@@ -83,6 +83,15 @@ class Controller_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
+	public function it_should_be_switched_off_by_a_falsy_string_from_the_filter(): void {
+		add_filter( 'tec_tickets_deferred_save_active', static fn() => 'no' );
+
+		$this->assertFalse( $this->make_controller()->is_active() );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_register_nothing_when_switched_off(): void {
 		add_filter( 'tec_tickets_deferred_save_active', '__return_false' );
 		$controller = $this->make_controller();

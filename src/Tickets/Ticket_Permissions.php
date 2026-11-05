@@ -75,10 +75,10 @@ class Ticket_Permissions {
 		 * @since TBD
 		 *
 		 * @param bool $can     Whether the user may edit the post's tickets.
-		 * @param int  $post_id The ID of the post, as asked about.
+		 * @param int  $post_id The ID of the post, with an occurrence ID normalized to its event.
 		 * @param int  $user_id The ID of the user.
 		 */
-		return (bool) apply_filters( 'tec_tickets_user_can_edit_tickets_of', $can, $post_id, $user_id );
+		return tribe_is_truthy( apply_filters( 'tec_tickets_user_can_edit_tickets_of', $can, $normalized_id, $user_id ) );
 	}
 
 	/**
@@ -103,7 +103,7 @@ class Ticket_Permissions {
 		 * @param Ticket_Object $ticket  The ticket.
 		 * @param int           $user_id The ID of the user.
 		 */
-		return (bool) apply_filters( 'tec_tickets_user_can_edit_ticket', $this->can_edit_ticket( $ticket, $user_id ), $ticket, $user_id );
+		return tribe_is_truthy( apply_filters( 'tec_tickets_user_can_edit_ticket', $this->can_edit_ticket( $ticket, $user_id ), $ticket, $user_id ) );
 	}
 
 	/**
@@ -154,6 +154,6 @@ class Ticket_Permissions {
 		 * @param Ticket_Object $ticket  The ticket.
 		 * @param int           $user_id The ID of the user.
 		 */
-		return (bool) apply_filters( 'tec_tickets_user_can_delete_ticket', $can, $ticket, $user_id );
+		return tribe_is_truthy( apply_filters( 'tec_tickets_user_can_delete_ticket', $can, $ticket, $user_id ) );
 	}
 }
