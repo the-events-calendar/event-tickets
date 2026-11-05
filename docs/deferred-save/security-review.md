@@ -73,4 +73,5 @@ tec_tickets = [
 ## Open items for mini-project D
 
 - Which post a routed payload lands on after a split is D's; the seam re-checks against the destination, so D cannot widen what the user may do.
+- A route must not hand one entry to two posts. `Result` reports one created ID per `create` position, so a `create` routed to both halves of a split would make two tickets and report one; if D needs one change on several posts, `Result` has to report it per post first.
 - The classic seam runs at `save_post` priority 20, before ECP commits occurrences at `redirect_post_location` 100; if D needs the occurrences it moves its hook, not the checks.
