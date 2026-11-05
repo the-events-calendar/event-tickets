@@ -9,13 +9,11 @@
 
 namespace TEC\Tickets\Recurring_Tickets\Admin;
 
-use DateTimeInterface;
-use TEC\Tickets\Recurring_Tickets\Hydrator;
-use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
+use Tribe__Date_Utils as Dates;
 
 /**
- * Lists a recurring event's orders of every date on the event's Orders page and its export, shows each order's dates
- * and narrows the list to one.
+ * Lists a recurring event's orders of every date on the event's Orders page and its export, gives each ordered
+ * ticket its date and narrows the list to the dates chosen.
  *
  * An order of a row holds its date's ID; the event's Orders page looks orders up by the event's own ID.
  *
@@ -25,40 +23,22 @@ use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
  */
 final class Orders_Page {
 	/**
-	 * The orders table's column of each order's dates.
+	 * An event ID no order holds: narrowing to it lists no order, where no event at all would list every one.
 	 *
 	 * @since TBD
 	 *
-	 * @var string
+	 * @var int
 	 */
-	public const DATE_COLUMN = 'tec_tickets_recurring_date';
+	private const NO_EVENT = -1;
 
 	/**
-	 * The rows repository.
+	 * The event's dates.
 	 *
 	 * @since TBD
 	 *
-	 * @var Rows
+	 * @var Event_Dates
 	 */
-	private Rows $rows;
-
-	/**
-	 * The row hydrator.
-	 *
-	 * @since TBD
-	 *
-	 * @var Hydrator
-	 */
-	private Hydrator $hydrator;
-
-	/**
-	 * The event's Attendees page, which knows the dates its attendees hold.
-	 *
-	 * @since TBD
-	 *
-	 * @var Attendees_Page
-	 */
-	private Attendees_Page $attendees_page;
+	private Event_Dates $event_dates;
 
 	/**
 	 * The select that narrows the table to one date.
@@ -70,33 +50,20 @@ final class Orders_Page {
 	private Date_Filter $date_filter;
 
 	/**
-	 * The dates of each event, by event: the date's start by its post ID.
-	 *
-	 * @since TBD
-	 *
-	 * @var array<int,array<int,string>>
-	 */
-	private array $dates = [];
-
-	/**
 	 * Orders_Page constructor.
 	 *
 	 * @since TBD
 	 *
-	 * @param Rows           $rows           The rows repository.
-	 * @param Hydrator       $hydrator       The row hydrator.
-	 * @param Attendees_Page $attendees_page The event's Attendees page.
-	 * @param Date_Filter    $date_filter    The select that narrows the table to one date.
+	 * @param Event_Dates $event_dates    The event's dates.
+	 * @param Date_Filter $date_filter    The select that narrows the table to one date.
 	 */
-	public function __construct( Rows $rows, Hydrator $hydrator, Attendees_Page $attendees_page, Date_Filter $date_filter ) {
-		$this->rows           = $rows;
-		$this->hydrator       = $hydrator;
-		$this->attendees_page = $attendees_page;
-		$this->date_filter    = $date_filter;
+	public function __construct( Event_Dates $event_dates, Date_Filter $date_filter ) {
+		$this->event_dates = $event_dates;
+		$this->date_filter = $date_filter;
 	}
 
 	/**
-	 * Looks an event's orders up by its dates too, or by the one chosen.
+	 * Looks an event's orders up by its dates too, or by those chosen.
 	 *
 	 * @since TBD
 	 *
@@ -107,88 +74,58 @@ final class Orders_Page {
 	public function filter_events( $arguments ): array {
 		$arguments = (array) $arguments;
 		$event_id  = is_numeric( $arguments['events'] ?? null ) ? (int) $arguments['events'] : 0;
-		$dates     = $this->dates( $event_id );
+		$dates     = $this->event_dates->all( $event_id );
 
 		if ( ! $dates ) {
 			return $arguments;
 		}
 
 		$chosen              = $this->date_filter->chosen( $dates );
-		$arguments['events'] = $chosen ? [ $chosen ] : array_merge( [ $event_id ], array_keys( $dates ) );
+		$arguments['events'] = null === $chosen ? array_merge( [ $event_id ], array_keys( $dates ) ) : ( $chosen ?: [ self::NO_EVENT ] );
 
 		return $arguments;
 	}
 
 	/**
-	 * Adds, after what was purchased, a column of each order's dates to an event with dates.
+	 * Gives an ordered recurring event ticket, in the orders table, the date it was bought for.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string,string>|mixed $columns  The orders table's columns.
-	 * @param int|mixed                  $event_id The event.
+	 * @param string|mixed              $name      The ticket's name.
+	 * @param array<string,mixed>|mixed $cart_item The order's line of the ticket.
 	 *
-	 * @return array<string,string> The columns.
+	 * @return string|mixed The name.
 	 */
-	public function add_date_column( $columns, $event_id ): array {
-		$columns = (array) $columns;
+	public function add_date_to_purchased( $name, $cart_item ) {
+		$dates = $this->event_dates->all( $this->event_dates->event_of( $this->page_event_id() ) );
+		$start = $dates[ (int) ( ( (array) $cart_item )['event_id'] ?? 0 ) ] ?? '';
 
-		if ( ! $this->dates( (int) $event_id ) ) {
-			return $columns;
+		if ( '' === $start ) {
+			return $name;
 		}
 
-		$position = array_search( 'purchased', array_keys( $columns ), true );
-		$position = false === $position ? count( $columns ) : $position + 1;
-		$column   = [ self::DATE_COLUMN => esc_html__( 'Event date', 'event-tickets' ) ];
-
-		return array_slice( $columns, 0, $position, true ) + $column + array_slice( $columns, $position, null, true );
+		return sprintf( '%1$s - %2$s', $name, tribe_format_date( $start, false, Dates::datepicker_formats( Dates::get_datepicker_format_index() ) ) );
 	}
 
 	/**
-	 * Returns an order's dates of the event, in the date column.
+	 * Prints, above the orders table, a select of the event's dates to narrow the list to them.
 	 *
 	 * @since TBD
 	 *
-	 * @param string|mixed $value  The cell's value.
-	 * @param object|mixed $item   The order.
-	 * @param string|mixed $column The column.
+	 * @param int|mixed $post_id The post the orders are of.
 	 *
-	 * @return string|mixed The cell's value.
+	 * @return void
 	 */
-	public function render_date_column( $value, $item, $column ) {
-		if ( self::DATE_COLUMN !== $column ) {
-			return $value;
+	public function render_date_filter( $post_id ): void {
+		$event_id = (int) $post_id;
+		$dates    = $this->event_dates->all( $event_id );
+
+		if ( ! $dates ) {
+			return;
 		}
 
-		$dates  = $this->dates( $this->page_event_id() );
-		$labels = [];
-		foreach ( (array) ( $item->events_in_order ?? [] ) as $date_id ) {
-			if ( isset( $dates[ (int) $date_id ] ) ) {
-				$labels[] = tribe_format_date( $dates[ (int) $date_id ], true );
-			}
-		}
-
-		return esc_html( implode( ', ', $labels ) );
-	}
-
-	/**
-	 * Adds, above the orders table, a select of the event's dates to narrow the list to one.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string,string[]>|mixed $nav   The table's nav items.
-	 * @param string|mixed                 $which Where the nav is: `top` or `bottom`.
-	 *
-	 * @return array<string,string[]> The nav items.
-	 */
-	public function add_date_filter( $nav, $which ): array {
-		$nav   = (array) $nav;
-		$dates = 'top' === $which ? $this->dates( $this->page_event_id() ) : [];
-
-		if ( $dates ) {
-			$nav['left'][ Date_Filter::NAME ] = $this->date_filter->render( $dates );
-		}
-
-		return $nav;
+		// phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscaped -- Escaped as it is built.
+		echo $this->date_filter->render( $dates, $this->event_dates->removed( $event_id ), __( 'Orders for:', 'event-tickets' ) );
 	}
 
 	/**
@@ -200,39 +137,5 @@ final class Orders_Page {
 	 */
 	private function page_event_id(): int {
 		return (int) tribe_get_request_var( 'event_id', tribe_get_request_var( 'post_id', 0 ) );
-	}
-
-	/**
-	 * Returns an event's dates: those with rows, and those its attendees hold, removed ones included; in start order.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $event_id The event.
-	 *
-	 * @return array<int,string> The date's start, by its post ID.
-	 */
-	private function dates( int $event_id ): array {
-		if ( $event_id <= 0 ) {
-			return [];
-		}
-
-		if ( isset( $this->dates[ $event_id ] ) ) {
-			return $this->dates[ $event_id ];
-		}
-
-		$dates = $this->attendees_page->held_dates( $event_id );
-		foreach ( $this->rows->get_by_post( $event_id ) as $row ) {
-			$date_id = $this->hydrator->event_id( $row );
-
-			// Without ECP, a row names its event: not a date of it.
-			if ( $date_id !== $event_id ) {
-				$dates[ $date_id ] = $row->occurrence_start instanceof DateTimeInterface ? $row->occurrence_start->format( 'Y-m-d H:i:s' ) : (string) $row->occurrence_start;
-			}
-		}
-		asort( $dates );
-
-		$this->dates[ $event_id ] = $dates;
-
-		return $dates;
 	}
 }

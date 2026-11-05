@@ -4,15 +4,17 @@
  *
  * @since 5.5.9
  * @since 5.6.5    Moved Attendance and Ticket Overview section to their own templates.
+ * @since TBD      The details title takes the post's label from the context, when given.
  *
  * @var \Tribe__Template          $this      Current template object.
  * @var int                       $event_id  The event/post/page id.
  * @var Tribe__Tickets__Attendees $attendees The Attendees object.
+ * @var string|null               $post_singular_label The label of the post in the details title; the post type's when not set.
  */
 
 $event    = $attendees->attendees_table->event;
 $pto      = get_post_type_object( $event->post_type );
-$singular = $pto->labels->singular_name;
+$singular = $post_singular_label ?? $pto->labels->singular_name;
 $tickets  = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
 ?>
 <div id="tribe-attendees-summary" class="welcome-panel tribe-report-panel">

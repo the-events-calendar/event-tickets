@@ -4,12 +4,16 @@ namespace TEC\Tickets\Recurring_Tickets\Admin;
 
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Admin_Tables\Orders as Orders_Table;
+use TEC\Tickets\Recurring_Tickets\Commerce\Attendees;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
+use TEC\Tickets\Recurring_Tickets\Template_Guard;
 use TEC\Tickets\Recurring_Tickets\Ticket_ID;
+use TEC\Tickets\Tests\Recurring_Tickets\Requires_Recurrence_Tier;
 use TEC\Tickets\Tests\Recurring_Tickets\Row_Orders;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe__Date_Utils as Dates;
 
 /**
  * A recurring event's Orders page lists the orders of all its dates, shows each order's dates and narrows to one.
@@ -18,6 +22,7 @@ class Orders_Page_Test extends WPTestCase {
 	use Ticket_Rows;
 	use Ticket_Maker;
 	use Row_Orders;
+	use Requires_Recurrence_Tier;
 
 	/**
 	 * The event.
@@ -46,7 +51,9 @@ class Orders_Page_Test extends WPTestCase {
 	public function create_orders(): void {
 		( new Tickets() )->empty_table();
 		$this->event = $this->create_recurring_event();
-		$this->create_tc_ticket( $this->event, 10 );
+		$template = $this->create_tc_ticket( $this->event, 10 );
+		// As the ticket editor saves a ticket on a recurring event.
+		update_post_meta( $template, '_type', Template_Guard::TICKET_TYPE );
 		$this->dates = $this->get_dates( $this->event );
 		$rows        = array_column( tribe( Rows::class )->get_by_post( $this->event ), null, 'occurrence_id' );
 		foreach ( [ 0, 1 ] as $date ) {
@@ -86,28 +93,29 @@ class Orders_Page_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_should_show_each_orders_date_in_a_column(): void {
+	public function it_should_give_each_purchased_ticket_its_date(): void {
 		$this->open_the_events_page();
 		$table = new Orders_Table();
-		$this->assertArrayHasKey( Orders_Page::DATE_COLUMN, $table->get_columns() );
+		$date  = tribe_format_date( $this->dates[1]->start_date, false, Dates::datepicker_formats( Dates::get_datepicker_format_index() ) );
 
-		$order = tec_tc_get_order( $this->orders[1] );
-		$this->assertSame( esc_html( tribe_format_date( $this->dates[1]->start_date, true ) ), $table->column_default( $order, Orders_Page::DATE_COLUMN ) );
+		$this->assertStringContainsString( ' - ' . esc_html( $date ) . '</div>', $table->column_purchased( tec_tc_get_order( $this->orders[1] ) ) );
 
-		$_GET['post_id'] = static::factory()->post->create();
-		$this->assertArrayNotHasKey( Orders_Page::DATE_COLUMN, $table->get_columns() );
+		// The date has its own column no more.
+		$this->assertArrayNotHasKey( 'tec_tickets_recurring_date', $table->get_columns() );
 	}
 
 	/**
 	 * @test
 	 */
 	public function it_should_offer_the_dates_to_filter_by(): void {
-		$this->open_the_events_page();
 		ob_start();
-		( new Orders_Table() )->extra_tablenav( 'top' );
+		do_action( 'tec_tickets_commerce_reports_orders_table_before', $this->event );
 		$nav = (string) ob_get_clean();
 
 		$this->assertStringContainsString( '<select name="' . Date_Filter::NAME . '"', $nav );
+		$this->assertRegExp( '#</select>\s*<input type="submit"#', $nav, 'The Filter button sits right after the select.' );
+		$this->assertStringContainsString( 'Orders for:', $nav );
+		$this->assertStringContainsString( 'value="' . Date_Filter::UPCOMING . '"', $nav );
 		foreach ( $this->dates as $date ) {
 			$this->assertStringContainsString( 'value="' . (int) $date->provisional_id . '"', $nav, 'Every date is listed, with orders or not.' );
 		}
@@ -131,6 +139,30 @@ class Orders_Page_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_narrow_the_orders_to_the_upcoming_dates(): void {
+		$this->open_the_events_page();
+		$_GET[ Date_Filter::NAME ] = Date_Filter::UPCOMING;
+
+		$this->assertSame( $this->orders, $this->listed_orders(), 'Every date of the event is to come.' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_list_no_order_when_no_date_is_to_come(): void {
+		global $wpdb;
+		$past = '2000-01-01 10:00:00';
+		$wpdb->query( $wpdb->prepare( 'UPDATE %i SET occurrence_start = %s WHERE post_id = %d', Tickets::table_name(), $past, $this->event ) );
+		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->postmeta} SET meta_value = %s WHERE meta_key = %s", $past, Attendees::OCCURRENCE_START_META_KEY ) );
+		$this->open_the_events_page();
+		$_GET[ Date_Filter::NAME ] = Date_Filter::UPCOMING;
+
+		$this->assertSame( [], $this->listed_orders(), 'No event at all would list every order of the site.' );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_not_offer_the_event_as_its_own_date_without_ecp(): void {
 		global $wp_actions;
 		$this->open_the_events_page();
@@ -140,7 +172,7 @@ class Orders_Page_Test extends WPTestCase {
 
 		try {
 			ob_start();
-			( new Orders_Table() )->extra_tablenav( 'top' );
+			do_action( 'tec_tickets_commerce_reports_orders_table_before', $this->event );
 			$nav = (string) ob_get_clean();
 		} finally {
 			$wp_actions['tec_events_pro_custom_tables_v1_fully_activated'] = $fired;
