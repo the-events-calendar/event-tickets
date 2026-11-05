@@ -2,6 +2,7 @@
 
 namespace Tribe\Tickets\Commerce\PayPal\Main\Attendees;
 
+use TEC\Tickets\Legacy_PayPal\Cart_Reconciler;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe__Tickets__Data_API as Data_API;
 use WP_Post;
@@ -64,24 +65,40 @@ class GenerateTest extends \Codeception\TestCase\WPTestCase {
 		/** @var \Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
 		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
 
+		tribe( Cart_Reconciler::class )->remember_checkout(
+			'tpp-invoice-test',
+			[
+				'business'      => 'merchant@example.com',
+				'currency_code' => 'USD',
+				'item_number'   => "{$post_id}:{$ticket_id}",
+				'quantity'      => 1,
+				'amount'        => $ticket->price,
+			]
+		);
+
 		$transaction_data = [
 			'custom'      => wp_json_encode( [
 				'user_id' => $user_id,
+				'invoice' => 'tpp-invoice-test',
 				'oo' => [
 					// Optout.
 					'ticket_' . $ticket_id => 1,
 				],
 			] ),
-			'txn_id'      => 'tpp-txn-id-test',
-			'first_name'  => $user_data['first_name'],
-			'last_name'   => $user_data['last_name'],
-			'payer_email' => $user_data['user_email'],
+			'txn_id'         => 'tpp-txn-id-test',
+			'first_name'     => $user_data['first_name'],
+			'last_name'      => $user_data['last_name'],
+			'payer_email'    => $user_data['user_email'],
+			'receiver_email' => 'merchant@example.com',
+			'mc_currency'    => 'USD',
+			'mc_gross'       => $ticket->price,
 			'items' => [
 				[
-					'ticket'    => $ticket,
-					'ticket_id' => $ticket_id,
-					'post_id'   => $post_id,
-					'quantity'  => 1,
+					'ticket'      => $ticket,
+					'ticket_id'   => $ticket_id,
+					'post_id'     => $post_id,
+					'item_number' => "{$post_id}:{$ticket_id}",
+					'quantity'    => 1,
 				],
 			],
 		];

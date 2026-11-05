@@ -14,7 +14,11 @@ use Tribe__Tickets__Commerce__Currency;
 use Tribe__Tickets__Ticket_Object;
 use WP_List_Table;
 use DateTime;
+use DateTimeImmutable;
 use DateTimeInterface;
+use DateTimeZone;
+use Exception;
+use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce as TicketsCommerce;
 use Tribe\Tickets\Admin\Settings;
 use Tribe__Template;
@@ -912,6 +916,8 @@ class List_Table extends WP_List_Table {
 	 * Modify the filter arguments.
 	 *
 	 * @since 5.14.0
+	 * @since 5.31.0 Counted a sale price without a start or end date as discounted.
+	 * @since 5.31.0 Left the sale price dates of the discounted filter to `filter_query_clauses()`.
 	 *
 	 * @param array $args The arguments used to query the tickets for the Admin Tickets Table.
 	 *
@@ -962,20 +968,17 @@ class List_Table extends WP_List_Table {
 				break;
 			case 'discounted':
 				$args['meta_query'][] = [
-					'key'     => '_sale_price',
+					'key'     => TicketsCommerce\Ticket::$sale_price_key,
 					'compare' => 'EXISTS',
 				];
+
+				/*
+				 * Other providers, such as WooCommerce, keep a `_sale_price` without the dates the sale price clauses of
+				 * `filter_query_clauses()` read.
+				 */
 				$args['meta_query'][] = [
-					'key'     => '_sale_price_start_date',
-					'value'   => current_time( 'mysql' ),
-					'compare' => '<',
-					'type'    => 'DATETIME',
-				];
-				$args['meta_query'][] = [
-					'key'     => '_sale_price_end_date',
-					'value'   => current_time( 'mysql' ),
-					'compare' => '>',
-					'type'    => 'DATETIME',
+					'key'   => TicketsCommerce\Ticket::$sale_price_checked_key,
+					'value' => '1',
 				];
 				break;
 		}
@@ -1145,6 +1148,7 @@ class List_Table extends WP_List_Table {
 	 * Filter the query clauses.
 	 *
 	 * @since 5.14.0
+	 * @since 5.31.0 Kept a discounted ticket only while its sale price runs, its days read in the event timezone.
 	 *
 	 * @param array    $clauses The query clauses.
 	 * @param WP_Query $query   The WP_Query object.
@@ -1169,6 +1173,10 @@ class List_Table extends WP_List_Table {
 		$clauses['join'] .= " LEFT JOIN {$wpdb->posts} AS event_data ON event_data.ID = ticket_event.meta_value ";
 
 		$clauses['fields'] .= ', event_data.ID AS event_id';
+
+		if ( 'discounted' === tribe_get_request_var( Page::STATUS_KEY, self::get_default_status() ) ) {
+			$clauses = $this->add_sale_price_date_clauses( $clauses );
+		}
 
 		// If there is no search, return the clauses.
 		$search = tribe_get_request_var( 's' );
@@ -1317,5 +1325,104 @@ class List_Table extends WP_List_Table {
 	 */
 	public function no_items() {
 		esc_html_e( 'No tickets found for the active filter.', 'event-tickets' );
+	}
+
+	/**
+	 * Adds the clauses that list a discounted ticket only while its sale price runs, as `is_on_sale()` judges it.
+	 *
+	 * The sale price dates are days in the event timezone, which `is_on_sale()` compares with today's there, both ends
+	 * included. It reads an empty or missing start as started and an empty or missing end as no end; casting an empty
+	 * date matches no row on MySQL, so those are tested apart.
+	 *
+	 * @since 5.31.0
+	 *
+	 * @param array<string,string> $clauses The query clauses, with the ticket's event joined as `event_data`.
+	 *
+	 * @return array<string,string> The query clauses.
+	 */
+	private function add_sale_price_date_clauses( array $clauses ): array {
+		$postmeta = DB::prefix( 'postmeta' );
+		$posts    = DB::prefix( 'posts' );
+
+		$clauses['join'] .= DB::prepare(
+			' LEFT JOIN %i AS sale_price_start ON ( sale_price_start.post_id = %i.ID AND sale_price_start.meta_key = %s )
+			LEFT JOIN %i AS sale_price_end ON ( sale_price_end.post_id = %i.ID AND sale_price_end.meta_key = %s ) ',
+			$postmeta,
+			$posts,
+			TicketsCommerce\Ticket::$sale_price_start_date_key,
+			$postmeta,
+			$posts,
+			TicketsCommerce\Ticket::$sale_price_end_date_key
+		);
+
+		$today          = DB::prepare( '%s', current_time( 'Y-m-d' ) );
+		$other_todays   = $this->get_other_todays_by_event_timezone();
+		$today_by_event = $today;
+
+		if ( $other_todays ) {
+			$clauses['join'] .= DB::prepare(
+				' LEFT JOIN %i AS event_timezone ON ( event_timezone.post_id = event_data.ID AND event_timezone.meta_key = %s ) ',
+				$postmeta,
+				'_EventTimezone'
+			);
+
+			$cases = '';
+			foreach ( $other_todays as $timezone => $other_today ) {
+				$cases .= DB::prepare( ' WHEN %s THEN %s', $timezone, $other_today );
+			}
+
+			$today_by_event = "CASE event_timezone.meta_value{$cases} ELSE {$today} END";
+		}
+
+		$clauses['where'] .= " AND ( sale_price_start.meta_value IS NULL OR sale_price_start.meta_value = ''
+			OR CAST( sale_price_start.meta_value AS DATE ) <= CAST( {$today_by_event} AS DATE ) )";
+		$clauses['where'] .= " AND ( sale_price_end.meta_value IS NULL OR sale_price_end.meta_value = ''
+			OR CAST( sale_price_end.meta_value AS DATE ) >= CAST( {$today_by_event} AS DATE ) )";
+
+		return $clauses;
+	}
+
+	/**
+	 * Gets today's date in each timezone events are stored with, where it is not the site's.
+	 *
+	 * The timezones resolve as `Ticket_Object::get_event_timezone()` resolves them: one PHP reads, or `UTC+0` as UTC.
+	 * Any other value, such as a `UTC+2` offset, falls back on the site timezone, as does every event without The
+	 * Events Calendar active.
+	 *
+	 * @since 5.31.0
+	 *
+	 * @return array<string,string> Today's date, as `Y-m-d`, by stored event timezone.
+	 */
+	private function get_other_todays_by_event_timezone(): array {
+		if ( ! class_exists( 'Tribe__Events__Timezones' ) ) {
+			return [];
+		}
+
+		$timezones = DB::get_col(
+			DB::prepare(
+				'SELECT DISTINCT meta_value FROM %i WHERE meta_key = %s',
+				DB::prefix( 'postmeta' ),
+				'_EventTimezone'
+			)
+		);
+
+		$site_today   = current_time( 'Y-m-d' );
+		$other_todays = [];
+
+		foreach ( $timezones as $timezone ) {
+			try {
+				$zone = new DateTimeZone( 'UTC+0' === $timezone ? 'UTC' : $timezone );
+			} catch ( Exception $exception ) {
+				continue;
+			}
+
+			$today = ( new DateTimeImmutable( 'now', $zone ) )->format( 'Y-m-d' );
+
+			if ( $today !== $site_today ) {
+				$other_todays[ $timezone ] = $today;
+			}
+		}
+
+		return $other_todays;
 	}
 }
