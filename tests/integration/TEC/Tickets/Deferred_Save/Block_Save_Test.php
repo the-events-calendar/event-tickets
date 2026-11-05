@@ -78,6 +78,32 @@ class Block_Save_Test extends WPTestCase {
 	}
 
 	/**
+	 * A plugin that fires the hook itself may leave out the last argument.
+	 *
+	 * @test
+	 */
+	public function it_should_commit_when_the_insert_hook_leaves_out_creating(): void {
+		$this->log_in_as_admin();
+		$post_id = $this->create_deferred_post();
+		$request = new WP_REST_Request( 'POST', '/wp/v2/pages/' . $post_id );
+		$request->set_param( 'tec_tickets', [ 'create' => [ $this->ticket_data( 'From the hook' ) ] ] );
+
+		$result = tribe( Block_Save::class )->on_rest_after_insert( get_post( $post_id ), $request );
+
+		$this->assertInstanceOf( Result::class, $result );
+		$this->assertSame( [ 'From the hook' ], $this->ticket_names( $post_id ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_do_nothing_when_the_insert_hook_passes_something_else(): void {
+		$this->log_in_as_admin();
+
+		$this->assertNull( tribe( Block_Save::class )->on_rest_after_insert( 'not-a-post', 'not-a-request', 'no' ) );
+	}
+
+	/**
 	 * @test
 	 */
 	public function it_should_report_a_rejected_entry_while_the_rest_saves(): void {
