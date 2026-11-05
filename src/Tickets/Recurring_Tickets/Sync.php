@@ -95,6 +95,15 @@ final class Sync {
 	private Template_Guard $guard;
 
 	/**
+	 * The same-date re-pointing.
+	 *
+	 * @since TBD
+	 *
+	 * @var Reconcile
+	 */
+	private Reconcile $reconcile;
+
+	/**
 	 * The store of the tickets' relative sale date rules.
 	 *
 	 * @since TBD
@@ -131,12 +140,14 @@ final class Sync {
 	 *
 	 * @param Rows           $rows        The rows repository.
 	 * @param Template_Guard $guard       The template guard.
+	 * @param Reconcile      $reconcile   The same-date re-pointing.
 	 * @param Rule_Store     $rule_store  The store of the tickets' relative sale date rules.
 	 * @param Sale_Window    $sale_window The resolver of relative sales windows.
 	 */
-	public function __construct( Rows $rows, Template_Guard $guard, Rule_Store $rule_store, Sale_Window $sale_window ) {
+	public function __construct( Rows $rows, Template_Guard $guard, Reconcile $reconcile, Rule_Store $rule_store, Sale_Window $sale_window ) {
 		$this->rows        = $rows;
 		$this->guard       = $guard;
+		$this->reconcile   = $reconcile;
 		$this->rule_store  = $rule_store;
 		$this->sale_window = $sale_window;
 	}
@@ -208,7 +219,8 @@ final class Sync {
 	 * @return void
 	 */
 	private function apply( int $post_id, array $templates, array $dates ): void {
-		$rows   = $this->rows->get_by_post( $post_id );
+		// A gone date may be the same day under a new ID: its rows follow it before the rest go.
+		$rows   = $this->reconcile->repoint( $post_id, $this->rows->get_by_post( $post_id ), $dates );
 		$rows   = $this->delete_stale( $rows, array_merge( $templates, $this->templates_being_saved( $post_id, $rows, $templates ) ), $dates );
 		$values = [];
 

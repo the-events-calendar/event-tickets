@@ -90,6 +90,19 @@ class Recurrence_Controller_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
+	public function it_should_unregister_on_an_older_ecp(): void {
+		$this->remove_ecp_constant( 'AFTER_TRANSFER_OCCURRENCES_ACTION' );
+
+		$controller = $this->make_controller();
+		$controller->register();
+		$controller->unregister();
+
+		$this->assertFalse( $controller->is_active() );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_be_off_when_the_rows_table_could_not_be_created(): void {
 		$table_ready = tribe()->getVar( Core_Controller::TABLE_READY );
 		tribe()->setVar( Core_Controller::TABLE_READY, false );
