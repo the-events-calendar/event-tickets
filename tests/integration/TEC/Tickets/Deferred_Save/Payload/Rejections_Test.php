@@ -11,7 +11,6 @@ class Rejections_Test extends WPTestCase {
 	public function it_should_start_empty(): void {
 		$rejections = new Rejections();
 
-		$this->assertTrue( $rejections->is_empty() );
 		$this->assertSame( [], $rejections->all() );
 	}
 
@@ -24,7 +23,7 @@ class Rejections_Test extends WPTestCase {
 		$one = $empty->with( 'update', 12, 'not yours' );
 		$two = $one->with( null, null, 'too many' );
 
-		$this->assertTrue( $empty->is_empty(), 'The original is untouched.' );
+		$this->assertSame( [], $empty->all(), 'The original is untouched.' );
 		$this->assertSame( [ [ 'part' => 'update', 'key' => 12, 'message' => 'not yours' ] ], $one->all() );
 		$this->assertSame(
 			[
