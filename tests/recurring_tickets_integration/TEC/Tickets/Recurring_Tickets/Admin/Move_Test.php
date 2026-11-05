@@ -48,13 +48,14 @@ class Move_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_offer_dates_as_destinations_when_searching_events(): void {
-		$event = $this->create_recurring_event();
+		// Move Tickets lists one match per title and date: another test's event of the same name and dates would take its place.
+		$event = $this->create_recurring_event( 3, 'Move Destination' );
 		$dates = $this->get_dates( $event );
 
 		// Move Tickets searches over AJAX.
 		add_filter( 'wp_doing_ajax', '__return_true' );
 
-		$matches = array_map( 'intval', $this->call( 'get_possible_matches', [ [ 'post_type' => [ 'tribe_events' ], 'search_terms' => 'Recurring' ] ] ) );
+		$matches = array_map( 'intval', $this->call( 'get_possible_matches', [ [ 'post_type' => [ 'tribe_events' ], 'search_terms' => 'Move Destination' ] ] ) );
 
 		// The first date is listed under the event's own ID.
 		$this->assertContains( $event, $matches );

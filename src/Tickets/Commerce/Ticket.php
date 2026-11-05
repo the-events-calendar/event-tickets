@@ -346,12 +346,27 @@ class Ticket extends Ticket_Data {
 	 * that is handled by the Order status transitions system.
 	 *
 	 * @since 5.2.0
+	 * @since TBD A ticket without a post can have its quantities given by a filter.
 	 *
 	 * @param int|string|\WP_Post $ticket_id Which ticket we are fetching the count for.
 	 *
 	 * @return array<string,int>|\WP_Error
 	 */
 	public function get_status_quantity( $ticket_id ) {
+		/**
+		 * Filters the quantity of a ticket ordered in each status before it is read from the ticket's post.
+		 *
+		 * @since TBD
+		 *
+		 * @param array<string,int>|null $status_qty The quantity by status slug, or null to read it from the post.
+		 * @param int|string|\WP_Post    $ticket_id  The ticket.
+		 */
+		$status_qty = apply_filters( 'tec_tickets_commerce_ticket_status_quantity', null, $ticket_id );
+
+		if ( is_array( $status_qty ) ) {
+			return $status_qty;
+		}
+
 		$ticket = get_post( $ticket_id );
 
 		if ( ! $ticket ) {
