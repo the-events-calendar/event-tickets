@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Tests\REST\TEC\V1\Endpoints;
 
 use TEC\Tickets\Commerce\Ticket as Ticket_CPT;
+use TEC\Tickets\Relative_Sale_Dates\Controller as Relative_Sale_Dates_Controller;
 use TEC\Tickets\REST\TEC\V1\Endpoints\Tickets;
 use Tribe__Tickets__Tickets as Tickets_API;
 use Closure;
@@ -76,6 +77,58 @@ class Tickets_Test extends Ticket_Test {
 		$response = $this->assert_endpoint( '/tickets', 'POST', 201, [ 'event' => $event, 'title' => 'Legit ticket', 'price' => 5 ] );
 
 		$this->assertSame( $event, (int) get_post_meta( $response['id'], Ticket_CPT::$event_relation_meta_key, true ) );
+
+		wp_delete_post( $response['id'], true );
+	}
+
+	/**
+	 * Prices a ticket can never be created with.
+	 *
+	 * @return Generator
+	 */
+	public function negative_price_provider(): Generator {
+		yield 'negative price'                  => [ [ 'price' => -10 ] ];
+		yield 'negative fractional price'       => [ [ 'price' => -0.01 ] ];
+		yield 'negative sale price'             => [ [ 'price' => 10, 'sale_price' => -10 ] ];
+		yield 'negative fractional sale price'  => [ [ 'price' => 10, 'sale_price' => -0.01 ] ];
+		yield 'negative price and sale price'   => [ [ 'price' => -5, 'sale_price' => -10 ] ];
+	}
+
+	/**
+	 * @dataProvider negative_price_provider
+	 */
+	public function test_create_rejects_negative_prices( array $prices ): void {
+		$author = $this->factory()->user->create( [ 'role' => 'author' ] );
+		$event  = self::factory()->post->create(
+			[
+				'post_type'   => 'post',
+				'post_status' => 'publish',
+				'post_author' => $author,
+			]
+		);
+
+		wp_set_current_user( $author );
+
+		$this->assert_endpoint( '/tickets', 'POST', 400, array_merge( [ 'event' => $event, 'title' => 'Negative ticket' ], $prices ) );
+
+		$this->assertEmpty( Tickets_API::get_all_event_tickets( $event ), 'No ticket must be created.' );
+	}
+
+	public function test_create_accepts_a_zero_sale_price(): void {
+		$author = $this->factory()->user->create( [ 'role' => 'author' ] );
+		$event  = self::factory()->post->create(
+			[
+				'post_type'   => 'post',
+				'post_status' => 'publish',
+				'post_author' => $author,
+			]
+		);
+
+		wp_set_current_user( $author );
+
+		$response = $this->assert_endpoint( '/tickets', 'POST', 201, [ 'event' => $event, 'title' => 'Free on sale', 'price' => 10, 'sale_price' => 0 ] );
+
+		$this->assertSame( 0.0, get_post_meta( $response['id'], Ticket_CPT::$sale_price_key, true )->get_decimal() );
 
 		wp_delete_post( $response['id'], true );
 	}
@@ -221,5 +274,76 @@ class Tickets_Test extends Ticket_Test {
 		$json = str_replace( $tickets, '{TICKET_ID}', $json );
 
 		$this->assertMatchesJsonSnapshot( $json );
+	}
+
+	/**
+	 * Turns relative sale dates on and creates an event to put tickets on: The Events Calendar, whose loading registers
+	 * the feature, is not loaded in this suite.
+	 *
+	 * @return int The event post ID.
+	 */
+	private function create_relative_sale_dates_event(): int {
+		// An earlier test's hooks are removed after it, but the flag that makes `register()` do nothing stays set.
+		tribe()->setVar( Relative_Sale_Dates_Controller::class . '_registered', false );
+		tribe( Relative_Sale_Dates_Controller::class )->register();
+		// The routes take their arguments when the server is built, so build it again with the rules in them.
+		$GLOBALS['wp_rest_server'] = null;
+		$this->rest_server         = rest_get_server();
+		register_post_type( 'tribe_events', [ 'public' => true ] );
+		$ticketable   = tribe_get_option( 'ticket-enabled-post-types', [] );
+		$ticketable[] = 'tribe_events';
+		tribe_update_option( 'ticket-enabled-post-types', array_values( array_unique( $ticketable ) ) );
+		update_option( 'timezone_string', 'UTC' );
+		$event_id = self::factory()->post->create( [ 'post_type' => 'tribe_events', 'post_status' => 'publish' ] );
+		$start    = gmdate( 'Y-m-d H:i:s', strtotime( '+2 months 19:00' ) );
+		update_post_meta( $event_id, '_EventStartDate', $start );
+		update_post_meta( $event_id, '_EventEndDate', gmdate( 'Y-m-d H:i:s', strtotime( $start . ' +3 hours' ) ) );
+		update_post_meta( $event_id, '_EventTimezone', 'UTC' );
+		wp_set_current_user( $this->factory()->user->create( [ 'role' => 'administrator' ] ) );
+
+		return $event_id;
+	}
+
+	public function test_create_stores_a_relative_sale_dates_rule_as_sent(): void {
+		$event_id = $this->create_relative_sale_dates_event();
+		$rule     = [
+			'start' => [ 'mode' => 'relative', 'value' => 2, 'unit' => WEEK_IN_SECONDS, 'anchor' => 'start' ],
+			'end'   => [ 'mode' => 'relative', 'value' => 1, 'unit' => DAY_IN_SECONDS, 'anchor' => 'start' ],
+		];
+
+		$response = $this->assert_endpoint(
+			'/tickets',
+			'POST',
+			201,
+			[
+				'event'               => $event_id,
+				'title'               => 'Ruled ticket',
+				'price'               => 5,
+				'relative_sale_dates' => $rule,
+			]
+		);
+
+		$this->assertSame( $rule, $response['relative_sale_dates'] );
+
+		wp_delete_post( $response['id'], true );
+	}
+
+	public function test_create_rejects_a_relative_sale_dates_rule_that_is_not_an_object(): void {
+		$event_id = $this->create_relative_sale_dates_event();
+
+		$response = $this->assert_endpoint(
+			'/tickets',
+			'POST',
+			400,
+			[
+				'event'               => $event_id,
+				'title'               => 'Ruled ticket',
+				'price'               => 5,
+				'relative_sale_dates' => 'two weeks before',
+			]
+		);
+
+		$this->assertSame( 'rest_invalid_param', $response['code'] );
+		$this->assertSame( 'tec_rest_invalid_relative_sale_dates_argument', $response['data']['details']['relative_sale_dates']['code'] );
 	}
 }

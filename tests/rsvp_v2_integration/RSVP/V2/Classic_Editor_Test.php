@@ -4,6 +4,7 @@ namespace TEC\Tickets\RSVP\V2;
 
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Tests\Commerce\RSVP\V2\Ticket_Maker;
+use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe__Tickets__Global_Stock as Global_Stock;
 
 /**
@@ -14,6 +15,7 @@ use Tribe__Tickets__Global_Stock as Global_Stock;
  */
 class Classic_Editor_Test extends WPTestCase {
 	use Ticket_Maker;
+	use PayPal_Ticket_Maker;
 
 	public function test_should_disable_rsvp_form_toggle(): void {
 		$enabled = [
@@ -364,6 +366,40 @@ class Classic_Editor_Test extends WPTestCase {
 		] );
 
 		$this->assertTrue( $filter_called, 'tec_tickets_rsvp_v2_classic_save_data filter should be applied on save' );
+	}
+
+	/**
+	 * Saving an RSVP must not switch an event selling through another provider to Tickets Commerce.
+	 *
+	 * Legacy PayPal stands in for WooCommerce: it is the only other paid provider ET's suites can load.
+	 */
+	public function test_save_rsvp_keeps_the_event_ticket_provider(): void {
+		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
+		add_filter(
+			'tribe_tickets_get_modules',
+			function ( array $modules ): array {
+				$modules['Tribe__Tickets__Commerce__PayPal__Main'] = tribe( $this->get_paypal_ticket_provider() )->plugin_name;
+
+				return $modules;
+			}
+		);
+
+		$post_id      = static::factory()->post->create( [ 'post_status' => 'publish' ] );
+		$provider_key = tribe( 'tickets.handler' )->key_provider_field;
+		$this->create_paypal_ticket( $post_id, 10 );
+		update_post_meta( $post_id, $provider_key, 'Tribe__Tickets__Commerce__PayPal__Main' );
+
+		$this->capture_save_data(
+			$post_id,
+			[
+				'tec_tickets_rsvp_ticket_type' => Constants::TC_RSVP_TYPE,
+				'tec_tickets_rsvp_enable'      => '1',
+				'rsvp_limit'                   => '20',
+			]
+		);
+
+		$this->assertNotNull( tribe( Ticket::class )->get_for_event( $post_id ), 'The RSVP should be created' );
+		$this->assertSame( 'Tribe__Tickets__Commerce__PayPal__Main', get_post_meta( $post_id, $provider_key, true ) );
 	}
 
 	private function capture_save_data( int $post_id, array $post_data ): ?array {
