@@ -94,6 +94,9 @@ class Regulator_Test extends Controller_Test_Case {
 	 * @dataProvider schedule_with_delays_generator
 	 */
 	public function it_should_schedule_with_delays_when_rate_limited( Closure $fixture ): void {
+		// The scheduler and the bounds below must read the same second.
+		$this->set_fn_return( 'time', time() );
+
 		[ $min, $max ] = $fixture();
 
 		$controller = $this->make_controller();
