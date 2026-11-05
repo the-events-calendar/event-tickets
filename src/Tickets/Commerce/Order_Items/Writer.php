@@ -183,7 +183,11 @@ final class Writer {
 		}
 
 		try {
-			$rows    = $this->to_rows( $order_id, $items );
+			$rows = $this->to_rows( $order_id, $items );
+
+			// Rejected before any write, so a duplicate never leaves a half-applied delete or update behind.
+			$this->assert_unique_identities( $rows );
+
 			$stored  = [];
 			$updates = [];
 			$inserts = [];
@@ -206,7 +210,7 @@ final class Writer {
 				unset( $stored[ $identity ] );
 
 				// serialize() is strict on key order and scalar types, and compares objects by class and state.
-				if ( $current['position'] !== $row['position'] || $current['currency'] !== $row['currency'] || serialize( $this->types->get( $current['type'] )::from_row( $current ) ) !== serialize( [ (string) $key, $items[ $key ] ] ) ) { // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
+				if ( $current['position'] !== $row['position'] || $current['currency'] !== $row['currency'] || serialize( $this->types->get( $current['type'] )::from_row( $current ) ) !== serialize( [ $row['item_key'], $items[ $key ] ] ) ) { // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
 					$updates[] = [ 'id' => $current['id'] ] + $this->keep_purchase_details( $row, $current, $items[ $key ] );
 				}
 			}
