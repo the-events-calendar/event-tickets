@@ -254,6 +254,21 @@ final class Sync {
 	}
 
 	/**
+	 * Deletes the rows of an event deleted for good. Its attendees and orders stay; a trashed event keeps its rows.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The post about to be deleted.
+	 *
+	 * @return void
+	 */
+	public function delete_event( $post_id ): void {
+		if ( TEC::POSTTYPE === get_post_type( (int) $post_id ) ) {
+			$this->rows->delete_by_post( (int) $post_id );
+		}
+	}
+
+	/**
 	 * Syncs an event's dates once its shared capacity changed outside a ticket save: the ticket settings, or the block
 	 * editor's post save.
 	 *
