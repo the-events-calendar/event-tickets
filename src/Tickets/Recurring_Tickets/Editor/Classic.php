@@ -11,6 +11,7 @@ namespace TEC\Tickets\Recurring_Tickets\Editor;
 
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use TEC\Tickets\Event;
+use TEC\Tickets\Recurring_Tickets\Admin\Tickets_By_Date;
 use TEC\Tickets\Recurring_Tickets\Template_Guard;
 use TEC\Tickets\Seating\Meta as Seating_Meta;
 use Tribe__Events__Main as TEC;
@@ -38,14 +39,25 @@ final class Classic {
 	private Template_Guard $guard;
 
 	/**
+	 * The Tickets by Date section's data.
+	 *
+	 * @since TBD
+	 *
+	 * @var Tickets_By_Date
+	 */
+	private Tickets_By_Date $tickets_by_date;
+
+	/**
 	 * Classic constructor.
 	 *
 	 * @since TBD
 	 *
-	 * @param Template_Guard $guard The template guard.
+	 * @param Template_Guard  $guard           The template guard.
+	 * @param Tickets_By_Date $tickets_by_date The Tickets by Date section's data.
 	 */
-	public function __construct( Template_Guard $guard ) {
-		$this->guard = $guard;
+	public function __construct( Template_Guard $guard, Tickets_By_Date $tickets_by_date ) {
+		$this->guard           = $guard;
+		$this->tickets_by_date = $tickets_by_date;
 	}
 
 	/**
@@ -65,6 +77,25 @@ final class Classic {
 		}
 
 		tribe( 'tickets.admin.views' )->template( 'recurring-tickets/form-toggle', [ 'hidden' => ! tribe_is_recurring_event( $post_id ) ] );
+	}
+
+	/**
+	 * Prints, under a recurring event's tickets, the root of its Tickets by Date section with the section's data.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|mixed $post_id The post being edited: the event, or one of its dates.
+	 *
+	 * @return void
+	 */
+	public function render_tickets_by_date( $post_id ): void {
+		$data = $this->tickets_by_date->for_event( (int) Event::filter_event_id( (int) $post_id, 'recurring-tickets-by-date' ) );
+
+		if ( ! $data ) {
+			return;
+		}
+
+		printf( '<div class="tec-tickets-by-date-root" data-tickets-by-date="%s"></div>', esc_attr( (string) wp_json_encode( $data ) ) );
 	}
 
 	/**

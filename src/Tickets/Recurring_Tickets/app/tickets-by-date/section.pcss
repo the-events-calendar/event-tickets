@@ -1,0 +1,236 @@
+/* The Tickets by Date section, after the design mock: WP admin greys and the editor's blue accent. */
+
+.tec-tickets-by-date {
+	--tec-tickets-by-date-accent: #3858e9;
+	--tec-tickets-by-date-border: #c3c4c7;
+	--tec-tickets-by-date-border-light: #dcdcde;
+	--tec-tickets-by-date-text: #1d2327;
+	--tec-tickets-by-date-text-muted: #50575e;
+	--tec-tickets-by-date-text-faint: #787c82;
+	--tec-tickets-by-date-columns: minmax(0, 1fr) 110px 110px 110px;
+
+	border-top: 1px solid var(--tec-tickets-by-date-border);
+	color: var(--tec-tickets-by-date-text);
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	padding: 28px 0 12px;
+}
+
+.tec-tickets-by-date__header {
+	align-items: flex-start;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+	justify-content: space-between;
+}
+
+.tec-tickets-by-date__title {
+	font-size: 18px;
+	font-weight: 600;
+	margin: 0 0 4px;
+}
+
+.tec-tickets-by-date__help {
+	color: var(--tec-tickets-by-date-text-muted);
+	margin: 0;
+}
+
+.tec-tickets-by-date__unsaved {
+	background: #fff;
+	border: 1px solid var(--tec-tickets-by-date-border);
+	border-left: 4px solid #dba617;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+	padding: 10px 12px;
+}
+
+.tec-tickets-by-date__dates {
+	border: 1px solid var(--tec-tickets-by-date-border);
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.tec-tickets-by-date__date {
+	border-left: 3px solid transparent;
+
+	& + & {
+		border-top: 1px solid var(--tec-tickets-by-date-border-light);
+	}
+
+	&.is-open {
+		border-left-color: var(--tec-tickets-by-date-accent);
+	}
+}
+
+.tec-tickets-by-date__date-header {
+	align-items: center;
+	cursor: pointer;
+	display: flex;
+	gap: 16px;
+	justify-content: space-between;
+	padding: 14px 16px 14px 13px;
+	user-select: none;
+
+	&:hover,
+	.is-open > & {
+		background: #f0f0f1;
+	}
+
+	&:focus-visible {
+		box-shadow: inset 0 0 0 2px var(--tec-tickets-by-date-accent);
+		outline: none;
+	}
+}
+
+.tec-tickets-by-date__when {
+	align-items: center;
+	display: flex;
+	font-size: 15px;
+	gap: 12px;
+}
+
+.tec-tickets-by-date__chevron {
+	color: var(--tec-tickets-by-date-text-muted);
+	transition: transform 0.15s;
+
+	.is-open & {
+		transform: rotate(90deg);
+	}
+}
+
+.tec-tickets-by-date__time,
+.tec-tickets-by-date__availability {
+	color: var(--tec-tickets-by-date-text-muted);
+}
+
+.tec-tickets-by-date__availability {
+	font-size: 15px;
+
+	& strong {
+		color: var(--tec-tickets-by-date-text);
+	}
+}
+
+.tec-tickets-by-date__past {
+	color: var(--tec-tickets-by-date-text-faint);
+	font-size: 12px;
+}
+
+.tec-tickets-by-date__body {
+	background: #fff;
+	padding: 6px 16px 18px 41px;
+}
+
+.tec-tickets-by-date__row {
+	align-items: center;
+	border-bottom: 1px solid var(--tec-tickets-by-date-border-light);
+	column-gap: 24px;
+	display: grid;
+	font-size: 15px;
+	grid-template-columns: var(--tec-tickets-by-date-columns);
+	padding: 12px 0;
+}
+
+.tec-tickets-by-date__row--head {
+	border-bottom-color: var(--tec-tickets-by-date-border);
+	color: var(--tec-tickets-by-date-text-muted);
+	font-size: 14px;
+	font-weight: 600;
+	padding: 10px 0;
+}
+
+.tec-tickets-by-date__ticket {
+	min-width: 0;
+}
+
+.tec-tickets-by-date__ticket-name {
+	margin-bottom: 4px;
+}
+
+.tec-tickets-by-date__ticket-meta {
+	align-items: flex-start;
+	color: var(--tec-tickets-by-date-text-faint);
+	display: flex;
+	font-size: 14px;
+	gap: 6px;
+	line-height: 1.4;
+	min-width: 0;
+
+	& .dashicons {
+		flex: none;
+		font-size: 16px;
+		height: 16px;
+		margin-top: 2px;
+		width: 16px;
+	}
+}
+
+.tec-tickets-by-date__ticket-fields {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.tec-tickets-by-date__regular-price {
+	color: #a7aaad;
+	margin-left: 6px;
+}
+
+.tec-tickets-by-date__footer {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	font-size: 15px;
+	gap: 16px;
+	justify-content: space-between;
+	padding-top: 14px;
+}
+
+.tec-tickets-by-date__separator {
+	color: var(--tec-tickets-by-date-text-muted);
+}
+
+.tec-tickets-by-date__total {
+	align-items: center;
+	display: inline-flex;
+	gap: 6px;
+
+	& .dashicons {
+		color: var(--tec-tickets-by-date-text-faint);
+		cursor: help;
+	}
+}
+
+.tec-tickets-by-date__pages {
+	display: flex;
+	gap: 4px;
+	justify-content: flex-end;
+}
+
+.tec-tickets-by-date__page,
+.tec-tickets-by-date__page-arrow {
+	align-items: center;
+	background: #fff;
+	border: 1px solid var(--tec-tickets-by-date-accent);
+	border-radius: 3px;
+	color: var(--tec-tickets-by-date-accent);
+	cursor: pointer;
+	display: flex;
+	font: inherit;
+	font-size: 14px;
+	height: 32px;
+	justify-content: center;
+	min-width: 32px;
+	padding: 0 8px;
+
+	&:disabled {
+		border-color: var(--tec-tickets-by-date-border-light);
+		color: #a7aaad;
+		cursor: default;
+	}
+}
+
+.tec-tickets-by-date__page.is-current {
+	background: var(--tec-tickets-by-date-accent);
+	color: #fff;
+}
