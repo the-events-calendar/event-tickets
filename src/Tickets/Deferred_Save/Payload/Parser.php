@@ -109,8 +109,7 @@ final class Parser {
 		[ $delete, $rejections ] = $this->parse_delete( $this->part( $raw, self::DELETE ), $rejections );
 		[ $move, $rejections ]   = $this->parse_move( $this->part( $raw, self::MOVE ), $rejections );
 
-		// A ticket may be updated, moved or deleted, not more than one; which is meant cannot be told, so every entry goes.
-		// The IDs come from the raw parts, so a malformed entry still takes its competing entries with it.
+		// Which of two actions on one ticket is meant cannot be told, so it loses every entry, malformed ones included.
 		$named_update = $this->named_ticket_ids( $this->part( $raw, self::UPDATE ), true );
 		$named_move   = $this->named_ticket_ids( $this->part( $raw, self::MOVE ), true );
 		$named_delete = $this->named_ticket_ids( $this->part( $raw, self::DELETE ), false );
