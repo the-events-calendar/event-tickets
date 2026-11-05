@@ -382,7 +382,7 @@ final class Tickets extends Custom_Table_Repository {
 	 *
 	 * @since TBD
 	 *
-	 * @param Ticket                         $row    The row.
+	 * @param Ticket                        $row    The row.
 	 * @param array<string,int|string|null> $values The values, keyed by column.
 	 *
 	 * @return void
