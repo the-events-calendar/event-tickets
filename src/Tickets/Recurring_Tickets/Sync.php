@@ -222,7 +222,8 @@ final class Sync {
 		// A gone date may be the same day under a new ID: its rows follow it before the rest go.
 		$rows   = $this->reconcile->repoint( $post_id, $this->rows->get_by_post( $post_id ), $dates );
 		$rows   = $this->delete_stale( $rows, array_merge( $templates, $this->templates_being_saved( $post_id, $rows, $templates ) ), $dates );
-		$values   = [];
+		$values = [];
+
 		$rules    = [];
 		$timezone = Timezones::build_timezone_object( Timezones::get_event_timezone_string( $post_id ) );
 
@@ -611,8 +612,12 @@ final class Sync {
 			new DateTimeImmutable( $date->end_date, $timezone )
 		);
 		$utc      = new DateTimeZone( 'UTC' );
+		$edges    = [
+			'start' => $resolved->get_start(),
+			'end'   => $resolved->get_end(),
+		];
 
-		foreach ( [ 'start' => $resolved->get_start(), 'end' => $resolved->get_end() ] as $edge => $resolved_date ) {
+		foreach ( $edges as $edge => $resolved_date ) {
 			if ( $resolved_date ) {
 				$window[ "{$edge}_date" ]     = $resolved_date->format( Dates::DBDATETIMEFORMAT );
 				$window[ "{$edge}_date_utc" ] = $resolved_date->setTimezone( $utc )->format( Dates::DBDATETIMEFORMAT );
