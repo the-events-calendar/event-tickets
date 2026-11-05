@@ -473,6 +473,18 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 						$ticket_sale_start_date.datepicker( 'option', 'maxDate', the_date );
 						break;
 				}
+
+				/**
+				 * Fires when a date is picked from the calendar of a ticket date field.
+				 *
+				 * jQuery UI fires no `change` after a pick when there is an `onSelect`, and firing one here would reach
+				 * every other script that listens for it.
+				 *
+				 * @since 5.31.0
+				 *
+				 * @param {HTMLInputElement} input The date field the date was picked for.
+				 */
+				doAction( 'tec.tickets.admin.ticketDatePicked', this );
 			},
 		};
 
@@ -791,6 +803,15 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 			params,
 			function ( response ) {
 				if ( ! response.success ) {
+					/**
+					 * Fires when the server rejects a ticket save from the classic editor.
+					 *
+					 * @since 5.31.0
+					 *
+					 * @param {Object} response The response, with the reason in `data.message` when the server gave one.
+					 */
+					doAction( 'tec.tickets.admin.ticketSaveFailed', response );
+
 					return;
 				}
 

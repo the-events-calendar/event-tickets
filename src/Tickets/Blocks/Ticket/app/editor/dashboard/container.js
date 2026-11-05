@@ -8,7 +8,7 @@ import { compose } from 'redux';
  * WordPress dependencies
  */
 import { dispatch as wpDispatch } from '@wordpress/data';
-import { applyFilters } from '@wordpress/hooks';
+import { applyFilters, doAction } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
@@ -22,6 +22,7 @@ import { withStore } from '@moderntribe/common/hoc';
  * Whether the confirm button should be disabled.
  *
  * @since 5.16.0
+ * @since 5.31.0 Filtered the sales duration error through `tec.tickets.blocks.confirmButton.hasDurationError`.
  *
  * @param {Object} state    The state of the store.
  * @param {Object} ownProps The own props of the component.
@@ -29,9 +30,26 @@ import { withStore } from '@moderntribe/common/hoc';
  * @return {boolean} Whether the confirm button should be disabled.
  */
 export const getIsConfirmDisabled = ( state, ownProps ) => {
+	/**
+	 * Filters whether the ticket's sales duration error disables the confirm button, for an extension that replaces
+	 * the dates the error judges.
+	 *
+	 * @since 5.31.0
+	 *
+	 * @param {boolean} hasDurationError Whether the ticket has a sales duration error.
+	 * @param {Object}  state            The state of the store.
+	 * @param {Object}  ownProps         The own props of the component.
+	 */
+	const hasDurationError = applyFilters(
+		'tec.tickets.blocks.confirmButton.hasDurationError',
+		selectors.getTicketHasDurationError( state, ownProps ),
+		state,
+		ownProps
+	);
+
 	const shouldConfirmBeDisabled =
 		selectors.isTicketDisabled( state, ownProps ) ||
-		selectors.getTicketHasDurationError( state, ownProps ) ||
+		hasDurationError ||
 		! selectors.getTicketHasChanges( state, ownProps ) ||
 		! selectors.isTicketValid( state, ownProps ) ||
 		// A staged ticket travels with the post save, so nothing invalid may be staged: the sale price rule applies
@@ -84,6 +102,15 @@ export const onCancelClick = ( state, dispatch, ownProps ) => () => {
 		);
 		dispatch( actions.setTicketsTempSharedCapacity( selectors.getTicketsSharedCapacity( state ) ) );
 		dispatch( actions.setTicketHasChanges( ownProps.clientId, false ) );
+
+		/**
+		 * Fires after the edits of a saved ticket have been discarded with the Cancel button.
+		 *
+		 * @since 5.31.0
+		 *
+		 * @param {string} clientId The client ID of the ticket block.
+		 */
+		doAction( 'tec.tickets.blocks.ticketCancelled', ownProps.clientId );
 	} else {
 		dispatch( actions.removeTicketBlock( ownProps.clientId ) );
 		wpDispatch( 'core/block-editor' ).removeBlocks( ownProps.clientId );
