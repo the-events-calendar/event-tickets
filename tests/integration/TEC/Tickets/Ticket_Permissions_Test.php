@@ -234,6 +234,53 @@ class Ticket_Permissions_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_pass_the_post_filter_the_id_it_answered_for(): void {
+		$ticket        = $this->ticket_on_a_post();
+		$permissions   = tribe( Ticket_Permissions::class );
+		$post_id       = (int) $ticket->get_event_id();
+		$occurrence_id = $post_id + 1000;
+		$seen          = null;
+		$this->log_in_as( 'administrator' );
+		add_filter(
+			'tec_tickets_filter_event_id',
+			static fn( $id ) => (int) $id === $occurrence_id ? $post_id : $id
+		);
+		add_filter(
+			'tec_tickets_user_can_edit_tickets_of',
+			static function ( $can, $id ) use ( &$seen ) {
+				$seen = $id;
+
+				return $can;
+			},
+			10,
+			2
+		);
+
+		$this->assertTrue( $permissions->user_can_edit_tickets_of( $occurrence_id ) );
+		$this->assertSame( $post_id, $seen );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_treat_a_falsy_string_from_each_filter_as_a_refusal(): void {
+		$ticket      = $this->ticket_on_a_post();
+		$permissions = tribe( Ticket_Permissions::class );
+		$this->log_in_as( 'administrator' );
+
+		add_filter( 'tec_tickets_user_can_delete_ticket', static fn() => 'false' );
+		$this->assertFalse( $permissions->user_can_delete_ticket( $ticket ) );
+
+		add_filter( 'tec_tickets_user_can_edit_ticket', static fn() => 'no' );
+		$this->assertFalse( $permissions->user_can_edit_ticket( $ticket ) );
+
+		add_filter( 'tec_tickets_user_can_edit_tickets_of', static fn() => 'off' );
+		$this->assertFalse( $permissions->user_can_edit_tickets_of( (int) $ticket->get_event_id() ) );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_refuse_the_delete_when_the_edit_filter_refuses(): void {
 		$ticket = $this->ticket_on_a_post();
 		$this->log_in_as( 'administrator' );
