@@ -44,7 +44,7 @@ class Orders_Lists_Test extends Controller_Test_Case {
 		yield 'event report, deleted ticket, version 2 order' => [ $purchased, true, true, '1 - General admission|2 - Stored VIP (no longer exists)' ];
 		yield 'orders list, all tickets present, old order' => [ $items, false, false, '1 General admission|2 VIP' ];
 		yield 'orders list, all tickets present, version 2 order' => [ $items, true, false, '1 General admission|2 VIP' ];
-		yield 'orders list, deleted ticket, old order' => [ $items, false, true, '1 General admission|2 Tickets' ];
+		yield 'orders list, deleted ticket, old order' => [ $items, false, true, '1 General admission|2 Ticket #{{ticket_id}} (no longer exists)' ];
 		yield 'orders list, deleted ticket, version 2 order' => [ $items, true, true, '1 General admission|2 Stored VIP (no longer exists)' ];
 	}
 
@@ -162,7 +162,7 @@ class Orders_Lists_Test extends Controller_Test_Case {
 		$this->assertSame( "<div class='tribe-line-item'>2 Snapshot VIP (no longer exists)</div>", $html );
 	}
 
-	public function test_the_orders_list_shows_no_ticket_id_for_a_version_2_order_while_the_feature_is_off(): void {
+	public function test_the_orders_list_shows_the_ticket_id_for_a_version_2_order_while_the_feature_is_off(): void {
 		$event_id  = static::factory()->post->create( [ 'post_type' => 'page' ] );
 		$ticket_id = $this->create_tc_ticket( $event_id, 10, [ 'ticket_name' => 'VIP' ] );
 		$order     = $this->create_order( [ $ticket_id => 2 ] );
@@ -173,7 +173,7 @@ class Orders_Lists_Test extends Controller_Test_Case {
 
 		$html = ( new Orders_Table() )->column_items( tec_tc_get_order( $order->ID ) );
 
-		$this->assertSame( "<div class='tribe-line-item'>2 Tickets</div>", $html );
+		$this->assertSame( "<div class='tribe-line-item'>2 Ticket #{$ticket_id} (no longer exists)</div>", $html );
 	}
 
 	private function register_controller(): void {
