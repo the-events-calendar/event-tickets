@@ -90,6 +90,34 @@ class Save_Ticket_Test extends WPTestCase {
 	}
 
 	/**
+	 * Updating an RSVP must not hand it to whoever saved it: the ticket's author decides who may delete it.
+	 *
+	 * @test
+	 */
+	public function should_keep_the_author_when_another_user_updates_the_ticket(): void {
+		$creator_id = static::factory()->user->create( [ 'role' => 'administrator' ] );
+		$editor_id  = static::factory()->user->create( [ 'role' => 'author' ] );
+		$event_id   = static::factory()->post->create();
+
+		wp_set_current_user( $creator_id );
+		$ticket       = new Ticket_Object();
+		$ticket->name        = 'Created';
+		$ticket->description = '';
+		$ticket_id    = $this->rsvp->save_ticket( $event_id, $ticket, [] );
+
+		wp_set_current_user( $editor_id );
+		$ticket       = new Ticket_Object();
+		$ticket->ID   = $ticket_id;
+		$ticket->name        = 'Updated';
+		$ticket->description = '';
+		$this->rsvp->save_ticket( $event_id, $ticket, [] );
+		wp_set_current_user( 0 );
+
+		$this->assertSame( 'Updated', get_post( $ticket_id )->post_title );
+		$this->assertSame( $creator_id, (int) get_post( $ticket_id )->post_author );
+	}
+
+	/**
 	 * It should set all ticket fields correctly
 	 *
 	 * @test
