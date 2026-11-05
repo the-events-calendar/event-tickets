@@ -44,7 +44,7 @@ class Parser_Test extends WPTestCase {
 			]
 		);
 
-		$this->assertTrue( $this->rejections->is_empty() );
+		$this->assertSame( [], $this->rejections->all() );
 		$this->assertTrue( $payload->has_changes() );
 		$this->assertSame( [ 123 => $update_data + [ 'ticket_id' => 123 ] ], $payload->get_update() );
 		$this->assertSame( [ 0 => $create_data, 1 => $create_data ], $payload->get_create() );
@@ -120,7 +120,7 @@ class Parser_Test extends WPTestCase {
 	public function it_should_treat_an_empty_or_missing_payload_as_no_changes( $raw ): void {
 		$payload = $this->parse( $raw );
 
-		$this->assertTrue( $this->rejections->is_empty() );
+		$this->assertSame( [], $this->rejections->all() );
 		$this->assertFalse( $payload->has_changes() );
 	}
 
@@ -306,57 +306,58 @@ class Parser_Test extends WPTestCase {
 		$this->assertSame( [ 'a', -1 ], $this->rejected_keys( 'create' ) );
 	}
 
-	/**
-	 * @test
-	 */
-	public function it_should_reject_both_entries_when_the_same_ticket_is_in_update_and_delete(): void {
-		$data    = [ 'ticket_name' => 'x' ];
-		$payload = $this->parse(
-			[
-				'update' => [ 1 => $data, 2 => $data ],
-				'delete' => [ 2, 3 ],
-			]
-		);
+	public function same_ticket_in_two_parts_provider(): array {
+		$data = [ 'ticket_name' => 'x' ];
 
-		$this->assertSame( [ 1 => $data + [ 'ticket_id' => 1 ] ], $payload->get_update() );
-		$this->assertSame( [ 3 ], $payload->get_delete() );
-		$this->assertCount( 1, $this->rejections->all() );
-		$this->assertSame( 2, $this->rejections->all()[0]['key'] );
+		return [
+			'update and delete' => [
+				[
+					'update' => [ 1 => $data, 2 => $data ],
+					'delete' => [ 2, 3 ],
+				],
+				[
+					'update' => [ 1 => $data + [ 'ticket_id' => 1 ] ],
+					'delete' => [ 3 ],
+				],
+				'update',
+			],
+			'move and delete'   => [
+				[
+					'move'   => [ 1 => 10, 2 => 10 ],
+					'delete' => [ 2, 3 ],
+				],
+				[
+					'move'   => [ 1 => 10 ],
+					'delete' => [ 3 ],
+				],
+				'move',
+			],
+			'update and move'   => [
+				[
+					'update' => [ 1 => $data, 2 => $data ],
+					'move'   => [ 2 => 10, 3 => 10 ],
+				],
+				[
+					'update' => [ 1 => $data + [ 'ticket_id' => 1 ] ],
+					'move'   => [ 3 => 10 ],
+				],
+				'update',
+			],
+		];
 	}
 
 	/**
 	 * @test
+	 * @dataProvider same_ticket_in_two_parts_provider
 	 */
-	public function it_should_reject_both_entries_when_the_same_ticket_is_in_move_and_delete(): void {
-		$payload = $this->parse(
-			[
-				'move'   => [ 1 => 10, 2 => 10 ],
-				'delete' => [ 2, 3 ],
-			]
-		);
+	public function it_should_reject_both_entries_when_the_same_ticket_is_in_two_parts( array $raw, array $expected, string $rejected_part ): void {
+		$payload = $this->parse( $raw );
 
-		$this->assertSame( [ 1 => 10 ], $payload->get_move() );
-		$this->assertSame( [ 3 ], $payload->get_delete() );
+		$this->assertSame( $expected['update'] ?? [], $payload->get_update() );
+		$this->assertSame( $expected['move'] ?? [], $payload->get_move() );
+		$this->assertSame( $expected['delete'] ?? [], $payload->get_delete() );
 		$this->assertCount( 1, $this->rejections->all() );
-		$this->assertSame( [ 2 ], $this->rejected_keys( 'move' ) );
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_should_reject_both_entries_when_the_same_ticket_is_in_update_and_move(): void {
-		$data    = [ 'ticket_name' => 'x' ];
-		$payload = $this->parse(
-			[
-				'update' => [ 1 => $data, 2 => $data ],
-				'move'   => [ 2 => 10, 3 => 10 ],
-			]
-		);
-
-		$this->assertSame( [ 1 => $data + [ 'ticket_id' => 1 ] ], $payload->get_update() );
-		$this->assertSame( [ 3 => 10 ], $payload->get_move() );
-		$this->assertCount( 1, $this->rejections->all() );
-		$this->assertSame( [ 2 ], $this->rejected_keys( 'update' ) );
+		$this->assertSame( [ 2 ], $this->rejected_keys( $rejected_part ) );
 	}
 
 	/**
