@@ -8,7 +8,10 @@
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use Tribe__Cache_Listener as Cache;
 use Tribe__Utils__Array as Arr;
+use TEC\Tickets\Event;
 use TEC\Tickets\RSVP\V2\Constants;
+use TEC\Tickets\Commerce\Event_Provider_Heal;
+use TEC\Tickets\Commerce\Module as Commerce_Module;
 
 // phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
 
@@ -3077,6 +3080,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public function get_ticket_prices( array $prices, $post_id ) {
+			// The block editor saves an empty Event Price block as an empty cost, which is no cost at all.
+			$prices = array_filter( $prices, static fn( $price ) => '' !== $price && null !== $price );
+
 			// If value already exists, do not override it. Return it.
 			if ( ! empty( $prices ) ) {
 				return $prices;
@@ -3747,8 +3753,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			// Bail if there aren't any tickets.
-			$tickets = $this->get_tickets( $post->ID );
-			if ( empty( $tickets ) ) {
+			if ( ! $this->has_tickets_for_post_content( $post->ID ) ) {
 				return false;
 			}
 
@@ -3761,6 +3766,19 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			return true;
+		}
+
+		/**
+		 * Whether the post has tickets of this provider to show in its content.
+		 *
+		 * @since 5.30.3
+		 *
+		 * @param int $post_id The post ID.
+		 *
+		 * @return bool Whether the post has tickets of this provider to show in its content.
+		 */
+		protected function has_tickets_for_post_content( int $post_id ): bool {
+			return ! empty( $this->get_tickets( $post_id ) );
 		}
 
 		/**
@@ -4108,6 +4126,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Creates a ticket object and calls the child save_ticket function
 		 *
+		 * @since 5.30.3 Returns false, saving nothing, when the ID to update is not a ticket attached to the post.
+		 *
 		 * @param int   $post_id ID of parent "event" post.
 		 * @param array $data    Raw post data.
 		 *
@@ -4125,6 +4145,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$ticket->start_date       = null;
 			$ticket->end_date         = null;
 			$ticket->menu_order       = isset( $data['ticket_menu_order'] ) ? intval( $data['ticket_menu_order'] ) : null;
+
+			// Every save path takes the ticket ID from the request, and the caller only checked its rights on the post.
+			if ( $update && ! Event::ticket_belongs_to_post( $ticket->ID, absint( $post_id ) ) ) {
+				return false;
+			}
 
 			/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
 			$tickets_handler = tribe( 'tickets.handler' );
@@ -4303,6 +4328,56 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Returns whether ticket data can be saved, before an editor or REST request saves it with `ticket_add()`.
+		 *
+		 * `ticket_add()` can only return `false`, so the entry points ask here first, where a callback can reject the data
+		 * with a message they show. The classic editor's ajax save, the block editor's REST V1 save and the TEC REST API
+		 * call it; other callers of `ticket_add()`, such as imports and the RSVP V2 editor, save without it.
+		 *
+		 * @since 5.31.0
+		 *
+		 * @param int|string          $post_id The ticket parent post ID.
+		 * @param array<string,mixed> $data    The ticket data about to be saved.
+		 *
+		 * @return true|WP_Error `true` when the data can be saved, or the error it is rejected with.
+		 */
+		public function validate_ticket_data( $post_id, array $data ) {
+			/**
+			 * Filters whether ticket data can be saved, before an editor or REST request saves it.
+			 *
+			 * Return a `WP_Error` to reject the save: its message is shown to the user, and nothing is saved. Only the
+			 * classic editor's ajax save, the block editor's REST V1 save and the TEC REST API apply it.
+			 *
+			 * @since 5.31.0
+			 *
+			 * @param true|WP_Error       $valid   `true`, or the error an earlier callback rejected the data with.
+			 * @param int                 $post_id The ticket parent post ID.
+			 * @param array<string,mixed> $data    The ticket data about to be saved, with the class name of its provider in `ticket_provider`.
+			 */
+			$valid = apply_filters(
+				'tec_tickets_ticket_data_validation',
+				true,
+				absint( $post_id ),
+				array_merge( $data, [ 'ticket_provider' => $this->class_name ] )
+			);
+
+			if ( is_wp_error( $valid ) ) {
+				return $valid;
+			}
+
+			// A callback that rejects the data without saying why still rejects it.
+			if ( false === $valid ) {
+				return new WP_Error(
+					'tec_tickets_ticket_data_invalid',
+					__( 'The ticket could not be saved.', 'event-tickets' ),
+					[ 'status' => 400 ]
+				);
+			}
+
+			return true;
+		}
+
+		/**
 		 * Get the saved or default ticket provider, if active.
 		 *
 		 * Will return False if there is a saved provider that is currently not active.
@@ -4381,6 +4456,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @see get_ticket_provider_instance()
 		 *
 		 * @since 4.12.3
+		 * @since 5.30.3 A post wrongly stored as Tickets Commerce heals to the provider that owns its tickets.
 		 *
 		 * @param int $post_id The post ID of the event to which the ticket is attached.
 		 *
@@ -4398,7 +4474,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$saved = get_post_meta( $post_id, $tickets_handler->key_provider_field, true );
 
 				if ( ! empty( $saved ) ) {
-					$provider = $saved;
+					// Saving an RSVP v2 used to store Tickets Commerce over the event's real provider.
+					$provider = Commerce_Module::class === $saved
+						? tribe( Event_Provider_Heal::class )->heal( (int) $post_id )
+						: $saved;
 				}
 			}
 
