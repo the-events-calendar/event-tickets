@@ -143,7 +143,7 @@ class Order_Actions_Test extends Controller_Test_Case {
 			'tec_tickets_commerce_order_deleted',
 			static function ( $order_id ) use ( &$deleted, &$still_in_db ) {
 				$deleted[]     = $order_id;
-				$still_in_db[] = (int) DB::get_var( DB::prepare( 'SELECT COUNT(*) FROM %i WHERE ID = %d', DB::prefix( 'posts' ), $order_id ) );
+				$still_in_db[] = absint( DB::get_var( DB::prepare( 'SELECT COUNT(*) FROM %i WHERE ID = %d', DB::prefix( 'posts' ), $order_id ) ) );
 			}
 		);
 		$event_id  = static::factory()->post->create( [ 'post_type' => 'page' ] );
