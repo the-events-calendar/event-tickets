@@ -106,7 +106,7 @@ final class Recurrence_Controller extends Controller_Contract {
 		remove_action( 'tribe_tickets_ticket_add', $this->container->callback( Sync::class, 'sync_saved_ticket' ) );
 		remove_action( 'tec_tickets_commerce_ticket_deleted', $this->container->callback( Sync::class, 'sync_deleted_ticket' ) );
 		remove_action( 'before_delete_post', $this->container->callback( Sync::class, 'delete_event' ) );
-		remove_action( 'tribe_events_tickets_new_ticket_buttons', $this->container->callback( Classic::class, 'render_button' ) );
+		remove_action( 'tribe_events_tickets_new_ticket_buttons', $this->container->callback( Classic::class, 'render_header' ) );
 		remove_action( 'tribe_events_tickets_after_new_ticket_panel', $this->container->callback( Classic::class, 'render_tickets_by_date' ) );
 		remove_action( self::TYPE_HEADER_ACTION, $this->container->callback( Classic::class, 'render_type_header' ) );
 		remove_filter( self::WARNING_CONTEXT_FILTER, $this->container->callback( Classic::class, 'filter_warning' ), 20 );
@@ -114,7 +114,13 @@ final class Recurrence_Controller extends Controller_Contract {
 		remove_filter( 'tec_tickets_filter_event_id', $this->container->callback( Classic::class, 'panel_event_id' ), 600 );
 		remove_action( 'admin_init', $this->container->callback( Classic::class, 'hide_legacy_notice' ), 9 );
 		remove_filter( 'tec_tickets_editor_list_table_data_' . Template_Guard::TICKET_TYPE, $this->container->callback( Classic::class, 'title_list' ) );
+		remove_filter( 'tec_tickets_editor_list_row_capacity', $this->container->callback( Classic::class, 'row_capacity' ) );
+		remove_filter( 'tec_tickets_editor_total_capacity', $this->container->callback( Classic::class, 'total_capacity' ) );
+		remove_filter( 'tec_tickets_editor_list_row_available', $this->container->callback( Classic::class, 'row_available' ) );
+		remove_action( 'tec_tickets_editor_list_table_columns_' . Template_Guard::TICKET_TYPE, $this->container->callback( Classic::class, 'render_sold_header' ) );
+		remove_action( 'tec_tickets_editor_list_row_columns_' . Template_Guard::TICKET_TYPE, $this->container->callback( Classic::class, 'render_sold_cell' ) );
 		remove_filter( 'tec_tickets_editor_list_tickets', $this->container->callback( Block_Editor::class, 'remove_date_copies' ) );
+		remove_action( 'rest_api_init', $this->container->callback( Block_Editor::class, 'register_tickets_by_date_field' ) );
 		remove_filter( 'tec_tickets_views_v2_ticket_model_cache_id', $this->container->callback( Views::class, 'cache_id' ) );
 		remove_action( 'tec_tickets_recurring_tickets_synced', $this->container->callback( Views::class, 'forget_dates' ) );
 		remove_action( 'tec_tickets_recurring_tickets_stock_written', $this->container->callback( Views::class, 'forget_row_dates' ) );
@@ -167,7 +173,7 @@ final class Recurrence_Controller extends Controller_Contract {
 
 		$this->container->singleton( Classic::class );
 
-		add_action( 'tribe_events_tickets_new_ticket_buttons', $this->container->callback( Classic::class, 'render_button' ) );
+		add_action( 'tribe_events_tickets_new_ticket_buttons', $this->container->callback( Classic::class, 'render_header' ) );
 		add_action( 'tribe_events_tickets_after_new_ticket_panel', $this->container->callback( Classic::class, 'render_tickets_by_date' ) );
 		add_action( self::TYPE_HEADER_ACTION, $this->container->callback( Classic::class, 'render_type_header' ), 10, 3 );
 		// After Flexible Tickets adds its message, at 10.
@@ -178,10 +184,16 @@ final class Recurrence_Controller extends Controller_Contract {
 		// Before the notice, at 10.
 		add_action( 'admin_init', $this->container->callback( Classic::class, 'hide_legacy_notice' ), 9 );
 		add_filter( 'tec_tickets_editor_list_table_data_' . Template_Guard::TICKET_TYPE, $this->container->callback( Classic::class, 'title_list' ) );
+		add_filter( 'tec_tickets_editor_list_row_capacity', $this->container->callback( Classic::class, 'row_capacity' ), 10, 3 );
+		add_filter( 'tec_tickets_editor_total_capacity', $this->container->callback( Classic::class, 'total_capacity' ), 10, 2 );
+		add_filter( 'tec_tickets_editor_list_row_available', $this->container->callback( Classic::class, 'row_available' ), 10, 3 );
+		add_action( 'tec_tickets_editor_list_table_columns_' . Template_Guard::TICKET_TYPE, $this->container->callback( Classic::class, 'render_sold_header' ) );
+		add_action( 'tec_tickets_editor_list_row_columns_' . Template_Guard::TICKET_TYPE, $this->container->callback( Classic::class, 'render_sold_cell' ), 10, 2 );
 
 		$this->container->singleton( Block_Editor::class );
 
 		add_filter( 'tec_tickets_editor_list_tickets', $this->container->callback( Block_Editor::class, 'remove_date_copies' ) );
+		add_action( 'rest_api_init', $this->container->callback( Block_Editor::class, 'register_tickets_by_date_field' ) );
 
 		$this->container->singleton( Views::class );
 

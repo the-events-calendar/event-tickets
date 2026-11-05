@@ -17,6 +17,7 @@ import { PREFIX, SUFFIX, PRICE_POSITIONS } from '../../../../../../../modules/da
 import './style.pcss';
 
 const TicketContainerHeaderPriceLabel = ( {
+	amountLabel = __( 'available', 'event-tickets' ),
 	available,
 	currencyDecimalPoint,
 	currencyNumberOfDecimals,
@@ -35,7 +36,7 @@ const TicketContainerHeaderPriceLabel = ( {
 		) : (
 			<>
 				<span className="tribe-editor__ticket__container-header-label__available">{ available }</span>
-				{ __( 'available', 'event-tickets' ) }
+				{ amountLabel }
 			</>
 		);
 
@@ -88,7 +89,8 @@ const TicketContainerHeaderPriceLabel = ( {
 };
 
 TicketContainerHeaderPriceLabel.propTypes = {
-	available: PropTypes.number,
+	amountLabel: PropTypes.string,
+	available: PropTypes.oneOfType( [ PropTypes.number, PropTypes.string ] ),
 	currencyDecimalPoint: PropTypes.string,
 	currencyNumberOfDecimals: PropTypes.number,
 	currencyPosition: PropTypes.oneOf( PRICE_POSITIONS ),
@@ -102,6 +104,7 @@ TicketContainerHeaderPriceLabel.propTypes = {
 };
 
 const TicketContainerHeaderPrice = ( {
+	amountLabel,
 	available,
 	currencyDecimalPoint,
 	currencyNumberOfDecimals,
@@ -116,6 +119,7 @@ const TicketContainerHeaderPrice = ( {
 } ) => (
 	<div className="tribe-editor__ticket__container-header-price">
 		<TicketContainerHeaderPriceLabel
+			amountLabel={ amountLabel }
 			available={ available }
 			currencyDecimalPoint={ currencyDecimalPoint }
 			currencyNumberOfDecimals={ currencyNumberOfDecimals }
@@ -132,7 +136,8 @@ const TicketContainerHeaderPrice = ( {
 );
 
 TicketContainerHeaderPrice.propTypes = {
-	available: PropTypes.number,
+	amountLabel: PropTypes.string,
+	available: PropTypes.oneOfType( [ PropTypes.number, PropTypes.string ] ),
 	currencyDecimalPoint: PropTypes.string,
 	currencyNumberOfDecimals: PropTypes.number,
 	currencyPosition: PropTypes.oneOf( PRICE_POSITIONS ),

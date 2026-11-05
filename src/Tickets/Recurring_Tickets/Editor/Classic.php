@@ -11,11 +11,14 @@ namespace TEC\Tickets\Recurring_Tickets\Editor;
 
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use TEC\Tickets\Event;
+use TEC\Tickets\Recurring_Tickets\Admin\Template_Sales;
 use TEC\Tickets\Recurring_Tickets\Admin\Tickets_By_Date;
 use TEC\Tickets\Recurring_Tickets\Template_Guard;
 use TEC\Tickets\Seating\Meta as Seating_Meta;
 use Tribe__Events__Main as TEC;
 use Tribe__Template as Template;
+use Tribe__Tickets__Global_Stock as Global_Stock;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
 use WP_Post;
 
@@ -48,20 +51,41 @@ final class Classic {
 	private Tickets_By_Date $tickets_by_date;
 
 	/**
+	 * The sales of each recurring event ticket over every date.
+	 *
+	 * @since TBD
+	 *
+	 * @var Template_Sales
+	 */
+	private Template_Sales $template_sales;
+
+	/**
+	 * The sales of the events whose tickets the panel lists, by event ID: the panel lists one row per ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @var array<int,array{tickets: array<int,array{sold: int, available: int}>, shared: array{sold: int, capacity: int}|null}>
+	 */
+	private array $sales = [];
+
+	/**
 	 * Classic constructor.
 	 *
 	 * @since TBD
 	 *
 	 * @param Template_Guard  $guard           The template guard.
 	 * @param Tickets_By_Date $tickets_by_date The Tickets by Date section's data.
+	 * @param Template_Sales  $template_sales  The sales of each recurring event ticket over every date.
 	 */
-	public function __construct( Template_Guard $guard, Tickets_By_Date $tickets_by_date ) {
+	public function __construct( Template_Guard $guard, Tickets_By_Date $tickets_by_date, Template_Sales $template_sales ) {
 		$this->guard           = $guard;
 		$this->tickets_by_date = $tickets_by_date;
+		$this->template_sales  = $template_sales;
 	}
 
 	/**
-	 * Renders the button that adds a recurring event ticket, hidden until the event recurs.
+	 * Renders the head of the recurring event tickets, with the buttons that open the Tickets by Date section and add a
+	 * ticket, hidden until the event recurs.
 	 *
 	 * @since TBD
 	 *
@@ -69,14 +93,20 @@ final class Classic {
 	 *
 	 * @return void
 	 */
-	public function render_button( $post_id ): void {
+	public function render_header( $post_id ): void {
 		$post_id = (int) $post_id;
 
 		if ( ! $this->offers_recurring_tickets( $post_id ) ) {
 			return;
 		}
 
-		tribe( 'tickets.admin.views' )->template( 'recurring-tickets/form-toggle', [ 'hidden' => ! tribe_is_recurring_event( $post_id ) ] );
+		tribe( 'tickets.admin.views' )->template(
+			'recurring-tickets/header',
+			[
+				'hidden'  => ! tribe_is_recurring_event( $post_id ),
+				'by_date' => null !== $this->tickets_by_date->for_event( (int) Event::filter_event_id( $post_id, 'recurring-tickets-by-date' ) ),
+			]
+		);
 	}
 
 	/**
@@ -95,7 +125,7 @@ final class Classic {
 			return;
 		}
 
-		printf( '<div class="tec-tickets-by-date-root" data-tickets-by-date="%s"></div>', esc_attr( (string) wp_json_encode( $data ) ) );
+		printf( '<div id="tec-tickets-by-date" class="tec-tickets-by-date-root" data-tickets-by-date="%s"></div>', esc_attr( (string) wp_json_encode( $data ) ) );
 	}
 
 	/**
@@ -163,7 +193,7 @@ final class Classic {
 	}
 
 	/**
-	 * Titles the tickets panel's list of recurring event tickets.
+	 * Titles the tickets panel's list of recurring event tickets: the head above it says they are the event's.
 	 *
 	 * @since TBD
 	 *
@@ -173,14 +203,146 @@ final class Classic {
 	 */
 	public function title_list( $table_data ): array {
 		$table_data                = (array) $table_data;
-		$table_data['table_title'] = _x( 'Recurring event tickets', 'The title of the list of recurring event tickets in the tickets panel.', 'event-tickets' );
+		$table_data['table_title'] = tribe_get_ticket_label_plural( 'recurring_tickets_list_title' );
 
 		return $table_data;
 	}
 
 	/**
-	 * Says, where the panel says standard tickets are not supported on a recurring event, what it sells instead, and
-	 * where the Series Passes of its Series are sold.
+	 * Shows, in a recurring event ticket's row, its capacity over every date: the shared capacity's when it shares it.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|mixed           $capacity The capacity of one date, -1 when unlimited.
+	 * @param Ticket_Object|mixed $ticket   The ticket.
+	 * @param int|mixed           $post_id  The post being edited: the event, or one of its dates.
+	 *
+	 * @return int|mixed The capacity over every date; `$capacity` for another ticket.
+	 */
+	public function row_capacity( $capacity, $ticket, $post_id ) {
+		$sales = $this->row_sales( $ticket, $post_id );
+
+		if ( null === $sales || -1 === (int) $capacity ) {
+			return $capacity;
+		}
+
+		$shared = in_array( $ticket->global_stock_mode(), [ Global_Stock::GLOBAL_STOCK_MODE, Global_Stock::CAPPED_STOCK_MODE ], true );
+		$pool   = $this->sales[ $this->event_id( $post_id ) ]['shared'] ?? null;
+
+		return $shared && $pool ? $pool['capacity'] : $sales['sold'] + $sales['available'];
+	}
+
+	/**
+	 * Shows, in a recurring event ticket's row, what it has left over every date.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|mixed           $available What one date has left, -1 when unlimited.
+	 * @param Ticket_Object|mixed $ticket    The ticket.
+	 * @param int|mixed           $post_id   The post being edited: the event, or one of its dates.
+	 *
+	 * @return int|mixed What it has left over every date; `$available` for another ticket.
+	 */
+	public function row_available( $available, $ticket, $post_id ) {
+		$sales = $this->row_sales( $ticket, $post_id );
+
+		return null === $sales ? $available : $sales['available'];
+	}
+
+	/**
+	 * Shows, under a recurring event's tickets, their total capacity over every date, as their rows do.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|null|mixed $total   The total capacity of one date, -1 when unlimited.
+	 * @param int|mixed      $post_id The post being edited: the event, or one of its dates.
+	 *
+	 * @return int|null|mixed The total capacity over every date; `$total` for a post without recurring event tickets.
+	 */
+	public function total_capacity( $total, $post_id ) {
+		$event_id = $this->event_id( $post_id );
+
+		if ( ! $this->offers_recurring_tickets( $event_id ) || ! $this->template_sales->for_event( $event_id ) ) {
+			return $total;
+		}
+
+		$available = $this->template_sales->available( $event_id );
+
+		return -1 === $available ? -1 : $this->template_sales->sold( $event_id ) + $available;
+	}
+
+	/**
+	 * Heads the Sold column of the list of recurring event tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function render_sold_header(): void {
+		printf( '<th class="ticket_sold">%s</th>', esc_html__( 'Sold', 'event-tickets' ) );
+	}
+
+	/**
+	 * Prints a recurring event ticket's sales over every date in its row.
+	 *
+	 * @since TBD
+	 *
+	 * @param Ticket_Object|mixed $ticket  The ticket.
+	 * @param int|mixed           $post_id The post being edited: the event, or one of its dates.
+	 *
+	 * @return void
+	 */
+	public function render_sold_cell( $ticket, $post_id ): void {
+		$sales = $this->row_sales( $ticket, $post_id );
+
+		printf(
+			'<td class="ticket_sold"><span class="tribe-mobile-only">%1$s</span> %2$s</td>',
+			esc_html__( 'Sold:', 'event-tickets' ),
+			esc_html( (string) ( $sales['sold'] ?? 0 ) )
+		);
+	}
+
+	/**
+	 * Returns a recurring event ticket's sales over every date of its event, read once per event.
+	 *
+	 * @since TBD
+	 *
+	 * @param Ticket_Object|mixed $ticket  The ticket.
+	 * @param int|mixed           $post_id The post being edited: the event, or one of its dates.
+	 *
+	 * @return array{sold: int, available: int}|null The sales, or null for another ticket.
+	 */
+	private function row_sales( $ticket, $post_id ): ?array {
+		if ( ! $ticket instanceof Ticket_Object || ! $this->guard->is_template( (int) $ticket->ID ) ) {
+			return null;
+		}
+
+		$event_id = $this->event_id( $post_id );
+
+		$this->sales[ $event_id ] ??= [
+			'tickets' => $this->template_sales->for_event( $event_id ),
+			'shared'  => $this->template_sales->shared_pool( $event_id ),
+		];
+
+		return $this->sales[ $event_id ]['tickets'][ (int) $ticket->ID ] ?? null;
+	}
+
+	/**
+	 * Returns the event of the post being edited.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|mixed $post_id The post being edited: the event, or one of its dates.
+	 *
+	 * @return int The event's post ID.
+	 */
+	private function event_id( $post_id ): int {
+		return (int) Event::filter_event_id( (int) $post_id, 'recurring-tickets-list' );
+	}
+
+	/**
+	 * Takes out the panel's warning that standard tickets are not supported on a recurring event, which its recurring
+	 * event tickets are, and says where the Series Passes of its Series are sold.
 	 *
 	 * @since TBD
 	 *
@@ -195,19 +357,8 @@ final class Classic {
 
 		$event = tribe_get_event_label_singular_lowercase();
 
+		// The head of the recurring event tickets says what the event offers in place of standard tickets.
 		unset( $context['messages']['et-warning'] );
-		$context['messages'] = array_merge(
-			[
-				'recurring-event-tickets' => esc_html(
-					sprintf(
-						// translators: %s is the lowercase singular label for an event.
-						__( 'Tickets you add here are offered on every date of this %1$s. Each date has its own capacity. You can\'t add standard tickets or RSVPs to a recurring %1$s.', 'event-tickets' ),
-						$event
-					)
-				),
-			],
-			$context['messages']
-		);
 
 		$series = isset( $context['post_id'] ) && function_exists( 'tec_series' ) ? tec_series()->where( 'event_post_id', (int) $context['post_id'] )->first() : null;
 

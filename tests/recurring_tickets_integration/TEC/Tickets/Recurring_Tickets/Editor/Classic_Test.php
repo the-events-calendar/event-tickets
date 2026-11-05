@@ -7,9 +7,11 @@ use TEC\Events_Pro\Custom_Tables\V1\Editors\Classic\Recurrence;
 use TEC\Tickets\Event;
 use TEC\Tickets\Recurring_Tickets\Admin\Tickets_By_Date;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Recurring_Tickets\Template_Guard;
 use TEC\Tickets\Recurring_Tickets\Ticket_ID;
 use TEC\Tickets\Tests\Recurring_Tickets\Recurrence_Tier_Check;
+use TEC\Tickets\Tests\Recurring_Tickets\Row_Orders;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use Tribe\Tickets\Editor\Warnings;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -22,6 +24,7 @@ class Classic_Test extends WPTestCase {
 	use Ticket_Rows;
 	use Ticket_Maker;
 	use Recurrence_Tier_Check;
+	use Row_Orders;
 
 	/**
 	 * @before
@@ -54,7 +57,7 @@ class Classic_Test extends WPTestCase {
 		do_action( 'tribe_events_tickets_after_new_ticket_panel', $event );
 		$html = (string) ob_get_clean();
 
-		$this->assertSame( 1, preg_match( '#<div class="tec-tickets-by-date-root" data-tickets-by-date="([^"]+)"></div>#', $html, $matches ) );
+		$this->assertSame( 1, preg_match( '#<div id="tec-tickets-by-date" class="tec-tickets-by-date-root" data-tickets-by-date="([^"]+)"></div>#', $html, $matches ) );
 		$this->assertSame( tribe( Tickets_By_Date::class )->for_event( $event ), json_decode( html_entity_decode( $matches[1], ENT_QUOTES ), true ) );
 	}
 
@@ -84,8 +87,10 @@ class Classic_Test extends WPTestCase {
 
 		$this->assertStringContainsString( 'id="recurring_ticket_form_toggle"', $html );
 		$this->assertStringContainsString( 'data-ticket-type="recurring"', $html );
-		$this->assertStringContainsString( 'New recurring event ticket', $html );
-		$this->assertStringNotContainsString( 'display: none', $this->button( $html ) );
+		$this->assertStringContainsString( 'Recurring Event Tickets', $html );
+		$this->assertStringContainsString( 'These tickets apply to all dates in the recurring event', $html );
+		$this->assertStringContainsString( 'Add a Ticket', $html );
+		$this->assertStringNotContainsString( 'display: none', $this->header( $html ) );
 	}
 
 	/**
@@ -103,7 +108,7 @@ class Classic_Test extends WPTestCase {
 			]
 		)->create()->ID;
 
-		$this->assertStringContainsString( 'display: none', $this->button( $this->new_ticket_buttons( $event ) ) );
+		$this->assertStringContainsString( 'display: none', $this->header( $this->new_ticket_buttons( $event ) ) );
 	}
 
 	/**
@@ -150,6 +155,47 @@ class Classic_Test extends WPTestCase {
 	}
 
 	/**
+	 * The panel lists a recurring event's tickets for all its dates: one date's numbers read as if nothing sold.
+	 *
+	 * @test
+	 */
+	public function it_should_count_each_tickets_numbers_over_every_date_as_the_attendees_page_does(): void {
+		$this->skip_without_recurrence_tier();
+
+		$event  = $this->create_recurring_event();
+		$shared = $this->create_tc_ticket( $event, 10, [ 'tribe-ticket' => [ 'mode' => 'global', 'event_capacity' => 10, 'capacity' => 10 ] ] );
+		$own    = $this->create_tc_ticket( $event, 20, [ 'tribe-ticket' => [ 'mode' => 'own', 'capacity' => 5 ] ] );
+		$single = $this->create_tc_ticket( static::factory()->post->create(), 5 );
+		$date   = $this->get_dates( $event )[0];
+		$rows   = array_filter( tribe( Rows::class )->get_by_template( $shared ), static fn( $row ) => (int) $row->occurrence_id === (int) $date->occurrence_id );
+		$this->create_row_order( [ Ticket_ID::from_row_id( (int) reset( $rows )->id ) => 2 ] );
+		$this->forget_rows_read();
+
+		$row = function ( int $ticket_id, int $post_id ): array {
+			$ticket = tribe( Module::class )->get_ticket( $post_id, $ticket_id );
+
+			ob_start();
+			do_action( 'tec_tickets_editor_list_row_columns_' . $ticket->type(), $ticket, $post_id );
+
+			return [
+				apply_filters( 'tec_tickets_editor_list_row_capacity', $ticket->capacity(), $ticket, $post_id ),
+				apply_filters( 'tec_tickets_editor_list_row_available', $ticket->available(), $ticket, $post_id ),
+				trim( wp_strip_all_tags( (string) ob_get_clean() ) ),
+			];
+		};
+
+		// Pools of 10 on each of the 3 dates, 2 sold; 5 of its own on each.
+		$this->assertSame( [ 3 * 10, 3 * 10 - 2, 'Sold: 2' ], $row( $shared, $event ) );
+		$this->assertSame( [ 3 * 5, 3 * 5, 'Sold: 0' ], $row( $own, $event ) );
+
+		$this->assertSame( 3 * 10 + 3 * 5, apply_filters( 'tec_tickets_editor_total_capacity', 10 + 5, $event ), 'The total under them counts every date too.' );
+
+		$single_ticket = tribe( Module::class )->get_ticket( get_post_meta( $single, '_tec_tickets_commerce_event', true ), $single );
+		$this->assertSame( $single_ticket->capacity(), apply_filters( 'tec_tickets_editor_list_row_capacity', $single_ticket->capacity(), $single_ticket, 0 ), 'Other tickets keep their own numbers.' );
+		$this->assertSame( 5, apply_filters( 'tec_tickets_editor_total_capacity', 5, (int) $single_ticket->get_event_id() ), 'Other posts keep their total.' );
+	}
+
+	/**
 	 * @test
 	 */
 	public function it_should_title_the_list_of_recurring_event_tickets(): void {
@@ -157,21 +203,20 @@ class Classic_Test extends WPTestCase {
 
 		$table_data = apply_filters( 'tec_tickets_editor_list_table_data_' . Template_Guard::TICKET_TYPE, [ 'ticket_type' => Template_Guard::TICKET_TYPE ] );
 
-		$this->assertSame( 'Recurring event tickets', $table_data['table_title'] ?? null );
+		$this->assertSame( tribe_get_ticket_label_plural( 'recurring_tickets_list_title' ), $table_data['table_title'] ?? null );
 	}
 
 	/**
 	 * @test
 	 */
-	public function it_should_say_what_a_recurring_event_offers_in_place_of_standard_tickets(): void {
+	public function it_should_leave_saying_what_a_recurring_event_offers_to_the_head_of_its_tickets(): void {
 		$this->skip_without_recurrence_tier();
 
 		ob_start();
 		tribe( Warnings::class )->render_hidden_recurring_warning_for_ticket_meta_box( $this->create_recurring_event() );
 		$html = (string) ob_get_clean();
 
-		$this->assertStringContainsString( 'Tickets you add here are offered on every date of this event. Each date has its own capacity.', $html );
-		$this->assertStringContainsString( 'You can&#039;t add standard tickets or RSVPs to a recurring event.', $html );
+		$this->assertStringNotContainsString( 'Tickets you add here are offered on every date', $html );
 		$this->assertStringNotContainsString( 'Standard tickets are not yet supported', $html );
 	}
 
@@ -225,7 +270,8 @@ class Classic_Test extends WPTestCase {
 			set_current_screen( 'front' );
 		}
 
-		$this->assertStringContainsString( '(100)', $html );
+		// A pool of 100 on each of the 3 dates.
+		$this->assertStringContainsString( '(300)', $html );
 	}
 
 	/**
@@ -299,10 +345,10 @@ class Classic_Test extends WPTestCase {
 	/**
 	 * @param string $html The new ticket buttons.
 	 *
-	 * @return string The opening tag of the recurring event ticket button.
+	 * @return string The opening tag of the head of the recurring event tickets.
 	 */
-	private function button( string $html ): string {
-		preg_match( '/<button[^>]*id="recurring_ticket_form_toggle"[^>]*>/s', $html, $matches );
+	private function header( string $html ): string {
+		preg_match( '/<div[^>]*id="tec-tickets-recurring-header"[^>]*>/s', $html, $matches );
 
 		return $matches[0] ?? '';
 	}

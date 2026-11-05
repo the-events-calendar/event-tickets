@@ -18,6 +18,7 @@ import './style.pcss';
 
 const TicketContainerHeaderDescription = ( {
 	isDisabled,
+	isHidden,
 	isSelected,
 	isShared,
 	isUnlimited,
@@ -48,6 +49,10 @@ const TicketContainerHeaderDescription = ( {
 		);
 	/* eslint-enable max-len */
 
+	if ( isHidden ) {
+		return null;
+	}
+
 	return (
 		! isSelected && (
 			<div className="tribe-editor__ticket__container-header-quantity">
@@ -70,6 +75,7 @@ const TicketContainerHeaderDescription = ( {
 
 TicketContainerHeaderDescription.propTypes = {
 	isDisabled: PropTypes.bool,
+	isHidden: PropTypes.bool,
 	isSelected: PropTypes.bool,
 	isShared: PropTypes.bool,
 	isUnlimited: PropTypes.bool,

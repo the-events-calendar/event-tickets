@@ -23,16 +23,28 @@ const getHeaderElement = ( header, description ) => {
 	);
 };
 
-const Card = ( { className, children, header, description } ) => {
+const getHeaderWithActions = ( header, description, actions ) => (
+	<div className="tickets-heading__row tickets-row-line">
+		<div className="tickets-heading__text">
+			<div className="tickets-heading tickets-heading__title">{ header }</div>
+			{ description && <div className="tickets-heading__description">{ description }</div> }
+		</div>
+		<div className="tickets-heading__actions">{ actions }</div>
+	</div>
+);
+
+const Card = ( { className, children, header, description, actions } ) => {
 	return (
 		<div className={ classNames( 'tribe-editor__card', className ) }>
-			{ header && getHeaderElement( header, description ) }
+			{ header && actions && getHeaderWithActions( header, description, actions ) }
+			{ header && ! actions && getHeaderElement( header, description ) }
 			{ children }
 		</div>
 	);
 };
 
 Card.propTypes = {
+	actions: PropTypes.node,
 	className: PropTypes.string,
 	children: PropTypes.node,
 	header: PropTypes.string,

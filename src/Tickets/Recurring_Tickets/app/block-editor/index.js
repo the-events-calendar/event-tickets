@@ -11,6 +11,8 @@ import { addFilter } from '@wordpress/hooks';
 import { __, _x, sprintf } from '@wordpress/i18n';
 import { hasRecurrenceRules } from '@moderntribe/common/utils/recurrence';
 import { TICKET_LABELS } from '../../../../modules/data/blocks/ticket/constants';
+import './tickets-by-date';
+import './tickets-block';
 import { constants, selectors } from '../../../../modules/data/blocks/ticket';
 
 /**
@@ -221,7 +223,8 @@ export function offerTicketsOnRecurringEvents( mappedProps, { state, isRecurring
 
 	return {
 		...mappedProps,
-		showConfirm: true,
+		// The header has the block's "Add a Ticket".
+		showConfirm: false,
 		showNotSupportedMessage: false,
 		showWarning: false,
 		disableSettings: false,

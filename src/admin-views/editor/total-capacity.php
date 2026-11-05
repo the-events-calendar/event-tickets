@@ -6,6 +6,16 @@ $handler = tribe( 'tickets.handler' );
 
 $total_tickets = tribe_get_event_capacity( $post_id, true );
 
+/**
+ * Filters the total capacity the tickets panel shows for a post.
+ *
+ * @since TBD
+ *
+ * @param int|null $total_tickets The total capacity of the post's tickets, -1 when unlimited.
+ * @param int      $post_id       The ID of the post the panel is for.
+ */
+$total_tickets = apply_filters( 'tec_tickets_editor_total_capacity', $total_tickets, $post_id );
+
 // only show if there are tickets
 if ( empty( $total_tickets ) ) {
 	return;

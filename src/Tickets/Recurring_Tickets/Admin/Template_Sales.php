@@ -103,6 +103,42 @@ final class Template_Sales {
 	}
 
 	/**
+	 * Returns what an event's shared capacity holds over every date: its pools' sales and capacity, each date's once.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id The event.
+	 *
+	 * @return array{sold: int, capacity: int}|null The pools' sales and capacity, or null when no ticket shares capacity.
+	 */
+	public function shared_pool( int $event_id ): ?array {
+		$pools = [];
+
+		foreach ( $this->rows->get_by_post( $event_id ) as $row ) {
+			$occurrence_id = (int) $row->occurrence_id;
+
+			if ( 'publish' !== $row->status || isset( $pools[ $occurrence_id ] ) || ! $this->hydrator->pool_numbers( $row ) ) {
+				continue;
+			}
+
+			$pool = $this->rows->get_pool( $occurrence_id );
+
+			if ( $pool ) {
+				$pools[ $occurrence_id ] = $pool;
+			}
+		}
+
+		if ( ! $pools ) {
+			return null;
+		}
+
+		return [
+			'sold'     => (int) array_sum( array_map( static fn( $pool ) => (int) $pool->sales, $pools ) ),
+			'capacity' => (int) array_sum( array_map( static fn( $pool ) => max( 0, (int) $pool->capacity ), $pools ) ),
+		];
+	}
+
+	/**
 	 * Returns the number of recurring event tickets sold over every date of an event.
 	 *
 	 * @since TBD
