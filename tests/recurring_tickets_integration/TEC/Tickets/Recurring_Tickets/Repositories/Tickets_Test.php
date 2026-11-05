@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Recurring_Tickets\Repositories;
 
+use Closure;
 use Codeception\TestCase\WPTestCase;
 use InvalidArgumentException;
 use TEC\Common\StellarWP\DB\DB;
@@ -215,6 +216,40 @@ class Tickets_Test extends WPTestCase {
 		$repository->delete_pools( 20 );
 
 		$this->assertSame( 1, $this->count_pools(), 'Another event keeps its pools.' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_prime_a_dates_pool_apart_from_its_rows(): void {
+		$repository = tribe( Tickets::class );
+		$repository->insert_many( [ $this->row( [ 'occurrence_id' => 30 ] ) ] );
+		$repository->upsert_pools( 20, 100, [ 30 ] );
+		$pool = (int) DB::get_var( DB::prepare( 'SELECT id FROM %i WHERE type = %s', Tickets_Table::table_name(), Tickets::POOL_TYPE ) );
+		Closure::bind(
+			function () {
+				$this->forget_all();
+			},
+			$repository,
+			Tickets::class
+		)();
+		$queries = 0;
+		add_filter(
+			'query',
+			static function ( string $query ) use ( &$queries ) {
+				$queries += false !== strpos( $query, Tickets_Table::table_name() ) ? 1 : 0;
+
+				return $query;
+			}
+		);
+
+		$repository->prime_occurrences( [ 30, 31 ] );
+
+		$this->assertSame( $pool, (int) $repository->get_pool( 30 )->id );
+		$this->assertNull( $repository->get_pool( 31 ) );
+		$this->assertCount( 1, $repository->get_by_occurrence( 30 ) );
+		$this->assertSame( 1, $queries, 'The pools come with the rows.' );
+		$this->assertNull( $repository->find( $pool ), 'A pool is no ticket, primed or not.' );
 	}
 
 	/**
