@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.30.3\n"
+"Project-Id-Version: Event Tickets 5.31.0\n"
 "Report-Msgid-Bugs-To: https://evnt.is/191x\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-02T20:23:36+00:00\n"
+"POT-Creation-Date: 2026-11-03T22:24:58+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: event-tickets\n"
@@ -397,7 +397,7 @@ msgstr ""
 #: src/admin-views/attendees/attendees.php:18
 #: src/admin-views/list.php:95
 #: src/Tickets/Admin/Attendees/Page.php:105
-#: src/Tickets/Admin/Tickets/List_Table.php:574
+#: src/Tickets/Admin/Tickets/List_Table.php:578
 #: src/Tickets/Commerce/Attendee.php:201
 #: src/Tickets/Commerce/Reports/Attendees_Tab.php:35
 #: src/Tribe/Admin/Columns/Tickets.php:58
@@ -518,25 +518,25 @@ msgstr ""
 msgid "Leave blank for unlimited"
 msgstr ""
 
-#: src/admin-views/commerce/metabox/sale-price.php:43
-msgid "Add Sale Price"
+#: src/admin-views/commerce/metabox/sale-price.php:35
+msgid "On sale from:"
 msgstr ""
 
-#: src/admin-views/commerce/metabox/sale-price.php:52
+#: src/admin-views/commerce/metabox/sale-price.php:38
+#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:826
+#: src/Tickets/Commerce/Hooks.php:1092
+msgid "to"
+msgstr ""
+
+#: src/admin-views/commerce/metabox/sale-price/price.php:31
 #: src/admin-views/editor/fieldset/price.php:120
 #: src/admin-views/legacy-ticket-fields.php:24
 #: src/admin-views/price-fields.php:12
 msgid "Sale Price:"
 msgstr ""
 
-#: src/admin-views/commerce/metabox/sale-price.php:66
-msgid "On sale from:"
-msgstr ""
-
-#: src/admin-views/commerce/metabox/sale-price.php:80
-#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:826
-#: src/Tickets/Commerce/Hooks.php:1092
-msgid "to"
+#: src/admin-views/commerce/metabox/sale-price/toggle.php:28
+msgid "Add Sale Price"
 msgstr ""
 
 #: src/admin-views/commerce/metabox/sku.php:23
@@ -684,7 +684,7 @@ msgid "Attendee"
 msgstr ""
 
 #: src/admin-views/commerce/orders/single/order-items-metabox-item.php:106
-#: src/Tickets/Admin/Tickets/List_Table.php:210
+#: src/Tickets/Admin/Tickets/List_Table.php:214
 #: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:167
 msgid "Event"
 msgstr ""
@@ -709,7 +709,7 @@ msgstr ""
 
 #: src/admin-views/commerce/orders/single/order-items-metabox.php:27
 #: src/admin-views/editor/column-head-price.php:11
-#: src/Tickets/Admin/Tickets/List_Table.php:214
+#: src/Tickets/Admin/Tickets/List_Table.php:218
 #: src/views/emails/template-parts/body/order/ticket-totals/header-row.php:38
 #: src/views/registration/summary/tickets-header.php:19
 msgid "Price"
@@ -804,14 +804,14 @@ msgstr ""
 msgid "View Orders"
 msgstr ""
 
-#: src/admin-views/editor/column-body-price.php:22
+#: src/admin-views/editor/column-body-price.php:26
 #: src/admin-views/editor/fieldset/price.php:83
 #: src/admin-views/legacy-ticket-fields.php:15
 #: src/admin-views/price-fields.php:3
 msgid "Price:"
 msgstr ""
 
-#: src/admin-views/editor/column-body-price.php:43
+#: src/admin-views/editor/column-body-price.php:47
 #: src/Tickets/Commerce/Admin/Singular_Order_Page.php:336
 #: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:625
 #: src/Tribe/RSVP.php:1836
@@ -935,13 +935,7 @@ msgstr ""
 msgid "Available"
 msgstr ""
 
-#: src/admin-views/editor/panel/fields/dates.php:38
-#: src/admin-views/meta-box.php:225
-msgid "Start sale:"
-msgstr ""
-
-#: src/admin-views/editor/panel/fields/dates.php:52
-#: src/admin-views/editor/panel/fields/dates.php:82
+#: src/admin-views/editor/panel/fields/date-inputs.php:54
 #: src/admin-views/editor/panel/fields/rsvp/dates.php:52
 #: src/admin-views/editor/panel/fields/rsvp/dates.php:84
 #: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:822
@@ -949,21 +943,24 @@ msgstr ""
 msgid "YYYY-MM-DD"
 msgstr ""
 
-#: src/admin-views/editor/panel/fields/dates.php:53
-#: src/admin-views/editor/panel/fields/dates.php:83
+#: src/admin-views/editor/panel/fields/date-inputs.php:55
 #: src/admin-views/editor/panel/fields/rsvp/dates.php:53
 #: src/admin-views/editor/panel/fields/rsvp/dates.php:85
 msgid "at"
 msgstr ""
 
-#: src/admin-views/editor/panel/fields/dates.php:66
-#: src/admin-views/editor/panel/fields/dates.php:96
+#: src/admin-views/editor/panel/fields/date-inputs.php:68
 #: src/admin-views/editor/panel/fields/rsvp/dates.php:66
 #: src/admin-views/editor/panel/fields/rsvp/dates.php:98
 msgid "HH:MM"
 msgstr ""
 
-#: src/admin-views/editor/panel/fields/dates.php:71
+#: src/admin-views/editor/panel/fields/dates.php:29
+#: src/admin-views/meta-box.php:225
+msgid "Start sale:"
+msgstr ""
+
+#: src/admin-views/editor/panel/fields/dates.php:37
 #: src/admin-views/meta-box.php:256
 msgid "End sale:"
 msgstr ""
@@ -1709,6 +1706,182 @@ msgstr ""
 msgid "If you have extended our plugin(s) to send data to a third-party service such as Eventbrite, Google Maps, or PayPal, user information may be passed to these external services. These services may be located abroad."
 msgstr ""
 
+#: src/admin-views/relative-sale-dates/sale-price.php:33
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/window-kinds.js:151
+msgctxt "When the sale price starts."
+msgid "Now"
+msgstr ""
+
+#: src/admin-views/relative-sale-dates/sale-price.php:34
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/window-kinds.js:154
+msgctxt "When the sale price starts."
+msgid "On a relative date"
+msgstr ""
+
+#: src/admin-views/relative-sale-dates/sale-price.php:35
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/window-kinds.js:158
+msgctxt "When the sale price starts."
+msgid "On a specific date"
+msgstr ""
+
+#: src/admin-views/relative-sale-dates/sale-price.php:38
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/window-kinds.js:175
+msgctxt "When the sale price ends."
+msgid "On a relative date"
+msgstr ""
+
+#: src/admin-views/relative-sale-dates/sale-price.php:39
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/window-kinds.js:179
+msgctxt "When the sale price ends."
+msgid "On a specific date"
+msgstr ""
+
+#: src/admin-views/relative-sale-dates/sale-price.php:45
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/window-kinds.js:142
+msgid "Sale Starts:"
+msgstr ""
+
+#. translators: The screen reader label of the number of a relative ticket sale price start.
+#: src/admin-views/relative-sale-dates/sale-price.php:46
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/window-kinds.js:144
+msgid "Number of units before the event that the sale price starts"
+msgstr ""
+
+#. translators: The screen reader label of the unit of a relative ticket sale price start.
+#: src/admin-views/relative-sale-dates/sale-price.php:47
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/window-kinds.js:146
+msgid "Unit of the sale price start"
+msgstr ""
+
+#. translators: The screen reader label of the date picker of a specific ticket sale price start.
+#: src/admin-views/relative-sale-dates/sale-price.php:48
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/window-kinds.js:148
+msgid "Sale price start date"
+msgstr ""
+
+#: src/admin-views/relative-sale-dates/sale-price.php:51
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/window-kinds.js:164
+msgid "Sale Ends:"
+msgstr ""
+
+#. translators: The screen reader label of the number of a relative ticket sale price end.
+#: src/admin-views/relative-sale-dates/sale-price.php:52
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/window-kinds.js:166
+msgid "Number of units before the event that the sale price ends"
+msgstr ""
+
+#. translators: The screen reader label of the unit of a relative ticket sale price end.
+#: src/admin-views/relative-sale-dates/sale-price.php:53
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/window-kinds.js:168
+msgid "Unit of the sale price end"
+msgstr ""
+
+#. translators: The screen reader label of the date picker of a specific ticket sale price end.
+#: src/admin-views/relative-sale-dates/sale-price.php:54
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/window-kinds.js:170
+msgid "Sale price end date"
+msgstr ""
+
+#: src/admin-views/relative-sale-dates/sales-window.php:43
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/window-kinds.js:102
+msgctxt "When ticket sales start."
+msgid "Now"
+msgstr ""
+
+#: src/admin-views/relative-sale-dates/sales-window.php:44
+msgctxt "When ticket sales start."
+msgid "On a relative date"
+msgstr ""
+
+#: src/admin-views/relative-sale-dates/sales-window.php:45
+msgctxt "When ticket sales start."
+msgid "On a specific date"
+msgstr ""
+
+#: src/admin-views/relative-sale-dates/sales-window.php:48
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/window-kinds.js:120
+msgctxt "When ticket sales end."
+msgid "When the event starts"
+msgstr ""
+
+#: src/admin-views/relative-sale-dates/sales-window.php:49
+msgctxt "When ticket sales end."
+msgid "On a relative date"
+msgstr ""
+
+#: src/admin-views/relative-sale-dates/sales-window.php:50
+msgctxt "When ticket sales end."
+msgid "On a specific date"
+msgstr ""
+
+#: src/admin-views/relative-sale-dates/sales-window.php:56
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/window-kinds.js:93
+msgid "Start Sales:"
+msgstr ""
+
+#: src/admin-views/relative-sale-dates/sales-window.php:57
+msgctxt "Opens a relative ticket sales start, as in \"Starts 2 weeks before the event starts\"."
+msgid "Starts"
+msgstr ""
+
+#. translators: The screen reader label of the number of a relative ticket sales start.
+#: src/admin-views/relative-sale-dates/sales-window.php:58
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/window-kinds.js:95
+msgid "Number of units before the event that sales start"
+msgstr ""
+
+#. translators: The screen reader label of the unit of a relative ticket sales start.
+#: src/admin-views/relative-sale-dates/sales-window.php:59
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/window-kinds.js:97
+msgid "Unit of the sales start"
+msgstr ""
+
+#. translators: The screen reader label of what a relative ticket sales start is measured from.
+#: src/admin-views/relative-sale-dates/sales-window.php:60
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/window-kinds.js:99
+msgid "What the sales start is measured from"
+msgstr ""
+
+#: src/admin-views/relative-sale-dates/sales-window.php:64
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/window-kinds.js:109
+msgid "End Sales:"
+msgstr ""
+
+#: src/admin-views/relative-sale-dates/sales-window.php:65
+msgctxt "Opens a relative ticket sales end, as in \"Ends 1 hour before the event starts\"."
+msgid "Ends"
+msgstr ""
+
+#. translators: The screen reader label of the number of a relative ticket sales end.
+#: src/admin-views/relative-sale-dates/sales-window.php:66
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/window-kinds.js:111
+msgid "Number of units before the event that sales end"
+msgstr ""
+
+#. translators: The screen reader label of the unit of a relative ticket sales end.
+#: src/admin-views/relative-sale-dates/sales-window.php:67
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/window-kinds.js:113
+msgid "Unit of the sales end"
+msgstr ""
+
+#. translators: The screen reader label of what a relative ticket sales end is measured from.
+#: src/admin-views/relative-sale-dates/sales-window.php:68
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/window-kinds.js:115
+msgid "What the sales end is measured from"
+msgstr ""
+
+#: src/admin-views/relative-sale-dates/window-boundary.php:36
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/window-boundary.js:47
+msgctxt "What a relative ticket sale date is measured from."
+msgid "before the event starts"
+msgstr ""
+
+#: src/admin-views/relative-sale-dates/window-boundary.php:37
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/window-boundary.js:52
+msgctxt "What a relative ticket sale date is measured from."
+msgid "before the event ends"
+msgstr ""
+
 #: src/admin-views/rsvp-metabox-not-going.php:17
 msgid "Can't Go:"
 msgstr ""
@@ -2175,7 +2348,7 @@ msgid "Active"
 msgstr ""
 
 #: src/admin-views/settings/tickets-commerce/square/connect/webhook-status.php:40
-#: src/Tickets/Blocks/Ticket/app/editor/container-header/title/attendee-registration-icons/container.js:31
+#: src/Tickets/Blocks/Ticket/app/editor/container-header/title/attendee-registration-icons/container.js:32
 msgid "Expired"
 msgstr ""
 
@@ -3416,69 +3589,69 @@ msgctxt "The help text for the default ticket type in the ticket form."
 msgid "A %1$s is specific to this %2$s."
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:192
+#: src/Tickets/Admin/Tickets/List_Table.php:196
 msgid "Number of tickets per page:"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:208
+#: src/Tickets/Admin/Tickets/List_Table.php:212
 msgid "Ticket Name"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:209
+#: src/Tickets/Admin/Tickets/List_Table.php:213
 #: src/views/emails/template-parts/body/order/attendees-table/header-row.php:30
 msgid "Ticket ID"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:211
+#: src/Tickets/Admin/Tickets/List_Table.php:215
 msgid "Sale Starts"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:212
+#: src/Tickets/Admin/Tickets/List_Table.php:216
 msgid "Sale Ends"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:213
+#: src/Tickets/Admin/Tickets/List_Table.php:217
 msgid "Days Left"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:215
+#: src/Tickets/Admin/Tickets/List_Table.php:219
 #: src/Tribe/Status/Abstract_Commerce.php:169
 msgid "Sold"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:216
+#: src/Tickets/Admin/Tickets/List_Table.php:220
 #: src/Tickets/Commerce/Order_Modifiers/Table_Views/Coupon_Table.php:64
 msgid "Remaining"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:217
+#: src/Tickets/Admin/Tickets/List_Table.php:221
 msgid "Sales"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:448
+#: src/Tickets/Admin/Tickets/List_Table.php:452
 msgctxt "Default TC-RSVP ticket name in the All Tickets list"
 msgid "RSVP"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:520
+#: src/Tickets/Admin/Tickets/List_Table.php:524
 msgid "This ticket is connected to a disabled post type."
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:526
+#: src/Tickets/Admin/Tickets/List_Table.php:530
 msgid "Ticket Settings Page"
 msgstr ""
 
 #. Translators: %s: Ticket Settings Page link.
-#: src/Tickets/Admin/Tickets/List_Table.php:530
+#: src/Tickets/Admin/Tickets/List_Table.php:534
 #, php-format
 msgid "You can enable this post type on the %s."
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:540
+#: src/Tickets/Admin/Tickets/List_Table.php:544
 msgid "No associated event"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:560
+#: src/Tickets/Admin/Tickets/List_Table.php:564
 #: src/Tickets/Commerce/Admin/Orders_Page.php:108
 #: src/Tickets/Commerce/Order.php:334
 #: src/Tickets/Commerce/Order.php:359
@@ -3489,29 +3662,29 @@ msgstr ""
 msgid "Orders"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:1282
+#: src/Tickets/Admin/Tickets/List_Table.php:1290
 msgid "Active Tickets"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:1283
+#: src/Tickets/Admin/Tickets/List_Table.php:1291
 msgid "Past Tickets"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:1284
+#: src/Tickets/Admin/Tickets/List_Table.php:1292
 msgid "Upcoming Tickets"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:1285
+#: src/Tickets/Admin/Tickets/List_Table.php:1293
 msgid "Discounted Tickets"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:1286
+#: src/Tickets/Admin/Tickets/List_Table.php:1294
 #: src/Tickets/Admin/Tickets/Page.php:329
 #: src/Tickets/Admin/Tickets/Page.php:338
 msgid "All Tickets"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:1319
+#: src/Tickets/Admin/Tickets/List_Table.php:1327
 msgid "No tickets found for the active filter."
 msgstr ""
 
@@ -3545,13 +3718,13 @@ msgid "A single configured ticket type."
 msgstr ""
 
 #: src/Tickets/Blocks/Tickets/Block.php:348
-#: src/Tribe/Tickets.php:4856
+#: src/Tribe/Tickets.php:4906
 msgctxt "Error message title, will be followed by the error code."
 msgid "API Error"
 msgstr ""
 
 #: src/Tickets/Blocks/Tickets/Block.php:349
-#: src/Tribe/Tickets.php:4857
+#: src/Tribe/Tickets.php:4907
 msgid "Refresh this page or wait a few minutes before trying again. If this happens repeatedly, please contact the Site Admin."
 msgstr ""
 
@@ -3562,7 +3735,7 @@ msgid "The %s for this event has sold out and has been removed from your cart."
 msgstr ""
 
 #: src/Tickets/Blocks/Tickets/Block.php:355
-#: src/Tribe/Tickets.php:4859
+#: src/Tribe/Tickets.php:4909
 #: src/views/v2/commerce/order/header/title-empty.php:28
 msgid "Whoops!"
 msgstr ""
@@ -3570,7 +3743,7 @@ msgstr ""
 #. Translators: %s - the HTML of the number of tickets with validation errors.
 #. translators: %s: Number of tickets with errors.
 #: src/Tickets/Blocks/Tickets/Block.php:357
-#: src/Tribe/Tickets.php:4861
+#: src/Tribe/Tickets.php:4911
 #, php-format
 msgctxt "The %s will change based on the error produced."
 msgid "You have %s ticket(s) with a field that requires information."
@@ -3966,19 +4139,19 @@ msgstr ""
 msgid "Tickets Commerce Checkout Page"
 msgstr ""
 
-#: src/Tickets/Commerce/Editor/Metabox.php:195
+#: src/Tickets/Commerce/Editor/Metabox.php:197
 msgid "Sale price must be greater than 0"
 msgstr ""
 
-#: src/Tickets/Commerce/Editor/Metabox.php:196
+#: src/Tickets/Commerce/Editor/Metabox.php:198
 msgid "Sale price must be less than the regular price"
 msgstr ""
 
-#: src/Tickets/Commerce/Editor/Metabox.php:201
+#: src/Tickets/Commerce/Editor/Metabox.php:203
 msgid "Sale from date cannot be greater than Sale to date"
 msgstr ""
 
-#: src/Tickets/Commerce/Editor/Metabox.php:204
+#: src/Tickets/Commerce/Editor/Metabox.php:206
 msgid "Sale to date cannot be less than Sale from date"
 msgstr ""
 
@@ -11242,15 +11415,15 @@ msgctxt "uppercase plural label for Series Pass"
 msgid "Series Passes"
 msgstr ""
 
-#: src/Tickets/Integrations/Plugins/Yoast_Duplicate_Post/Duplicate_Post.php:75
+#: src/Tickets/Integrations/Plugins/Yoast_Duplicate_Post/Duplicate_Post.php:78
 #: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:80
-#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:289
-#: src/Tribe/Metabox.php:361
-#: src/Tribe/Metabox.php:490
-#: src/Tribe/Metabox.php:584
-#: src/Tribe/Metabox.php:688
-#: src/Tribe/Metabox.php:761
-#: src/Tribe/Metabox.php:815
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:291
+#: src/Tribe/Metabox.php:363
+#: src/Tribe/Metabox.php:516
+#: src/Tribe/Metabox.php:610
+#: src/Tribe/Metabox.php:714
+#: src/Tribe/Metabox.php:787
+#: src/Tribe/Metabox.php:841
 msgid "Commerce Module invalid"
 msgstr ""
 
@@ -11327,6 +11500,162 @@ msgstr ""
 #: src/Tickets/QR/Observer.php:267
 #, php-format
 msgid "The ticket with ID %s was checked in."
+msgstr ""
+
+#. Translators: %1$s is the date sales start on, %2$s the time.
+#. translators: %1$s is the date sales start on, %2$s the time.
+#: src/Tickets/Relative_Sale_Dates/Assets.php:240
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/sale-dates.js:60
+#, php-format,js-format
+msgid "Sales start %1$s at %2$s"
+msgstr ""
+
+#. Translators: %1$s is the date sales end on, %2$s the time.
+#. translators: %1$s is the date sales end on, %2$s the time.
+#: src/Tickets/Relative_Sale_Dates/Assets.php:242
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/sale-dates.js:62
+#, php-format,js-format
+msgid "Sales end %1$s at %2$s"
+msgstr ""
+
+#. Translators: %1$d is the smallest number a relative sale date takes, %2$d the largest.
+#: src/Tickets/Relative_Sale_Dates/Assets.php:275
+#, php-format
+msgid "Enter a number from %1$d to %2$d."
+msgstr ""
+
+#: src/Tickets/Relative_Sale_Dates/Editor.php:285
+#: src/Tickets/Relative_Sale_Dates/app/unit-names.js:27
+msgctxt "Unit of a relative ticket sale date."
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/Tickets/Relative_Sale_Dates/Editor.php:287
+#: src/Tickets/Relative_Sale_Dates/app/unit-names.js:29
+msgctxt "Unit of a relative ticket sale date."
+msgid "hour"
+msgid_plural "hours"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/Tickets/Relative_Sale_Dates/Editor.php:289
+#: src/Tickets/Relative_Sale_Dates/app/unit-names.js:30
+msgctxt "Unit of a relative ticket sale date."
+msgid "day"
+msgid_plural "days"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/Tickets/Relative_Sale_Dates/Editor.php:291
+#: src/Tickets/Relative_Sale_Dates/app/unit-names.js:32
+msgctxt "Unit of a relative ticket sale date."
+msgid "week"
+msgid_plural "weeks"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: 1) is the name of the parameter.
+#: src/Tickets/Relative_Sale_Dates/Rule_Parameter.php:113
+#, php-format
+msgid "The argument `{%1$s}` must be an object or null."
+msgstr ""
+
+#: src/Tickets/Relative_Sale_Dates/Rule_Parameter.php:163
+msgid "For a relative boundary, the event date it is counted from."
+msgstr ""
+
+#: src/Tickets/Relative_Sale_Dates/Rule_Parameter.php:188
+msgid "The sale price window relative to the event start, or null when the sale price has fixed dates. Sending null removes the rule. While the rule keeps a relative or now boundary, a date sent for that boundary is replaced by the one the rule resolves to."
+msgstr ""
+
+#: src/Tickets/Relative_Sale_Dates/Rule_Parameter.php:189
+msgid "When the sale price starts."
+msgstr ""
+
+#: src/Tickets/Relative_Sale_Dates/Rule_Parameter.php:190
+msgid "When the sale price ends."
+msgstr ""
+
+#: src/Tickets/Relative_Sale_Dates/Rule_Parameter.php:191
+msgid "How the start is set: `now` (as soon as ticket sales open), `relative` (before the event start) or `specific` (the date sent in `sale_price_start_date`)."
+msgstr ""
+
+#: src/Tickets/Relative_Sale_Dates/Rule_Parameter.php:192
+msgid "How the end is set: `relative` (before the event start) or `specific` (the date sent in `sale_price_end_date`)."
+msgstr ""
+
+#. translators: 1) the lowest number of units, 2) the highest number of units.
+#: src/Tickets/Relative_Sale_Dates/Rule_Parameter.php:195
+#, php-format
+msgid "For a relative boundary, the number of units before the event start, from %1$d to %2$d."
+msgstr ""
+
+#. translators: 1) a day and 2) a week, each in seconds.
+#: src/Tickets/Relative_Sale_Dates/Rule_Parameter.php:201
+#, php-format
+msgid "For a relative boundary, the unit in seconds: %1$d (days) or %2$d (weeks)."
+msgstr ""
+
+#: src/Tickets/Relative_Sale_Dates/Rule_Parameter.php:211
+msgid "How this end of the window is set: `default` (sales open at once, or close when the event starts), `relative` (before the event) or `specific` (the date sent with the ticket)."
+msgstr ""
+
+#: src/Tickets/Relative_Sale_Dates/Rule_Parameter.php:214
+msgid "The sales window relative to the event, or null when the ticket has fixed sale dates. Sending null removes the rule. While the rule keeps a relative or default boundary, a date sent for that boundary is replaced by the one the rule resolves to."
+msgstr ""
+
+#: src/Tickets/Relative_Sale_Dates/Rule_Parameter.php:215
+msgid "When sales start."
+msgstr ""
+
+#: src/Tickets/Relative_Sale_Dates/Rule_Parameter.php:216
+msgid "When sales end."
+msgstr ""
+
+#. translators: 1) the lowest number of units, 2) the highest number of units.
+#: src/Tickets/Relative_Sale_Dates/Rule_Parameter.php:221
+#, php-format
+msgid "For a relative boundary, the number of units before the anchor, from %1$d to %2$d."
+msgstr ""
+
+#. translators: 1) a minute, 2) an hour, 3) a day and 4) a week, each in seconds.
+#: src/Tickets/Relative_Sale_Dates/Rule_Parameter.php:227
+#, php-format
+msgid "For a relative boundary, the unit in seconds: %1$d (minutes), %2$d (hours), %3$d (days) or %4$d (weeks)."
+msgstr ""
+
+#. translators: 1) the lowest number a relative sale date takes, 2) the highest.
+#: src/Tickets/Relative_Sale_Dates/Window_Kind.php:281
+#, php-format
+msgid "The relative sales dates cannot be read. Enter a whole number from %1$d to %2$d for each relative date."
+msgstr ""
+
+#: src/Tickets/Relative_Sale_Dates/Window_Kind.php:288
+msgid "The sales dates cannot be read. Enter a valid date for each specific date."
+msgstr ""
+
+#: src/Tickets/Relative_Sale_Dates/Window_Kind.php:292
+msgid "Ticket sales cannot end before they start. Please adjust the sales window."
+msgstr ""
+
+#. translators: 1) the lowest number a relative sale price date takes, 2) the highest.
+#: src/Tickets/Relative_Sale_Dates/Window_Kind.php:364
+#, php-format
+msgid "The relative sale price dates cannot be read. Enter a whole number from %1$d to %2$d for each relative date."
+msgstr ""
+
+#: src/Tickets/Relative_Sale_Dates/Window_Kind.php:371
+msgid "The sale price dates cannot be read. Enter a valid date for each specific date."
+msgstr ""
+
+#: src/Tickets/Relative_Sale_Dates/Window_Kind.php:375
+msgid "The sale price cannot end before it starts. Please adjust the sale price window."
+msgstr ""
+
+#: src/Tickets/Relative_Sale_Dates/Window_Kind.php:379
+msgid "The sale price window falls outside the ticket sales window. Please adjust the dates."
 msgstr ""
 
 #: src/Tickets/REST/TEC/V1/Documentation/Ticket_Definition.php:66
@@ -11609,62 +11938,62 @@ msgid "These operations are introduced by Event Tickets."
 msgstr ""
 
 #. translators: 1) is the name of the parameter.
-#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:59
-#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:63
+#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:60
+#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:64
 #, php-format
 msgid "The argument `{%1$s}` is missing."
 msgstr ""
 
 #. translators: 1) is the name of the parameter.
-#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:70
-#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:74
+#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:71
+#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:75
 #, php-format
 msgid "The argument `{%1$s}` does not support ticket creation. Make sure its post type is enabled for tickets under Tickets > Settings > Ticket Settings > Post types that can have tickets."
 msgstr ""
 
 #. translators: 1) is the name of the parameter.
-#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:174
-#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:178
+#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:197
+#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:201
 #, php-format
 msgid "The argument `{%1$s}` must be a number."
 msgstr ""
 
 #. translators: 1) is the name of the parameter.
-#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:271
-#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:275
+#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:294
+#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:298
 #, php-format
 msgid "The argument `{%1$s}` must be a number greater than or equal to 0."
 msgstr ""
 
-#: src/Tickets/REST/TEC/V1/Traits/With_Ticket_Upsert.php:34
+#: src/Tickets/REST/TEC/V1/Traits/With_Ticket_Upsert.php:38
 msgctxt "This is being used as a verb."
 msgid "create"
 msgstr ""
 
-#: src/Tickets/REST/TEC/V1/Traits/With_Ticket_Upsert.php:55
-#: src/Tickets/REST/TEC/V1/Traits/With_Ticket_Upsert.php:64
+#: src/Tickets/REST/TEC/V1/Traits/With_Ticket_Upsert.php:62
+#: src/Tickets/REST/TEC/V1/Traits/With_Ticket_Upsert.php:71
 msgid "The ticket could not be updated."
 msgstr ""
 
-#: src/Tickets/REST/TEC/V1/Traits/With_Ticket_Upsert.php:70
+#: src/Tickets/REST/TEC/V1/Traits/With_Ticket_Upsert.php:77
 msgctxt "This is being used as a verb."
 msgid "update"
 msgstr ""
 
 #. translators: 1) is the operation: create or update.
-#: src/Tickets/REST/TEC/V1/Traits/With_Ticket_Upsert.php:100
+#: src/Tickets/REST/TEC/V1/Traits/With_Ticket_Upsert.php:119
 #, php-format
 msgid "Failed to %s ticket."
 msgstr ""
 
 #. translators: 1) is the operation: create or update.
-#: src/Tickets/REST/TEC/V1/Traits/With_Ticket_Upsert.php:118
+#: src/Tickets/REST/TEC/V1/Traits/With_Ticket_Upsert.php:137
 #, php-format
 msgid "Failed to %s partial data of the ticket."
 msgstr ""
 
 #. translators: 1) is the operation: create or update.
-#: src/Tickets/REST/TEC/V1/Traits/With_Ticket_Upsert.php:136
+#: src/Tickets/REST/TEC/V1/Traits/With_Ticket_Upsert.php:155
 #, php-format
 msgid "Ticket not found after %s."
 msgstr ""
@@ -12745,7 +13074,7 @@ msgid "It looks like you have modified your shared capacity setting but have not
 msgstr ""
 
 #: src/Tribe/Assets.php:280
-#: src/Tribe/Metabox.php:1002
+#: src/Tribe/Metabox.php:1028
 msgid "Please enter in without thousand separators and currency symbols."
 msgstr ""
 
@@ -13218,29 +13547,29 @@ msgid "The ticket post ID"
 msgstr ""
 
 #: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:62
-#: src/Tribe/Metabox.php:301
-#: src/Tribe/Metabox.php:445
-#: src/Tribe/Metabox.php:555
-#: src/Tribe/Metabox.php:635
+#: src/Tribe/Metabox.php:303
+#: src/Tribe/Metabox.php:471
+#: src/Tribe/Metabox.php:581
+#: src/Tribe/Metabox.php:661
 msgid "Invalid parent Post"
 msgstr ""
 
 #: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:70
-#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:256
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:258
 msgid "Invalid nonce"
 msgstr ""
 
 #. translators: %s: The singular, lowercase ticket label.
-#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:267
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:269
 #, php-format
 msgid "This %s can only be edited from the post it belongs to."
 msgstr ""
 
-#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:308
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:310
 msgid "Invalid price"
 msgstr ""
 
-#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:351
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:371
 #, php-format
 msgid "%s was not able to be updated"
 msgstr ""
@@ -13398,61 +13727,61 @@ msgid "You do not have permission to access this content."
 msgstr ""
 
 #. Translators:  %1$s - singular ticket term.
-#: src/Tribe/Metabox.php:330
+#: src/Tribe/Metabox.php:332
 #, php-format
 msgid "Failed to add the %1$s. Refresh the page to try again."
 msgstr ""
 
-#: src/Tribe/Metabox.php:344
+#: src/Tribe/Metabox.php:346
 msgid "Commerce Provider invalid"
 msgstr ""
 
 #. Translators: %1$s - Singular ticket term.
-#: src/Tribe/Metabox.php:374
+#: src/Tribe/Metabox.php:400
 #, php-format
 msgid "Failed to add the %1$s"
 msgstr ""
 
 #. Translators: %1$s - singular ticket term.
 #. Translators: %1$s - singular ticket term
-#: src/Tribe/Metabox.php:460
-#: src/Tribe/Metabox.php:538
+#: src/Tribe/Metabox.php:486
+#: src/Tribe/Metabox.php:564
 #, php-format
 msgid "Invalid %1$s"
 msgstr ""
 
 #. Translators: %1$s - singular ticket term.
-#: src/Tribe/Metabox.php:476
+#: src/Tribe/Metabox.php:502
 #, php-format
 msgid "Failed to edit the %1$s. Refresh the page to try again."
 msgstr ""
 
 #. Translators: %1$s - singular ticket term
-#: src/Tribe/Metabox.php:569
+#: src/Tribe/Metabox.php:595
 #, php-format
 msgid "Failed to delete the %1$s. Refresh the page to try again."
 msgstr ""
 
 #. Translators: %s: dynamic "ticket" text.
-#: src/Tribe/Metabox.php:651
+#: src/Tribe/Metabox.php:677
 #, php-format
 msgid "Invalid %s"
 msgstr ""
 
 #. Translators: %s: dynamic "ticket" text.
-#: src/Tribe/Metabox.php:670
+#: src/Tribe/Metabox.php:696
 #, php-format
 msgid "Failed to duplicate the %s. Refresh the page to try again."
 msgstr ""
 
 #. Translators: %1$s - singular ticket term
-#: src/Tribe/Metabox.php:710
+#: src/Tribe/Metabox.php:736
 #, php-format
 msgid "Failed to duplicate the %1$s"
 msgstr ""
 
-#: src/Tribe/Metabox.php:753
-#: src/Tribe/Metabox.php:807
+#: src/Tribe/Metabox.php:779
+#: src/Tribe/Metabox.php:833
 msgid "The attendee ID is missing from the request parameters."
 msgstr ""
 
@@ -14481,7 +14810,11 @@ msgstr ""
 msgid "(copy)"
 msgstr ""
 
-#: src/Tribe/Tickets.php:4858
+#: src/Tribe/Tickets.php:4370
+msgid "The ticket could not be saved."
+msgstr ""
+
+#: src/Tribe/Tickets.php:4908
 msgid "The ticket for this event has sold out and has been removed from your cart."
 msgstr ""
 
@@ -15903,7 +16236,7 @@ msgstr ""
 
 #: src/modules/blocks/rsvp-v2/duration-fields/template.js:29
 #: src/modules/blocks/rsvp/duration/template.js:25
-#: src/Tickets/Blocks/Ticket/app/editor/container-content/duration/template.js:40
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/duration/template.js:55
 msgid "There is an error with the selected sales duration. Please fix the issue before saving."
 msgstr ""
 
@@ -16011,8 +16344,20 @@ msgstr ""
 msgid "Share capacity with other tickets"
 msgstr ""
 
-#: src/modules/data/blocks/ticket/sagas.js:890
+#: src/modules/data/blocks/ticket/sagas.js:947
 msgid "Are you sure you want to delete this ticket? It cannot be undone."
+msgstr ""
+
+#. translators: %s: the ticket name.
+#: src/modules/data/blocks/ticket/sagas.js:1280
+#, js-format
+msgid "The changes to the ticket \"%s\" were not saved with the post. Review them in the ticket block, then click Update."
+msgstr ""
+
+#. translators: %s: the ticket name.
+#: src/modules/data/blocks/ticket/sagas.js:1315
+#, js-format
+msgid "The ticket \"%s\" was not saved."
 msgstr ""
 
 #: src/modules/elements/attendees-registration/element.js:63
@@ -16140,11 +16485,11 @@ msgstr ""
 msgid "Number of %s available"
 msgstr ""
 
-#: src/Tickets/Blocks/Ticket/app/editor/container-content/duration/template.js:30
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/duration/template.js:31
 msgid "Sale Duration"
 msgstr ""
 
-#: src/Tickets/Blocks/Ticket/app/editor/container-content/duration/template.js:31
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/duration/template.js:32
 msgid "If you do not set a start sale date, tickets will be available immediately."
 msgstr ""
 
@@ -16154,7 +16499,7 @@ msgstr ""
 msgid "%s price"
 msgstr ""
 
-#: src/Tickets/Blocks/Ticket/app/editor/container-content/sale-price/template.js:232
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/sale-price/template.js:254
 msgid "The sale price can be managed via WooCommerce's product editor."
 msgstr ""
 
@@ -16211,11 +16556,11 @@ msgstr ""
 msgid "This pertains to Orders that have been marked Completed."
 msgstr ""
 
-#: src/Tickets/Blocks/Ticket/app/editor/container-header/title/attendee-registration-icons/container.js:30
+#: src/Tickets/Blocks/Ticket/app/editor/container-header/title/attendee-registration-icons/container.js:31
 msgid "Scheduled"
 msgstr ""
 
-#: src/Tickets/Blocks/Ticket/app/editor/container-header/title/attendee-registration-icons/container.js:32
+#: src/Tickets/Blocks/Ticket/app/editor/container-header/title/attendee-registration-icons/container.js:33
 msgid "On sale"
 msgstr ""
 
@@ -16404,6 +16749,42 @@ msgstr ""
 msgctxt "Block editor not supported notice"
 msgid "Once you save this event, you'll be able to add %s from the Series admin."
 msgstr ""
+
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/window-kinds.js:103
+msgctxt "When ticket sales start."
+msgid "A relative date"
+msgstr ""
+
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/window-kinds.js:104
+msgctxt "When ticket sales start."
+msgid "A specific date"
+msgstr ""
+
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/window-kinds.js:122
+msgctxt "When ticket sales end."
+msgid "A relative date"
+msgstr ""
+
+#: src/Tickets/Relative_Sale_Dates/app/block-editor/window-kinds.js:123
+msgctxt "When ticket sales end."
+msgid "A specific date"
+msgstr ""
+
+#. translators: %d: The number of weeks the ticket sale price lasts.
+#: src/Tickets/Relative_Sale_Dates/app/window-kinds.js:110
+#, js-format
+msgid "Tickets on sale for %d week"
+msgid_plural "Tickets on sale for %d weeks"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: The number of days the ticket sale price lasts.
+#: src/Tickets/Relative_Sale_Dates/app/window-kinds.js:116
+#, js-format
+msgid "Tickets on sale for %d day"
+msgid_plural "Tickets on sale for %d days"
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/Tickets/Seating/app/blockEditor/capacity-form/series-notice.js:9
 msgid "Assigned seating is not yet supported for events that are in series."

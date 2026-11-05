@@ -211,6 +211,8 @@ class MetaboxTest extends WPTestCase {
 	public function test_get_panels( Closure $fixture ): void {
 		[ $post_id, $ticket_id ] = $fixture();
 		$this->set_fn_return( 'wp_create_nonce', '33333333' );
+		// What `tickets.js` sends when wp-admin asks for the panels.
+		$_POST['is_admin'] = 'true';
 
 		$metabox = tribe( Metabox::class );
 		$panels  = $metabox->get_panels( $post_id, $ticket_id );
@@ -275,6 +277,7 @@ class MetaboxTest extends WPTestCase {
 
 	public function tearDown() {
 		parent::tearDown();
+		unset( $_POST['is_admin'] );
 		uopz_unset_return( 'strtotime' );
 		uopz_unset_return( Date_Utils::class, 'build_date_object' );
 	}
