@@ -4,7 +4,6 @@ namespace TEC\Tickets\Flexible_Tickets\Series_Passes;
 
 use Closure;
 use Generator;
-use stdClass;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
@@ -167,14 +166,6 @@ class Emails_Test extends Controller_Test_Case {
 		$this->assertMatchesHtmlSnapshot( $modal_content );
 	}
 
-	private function extract_json_ld_from_message( $message ): ?stdClass {
-		preg_match( '~<script type="application/ld\\+json">(?<jsonld>.*?)</script>~us', $message, $matches );
-		$json_ld = $matches['jsonld'] ?? null;
-		$this->assertNotNull( $json_ld );
-
-		return json_decode( $json_ld )[0] ?? null;
-	}
-
 	/**
 	 * It should send Series Pass email using Series Pass email handler
 	 *
@@ -253,7 +244,6 @@ class Emails_Test extends Controller_Test_Case {
 		);
 		$series_pass_attendee_id       = $attendees[0]['ID'];
 		$series_pass_attendee_security = $attendees[0]['security'];
-		$public_event_1                = tribe_get_event( $public_event_ids[0] );
 
 		$controller = $this->make_controller();
 		$controller->register();
@@ -263,8 +253,8 @@ class Emails_Test extends Controller_Test_Case {
 		$this->assertCount( 1, $sent_emails );
 		$series_pass_mail = $sent_emails[0];
 		$message          = $series_pass_mail['message'];
-		$json_ld          = $this->extract_json_ld_from_message( $message );
-		$this->assertEquals( $public_event_1->post_title, $json_ld->reservationFor->name );
+		// Emails carry no event schema: some mail clients showed it as text.
+		$this->assertStringNotContainsString( 'application/ld+json', $message );
 		$first_five_public_event_provisional_ids = array_slice(
 			Occurrence::where_in( 'post_id', $public_event_ids )->map( fn( Occurrence $o ) => $o->provisional_id )
 			, 0,
