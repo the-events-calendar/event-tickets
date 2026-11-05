@@ -94,15 +94,4 @@ final class Rejections {
 	public function all(): array {
 		return $this->rejections;
 	}
-
-	/**
-	 * Whether nothing was rejected.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool Whether the list is empty.
-	 */
-	public function is_empty(): bool {
-		return [] === $this->rejections;
-	}
 }
