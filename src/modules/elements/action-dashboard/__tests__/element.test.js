@@ -79,6 +79,30 @@ describe( 'Action Dashboard Element', () => {
 		expect( onClick ).toHaveBeenCalledTimes( 1 );
 	} );
 
+	it( 'executes the confirm handler from the keyboard', () => {
+		const onClick = jest.fn();
+		const component = renderer.create( <ActionDashboard onConfirmClick={ onClick } showCancel={ false } /> );
+		const button = component.root.findByType( 'button' );
+
+		// Enter and Space fire a click with no mouse-down, and a detail of 0.
+		const event = { detail: 0 };
+		button.props.onClick( event );
+
+		expect( onClick ).toHaveBeenCalledTimes( 1 );
+		expect( onClick ).toHaveBeenCalledWith( event );
+	} );
+
+	it( 'executes the confirm handler once for a mouse click', () => {
+		const onClick = jest.fn();
+		const component = renderer.create( <ActionDashboard onConfirmClick={ onClick } showCancel={ false } /> );
+		const button = component.root.findByType( 'button' );
+
+		button.props.onMouseDown( {} );
+		button.props.onClick( { detail: 1 } );
+
+		expect( onClick ).toHaveBeenCalledTimes( 1 );
+	} );
+
 	it( 'renders action dashboard with cancel button hidden', () => {
 		const component = renderer.create( <ActionDashboard showCancel={ false } /> );
 		expect( component.toJSON() ).toMatchSnapshot();

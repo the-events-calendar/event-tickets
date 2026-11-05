@@ -40,7 +40,6 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	protected function add_actions() {
 		add_action( 'admin_menu', tribe_callback( Page::class, 'add_tec_tickets_attendees_page' ), 15 );
-		add_action( 'wp_ajax_tec_tickets_attendee_details', tribe_callback( Modal::class, 'display_attendee_details_modal' ) );
 		add_action( 'admin_footer', tribe_callback( Modal::class, 'render_modal' ) );
 	}
 
