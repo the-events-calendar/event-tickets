@@ -66,4 +66,18 @@ class Seating_Test extends WPTestCase {
 		$this->assertFalse( tec_tickets_seating_enabled( $event ) );
 		$this->assertFalse( tec_tickets_seating_enabled( $date ) );
 	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_let_an_event_with_recurring_event_tickets_save_an_empty_seating_layout(): void {
+		$this->skip_without_recurrence_tier();
+
+		$event = $this->create_recurring_event();
+		$this->create_tc_ticket( $event, 10 );
+
+		// The block editor sends the empty layout with every save of the event.
+		$this->assertNotFalse( update_post_meta( $event, Meta::META_KEY_LAYOUT_ID, '' ) );
+		$this->assertFalse( tec_tickets_seating_enabled( $event ) );
+	}
 }
