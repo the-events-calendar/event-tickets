@@ -1,8 +1,7 @@
 significance: patch
 type: tweak
 entry: Hid the per-event Ticket Header Image setting in the classic and block
-  editors when Tickets Emails is enabled, because Tickets Emails only uses the
-  header image set under Tickets > Settings > Emails. The classic editor's
-  Ticket Settings panel now shows a note about premium settings when it has no
-  settings to show.
+  editors when Tickets Emails is enabled, because Tickets Emails uses the header
+  image set under Tickets > Settings > Emails, and the classic editor's Ticket
+  Settings panel shows a premium-settings note when it has no settings to show.
 timestamp: 2026-11-04T21:36:23.577Z

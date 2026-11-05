@@ -55,4 +55,34 @@ class Ticket_Header_Image_Setting_Test extends WPTestCase {
 
 		$this->assertTrue( $config['tickets']['ticketHeaderImageEnabled'] );
 	}
+
+	/**
+	 * @test
+	 * it should keep the stored header image when the settings are saved without the header image field
+	 */
+	public function it_should_keep_the_stored_header_image_when_the_settings_are_saved_without_the_header_image_field(): void {
+		$post_id       = static::factory()->post->create();
+		$attachment_id = static::factory()->attachment->create();
+		$handler       = tribe( 'tickets.handler' );
+		update_post_meta( $post_id, $handler->key_image_header, $attachment_id );
+
+		$handler->save_form_settings( $post_id, [ 'event_capacity' => 10 ] );
+
+		$this->assertEquals( $attachment_id, get_post_meta( $post_id, $handler->key_image_header, true ) );
+	}
+
+	/**
+	 * @test
+	 * it should remove the stored header image when the header image field is sent empty
+	 */
+	public function it_should_remove_the_stored_header_image_when_the_header_image_field_is_sent_empty(): void {
+		$post_id       = static::factory()->post->create();
+		$attachment_id = static::factory()->attachment->create();
+		$handler       = tribe( 'tickets.handler' );
+		update_post_meta( $post_id, $handler->key_image_header, $attachment_id );
+
+		$handler->save_form_settings( $post_id, [ 'header_image_id' => '' ] );
+
+		$this->assertSame( '', get_post_meta( $post_id, $handler->key_image_header, true ) );
+	}
 }
