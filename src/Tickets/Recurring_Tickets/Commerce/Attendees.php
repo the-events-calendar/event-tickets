@@ -10,6 +10,9 @@
 namespace TEC\Tickets\Recurring_Tickets\Commerce;
 
 use DateTimeInterface;
+use TEC\Common\StellarWP\DB\DB;
+use TEC\Events_Pro\Custom_Tables\V1\Events\Provisional\ID_Generator;
+use TEC\Tickets\Commerce\Attendee;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Recurring_Tickets\Models\Ticket;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
@@ -118,5 +121,41 @@ final class Attendees {
 	public function forget( int $attendee_id ): void {
 		delete_post_meta( $attendee_id, self::POST_ID_META_KEY );
 		delete_post_meta( $attendee_id, self::OCCURRENCE_START_META_KEY );
+	}
+
+	/**
+	 * Gives a removed date's ID the event its attendees were sold for.
+	 *
+	 * A removed date's ID is no post: a permission check on it would refuse the date's attendees.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|null|mixed $event_id The event ID, as filtered so far.
+	 *
+	 * @return int|null|mixed The event of a removed date's attendees; `$event_id` otherwise.
+	 */
+	public function removed_date_event( $event_id ) {
+		if (
+			! is_numeric( $event_id )
+			|| (int) $event_id <= tribe( ID_Generator::class )->current()
+			|| Ticket_ID::is_table_ticket( (int) $event_id )
+			|| get_post( (int) $event_id )
+		) {
+			return $event_id;
+		}
+
+		global $wpdb;
+		$post_id = (int) DB::get_var(
+			DB::prepare(
+				'SELECT post.meta_value FROM %i date JOIN %i post ON post.post_id = date.post_id AND post.meta_key = %s WHERE date.meta_key = %s AND date.meta_value = %s LIMIT 1',
+				$wpdb->postmeta,
+				$wpdb->postmeta,
+				self::POST_ID_META_KEY,
+				Attendee::$event_relation_meta_key,
+				(string) (int) $event_id
+			)
+		);
+
+		return $post_id ?: $event_id;
 	}
 }

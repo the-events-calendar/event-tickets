@@ -3,6 +3,9 @@
 namespace TEC\Tickets\Recurring_Tickets\Commerce;
 
 use Codeception\TestCase\WPTestCase;
+use TEC\Common\StellarWP\DB\DB;
+use TEC\Events\Custom_Tables\V1\Tables\Occurrences;
+use TEC\Tickets\Event;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
 use TEC\Tickets\Recurring_Tickets\Ticket_ID;
@@ -47,6 +50,31 @@ class Attendees_Test extends WPTestCase {
 
 		$this->assertSame( (string) $event, get_post_meta( $attendee, Attendees::POST_ID_META_KEY, true ) );
 		$this->assertSame( $second->start_date, get_post_meta( $attendee, Attendees::OCCURRENCE_START_META_KEY, true ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_give_a_removed_dates_id_the_event_of_its_attendees(): void {
+		$this->skip_without_recurrence_tier();
+
+		( new Tickets() )->empty_table();
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$event = $this->create_recurring_event();
+		$dates = $this->get_dates( $event );
+		$this->create_tc_ticket( $event, 10 );
+		$rows = array_filter( tribe( Rows::class )->get_by_post( $event ), static fn( $row ) => (int) $row->occurrence_id === (int) $dates[1]->occurrence_id );
+		$this->create_row_order( [ Ticket_ID::from_row_id( (int) reset( $rows )->id ) => 1 ] );
+		$removed = (int) $dates[1]->provisional_id;
+		$kept    = (int) $dates[2]->provisional_id;
+
+		// The date is removed.
+		DB::delete( Occurrences::table_name(), [ 'occurrence_id' => (int) $dates[1]->occurrence_id ] );
+		wp_cache_delete( $removed, 'posts' );
+
+		$this->assertSame( $event, Event::filter_event_id( $removed ) );
+		$this->assertSame( $removed + 1000, Event::filter_event_id( $removed + 1000 ), 'No attendee holds it: left alone.' );
+		$this->assertNotSame( $event, tribe( Attendees::class )->removed_date_event( $kept ), 'A date that exists is no removed date.' );
 	}
 
 	/**
