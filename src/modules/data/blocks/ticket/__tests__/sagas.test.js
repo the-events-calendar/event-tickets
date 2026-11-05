@@ -1063,6 +1063,9 @@ describe( 'Ticket Block sagas', () => {
 				call( [ tempEndMoment, 'isSame' ], prevEventStartMoment, 'minute' ),
 			);
 			expect( gen.next( false ).value ).toEqual( call( isTribeEventPostType ) );
+			expect( gen.next( true ).value ).toEqual(
+				call( applyFilters, 'tec.tickets.blocks.syncSaleEndWithEventStart', true, CLIENT_ID )
+			);
 			expect( gen.next( true ).done ).toEqual( true );
 		} );
 
@@ -1106,9 +1109,34 @@ describe( 'Ticket Block sagas', () => {
 			// The fallback never matched the invalid previous start, yet it still syncs.
 			expect( gen.next( false ).value ).toEqual( call( isTribeEventPostType ) );
 			expect( gen.next( true ).value ).toEqual(
+				call( applyFilters, 'tec.tickets.blocks.syncSaleEndWithEventStart', true, CLIENT_ID )
+			);
+			expect( gen.next( true ).value ).toEqual(
 				select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart ),
 			);
 			expect( gen.next( eventStart ).value ).toEqual( call( createDates, eventStart ) );
+		} );
+
+		it( 'should keep the sale end of a ticket the tec.tickets.blocks.syncSaleEndWithEventStart filter excludes', () => {
+			const CLIENT_ID = 'modern-tribe';
+			const prevStartDate = 'November 20, 2018 12:30:00';
+			const tempEndMoment = { local: jest.fn(), isSame: jest.fn() };
+			const endMoment = { local: jest.fn() };
+			const prevEventStartMoment = { local: jest.fn() };
+
+			const gen = cloneableGenerator( sagas.syncTicketSaleEndWithEventStart )( prevStartDate, CLIENT_ID );
+
+			gen.next();
+			gen.next( tempEndMoment );
+			gen.next( endMoment );
+			gen.next( { moment: prevEventStartMoment } );
+			gen.next();
+			gen.next( true );
+			expect( gen.next( true ).value ).toEqual( call( isTribeEventPostType ) );
+			expect( gen.next( true ).value ).toEqual(
+				call( applyFilters, 'tec.tickets.blocks.syncSaleEndWithEventStart', true, CLIENT_ID )
+			);
+			expect( gen.next( false ).done ).toEqual( true );
 		} );
 
 		it( 'should sync the sale end date with the event start when it follows the event', () => {
@@ -1148,6 +1176,9 @@ describe( 'Ticket Block sagas', () => {
 			);
 			expect( gen.next( true ).value ).toEqual( call( isTribeEventPostType ) );
 			expect( gen.next( true ).value ).toEqual(
+				call( applyFilters, 'tec.tickets.blocks.syncSaleEndWithEventStart', true, CLIENT_ID )
+			);
+			expect( gen.next( true ).value ).toEqual(
 				select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart ),
 			);
 			expect( gen.next( eventStart ).value ).toEqual(
@@ -1178,6 +1209,14 @@ describe( 'Ticket Block sagas', () => {
 				] ),
 			);
 			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'toRequestSaleDate', () => {
+		it( 'should send a sale price date the store keeps as Invalid date empty, as on create', () => {
+			expect( sagas.toRequestSaleDate( 'Invalid date' ) ).toBe( '' );
+			expect( sagas.toRequestSaleDate( '' ) ).toBe( '' );
+			expect( sagas.toRequestSaleDate( '2040-10-01' ) ).toBe( '2040-10-01' );
 		} );
 	} );
 
@@ -1259,6 +1298,25 @@ describe( 'Ticket Block sagas', () => {
 
 			expect( clone2.next().done ).toEqual( true );
 		} );
+
+		it( 'should send a sale price date the store holds as Invalid date empty', () => {
+			const props = { clientId: 'modern-tribe' };
+			const answers = new Map( [
+				[ selectors.getTicketTempCapacityType, TICKET_TYPES[ INDEPENDENT ] ],
+				[ selectors.showSalePrice, true ],
+				[ selectors.getTicketTempSaleStartDate, 'Invalid date' ],
+				[ selectors.getTicketTempSaleEndDate, '2040-10-01' ],
+			] );
+			const gen = sagas.setBodyDetails( props.clientId );
+			let step = gen.next();
+
+			while ( ! step.done ) {
+				step = gen.next( answers.get( step.value?.SELECT?.selector ) );
+			}
+
+			expect( step.value.get( 'ticket[sale_price][start_date]' ) ).toBe( '' );
+			expect( step.value.get( 'ticket[sale_price][end_date]' ) ).toBe( '2040-10-01' );
+		} );
 	} );
 
 	describe( 'fetchTicket', () => {
@@ -1323,133 +1381,39 @@ describe( 'Ticket Block sagas', () => {
 				},
 			};
 
-			// First convert the dates
-			expect( gen.next( apiResponse ).value ).toEqual(
-				call( momentUtil.toMoment, apiResponse.data.available_from )
-			);
+			expect( gen.next( apiResponse ).value ).toEqual( call( sagas.getTicketSaleDates, apiResponse.data ) );
 
 			const startMoment = momentUtil.toMoment( apiResponse.data.available_from );
-
-			expect( gen.next( startMoment ).value ).toEqual(
-				call( momentUtil.toDatabaseDate, startMoment )
-			);
-
-			const startDate = momentUtil.toDatabaseDate( startMoment );
-
-			expect( gen.next( startDate ).value ).toEqual(
-				call( momentUtil.toDate, startMoment, datePickerFormat )
-			);
-
-			const startDateInput = momentUtil.toDate( startMoment );
-
-			expect( gen.next( startDateInput ).value ).toEqual(
-				call( momentUtil.toDatabaseTime, startMoment )
-			);
-
-			const startTime = momentUtil.toDatabaseTime( startMoment );
-
-			expect( gen.next( startTime ).value ).toEqual(
-				call( momentUtil.toTime, startMoment )
-			);
-
-			const startTimeInput = momentUtil.toTime( startMoment );
-
-			expect( gen.next( startTimeInput ).value ).toEqual(
-				call( momentUtil.toMoment, apiResponse.data.available_until )
-			);
-
 			const endMoment = momentUtil.toMoment( apiResponse.data.available_until );
+			const saleDates = {
+				startDate: momentUtil.toDatabaseDate( startMoment ),
+				startDateInput: momentUtil.toDate( startMoment ),
+				startDateMoment: startMoment,
+				endDate: momentUtil.toDatabaseDate( endMoment ),
+				endDateInput: momentUtil.toDate( endMoment ),
+				endDateMoment: endMoment,
+				startTime: momentUtil.toDatabaseTime( startMoment ),
+				endTime: momentUtil.toDatabaseTime( endMoment ),
+				startTimeInput: momentUtil.toTime( startMoment ),
+				endTimeInput: momentUtil.toTime( endMoment ),
+			};
+			const { startDate, startDateInput, endDate, endDateInput, startTime, endTime, startTimeInput, endTimeInput } =
+				saleDates;
 
-			expect( gen.next( endMoment ).value ).toEqual(
-				call( momentUtil.toDatabaseDate, endMoment )
-			);
-
-			const endDate = momentUtil.toDatabaseDate( endMoment );
-
-			expect( gen.next( endDate ).value ).toEqual(
-				call( momentUtil.toDate, endMoment, datePickerFormat )
-			);
-
-			const endDateInput = momentUtil.toDate( endMoment );
-
-			expect( gen.next( endDateInput ).value ).toEqual(
-				call( momentUtil.toDatabaseTime, endMoment )
-			);
-
-			const endTime = momentUtil.toDatabaseTime( endMoment );
-
-			expect( gen.next( endTime ).value ).toEqual(
-				call( momentUtil.toTime, endMoment )
-			);
-
-			const endTimeInput = momentUtil.toTime( endMoment );
-
-			// The saga processes available_until a second time if it exists
-			expect( gen.next( endTimeInput ).value ).toEqual(
-				call( momentUtil.toMoment, apiResponse.data.available_until )
-			);
-
-			const endMoment2 = momentUtil.toMoment( apiResponse.data.available_until );
-
-			expect( gen.next( endMoment2 ).value ).toEqual(
-				call( momentUtil.toDatabaseDate, endMoment2 )
-			);
-
-			const endDate2 = momentUtil.toDatabaseDate( endMoment2 );
-
-			expect( gen.next( endDate2 ).value ).toEqual(
-				call( momentUtil.toDate, endMoment2, datePickerFormat )
-			);
-
-			const endDateInput2 = momentUtil.toDate( endMoment2 );
-
-			expect( gen.next( endDateInput2 ).value ).toEqual(
-				call( momentUtil.toDatabaseTime, endMoment2 )
-			);
-
-			const endTime2 = momentUtil.toDatabaseTime( endMoment2 );
-
-			expect( gen.next( endTime2 ).value ).toEqual(
-				call( momentUtil.toTime, endMoment2 )
-			);
-
-			const endTimeInput2 = momentUtil.toTime( endMoment2 );
-
-			expect( gen.next( endTimeInput2 ).value ).toEqual(
-				call( momentUtil.toMoment, apiResponse.data.sale_price_data.start_date )
-			);
+			// The sale price dates take the date picker format, as they do after a create or update.
+			expect( gen.next( saleDates ).value ).toEqual( call( sagas.getTicketSalePriceDates, apiResponse.data ) );
 
 			const saleStartDateMoment = momentUtil.toMoment( apiResponse.data.sale_price_data.start_date );
-
-			expect( gen.next( saleStartDateMoment ).value ).toEqual(
-				call( momentUtil.toDatabaseDate, saleStartDateMoment )
-			);
-
-			const saleStartDate = momentUtil.toDatabaseDate( saleStartDateMoment );
-
-			expect( gen.next( saleStartDate ).value ).toEqual(
-				call( momentUtil.toDate, saleStartDateMoment )
-			);
-
-			const saleStartDateInput = momentUtil.toDate( saleStartDateMoment );
-
-			expect( gen.next( saleStartDateInput ).value ).toEqual(
-				call( momentUtil.toMoment, apiResponse.data.sale_price_data.end_date )
-			);
-
 			const saleEndDateMoment = momentUtil.toMoment( apiResponse.data.sale_price_data.end_date );
-
-			expect( gen.next( saleEndDateMoment ).value ).toEqual(
-				call( momentUtil.toDatabaseDate, saleEndDateMoment )
-			);
-
-			const saleEndDate = momentUtil.toDatabaseDate( saleEndDateMoment );
-
-			expect( gen.next( saleEndDate ).value ).toEqual(
-				call( momentUtil.toDate, saleEndDateMoment )
-			);
-
-			const saleEndDateInput = momentUtil.toDate( saleEndDateMoment );
+			const salePriceDates = {
+				saleStartDate: momentUtil.toDatabaseDate( saleStartDateMoment ),
+				saleStartDateInput: momentUtil.toDate( saleStartDateMoment, datePickerFormat ),
+				saleStartDateMoment,
+				saleEndDate: momentUtil.toDatabaseDate( saleEndDateMoment ),
+				saleEndDateInput: momentUtil.toDate( saleEndDateMoment, datePickerFormat ),
+				saleEndDateMoment,
+			};
+			const { saleStartDate, saleStartDateInput, saleEndDate, saleEndDateInput } = salePriceDates;
 
 			const details = {
 				title: apiResponse.data.title,
@@ -1482,7 +1446,7 @@ describe( 'Ticket Block sagas', () => {
 				saleEndDateMoment,
 			};
 
-			expect( gen.next( saleEndDateInput ).value ).toEqual(
+			expect( gen.next( salePriceDates ).value ).toEqual(
 				all( [
 					put( actions.setTicketDetails( CLIENT_ID, details ) ),
 					put( actions.setTicketTempDetails( CLIENT_ID, details ) ),
@@ -1521,6 +1485,323 @@ describe( 'Ticket Block sagas', () => {
 			expect( gen.next().done ).toEqual( true );
 		} );
 	} );
+
+	describe( 'saveTicketWithPostSave', () => {
+		// A ticket with a relative rule is resolved against the event dates the server reads when the update arrives.
+		it( 'should update the ticket once the post save is done', () => {
+			const clientId = 'saved-with-the-post';
+			const savingChannel = { take: jest.fn(), close: jest.fn() };
+			const notSavingChannel = { take: jest.fn(), close: jest.fn() };
+			const gen = sagas.saveTicketWithPostSave( clientId );
+
+			expect( gen.next().value ).toEqual( select( selectors.getTicketHasBeenCreated, { clientId } ) );
+			expect( gen.next( true ).value ).toEqual( call( createWPEditorSavingChannel ) );
+			expect( gen.next( savingChannel ).value ).toEqual( call( createWPEditorNotSavingChannel ) );
+			expect( gen.next( notSavingChannel ).value ).toEqual( take( savingChannel ) );
+			expect( gen.next().value ).toEqual( take( notSavingChannel ) );
+			expect( gen.next().value ).toEqual(
+				call( applyFilters, 'tec.tickets.blocks.updateTicketWithPostSave', true, clientId )
+			);
+			expect( gen.next( true ).value ).toEqual( call( sagas.updateTicket, { payload: { clientId } } ) );
+			expect( gen.next().value ).toEqual( take( savingChannel ) );
+		} );
+
+		it( 'should not update the ticket when tec.tickets.blocks.updateTicketWithPostSave returns false', () => {
+			const clientId = 'kept-out-of-the-post-save';
+			const savingChannel = { take: jest.fn(), close: jest.fn() };
+			const notSavingChannel = { take: jest.fn(), close: jest.fn() };
+			const gen = sagas.saveTicketWithPostSave( clientId );
+
+			gen.next();
+			gen.next( true );
+			gen.next( savingChannel );
+			gen.next( notSavingChannel );
+			gen.next();
+
+			expect( gen.next().value ).toEqual(
+				call( applyFilters, 'tec.tickets.blocks.updateTicketWithPostSave', true, clientId )
+			);
+			expect( gen.next( false ).value ).toEqual( select( selectors.getTicketHasChanges, { clientId } ) );
+			expect( gen.next( false ).value ).toEqual( take( savingChannel ) );
+		} );
+
+		it( 'should warn when the skipped update leaves the ticket changes unsaved', () => {
+			const clientId = 'skipped-with-changes';
+			const savingChannel = { take: jest.fn(), close: jest.fn() };
+			const notSavingChannel = { take: jest.fn(), close: jest.fn() };
+			const gen = sagas.saveTicketWithPostSave( clientId );
+
+			gen.next();
+			gen.next( true );
+			gen.next( savingChannel );
+			gen.next( notSavingChannel );
+			gen.next();
+			gen.next();
+
+			expect( gen.next( false ).value ).toEqual( select( selectors.getTicketHasChanges, { clientId } ) );
+			expect( gen.next( true ).value ).toEqual( call( sagas.noticeTicketNotUpdated, clientId ) );
+			expect( gen.next().value ).toEqual( take( savingChannel ) );
+		} );
+	} );
+
+	describe( 'noticeTicketNotUpdated', () => {
+		it( 'should add one warning notice per ticket', () => {
+			const clientId = 'ticket-not-updated';
+			const title = 'General admission';
+			const createWarningNotice = jest.fn();
+			const gen = sagas.noticeTicketNotUpdated( clientId );
+
+			expect( gen.next().value ).toEqual( select( selectors.getTicketTitle, { clientId } ) );
+			expect( gen.next( title ).value ).toEqual( call( wpDispatch, 'core/notices' ) );
+
+			const { fn, args } = gen.next( { createWarningNotice } ).value.CALL;
+
+			expect( fn ).toBe( createWarningNotice );
+			expect( args[ 0 ] ).toContain( `"${ title }"` );
+			expect( args[ 1 ] ).toEqual( { id: `tec-tickets-ticket-not-updated-${ clientId }` } );
+			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'noticeTicketNotSaved', () => {
+		const clientId = 'ticket-not-saved';
+		const title = 'General admission';
+		const response = { ok: false, status: 400, json: jest.fn() };
+
+		/**
+		 * Runs the saga from the reading of the response body to the notice it adds.
+		 *
+		 * @param {Function} answerBody Steps the saga past the reading of the body.
+		 *
+		 * @return {Array} The arguments the error notice is created with.
+		 */
+		const getNoticeArgs = ( answerBody ) => {
+			const createErrorNotice = jest.fn();
+			const gen = sagas.noticeTicketNotSaved( clientId, response );
+
+			expect( gen.next().value ).toEqual( call( [ response, 'json' ] ) );
+			expect( answerBody( gen ).value ).toEqual( select( selectors.getTicketTempTitle, { clientId } ) );
+			expect( gen.next( title ).value ).toEqual( call( wpDispatch, 'core/notices' ) );
+
+			const { fn, args } = gen.next( { createErrorNotice } ).value.CALL;
+
+			expect( fn ).toBe( createErrorNotice );
+			expect( gen.next().done ).toEqual( true );
+
+			return args;
+		};
+
+		it( 'should add the reason the server gave as an error notice, one per ticket', () => {
+			const reason = 'Ticket sales cannot end before they start. Please adjust the sales window.';
+
+			const [ message, options ] = getNoticeArgs( ( gen ) => gen.next( { code: 'invalid', message: reason } ) );
+
+			expect( message ).toContain( `"${ title }"` );
+			expect( message ).toContain( reason );
+			expect( options ).toEqual( { id: `tec-tickets-ticket-not-updated-${ clientId }` } );
+		} );
+
+		it( 'should still add the notice when the answer has no JSON body to read', () => {
+			const [ message ] = getNoticeArgs( ( gen ) => gen.throw( new SyntaxError( 'Unexpected end of JSON input' ) ) );
+
+			expect( message ).toContain( `"${ title }"` );
+		} );
+	} );
+
+	describe( 'getTicketSaleDates', () => {
+		/**
+		 * Runs a saga that only yields call effects, answering each with what its function returns.
+		 *
+		 * @param {Generator} gen The saga.
+		 *
+		 * @return {*} What the saga returns.
+		 */
+		const runCalls = ( gen ) => {
+			let step = gen.next();
+			while ( ! step.done ) {
+				const { context, fn, args } = step.value.CALL;
+				step = gen.next( fn.apply( context, args ) );
+			}
+
+			return step.value;
+		};
+
+		it( 'should map the sale dates a ticket was stored with', () => {
+			const dates = runCalls(
+				sagas.getTicketSaleDates( { available_from: '2040-09-10 19:00:00', available_until: '2040-10-19 18:00:00' } ),
+			);
+
+			expect( dates ).toMatchObject( {
+				startDate: '2040-09-10',
+				startTime: '19:00:00',
+				endDate: '2040-10-19',
+				endTime: '18:00:00',
+			} );
+		} );
+
+		/*
+		 * The moment stays a moment, as the ticket details sent to `tec.tickets.blocks.ticketUpdated` callbacks always
+		 * held one, but an invalid one: its "Invalid date" times are left out for the duration check, which cannot read
+		 * them.
+		 */
+		it.each( [
+			[ 'end', { available_from: '2040-09-10 19:00:00', available_until: '' }, 'end' ],
+			[ 'start', { available_from: '', available_until: '2040-10-19 18:00:00' }, 'start' ],
+		] )( 'should leave empty the %s a ticket was stored without', ( title, ticket, boundary ) => {
+			const dates = runCalls( sagas.getTicketSaleDates( ticket ) );
+
+			expect( dates ).toMatchObject( {
+				[ `${ boundary }Date` ]: '',
+				[ `${ boundary }DateInput` ]: '',
+				[ `${ boundary }Time` ]: '',
+				[ `${ boundary }TimeInput` ]: '',
+			} );
+			expect( moment.isMoment( dates[ `${ boundary }DateMoment` ] ) ).toBe( true );
+			expect( dates[ `${ boundary }DateMoment` ].isValid() ).toBe( false );
+		} );
+
+		// A ticket can be stored without an end, so its edits, a price change say, must not wait for one.
+		it( 'should not mark a ticket loaded without an end as a duration error', () => {
+			const clientId = 'stored-without-end';
+			const gen = sagas.handleTicketDurationError( clientId );
+
+			gen.next();
+			gen.next( moment( '2040-09-10 19:00:00' ) );
+
+			expect( gen.next( moment.invalid() ).value ).toEqual(
+				put( actions.setTicketHasDurationError( clientId, false ) )
+			);
+			expect( gen.next().done ).toBe( true );
+		} );
+
+		it( 'should mark an end cleared in the date picker as a duration error', () => {
+			const clientId = 'cleared-end';
+			const gen = sagas.handleTicketDurationError( clientId );
+
+			gen.next();
+			gen.next( moment( '2040-09-10 19:00:00' ) );
+
+			expect( gen.next( undefined ).value ).toEqual(
+				put( actions.setTicketHasDurationError( clientId, true ) )
+			);
+			expect( gen.next().done ).toBe( true );
+		} );
+
+		it( 'should map the dates a ticket sale price was stored with', () => {
+			const dates = runCalls(
+				sagas.getTicketSalePriceDates( { sale_price_data: { start_date: '2040-09-01', end_date: '2040-09-30' } } ),
+			);
+
+			expect( dates ).toMatchObject( { saleStartDate: '2040-09-01', saleEndDate: '2040-09-30' } );
+		} );
+	} );
+
+	/*
+	 * A ticket the server stored without an end, the dates parsed from it, and the end the form holds, for the sagas
+	 * that put a saved ticket back in the form.
+	 */
+	const ticketStoredWithoutEnd = {
+		id: 123,
+		available_from: '2018-11-09 19:48:42',
+		available_until: '',
+		capacity_details: { available: 100, sold: 0 },
+		provider_class: WOO_CLASS,
+		sale_price_data: { enabled: false, sale_price: '' },
+		on_sale: false,
+	};
+	const parsedSaleDatesWithoutEnd = {
+		startDate: '2018-11-09',
+		startDateInput: 'November 9, 2018',
+		startDateMoment: moment( '2018-11-09 19:48:42' ),
+		endDate: '',
+		endDateInput: '',
+		endDateMoment: moment.invalid(),
+		startTime: '19:48:42',
+		endTime: '',
+		startTimeInput: '7:48 pm',
+		endTimeInput: '',
+	};
+	const tempEnd = {
+		endDate: '2018-11-12',
+		endDateInput: 'November 12, 2018',
+		endDateMoment: moment( '2018-11-12 18:00:00' ),
+		endTime: '18:00:00',
+		endTimeInput: '6:00 pm',
+	};
+	const salePriceDatesWithoutDates = {
+		saleStartDate: '',
+		saleStartDateInput: '',
+		saleStartDateMoment: undefined,
+		saleEndDate: '',
+		saleEndDateInput: '',
+		saleEndDateMoment: undefined,
+	};
+	const tempFields = {
+		title: 'title',
+		description: 'description',
+		price: 10,
+		sku: 'sku',
+		iac: undefined,
+		capacityType: 'unlimited',
+		capacity: 100,
+	};
+
+	/**
+	 * Steps the saga that reads the sale dates a ticket was saved with, answering its reads with the given parsed
+	 * dates and form end.
+	 *
+	 * @param {Object} ticket      The ticket, as the tickets REST API returns it.
+	 * @param {string} clientId    The ticket's client ID.
+	 * @param {Object} parsedDates The dates parsed from the ticket.
+	 * @param {Object} formEnd     The end the form holds.
+	 *
+	 * @return {Object} What the saga returns.
+	 */
+	const stepSavedTicketSaleDates = ( ticket, clientId, parsedDates, formEnd ) => {
+		const props = { clientId };
+		const gen = sagas.getSavedTicketSaleDates( ticket, clientId );
+
+		expect( gen.next().value ).toEqual( call( sagas.getTicketSaleDates, ticket ) );
+		expect( gen.next( parsedDates ).value ).toEqual(
+			all( [
+				select( selectors.getTicketTempEndDate, props ),
+				select( selectors.getTicketTempEndDateInput, props ),
+				select( selectors.getTicketTempEndDateMoment, props ),
+				select( selectors.getTicketTempEndTime, props ),
+				select( selectors.getTicketTempEndTimeInput, props ),
+			] )
+		);
+
+		const result = gen.next( [
+			formEnd.endDate,
+			formEnd.endDateInput,
+			formEnd.endDateMoment,
+			formEnd.endTime,
+			formEnd.endTimeInput,
+		] );
+
+		expect( result.done ).toBe( true );
+
+		return result.value;
+	};
+
+	/**
+	 * Gets the selects a saved ticket's form fields are read with.
+	 *
+	 * @param {Object} props The props holding the ticket's client ID.
+	 *
+	 * @return {Object} The all effect of the selects.
+	 */
+	const selectTempFields = ( props ) =>
+		all( [
+			select( selectors.getTicketTempTitle, props ),
+			select( selectors.getTicketTempDescription, props ),
+			select( selectors.getTicketTempPrice, props ),
+			select( selectors.getTicketTempSku, props ),
+			select( selectors.getTicketTempIACSetting, props ),
+			select( selectors.getTicketTempCapacityType, props ),
+			select( selectors.getTicketTempCapacity, props ),
+		] );
 
 	describe( 'createNewTicket', () => {
 		it( 'should create a new ticket', () => {
@@ -1588,30 +1869,44 @@ describe( 'Ticket Block sagas', () => {
 			);
 
 			expect( gen.next( 0 ).value ).toEqual(
+				call( sagas.getSavedTicketSaleDates, response.data, action.payload.clientId )
+			);
+
+			const saleDates = {
+				startDate: '2018-01-01',
+				startDateInput: 'January 1, 2018',
+				startDateMoment: undefined,
+				endDate: '2018-01-02',
+				endDateInput: 'January 2, 2018',
+				endDateMoment: undefined,
+				startTime: '10:00:00',
+				endTime: '12:00:00',
+				startTimeInput: '10:00 am',
+				endTimeInput: '12:00 pm',
+			};
+
+			expect( gen.next( saleDates ).value ).toEqual(
+				call( sagas.getTicketSalePriceDates, response.data ),
+			);
+
+			const salePriceDates = {
+				saleStartDate: '',
+				saleStartDateInput: '',
+				saleStartDateMoment: undefined,
+				saleEndDate: '',
+				saleEndDateInput: '',
+				saleEndDateMoment: undefined,
+			};
+
+			expect( gen.next( salePriceDates ).value ).toEqual(
 				all( [
 					select( selectors.getTicketTempTitle, { clientId: action.payload.clientId } ),
 					select( selectors.getTicketTempDescription, { clientId: action.payload.clientId } ),
 					select( selectors.getTicketTempPrice, { clientId: action.payload.clientId } ),
 					select( selectors.getTicketTempSku, { clientId: action.payload.clientId } ),
 					select( selectors.getTicketTempIACSetting, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempStartDate, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempStartDateInput, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempStartDateMoment, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempEndDate, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempEndDateInput, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempEndDateMoment, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempStartTime, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempEndTime, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempStartTimeInput, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempEndTimeInput, { clientId: action.payload.clientId } ),
 					select( selectors.getTicketTempCapacityType, { clientId: action.payload.clientId } ),
 					select( selectors.getTicketTempCapacity, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempSaleStartDate, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempSaleStartDateInput, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempSaleStartDateMoment, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempSaleEndDate, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempSaleEndDateInput, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempSaleEndDateMoment, { clientId: action.payload.clientId } ),
 				] ),
 			);
 
@@ -1621,26 +1916,12 @@ describe( 'Ticket Block sagas', () => {
 				price: 10,
 				sku: 'sku',
 				iac: undefined,
-				startDate: '2018-01-01',
-				startDateInput: undefined,
-				startDateMoment: undefined,
-				endDate: '2018-01-02',
-				endDateInput: undefined,
-				endDateMoment: undefined,
-				startTime: '10:00',
-				endTime: '12:00',
-				startTimeInput: undefined,
-				endTimeInput: undefined,
+				...saleDates,
 				capacityType: 'unlimited',
 				capacity: 100,
 				salePriceChecked: true,
 				salePrice: '15',
-				saleStartDate: undefined,
-				saleStartDateInput: undefined,
-				saleStartDateMoment: undefined,
-				saleEndDate: undefined,
-				saleEndDateInput: undefined,
-				saleEndDateMoment: undefined,
+				...salePriceDates,
 			};
 
 			expect( gen.next( [
@@ -1649,29 +1930,12 @@ describe( 'Ticket Block sagas', () => {
 				10,
 				'sku',
 				undefined,
-				'2018-01-01',
-				undefined,
-				undefined,
-				'2018-01-02',
-				undefined,
-				undefined,
-				'10:00',
-				'12:00',
-				undefined,
-				undefined,
 				'unlimited',
 				100,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
 			] ).value ).toEqual(
 				all( [
 					put( actions.setTicketDetails( action.payload.clientId, ticketDetails ) ),
-					put( actions.setTempSalePriceChecked( action.payload.clientId, true ) ),
-					put( actions.setTempSalePrice( action.payload.clientId, '15' ) ),
+					put( actions.setTicketTempDetails( action.payload.clientId, ticketDetails ) ),
 					put( actions.setTicketId( action.payload.clientId, 123 ) ),
 					put( actions.setTicketHasBeenCreated( action.payload.clientId, true ) ),
 					put( actions.setTicketAvailable( action.payload.clientId, 100 ) ),
@@ -1680,6 +1944,12 @@ describe( 'Ticket Block sagas', () => {
 				] ),
 			);
 
+			const removeNotice = jest.fn();
+
+			expect( gen.next().value ).toEqual( call( wpDispatch, 'core/notices' ) );
+			expect( gen.next( { removeNotice } ).value ).toEqual(
+				call( removeNotice, `tec-tickets-ticket-not-updated-${ action.payload.clientId }` )
+			);
 			expect( gen.next().value ).toEqual(
 				fork( sagas.saveTicketWithPostSave, action.payload.clientId ),
 			);
@@ -1688,6 +1958,89 @@ describe( 'Ticket Block sagas', () => {
 				put( actions.setTicketIsLoading( action.payload.clientId, false ) ),
 			);
 
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should put back the end the form holds for a ticket the server stored without one', () => {
+			const clientId = 'tribe';
+			const props = { clientId };
+			const gen = sagas.createNewTicket( { payload: { clientId } } );
+
+			gen.next();
+			gen.next( { append: jest.fn() } );
+			gen.next();
+
+			expect( gen.next( { response: { ok: true }, data: ticketStoredWithoutEnd } ).value ).toEqual(
+				select( selectors.getTicketsSharedCapacity )
+			);
+			expect( gen.next( '' ).value ).toEqual( select( selectors.getTicketsTempSharedCapacity ) );
+			expect( gen.next( 0 ).value ).toEqual(
+				call( sagas.getSavedTicketSaleDates, ticketStoredWithoutEnd, clientId )
+			);
+			expect(
+				gen.next(
+					stepSavedTicketSaleDates( ticketStoredWithoutEnd, clientId, parsedSaleDatesWithoutEnd, tempEnd )
+				).value
+			).toEqual( call( sagas.getTicketSalePriceDates, ticketStoredWithoutEnd ) );
+			expect( gen.next( salePriceDatesWithoutDates ).value ).toEqual( selectTempFields( props ) );
+
+			const ticketDetails = {
+				...tempFields,
+				...parsedSaleDatesWithoutEnd,
+				...tempEnd,
+				salePriceChecked: ticketStoredWithoutEnd.sale_price_data.enabled,
+				salePrice: ticketStoredWithoutEnd.sale_price_data.sale_price,
+				...salePriceDatesWithoutDates,
+			};
+
+			const puts = gen.next( Object.values( tempFields ) ).value;
+
+			expect( puts.ALL ).toEqual(
+				expect.arrayContaining( [
+					put( actions.setTicketDetails( clientId, ticketDetails ) ),
+					put( actions.setTicketTempDetails( clientId, ticketDetails ) ),
+				] )
+			);
+			gen.next();
+			gen.next( { removeNotice: jest.fn() } );
+
+			expect( gen.next().value ).toEqual( fork( sagas.saveTicketWithPostSave, clientId ) );
+		} );
+
+		it( 'should remove the notice a rejected save added once the ticket is created', () => {
+			const clientId = 'created-after-a-rejected-save';
+			const removeNotice = jest.fn();
+			const gen = sagas.createNewTicket( { payload: { clientId } } );
+
+			gen.next();
+			gen.next( { append: jest.fn() } );
+			gen.next();
+			gen.next( { response: { ok: true }, data: ticketStoredWithoutEnd } );
+			gen.next( '' );
+			gen.next( 0 );
+			gen.next( stepSavedTicketSaleDates( ticketStoredWithoutEnd, clientId, parsedSaleDatesWithoutEnd, tempEnd ) );
+			gen.next( salePriceDatesWithoutDates );
+			gen.next( Object.values( tempFields ) );
+
+			expect( gen.next().value ).toEqual( call( wpDispatch, 'core/notices' ) );
+			expect( gen.next( { removeNotice } ).value ).toEqual(
+				call( removeNotice, `tec-tickets-ticket-not-updated-${ clientId }` )
+			);
+		} );
+
+		it( 'should show why the server rejected the ticket, and keep the form as it is', () => {
+			const clientId = 'rejected-on-create';
+			const rejected = { ok: false, status: 400 };
+			const gen = sagas.createNewTicket( { payload: { clientId } } );
+
+			gen.next();
+			gen.next( { append: jest.fn() } );
+			gen.next();
+
+			expect( gen.next( { response: rejected, data: {} } ).value ).toEqual(
+				call( sagas.noticeTicketNotSaved, clientId, rejected )
+			);
+			expect( gen.next().value ).toEqual( put( actions.setTicketIsLoading( clientId, false ) ) );
 			expect( gen.next().done ).toEqual( true );
 		} );
 	} );
@@ -1751,6 +2104,83 @@ describe( 'Ticket Block sagas', () => {
 			expect( gen.next( response ).value ).toEqual(
 				put( actions.setTicketIsLoading( action.payload.clientId, false ) ),
 			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should put back the end the form holds for a ticket the server stored without one', () => {
+			const clientId = 'tribe';
+			const props = { clientId };
+			const gen = sagas.updateTicket( { payload: { clientId } } );
+
+			gen.next();
+			gen.next( { append: jest.fn(), entries: () => [] } );
+			gen.next( ticketStoredWithoutEnd.id );
+			gen.next();
+
+			expect( gen.next( { response: { ok: true }, data: ticketStoredWithoutEnd } ).value ).toEqual(
+				call( sagas.getSavedTicketSaleDates, ticketStoredWithoutEnd, clientId )
+			);
+			expect(
+				gen.next(
+					stepSavedTicketSaleDates( ticketStoredWithoutEnd, clientId, parsedSaleDatesWithoutEnd, tempEnd )
+				).value
+			).toEqual( call( sagas.getTicketSalePriceDates, ticketStoredWithoutEnd ) );
+			expect( gen.next( salePriceDatesWithoutDates ).value ).toEqual( selectTempFields( props ) );
+
+			const ticketDetails = {
+				...tempFields,
+				on_sale: ticketStoredWithoutEnd.on_sale,
+				...parsedSaleDatesWithoutEnd,
+				...tempEnd,
+				salePriceChecked: ticketStoredWithoutEnd.sale_price_data.enabled,
+				salePrice: ticketStoredWithoutEnd.sale_price_data.sale_price,
+				...salePriceDatesWithoutDates,
+			};
+
+			const puts = gen.next( Object.values( tempFields ) ).value;
+
+			expect( puts.ALL ).toEqual(
+				expect.arrayContaining( [
+					put( actions.setTicketDetails( clientId, ticketDetails ) ),
+					put( actions.setTicketTempDetails( clientId, ticketDetails ) ),
+				] )
+			);
+		} );
+
+		it( 'should remove the notice a skipped post save update added once the ticket is updated', () => {
+			const clientId = 'updated-after-a-skipped-post-save';
+			const removeNotice = jest.fn();
+			const gen = sagas.updateTicket( { payload: { clientId } } );
+
+			gen.next();
+			gen.next( { append: jest.fn(), entries: () => [] } );
+			gen.next( ticketStoredWithoutEnd.id );
+			gen.next();
+			gen.next( { response: { ok: true }, data: ticketStoredWithoutEnd } );
+			gen.next( stepSavedTicketSaleDates( ticketStoredWithoutEnd, clientId, parsedSaleDatesWithoutEnd, tempEnd ) );
+			gen.next( salePriceDatesWithoutDates );
+			gen.next( Object.values( tempFields ) );
+
+			expect( gen.next().value ).toEqual( call( wpDispatch, 'core/notices' ) );
+			expect( gen.next( { removeNotice } ).value ).toEqual(
+				call( removeNotice, `tec-tickets-ticket-not-updated-${ clientId }` )
+			);
+		} );
+
+		it( 'should show why the server rejected the ticket, and keep the form as it is', () => {
+			const clientId = 'rejected-on-update';
+			const rejected = { ok: false, status: 400 };
+			const gen = sagas.updateTicket( { payload: { clientId } } );
+
+			gen.next();
+			gen.next( { append: jest.fn(), entries: () => [] } );
+			gen.next( 123 );
+			gen.next();
+
+			expect( gen.next( { response: rejected, data: {} } ).value ).toEqual(
+				call( sagas.noticeTicketNotSaved, clientId, rejected )
+			);
+			expect( gen.next().value ).toEqual( put( actions.setTicketIsLoading( clientId, false ) ) );
 			expect( gen.next().done ).toEqual( true );
 		} );
 	} );
@@ -1824,6 +2254,26 @@ describe( 'Ticket Block sagas', () => {
 				} ),
 			);
 			expect( clone2.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'getSavedTicketSaleDates', () => {
+		it( 'should fill the end from the form for a ticket the server stored without one', () => {
+			expect(
+				stepSavedTicketSaleDates( ticketStoredWithoutEnd, 'tribe', parsedSaleDatesWithoutEnd, tempEnd )
+			).toEqual( { ...parsedSaleDatesWithoutEnd, ...tempEnd } );
+		} );
+
+		it( 'should keep the end of a ticket the server stored with one', () => {
+			const ticket = { ...ticketStoredWithoutEnd, available_until: '2018-11-12 19:48:42' };
+			const gen = sagas.getSavedTicketSaleDates( ticket, 'tribe' );
+
+			gen.next();
+
+			const result = gen.next( parsedSaleDatesWithoutEnd );
+
+			expect( result.done ).toBe( true );
+			expect( result.value ).toBe( parsedSaleDatesWithoutEnd );
 		} );
 	} );
 
