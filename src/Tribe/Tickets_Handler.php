@@ -1697,6 +1697,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since 4.6
 	 * @since 5.30.3 Skips the IDs that are not tickets of the post.
+	 * @since TBD No longer errors when none of the listed tickets belong to the post.
 	 *
 	 * @param int $post
 	 */
@@ -1725,6 +1726,8 @@ class Tribe__Tickets__Tickets_Handler {
 		if ( empty( $tickets ) ) {
 			return false;
 		}
+
+		$updated = [];
 
 		foreach ( $tickets as $id => $ticket ) {
 			// The list comes from the request, so only this post's tickets are reordered.
