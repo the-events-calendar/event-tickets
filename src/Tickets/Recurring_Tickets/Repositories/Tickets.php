@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Recurring_Tickets\Repositories;
 
+use DateTimeInterface;
 use InvalidArgumentException;
 use TEC\Common\Abstracts\Custom_Table_Repository;
 use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
@@ -436,6 +437,40 @@ final class Tickets extends Custom_Table_Repository {
 			$this->forget( (int) $row->id );
 		}
 
+		$this->occurrence_rows = [];
+	}
+
+	/**
+	 * Writes the values of one row that changed, but for the columns it overrides.
+	 *
+	 * @since TBD
+	 *
+	 * @param Ticket                         $row    The row.
+	 * @param array<string,int|string|null> $values The values, keyed by column.
+	 *
+	 * @return void
+	 */
+	public function refresh_row( Ticket $row, array $values ): void {
+		$changed = [];
+
+		foreach ( array_diff_key( $values, array_flip( (array) $row->overrides ) ) as $column => $value ) {
+			$current = $row->{$column};
+			$current = $current instanceof DateTimeInterface ? $current->format( 'Y-m-d H:i:s' ) : $current;
+
+			if ( (string) $current !== (string) $value ) {
+				$changed[ $column ] = $value;
+			}
+		}
+
+		if ( ! $changed ) {
+			return;
+		}
+
+		[ $set, $args ] = $this->set_clause( $changed );
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- The SET clause holds placeholders only.
+		DB::query( DB::prepare( "UPDATE %i SET {$set} WHERE id = %d", Tickets_Table::table_name(), ...array_merge( $args, [ (int) $row->id ] ) ) );
+
+		$this->forget( (int) $row->id );
 		$this->occurrence_rows = [];
 	}
 

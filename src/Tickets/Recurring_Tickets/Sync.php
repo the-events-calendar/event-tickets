@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Recurring_Tickets;
 
+use DateTimeImmutable;
 use DateTimeZone;
 use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 use TEC\Common\StellarWP\DB\DB;
@@ -16,6 +17,10 @@ use TEC\Events\Custom_Tables\V1\Tables\Occurrences;
 use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
 use TEC\Tickets\Recurring_Tickets\Models\Ticket;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
+use TEC\Tickets\Relative_Sale_Dates\Rule;
+use TEC\Tickets\Relative_Sale_Dates\Rule_Store;
+use TEC\Tickets\Relative_Sale_Dates\Sale_Window;
+use TEC\Tickets\Relative_Sale_Dates\Window_Kind;
 use TEC\Tickets\Recurring_Tickets\Tasks\Sync_Task;
 use Tribe__Date_Utils as Dates;
 use Tribe__Events__Main as TEC;
@@ -41,6 +46,15 @@ final class Sync {
 	 * @var int
 	 */
 	private const CHUNK = 500;
+
+	/**
+	 * The columns of a row's sales window.
+	 *
+	 * @since TBD
+	 *
+	 * @var string[]
+	 */
+	private const SALE_DATE_COLUMNS = [ 'start_date', 'start_date_utc', 'end_date', 'end_date_utc' ];
 
 	/**
 	 * How many template-date pairs an event can have for Sync to write them in the request.
@@ -90,6 +104,24 @@ final class Sync {
 	private Reconcile $reconcile;
 
 	/**
+	 * The store of the tickets' relative sale date rules.
+	 *
+	 * @since TBD
+	 *
+	 * @var Rule_Store
+	 */
+	private Rule_Store $rule_store;
+
+	/**
+	 * The resolver of relative sales windows.
+	 *
+	 * @since TBD
+	 *
+	 * @var Sale_Window
+	 */
+	private Sale_Window $sale_window;
+
+	/**
 	 * Whether a ticket save is under way: it syncs its event once done.
 	 *
 	 * Mid-save, Tickets Commerce has written the ticket's type back to `default`: a sync then would take the template
@@ -106,14 +138,16 @@ final class Sync {
 	 *
 	 * @since TBD
 	 *
-	 * @param Rows           $rows      The rows repository.
-	 * @param Template_Guard $guard     The template guard.
-	 * @param Reconcile      $reconcile The same-date re-pointing.
+	 * @param Rows           $rows        The rows repository.
+	 * @param Template_Guard $guard       The template guard.
+	 * @param Rule_Store     $rule_store  The store of the tickets' relative sale date rules.
+	 * @param Sale_Window    $sale_window The resolver of relative sales windows.
 	 */
-	public function __construct( Rows $rows, Template_Guard $guard, Reconcile $reconcile ) {
-		$this->rows      = $rows;
-		$this->guard     = $guard;
-		$this->reconcile = $reconcile;
+	public function __construct( Rows $rows, Template_Guard $guard, Rule_Store $rule_store, Sale_Window $sale_window ) {
+		$this->rows        = $rows;
+		$this->guard       = $guard;
+		$this->rule_store  = $rule_store;
+		$this->sale_window = $sale_window;
 	}
 
 	/**
@@ -186,14 +220,23 @@ final class Sync {
 		// A gone date may be the same day under a new ID: its rows follow it before the rest go.
 		$rows   = $this->reconcile->repoint( $post_id, $this->rows->get_by_post( $post_id ), $dates );
 		$rows   = $this->delete_stale( $rows, array_merge( $templates, $this->templates_being_saved( $post_id, $rows, $templates ) ), $dates );
-		$values = [];
+		$values   = [];
+		$rules    = [];
+		$timezone = Timezones::build_timezone_object( Timezones::get_event_timezone_string( $post_id ) );
 
 		foreach ( $templates as $template_id ) {
 			$values[ $template_id ] = $this->values( $template_id, $post_id );
-			$this->rows->refresh_template( $template_id, $values[ $template_id ] );
+			$rules[ $template_id ]  = Rule::from_stored( $this->rule_store->get( $template_id ), Window_Kind::sales() );
+
+			// A relative sales window is each date's own: the template's is its first date's.
+			$refreshed = $rules[ $template_id ]
+				? array_diff_key( $values[ $template_id ], array_flip( self::SALE_DATE_COLUMNS ) )
+				: $values[ $template_id ];
+			$this->rows->refresh_template( $template_id, $refreshed );
 		}
 
-		$this->insert_missing( $post_id, $values, $dates, $rows );
+		$this->insert_missing( $post_id, $values, $dates, $rows, $rules, $timezone );
+		$this->refresh_sale_windows( $rows, $values, $dates, $rules, $timezone );
 		$this->sync_pools( $post_id, $values, $dates );
 
 		/**
@@ -377,12 +420,12 @@ final class Sync {
 	 *
 	 * @param int $post_id The event's post ID.
 	 *
-	 * @return array<int,object> The dates, by occurrence ID, with their local and UTC start.
+	 * @return array<int,object> The dates, by occurrence ID, with their local and UTC start and their local end.
 	 */
 	private function dates( int $post_id ): array {
 		$dates = DB::get_results(
 			DB::prepare(
-				'SELECT occurrence_id, start_date, start_date_utc FROM %i WHERE post_id = %d ORDER BY start_date_utc, occurrence_id',
+				'SELECT occurrence_id, start_date, start_date_utc, end_date FROM %i WHERE post_id = %d ORDER BY start_date_utc, occurrence_id',
 				Occurrences::table_name(),
 				$post_id
 			)
@@ -448,14 +491,16 @@ final class Sync {
 	 *
 	 * @since TBD
 	 *
-	 * @param int                                      $post_id The event's post ID.
-	 * @param array<int,array<string,int|string|null>> $values  Each template's values, by template ID.
-	 * @param array<int,object>                        $dates   The event's dates, by occurrence ID.
-	 * @param Ticket[]                                 $rows    The event's rows.
+	 * @param int                                      $post_id  The event's post ID.
+	 * @param array<int,array<string,int|string|null>> $values   Each template's values, by template ID.
+	 * @param array<int,object>                        $dates    The event's dates, by occurrence ID.
+	 * @param Ticket[]                                 $rows     The event's rows.
+	 * @param array<int,Rule|null>                     $rules    Each template's relative sales window, by template ID.
+	 * @param DateTimeZone                             $timezone The event's time zone.
 	 *
 	 * @return void
 	 */
-	private function insert_missing( int $post_id, array $values, array $dates, array $rows ): void {
+	private function insert_missing( int $post_id, array $values, array $dates, array $rows, array $rules, DateTimeZone $timezone ): void {
 		$have = [];
 		foreach ( $rows as $row ) {
 			$have[ $row->parent_id . ':' . $row->occurrence_id ] = true;
@@ -470,6 +515,7 @@ final class Sync {
 
 				$new[] = array_merge(
 					$template_values,
+					$this->date_sale_window( $template_values, $rules[ $template_id ] ?? null, $date, $timezone ),
 					[
 						'type'                 => Template_Guard::TICKET_TYPE,
 						'parent_id'            => $template_id,
@@ -492,6 +538,71 @@ final class Sync {
 				$this->insert_still_missing( $post_id, $chunk );
 			}
 		}
+	}
+
+	/**
+	 * Gives the existing rows of the templates with a relative sales window their own date's window.
+	 *
+	 * @since TBD
+	 *
+	 * @param Ticket[]                                 $rows     The event's rows.
+	 * @param array<int,array<string,int|string|null>> $values   Each template's values, by template ID.
+	 * @param array<int,object>                        $dates    The event's dates, by occurrence ID.
+	 * @param array<int,Rule|null>                     $rules    Each template's relative sales window, by template ID.
+	 * @param DateTimeZone                             $timezone The event's time zone.
+	 *
+	 * @return void
+	 */
+	private function refresh_sale_windows( array $rows, array $values, array $dates, array $rules, DateTimeZone $timezone ): void {
+		foreach ( $rows as $row ) {
+			$template_id = (int) $row->parent_id;
+			$date        = $dates[ (int) $row->occurrence_id ] ?? null;
+
+			// A row whose date moved to another event keeps its window.
+			if ( ! $date || empty( $rules[ $template_id ] ) || ! isset( $values[ $template_id ] ) ) {
+				continue;
+			}
+
+			$this->rows->refresh_row( $row, $this->date_sale_window( $values[ $template_id ], $rules[ $template_id ], $date, $timezone ) );
+		}
+	}
+
+	/**
+	 * Returns a template's sales window on one date.
+	 *
+	 * A boundary the rule gives no date, a Now start or a specific date, is the template's own.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,int|string|null> $values   The template's values.
+	 * @param Rule|null                     $rule     The template's relative sales window, if it has one.
+	 * @param object                        $date     The date, with its local start and end.
+	 * @param DateTimeZone                  $timezone The event's time zone.
+	 *
+	 * @return array<string,string|null> The window's local and UTC start and end, keyed by column.
+	 */
+	private function date_sale_window( array $values, ?Rule $rule, object $date, DateTimeZone $timezone ): array {
+		$window = array_intersect_key( $values, array_flip( self::SALE_DATE_COLUMNS ) );
+
+		if ( ! $rule ) {
+			return $window;
+		}
+
+		$resolved = $this->sale_window->resolve_for_dates(
+			$rule,
+			new DateTimeImmutable( $date->start_date, $timezone ),
+			new DateTimeImmutable( $date->end_date, $timezone )
+		);
+		$utc      = new DateTimeZone( 'UTC' );
+
+		foreach ( [ 'start' => $resolved->get_start(), 'end' => $resolved->get_end() ] as $edge => $resolved_date ) {
+			if ( $resolved_date ) {
+				$window[ "{$edge}_date" ]     = $resolved_date->format( Dates::DBDATETIMEFORMAT );
+				$window[ "{$edge}_date_utc" ] = $resolved_date->setTimezone( $utc )->format( Dates::DBDATETIMEFORMAT );
+			}
+		}
+
+		return $window;
 	}
 
 	/**
