@@ -4,6 +4,7 @@ namespace TEC\Tickets\Recurring_Tickets\Admin;
 
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Admin_Tables\Orders as Orders_Table;
+use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Recurring_Tickets\Commerce\Attendees;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
@@ -163,6 +164,85 @@ class Orders_Page_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_sum_the_sales_of_every_date_by_recurring_event_ticket(): void {
+		$summary = $this->summary();
+
+		$this->assertInstanceOf( Order_Summary::class, $summary );
+		$sales = $summary->get_event_sales_data();
+		$this->assertSame( 2, $sales['total_sales']['qty'] );
+		$this->assertSame( 2, $sales['total_ordered']['qty'] );
+
+		$tickets = $summary->get_tickets_by_type()[ Template_Guard::TICKET_TYPE ];
+		$this->assertCount( 1, $tickets, 'One line per recurring event ticket, of every date.' );
+		$this->assertSame( 2, $tickets[0]['qty_data'][ Completed::SLUG ] );
+		$this->assertSame( 'Recurring Event Tickets · all dates', $summary->get_label_for_type( Template_Guard::TICKET_TYPE ) );
+		$this->assertSame( 'All Dates', $summary->get_sales_totals_title() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_sum_the_sales_of_the_next_date_apart(): void {
+		$summary = $this->summary();
+
+		$this->assertSame( (int) $this->dates[0]->provisional_id, $summary->get_next_date() );
+		$next_date = $summary->get_next_date_sales();
+		$this->assertSame( 1, $next_date['total_sales']['qty'] );
+		$this->assertSame( 1, $next_date['by_status'][ Completed::SLUG ]['qty_sold'] );
+
+		ob_start();
+		do_action( 'tec_tickets_commerce_order_report_before_sales_totals', $summary );
+		$html = (string) ob_get_clean();
+
+		$this->assertStringContainsString( 'Next Date: ' . $summary->get_next_date_label(), $html );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_keep_the_next_date_apart_whatever_date_is_chosen(): void {
+		$_GET[ Date_Filter::NAME ] = (string) $this->dates[1]->provisional_id;
+
+		$this->assertSame( (int) $this->dates[0]->provisional_id, $this->summary()->get_next_date(), 'The filter narrows the table only.' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_list_only_every_dates_sales_by_ticket(): void {
+		$_GET[ Date_Filter::NAME ] = (string) $this->dates[1]->provisional_id;
+
+		$this->assertSame( [ Template_Guard::TICKET_TYPE ], array_keys( array_filter( $this->summary()->get_tickets_by_type() ) ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_summarize_a_dates_page_as_its_events(): void {
+		$date = (int) $this->dates[1]->provisional_id;
+
+		$vars    = apply_filters( 'tec_tickets_commerce_reports_tickets-commerce-orders_template_vars', [ 'post_id' => $date ] );
+		$summary = $vars['order_summary'];
+
+		$this->assertInstanceOf( Order_Summary::class, $summary );
+		$this->assertSame( $this->event, $summary->get_post_id() );
+		$this->assertSame( (int) $this->dates[0]->provisional_id, $summary->get_next_date() );
+		$this->assertSame( 2, $summary->get_event_sales_data()['total_sales']['qty'], 'Every date of the event.' );
+		$this->assertSame( 'Recurring Event', $vars['post_singular_label'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_leave_the_summary_of_an_event_without_dates_alone(): void {
+		$vars = [ 'post_id' => static::factory()->post->create() ];
+
+		$this->assertSame( $vars, apply_filters( 'tec_tickets_commerce_reports_tickets-commerce-orders_template_vars', $vars ) );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_not_offer_the_event_as_its_own_date_without_ecp(): void {
 		global $wp_actions;
 		$this->open_the_events_page();
@@ -188,6 +268,13 @@ class Orders_Page_Test extends WPTestCase {
 	 */
 	private function open_the_events_page(): void {
 		$_GET['post_id'] = $this->event;
+	}
+
+	/**
+	 * @return Order_Summary The summary the event's Orders page shows.
+	 */
+	private function summary(): Order_Summary {
+		return apply_filters( 'tec_tickets_commerce_reports_tickets-commerce-orders_template_vars', [ 'post_id' => $this->event ] )['order_summary'];
 	}
 
 	/**
