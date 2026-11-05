@@ -43,6 +43,28 @@ if (
 	$stk_warning  = $manage_stock ? false : true;
 }
 
+
+/**
+ * Filters the capacity a ticket's row shows in the tickets panel.
+ *
+ * @since TBD
+ *
+ * @param int                           $capacity The capacity, -1 when unlimited.
+ * @param Tribe__Tickets__Ticket_Object $ticket   The ticket.
+ * @param int                           $post_id  The ID of the post context of the print.
+ */
+$capacity = apply_filters( 'tec_tickets_editor_list_row_capacity', $capacity, $ticket, $post_id );
+
+/**
+ * Filters the number available a ticket's row shows in the tickets panel.
+ *
+ * @since TBD
+ *
+ * @param int                           $available The number available, -1 when unlimited.
+ * @param Tribe__Tickets__Ticket_Object $ticket    The ticket.
+ * @param int                           $post_id   The ID of the post context of the print.
+ */
+$available = apply_filters( 'tec_tickets_editor_list_row_available', $available, $ticket, $post_id );
 ?>
 <tr class="<?php echo esc_attr( $provider ); ?> is-expanded"
 	data-ticket-order-id="order_<?php echo esc_attr( $ticket->ID ); ?>"
@@ -117,6 +139,17 @@ if (
 		<?php tribe_tickets_get_readable_amount( $available, $mode, true ); ?>
 	</td>
 
+<?php
+/**
+ * Fires after a ticket row's Available column, to add columns of the ticket's type.
+ *
+ * @since TBD
+ *
+ * @param Tribe__Tickets__Ticket_Object $ticket  The ticket.
+ * @param int                           $post_id The ID of the post context of the print.
+ */
+do_action( 'tec_tickets_editor_list_row_columns_' . $ticket->type(), $ticket, $post_id );
+?>
 	<td class="ticket_edit">
 		<?php
 		/**

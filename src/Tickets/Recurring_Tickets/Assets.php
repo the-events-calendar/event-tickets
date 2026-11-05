@@ -68,6 +68,17 @@ final class Assets {
 
 		tec_asset(
 			$plugin,
+			'tec-tickets-recurring-tickets-classic-editor-style',
+			$plugin->plugin_url . 'build/RecurringTickets/classic-editor.css',
+			[ 'dashicons' ],
+			'admin_enqueue_scripts',
+			[
+				'conditionals' => [ $this, 'is_editing_an_event_in_the_classic_editor' ],
+			]
+		);
+
+		tec_asset(
+			$plugin,
 			'tec-tickets-recurring-tickets-by-date-classic',
 			$plugin->plugin_url . 'build/RecurringTickets/tickets-by-date-classic.js',
 			[ 'react', 'react-jsx-runtime', 'wp-dom-ready', 'wp-element', 'wp-i18n', 'jquery' ],

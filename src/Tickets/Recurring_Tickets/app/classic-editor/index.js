@@ -1,13 +1,14 @@
 /**
  * Recurring event tickets in the classic editor's tickets panel.
  *
- * Shows the button that adds a recurring event ticket while the event recurs. The tickets panel script keeps
- * standard tickets and RSVPs off a recurring event, as before.
+ * Shows the head of the recurring event tickets, with the button that adds one, while the event recurs. The tickets
+ * panel script keeps standard tickets and RSVPs off a recurring event, as before.
  *
  * @since TBD
  */
+import './header.pcss';
 
-const buttonSelector = '#recurring_ticket_form_toggle';
+const headerSelector = '#tec-tickets-recurring-header';
 const recurrenceRuleSelector = '.tribe-event-recurrence-rule';
 const standardTicketsSelector =
 	'.tribe-tickets-editor-table-tickets-body [data-ticket-type="default"],' +
@@ -31,7 +32,7 @@ export function init( $, document ) {
 	 * out of sight for a moment: whether the event has a rule decides.
 	 */
 	$document.on( 'tribe-recurrence-active tribe-recurrence-inactive', () =>
-		$( buttonSelector ).toggle( $( recurrenceRuleSelector ).length > 0 )
+		$( headerSelector ).toggle( $( recurrenceRuleSelector ).length > 0 )
 	);
 
 	/*

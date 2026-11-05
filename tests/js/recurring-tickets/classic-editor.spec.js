@@ -8,7 +8,9 @@ describe( 'Recurring event tickets in the classic editor', () => {
 		$( document ).off();
 		document.body.className = '';
 		document.body.innerHTML = `
-			<button id="recurring_ticket_form_toggle" class="ticket_form_toggle" style="display: none"></button>
+			<div id="tec-tickets-recurring-header" style="display: none">
+				<button id="recurring_ticket_form_toggle" class="ticket_form_toggle"></button>
+			</div>
 			<table><tbody class="tribe-tickets-editor-table-tickets-body"></tbody></table>`;
 		recurrenceShown.length = 0;
 		// What tickets.js does when the event has no tickets any more: show the recurrence rules again.
@@ -16,31 +18,31 @@ describe( 'Recurring event tickets in the classic editor', () => {
 		init( $, document );
 	} );
 
-	const button = () => $( '#recurring_ticket_form_toggle' );
+	const header = () => $( '#tec-tickets-recurring-header' );
 	const addRow = ( type ) =>
 		$( '.tribe-tickets-editor-table-tickets-body' ).append( `<tr data-ticket-type="${ type }"></tr>` );
 
 	const addRule = () => $( document.body ).append( '<div class="tribe-event-recurrence tribe-event-recurrence-rule"></div>' );
 
-	test( 'the button shows while the event recurs', () => {
+	test( 'the head shows while the event recurs', () => {
 		addRule();
 		$( document ).trigger( 'tribe-recurrence-active' );
-		expect( button().css( 'display' ) ).not.toBe( 'none' );
+		expect( header().css( 'display' ) ).not.toBe( 'none' );
 
 		// As when the rule is deleted.
 		$( '.tribe-event-recurrence-rule' ).remove();
 		$( document ).trigger( 'tribe-recurrence-inactive' );
-		expect( button().css( 'display' ) ).toBe( 'none' );
+		expect( header().css( 'display' ) ).toBe( 'none' );
 	} );
 
-	test( 'the button stays while the event recurs and the rules are out of sight', () => {
+	test( 'the head stays while the event recurs and the rules are out of sight', () => {
 		addRule();
 		$( document ).trigger( 'tribe-recurrence-active' );
 
 		// As tickets.js does when a saved ticket refreshes the panel: the rules are out of sight for a moment.
 		$( document ).trigger( 'tribe-recurrence-inactive' );
 
-		expect( button().css( 'display' ) ).not.toBe( 'none' );
+		expect( header().css( 'display' ) ).not.toBe( 'none' );
 	} );
 
 	test( 'recurring event tickets leave the recurrence rules editable when tickets.js locks them', () => {

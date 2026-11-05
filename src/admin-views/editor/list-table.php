@@ -57,6 +57,14 @@ $ticket_type = $ticket_type ?? 'default';
 				?>
 				<th class="ticket_capacity"><?php esc_html_e( 'Capacity', 'event-tickets' ); ?></th>
 				<th class="ticket_available"><?php esc_html_e( 'Available', 'event-tickets' ); ?></th>
+<?php
+/**
+ * Fires after the ticket table's Available header, to add columns for a ticket type.
+ *
+ * @since TBD
+ */
+do_action( "tec_tickets_editor_list_table_columns_{$ticket_type}" );
+?>
 				<th class="ticket_edit"></th>
 			</tr>
 		</thead>
