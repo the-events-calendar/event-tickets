@@ -50,12 +50,10 @@ final class Controller extends Controller_Contract {
 	 */
 	public function is_active(): bool {
 		if ( defined( self::DISABLED ) && constant( self::DISABLED ) ) {
-			// The constant to disable the feature is defined and it's truthy.
 			return false;
 		}
 
 		if ( getenv( self::DISABLED ) ) {
-			// The environment variable to disable the feature is truthy.
 			return false;
 		}
 
@@ -69,7 +67,7 @@ final class Controller extends Controller_Contract {
 		 *
 		 * @param bool $active Whether the feature is active. Defaults to `true`.
 		 */
-		return (bool) apply_filters( 'tec_tickets_deferred_save_active', true );
+		return tribe_is_truthy( apply_filters( 'tec_tickets_deferred_save_active', true ) );
 	}
 
 	/**
