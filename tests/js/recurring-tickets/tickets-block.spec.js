@@ -11,11 +11,12 @@ jest.mock( '@moderntribe/common/utils/recurrence', () => ( { hasRecurrenceRules:
 
 const mockInsertBlock = jest.fn();
 
-// The event's tickets over its 5 dates of a pool of 100: Ticket A sold 4, Ticket B 3.
+// Over 5 dates: Ticket A and B share a pool of 100 a date and sold 4 each; Parking has 10 a date and sold 1.
 const sales = {
-	tickets: { 11: { sold: 4, available: 493 }, 12: { sold: 3, available: 493 } },
-	sold: 7,
-	available: 493,
+	tickets: { 11: { sold: 4, available: 492 }, 12: { sold: 4, available: 492 }, 13: { sold: 1, available: 49 } },
+	sold: 9,
+	available: 541,
+	shared: { sold: 8, capacity: 500 },
 };
 let mockPost = { tec_tickets_by_date: { sales } };
 
@@ -31,9 +32,17 @@ jest.mock(
 
 jest.mock( '@wordpress/blocks', () => ( { createBlock: ( name ) => ( { name } ) } ), { virtual: true } );
 
-jest.mock( '@moderntribe/common/elements', () => ( {
-	Button: ( { children, onClick } ) => <button onClick={ onClick }>{ children }</button>,
-} ) );
+jest.mock(
+	'@wordpress/components',
+	() => ( {
+		Button: ( { children, onClick, variant } ) => (
+			<button onClick={ onClick } data-variant={ variant }>
+				{ children }
+			</button>
+		),
+	} ),
+	{ virtual: true }
+);
 
 jest.mock( '../../../src/Tickets/Recurring_Tickets/app/block-editor/tickets-by-date', () => ( {
 	TicketsByDateAction: () => <button>Tickets by Date</button>,
@@ -77,8 +86,8 @@ describe( 'The Tickets block of a recurring event', () => {
 		selectors.isSharedTicket.mockReturnValue( true );
 		const shared = applyFilters( 'tec.tickets.blocks.Ticket.Price.mappedProps', { available: 95 }, context );
 
-		expect( own.available ).toBe( 493 );
-		expect( shared.available ).toBe( '(493)' );
+		expect( own.available ).toBe( 492 );
+		expect( shared.available ).toBe( '(492)' );
 		expect( shared.amountLabel ).toBeUndefined();
 	} );
 
@@ -95,14 +104,14 @@ describe( 'The Tickets block of a recurring event', () => {
 		const own = applyFilters( 'tec.tickets.blocks.Ticket.Quantity.mappedProps', { isShared: false, isHidden: false }, context );
 		const shared = applyFilters( 'tec.tickets.blocks.Ticket.Quantity.mappedProps', { isShared: true, isHidden: false }, context );
 
-		expect( [ own.isHidden, own.sold, own.capacity, own.sharedSold ] ).toEqual( [ false, 4, 497, 0 ] );
-		expect( [ shared.sold, shared.capacity, shared.sharedSold, shared.sharedCapacity ] ).toEqual( [ 4, 500, 7, 500 ] );
+		expect( [ own.isHidden, own.sold, own.capacity, own.sharedSold ] ).toEqual( [ false, 4, 496, 0 ] );
+		expect( [ shared.sold, shared.capacity, shared.sharedSold, shared.sharedCapacity ] ).toEqual( [ 4, 500, 8, 500 ] );
 	} );
 
 	test( 'counts the tickets available and the capacity over every date', () => {
 		expect( applyFilters( 'tec.tickets.blocks.Tickets.Availability.mappedProps', { available: 95, total: 100 }, context ) ).toEqual( {
-			available: 493,
-			total: 500,
+			available: 541,
+			total: 550,
 		} );
 	} );
 
@@ -122,6 +131,7 @@ describe( 'The Tickets block of a recurring event', () => {
 
 		add.props.onClick( event );
 
+		expect( add.props[ 'data-variant' ] ).toBe( 'primary' );
 		expect( event.preventDefault ).toHaveBeenCalled();
 		expect( dispatch ).toHaveBeenCalledWith( 'core/block-editor' );
 		expect( mockInsertBlock ).toHaveBeenCalledWith( { name: 'tribe/tickets-item' }, 2, 'tickets-block' );

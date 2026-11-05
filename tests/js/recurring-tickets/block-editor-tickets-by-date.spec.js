@@ -7,7 +7,14 @@ import { TicketsByDateAction, hasUnsavedDates } from '../../../src/Tickets/Recur
 jest.mock(
 	'@wordpress/components',
 	() => ( {
-		Button: ( { children, ...props } ) => <button { ...props }>{ children }</button>,
+		Button: ( { children, icon, ...props } ) => (
+			<button { ...props }>
+				{ icon }
+				{ children }
+			</button>
+		),
+		SVG: ( props ) => <svg { ...props } />,
+		Path: ( props ) => <path { ...props } />,
 		Modal: ( { title, children, onRequestClose } ) => (
 			<div role="dialog" aria-label={ title } data-close={ onRequestClose }>
 				{ children }
@@ -73,6 +80,8 @@ describe( 'Tickets by Date in the block editor', () => {
 		const rendered = render();
 
 		expect( rendered.root.findAllByProps( { role: 'dialog' } ) ).toHaveLength( 0 );
+		// The editor canvas is an iframe without the Dashicons font: the icon is an SVG.
+		expect( rendered.root.findByType( 'button' ).findAllByType( 'svg' ) ).toHaveLength( 1 );
 
 		act( () => rendered.root.findByType( 'button' ).props.onClick() );
 

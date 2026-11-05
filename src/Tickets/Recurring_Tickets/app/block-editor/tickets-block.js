@@ -6,10 +6,10 @@
  */
 import React from 'react';
 import { createBlock } from '@wordpress/blocks';
+import { Button } from '@wordpress/components';
 import { dispatch, select } from '@wordpress/data';
 import { addFilter } from '@wordpress/hooks';
 import { __, sprintf } from '@wordpress/i18n';
-import { Button } from '@moderntribe/common/elements';
 import { hasRecurrenceRules } from '@moderntribe/common/utils/recurrence';
 import { selectors } from '../../../../modules/data/blocks/ticket';
 import { TICKET_LABELS } from '../../../../modules/data/blocks/ticket/constants';
@@ -73,10 +73,7 @@ export function RecurringTicketsActions( { clientId } ) {
 	return (
 		<>
 			<TicketsByDateAction />
-			<Button
-				className="tribe-editor__action-dashboard__confirm-button tribe-editor__button--sm tribe-common-c-btn"
-				onClick={ ( event ) => addTicket( event, clientId ) }
-			>
+			<Button variant="primary" onClick={ ( event ) => addTicket( event, clientId ) }>
 				{ sprintf(
 					/* Translators: %s - the singular label for a ticket. */
 					__( 'Add a %s', 'event-tickets' ),
@@ -166,15 +163,15 @@ export function countRecurringTicketSales( mappedProps, { state, ownProps } ) {
 		return { ...mappedProps, isHidden: true };
 	}
 
-	const all = allDatesSales();
-	const sharedCapacity = all.sold + all.available;
+	// The shared capacity's own totals: the event's add in the tickets with a capacity of their own.
+	const pool = allDatesSales().shared ?? { sold: 0, capacity: 0 };
 
 	return {
 		...mappedProps,
 		sold: sales.sold,
-		capacity: mappedProps.isShared ? sharedCapacity : sales.sold + sales.available,
-		sharedSold: mappedProps.isShared ? all.sold : 0,
-		sharedCapacity,
+		capacity: mappedProps.isShared ? pool.capacity : sales.sold + sales.available,
+		sharedSold: mappedProps.isShared ? pool.sold : 0,
+		sharedCapacity: pool.capacity,
 	};
 }
 

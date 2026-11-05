@@ -137,6 +137,7 @@ final class Block_Editor {
 			'tickets'   => $this->template_sales->for_event( $event_id ),
 			'sold'      => $this->template_sales->sold( $event_id ),
 			'available' => $this->template_sales->available( $event_id ),
+			'shared'    => $this->template_sales->shared_pool( $event_id ),
 		];
 
 		return $section;

@@ -92,6 +92,7 @@ class Block_Editor_Test extends WPTestCase {
 		$shared = [ 'mode' => 'global', 'event_capacity' => 10, 'capacity' => 10 ];
 		$adult  = $this->create_tc_ticket( $event, 10, [ 'ticket_name' => 'Adult', 'tribe-ticket' => $shared ] );
 		$child  = $this->create_tc_ticket( $event, 5, [ 'ticket_name' => 'Child', 'tribe-ticket' => $shared ] );
+		$own    = $this->create_tc_ticket( $event, 20, [ 'ticket_name' => 'Parking', 'tribe-ticket' => [ 'mode' => 'own', 'capacity' => 5 ] ] );
 		$dates  = $this->get_dates( $event );
 		$rows   = array_filter( tribe( Rows::class )->get_by_template( $adult ), static fn( $row ) => (int) $row->occurrence_id === (int) $dates[0]->occurrence_id );
 		$this->create_row_order( [ Ticket_ID::from_row_id( (int) reset( $rows )->id ) => 2 ] );
@@ -99,16 +100,18 @@ class Block_Editor_Test extends WPTestCase {
 
 		$sales = $this->rest_event( $event, 'edit' )['tec_tickets_by_date']['sales'];
 
-		// A pool of 10 on each of the 3 dates, 2 sold.
+		// A pool of 10 on each of the 3 dates, 2 sold; Parking has 5 of its own on each.
 		$left = 3 * 10 - 2;
 		$this->assertSame(
 			[
 				'tickets'   => [
 					$adult => [ 'sold' => 2, 'available' => $left ],
 					$child => [ 'sold' => 0, 'available' => $left ],
+					$own   => [ 'sold' => 0, 'available' => 3 * 5 ],
 				],
 				'sold'      => 2,
-				'available' => $left,
+				'available' => $left + 3 * 5,
+				'shared'    => [ 'sold' => 2, 'capacity' => 3 * 10 ],
 			],
 			$sales
 		);
