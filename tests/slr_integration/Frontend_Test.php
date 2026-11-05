@@ -193,6 +193,34 @@ class Frontend_Test extends Controller_Test_Case {
 	}
 
 	/**
+	 * The cart sends the buyer back here when their session held no seat for a ticket they picked.
+	 *
+	 * @test
+	 * @covers Frontend::print_tickets_block
+	 */
+	public function test_tickets_block_asks_to_choose_seats_again_after_a_refused_checkout(): void {
+		$post_id = static::factory()->post->create( [ 'post_type' => 'page' ] );
+		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
+		update_post_meta( $post_id, tribe( 'tickets.handler' )->key_capacity, 100 );
+		$this->create_tc_ticket( $post_id, 20 );
+		$this->given_the_seat_selection_service_issues( 'test-ephemeral-token' );
+		$message = 'Your seats could not be held. Please choose your seats again.';
+
+		$html = tribe( Tickets_View::class )->get_tickets_block( $post_id );
+		$this->assertStringNotContainsString( $message, $html );
+
+		$_GET['tec-tickets-seating-seats-not-held'] = '1';
+		$html = tribe( Tickets_View::class )->get_tickets_block( $post_id );
+		unset( $_GET['tec-tickets-seating-seats-not-held'] );
+
+		$this->assertRegExp(
+			'/<div role="alert" class="tec-tickets-seating__notice">\s*' . preg_quote( $message, '/' ) . '\s*<\/div>/',
+			$html,
+			'The notice should be announced to assistive technology and carry the callout class.'
+		);
+	}
+
+	/**
 	 * An archive rendering full content embeds a token for every seated post it lists, and it is not
 	 * singular, so the response has to be recognised from the main query while headers can still be set.
 	 *
@@ -851,6 +879,19 @@ class Frontend_Test extends Controller_Test_Case {
 	 * @return void
 	 */
 	private function given_the_seat_selection_block_was_rendered( int $post_id, string $token ): void {
+		$this->given_the_seat_selection_service_issues( $token );
+
+		tribe( Tickets_View::class )->get_tickets_block( $post_id );
+	}
+
+	/**
+	 * Stubs the Seating service to issue a known token and registers the controller.
+	 *
+	 * @param string $token The token the stubbed service issues.
+	 *
+	 * @return void
+	 */
+	private function given_the_seat_selection_service_issues( string $token ): void {
 		$this->test_services->singleton(
 			Service::class,
 			function () use ( $token ) {
@@ -867,8 +908,6 @@ class Frontend_Test extends Controller_Test_Case {
 		);
 
 		$this->make_controller()->register();
-
-		tribe( Tickets_View::class )->get_tickets_block( $post_id );
 	}
 
 	/**
