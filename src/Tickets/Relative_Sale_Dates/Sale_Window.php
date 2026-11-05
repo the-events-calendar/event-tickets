@@ -49,6 +49,21 @@ final class Sale_Window {
 	}
 
 	/**
+	 * Resolves a rule against a start and an end, such as one date's of a recurring event, in the event timezone.
+	 *
+	 * @since TBD
+	 *
+	 * @param Rule              $rule  The rule.
+	 * @param DateTimeImmutable $start The start, in the event's named timezone.
+	 * @param DateTimeImmutable $end   The end, in the same timezone.
+	 *
+	 * @return Resolved_Window The resolved window.
+	 */
+	public function resolve_for_dates( Rule $rule, DateTimeImmutable $start, DateTimeImmutable $end ): Resolved_Window {
+		return $this->resolve( $rule, $start, $end );
+	}
+
+	/**
 	 * Gets the event's start and end in the event timezone.
 	 *
 	 * @since 5.31.0
