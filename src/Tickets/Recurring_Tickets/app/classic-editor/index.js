@@ -8,6 +8,7 @@
  */
 
 const buttonSelector = '#recurring_ticket_form_toggle';
+const recurrenceRuleSelector = '.tribe-event-recurrence-rule';
 const standardTicketsSelector =
 	'.tribe-tickets-editor-table-tickets-body [data-ticket-type="default"],' +
 	' .tribe-tickets-editor-table-tickets-body [data-ticket-type="rsvp"]';
@@ -25,8 +26,13 @@ const standardTicketsSelector =
 export function init( $, document ) {
 	const $document = $( document );
 
-	$document.on( 'tribe-recurrence-active', () => $( buttonSelector ).show() );
-	$document.on( 'tribe-recurrence-inactive', () => $( buttonSelector ).hide() );
+	/*
+	 * tickets.js says the event recurs when its rules are in sight, and a saved ticket refreshing the panel puts them
+	 * out of sight for a moment: whether the event has a rule decides.
+	 */
+	$document.on( 'tribe-recurrence-active tribe-recurrence-inactive', () =>
+		$( buttonSelector ).toggle( $( recurrenceRuleSelector ).length > 0 )
+	);
 
 	/*
 	 * Without Flexible Tickets, the tickets panel script hides the recurrence rules whenever the tickets table shows.

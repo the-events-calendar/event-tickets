@@ -20,12 +20,27 @@ describe( 'Recurring event tickets in the classic editor', () => {
 	const addRow = ( type ) =>
 		$( '.tribe-tickets-editor-table-tickets-body' ).append( `<tr data-ticket-type="${ type }"></tr>` );
 
+	const addRule = () => $( document.body ).append( '<div class="tribe-event-recurrence tribe-event-recurrence-rule"></div>' );
+
 	test( 'the button shows while the event recurs', () => {
+		addRule();
 		$( document ).trigger( 'tribe-recurrence-active' );
 		expect( button().css( 'display' ) ).not.toBe( 'none' );
 
+		// As when the rule is deleted.
+		$( '.tribe-event-recurrence-rule' ).remove();
 		$( document ).trigger( 'tribe-recurrence-inactive' );
 		expect( button().css( 'display' ) ).toBe( 'none' );
+	} );
+
+	test( 'the button stays while the event recurs and the rules are out of sight', () => {
+		addRule();
+		$( document ).trigger( 'tribe-recurrence-active' );
+
+		// As tickets.js does when a saved ticket refreshes the panel: the rules are out of sight for a moment.
+		$( document ).trigger( 'tribe-recurrence-inactive' );
+
+		expect( button().css( 'display' ) ).not.toBe( 'none' );
 	} );
 
 	test( 'recurring event tickets leave the recurrence rules editable when tickets.js locks them', () => {

@@ -131,7 +131,8 @@ final class Hydrator {
 		}
 
 		$ticket->manage_stock( ! $unlimited );
-		$ticket->global_stock_mode( $this->stock_mode( $row ) );
+		// Tickets Commerce gives an unlimited ticket no stock mode; counts read any other mode as one with stock.
+		$ticket->global_stock_mode( $unlimited ? '' : $this->stock_mode( $row ) );
 		$ticket->qty_sold( (int) $row->sales );
 		$ticket->qty_pending( 0 );
 		$ticket->qty_cancelled( 0 );
