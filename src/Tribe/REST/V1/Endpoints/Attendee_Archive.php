@@ -84,6 +84,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 	 * @since 4.12.0 Returns 401 Unauthorized if Event Tickets Plus is not loaded.
 	 * @since 5.29.5 Reindexes the attendees so the response always encodes them as a JSON array.
 	 * @since 5.30.1 Rejects a provided-but-invalid api_key with a 401 instead of returning public results.
+	 * @since TBD Applies the order, order status, check-in and price filters only to requests with manage access.
 	 *
 	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
 	 */
@@ -118,16 +119,24 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 			'before'                         => 'before_date',
 			'include'                        => 'post__in',
 			'exclude'                        => 'post__not_in',
-			'order_id'                       => 'order',
 			'post_status'                    => 'event_status',
 			'status'                         => 'post_status',
-			'order_status'                   => 'order_status',
-			'checkedin'                      => 'checkedin',
 			'rsvp_going_status'              => 'rsvp_status__or_none',
-			'price_min'                      => 'price_min',
-			'price_max'                      => 'price_max',
 			'attendee_information_available' => 'has_attendee_meta',
 		];
+
+		/* Filters on fields that only requests with manage access can read. */
+		$private_args = [
+			'order_id'     => 'order',
+			'order_status' => 'order_status',
+			'checkedin'    => 'checkedin',
+			'price_min'    => 'price_min',
+			'price_max'    => 'price_max',
+		];
+
+		if ( $has_manage_access ) {
+			$supported_args = array_merge( $supported_args, $private_args );
+		}
 
 		foreach ( $supported_args as $request_arg => $query_arg ) {
 			if ( isset( $request[ $request_arg ] ) ) {
@@ -223,6 +232,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 	 * Process the search terms for attendees.
 	 *
 	 * @since 5.5.2
+	 * @since TBD Applies the email search only to requests with manage access.
 	 *
 	 * @param array $request_args Array of request args.
 	 * @param Tribe__Tickets__REST__V1__Attendee_Repository $query The query object.
@@ -232,9 +242,13 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 	protected function process_search( array $request_args, Tribe__Tickets__REST__V1__Attendee_Repository $query ) {
 
 		$search_keys = [
-			'name'  => 'holder_name__like',
-			'email' => 'holder_email__like',
+			'name' => 'holder_name__like',
 		];
+
+		/* Only requests with manage access can read the email, so only they can search by it. */
+		if ( tribe( 'tickets.rest-v1.main' )->request_has_manage_access() ) {
+			$search_keys['email'] = 'holder_email__like';
+		}
 
 		foreach ( $search_keys as $key => $search_term ) {
 			if ( isset( $request_args[ $key ] ) ) {
