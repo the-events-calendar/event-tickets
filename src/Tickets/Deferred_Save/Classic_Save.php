@@ -127,12 +127,22 @@ final class Classic_Save {
 	 *
 	 * @since TBD
 	 *
-	 * @param int     $post_id The ID of the post being saved.
-	 * @param WP_Post $post    The post being saved.
+	 * Untyped, as `save_post` is core's: some plugins fire it with the post ID alone.
+	 *
+	 * @param int|mixed          $post_id The ID of the post being saved.
+	 * @param WP_Post|mixed|null $post    The post being saved, loaded from the ID when it is not one.
 	 *
 	 * @return Result|null The commit result, or `null` when nothing was committed.
 	 */
-	public function on_save_post( int $post_id, WP_Post $post ): ?Result {
+	public function on_save_post( $post_id, $post = null ): ?Result {
+		$post = $post instanceof WP_Post ? $post : get_post( absint( $post_id ) );
+
+		if ( ! $post instanceof WP_Post ) {
+			return null;
+		}
+
+		$post_id = $post->ID;
+
 		if (
 			isset( $this->committed[ $post_id ] )
 			|| wp_is_post_autosave( $post )
