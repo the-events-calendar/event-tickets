@@ -16,11 +16,13 @@
                 "price": {
                     "description": "The price of the ticket",
                     "type": "number",
+                    "minimum": 0,
                     "example": 25.05
                 },
                 "sale_price": {
                     "description": "The sale price of the ticket",
                     "type": "number",
+                    "minimum": 0,
                     "example": 20.05
                 },
                 "sale_price_start_date": {

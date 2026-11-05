@@ -16,8 +16,10 @@ use Tribe__Tickets__Attendees as Attendees;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
 use Tribe__Tickets__Tickets as Tickets;
+use Tribe\Tickets\Test\Traits\With_Version_Independent_List_Table;
 
 class AttendeesTest extends WPTestCase {
+	use With_Version_Independent_List_Table;
 	use SnapshotAssertions;
 	use With_Uopz;
 	use Ticket_Maker;
@@ -226,6 +228,7 @@ class AttendeesTest extends WPTestCase {
 			return strlen( $b ) <=> strlen( $a );
 		} );
 		$html = str_replace( array_keys( $replace ), (array) $replace, $html );
+		$html = $this->remove_core_list_table_navigation( $html );
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
