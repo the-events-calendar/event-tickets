@@ -112,11 +112,13 @@ class Cart {
 		$held = $token ? $this->get_token_reservations( $token ) : null;
 
 		foreach ( $data['tickets'] as $key => $ticket_data ) {
-			if ( ! isset( $ticket_data['seat_labels'] ) ) {
+			$ticket_id  = $ticket_data['ticket_id'] ?? 0;
+			$has_labels = isset( $ticket_data['seat_labels'] );
+
+			if ( ! $has_labels && ! get_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true ) ) {
 				continue;
 			}
 
-			$ticket_id  = $ticket_data['ticket_id'] ?? 0;
 			$seats_held = null === $held ? null : count( $held[ $ticket_id ] ?? [] );
 
 			/*
@@ -126,6 +128,10 @@ class Cart {
 			if ( 0 === $seats_held ) {
 				unset( $data['tickets'][ $key ] );
 				$this->left_out_unheld_seats = true;
+				continue;
+			}
+
+			if ( ! $has_labels ) {
 				continue;
 			}
 

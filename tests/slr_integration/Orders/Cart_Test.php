@@ -207,6 +207,25 @@ class Cart_Test extends WPTestCase {
 	}
 
 	/**
+	 * A request built outside the seat selection frontend can leave the seat labels out, and the
+	 * ticket must not sell without a held seat either.
+	 *
+	 * @test
+	 * @covers Cart::handle_seat_selection
+	 */
+	public function test_cart_leaves_out_a_seated_ticket_posted_without_seat_labels_when_the_session_holds_no_seats_for_it(): void {
+		[ $post, $ticket ] = $this->given_a_seated_ticket();
+		tribe( Session::class )->add_entry( $post, 'test-token' );
+		$this->given_a_started_session( 'test-token', $post );
+
+		$tc_cart = tribe( TicketsCommerce_Cart::class );
+		$data    = $tc_cart->prepare_data( $this->seat_selection_checkout_request( $post, $ticket, false ) );
+		$tc_cart->process( $data );
+
+		$this->assertArrayNotHasKey( $ticket, $tc_cart->get_items_in_cart() );
+	}
+
+	/**
 	 * @test
 	 * @covers Cart::handle_seat_selection
 	 */
@@ -559,18 +578,21 @@ class Cart_Test extends WPTestCase {
 	 *
 	 * @return array{tribe_tickets_ar_data: string} The posted request data.
 	 */
-	private function seat_selection_checkout_request( int $post, int $ticket ): array {
+	private function seat_selection_checkout_request( int $post, int $ticket, bool $with_seat_labels = true ): array {
+		$ticket_data = [
+			'ticket_id' => $ticket,
+			'quantity'  => 1,
+			'optout'    => '1',
+		];
+
+		if ( $with_seat_labels ) {
+			$ticket_data['seat_labels'] = [ 'seat-label-0-1' ];
+		}
+
 		return [
 			'tribe_tickets_ar_data' => wp_json_encode(
 				[
-					'tribe_tickets_tickets' => [
-						[
-							'ticket_id'   => $ticket,
-							'quantity'    => 1,
-							'optout'      => '1',
-							'seat_labels' => [ 'seat-label-0-1' ],
-						],
-					],
+					'tribe_tickets_tickets' => [ $ticket_data ],
 					'tribe_tickets_meta'    => [],
 					'tribe_tickets_post_id' => $post,
 				]
