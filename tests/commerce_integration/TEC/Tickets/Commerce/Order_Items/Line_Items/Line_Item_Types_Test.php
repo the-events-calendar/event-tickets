@@ -370,6 +370,21 @@ class Line_Item_Types_Test extends WPTestCase {
 		tribe( Line_Item_Types::class )->get_for_item( $item )::to_row( 0, $item, 1, 'USD' );
 	}
 
+	public function test_a_stored_object_of_an_unsupported_class_is_never_rebuilt(): void {
+		$fee                 = $this->fixture( 'fee' )[1];
+		$fee['display_name'] = (object) [ 'label' => 'Fee' ];
+		$row                 = tribe( Line_Item_Types::class )->get_for_item( $fee )::to_row( 0, $fee, 1, 'USD' );
+
+		// A row written by anything but the mapper, e.g. edited in the database, holding a class outside the allow list.
+		$extra               = json_decode( $row['extra'], true );
+		$extra['serialized'] = serialize( [ 'display_name' => new ArrayObject( [ 'label' => 'Fee' ] ) ] ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
+		$row['extra']        = wp_json_encode( $extra );
+
+		[ , $rebuilt ] = tribe( Line_Item_Types::class )->get_for_item( $fee )::from_row( $row );
+
+		$this->assertInstanceOf( \__PHP_Incomplete_Class::class, $rebuilt['display_name'] );
+	}
+
 	public function test_an_object_shared_by_two_fields_is_still_shared_after_the_round_trip(): void {
 		$item                = $this->fixture( 'tickets' )[0];
 		$shared              = (object) [ 'seat' => 'A1' ];
