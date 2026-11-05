@@ -64,7 +64,8 @@
             "enabled": "",
             "sale_price": "",
             "start_date": "",
-            "end_date": ""
+            "end_date": "",
+            "relative": null
         },
         "supports_attendee_information": false,
         "attendees": [],
@@ -75,6 +76,7 @@
             "unchecked_in_percentage": 0
         },
         "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}",
+        "relative_sale_dates": null,
         "capacity_type": "own",
         "sku": "TEST-TKT-{EVENT_ID}",
         "available_from_start_time": "08:00:00",
@@ -459,7 +461,8 @@
             "enabled": "",
             "sale_price": "",
             "start_date": "",
-            "end_date": ""
+            "end_date": "",
+            "relative": null
         },
         "supports_attendee_information": false,
         "attendees": [],
@@ -470,6 +473,7 @@
             "unchecked_in_percentage": 0
         },
         "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}",
+        "relative_sale_dates": null,
         "capacity_type": "own",
         "sku": "TEST-TKT-{EVENT_ID}",
         "available_from_start_time": "08:00:00",
@@ -851,7 +855,8 @@
             "enabled": "",
             "sale_price": "",
             "start_date": "",
-            "end_date": ""
+            "end_date": "",
+            "relative": null
         },
         "supports_attendee_information": false,
         "attendees": [],
@@ -862,6 +867,7 @@
             "unchecked_in_percentage": 0
         },
         "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}",
+        "relative_sale_dates": null,
         "capacity_type": "own",
         "sku": "TEST-TKT-{EVENT_ID}",
         "available_from_start_time": "08:00:00",
@@ -1246,7 +1252,8 @@
             "enabled": "",
             "sale_price": "",
             "start_date": "",
-            "end_date": ""
+            "end_date": "",
+            "relative": null
         },
         "supports_attendee_information": false,
         "attendees": [],
@@ -1257,6 +1264,7 @@
             "unchecked_in_percentage": 0
         },
         "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}",
+        "relative_sale_dates": null,
         "capacity_type": "own",
         "sku": "TEST-TKT-{EVENT_ID}",
         "available_from_start_time": "08:00:00",
@@ -1641,7 +1649,8 @@
             "enabled": "",
             "sale_price": "",
             "start_date": "",
-            "end_date": ""
+            "end_date": "",
+            "relative": null
         },
         "supports_attendee_information": false,
         "attendees": [],
@@ -1652,6 +1661,7 @@
             "unchecked_in_percentage": 0
         },
         "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}",
+        "relative_sale_dates": null,
         "capacity_type": "own",
         "sku": "TEST-TKT-{EVENT_ID}",
         "available_from_start_time": "08:00:00",
@@ -2036,7 +2046,8 @@
             "enabled": "",
             "sale_price": "",
             "start_date": "",
-            "end_date": ""
+            "end_date": "",
+            "relative": null
         },
         "supports_attendee_information": false,
         "attendees": [],
@@ -2047,6 +2058,7 @@
             "unchecked_in_percentage": 0
         },
         "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}",
+        "relative_sale_dates": null,
         "capacity_type": "own",
         "sku": "TEST-TKT-{EVENT_ID}",
         "available_from_start_time": "08:00:00",
@@ -2431,7 +2443,8 @@
             "enabled": "",
             "sale_price": "",
             "start_date": "",
-            "end_date": ""
+            "end_date": "",
+            "relative": null
         },
         "supports_attendee_information": false,
         "attendees": [],
@@ -2442,6 +2455,7 @@
             "unchecked_in_percentage": 0
         },
         "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}",
+        "relative_sale_dates": null,
         "capacity_type": "own",
         "sku": "TEST-TKT-{EVENT_ID}",
         "available_from_start_time": "08:00:00",
@@ -2826,7 +2840,8 @@
             "enabled": "",
             "sale_price": "",
             "start_date": "",
-            "end_date": ""
+            "end_date": "",
+            "relative": null
         },
         "supports_attendee_information": false,
         "attendees": [],
@@ -2837,6 +2852,7 @@
             "unchecked_in_percentage": 0
         },
         "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}",
+        "relative_sale_dates": null,
         "capacity_type": "own",
         "sku": "TEST-TKT-{EVENT_ID}",
         "available_from_start_time": "08:00:00",
@@ -3218,7 +3234,8 @@
             "enabled": "",
             "sale_price": "",
             "start_date": "",
-            "end_date": ""
+            "end_date": "",
+            "relative": null
         },
         "supports_attendee_information": false,
         "attendees": [],
@@ -3229,6 +3246,7 @@
             "unchecked_in_percentage": 0
         },
         "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}",
+        "relative_sale_dates": null,
         "capacity_type": "own",
         "sku": "TEST-TKT-{EVENT_ID}",
         "available_from_start_time": "08:00:00",
@@ -3613,7 +3631,8 @@
             "enabled": "",
             "sale_price": "",
             "start_date": "",
-            "end_date": ""
+            "end_date": "",
+            "relative": null
         },
         "supports_attendee_information": false,
         "attendees": [],
@@ -3624,6 +3643,7 @@
             "unchecked_in_percentage": 0
         },
         "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}",
+        "relative_sale_dates": null,
         "capacity_type": "own",
         "sku": "TEST-TKT-{EVENT_ID}",
         "available_from_start_time": "08:00:00",
@@ -4008,7 +4028,8 @@
             "enabled": "",
             "sale_price": "",
             "start_date": "",
-            "end_date": ""
+            "end_date": "",
+            "relative": null
         },
         "supports_attendee_information": false,
         "attendees": [],
@@ -4019,6 +4040,7 @@
             "unchecked_in_percentage": 0
         },
         "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}",
+        "relative_sale_dates": null,
         "capacity_type": "own",
         "sku": "TEST-TKT-{EVENT_ID}",
         "available_from_start_time": "08:00:00",
@@ -4403,7 +4425,8 @@
             "enabled": "",
             "sale_price": "",
             "start_date": "",
-            "end_date": ""
+            "end_date": "",
+            "relative": null
         },
         "supports_attendee_information": false,
         "attendees": [],
@@ -4414,6 +4437,7 @@
             "unchecked_in_percentage": 0
         },
         "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}",
+        "relative_sale_dates": null,
         "capacity_type": "own",
         "sku": "TEST-TKT-{EVENT_ID}",
         "available_from_start_time": "08:00:00",
@@ -4798,7 +4822,8 @@
             "enabled": "",
             "sale_price": "",
             "start_date": "",
-            "end_date": ""
+            "end_date": "",
+            "relative": null
         },
         "supports_attendee_information": false,
         "attendees": [],
@@ -4809,6 +4834,7 @@
             "unchecked_in_percentage": 0
         },
         "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}",
+        "relative_sale_dates": null,
         "capacity_type": "own",
         "sku": "TEST-TKT-{EVENT_ID}",
         "available_from_start_time": "08:00:00",

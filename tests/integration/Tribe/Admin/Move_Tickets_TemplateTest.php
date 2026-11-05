@@ -81,6 +81,8 @@ class Move_Tickets_TemplateTest extends WPTestCase {
 	 * @covers Tribe__Tickets__Admin__Move_Tickets::get_possible_matches
 	 */
 	public function test_posts_are_sorted_alphabetically_by_title(): void {
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+
 		// Create posts with deliberately out-of-order titles.
 		$post_z = $this->factory->post->create([
 			'post_type' => 'post',
