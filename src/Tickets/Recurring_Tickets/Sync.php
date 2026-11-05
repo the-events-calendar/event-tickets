@@ -140,12 +140,14 @@ final class Sync {
 	 *
 	 * @param Rows           $rows        The rows repository.
 	 * @param Template_Guard $guard       The template guard.
+	 * @param Reconcile      $reconcile   The same-date re-pointing.
 	 * @param Rule_Store     $rule_store  The store of the tickets' relative sale date rules.
 	 * @param Sale_Window    $sale_window The resolver of relative sales windows.
 	 */
-	public function __construct( Rows $rows, Template_Guard $guard, Rule_Store $rule_store, Sale_Window $sale_window ) {
+	public function __construct( Rows $rows, Template_Guard $guard, Reconcile $reconcile, Rule_Store $rule_store, Sale_Window $sale_window ) {
 		$this->rows        = $rows;
 		$this->guard       = $guard;
+		$this->reconcile   = $reconcile;
 		$this->rule_store  = $rule_store;
 		$this->sale_window = $sale_window;
 	}
