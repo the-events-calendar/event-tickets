@@ -210,7 +210,8 @@ final class Sync {
 	private function apply( int $post_id, array $templates, array $dates ): void {
 		$rows   = $this->rows->get_by_post( $post_id );
 		$rows   = $this->delete_stale( $rows, array_merge( $templates, $this->templates_being_saved( $post_id, $rows, $templates ) ), $dates );
-		$values   = [];
+		$values = [];
+
 		$rules    = [];
 		$timezone = Timezones::build_timezone_object( Timezones::get_event_timezone_string( $post_id ) );
 
@@ -574,8 +575,12 @@ final class Sync {
 			new DateTimeImmutable( $date->end_date, $timezone )
 		);
 		$utc      = new DateTimeZone( 'UTC' );
+		$edges    = [
+			'start' => $resolved->get_start(),
+			'end'   => $resolved->get_end(),
+		];
 
-		foreach ( [ 'start' => $resolved->get_start(), 'end' => $resolved->get_end() ] as $edge => $resolved_date ) {
+		foreach ( $edges as $edge => $resolved_date ) {
 			if ( $resolved_date ) {
 				$window[ "{$edge}_date" ]     = $resolved_date->format( Dates::DBDATETIMEFORMAT );
 				$window[ "{$edge}_date_utc" ] = $resolved_date->setTimezone( $utc )->format( Dates::DBDATETIMEFORMAT );
