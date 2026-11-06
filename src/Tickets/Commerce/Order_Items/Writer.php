@@ -195,12 +195,13 @@ final class Writer {
 			foreach ( $this->repository->get_by_order( $order_id ) as $model ) {
 				$row = $model->toArray();
 
-				$stored[ $this->line_identity( $row ) ] = $row;
+				// A line with no identity cannot be matched to a new line, so it is always replaced.
+				$stored[ $this->line_identity( $row ) ?? "row:{$row['id']}" ] = $row;
 			}
 
 			foreach ( $rows as $key => $row ) {
 				$identity = $this->line_identity( $row );
-				$current  = $stored[ $identity ] ?? null;
+				$current  = null === $identity ? null : $stored[ $identity ] ?? null;
 
 				if ( null === $current ) {
 					$inserts[] = $row;
@@ -316,8 +317,7 @@ final class Writer {
 	/**
 	 * Rejects rows that share a line identity, which the table's unique key would refuse as a whole.
 	 *
-	 * Lines with no ticket, modifier or rule ID, such as the several taxes of a Square order, all store the same
-	 * identity, so an order holding two of them stays in the order meta, by this decision and not by a failed query.
+	 * Lines with no identity, such as the several taxes of a Square POS order, are skipped: the table keeps them apart.
 	 *
 	 * @since TBD
 	 *
@@ -331,7 +331,11 @@ final class Writer {
 		$keys = [];
 
 		foreach ( $rows as $row ) {
-			$identity = $row['ticket_id'] . '-' . $row['modifier_id'] . '-' . $row['purchase_rule_id'];
+			$identity = $this->line_identity( $row );
+
+			if ( null === $identity ) {
+				continue;
+			}
 
 			if ( isset( $keys[ $identity ] ) ) {
 				throw new InvalidArgumentException( sprintf( 'Items "%s" and "%s" share one line identity (ticket, modifier and rule IDs), which the table cannot tell apart.', $keys[ $identity ], $row['item_key'] ) );
@@ -412,9 +416,13 @@ final class Writer {
 	 *
 	 * @param array<string,mixed> $row The row.
 	 *
-	 * @return string The line identity.
+	 * @return string|null The line identity, or null for a line with none, stored with no modifier.
 	 */
-	private function line_identity( array $row ): string {
+	private function line_identity( array $row ): ?string {
+		if ( null === $row['modifier_id'] ) {
+			return null;
+		}
+
 		return "{$row['ticket_id']}:{$row['modifier_id']}:{$row['purchase_rule_id']}";
 	}
 }

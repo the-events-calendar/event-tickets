@@ -110,11 +110,12 @@ class Order_Items extends Table {
 				$columns[] = ( new Integer_Column( 'position' ) )->set_type( Column_Types::INT )->set_length( 11 )->set_signed( false );
 
 				/*
-				 * The line identity columns are NOT NULL and writers store 0 for "none": MySQL treats NULLs
-				 * as distinct in a unique key, so a nullable column would let the same ticket line be stored twice.
+				 * The line identity columns store 0 for "none": MySQL treats NULLs as distinct in a unique key, so a
+				 * NULL would let the same ticket line be stored twice. `modifier_id` alone accepts NULL, which marks a
+				 * line with no identity at all, such as a Square POS tax, so any number of those fit in one order.
 				 */
 				$columns[] = new Referenced_ID( 'ticket_id' );
-				$columns[] = new Referenced_ID( 'modifier_id' );
+				$columns[] = ( new Referenced_ID( 'modifier_id' ) )->set_nullable( true );
 				$columns[] = new Referenced_ID( 'purchase_rule_id' );
 				$columns[] = ( new Referenced_ID( 'event_id' ) )->set_nullable( true );
 				$columns[] = ( new Referenced_ID( 'post_id' ) )->set_nullable( true );

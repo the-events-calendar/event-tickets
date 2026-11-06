@@ -186,31 +186,6 @@ class Writer_Test extends Controller_Test_Case {
 			'debug',
 		];
 
-		yield 'two taxes without a numeric ID, as a Square order builds them' => [
-			function () {
-				add_filter(
-					'tec_tickets_commerce_create_order_from_cart_items',
-					static function ( $items ) {
-						foreach ( [ 'a', 'b' ] as $uid ) {
-							$items[] = [
-								'id'           => "square-tax-{$uid}",
-								'type'         => 'fee',
-								'ticket_id'    => 0,
-								'fee_id'       => "square-tax-{$uid}",
-								'display_name' => "Tax {$uid}",
-								'quantity'     => 1,
-								'price'        => 1.0,
-								'sub_total'    => 1.0,
-							];
-						}
-
-						return $items;
-					}
-				);
-			},
-			'debug',
-		];
-
 		yield 'insert fails' => [
 			function () {
 				$this->set_class_fn_return(
@@ -285,10 +260,9 @@ class Writer_Test extends Controller_Test_Case {
 		$queries          = $this->count_queries_against_the_table();
 		add_filter(
 			'tec_tickets_commerce_create_order_from_cart_items',
-			static function ( $items ) {
-				foreach ( [ 'a', 'b' ] as $uid ) {
-					$items[] = [ 'type' => 'fee', 'ticket_id' => 0, 'fee_id' => "square-tax-{$uid}", 'quantity' => 1, 'price' => 1.0, 'sub_total' => 1.0 ];
-				}
+			function ( $items ) {
+				$items[] = $this->square_line( 'fee', 7, 'Booking fee' );
+				$items[] = $this->square_line( 'fee', 7, 'Booking fee again' );
 
 				return $items;
 			}
@@ -804,6 +778,90 @@ class Writer_Test extends Controller_Test_Case {
 
 		$this->assertNull( get_post( $order_id ) );
 		$this->assert_logged( 'warning', 'could not be deleted' );
+	}
+
+	public function test_a_square_pos_order_stores_a_row_for_every_line(): void {
+		$this->register_controller( true );
+		[ , $ticket_ids ] = $this->make_tickets();
+		add_filter(
+			'tec_tickets_commerce_create_order_from_cart_items',
+			function ( $items ) {
+				return array_merge( $items, $this->square_pos_lines( [ 'state', 'city' ] ) );
+			}
+		);
+
+		$order = $this->create_order( [ $ticket_ids[0] => 1 ] );
+
+		$items = get_post_meta( $order->ID, Order::$items_meta_key, true );
+		$rows  = tribe( Order_Items_Repository::class )->get_by_order( $order->ID );
+		$this->assertCount( count( $items ), $rows );
+		// The two taxes and the terminal discount carry no modifier; the ticket keeps its identity.
+		$this->assertSame( [ 0, null, null, null ], array_map( static fn( $row ) => $row->toArray()['modifier_id'], $rows ) );
+		$this->assertSame( '2', get_post_meta( $order->ID, Writer::VERSION_META_KEY, true ) );
+		$this->assert_rows_hold_the_items( $order->ID );
+	}
+
+	public function test_lines_without_an_identity_are_replaced_when_the_items_change(): void {
+		$this->register_controller( true );
+		[ , $ticket_ids ] = $this->make_tickets();
+		add_filter(
+			'tec_tickets_commerce_create_order_from_cart_items',
+			function ( $items ) {
+				return array_merge( $items, $this->square_pos_lines( [ 'state', 'city' ] ) );
+			}
+		);
+		$order      = $this->create_order( [ $ticket_ids[0] => 1 ], [ 'order_status' => Pending::SLUG ] );
+		$ticket_row = tribe( Order_Items_Repository::class )->get_by_order( $order->ID )[0]->toArray();
+		$items      = get_post_meta( $order->ID, Order::$items_meta_key, true );
+		$new_items  = [ $items[0], $this->square_line( 'fee', 'square-tax-county', 'County tax' ) ];
+
+		$this->save_items( $order->ID, $new_items );
+
+		$rows = array_map( static fn( $row ) => $row->toArray(), tribe( Order_Items_Repository::class )->get_by_order( $order->ID ) );
+		$this->assertSame( [ $ticket_row['id'], $ticket_row['ticket_id'] ], [ $rows[0]['id'], $rows[0]['ticket_id'] ] );
+		$this->assertSame( [ 'County tax' ], array_column( array_slice( $rows, 1 ), 'name' ) );
+		$this->assertSame( '2', get_post_meta( $order->ID, Writer::VERSION_META_KEY, true ) );
+		$this->assert_rows_hold_the_items( $order->ID );
+	}
+
+	/**
+	 * Builds the lines a Square POS order adds without a local ID: one ADDITIVE tax per uid and a terminal discount.
+	 *
+	 * @param string[] $tax_uids The Square uids of the taxes.
+	 *
+	 * @return array<int,array<string,mixed>> The lines, shaped as `Gateways/Square/Order::get_items_from_square_order()` builds them.
+	 */
+	private function square_pos_lines( array $tax_uids ): array {
+		$lines = [];
+
+		foreach ( $tax_uids as $uid ) {
+			$lines[] = $this->square_line( 'fee', "square-tax-{$uid}", ucfirst( $uid ) . ' tax' );
+		}
+
+		$lines[] = $this->square_line( 'coupon', 0, 'Square Applied Discount 1' );
+
+		return $lines;
+	}
+
+	/**
+	 * @param string     $type The line type, `fee` or `coupon`.
+	 * @param int|string $id   The fee or coupon ID.
+	 * @param string     $name The line's display name.
+	 *
+	 * @return array<string,mixed> A fee or coupon line as Square builds it.
+	 */
+	private function square_line( string $type, $id, string $name ): array {
+		return [
+			'id'           => $id,
+			'type'         => $type,
+			"{$type}_id"   => $id,
+			'price'        => 1.5,
+			'sub_total'    => 'coupon' === $type ? -1.5 : 1.5,
+			'display_name' => $name,
+			'ticket_id'    => 0,
+			'event_id'     => 0,
+			'quantity'     => 1,
+		];
 	}
 
 	/**
