@@ -175,47 +175,20 @@ class Classic_Entry_Point_Test extends WPTestCase {
 
 	/**
 	 * @test
+	 * @dataProvider roles_saving_markup
 	 */
-	public function it_should_store_data_exactly_as_the_ajax_save_does(): void {
+	public function it_should_store_data_exactly_as_the_ajax_save_does( string $role ): void {
 		$this->given_two_posts_with_tickets();
-		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
-		$data = $this->ticket_data(
-			'<b>Bold</b> <script>alert(1)</script> name',
-			[
-				'ticket_description' => '<p>Kept</p><script>alert(2)</script><img src=x onerror=alert(3)>',
-				'ticket_sku'         => 'SKU <i>x</i>',
-			]
-		);
+		$user_id = $this->log_in_as( $role );
+		wp_update_post( [ 'ID' => $this->post_a, 'post_author' => $user_id ] );
+		$data    = $this->markup_ticket_data();
+		$ajax_id = $this->save_through_ajax( $data );
 
-		// Today's path, on a post of its own so the panels it renders have nothing else to load.
-		$post_c = static::factory()->post->create();
-		$_POST  = [
-			'post_id'     => $post_c,
-			// tickets.js posts the edit form serialized: the request helper sanitizes that string, not the fields in it.
-			'data'        => http_build_query( $data ),
-			'ticket_type' => 'default',
-			'nonce'       => wp_create_nonce( 'add_ticket_nonce' ),
-		];
-		$this->assertIsArray( tribe( 'tickets.metabox' )->ajax_ticket_add( true ) );
-		$ajax_ids = tribe_tickets()->where( 'event', $post_c )->get_ids();
-		$ajax_id  = (int) reset( $ajax_ids );
-
-		// The deferred path.
 		$this->submit_form( $this->post_a, [ 'create' => [ $data ] ] );
 		$deferred_ids = array_diff( tribe_tickets()->where( 'event', $this->post_a )->get_ids(), [ $this->ticket_a ] );
 		$deferred_id  = (int) reset( $deferred_ids );
 
-		$this->assertGreaterThan( 0, $ajax_id );
-		$this->assertGreaterThan( 0, $deferred_id );
-		$stored = fn( int $id ) => [
-			'title'   => get_post_field( 'post_title', $id, 'raw' ),
-			'excerpt' => get_post_field( 'post_excerpt', $id, 'raw' ),
-			'sku'     => get_post_meta( $id, '_sku', true ),
-			'price'   => get_post_meta( $id, '_price', true ),
-		];
-		$this->assertSame( $stored( $ajax_id ), $stored( $deferred_id ) );
-		// What reaches a ticket is what the provider and WordPress keep for this user, as on the AJAX path.
-		$this->assertStringContainsString( '<p>Kept</p>', $stored( $deferred_id )['excerpt'] );
+		$this->assert_stored_like_the_ajax_save( $ajax_id, $deferred_id );
 	}
 
 	/**

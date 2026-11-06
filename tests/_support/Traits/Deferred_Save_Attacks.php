@@ -2,6 +2,7 @@
 
 namespace Tribe\Tests\Tickets\Traits;
 
+use Generator;
 use TEC\Tickets\Commerce\Module;
 use Tribe__Tickets__Tickets as Tickets;
 
@@ -109,6 +110,65 @@ trait Deferred_Save_Attacks {
 			'b_title'    => get_the_title( $this->post_b ),
 			'b_type'     => get_post_type( $this->post_b ),
 		];
+	}
+
+	/**
+	 * A role that holds `unfiltered_html` and one that does not: `ticket_add()` filters the name and description for both.
+	 */
+	public function roles_saving_markup(): Generator {
+		yield 'administrator' => [ 'administrator' ];
+		yield 'author' => [ 'author' ];
+	}
+
+	protected function markup_ticket_data(): array {
+		return $this->ticket_data(
+			'<b>Bold</b> <script>alert(1)</script> name',
+			[
+				'ticket_description' => '<p>Kept</p><script>alert(2)</script><img src=x onerror=alert(3)>',
+				'ticket_sku'         => 'SKU <i>x</i>',
+			]
+		);
+	}
+
+	/**
+	 * Saves a ticket through today's AJAX path, on a post of the current user's own so the panels it renders have
+	 * nothing else to load.
+	 */
+	protected function save_through_ajax( array $data ): int {
+		$post_id = static::factory()->post->create( [ 'post_author' => get_current_user_id() ] );
+		$_POST   = [
+			'post_id'     => $post_id,
+			// tickets.js posts the edit form serialized: the request helper sanitizes that string, not the fields in it.
+			'data'        => http_build_query( $data ),
+			'ticket_type' => 'default',
+			'nonce'       => wp_create_nonce( 'add_ticket_nonce' ),
+		];
+		$this->assertIsArray( tribe( 'tickets.metabox' )->ajax_ticket_add( true ) );
+		$_POST = [];
+		$ids   = tribe_tickets()->where( 'event', $post_id )->get_ids();
+
+		return absint( reset( $ids ) );
+	}
+
+	protected function stored_fields( int $ticket_id ): array {
+		return [
+			'title'   => get_post_field( 'post_title', $ticket_id, 'raw' ),
+			'excerpt' => get_post_field( 'post_excerpt', $ticket_id, 'raw' ),
+			'sku'     => get_post_meta( $ticket_id, '_sku', true ),
+			'price'   => get_post_meta( $ticket_id, '_price', true ),
+		];
+	}
+
+	protected function assert_stored_like_the_ajax_save( int $ajax_id, int $deferred_id ): void {
+		$this->assertGreaterThan( 0, $ajax_id );
+		$this->assertGreaterThan( 0, $deferred_id );
+		$stored = $this->stored_fields( $deferred_id );
+		$this->assertSame( $this->stored_fields( $ajax_id ), $stored );
+		$this->assertStringContainsString( '<p>Kept</p>', $stored['excerpt'] );
+
+		$saved_text = $stored['title'] . $stored['excerpt'];
+		$this->assertStringNotContainsString( '<script>', $saved_text );
+		$this->assertStringNotContainsString( 'onerror', $saved_text );
 	}
 
 	protected function assert_world_unchanged( array $before, string $message = '' ): void {
