@@ -84,37 +84,6 @@ class Order_Items_Test extends WPTestCase {
 		$this->assertSame( 1, Order_Items::get_total_items() );
 	}
 
-	public function test_an_update_makes_the_modifier_of_an_earlier_table_nullable_and_keeps_rows(): void {
-		Order_Items::insert( $this->row( [ 'order_id' => 1 ] ) );
-		DB::query( DB::prepare( 'ALTER TABLE %i MODIFY `modifier_id` bigint UNSIGNED NOT NULL', Order_Items::table_name() ) );
-
-		( new Order_Items() )->update();
-
-		$this->assertSame( 'YES', $this->get_modifier_nullable() );
-		$this->assertSame( 1, Order_Items::get_total_items() );
-	}
-
-	public function test_a_failed_alter_is_retried_on_the_next_update(): void {
-		DB::query( DB::prepare( 'ALTER TABLE %i MODIFY `modifier_id` bigint UNSIGNED NOT NULL', Order_Items::table_name() ) );
-		$break_alter = static fn( $query ) => str_starts_with( $query, 'ALTER TABLE' ) ? 'ALTER TABLE `missing_table` MODIFY `modifier_id` bigint NULL' : $query;
-		add_filter( 'query', $break_alter );
-		$table = new Order_Items();
-
-		try {
-			$table->update();
-			$this->fail( 'The failed ALTER should throw.' );
-		} catch ( DatabaseQueryException $e ) {
-			$this->assertFalse( $table->is_schema_current() );
-		} finally {
-			remove_filter( 'query', $break_alter );
-		}
-
-		$table->update();
-
-		$this->assertSame( 'YES', $this->get_modifier_nullable() );
-		$this->assertTrue( $table->is_schema_current() );
-	}
-
 	public function test_money_columns_keep_negative_values_and_currency(): void {
 		Order_Items::insert( $this->row( [ 'type' => 'coupon', 'price' => -500, 'sub_total' => -500, 'currency' => 'EUR' ] ) );
 
@@ -203,9 +172,5 @@ class Order_Items_Test extends WPTestCase {
 
 		// The AUTO_INCREMENT counter moves with every insert and is not part of the schema.
 		return preg_replace( '/ AUTO_INCREMENT=\d+/', '', $row[1] );
-	}
-
-	private function get_modifier_nullable(): string {
-		return DB::get_var( DB::prepare( 'SELECT IS_NULLABLE FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = %s AND COLUMN_NAME = %s', Order_Items::table_name(), 'modifier_id' ) );
 	}
 }

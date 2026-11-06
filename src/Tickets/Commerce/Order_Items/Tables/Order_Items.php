@@ -9,7 +9,6 @@
 
 namespace TEC\Tickets\Commerce\Order_Items\Tables;
 
-use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 use TEC\Common\StellarWP\Schema\Collections\Column_Collection;
 use TEC\Common\StellarWP\Schema\Collections\Index_Collection;
 use TEC\Common\StellarWP\Schema\Columns\Column_Types;
@@ -44,7 +43,7 @@ class Order_Items extends Table {
 	 *
 	 * @var string
 	 */
-	const SCHEMA_VERSION = '1.0.1';
+	const SCHEMA_VERSION = '1.0.0';
 
 	/**
 	 * The length of each string column, in characters.
@@ -143,37 +142,6 @@ class Order_Items extends Table {
 				return new Table_Schema( $table_name, $columns, $indexes );
 			},
 		];
-	}
-
-	/**
-	 * Makes `modifier_id` nullable on a table created before it was: `dbDelta` compares column types only.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string,string> $results The `dbDelta` results.
-	 *
-	 * @return array<string,string> The `dbDelta` results.
-	 *
-	 * @throws DatabaseQueryException When the column cannot be altered; the next update tries again.
-	 */
-	protected function after_update( array $results ) {
-		$results = parent::after_update( $results );
-		$column  = $this->db::get_row( $this->db::prepare( 'SHOW COLUMNS FROM %i LIKE %s', static::table_name(), 'modifier_id' ) );
-
-		if ( $column && 'NO' === $column->Null ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- MySQL's column name.
-			[ $definition ] = static::get_columns()->get( 'modifier_id' )->get_definition();
-
-			try {
-				$this->db::query( $this->db::prepare( "ALTER TABLE %i MODIFY {$definition}", static::table_name() ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- The schema's own column definition.
-			} catch ( DatabaseQueryException $e ) {
-				// The update stored the new version before this ran: drop it, so the next request runs the update again.
-				delete_option( $this->get_schema_version_option() );
-
-				throw $e;
-			}
-		}
-
-		return $results;
 	}
 
 	/**
