@@ -305,6 +305,20 @@ describe( 'applying the answer of a save', () => {
 		expect( mockEditor.createErrorNotice ).toHaveBeenCalledWith( 'Too many', expect.anything() );
 	} );
 
+	it( 'stages the delete of a ticket the save created for a block removed while the save was out', () => {
+		mockEditor.order = [ 'a' ];
+		sagas.rememberBody( 'a', [ [ 'name', 'A' ] ] );
+		prepare( stateWith( { a: { isStaged: true } } ) );
+		mockEditor.order = [];
+		mockEditor.record = { id: 10, tec_tickets: { created: { 0: 101 }, errors: [] } };
+
+		const dispatched = run( stateWith( {} ), sagas.applyLastSaveResponse );
+
+		expect( dispatched ).toContainEqual( actions.stageTicketDelete( 101 ) );
+		expect( dispatched ).not.toContainEqual( actions.setTicketId( 'a', 101 ) );
+		expect( doAction ).not.toHaveBeenCalledWith( 'tec.tickets.blocks.ticketCreated', 'a', 101, expect.anything() );
+	} );
+
 	it( 'shows a refused delete as a notice, its block being gone', () => {
 		const state = stateWith( {}, { deletes: [ 40 ] } );
 

@@ -639,6 +639,10 @@ export function* applySaveResponse( response, sentNow ) {
 	yield put( actions.clearStagedTickets( outcome.settle ) );
 	yield call( settlePayloadEdit, response );
 	yield call( refreshPayload );
+
+	for ( const { clientId, ticketId } of outcome.orphaned ) {
+		yield call( stageDelete, clientId, ticketId );
+	}
 	// The position each committed ticket was sent with; one it was moved to since is still unsaved.
 	outcome.blocks.forEach( ( { clientId, hook } ) => {
 		if ( hook && sentNow.positions && hasOwn( sentNow.positions, clientId ) ) {
