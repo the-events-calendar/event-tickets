@@ -13,6 +13,7 @@ use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Gateways\Free\Gateway as Free_Gateway;
 use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Order_Items\Fallbacks;
 use TEC\Tickets\Commerce\Traits\Is_Ticket;
 use Tribe__Date_Utils;
 use WP_Post;
@@ -437,6 +438,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	 * Handler for the items column
 	 *
 	 * @since 5.13.0
+	 * @since TBD Lines whose ticket no longer exists show the fallback name.
 	 *
 	 * @param WP_Post $item The current item.
 	 *
@@ -449,7 +451,7 @@ class Orders_Table extends WP_Posts_List_Table {
 			return $output;
 		}
 
-		foreach ( $item->items as $cart_item ) {
+		foreach ( $item->items as $key => $cart_item ) {
 			// Check if 'type' exists and proceed only if it's empty or equals 'ticket'.
 			if ( ! $this->is_ticket( $cart_item ) ) {
 				continue;
@@ -458,13 +460,7 @@ class Orders_Table extends WP_Posts_List_Table {
 			$ticket   = Tribe__Tickets__Tickets::load_ticket_object( $cart_item['ticket_id'] );
 			$quantity = esc_html( (int) $cart_item['quantity'] );
 
-			if ( ! $ticket ) {
-				$name    = _n( 'Ticket', 'Tickets', $quantity, 'event-tickets' );
-				$output .= "<div class='tribe-line-item'>{$quantity} {$name}</div>";
-				continue;
-			}
-
-			$name    = esc_html( $ticket->name );
+			$name    = esc_html( $ticket ? $ticket->name : tribe( Fallbacks::class )->get_missing_ticket( $item, $key, $cart_item )['name'] );
 			$output .= "<div class='tribe-line-item'>{$quantity} {$name}</div>";
 		}
 
