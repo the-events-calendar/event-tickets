@@ -181,6 +181,18 @@ describe( 'deferred-save module', () => {
 		expect( $( '.tec-tickets-deferred-save-validation' ).length ).toBe( 0 );
 	} );
 
+	it( 'tells other scripts through wp.hooks that a ticket was staged, with the payload', () => {
+		load();
+		window.tribe.tickets.editor = { fetchPanels: jest.fn() };
+		const staged = jest.fn();
+		loadedHooks.addAction( 'tec.tickets.admin.deferredSave.staged', 'tests', staged );
+
+		loadedHooks.applyFilters( 'tec.tickets.admin.ticket.intercepted', false, 'save', {} );
+
+		expect( staged ).toHaveBeenCalledTimes( 1 );
+		expect( staged.mock.calls[ 0 ][ 0 ].create ).toHaveLength( 1 );
+	} );
+
 	it( 'lets the fields a staged ticket turned on show again when it is edited', () => {
 		const module = load( {
 			editPanel: `
