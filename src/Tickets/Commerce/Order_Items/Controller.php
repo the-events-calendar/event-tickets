@@ -68,6 +68,7 @@ class Controller extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		remove_action( 'tec_tickets_commerce_order_created', $this->container->callback( Writer::class, 'write_created_order' ), 10 );
+		remove_action( 'tec_tickets_commerce_order_updated', $this->container->callback( Writer::class, 'sync_updated_order' ), 10 );
 	}
 
 	/**
@@ -96,5 +97,6 @@ class Controller extends Controller_Contract {
 		$this->container->singleton( Writer::class );
 
 		add_action( 'tec_tickets_commerce_order_created', $this->container->callback( Writer::class, 'write_created_order' ), 10, 1 );
+		add_action( 'tec_tickets_commerce_order_updated', $this->container->callback( Writer::class, 'sync_updated_order' ), 10, 2 );
 	}
 }
