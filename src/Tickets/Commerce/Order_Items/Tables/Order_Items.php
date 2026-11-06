@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Commerce\Order_Items\Tables;
 
+use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 use TEC\Common\StellarWP\Schema\Collections\Column_Collection;
 use TEC\Common\StellarWP\Schema\Collections\Index_Collection;
 use TEC\Common\StellarWP\Schema\Columns\Column_Types;
@@ -152,6 +153,8 @@ class Order_Items extends Table {
 	 * @param array<string,string> $results The `dbDelta` results.
 	 *
 	 * @return array<string,string> The `dbDelta` results.
+	 *
+	 * @throws DatabaseQueryException When the column cannot be altered; the next update tries again.
 	 */
 	protected function after_update( array $results ) {
 		$results = parent::after_update( $results );
@@ -159,7 +162,15 @@ class Order_Items extends Table {
 
 		if ( $column && 'NO' === $column->Null ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- MySQL's column name.
 			[ $definition ] = static::get_columns()->get( 'modifier_id' )->get_definition();
-			$this->db::query( $this->db::prepare( "ALTER TABLE %i MODIFY {$definition}", static::table_name() ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- The schema's own column definition.
+
+			try {
+				$this->db::query( $this->db::prepare( "ALTER TABLE %i MODIFY {$definition}", static::table_name() ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- The schema's own column definition.
+			} catch ( DatabaseQueryException $e ) {
+				// The update stored the new version before this ran: drop it, so the next request runs the update again.
+				delete_option( $this->get_schema_version_option() );
+
+				throw $e;
+			}
 		}
 
 		return $results;
