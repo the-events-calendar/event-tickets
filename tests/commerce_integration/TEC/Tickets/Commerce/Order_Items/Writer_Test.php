@@ -177,6 +177,7 @@ class Writer_Test extends Controller_Test_Case {
 					}
 				);
 			},
+			'debug',
 		];
 
 		yield 'two taxes without a numeric ID, as a Square order builds them' => [
@@ -201,6 +202,7 @@ class Writer_Test extends Controller_Test_Case {
 					}
 				);
 			},
+			'debug',
 		];
 
 		yield 'insert fails' => [
@@ -214,6 +216,7 @@ class Writer_Test extends Controller_Test_Case {
 					true
 				);
 			},
+			'error',
 		];
 
 		yield 'unsupported object in an item' => [
@@ -227,13 +230,14 @@ class Writer_Test extends Controller_Test_Case {
 					}
 				);
 			},
+			'debug',
 		];
 	}
 
 	/**
 	 * @dataProvider failed_write_provider
 	 */
-	public function test_a_failed_write_leaves_the_order_stored_the_old_way( Closure $break_the_write ): void {
+	public function test_a_failed_write_leaves_the_order_stored_the_old_way( Closure $break_the_write, string $log_level ): void {
 		$this->register_controller( true );
 		[ $event_id, $ticket_ids ] = $this->make_tickets();
 		$break_the_write->call( $this );
@@ -245,7 +249,7 @@ class Writer_Test extends Controller_Test_Case {
 		$this->assertSame( '', get_post_meta( $order->ID, Writer::VERSION_META_KEY, true ) );
 		$this->assertNotEmpty( get_post_meta( $order->ID, Order::$items_meta_key, true ) );
 		$this->assertSame( tribe( Completed::class )->get_wp_slug(), get_post_status( $order->ID ) );
-		$this->assert_logged( 'error', 'could not be written' );
+		$this->assert_logged( $log_level, 'could not be written' );
 	}
 
 	/**
