@@ -1,0 +1,116 @@
+/**
+ * Markers and rows for ticket changes staged in the classic editor.
+ *
+ * @since TBD
+ */
+
+.tec-tickets-deferred-save-badge {
+	background: #f0f0f1;
+	border-radius: 10px;
+	color: #1d2327;
+	display: inline-block;
+	font-size: 11px;
+	font-weight: 600;
+	line-height: 18px;
+	margin-left: 8px;
+	padding: 1px 8px;
+	vertical-align: middle;
+
+	&--staged {
+		background: #fcf9e8;
+		color: #614200;
+	}
+
+	&--delete {
+		background: #fcf0f1;
+		color: #8a2424;
+	}
+
+	&--move {
+		background: #f0f6fc;
+		color: #0a4b78;
+	}
+
+	&__target {
+		font-weight: 400;
+		margin-left: 4px;
+	}
+
+	&__undo {
+		font-size: 11px;
+		margin-left: 6px;
+		text-decoration: underline;
+	}
+}
+
+.tec-tickets-deferred-save-row--delete {
+
+	td {
+		opacity: 0.6;
+		text-decoration: line-through;
+	}
+
+	.ticket_edit,
+	.ticket_name .tec-tickets-deferred-save-badge {
+		opacity: 1;
+		text-decoration: none;
+	}
+}
+
+/*
+ * The staged row's buttons look like the saved row's: icon only, with the
+ * ticket name for screen readers.
+ */
+.tec-tickets-deferred-save-row {
+
+	&__duplicate,
+	&__remove {
+		margin-left: 12px;
+	}
+
+	&__edit,
+	&__duplicate,
+	&__remove {
+		background: none;
+		border: 0;
+		color: #ccc;
+		cursor: pointer;
+		padding: 0;
+
+		&:hover {
+			color: #727272;
+		}
+
+		.ticket_edit_text,
+		.ticket_delete_text,
+		.ticket_duplicate_text {
+			font-size: 0;
+
+			&::before {
+				content: "\f464";
+				font-family: dashicons, sans-serif;
+				font-size: 20px;
+				vertical-align: top;
+			}
+		}
+
+		.ticket_delete_text::before {
+			content: "\f182";
+		}
+
+		.ticket_duplicate_text::before {
+			background-color: #ccc;
+			content: "";
+			display: inline-block;
+			height: 22px;
+			mask-image: url(../icons/ticket-copy.svg);
+			mask-position: center;
+			mask-repeat: no-repeat;
+			width: 20px;
+		}
+	}
+
+	&__duplicate:hover .ticket_duplicate_text::before {
+		background-color: #727272;
+	}
+}
