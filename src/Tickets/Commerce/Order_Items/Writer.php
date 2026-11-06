@@ -12,7 +12,7 @@ namespace TEC\Tickets\Commerce\Order_Items;
 use InvalidArgumentException;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Order_Items\Line_Items\Line_Item_Types;
-use TEC\Tickets\Commerce\Order_Items\Repositories\Order_Items;
+use TEC\Tickets\Commerce\Order_Items\Repositories\Order_Items_Repository;
 use TEC\Tickets\Commerce\Order_Items\Traits\With_Logger;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Commerce\Utils\Currency;
@@ -71,19 +71,19 @@ final class Writer {
 	 *
 	 * @since TBD
 	 *
-	 * @var Order_Items
+	 * @var Order_Items_Repository
 	 */
-	private Order_Items $repository;
+	private Order_Items_Repository $repository;
 
 	/**
 	 * Writer constructor.
 	 *
 	 * @since TBD
 	 *
-	 * @param Line_Item_Types $types      The line item types that turn order items into rows.
-	 * @param Order_Items     $repository The Order Items repository.
+	 * @param Line_Item_Types        $types      The line item types that turn order items into rows.
+	 * @param Order_Items_Repository $repository The Order Items repository.
 	 */
-	public function __construct( Line_Item_Types $types, Order_Items $repository ) {
+	public function __construct( Line_Item_Types $types, Order_Items_Repository $repository ) {
 		$this->types      = $types;
 		$this->repository = $repository;
 	}

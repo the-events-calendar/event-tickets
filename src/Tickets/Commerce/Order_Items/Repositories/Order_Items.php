@@ -25,7 +25,7 @@ use TEC\Tickets\Commerce\Order_Items\Tables\Order_Items as Order_Items_Table;
  *
  * @package TEC\Tickets\Commerce\Order_Items\Repositories
  */
-class Order_Items extends Custom_Table_Repository {
+class Order_Items extends Custom_Table_Repository implements Order_Items_Repository {
 	/**
 	 * The most rows the table returns per query.
 	 *
