@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Deferred_Save\Classic;
 
 use Codeception\TestCase\WPTestCase;
+use TEC\Common\StellarWP\Assets\Assets as Stellar_Assets;
 
 class Assets_Test extends WPTestCase {
 	/**
@@ -43,4 +44,24 @@ class Assets_Test extends WPTestCase {
 			$this->assertNotSame( '', $data[ $key ], $key );
 		}
 	}
+
+	/**
+	 * The assets library registers and enqueues what it holds on `init`, so unregistering must take them out of it.
+	 *
+	 * @test
+	 */
+	public function it_should_take_the_assets_out_of_the_assets_library_on_unregister(): void {
+		$assets = tribe( Assets::class );
+		$assets->register();
+
+		$assets->unregister();
+
+		$this->assertFalse( Stellar_Assets::instance()->exists( Assets::SCRIPT ) );
+		$this->assertFalse( Stellar_Assets::instance()->exists( Assets::STYLE ) );
+		$this->assertFalse( wp_script_is( Assets::SCRIPT, 'registered' ) );
+
+		$assets->register();
+		$this->assertTrue( Stellar_Assets::instance()->exists( Assets::SCRIPT ) );
+	}
+
 }

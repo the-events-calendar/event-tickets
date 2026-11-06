@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Deferred_Save\Classic;
 
+use TEC\Common\StellarWP\Assets\Assets as Stellar_Assets;
 use Tribe__Tickets__Main as Tickets_Main;
 
 /**
@@ -110,10 +111,9 @@ final class Assets {
 	 * @return void
 	 */
 	public function unregister(): void {
-		wp_dequeue_script( self::SCRIPT );
-		wp_deregister_script( self::SCRIPT );
-		wp_dequeue_style( self::STYLE );
-		wp_deregister_style( self::STYLE );
+		$assets = Stellar_Assets::instance();
+		$assets->remove( self::SCRIPT );
+		$assets->remove( self::STYLE );
 	}
 
 	/**
