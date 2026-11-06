@@ -13,6 +13,7 @@ namespace TEC\Tickets\Relative_Sale_Dates;
 
 use DateTimeImmutable;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Common\Editor\Canvas_Styles;
 use TEC\Common\StellarWP\Assets\Assets as Asset_Registry;
 use Tribe__Tickets__Main as Tickets_Plugin;
 use Tribe__Timezones as Timezones;
@@ -136,6 +137,7 @@ final class Assets extends Controller_Contract {
 	 * Registers the controller.
 	 *
 	 * @since 5.31.0
+	 * @since TBD Added the Ticket block style to the editor canvas styles group.
 	 *
 	 * @return void
 	 */
@@ -192,6 +194,7 @@ final class Assets extends Controller_Contract {
 			[
 				'group_path'   => Tickets_Plugin::class . '-packages',
 				'conditionals' => fn(): bool => $this->is_block_event_edit_screen(),
+				'groups'       => [ Canvas_Styles::GROUP ],
 			]
 		);
 	}
