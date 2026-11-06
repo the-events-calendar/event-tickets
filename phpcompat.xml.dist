@@ -7,6 +7,12 @@
 
 	<rule ref="PHPCompatibilityWP"/>
 
+	<!-- Templates are included from a `Tribe__Template` method, which binds `$this` in their closures. -->
+	<rule ref="PHPCompatibility.FunctionDeclarations.NewClosure.ThisFoundOutsideClass">
+		<exclude-pattern>*/src/views/*</exclude-pattern>
+		<exclude-pattern>*/src/admin-views/*</exclude-pattern>
+	</rule>
+
 	<!-- Only PHP files. -->
 	<arg name="extensions" value="php"/>
 	<arg name="colors"/>

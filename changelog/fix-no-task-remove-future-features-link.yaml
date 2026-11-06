@@ -1,0 +1,6 @@
+significance: patch
+type: tweak
+entry: Removed the outdated planned features link from the notices that tickets
+  and RSVPs are not supported on recurring events, and changed the RSVP notice
+  to "RSVPs are not supported on recurring events."
+timestamp: 2026-10-28T18:42:18.640Z

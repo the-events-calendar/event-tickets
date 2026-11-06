@@ -109,6 +109,7 @@ class Warnings {
 	 *
 	 * @since 5.0.4
 	 * @since 5.8.0 Removed `class` attribute, dynamize ticket and rsvp labels.
+	 * @since TBD Removed the link to the planned features article.
 	 *
 	 * @param int $post_id The Post ID.
 	 */
@@ -116,17 +117,7 @@ class Warnings {
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( Tribe__Tickets__Admin__Views::class );
 
-		$help_text_link = sprintf(
-			'<a href="%1$s" target="_blank" rel="noreferrer noopener">%2$s</a>',
-			esc_url( 'https://evnt.is/1b7a' ),
-			esc_html( __( 'See our future planned features.', 'event-tickets' ) )
-		);
-
-		$et_message = sprintf(
-		/* translators: %1$s: link to help article. */
-			__( 'Standard tickets are not yet supported on recurring events. %1$s', 'event-tickets' ),
-			$help_text_link
-		);
+		$et_message = __( 'Standard tickets are not yet supported on recurring events.', 'event-tickets' );
 
 		$admin_views->template(
 			'editor/recurring-warning',

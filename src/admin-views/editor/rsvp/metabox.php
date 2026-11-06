@@ -23,8 +23,7 @@ $switch_classes = [
 	<span class="dashicons dashicons-lightbulb"></span>
 	<div class="ticket-editor-notice_warning--messages">
 		<p class="ticket-editor-notice_warning--message">
-			<?php echo esc_html__( 'RSVPs are not yet supported on recurring events.', 'event-tickets' ); ?>
-			<a href="https://evnt.is/1b7a" target="_blank" rel="noreferrer noopener"><?php echo esc_html__( 'See our future planned features.', 'event-tickets' ); ?></a>
+			<?php echo esc_html__( 'RSVPs are not supported on recurring events.', 'event-tickets' ); ?>
 		</p>
 	</div>
 </div>

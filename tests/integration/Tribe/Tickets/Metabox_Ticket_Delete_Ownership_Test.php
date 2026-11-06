@@ -3,53 +3,18 @@
 namespace Tribe\Tickets;
 
 use Codeception\TestCase\WPTestCase;
-use Generator;
-use TEC\Tickets\Commerce\Module as Commerce;
-use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
-use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker as TC_Ticket_Maker;
-use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
-use Tribe__Tickets__Data_API as Data_API;
+use Tribe\Tickets\Test\Traits\With_Ticket_Providers;
 use Tribe__Tickets__Metabox as Metabox;
 use WP_Error;
 
 class Metabox_Ticket_Delete_Ownership_Test extends WPTestCase {
-	use TC_Ticket_Maker;
-	use PayPal_Ticket_Maker;
-
-	private array $ticketable_post_types = [];
-
-	/**
-	 * @before
-	 */
-	public function enable_providers(): void {
-		$this->ticketable_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
-		tribe_update_option( 'ticket-enabled-post-types', array_values( array_unique( array_merge( $this->ticketable_post_types, [ 'post' ] ) ) ) );
-		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
-		add_filter( 'tribe_tickets_get_modules', [ $this, 'add_modules' ] );
-		tribe_singleton( 'tickets.data_api', new Data_API() );
-	}
+	use With_Ticket_Providers;
 
 	/**
 	 * @after
 	 */
-	public function reset_providers(): void {
-		tribe_update_option( 'ticket-enabled-post-types', $this->ticketable_post_types );
-		remove_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
-		remove_filter( 'tribe_tickets_get_modules', [ $this, 'add_modules' ] );
-		tribe_singleton( 'tickets.data_api', new Data_API() );
+	public function reset_request(): void {
 		unset( $_POST['post_id'], $_POST['ticket_id'], $_POST['nonce'] );
-	}
-
-	public function add_modules( array $modules ): array {
-		$modules[ Commerce::class ] = 'Tickets Commerce';
-		$modules[ PayPal::class ]   = tribe( 'tickets.commerce.paypal' )->plugin_name;
-
-		return $modules;
-	}
-
-	public function provider_ticket_makers(): Generator {
-		yield 'Tickets Commerce' => [ 'create_tc_ticket' ];
-		yield 'PayPal' => [ 'create_paypal_ticket' ];
 	}
 
 	private function request_delete_as_contributor( int $ticket_id, ?int $post_id = null ) {
@@ -69,9 +34,9 @@ class Metabox_Ticket_Delete_Ownership_Test extends WPTestCase {
 	}
 
 	/**
-	 * @dataProvider provider_ticket_makers
+	 * @dataProvider provider_paid_ticket_makers
 	 */
-	public function test_contributor_cannot_delete_ticket_of_another_post( string $make_ticket ): void {
+	public function test_contributor_cannot_delete_ticket_of_another_post( string $provider, string $make_ticket ): void {
 		$victim_post = static::factory()->post->create();
 		$ticket_id   = $this->{$make_ticket}( $victim_post, 10 );
 
@@ -82,9 +47,9 @@ class Metabox_Ticket_Delete_Ownership_Test extends WPTestCase {
 	}
 
 	/**
-	 * @dataProvider provider_ticket_makers
+	 * @dataProvider provider_paid_ticket_makers
 	 */
-	public function test_ticket_is_deleted_through_its_own_post_whatever_post_id_is_sent( string $make_ticket ): void {
+	public function test_ticket_is_deleted_through_its_own_post_whatever_post_id_is_sent( string $provider, string $make_ticket ): void {
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 		$post_id   = static::factory()->post->create();
 		$ticket_id = $this->{$make_ticket}( $post_id, 10 );
@@ -100,9 +65,9 @@ class Metabox_Ticket_Delete_Ownership_Test extends WPTestCase {
 	}
 
 	/**
-	 * @dataProvider provider_ticket_makers
+	 * @dataProvider provider_paid_ticket_makers
 	 */
-	public function test_ticket_without_a_parent_post_is_not_deleted( string $make_ticket ): void {
+	public function test_ticket_without_a_parent_post_is_not_deleted( string $provider, string $make_ticket ): void {
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 		$post_id   = static::factory()->post->create();
 		$ticket_id = $this->{$make_ticket}( $post_id, 10 );

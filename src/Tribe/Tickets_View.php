@@ -9,6 +9,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Tribe__Tickets__Tickets_View {
 
 	/**
+	 * The nonce action that guards attendee updates from the My Tickets page.
+	 *
+	 * @since 5.30.3
+	 *
+	 * @var string
+	 */
+	private const MY_TICKETS_NONCE_ACTION = 'tec_tickets_my_tickets_update';
+
+	/**
+	 * The name of the field that carries the My Tickets nonce.
+	 *
+	 * @since 5.30.3
+	 *
+	 * @var string
+	 */
+	private const MY_TICKETS_NONCE_FIELD = 'tec_tickets_my_tickets_nonce';
+
+	/**
 	 * Get (and instantiate, if necessary) the instance of the class.
 	 *
 	 * @static
@@ -29,6 +47,7 @@ class Tribe__Tickets__Tickets_View {
 
 		add_action( 'template_redirect', [ $myself, 'authorization_redirect' ] );
 		add_action( 'template_redirect', [ $myself, 'update_tickets' ] );
+		add_action( 'tribe_tickets_orders_before_submit', [ $myself, 'render_my_tickets_nonce_field' ] );
 
 		// Generate Non TEC Permalink.
 		add_action( 'generate_rewrite_rules', [ $myself, 'add_non_event_permalinks' ] );
@@ -182,6 +201,9 @@ class Tribe__Tickets__Tickets_View {
 	 * Update the RSVP and Tickets values for each Attendee.
 	 *
 	 * @since 5.8.2 Removed optional param from get_tickets_page_url call.
+	 * @since 5.30.3 Refuses the update unless the user is logged in and the My Tickets nonce verifies.
+	 *
+	 * @return void
 	 */
 	public function update_tickets() {
 		$is_correct_page = $this->is_edit_page();
@@ -206,6 +228,19 @@ class Tribe__Tickets__Tickets_View {
 		}
 
 		$post_id = get_the_ID();
+
+		/*
+		 * The ownership checks downstream compare against the current user id, which is 0 for every
+		 * logged-out visitor and for every guest-checkout attendee, so a logged-out request is refused
+		 * here rather than relying on `authorization_redirect()` running first.
+		 */
+		if (
+			! is_user_logged_in()
+			|| ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST[ self::MY_TICKETS_NONCE_FIELD ] ?? '' ) ), self::MY_TICKETS_NONCE_ACTION )
+		) {
+			wp_safe_redirect( esc_url_raw( $this->get_tickets_page_url( $post_id ) ) );
+			exit;
+		}
 
 		$attendees = [];
 
@@ -246,6 +281,19 @@ class Tribe__Tickets__Tickets_View {
 		$url = add_query_arg( 'tribe_updated', 1, $url );
 		wp_safe_redirect( esc_url_raw( $url ) );
 		exit;
+	}
+
+	/**
+	 * Prints the nonce that `update_tickets()` requires inside the My Tickets form.
+	 *
+	 * Printed from an action rather than the template so theme overrides of `tickets/orders.php` get it too.
+	 *
+	 * @since 5.30.3
+	 *
+	 * @return void
+	 */
+	public function render_my_tickets_nonce_field(): void {
+		wp_nonce_field( self::MY_TICKETS_NONCE_ACTION, self::MY_TICKETS_NONCE_FIELD, false );
 	}
 
 	/**
