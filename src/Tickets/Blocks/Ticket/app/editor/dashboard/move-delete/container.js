@@ -17,6 +17,8 @@ const mapStateToProps = ( state, ownProps ) => ( {
 	isDisabled: selectors.isTicketDisabled( state, ownProps ),
 	ticketIsSelected: selectors.getTicketIsSelected( state, ownProps ),
 	ticketId: selectors.getTicketId( state, ownProps ),
+	// A ticket with an edit waiting for the post save cannot be moved: the server refuses a ticket in both.
+	isMoveBlocked: selectors.getTicketIsStaged( state, ownProps ),
 } );
 
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {
