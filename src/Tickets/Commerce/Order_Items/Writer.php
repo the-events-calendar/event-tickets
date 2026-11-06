@@ -121,8 +121,9 @@ final class Writer {
 			 */
 			$this->repository->insert_many( $rows );
 		} catch ( Throwable $e ) {
+			// A line the table cannot hold, e.g. a second Square tax with no ID, is refused by design, not a failure.
 			$this->log(
-				Log::ERROR,
+				$e instanceof InvalidArgumentException ? Log::DEBUG : Log::ERROR,
 				'The order items could not be written to the table; the order keeps them in its meta.',
 				[
 					'order_id' => $order_id,
