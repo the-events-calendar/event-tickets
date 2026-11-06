@@ -57,6 +57,15 @@ abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 	];
 
 	/**
+	 * Whether the line is identified by its ticket, so a line with no modifier or purchase rule still has an identity.
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
+	 */
+	protected const IDENTIFIED_BY_TICKET = false;
+
+	/**
 	 * The object classes a stored item may hold. None of them runs code when unserialized.
 	 *
 	 * @since TBD
@@ -142,6 +151,11 @@ abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 			'sub_total'            => $columns['sub_total'] ?? 0,
 			'regular_sub_total'    => $columns['regular_sub_total'] ?? null,
 		];
+
+		// No modifier and no rule, as on a Square POS tax: a NULL keeps such lines apart in the table's unique key.
+		if ( ! static::IDENTIFIED_BY_TICKET && 0 === $row['modifier_id'] && 0 === $row['purchase_rule_id'] ) {
+			$row['modifier_id'] = null;
+		}
 
 		// Values the row cannot hold exactly (a '0' string, an unrounded float, a null ID stored as 0) keep their original.
 		foreach ( array_intersect_key( $item, static::FIELDS ) as $name => $value ) {

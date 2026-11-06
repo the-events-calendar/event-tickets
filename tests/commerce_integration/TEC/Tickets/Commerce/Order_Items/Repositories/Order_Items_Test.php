@@ -153,7 +153,6 @@ class Order_Items_Test extends WPTestCase {
 			array_fill_keys( $nullable, null ),
 			[
 				'type'        => 'coupon',
-				'modifier_id' => 9,
 				'currency'    => 'EUR',
 				'price'       => -500,
 				'sub_total'   => -500,

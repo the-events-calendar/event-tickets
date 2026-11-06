@@ -35,6 +35,15 @@ final class Ticket_Line_Item extends Abstract_Line_Item_Type {
 	];
 
 	/**
+	 * Whether the line is identified by its ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
+	 */
+	protected const IDENTIFIED_BY_TICKET = true;
+
+	/**
 	 * Returns the ticket's name, SKU and type at purchase time.
 	 *
 	 * @since TBD

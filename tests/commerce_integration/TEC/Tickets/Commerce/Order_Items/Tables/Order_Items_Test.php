@@ -27,7 +27,7 @@ class Order_Items_Test extends WPTestCase {
 			'item_key'              => [ 'varchar(191)', 'YES', null ],
 			'position'              => [ 'int unsigned', 'NO', null ],
 			'ticket_id'             => $line_identity,
-			'modifier_id'           => $line_identity,
+			'modifier_id'           => $bigint_unsigned,
 			'purchase_rule_id'      => $line_identity,
 			'event_id'              => $bigint_unsigned,
 			'post_id'               => $bigint_unsigned,
@@ -81,6 +81,16 @@ class Order_Items_Test extends WPTestCase {
 		( new Order_Items() )->update();
 
 		$this->assertSame( $create_table, $this->get_create_table() );
+		$this->assertSame( 1, Order_Items::get_total_items() );
+	}
+
+	public function test_an_update_makes_the_modifier_of_an_earlier_table_nullable_and_keeps_rows(): void {
+		Order_Items::insert( $this->row( [ 'order_id' => 1 ] ) );
+		DB::query( DB::prepare( 'ALTER TABLE %i MODIFY `modifier_id` bigint UNSIGNED NOT NULL', Order_Items::table_name() ) );
+
+		( new Order_Items() )->update();
+
+		$this->assertSame( 'YES', DB::get_var( DB::prepare( 'SELECT IS_NULLABLE FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = %s AND COLUMN_NAME = %s', Order_Items::table_name(), 'modifier_id' ) ) );
 		$this->assertSame( 1, Order_Items::get_total_items() );
 	}
 
