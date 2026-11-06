@@ -193,7 +193,17 @@ export const restBodyToTicketData = ( entries ) => {
 		setPath( data, path, value );
 	} );
 
-	const salePrice = data[ 'tribe-ticket' ] && data[ 'tribe-ticket' ].sale_price;
+	const ticketFields = data[ 'tribe-ticket' ] || {};
+	const salePrice = ticketFields.sale_price;
+
+	// Mirrors `Relative_Sale_Dates\Rest::map_block_editor_rule()`, which only the REST save runs.
+	if ( hasOwn( ticketFields, 'relative_sale_dates' ) ) {
+		data.relative_sale_dates = ticketFields.relative_sale_dates;
+	}
+
+	if ( salePrice && hasOwn( salePrice, 'relative' ) && TICKETS_COMMERCE_MODULE_CLASS === data.ticket_provider ) {
+		data.ticket_sale_price_relative = salePrice.relative;
+	}
 
 	if ( salePrice && SALE_PRICE_PROVIDERS.includes( data.ticket_provider ) ) {
 		data.ticket_add_sale_price = hasOwn( salePrice, 'checked' ) ? salePrice.checked : false;
