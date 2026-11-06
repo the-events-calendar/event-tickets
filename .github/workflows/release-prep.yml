@@ -94,6 +94,12 @@ jobs:
       - name: Import common's changelog entries
         uses: the-events-calendar/actions/.github/actions/import-common-changelog@main
 
+      # After common's entries and before the changelog is written, so the changelog processes
+      # them with the rest: the actions and filters the release adds or removes and the views it
+      # changes, from a diff of src/ against the last release tag.
+      - name: Add the hook and view changelog entries
+        uses: the-events-calendar/actions/.github/actions/analyze-hooks@main
+
       - name: Read the translation settings
         id: i18n
         env:
@@ -148,6 +154,27 @@ jobs:
           TRANSLATIONS_DEPLOY_SSH_KEY: ${{ secrets.TRANSLATIONS_DEPLOY_SSH_KEY }}
           TRANSLATIONS_DEPLOY_POT_LOCATION: ${{ secrets.TRANSLATIONS_DEPLOY_POT_LOCATION }}
 
+      # The changelogger sorts a write's entries by type, which puts Language first. Writing the
+      # other entries now, before the language entry exists, leaves it to the toolbox's own write,
+      # which appends it to this version's section: last, where earlier releases have it.
+      - name: Resolve the changelog date
+        id: changelog-date
+        env:
+          RELEASE_DATE: ${{ inputs.date }}
+        run: |
+          if [ -z "$RELEASE_DATE" ] || [ "$RELEASE_DATE" = "today" ]; then
+            echo "date=$(date -u +%F)" >> "$GITHUB_OUTPUT"
+          else
+            echo "date=$RELEASE_DATE" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Write the changelog before the language entry
+        uses: stellarwp/changelogger@6bff9fcee9dc63f8ec4d723b09f728fbc40d0be5 # v1
+        with:
+          command: write
+          version: ${{ inputs.version }}
+          date: ${{ steps.changelog-date.outputs.date }}
+
       - name: Add the language changelog entry
         if: steps.push-translations.outcome == 'success'
         uses: the-events-calendar/actions/.github/actions/add-changelog@main
@@ -165,7 +192,7 @@ jobs:
         with:
           branch: ${{ inputs.branch }}
           version: ${{ inputs.version }}
-          date: ${{ inputs.date }}
+          date: ${{ steps.changelog-date.outputs.date }}
           token: ${{ secrets.GHA_BOT_TOKEN_MANAGER }}
 
       - name: Summary
