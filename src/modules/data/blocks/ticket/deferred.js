@@ -12,6 +12,7 @@
  * Internal dependencies
  */
 import { globals } from '@moderntribe/common/utils';
+import { TICKETS_COMMERCE_MODULE_CLASS, TC_CLASS } from './constants';
 
 /**
  * Whether the post being edited defers ticket saves to the post save.
@@ -40,11 +41,12 @@ const KEY_MAP = {
 	sku: 'ticket_sku',
 	iac: 'ticket_iac',
 	menu_order: 'ticket_menu_order',
-	'ticket[sale_price][checked]': 'ticket_add_sale_price',
-	'ticket[sale_price][price]': 'ticket_sale_price',
-	'ticket[sale_price][start_date]': 'ticket_sale_start_date',
-	'ticket[sale_price][end_date]': 'ticket_sale_end_date',
 };
+
+// Only these providers read the sale price from the top-level keys; WooCommerce writes any top-level one onto the product.
+const SALE_PRICE_PROVIDERS = [ TICKETS_COMMERCE_MODULE_CLASS, TC_CLASS ];
+
+const isTruthy = ( value ) => [ true, 1, '1', 'true', 'yes', 'on' ].includes( value );
 
 const DROPPED_KEYS = [ 'post_id', 'add_ticket_nonce', 'edit_ticket_nonce', 'remove_ticket_nonce' ];
 
@@ -185,6 +187,18 @@ export const restBodyToTicketData = ( entries ) => {
 
 		setPath( data, path, value );
 	} );
+
+	const salePrice = data[ 'tribe-ticket' ] && data[ 'tribe-ticket' ].sale_price;
+
+	if ( salePrice && SALE_PRICE_PROVIDERS.includes( data.ticket_provider ) ) {
+		data.ticket_add_sale_price = hasOwn( salePrice, 'checked' ) ? salePrice.checked : false;
+
+		if ( isTruthy( data.ticket_add_sale_price ) ) {
+			data.ticket_sale_price = hasOwn( salePrice, 'price' ) ? salePrice.price : '';
+			data.ticket_sale_start_date = hasOwn( salePrice, 'start_date' ) ? salePrice.start_date : '';
+			data.ticket_sale_end_date = hasOwn( salePrice, 'end_date' ) ? salePrice.end_date : '';
+		}
+	}
 
 	return data;
 };
