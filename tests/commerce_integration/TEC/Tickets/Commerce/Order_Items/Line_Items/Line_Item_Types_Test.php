@@ -279,19 +279,27 @@ class Line_Item_Types_Test extends WPTestCase {
 	}
 
 	public function no_identity_provider(): Generator {
-		yield 'keys missing' => [ [ 'type' => 'fee', 'price' => 1.0, 'sub_total' => 1.0, 'quantity' => 1 ] ];
-		yield 'string zeros' => [ [ 'type' => 'fee', 'fee_id' => '0', 'ticket_id' => '0', 'event_id' => '0' ] ];
-		yield 'integer zeros' => [ [ 'type' => 'discount', 'rule_id' => 0, 'coupon_id' => 0, 'ticket_id' => 0 ] ];
-		yield 'nulls' => [ [ 'type' => null, 'fee_id' => null, 'rule_id' => null, 'ticket_id' => null, 'display_name' => null ] ];
+		yield 'keys missing' => [ [ 'type' => 'fee', 'price' => 1.0, 'sub_total' => 1.0, 'quantity' => 1 ], [ 0, null, 0 ] ];
+		yield 'string zeros' => [ [ 'type' => 'fee', 'fee_id' => '0', 'ticket_id' => '0', 'event_id' => '0' ], [ 0, null, 0 ] ];
+		yield 'integer zeros' => [ [ 'type' => 'discount', 'rule_id' => 0, 'coupon_id' => 0, 'ticket_id' => 0 ], [ 0, null, 0 ] ];
+		yield 'Square tax' => [ [ 'id' => 'square-tax-a', 'type' => 'fee', 'fee_id' => 'square-tax-a', 'ticket_id' => 0, 'display_name' => 'City tax', 'quantity' => 1, 'price' => 1.5, 'sub_total' => 1.5 ], [ 0, null, 0 ] ];
+		yield 'Square terminal discount' => [ [ 'id' => 0, 'type' => 'coupon', 'coupon_id' => 0, 'ticket_id' => 0, 'event_id' => 0, 'display_name' => 'Square Applied Discount 1', 'quantity' => 1, 'price' => 2.0, 'sub_total' => -2.0 ], [ 0, null, 0 ] ];
+		// A line of an unknown type applied to a ticket must not take that ticket's own identity.
+		yield 'unknown type on a ticket' => [ [ 'type' => 'custom-charge', 'ticket_id' => 5, 'price' => 1.0 ], [ 5, null, 0 ] ];
+		// A ticket line is identified by its ticket, even when it has none.
+		yield 'nulls' => [ [ 'type' => null, 'fee_id' => null, 'rule_id' => null, 'ticket_id' => null, 'display_name' => null ], [ 0, 0, 0 ] ];
 	}
 
 	/**
 	 * @dataProvider no_identity_provider
+	 *
+	 * @param array                    $item     The order item.
+	 * @param array{int, int|null, int} $identity The row's ticket, modifier and purchase rule IDs.
 	 */
-	public function test_line_without_ticket_modifier_or_rule_stores_zero( array $item ): void {
+	public function test_line_without_modifier_or_rule_stores_no_modifier( array $item, array $identity ): void {
 		[ $rows, $rebuilt ] = $this->round_trip( [ $item ], 'USD' );
 
-		$this->assertSame( [ 0, 0, 0 ], [ $rows[0]['ticket_id'], $rows[0]['modifier_id'], $rows[0]['purchase_rule_id'] ] );
+		$this->assertSame( $identity, [ $rows[0]['ticket_id'], $rows[0]['modifier_id'], $rows[0]['purchase_rule_id'] ] );
 		$this->assertSame( [ $item ], $rebuilt );
 	}
 

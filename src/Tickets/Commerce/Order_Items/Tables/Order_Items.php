@@ -43,7 +43,7 @@ class Order_Items extends Table {
 	 *
 	 * @var string
 	 */
-	const SCHEMA_VERSION = '1.0.0';
+	const SCHEMA_VERSION = '1.0.1';
 
 	/**
 	 * The length of each string column, in characters.
@@ -110,11 +110,12 @@ class Order_Items extends Table {
 				$columns[] = ( new Integer_Column( 'position' ) )->set_type( Column_Types::INT )->set_length( 11 )->set_signed( false );
 
 				/*
-				 * The line identity columns are NOT NULL and writers store 0 for "none": MySQL treats NULLs
-				 * as distinct in a unique key, so a nullable column would let the same ticket line be stored twice.
+				 * The line identity columns store 0 for "none": MySQL treats NULLs as distinct in a unique key, so a
+				 * NULL would let the same ticket line be stored twice. `modifier_id` alone accepts NULL, which marks a
+				 * line with no identity at all, such as a Square POS tax, so any number of those fit in one order.
 				 */
 				$columns[] = new Referenced_ID( 'ticket_id' );
-				$columns[] = new Referenced_ID( 'modifier_id' );
+				$columns[] = ( new Referenced_ID( 'modifier_id' ) )->set_nullable( true );
 				$columns[] = new Referenced_ID( 'purchase_rule_id' );
 				$columns[] = ( new Referenced_ID( 'event_id' ) )->set_nullable( true );
 				$columns[] = ( new Referenced_ID( 'post_id' ) )->set_nullable( true );
@@ -141,6 +142,27 @@ class Order_Items extends Table {
 				return new Table_Schema( $table_name, $columns, $indexes );
 			},
 		];
+	}
+
+	/**
+	 * Makes `modifier_id` nullable on a table created before it was: `dbDelta` compares column types only.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,string> $results The `dbDelta` results.
+	 *
+	 * @return array<string,string> The `dbDelta` results.
+	 */
+	protected function after_update( array $results ) {
+		$results = parent::after_update( $results );
+		$column  = $this->db::get_row( $this->db::prepare( 'SHOW COLUMNS FROM %i LIKE %s', static::table_name(), 'modifier_id' ) );
+
+		if ( $column && 'NO' === $column->Null ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- MySQL's column name.
+			[ $definition ] = static::get_columns()->get( 'modifier_id' )->get_definition();
+			$this->db::query( $this->db::prepare( "ALTER TABLE %i MODIFY {$definition}", static::table_name() ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- The schema's own column definition.
+		}
+
+		return $results;
 	}
 
 	/**
