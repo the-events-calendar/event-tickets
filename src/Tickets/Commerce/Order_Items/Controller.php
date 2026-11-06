@@ -66,10 +66,12 @@ class Controller extends Controller_Contract {
 	 *
 	 * @return void
 	 */
-	public function unregister(): void {}
+	public function unregister(): void {
+		remove_action( 'tec_tickets_commerce_order_created', $this->container->callback( Writer::class, 'write_created_order' ), 10 );
+	}
 
 	/**
-	 * Registers the table.
+	 * Registers the table and the writer.
 	 *
 	 * @since TBD
 	 *
@@ -86,6 +88,13 @@ class Controller extends Controller_Contract {
 					'query' => $e->getQuery(),
 				]
 			);
+
+			return;
 		}
+
+		// Singleton, so the container returns the same callback to `unregister()`.
+		$this->container->singleton( Writer::class );
+
+		add_action( 'tec_tickets_commerce_order_created', $this->container->callback( Writer::class, 'write_created_order' ), 10, 1 );
 	}
 }

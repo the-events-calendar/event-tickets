@@ -8,6 +8,7 @@ use Tribe__Repository;
 use TEC\Tickets\Commerce\Order;
 use Tribe__Repository__Interface;
 use Tribe__Utils__Array as Arr;
+use WP_Error;
 use WP_Post;
 use WP_Query;
 
@@ -260,7 +261,11 @@ class Order_Repository extends Tribe__Repository {
 	protected function get_create_callback( array $postarr ) {
 		$callback = parent::get_create_callback( $postarr );
 
-		// only modify if the filters didn't change anything.
+		/*
+		 * Only modify if the filters didn't change anything. A filtered callback skips
+		 * create_order_with_meta(), so it fires no `tec_tickets_commerce_order_created` and the order
+		 * lines stay in the order meta.
+		 */
 		if ( 'wp_insert_post' === $callback ) {
 			$callback = [ $this, 'create_order_with_meta' ];
 		}
@@ -275,10 +280,11 @@ class Order_Repository extends Tribe__Repository {
 	 * So we hijack the default create callback for this repository to allow for that behavior to exist.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Fires tec_tickets_commerce_order_created, and skips the order metas when the post was not inserted.
 	 *
 	 * @param array $postarr The post array that will be used for the creation.
 	 *
-	 * @return int The Post ID.
+	 * @return int|WP_Error The post ID, 0 when the post was not inserted, or a WP_Error from a filtered callback.
 	 */
 	protected function create_order_with_meta( array $postarr ) {
 		$callback = parent::get_create_callback( $postarr );
@@ -297,8 +303,8 @@ class Order_Repository extends Tribe__Repository {
 
 		$created = call_user_func( $callback, $postarr );
 
-		// Dont add in case we are dealing with a failed insertion.
-		if ( ! is_wp_error( $created ) ) {
+		// Don't add in case we are dealing with a failed insertion: wp_insert_post() returns 0, not a WP_Error, by default.
+		if ( is_int( $created ) && $created > 0 ) {
 			foreach ( $events as $event_id ) {
 				add_post_meta( $created, Order::$events_in_order_meta_key, $event_id );
 			}
@@ -306,6 +312,17 @@ class Order_Repository extends Tribe__Repository {
 			foreach ( $tickets as $ticket_id ) {
 				add_post_meta( $created, Order::$tickets_in_order_meta_key, $ticket_id );
 			}
+
+			/**
+			 * Fires once a Tickets Commerce order is fully created, including its events and tickets metas.
+			 *
+			 * Listen here rather than on `save_post`, which fires before the order is complete.
+			 *
+			 * @since TBD
+			 *
+			 * @param int $order_id The order ID.
+			 */
+			do_action( 'tec_tickets_commerce_order_created', $created );
 		}
 
 		return $created;
