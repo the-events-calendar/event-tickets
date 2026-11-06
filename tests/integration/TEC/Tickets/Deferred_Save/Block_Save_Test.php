@@ -104,6 +104,29 @@ class Block_Save_Test extends WPTestCase {
 	}
 
 	/**
+	 * The REST hooks stay attached to a type a filter later stops treating as ticketable.
+	 *
+	 * @test
+	 */
+	public function it_should_commit_nothing_for_a_type_that_is_no_longer_ticketable(): void {
+		$this->log_in_as_admin();
+		$post_id = $this->create_deferred_post();
+		add_filter(
+			'tribe_tickets_post_types',
+			static fn( $post_types ) => array_values( array_diff( (array) $post_types, [ 'page' ] ) )
+		);
+
+		$response = $this->save_through_rest(
+			'/wp/v2/pages/' . $post_id,
+			[ 'tec_tickets' => [ 'create' => [ $this->ticket_data( 'Not ticketable any more' ) ] ] ]
+		);
+
+		$this->assertSame( 200, $response->get_status() );
+		$this->assertArrayNotHasKey( 'tec_tickets', $response->get_data() );
+		$this->assertSame( [], $this->ticket_names( $post_id ) );
+	}
+
+	/**
 	 * @test
 	 */
 	public function it_should_report_a_rejected_entry_while_the_rest_saves(): void {
