@@ -80,16 +80,24 @@ final class Result {
 	 * @param string|null           $part    One of the `Payload\Parser` part constants, or `null` for the payload as a whole.
 	 * @param int|string|float|null $key     The ticket ID or `create` position, or `null` for a part-level error.
 	 * @param string                $message What went wrong, ready to show to the user.
+	 * @param bool                  $applied Whether the entry's write happened and something that runs after it failed:
+	 *                                       the editor must neither undo the entry nor send it as if it never happened.
 	 *
 	 * @return self The new result.
 	 */
-	public function with_error( ?string $part, $key, string $message ): self {
-		$errors   = $this->errors;
-		$errors[] = [
+	public function with_error( ?string $part, $key, string $message, bool $applied = false ): self {
+		$error = [
 			'part'    => $part,
 			'key'     => $key,
 			'message' => $message,
 		];
+
+		if ( $applied ) {
+			$error['applied'] = true;
+		}
+
+		$errors   = $this->errors;
+		$errors[] = $error;
 
 		return new self( $this->created, $errors );
 	}
