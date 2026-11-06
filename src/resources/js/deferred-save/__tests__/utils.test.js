@@ -193,4 +193,30 @@ describe( 'buildHiddenFields', () => {
 	it( 'writes nothing for an empty state', () => {
 		expect( buildHiddenFields( createState() ) ).toEqual( [] );
 	} );
+
+	it( 'writes prices typed with the site separators as the plain numbers the server reads', () => {
+		const state = createState();
+		state.stageCreate( [ [ 'ticket_price', '1.234,50' ], [ 'ticket_sale_price', '10,5' ] ] );
+		state.stageUpdate( 7, [ [ 'ticket_price', '12,50' ], [ 'ticket_name', '1,5' ] ] );
+		const value = ( fields, name ) => fields.find( ( [ fieldName ] ) => fieldName === name )[ 1 ];
+
+		const fields = buildHiddenFields( state, { decimal: ',' } );
+
+		expect( value( fields, 'tec_tickets[create][0][ticket_price]' ) ).toBe( '1234.5' );
+		expect( value( fields, 'tec_tickets[create][0][ticket_sale_price]' ) ).toBe( '10.5' );
+		expect( value( fields, 'tec_tickets[update][7][ticket_price]' ) ).toBe( '12.5' );
+		expect( value( fields, 'tec_tickets[update][7][ticket_name]' ) ).toBe( '1,5' );
+	} );
+
+	it( 'leaves a price it cannot read, or one with no known separator, as typed for the server to refuse', () => {
+		const state = createState();
+		state.stageCreate( [ [ 'ticket_price', 'abc' ], [ 'ticket_sale_price', '' ] ] );
+		state.stageUpdate( 7, [ [ 'ticket_price', '12,50' ] ] );
+		const value = ( fields, name ) => fields.find( ( [ fieldName ] ) => fieldName === name )[ 1 ];
+
+		const withDecimal = buildHiddenFields( state, { decimal: ',' } );
+		expect( value( withDecimal, 'tec_tickets[create][0][ticket_price]' ) ).toBe( 'abc' );
+		expect( value( withDecimal, 'tec_tickets[create][0][ticket_sale_price]' ) ).toBe( '' );
+		expect( value( buildHiddenFields( state ), 'tec_tickets[update][7][ticket_price]' ) ).toBe( '12,50' );
+	} );
 } );

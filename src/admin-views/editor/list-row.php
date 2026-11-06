@@ -47,7 +47,8 @@ if (
 <tr class="<?php echo esc_attr( $provider ); ?> is-expanded"
 	data-ticket-order-id="order_<?php echo esc_attr( $ticket->ID ); ?>"
 	data-ticket-type-id="<?php echo esc_attr( $ticket->ID ); ?>"
-	data-ticket-type="<?php echo esc_attr( $ticket->type() ); ?>">
+	data-ticket-type="<?php echo esc_attr( $ticket->type() ); ?>"
+	data-ticket-sold="<?php echo esc_attr( (string) $ticket->qty_sold() ); ?>">
 	<td class="column-primary ticket_name <?php echo esc_attr( $provider ); ?>" data-label="<?php echo esc_attr( sprintf( _x( '%s Type:', 'ticket type label', 'event-tickets' ), tribe_get_ticket_label_singular( 'ticket_type_label' ) ) ); ?>">
 		<input
 			type="hidden"
