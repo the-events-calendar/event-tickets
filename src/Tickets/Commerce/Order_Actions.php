@@ -9,7 +9,7 @@
 
 namespace TEC\Tickets\Commerce;
 
-use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Tickets\Commerce\Order_Items\Writer;
 use WP_Post;
 
 /**
@@ -19,7 +19,7 @@ use WP_Post;
  *
  * @package TEC\Tickets\Commerce
  */
-class Order_Actions extends Controller_Contract {
+final class Order_Actions {
 	/**
 	 * The items an order held before the write in progress, keyed by order ID.
 	 *
@@ -28,19 +28,6 @@ class Order_Actions extends Controller_Contract {
 	 * @var array<int,mixed>
 	 */
 	private array $previous_items = [];
-
-	/**
-	 * Unhooks the controller.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function unregister(): void {
-		remove_filter( 'update_post_metadata', [ $this, 'remember_previous_items' ] );
-		remove_action( 'updated_post_meta', [ $this, 'fire_order_updated' ] );
-		remove_action( 'deleted_post', [ $this, 'fire_order_deleted' ] );
-	}
 
 	/**
 	 * Remembers the items an order held before its items meta is written.
@@ -105,6 +92,32 @@ class Order_Actions extends Controller_Contract {
 	}
 
 	/**
+	 * Unmarks an order stored in the Order Items table when its items change while that feature is off.
+	 *
+	 * Nothing syncs the order's rows then, whether the feature is off or failed to start, so it would load its old lines once the feature is back on.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_id The order ID.
+	 *
+	 * @return void
+	 */
+	public function unmark_order_items_version( $order_id ): void {
+		// Checks the hook, not the controller: it registers before its table does, and a table that fails to register leaves the writer unhooked.
+		if ( has_action( 'tec_tickets_commerce_order_updated', tribe()->callback( Writer::class, 'sync_updated_order' ) ) ) {
+			return;
+		}
+
+		if ( '' === get_post_meta( $order_id, Writer::VERSION_META_KEY, true ) ) {
+			return;
+		}
+
+		// Updated, not deleted: a sync running elsewhere re-marks the order only if its token is still there.
+		update_post_meta( $order_id, Writer::VERSION_META_KEY, '' );
+		clean_post_cache( $order_id );
+	}
+
+	/**
 	 * Fires the order deleted action when an order is permanently deleted.
 	 *
 	 * Trashing an order does not delete it; emptying the trash does. Hooked after the post row is gone, so listeners
@@ -130,18 +143,5 @@ class Order_Actions extends Controller_Contract {
 		 * @param int $order_id The order ID.
 		 */
 		do_action( 'tec_tickets_commerce_order_deleted', absint( $post_id ) );
-	}
-
-	/**
-	 * Hooks the controller.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	protected function do_register(): void {
-		add_filter( 'update_post_metadata', [ $this, 'remember_previous_items' ], 10, 3 );
-		add_action( 'updated_post_meta', [ $this, 'fire_order_updated' ], 10, 4 );
-		add_action( 'deleted_post', [ $this, 'fire_order_deleted' ], 10, 2 );
 	}
 }
