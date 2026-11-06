@@ -46,4 +46,43 @@ class BlockTest extends WPTestCase {
 		$this->assertTrue( wp_style_is( Block::EDITOR_STYLE_SLUG, 'registered' ) );
 		$this->assertStringContainsString( "id='" . Block::EDITOR_STYLE_SLUG . "-css'", $iframe_styles );
 	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_print_the_editor_script_after_the_editor_packages_it_reads(): void {
+		tribe( 'tickets.editor.assets' );
+		Assets::init()->remove( Block::EDITOR_SCRIPT_SLUG );
+		wp_deregister_script( Block::EDITOR_SCRIPT_SLUG );
+		unregister_block_type( 'tribe/tickets' );
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		set_current_screen( 'page' );
+		get_current_screen()->is_block_editor( true );
+
+		tribe( Block::class )->register();
+
+		/*
+		 * Same order as `wp-admin/edit-form-blocks.php`: the editor assets action fires before
+		 * `admin-header.php` fires `admin_enqueue_scripts`.
+		 */
+		do_action( 'enqueue_block_editor_assets' );
+		do_action( 'admin_enqueue_scripts', 'post.php' );
+
+		$scripts = wp_scripts();
+		$scripts->all_deps( $scripts->queue );
+		$print_order = $scripts->to_do;
+
+		$editor_script = array_search( Block::EDITOR_SCRIPT_SLUG, $print_order, true );
+		$this->assertNotFalse( $editor_script );
+
+		/*
+		 * The script reads the `window.tribe.tickets.data` and `window.tribe.common` globals these
+		 * handles define, without declaring them as dependencies.
+		 */
+		foreach ( [ 'tribe-common-gutenberg-modules', 'tribe-common-gutenberg-main', 'tribe-tickets-gutenberg-main' ] as $package ) {
+			$package_position = array_search( $package, $print_order, true );
+			$this->assertNotFalse( $package_position, "{$package} should be printed in the editor." );
+			$this->assertGreaterThan( $package_position, $editor_script, "The editor script should print after {$package}." );
+		}
+	}
 }

@@ -156,13 +156,19 @@ class Block extends Abstract_Block {
 	 * Overrides the parent method to register the editor scripts.
 	 *
 	 * @since 5.8.0
-	 * @since TBD Registered the editor scripts before the block, so the editor canvas gets its editor style.
+	 * @since TBD Registered the editor style before the block, so the editor canvas gets it.
 	 *
 	 * @return void
 	 */
 	public function register() {
-		$this->register_editor_scripts();
+		$this->register_editor_style();
 		parent::register();
+
+		/*
+		 * Registered late on purpose: core enqueues a block's editor script on `enqueue_block_editor_assets`
+		 * at priority 10, and a script registered by then prints before the editor packages it reads.
+		 */
+		add_action( 'admin_enqueue_scripts', [ $this, 'register_editor_scripts' ] );
 	}
 
 	/**
@@ -407,6 +413,17 @@ class Block extends Abstract_Block {
 			->in_header()
 			->register();
 
+		$this->register_editor_style();
+	}
+
+	/**
+	 * Registers the editor style.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	private function register_editor_style(): void {
 		Asset::add(
 			self::EDITOR_STYLE_SLUG,
 			'Tickets/style-editor.css',
