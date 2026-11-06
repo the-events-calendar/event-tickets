@@ -43,7 +43,7 @@ class Controller extends Controller_Contract {
 			return false;
 		}
 
-		if ( getenv( self::DISABLED ) ) {
+		if ( tribe_is_truthy( getenv( self::DISABLED ) ) ) {
 			return false;
 		}
 

@@ -21,9 +21,9 @@ use TEC\Tickets\Commerce\Ticket;
  *
  * @package TEC\Tickets\Commerce\Order_Items\Line_Items
  */
-class Ticket_Line_Item extends Abstract_Line_Item_Type {
+final class Ticket_Line_Item extends Abstract_Line_Item_Type {
 	/**
-	 * Item keys stored in a column of the same name, and how their value is stored.
+	 * Item keys stored in a column, and how their value is stored.
 	 *
 	 * @since TBD
 	 *
