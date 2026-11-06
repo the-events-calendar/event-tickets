@@ -686,6 +686,41 @@ export const setTicketAvailable = ( clientId, available ) => ( {
 	},
 } );
 
+export const setTicketIsStaged = ( clientId, isStaged ) => ( {
+	type: types.SET_TICKET_IS_STAGED,
+	payload: {
+		clientId,
+		isStaged,
+	},
+} );
+
+export const setTicketSaveError = ( clientId, saveError ) => ( {
+	type: types.SET_TICKET_SAVE_ERROR,
+	payload: {
+		clientId,
+		saveError,
+	},
+} );
+
+export const stageTicketDelete = ( ticketId ) => ( {
+	type: types.STAGE_TICKET_DELETE,
+	payload: {
+		ticketId,
+	},
+} );
+
+export const stageTicketMove = ( ticketId, destinationId ) => ( {
+	type: types.STAGE_TICKET_MOVE,
+	payload: {
+		ticketId,
+		destinationId,
+	},
+} );
+
+export const clearStagedTickets = () => ( {
+	type: types.CLEAR_STAGED_TICKETS,
+} );
+
 export const setTicketId = ( clientId, ticketId ) => ( {
 	type: types.SET_TICKET_ID,
 	payload: {
