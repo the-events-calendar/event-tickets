@@ -375,7 +375,7 @@ describe( 'stageMove', () => {
 	} );
 } );
 
-describe( 'the review of the stacked PRs, second round', () => {
+describe( 'staging and settling a post save', () => {
 	const save = ( state, response, moveDuringSave = null ) => {
 		prepare( state );
 		if ( moveDuringSave ) {
@@ -506,7 +506,7 @@ describe( 'the review of the stacked PRs, second round', () => {
 	} );
 } );
 
-describe( 'the review of the stacked PRs, third round', () => {
+describe( 'a post save that edits made meanwhile overlap', () => {
 	// The store as the editor runs it: every action goes through the reducer, the bulk details actions through their sagas.
 	let block;
 	const dispatch = ( action ) => {
@@ -623,7 +623,7 @@ describe( 'the review of the stacked PRs, third round', () => {
 	} );
 } );
 
-describe( 'the cross-review of the stack', () => {
+describe( 'follow-up saves, Undo and previews', () => {
 	const save = ( state, response ) => {
 		prepare( state );
 		mockEditor.record = { id: 10, tec_tickets: response };
