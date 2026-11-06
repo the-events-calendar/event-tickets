@@ -780,12 +780,6 @@ class Writer_Test extends Controller_Test_Case {
 		$this->assert_logged( 'warning', 'could not be deleted' );
 	}
 
-	/**
-	 * Creates a pending stored order of a VIP and a GA ticket, and the items of the same order with the VIP quantity changed,
-	 * the GA line gone and a new ticket line added.
-	 *
-	 * @return array{0: int, 1: array<string,array<string,mixed>>, 2: array} The order ID, its rows and the new items.
-	 */
 	public function test_a_square_pos_order_stores_a_row_for_every_line(): void {
 		$this->register_controller( true );
 		[ , $ticket_ids ] = $this->make_tickets();
@@ -870,6 +864,12 @@ class Writer_Test extends Controller_Test_Case {
 		];
 	}
 
+	/**
+	 * Creates a pending stored order of a VIP and a GA ticket, and the items of the same order with the VIP quantity changed,
+	 * the GA line gone and a new ticket line added.
+	 *
+	 * @return array{0: int, 1: array<string,array<string,mixed>>, 2: array} The order ID, its rows and the new items.
+	 */
 	private function make_order_and_new_items(): array {
 		[ $event_id, [ $vip, $ga ] ] = $this->make_tickets();
 		$new_ticket                  = $this->create_tc_ticket( $event_id, 30 );
