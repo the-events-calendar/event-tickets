@@ -153,7 +153,7 @@ class Block extends Abstract_Block {
 	}
 
 	/**
-	 * Overrides the parent method to register the editor scripts.
+	 * Overrides the parent method to register the editor style and scripts.
 	 *
 	 * @since 5.8.0
 	 * @since TBD Registered the editor style before the block, so the editor canvas gets it.
