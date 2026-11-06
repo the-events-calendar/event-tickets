@@ -4,6 +4,12 @@
 import { createSelector } from 'reselect';
 import { find } from 'lodash';
 
+/**
+ * WordPress dependencies
+ */
+import { decodeEntities } from '@wordpress/html-entities';
+import { __ } from '@wordpress/i18n';
+
 export const getMove = ( state ) => state.tickets.move;
 export const _getUI = createSelector( getMove, ( move ) => move.ui );
 export const _getPostTypes = createSelector( getMove, ( move ) => move.postTypes );
@@ -24,9 +30,9 @@ export const getPostTypeOptions = createSelector( getPostTypes, ( types ) =>
 	} ) )
 );
 export const getPostOptions = createSelector( getPosts, ( posts ) =>
-	Object.keys( posts ).map( ( post ) => ( {
-		value: post,
-		label: posts[ post ],
+	Object.keys( posts ).map( ( title ) => ( {
+		value: String( posts[ title ] ),
+		label: decodeEntities( title ) || __( '(no title)', 'event-tickets' ),
 	} ) )
 );
 
@@ -36,6 +42,7 @@ export const getModalTarget = createSelector( _getModal, ( modal ) => modal.targ
 export const getModalTicketId = createSelector( _getModal, ( modal ) => modal.ticketId );
 export const getModalClientId = createSelector( _getModal, ( modal ) => modal.clientId );
 export const isModalSubmitting = createSelector( _getModal, ( modal ) => modal.isSubmitting );
+export const getModalErrorMessage = createSelector( _getModal, ( modal ) => modal.errorMessage );
 
 export const getPostTypeOptionValue = createSelector(
 	[ getPostTypeOptions, getModalPostType ],
