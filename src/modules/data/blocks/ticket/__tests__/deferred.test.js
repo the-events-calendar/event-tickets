@@ -17,7 +17,7 @@ describe( 'restBodyToTicketData', () => {
 		const data = restBodyToTicketData( [
 			[ 'post_id', '48' ],
 			[ 'add_ticket_nonce', 'abc' ],
-			[ 'provider', 'tribe_tickets_rsvp' ],
+			[ 'provider', 'TEC\\Tickets\\Commerce\\Module' ],
 			[ 'name', 'General' ],
 			[ 'description', 'Desc' ],
 			[ 'price', '10' ],
@@ -40,7 +40,7 @@ describe( 'restBodyToTicketData', () => {
 		] );
 
 		expect( data ).toEqual( {
-			ticket_provider: 'tribe_tickets_rsvp',
+			ticket_provider: 'TEC\\Tickets\\Commerce\\Module',
 			ticket_name: 'General',
 			ticket_description: 'Desc',
 			ticket_price: '10',
@@ -52,13 +52,59 @@ describe( 'restBodyToTicketData', () => {
 			ticket_sku: 'GEN',
 			ticket_iac: 'none',
 			ticket_menu_order: '2',
-			'tribe-ticket': { mode: 'own', capacity: '40', seating: { enabled: '1' } },
+			'tribe-ticket': {
+				mode: 'own',
+				capacity: '40',
+				sale_price: { checked: '1', price: '8', start_date: '2026-09-01', end_date: '2026-09-30' },
+				seating: { enabled: '1' },
+			},
 			ticket_add_sale_price: '1',
 			ticket_sale_price: '8',
 			ticket_sale_start_date: '2026-09-01',
 			ticket_sale_end_date: '2026-09-30',
 			something_else: 'kept',
 		} );
+	} );
+
+	const saleBody = ( provider, checked ) => [
+		[ 'provider', provider ],
+		[ 'ticket[sale_price][checked]', checked ],
+		[ 'ticket[sale_price][price]', '8' ],
+		[ 'ticket[sale_price][start_date]', '2026-09-01' ],
+		[ 'ticket[sale_price][end_date]', '2026-09-30' ],
+	];
+
+	it( 'sends only the sale switch for a Tickets Commerce ticket whose sale price is off', () => {
+		const data = restBodyToTicketData( saleBody( 'TEC\\Tickets\\Commerce\\Module', 'false' ) );
+
+		expect( data.ticket_add_sale_price ).toBe( 'false' );
+		expect( data ).not.toHaveProperty( 'ticket_sale_price' );
+		expect( data ).not.toHaveProperty( 'ticket_sale_start_date' );
+		expect( data ).not.toHaveProperty( 'ticket_sale_end_date' );
+	} );
+
+	it( 'maps the sale price to the top-level keys for a PayPal ticket, as the tickets REST endpoint does', () => {
+		const data = restBodyToTicketData( saleBody( 'Tribe__Tickets__Commerce__PayPal__Main', 'true' ) );
+
+		expect( data.ticket_sale_price ).toBe( '8' );
+		expect( data.ticket_sale_start_date ).toBe( '2026-09-01' );
+		expect( data.ticket_sale_end_date ).toBe( '2026-09-30' );
+	} );
+
+	it( 'leaves the sale price of a WooCommerce ticket nested, where the REST endpoint leaves it', () => {
+		// WooCommerce writes a top-level sale price onto the product whatever the sale switch says.
+		const data = restBodyToTicketData( saleBody( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main', 'false' ) );
+
+		expect( data[ 'tribe-ticket' ].sale_price ).toEqual( {
+			checked: 'false',
+			price: '8',
+			start_date: '2026-09-01',
+			end_date: '2026-09-30',
+		} );
+		expect( data ).not.toHaveProperty( 'ticket_add_sale_price' );
+		expect( data ).not.toHaveProperty( 'ticket_sale_price' );
+		expect( data ).not.toHaveProperty( 'ticket_sale_start_date' );
+		expect( data ).not.toHaveProperty( 'ticket_sale_end_date' );
 	} );
 
 	it( 'never writes through the prototype chain and never reads inherited mappings', () => {
