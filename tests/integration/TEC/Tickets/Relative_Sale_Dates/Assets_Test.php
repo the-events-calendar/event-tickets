@@ -350,6 +350,36 @@ class Assets_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
+	public function should_put_the_block_editor_style_in_the_editor_canvas_on_the_event_edit_screen(): void {
+		$this->make_controller()->register();
+		set_current_screen( 'tribe_events' );
+		get_current_screen()->is_block_editor( true );
+
+		// The same order as `wp-admin/edit-form-blocks.php`: the editor page assets, then the canvas assets.
+		do_action( 'enqueue_block_editor_assets' );
+		$iframe_styles = _wp_get_iframed_editor_assets()['styles'];
+
+		$this->assertStringContainsString( "id='" . Assets::BLOCK_EDITOR_STYLE . "-css'", $iframe_styles );
+		$this->assertTrue( wp_style_is( Assets::BLOCK_EDITOR_STYLE, 'enqueued' ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_not_put_the_block_editor_style_in_the_editor_canvas_on_the_page_edit_screen(): void {
+		$this->make_controller()->register();
+		set_current_screen( 'page' );
+		get_current_screen()->is_block_editor( true );
+
+		do_action( 'enqueue_block_editor_assets' );
+		$iframe_styles = _wp_get_iframed_editor_assets()['styles'];
+
+		$this->assertStringNotContainsString( "id='" . Assets::BLOCK_EDITOR_STYLE . "-css'", $iframe_styles );
+	}
+
+	/**
+	 * @test
+	 */
 	public function should_not_enqueue_the_block_editor_script_in_the_classic_editor(): void {
 		$this->make_controller()->register();
 		set_current_screen( 'tribe_events' );
