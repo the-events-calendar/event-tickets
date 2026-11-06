@@ -125,4 +125,14 @@ describe( 'the deferred Ticket block dashboard', () => {
 		expect( refused ).toContain( 'tribe-editor__ticket--save-error' );
 		expect( saved ).not.toContain( 'tribe-editor__ticket__deferred-status' );
 	} );
+
+	it( 'keeps the status region in place before there is anything to say, so screen readers announce what fills it', () => {
+		const statusRegions = ( props ) =>
+			renderer
+				.create( <Ticket clientId="a" isSelected={ false } showTicket onBlockUpdate={ () => {} } { ...props } /> )
+				.root.findAll( ( node ) => 'div' === node.type && 'status' === node.props.role );
+
+		expect( statusRegions( { isStaged: false, saveError: '' } ) ).toHaveLength( 1 );
+		expect( statusRegions( { isStaged: true, saveError: 'Not allowed' } ) ).toHaveLength( 1 );
+	} );
 } );

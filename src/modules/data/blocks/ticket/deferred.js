@@ -297,7 +297,7 @@ export const buildPayload = ( { clientIds, byClientId, bodies, stagedDeletes, st
  *                               the `bodies` it was built from, `deletes` and `moves`.
  * @param {Object} args.live     The ticket blocks now: `clientIds`, the current `bodies` and the `ticketIds` they hold.
  *
- * @return {{blocks: Array<Object>, deleted: Array<number>, settle: {deletes: Array<number>, moves: Array<number>}, notices: Array<string>, restore: Array<number>}} What to do.
+ * @return {{blocks: Array<Object>, deleted: Array<number>, settle: {deletes: Array<number>, moves: Array<number>}, notices: Array<string>, restore: Array<number>, orphaned: Array<{clientId: string, ticketId: number}>}} What to do.
  */
 export const reconcileSaveResponse = ( { response, sent, live } ) => {
 	const created = response.created || {};
@@ -318,6 +318,7 @@ export const reconcileSaveResponse = ( { response, sent, live } ) => {
 	const isLive = ( clientId ) => live.clientIds.includes( clientId );
 	const changedSince = ( clientId ) => live.bodies[ clientId ] !== sent.bodies[ clientId ];
 	const blocks = [];
+	const orphaned = [];
 
 	if ( payloadError ) {
 		const message = String( payloadError.message ?? '' );
@@ -326,16 +327,19 @@ export const reconcileSaveResponse = ( { response, sent, live } ) => {
 			blocks.push( { clientId, staged: true, error: message, hook: null } );
 		} );
 
-		return { blocks, deleted: [], settle: { deletes: [], moves: [] }, notices: [ message ], restore: [] };
+		return { blocks, deleted: [], settle: { deletes: [], moves: [] }, notices: [ message ], restore: [], orphaned };
 	}
 
 	sent.createOrder.forEach( ( clientId, position ) => {
+		const ticketId = parseInt( created[ position ], 10 );
+
 		if ( ! isLive( clientId ) ) {
-			// The block is gone; a ticket created for it appears on the next load.
+			// The block was removed while the save was out: the ticket it created is deleted with the next one.
+			if ( ticketId ) {
+				orphaned.push( { clientId, ticketId } );
+			}
 			return;
 		}
-
-		const ticketId = parseInt( created[ position ], 10 );
 
 		if ( ticketId ) {
 			const error = errorFor( 'create', position );
@@ -406,5 +410,6 @@ export const reconcileSaveResponse = ( { response, sent, live } ) => {
 			...sentDeletes.filter( ( id ) => isRefused( 'delete', id ) ),
 			...sentMoves.filter( ( id ) => isRefused( 'move', id ) ),
 		].filter( ( id ) => canRestore( id ) ),
+		orphaned,
 	};
 };

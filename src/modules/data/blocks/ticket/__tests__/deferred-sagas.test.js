@@ -305,6 +305,20 @@ describe( 'applying the answer of a save', () => {
 		expect( mockEditor.createErrorNotice ).toHaveBeenCalledWith( 'Too many', expect.anything() );
 	} );
 
+	it( 'stages the delete of a ticket the save created for a block removed while the save was out', () => {
+		mockEditor.order = [ 'a' ];
+		sagas.rememberBody( 'a', [ [ 'name', 'A' ] ] );
+		prepare( stateWith( { a: { isStaged: true } } ) );
+		mockEditor.order = [];
+		mockEditor.record = { id: 10, tec_tickets: { created: { 0: 101 }, errors: [] } };
+
+		const dispatched = run( stateWith( {} ), sagas.applyLastSaveResponse );
+
+		expect( dispatched ).toContainEqual( actions.stageTicketDelete( 101 ) );
+		expect( dispatched ).not.toContainEqual( actions.setTicketId( 'a', 101 ) );
+		expect( doAction ).not.toHaveBeenCalledWith( 'tec.tickets.blocks.ticketCreated', 'a', 101, expect.anything() );
+	} );
+
 	it( 'shows a refused delete as a notice, its block being gone', () => {
 		const state = stateWith( {}, { deletes: [ 40 ] } );
 
@@ -375,7 +389,7 @@ describe( 'stageMove', () => {
 	} );
 } );
 
-describe( 'the review of the stacked PRs, second round', () => {
+describe( 'staging and settling a post save', () => {
 	const save = ( state, response, moveDuringSave = null ) => {
 		prepare( state );
 		if ( moveDuringSave ) {
@@ -506,7 +520,7 @@ describe( 'the review of the stacked PRs, second round', () => {
 	} );
 } );
 
-describe( 'the review of the stacked PRs, third round', () => {
+describe( 'a post save that edits made meanwhile overlap', () => {
 	// The store as the editor runs it: every action goes through the reducer, the bulk details actions through their sagas.
 	let block;
 	const dispatch = ( action ) => {
@@ -623,7 +637,7 @@ describe( 'the review of the stacked PRs, third round', () => {
 	} );
 } );
 
-describe( 'the cross-review of the stack', () => {
+describe( 'follow-up saves, Undo and previews', () => {
 	const save = ( state, response ) => {
 		prepare( state );
 		mockEditor.record = { id: 10, tec_tickets: response };

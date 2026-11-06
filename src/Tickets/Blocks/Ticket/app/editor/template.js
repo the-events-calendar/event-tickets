@@ -100,18 +100,21 @@ class Ticket extends PureComponent {
 							{ 'tribe-editor__ticket--save-error': !! saveError }
 						) }
 					>
-						{ ( isStaged || saveError ) && (
-							<div className="tribe-editor__ticket__deferred-status" role="status">
-								{ isStaged && (
-									<span className="tribe-editor__ticket__deferred-badge">
-										{ __( 'Not saved yet', 'event-tickets' ) }
-									</span>
-								) }
-								{ saveError && (
-									<span className="tribe-editor__ticket__deferred-error">{ saveError }</span>
-								) }
-							</div>
-						) }
+						{ /* Rendered while empty: a live region that mounts with its text is often not announced. */ }
+						<div role="status">
+							{ ( isStaged || saveError ) && (
+								<div className="tribe-editor__ticket__deferred-status">
+									{ isStaged && (
+										<span className="tribe-editor__ticket__deferred-badge">
+											{ __( 'Not saved yet', 'event-tickets' ) }
+										</span>
+									) }
+									{ saveError && (
+										<span className="tribe-editor__ticket__deferred-error">{ saveError }</span>
+									) }
+								</div>
+							) }
+						</div>
 						<TicketContainer clientId={ clientId } isSelected={ filteredIsSelected } />
 						<TicketDashboard clientId={ clientId } isSelected={ filteredIsSelected } />
 						{ isLoading && <Spinner /> }

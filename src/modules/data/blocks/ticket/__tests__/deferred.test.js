@@ -505,4 +505,15 @@ describe( 'reconcileSaveResponse', () => {
 			{ clientId: 'a', staged: true, error: 'The ticket changes were not saved with the post.', hook: null },
 		] );
 	} );
+
+	it( 'hands back a ticket created for a block removed since the request left, so it can be deleted', () => {
+		const outcome = reconcileSaveResponse( {
+			response: { created: { 0: 101, 1: 102 }, errors: [] },
+			sent,
+			live: { clientIds: [ 'b', 'u' ], bodies: { b: bodyB, u: bodyU } },
+		} );
+
+		expect( outcome.orphaned ).toEqual( [ { clientId: 'a', ticketId: 101 } ] );
+		expect( outcome.blocks.map( ( { clientId } ) => clientId ) ).toEqual( [ 'b', 'u' ] );
+	} );
 } );
