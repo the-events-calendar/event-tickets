@@ -1,5 +1,6 @@
 significance: patch
 type: fix
-entry: Closed the block editor's Attendee Information modal after its fields are
-  saved, which kept showing a loading spinner in current browsers.
+entry: Closed the block editor's Attendee Information modal for tickets and RSVPs
+  after its fields are saved, which stayed open in Chrome, including on WordPress
+  7.1.
 timestamp: 2026-10-29T18:44:48.418Z
