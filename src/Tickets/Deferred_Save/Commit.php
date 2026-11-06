@@ -17,6 +17,8 @@ use TEC\Tickets\Commerce\Module;
 use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
 use Tribe__Tickets__Main as Tickets_Main;
 use Tribe__Tickets__Tickets as Tickets;
+use Throwable;
+use WP_Post;
 
 /**
  * Class Commit.
@@ -145,7 +147,6 @@ final class Commit {
 		try {
 			$parsed = $this->parser->parse( $raw );
 		} catch ( Malformed_Exception $e ) {
-			// Input that cannot be a payload is answered like any other whole-payload refusal.
 			return new Result( [], ( new Rejections() )->with( null, null, $e->getMessage() )->all() );
 		}
 
@@ -333,7 +334,7 @@ final class Commit {
 	private function guarded( Result $result, string $part, int $key, callable $step ): Result {
 		try {
 			return $step( $result );
-		} catch ( \Throwable $e ) {
+		} catch ( Throwable $e ) {
 			// `ticket_add()` turns the manual-update flag on around the save; the exception skipped turning it off.
 			tribe( 'tickets.handler' )->toggle_manual_update_flag( false );
 			$this->log_failure(
@@ -444,7 +445,7 @@ final class Commit {
 	 *
 	 * @return Result The result with this entry folded in.
 	 *
-	 * @throws \Throwable When the provider throws before the ticket is on the post; `guarded()` reports it.
+	 * @throws Throwable When the provider throws before the ticket is on the post; `guarded()` reports it.
 	 */
 	private function create( Result $result, int $post_id, int $position, array $data, array &$attached ): Result {
 		// The checks left an int here only for a ticket on this post the user may edit; a copy is made by its provider.
@@ -488,8 +489,7 @@ final class Commit {
 
 		try {
 			$ticket_id = $source_id ? $provider->duplicate_ticket( $post_id, $source_id ) : $provider->ticket_add( $post_id, $data );
-		} catch ( \Throwable $e ) {
-			// Whichever listener threw, and wherever the provider relates the ticket to the post, the ticket is there or not.
+		} catch ( Throwable $e ) {
 			$added = array_values( array_diff( $this->attached_ids( $provider, $post_id ), $before ) );
 
 			if ( 1 !== count( $added ) ) {
@@ -541,7 +541,7 @@ final class Commit {
 	 *
 	 * @return Result The result with this entry folded in.
 	 *
-	 * @throws \Throwable When the move throws before the ticket is on the destination; `guarded()` reports it.
+	 * @throws Throwable When the move throws before the ticket is on the destination; `guarded()` reports it.
 	 */
 	private function move( Result $result, int $ticket_id, int $destination_id ): Result {
 		if ( ! $this->can_hold_tickets( $destination_id ) ) {
@@ -558,7 +558,7 @@ final class Commit {
 
 		try {
 			$moved = Tickets_Main::instance()->move_ticket_types()->move_ticket_type( $ticket_id, $destination_id );
-		} catch ( \Throwable $e ) {
+		} catch ( Throwable $e ) {
 			// A listener on the moved action threw after the ticket was reassigned: the move happened, not all of it.
 			if ( ! $this->is_on_post( $ticket_id, $destination_id ) ) {
 				throw $e;
@@ -566,7 +566,6 @@ final class Commit {
 
 			$this->log_failure( 'Deferred ticket save: a ticket was moved, then a listener failed.', $e, [ 'ticket_id' => $ticket_id ] );
 
-			// The attendees are moved by a listener of that action, so they may still be here; the admin can move them from the attendee list.
 			return $result->with_error(
 				Parser::MOVE,
 				$ticket_id,
@@ -605,7 +604,7 @@ final class Commit {
 	private function can_hold_tickets( int $post_id ): bool {
 		$post = get_post( $post_id );
 
-		return $post instanceof \WP_Post
+		return $post instanceof WP_Post
 			&& in_array( $post->post_type, (array) Tickets_Main::instance()->post_types(), true )
 			&& ! in_array( $post->post_status, [ 'trash', 'inherit', 'auto-draft' ], true );
 	}
@@ -621,7 +620,7 @@ final class Commit {
 	 *
 	 * @return Result The result with this entry folded in.
 	 *
-	 * @throws \Throwable When the provider throws before the ticket is deleted; `guarded()` reports it.
+	 * @throws Throwable When the provider throws before the ticket is deleted; `guarded()` reports it.
 	 */
 	private function delete( Result $result, int $post_id, int $ticket_id ): Result {
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
@@ -634,9 +633,9 @@ final class Commit {
 
 		try {
 			$deleted = $provider->delete_ticket( $post_id, $ticket_id );
-		} catch ( \Throwable $e ) {
+		} catch ( Throwable $e ) {
 			// A listener threw after the ticket was deleted: the delete happened, not all of it.
-			if ( get_post( $ticket_id ) instanceof \WP_Post && 'trash' !== get_post_status( $ticket_id ) ) {
+			if ( get_post( $ticket_id ) instanceof WP_Post && 'trash' !== get_post_status( $ticket_id ) ) {
 				throw $e;
 			}
 
@@ -660,8 +659,7 @@ final class Commit {
 		try {
 			/** This action is documented in src/Tribe/Metabox.php */
 			do_action( 'tribe_tickets_ticket_deleted', $post_id );
-		} catch ( \Throwable $e ) {
-			// The ticket is deleted: reporting it as not deleted would be untrue.
+		} catch ( Throwable $e ) {
 			$this->log_failure( 'Deferred ticket save: a listener failed after a ticket was deleted.', $e, [ 'ticket_id' => $ticket_id ] );
 			$finished = false;
 		}
@@ -686,8 +684,7 @@ final class Commit {
 		try {
 			/** This action is documented in src/Tribe/Metabox.php */
 			do_action( 'tribe_tickets_ticket_added', $post_id, $ticket_id, $data );
-		} catch ( \Throwable $e ) {
-			// The ticket is saved: reporting it as not saved would make the editor create it again.
+		} catch ( Throwable $e ) {
 			$this->log_failure( 'Deferred ticket save: a listener failed after a ticket was saved.', $e, [ 'ticket_id' => $ticket_id ] );
 
 			return false;
@@ -809,25 +806,30 @@ final class Commit {
 	 * @since TBD
 	 *
 	 * @param string              $what    What happened.
-	 * @param \Throwable          $e       The exception.
+	 * @param Throwable           $e       The exception.
 	 * @param array<string,mixed> $context What it happened to.
 	 *
 	 * @return void
 	 */
-	private function log_failure( string $what, \Throwable $e, array $context ): void {
-		do_action(
-			'tribe_log',
-			'error',
-			$what,
-			array_merge(
-				[ 'source' => __CLASS__ ],
-				$context,
-				[
-					'exception' => get_class( $e ),
-					'message'   => $e->getMessage(),
-				]
-			)
-		);
+	private function log_failure( string $what, Throwable $e, array $context ): void {
+		// A `tribe_log` listener can throw on errors, as Square's does inside Action Scheduler; logging must not change the outcome.
+		try {
+			do_action(
+				'tribe_log',
+				'error',
+				$what,
+				array_merge(
+					[ 'source' => __CLASS__ ],
+					$context,
+					[
+						'exception' => get_class( $e ),
+						'message'   => $e->getMessage(),
+					]
+				)
+			);
+		} catch ( Throwable $logging_failure ) {
+			unset( $logging_failure );
+		}
 	}
 
 	/**
