@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Deferred_Save;
 
+use Tribe__Tickets__Main as Tickets_Main;
 use WP_Post;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -87,6 +88,11 @@ final class Block_Save {
 		unset( $creating );
 
 		if ( ! $post instanceof WP_Post || ! $request instanceof WP_REST_Request ) {
+			return null;
+		}
+
+		// The hooks stay attached to a type that a filter stops treating as ticketable after they were added.
+		if ( ! in_array( $post->post_type, Tickets_Main::instance()->post_types(), true ) ) {
 			return null;
 		}
 
