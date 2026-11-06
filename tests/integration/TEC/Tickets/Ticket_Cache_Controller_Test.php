@@ -11,6 +11,11 @@ class Ticket_Cache_Controller_Test extends WPTestCase {
 	use Ticket_Maker;
 	use With_Tickets_Commerce;
 
+	public function tearDown(): void {
+		unset( $GLOBALS['post'] );
+		parent::tearDown();
+	}
+
 	public function save_post_arguments(): array {
 		return [
 			'the post ID and the post' => [ static fn( int $post_id ) => [ $post_id, get_post( $post_id ) ] ],
@@ -35,6 +40,33 @@ class Ticket_Cache_Controller_Test extends WPTestCase {
 		tribe( Ticket_Cache_Controller::class )->clean_ticket_cache_from_related_post( ...$arguments( $attendee_id ) );
 
 		$this->assertFalse( wp_cache_get( $ticket_id, 'tec_tickets' ) );
+	}
+
+	public function invalid_post_ids(): array {
+		return [
+			'a non-numeric ID' => [ 'not-a-post-id' ],
+			'zero'             => [ 0 ],
+			'a negative ID'    => [ -1 ],
+		];
+	}
+
+	/**
+	 * `get_post()` answers an empty ID with the global post, which must not be acted on in its place.
+	 *
+	 * @test
+	 * @dataProvider invalid_post_ids
+	 */
+	public function it_should_not_clean_the_ticket_cache_of_the_global_post_for_an_invalid_post_id( $post_id ): void {
+		$event_id    = static::factory()->post->create();
+		$ticket_id   = $this->create_tc_ticket( $event_id, 10 );
+		$attendee_id = static::factory()->post->create( [ 'post_type' => Commerce_Attendee::POSTTYPE ] );
+		add_post_meta( $attendee_id, Commerce_Attendee::$ticket_relation_meta_key, $ticket_id );
+		$GLOBALS['post'] = get_post( $attendee_id );
+		wp_cache_set( $ticket_id, 'cached', 'tec_tickets' );
+
+		tribe( Ticket_Cache_Controller::class )->clean_ticket_cache_from_related_post( $post_id, 'not-a-post' );
+
+		$this->assertSame( 'cached', wp_cache_get( $ticket_id, 'tec_tickets' ) );
 	}
 
 	/**

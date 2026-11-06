@@ -372,7 +372,11 @@ STR;
 	 * @return void
 	 */
 	public function update_order_status( $post_id, $post = null ) {
-		$post = $post instanceof WP_Post ? $post : get_post( absint( $post_id ) );
+		if ( ! $post instanceof WP_Post ) {
+			// get_post() answers an empty ID with the global post, which is not the post being saved.
+			$post_id = filter_var( $post_id, FILTER_VALIDATE_INT, [ 'options' => [ 'min_range' => 1 ] ] );
+			$post    = $post_id ? get_post( $post_id ) : null;
+		}
 
 		if ( ! $post instanceof WP_Post || Order::POSTTYPE !== $post->post_type ) {
 			return;

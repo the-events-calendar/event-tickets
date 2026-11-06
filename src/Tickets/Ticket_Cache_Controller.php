@@ -157,7 +157,11 @@ class Ticket_Cache_Controller extends Controller {
 	 * @return void The ticket cache is cleaned if the post is related to a ticket.
 	 */
 	public function clean_ticket_cache_from_related_post( $post_id, $post = null ): void {
-		$post = $post instanceof WP_Post ? $post : get_post( absint( $post_id ) );
+		if ( ! $post instanceof WP_Post ) {
+			// get_post() answers an empty ID with the global post, which is not the post being saved.
+			$post_id = filter_var( $post_id, FILTER_VALIDATE_INT, [ 'options' => [ 'min_range' => 1 ] ] );
+			$post    = $post_id ? get_post( $post_id ) : null;
+		}
 
 		if ( ! $post instanceof WP_Post ) {
 			return;
