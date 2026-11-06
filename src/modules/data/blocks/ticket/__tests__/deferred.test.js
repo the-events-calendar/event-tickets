@@ -107,6 +107,37 @@ describe( 'restBodyToTicketData', () => {
 		expect( data ).not.toHaveProperty( 'ticket_sale_end_date' );
 	} );
 
+	const ruleBody = ( provider ) => [
+		[ 'provider', provider ],
+		[ 'ticket[relative_sale_dates]', '{"start":{"mode":"relative"}}' ],
+		[ 'ticket[sale_price][checked]', '1' ],
+		[ 'ticket[sale_price][relative]', '{"end":{"mode":"relative"}}' ],
+	];
+
+	it( 'maps the relative sale date rules to the keys the ticket save reads, as the tickets REST endpoint does', () => {
+		const data = restBodyToTicketData( ruleBody( 'TEC\\Tickets\\Commerce\\Module' ) );
+
+		expect( data.relative_sale_dates ).toBe( '{"start":{"mode":"relative"}}' );
+		expect( data.ticket_sale_price_relative ).toBe( '{"end":{"mode":"relative"}}' );
+	} );
+
+	it( 'maps a rule sent empty, as the editor sends one it removes', () => {
+		const data = restBodyToTicketData( [
+			[ 'provider', 'TEC\\Tickets\\Commerce\\Module' ],
+			[ 'ticket[relative_sale_dates]', '' ],
+		] );
+
+		expect( data ).toHaveProperty( 'relative_sale_dates', '' );
+		expect( data ).not.toHaveProperty( 'ticket_sale_price_relative' );
+	} );
+
+	it( 'maps only the sales window rule for a ticket another provider sells, as only Tickets Commerce saves a sale price', () => {
+		const data = restBodyToTicketData( ruleBody( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' ) );
+
+		expect( data.relative_sale_dates ).toBe( '{"start":{"mode":"relative"}}' );
+		expect( data ).not.toHaveProperty( 'ticket_sale_price_relative' );
+	} );
+
 	it( 'never writes through the prototype chain and never reads inherited mappings', () => {
 		const data = restBodyToTicketData( [
 			[ 'ticket[__proto__][polluted]', 'yes' ],
