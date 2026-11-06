@@ -95,6 +95,25 @@ class Classic_Save_Test extends WPTestCase {
 	}
 
 	/**
+	 * `get_post()` answers an empty ID with the global post, which must not get the payload in its place.
+	 *
+	 * @test
+	 */
+	public function it_should_not_commit_to_the_global_post_for_an_invalid_post_id(): void {
+		$this->log_in_as_admin();
+		$post_id         = $this->create_deferred_post();
+		$GLOBALS['post'] = get_post( $post_id );
+		$this->post_payload( [ 'create' => [ $this->ticket_data( 'From the form' ) ] ] );
+
+		foreach ( [ 'not-a-post-id', 0, -1 ] as $invalid_id ) {
+			$this->assertNull( tribe( Classic_Save::class )->on_save_post( $invalid_id, 'not-a-post' ) );
+		}
+
+		unset( $GLOBALS['post'] );
+		$this->assertSame( [], $this->ticket_names( $post_id ) );
+	}
+
+	/**
 	 * @test
 	 */
 	public function it_should_do_nothing_when_save_post_passes_something_that_is_not_a_post(): void {
