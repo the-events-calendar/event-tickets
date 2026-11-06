@@ -10,7 +10,7 @@
  * @since TBD
  */
 
-import { addFilter, addAction } from '@wordpress/hooks';
+import { addFilter, addAction, doAction } from '@wordpress/hooks';
 import { createState, buildHiddenFields } from './deferred-save/utils';
 
 const CONTAINER = '#tec-tickets-deferred-save';
@@ -379,7 +379,15 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 
 		// The form carries the change now, whether or not the refresh below succeeds.
 		render();
-		$tickets().trigger( 'tec-deferred-save-staged.tribe', [ state.toPayload() ] );
+
+		/**
+		 * Fires after a ticket change is staged to be saved with the post.
+		 *
+		 * @since TBD
+		 *
+		 * @param {Object} payload The staged changes, as they will be sent with the post save.
+		 */
+		doAction( 'tec.tickets.admin.deferredSave.staged', state.toPayload() );
 		editor().fetchPanels( null, 'list' );
 	};
 
