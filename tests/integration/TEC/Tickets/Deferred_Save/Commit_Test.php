@@ -988,6 +988,36 @@ class Commit_Test extends WPTestCase {
 	}
 
 	/**
+	 * Square's sync controller throws from `tribe_log` on error-level messages inside an Action Scheduler job.
+	 *
+	 * @test
+	 */
+	public function it_should_commit_every_entry_when_logging_a_failure_throws(): void {
+		$this->log_in_as_admin();
+		$post_id = static::factory()->post->create();
+		add_action(
+			'tribe_tickets_ticket_added',
+			static function () {
+				throw new \RuntimeException( 'A listener failed.' );
+			}
+		);
+		add_action(
+			'tribe_log',
+			static function ( $level ) {
+				if ( 'error' === $level ) {
+					throw new \RuntimeException( 'Logging failed.' );
+				}
+			}
+		);
+
+		$result = $this->commit()->run( [ 'create' => [ $this->ticket_data( 'First' ), $this->ticket_data( 'Second' ) ] ], $post_id );
+
+		$this->assertSame( [ 0, 1 ], array_keys( $result->get_created() ) );
+		$this->assertSame( [ [ 'create', 0, true ], [ 'create', 1, true ] ], $this->error_outcomes( $result ) );
+		$this->assertEqualSets( [ 'First', 'Second' ], array_map( 'get_the_title', tribe_tickets()->where( 'event', $post_id )->get_ids() ) );
+	}
+
+	/**
 	 * @test
 	 */
 	public function it_should_stop_flagging_manual_updates_after_an_entry_throws(): void {
