@@ -45,6 +45,24 @@ describe( 'Move Selectors', () => {
 		expect( selectors.getPostOptions( state ) ).toMatchSnapshot();
 	} );
 
+	test( 'getPostOptions uses the post ID as the value and the decoded title as the label', () => {
+		state.tickets.move.posts.posts = {
+			'Rain Date (November 1)': 12,
+			'Bob&#8217;s Rain &amp; Shine': 34,
+		};
+		expect( selectors.getPostOptions( state ) ).toEqual( [
+			{ value: '12', label: 'Rain Date (November 1)' },
+			{ value: '34', label: 'Bob’s Rain & Shine' },
+		] );
+	} );
+
+	test( 'getPostOptions gives a post without a title a label', () => {
+		state.tickets.move.posts.posts = {
+			'': 56,
+		};
+		expect( selectors.getPostOptions( state ) ).toEqual( [ { value: '56', label: '(no title)' } ] );
+	} );
+
 	test( 'getPostTypeOptionValue', () => {
 		state.tickets.move.postTypes.posts = {
 			all: 'All',
@@ -53,12 +71,24 @@ describe( 'Move Selectors', () => {
 		state.tickets.move.modal.post_type = 'all';
 		expect( selectors.getPostTypeOptionValue( state ) ).toMatchSnapshot();
 	} );
-	test( 'hasSelectedPost', () => {
+	test( 'hasSelectedPost is true when the selected post ID is listed', () => {
 		state.tickets.move.posts.posts = {
-			all: 'All',
-			cool: 'Cool',
+			'Rain Date (November 1)': 12,
 		};
-		state.tickets.move.modal.target_post_id = 'all';
-		expect( selectors.hasSelectedPost( state ) ).toMatchSnapshot();
+		state.tickets.move.modal.target_post_id = '12';
+		expect( selectors.hasSelectedPost( state ) ).toBe( true );
+	} );
+
+	test( 'hasSelectedPost is false when the selected post ID is not listed', () => {
+		state.tickets.move.posts.posts = {
+			'Rain Date (November 1)': 12,
+		};
+		state.tickets.move.modal.target_post_id = '56';
+		expect( selectors.hasSelectedPost( state ) ).toBe( false );
+	} );
+
+	test( 'getModalErrorMessage', () => {
+		state.tickets.move.modal.errorMessage = 'The move failed.';
+		expect( selectors.getModalErrorMessage( state ) ).toBe( 'The move failed.' );
 	} );
 } );
