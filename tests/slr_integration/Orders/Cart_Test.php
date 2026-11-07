@@ -5,6 +5,7 @@ namespace TEC\Tickets\Seating\Orders;
 use Generator;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use TEC\Tickets\Commerce\Checkout;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Meta;
@@ -179,6 +180,73 @@ class Cart_Test extends WPTestCase {
 
 		$this->assertEquals( $expected_quantity, $data['tickets'][0]['quantity'] );
 		$this->assertEquals( $expected_labels, $data['tickets'][0]['extra']['seats'] );
+	}
+
+	/**
+	 * A started session holding no reservation for the ticket must not sell it: the default cart
+	 * repository reads a quantity of 0 as 1.
+	 *
+	 * @test
+	 * @covers Cart::handle_seat_selection
+	 */
+	public function test_cart_leaves_out_a_seated_ticket_the_session_holds_no_seats_for(): void {
+		[ $post, $ticket ] = $this->given_a_seated_ticket();
+		tribe( Session::class )->add_entry( $post, 'test-token' );
+		$this->given_a_started_session( 'test-token', $post );
+
+		$tc_cart = tribe( TicketsCommerce_Cart::class );
+		$data    = $tc_cart->prepare_data( $this->seat_selection_checkout_request( $post, $ticket ) );
+		$tc_cart->process( $data );
+
+		$this->assertArrayNotHasKey( $ticket, $tc_cart->get_items_in_cart() );
+		$this->assertEquals(
+			add_query_arg( 'tec-tickets-seating-seats-not-held', '1', get_permalink( $post ) ),
+			apply_filters( 'tec_tickets_commerce_cart_to_checkout_redirect_url', tribe( Checkout::class )->get_url(), $data ),
+			'The buyer should go back to the event page to choose the seats again.'
+		);
+	}
+
+	/**
+	 * A request built outside the seat selection frontend can leave the seat labels out, and the
+	 * ticket must not sell without a held seat either.
+	 *
+	 * @test
+	 * @covers Cart::handle_seat_selection
+	 */
+	public function test_cart_leaves_out_a_seated_ticket_posted_without_seat_labels_when_the_session_holds_no_seats_for_it(): void {
+		[ $post, $ticket ] = $this->given_a_seated_ticket();
+		tribe( Session::class )->add_entry( $post, 'test-token' );
+		$this->given_a_started_session( 'test-token', $post );
+
+		$tc_cart = tribe( TicketsCommerce_Cart::class );
+		$data    = $tc_cart->prepare_data( $this->seat_selection_checkout_request( $post, $ticket, false ) );
+		$tc_cart->process( $data );
+
+		$this->assertArrayNotHasKey( $ticket, $tc_cart->get_items_in_cart() );
+	}
+
+	/**
+	 * @test
+	 * @covers Cart::handle_seat_selection
+	 */
+	public function test_cart_sends_a_seated_ticket_the_session_holds_to_checkout(): void {
+		[ $post, $ticket ] = $this->given_a_seated_ticket();
+		tribe( Session::class )->add_entry( $post, 'test-token' );
+		$this->given_a_started_session( 'test-token', $post );
+		tribe( Sessions_Table::class )->update_reservations(
+			'test-token',
+			$this->create_mock_reservations_data( [ $ticket ], 1 )
+		);
+
+		$tc_cart = tribe( TicketsCommerce_Cart::class );
+		$data    = $tc_cart->prepare_data( $this->seat_selection_checkout_request( $post, $ticket ) );
+		$tc_cart->process( $data );
+
+		$this->assertEquals( 1, $tc_cart->get_items_in_cart()[ $ticket ]['quantity'] ?? null );
+		$this->assertEquals(
+			tribe( Checkout::class )->get_url(),
+			apply_filters( 'tec_tickets_commerce_cart_to_checkout_redirect_url', tribe( Checkout::class )->get_url(), $data )
+		);
 	}
 
 	public function test_save_seat_data_for_attendee():void{
@@ -486,5 +554,49 @@ class Cart_Test extends WPTestCase {
 		$this->assertEquals( 'seat-label-0-1', get_post_meta( $attendee, Meta::META_KEY_ATTENDEE_SEAT_LABEL, true ) );
 		$this->assertEquals( 'seat-type-id-0', get_post_meta( $attendee, Meta::META_KEY_SEAT_TYPE, true ) );
 		$this->assertEquals( 'layout-uuid-1', get_post_meta( $attendee, Meta::META_KEY_LAYOUT_ID, true ) );
+	}
+
+	/**
+	 * @return array{0: int, 1: int} The seated post ID and its seated ticket ID.
+	 */
+	private function given_a_seated_ticket(): array {
+		$post = self::factory()->post->create();
+		update_post_meta( $post, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $post, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
+		$ticket = $this->create_tc_ticket( $post, 10 );
+		update_post_meta( $ticket, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $ticket, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
+
+		return [ $post, $ticket ];
+	}
+
+	/**
+	 * Builds the request the seat selector's Checkout button posts to the cart, for one seat.
+	 *
+	 * @param int $post   The post the ticket belongs to.
+	 * @param int $ticket The seated ticket ID.
+	 *
+	 * @return array{tribe_tickets_ar_data: string} The posted request data.
+	 */
+	private function seat_selection_checkout_request( int $post, int $ticket, bool $with_seat_labels = true ): array {
+		$ticket_data = [
+			'ticket_id' => $ticket,
+			'quantity'  => 1,
+			'optout'    => '1',
+		];
+
+		if ( $with_seat_labels ) {
+			$ticket_data['seat_labels'] = [ 'seat-label-0-1' ];
+		}
+
+		return [
+			'tribe_tickets_ar_data' => wp_json_encode(
+				[
+					'tribe_tickets_tickets' => [ $ticket_data ],
+					'tribe_tickets_meta'    => [],
+					'tribe_tickets_post_id' => $post,
+				]
+			),
+		];
 	}
 }

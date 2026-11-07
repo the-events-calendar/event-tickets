@@ -6,12 +6,14 @@
  * [your-theme]/tribe/tickets-seating/tickets-block.php
  *
  * @since 5.16.0
+ * @since TBD Added the notice shown when the buyer's seats were not held.
  *
- * @version 5.16.0
+ * @version TBD
  *
- * @var string $cost_range    The cost range of the tickets.
- * @var string $inventory     The inventory of the tickets.
- * @var string $modal_content The content of seat selection modal.
+ * @var string $cost_range     The cost range of the tickets.
+ * @var string $inventory      The inventory of the tickets.
+ * @var string $modal_content  The content of seat selection modal.
+ * @var bool   $seats_not_held Whether checkout sent the buyer back because their seats were not held.
  */
 
 ?>
@@ -27,6 +29,17 @@
 				<?php echo esc_html( sprintf( '%s %s', $inventory, __( 'available', 'event-tickets' ) ) ); ?>
 			</span>
 		</div>
+		<?php if ( ! empty( $seats_not_held ) ) : ?>
+			<div role="alert" class="tec-tickets-seating__notice">
+				<?php
+				echo esc_html_x(
+					'Your seats could not be held. Please choose your seats again.',
+					'Seat selection ticket block notice after a refused checkout',
+					'event-tickets'
+				);
+				?>
+			</div>
+		<?php endif; ?>
 		<div class="tec-tickets-seating__action">
 			<?php if ( empty( $inventory ) ) : ?>
 				<button class="tribe-common-c-btn tribe-common-c-btn--small sold-out-button"

@@ -25,6 +25,14 @@ use WP_Post;
  * @package TEC/Tickets/Seating/Orders
  */
 class Cart {
+	/**
+	 * The query argument that tells the seat selection block the buyer's seats were not held.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const SEATS_NOT_HELD_QUERY_ARG = 'tec-tickets-seating-seats-not-held';
 
 	/**
 	 * A reference to the Session handler.
@@ -60,6 +68,15 @@ class Cart {
 	private array $session_stacks = [];
 
 	/**
+	 * Whether the cart left out a seated ticket the session holds no seats for.
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
+	 */
+	private bool $left_out_unheld_seats = false;
+
+	/**
 	 * Cart constructor.
 	 *
 	 * @since 5.16.0
@@ -77,12 +94,15 @@ class Cart {
 	 *
 	 * @since 5.16.0
 	 * @since 5.29.5.1 Cap each seated ticket's quantity, and its seat labels, at the number of seats the session holds.
+	 * @since TBD Leave out a seated ticket the session holds no seats for.
 	 *
 	 * @param array $data The data to prepare for the cart.
 	 *
 	 * @return array The prepared data.
 	 */
 	public function handle_seat_selection( array $data ): array {
+		$this->left_out_unheld_seats = false;
+
 		if ( ! array_key_exists( 'tickets', $data ) ) {
 			return $data;
 		}
@@ -92,12 +112,28 @@ class Cart {
 		$held = $token ? $this->get_token_reservations( $token ) : null;
 
 		foreach ( $data['tickets'] as $key => $ticket_data ) {
-			if ( ! isset( $ticket_data['seat_labels'] ) ) {
+			$ticket_id  = $ticket_data['ticket_id'] ?? 0;
+			$has_labels = isset( $ticket_data['seat_labels'] );
+
+			if ( ! $has_labels && ! get_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true ) ) {
 				continue;
 			}
 
-			$ticket_id  = $ticket_data['ticket_id'] ?? 0;
 			$seats_held = null === $held ? null : count( $held[ $ticket_id ] ?? [] );
+
+			/*
+			 * Capping to 0 is not enough: the cart repository reads a quantity under 1 as 1, and the
+			 * ticket would sell with no seat.
+			 */
+			if ( 0 === $seats_held ) {
+				unset( $data['tickets'][ $key ] );
+				$this->left_out_unheld_seats = true;
+				continue;
+			}
+
+			if ( ! $has_labels ) {
+				continue;
+			}
 
 			if ( null !== $seats_held && isset( $ticket_data['quantity'] ) && $ticket_data['quantity'] > $seats_held ) {
 				$ticket_data['quantity']    = $seats_held;
@@ -110,6 +146,26 @@ class Cart {
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Sends the buyer back to the event page, instead of checkout, when the cart left out a seated ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|null $url  The URL the cart redirects to.
+	 * @param array       $data The cart data that was processed.
+	 *
+	 * @return string|null The URL the cart redirects to.
+	 */
+	public function filter_checkout_redirect_url( $url, $data ) {
+		if ( ! $this->left_out_unheld_seats || null === $url ) {
+			return $url;
+		}
+
+		$permalink = get_permalink( $data['post_id'] ?? 0 );
+
+		return $permalink ? add_query_arg( self::SEATS_NOT_HELD_QUERY_ARG, '1', $permalink ) : $url;
 	}
 
 	/**

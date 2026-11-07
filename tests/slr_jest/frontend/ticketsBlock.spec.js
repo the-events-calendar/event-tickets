@@ -3,8 +3,10 @@ import {
 	bootstrapIframe,
 	cancelReservations,
 	cancelReservationsViaBeacon,
+	dismissSeatsNotHeldNotice,
 	getReservationCancelRequest,
 	setExpireDate,
+	stripSeatsNotHeldQueryArg,
 } from '@tec/tickets/seating/frontend/ticketsBlock';
 import {
 	INBOUND_SEATS_SELECTED,
@@ -948,6 +950,56 @@ describe('Seat Selection Modal', () => {
 			setExpireDate(mockDialogElement)
 
 			expect(iframe.src).toContain('&expireDate=' + (mockNow + 893000))
+		});
+	});
+
+	describe('seats not held notice', () => {
+		const queryArg = 'tec-tickets-seating-seats-not-held';
+
+		afterEach(() => {
+			document.body.innerHTML = '';
+		});
+
+		it('should remove the notice from the page', () => {
+			document.body.innerHTML =
+				'<div role="alert" class="tec-tickets-seating__notice">Your seats could not be held.</div>';
+
+			dismissSeatsNotHeldNotice();
+
+			expect(
+				document.querySelector('.tec-tickets-seating__notice')
+			).toBeNull();
+		});
+
+		it('should do nothing when there is no notice on the page', () => {
+			expect(() => dismissSeatsNotHeldNotice()).not.toThrow();
+		});
+
+		it('should drop only its own argument from the address bar', () => {
+			window.location = {
+				href: `https://example.test/event/?keep=1&${queryArg}=1`,
+			};
+			const replaceState = jest
+				.spyOn(window.history, 'replaceState')
+				.mockImplementation(() => {});
+
+			stripSeatsNotHeldQueryArg();
+
+			expect(replaceState).toHaveBeenCalledTimes(1);
+			expect(replaceState.mock.calls[0][2]).toBe(
+				'https://example.test/event/?keep=1'
+			);
+		});
+
+		it('should leave the address bar alone without the argument', () => {
+			window.location = { href: 'https://example.test/event/?keep=1' };
+			const replaceState = jest
+				.spyOn(window.history, 'replaceState')
+				.mockImplementation(() => {});
+
+			stripSeatsNotHeldQueryArg();
+
+			expect(replaceState).not.toHaveBeenCalled();
 		});
 	});
 });
