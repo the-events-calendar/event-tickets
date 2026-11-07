@@ -146,6 +146,8 @@ class Controller extends Controller_Contract {
 			add_filter( 'tec_tickets_attendees_table_sortable_columns', [ $this, 'include_seat_column_as_sortable' ] );
 			add_filter( 'tribe_repository_attendees_query_args', [ $this, 'handle_sorting_seat_column' ], 10, 3 );
 			add_filter( 'event_tickets_attendees_table_row_actions', [ $this, 'remove_move_row_action' ], 10, 2 );
+			// After the Move Tickets class adds the action at the default priority.
+			add_filter( 'tribe_events_tickets_attendees_table_bulk_actions', [ $this, 'remove_move_bulk_action' ], 20 );
 		}
 
 		if ( is_admin() ) {
@@ -241,6 +243,7 @@ class Controller extends Controller_Contract {
 		remove_filter( 'tec_tickets_attendees_table_sortable_columns', [ $this, 'include_seat_column_as_sortable' ] );
 		remove_filter( 'tribe_repository_attendees_query_args', [ $this, 'handle_sorting_seat_column' ] );
 		remove_filter( 'event_tickets_attendees_table_row_actions', [ $this, 'remove_move_row_action' ] );
+		remove_filter( 'tribe_events_tickets_attendees_table_bulk_actions', [ $this, 'remove_move_bulk_action' ], 20 );
 
 		remove_filter( 'tec_tickets_commerce_reports_tabbed_view_tab_map', [ $this, 'include_seats_tab' ] );
 		remove_action( 'tec_tickets_commerce_reports_tabbed_view_after_register_tab', [ $this, 'register_seat_tab' ] );
@@ -461,6 +464,19 @@ class Controller extends Controller_Contract {
 	 */
 	public function remove_move_row_action( $default_row_actions, $item ) {
 		return $this->attendee->remove_move_row_action( $default_row_actions, $item );
+	}
+
+	/**
+	 * Removes the Move bulk action from the attendee list of an event that has seated attendees.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,string> $actions The bulk actions available on the Attendees table.
+	 *
+	 * @return array<string,string> The filtered bulk actions.
+	 */
+	public function remove_move_bulk_action( array $actions ): array {
+		return $this->attendee->remove_move_bulk_action( $actions );
 	}
 
 	/**

@@ -285,6 +285,133 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
 
+	public function bulk_move_action_data_provider(): Generator {
+		yield 'event without seating and with regular attendees' => [ false, 0, 2, true ];
+		yield 'seated event with no attendees' => [ true, 0, 0, true ];
+		yield 'seated event with only regular attendees' => [ true, 0, 2, true ];
+		yield 'seated event with seated attendees' => [ true, 2, 0, false ];
+		yield 'seated event with seated and regular attendees' => [ true, 1, 1, false ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider bulk_move_action_data_provider
+	 *
+	 * It should remove the bulk Move action only when the event has seated attendees.
+	 */
+	public function it_should_remove_bulk_move_only_when_the_event_has_seated_attendees(
+		bool $has_seating,
+		int $seated_attendees,
+		int $regular_attendees,
+		bool $expected
+	): void {
+		$_GET['page'] = 'tickets-attendees';
+		$this->make_controller()->register();
+
+		$event_id = $this->create_event_for_bulk_move( $has_seating );
+
+		if ( $has_seating ) {
+			$this->create_many_attendees_for_ticket( $seated_attendees, $this->create_seated_ticket( $event_id ), $event_id );
+		}
+
+		$this->create_many_attendees_for_ticket( $regular_attendees, $this->create_tc_ticket( $event_id ), $event_id );
+
+		$_GET['event_id'] = $event_id;
+
+		$actions = apply_filters( 'tribe_events_tickets_attendees_table_bulk_actions', [ 'check_in' => 'Check in', 'move' => 'Move' ] );
+
+		$this->assertSame( $expected, isset( $actions['move'] ) );
+		$this->assertArrayHasKey( 'check_in', $actions );
+	}
+
+	/**
+	 * @test
+	 *
+	 * It should read the event from the `post` request variable when `event_id` is not set.
+	 */
+	public function it_should_remove_bulk_move_for_the_event_in_the_post_request_variable(): void {
+		$_GET['page'] = 'tickets-attendees';
+		$this->make_controller()->register();
+
+		$event_id = $this->create_event_for_bulk_move( true );
+		$this->create_attendee_for_ticket( $this->create_seated_ticket( $event_id ), $event_id );
+
+		unset( $_GET['event_id'] );
+		$_GET['post'] = $event_id;
+
+		$actions = apply_filters( 'tribe_events_tickets_attendees_table_bulk_actions', [ 'move' => 'Move' ] );
+
+		$this->assertArrayNotHasKey( 'move', $actions );
+	}
+
+	/**
+	 * @test
+	 *
+	 * It should keep the bulk Move action on an event when only another event has seated attendees.
+	 */
+	public function it_should_keep_bulk_move_when_only_another_event_has_seated_attendees(): void {
+		$_GET['page'] = 'tickets-attendees';
+		$this->make_controller()->register();
+
+		$seated_event_id = $this->create_event_for_bulk_move( true );
+		$this->create_attendee_for_ticket( $this->create_seated_ticket( $seated_event_id ), $seated_event_id );
+
+		$event_id = $this->create_event_for_bulk_move( false );
+		$this->create_attendee_for_ticket( $this->create_tc_ticket( $event_id ), $event_id );
+
+		$_GET['event_id'] = $event_id;
+
+		$actions = apply_filters( 'tribe_events_tickets_attendees_table_bulk_actions', [ 'move' => 'Move' ] );
+
+		$this->assertArrayHasKey( 'move', $actions );
+	}
+
+	/**
+	 * @test
+	 *
+	 * It should remove the bulk Move action when the seated ticket is past the first page of the event's tickets.
+	 */
+	public function it_should_remove_bulk_move_for_a_seated_ticket_past_the_first_page_of_tickets(): void {
+		$_GET['page'] = 'tickets-attendees';
+		$this->make_controller()->register();
+
+		$event_id = $this->create_event_for_bulk_move( true );
+
+		$tickets_per_page = get_option( 'posts_per_page' );
+
+		for ( $i = 0; $i < $tickets_per_page; $i++ ) {
+			$this->create_tc_ticket( $event_id );
+		}
+
+		$this->create_attendee_for_ticket( $this->create_seated_ticket( $event_id ), $event_id );
+
+		$_GET['event_id'] = $event_id;
+
+		$actions = apply_filters( 'tribe_events_tickets_attendees_table_bulk_actions', [ 'move' => 'Move' ] );
+
+		$this->assertArrayNotHasKey( 'move', $actions );
+	}
+
+	/**
+	 * @test
+	 *
+	 * It should keep the bulk Move action when an Attendee keeps a seat label after moving to a regular ticket.
+	 */
+	public function it_should_keep_bulk_move_for_a_seat_label_on_a_regular_ticket_attendee(): void {
+		$_GET['page'] = 'tickets-attendees';
+		$this->make_controller()->register();
+
+		$event_id    = $this->create_event_for_bulk_move( false );
+		$attendee_id = $this->create_attendee_for_ticket( $this->create_tc_ticket( $event_id ), $event_id );
+		update_post_meta( $attendee_id, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'A-1' );
+
+		$_GET['event_id'] = $event_id;
+
+		$actions = apply_filters( 'tribe_events_tickets_attendees_table_bulk_actions', [ 'move' => 'Move' ] );
+
+		$this->assertArrayHasKey( 'move', $actions );
+	}
+
 	/**
 	 * @before
 	 * @after
@@ -2137,5 +2264,46 @@ class Controller_Test extends Controller_Test_Case {
 				],
 		];
 		$this->assertEquals($expected,$controller->get_localized_data());
+	}
+
+	/**
+	 * Creates an event for the bulk Move tests.
+	 *
+	 * @param bool $has_seating Whether the event uses a seat layout.
+	 *
+	 * @return int The event ID.
+	 */
+	private function create_event_for_bulk_move( bool $has_seating ): int {
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Bulk Move event',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+
+		if ( $has_seating ) {
+			update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
+			update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
+		}
+
+		return $event_id;
+	}
+
+	/**
+	 * Creates a seated ticket on an event.
+	 *
+	 * @param int $event_id The event ID.
+	 *
+	 * @return int The ticket ID.
+	 */
+	private function create_seated_ticket( int $event_id ): int {
+		$ticket_id = $this->create_tc_ticket( $event_id );
+
+		update_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $ticket_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
+
+		return $ticket_id;
 	}
 }
