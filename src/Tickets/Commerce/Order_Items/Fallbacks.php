@@ -9,8 +9,8 @@
 
 namespace TEC\Tickets\Commerce\Order_Items;
 
+use TEC\Common\Log\Traits\With_Logger;
 use TEC\Tickets\Commerce\Order_Items\Repositories\Order_Items_Repository;
-use TEC\Tickets\Commerce\Order_Items\Traits\With_Logger;
 use TEC\Tickets\RSVP\V2\Constants;
 use Throwable;
 use Tribe__Log as Log;
