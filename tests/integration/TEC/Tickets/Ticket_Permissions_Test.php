@@ -115,42 +115,22 @@ class Ticket_Permissions_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_should_answer_for_a_ticket_through_the_permissions_resolved_for_it(): void {
-		$ticket      = $this->ticket_on_a_post();
-		$permissions = tribe( Ticket_Permissions::class );
+	public function it_should_not_let_the_post_filter_grant_rights_on_something_that_is_not_a_post(): void {
 		$this->log_in_as( 'administrator' );
-
-		$this->assertSame( $permissions, $permissions->for_ticket( $ticket ), 'By default the base permissions answer.' );
-
-		$stricter = new class() extends Ticket_Permissions {
-			protected function can_edit_ticket( Ticket_Object $ticket, int $user_id ): bool {
-				return false;
-			}
-		};
+		$permissions = tribe( Ticket_Permissions::class );
+		$asked       = false;
 		add_filter(
-			'tec_tickets_ticket_permissions',
-			static function ( Ticket_Permissions $default, Ticket_Object $for ) use ( $stricter, $ticket ) {
-				return $for->ID === $ticket->ID ? $stricter : $default;
-			},
-			10,
-			2
+			'tec_tickets_user_can_edit_tickets_of',
+			static function () use ( &$asked ) {
+				$asked = true;
+
+				return true;
+			}
 		);
 
-		$this->assertSame( $stricter, $permissions->for_ticket( $ticket ) );
-		$this->assertFalse( $permissions->for_ticket( $ticket )->user_can_edit_ticket( $ticket ) );
-		$this->assertFalse( $permissions->for_ticket( $ticket )->user_can_delete_ticket( $ticket ), 'Delete builds on edit.' );
-		$this->assertTrue( $permissions->user_can_edit_ticket( $ticket ), 'The base answer is unchanged.' );
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_should_ignore_a_filter_that_returns_something_else(): void {
-		$ticket      = $this->ticket_on_a_post();
-		$permissions = tribe( Ticket_Permissions::class );
-		add_filter( 'tec_tickets_ticket_permissions', '__return_null' );
-
-		$this->assertSame( $permissions, $permissions->for_ticket( $ticket ) );
+		$this->assertFalse( $permissions->user_can_edit_tickets_of( 0 ) );
+		$this->assertFalse( $permissions->user_can_edit_tickets_of( PHP_INT_MAX ), 'A post that does not exist.' );
+		$this->assertFalse( $asked, 'The filter is not asked without a post.' );
 	}
 
 	/**
@@ -299,28 +279,4 @@ class Ticket_Permissions_Test extends WPTestCase {
 		$this->assertFalse( $asked, 'The delete filter is not asked once editing is refused.' );
 	}
 
-	/**
-	 * @test
-	 */
-	public function it_should_let_the_edit_filter_change_a_providers_answer(): void {
-		$ticket   = $this->ticket_on_a_post();
-		$stricter = new class() extends Ticket_Permissions {
-			protected function can_edit_ticket( Ticket_Object $ticket, int $user_id ): bool {
-				return false;
-			}
-		};
-		$this->log_in_as( 'administrator' );
-		$seen = null;
-		add_filter(
-			'tec_tickets_user_can_edit_ticket',
-			static function ( bool $can ) use ( &$seen ): bool {
-				$seen = $can;
-
-				return true;
-			}
-		);
-
-		$this->assertTrue( $stricter->user_can_edit_ticket( $ticket ) );
-		$this->assertFalse( $seen, 'The filter sees the provider\'s refusal.' );
-	}
 }

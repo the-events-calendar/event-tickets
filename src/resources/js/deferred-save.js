@@ -11,6 +11,7 @@
  */
 
 import { addFilter, addAction, doAction } from '@wordpress/hooks';
+import { sprintf } from '@wordpress/i18n';
 import { createState, buildHiddenFields, validateFields, duplicateFields, copyOfSaved } from './deferred-save/utils';
 
 const CONTAINER = '#tec-tickets-deferred-save';
@@ -220,6 +221,20 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 	};
 
 	/**
+	 * The marker as one sentence for screen readers, the destination of a move included.
+	 *
+	 * @param {string} kind   `staged`, `delete` or `move`.
+	 * @param {string} target The destination title for a move.
+	 *
+	 * @return {string} The sentence, or an empty string when there is none for the kind.
+	 */
+	const markerSentence = ( kind, target ) => {
+		const sentence = strings.markerSentences && strings.markerSentences[ kind ];
+
+		return sentence ? sprintf( sentence, target ) : '';
+	};
+
+	/**
 	 * Puts a marker on a saved ticket's row.
 	 *
 	 * @param {jQuery}  $row   The row.
@@ -236,7 +251,7 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 		badge.classList.add( `tec-tickets-deferred-save-badge--${ kind }` );
 		const text = markerText( kind );
 		fillSlot( badge, 'marker-text', text );
-		fillSlot( badge, 'marker-text-sr', `${ text }${ target ? ` ${ target }` : '' }.` );
+		fillSlot( badge, 'marker-text-sr', markerSentence( kind, target ) || text );
 		fillSlot( badge, 'marker-target', target );
 		if ( ! undo ) {
 			badge.querySelector( '.tec-tickets-deferred-save-badge__undo' ).remove();
@@ -483,20 +498,17 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 	} );
 
 	/**
-	 * How many of a saved ticket the row says are sold.
+	 * How many of a saved ticket are sold, as the server counted them when the page loaded.
 	 *
-	 * Read from the count the row prints, not worked out from its capacity and availability: with shared
-	 * capacity, availability is the whole pool's, so other tickets' sales would count against this one.
+	 * Not worked out from the row's capacity and availability: with shared capacity, availability is the whole
+	 * pool's, so other tickets' sales would count against this one.
 	 *
 	 * @param {number} ticketId The ticket ID.
 	 *
-	 * @return {number|undefined} The sold count, or `undefined` when the row does not say.
+	 * @return {number|undefined} The sold count, or `undefined` when the server did not count it.
 	 */
-	const soldFromRow = ( ticketId ) => {
-		const sold = parseInt(
-			$panelBase().find( `tr[data-ticket-type-id="${ ticketId }"]` ).attr( 'data-ticket-sold' ),
-			10
-		);
+	const soldOf = ( ticketId ) => {
+		const sold = strings.sold ? parseInt( strings.sold[ ticketId ], 10 ) : NaN;
 
 		return Number.isNaN( sold ) ? undefined : sold;
 	};
@@ -507,9 +519,11 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 			problems.map( ( { name, rules } ) => {
 				const reasons = rules
 					.map( ( rule ) => ( strings.rules && strings.rules[ rule ] ) || rule )
-					.join( ', ' );
+					.join( strings.listSeparator || ', ' );
 
-				return `${ name }: ${ reasons }`;
+				// The format is translated on the server and localized with the script.
+				// eslint-disable-next-line @wordpress/valid-sprintf
+				return sprintf( strings.invalidTicket || '%1$s: %2$s', name, reasons );
 			} )
 		);
 	};
@@ -542,7 +556,7 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 		} );
 
 		Object.entries( update ).forEach( ( [ ticketId, { fields, summary } ] ) => {
-			const rules = validateFields( fields, { sold: soldFromRow( ticketId ), dateFormat, decimal } );
+			const rules = validateFields( fields, { sold: soldOf( ticketId ), dateFormat, decimal } );
 			if ( rules.length ) {
 				problems.push( { name: summary.name || `#${ ticketId }`, rules } );
 				$panelBase()
