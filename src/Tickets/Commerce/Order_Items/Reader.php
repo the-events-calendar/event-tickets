@@ -9,9 +9,9 @@
 
 namespace TEC\Tickets\Commerce\Order_Items;
 
+use TEC\Common\Log\Traits\With_Logger;
 use TEC\Tickets\Commerce\Order_Items\Line_Items\Line_Item_Types;
 use TEC\Tickets\Commerce\Order_Items\Repositories\Order_Items;
-use TEC\Tickets\Commerce\Order_Items\Traits\With_Logger;
 use Throwable;
 use Tribe__Log as Log;
 
