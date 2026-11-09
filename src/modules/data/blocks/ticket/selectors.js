@@ -28,6 +28,10 @@ export const getTicketsIsSettingsOpen = createSelector( [ getBlock ], ( block ) 
 
 export const getTicketsIsSettingsLoading = createSelector( [ getBlock ], ( block ) => block.isSettingsLoading );
 
+export const getStagedDeletes = createSelector( [ getBlock ], ( block ) => block.stagedDeletes || [] );
+
+export const getStagedMoves = createSelector( [ getBlock ], ( block ) => block.stagedMoves || {} );
+
 export const getTicketsProvider = createSelector( [ getBlock ], ( block ) => block.provider );
 
 export const getTicketsSharedCapacity = createSelector( [ getBlock ], ( block ) => block.sharedCapacity );
@@ -159,6 +163,10 @@ export const getTicketIsModalOpen = createSelector( [ getTicket ], ( ticket ) =>
 export const getTicketHasBeenCreated = createSelector( [ getTicket ], ( ticket ) => ticket.hasBeenCreated );
 
 export const getTicketHasChanges = createSelector( [ getTicket ], ( ticket ) => ticket.hasChanges );
+
+export const getTicketIsStaged = createSelector( [ getTicket ], ( ticket ) => !! ticket.isStaged );
+
+export const getTicketSaveError = createSelector( [ getTicket ], ( ticket ) => ticket.saveError || '' );
 
 export const getTicketHasDurationError = createSelector( [ getTicket ], ( ticket ) => ticket.hasDurationError );
 
@@ -458,6 +466,18 @@ export const isTicketSalePriceValid = createSelector(
 
 		return salePriceVal < priceVal;
 	}
+);
+
+/**
+ * Whether the sale price can be saved: it is off, or it is below the price.
+ *
+ * An unticked sale price is hidden and not saved, so it must not block the ticket.
+ *
+ * @since TBD
+ */
+export const isTicketSalePriceAcceptable = createSelector(
+	[ getTempSalePriceChecked, isTicketSalePriceValid ],
+	( checked, valid ) => ! checked || valid
 );
 
 export const isTempTitleValid = createSelector( [ getTicketTempTitle ], ( title ) => trim( title ) !== '' );

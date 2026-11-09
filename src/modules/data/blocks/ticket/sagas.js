@@ -39,8 +39,13 @@ import {
 	isTribeEventPostType,
 } from '../../shared/sagas';
 import { isTicketEditableFromPost } from './utils';
+import { usesDeferredSave } from './deferred';
+import * as deferredSagas from './deferred-sagas';
+import { setBodyDetails, toRequestSaleDate } from './body';
 
-const { UNLIMITED, SHARED, TICKET_TYPES, PROVIDER_CLASS_TO_PROVIDER_MAPPING } = constants;
+const { PROVIDER_CLASS_TO_PROVIDER_MAPPING } = constants;
+
+export { setBodyDetails, toRequestSaleDate };
 const { restNonce, tecDateSettings } = globals;
 const { wpREST } = api;
 
@@ -354,85 +359,13 @@ export function* setTicketInitialState( action ) {
 	}
 
 	yield call( handleTicketDurationError, clientId );
-	yield fork( saveTicketWithPostSave, clientId );
-}
 
-/**
- * Returns a sale price date as the ticket request sends it.
- *
- * The store keeps an empty sale price date it loads or saves as the string `Invalid date`, which the server rejects
- * as a date it cannot read; it is sent empty, as it was when the ticket was created.
- *
- * @since 5.31.0
- *
- * @param {string} date The sale price date the store holds.
- *
- * @return {string} The date, `YYYY-MM-DD`, or an empty string.
- */
-export function toRequestSaleDate( date ) {
-	return 'string' === typeof date && constants.SALE_DATE_PATTERN.test( date ) ? date : '';
-}
-
-export function* setBodyDetails( clientId ) {
-	let body = new FormData();
-	const props = { clientId };
-	const rootClientId = yield call( [ wpSelect( 'core/block-editor' ), 'getBlockRootClientId' ], clientId );
-	const ticketProvider = yield select( selectors.getTicketProvider, props );
-	const ticketsProvider = yield select( selectors.getTicketsProvider );
-
-	body.append( 'post_id', yield call( [ wpSelect( 'core/editor' ), 'getCurrentPostId' ] ) );
-	body.append( 'provider', ticketProvider || ticketsProvider );
-	body.append( 'name', yield select( selectors.getTicketTempTitle, props ) );
-	body.append( 'description', yield select( selectors.getTicketTempDescription, props ) );
-	body.append( 'price', yield select( selectors.getTicketTempPrice, props ) );
-	body.append( 'start_date', yield select( selectors.getTicketTempStartDate, props ) );
-	body.append( 'start_time', yield select( selectors.getTicketTempStartTime, props ) );
-	body.append( 'end_date', yield select( selectors.getTicketTempEndDate, props ) );
-	body.append( 'end_time', yield select( selectors.getTicketTempEndTime, props ) );
-	body.append( 'sku', yield select( selectors.getTicketTempSku, props ) );
-	body.append( 'iac', yield select( selectors.getTicketTempIACSetting, props ) );
-	body.append(
-		'menu_order',
-		yield call( [ wpSelect( 'core/block-editor' ), 'getBlockIndex' ], clientId, rootClientId )
-	);
-
-	const capacityType = yield select( selectors.getTicketTempCapacityType, props );
-	const capacity = yield select( selectors.getTicketTempCapacity, props );
-
-	const isUnlimited = capacityType === TICKET_TYPES[ UNLIMITED ];
-	body.append( 'ticket[mode]', isUnlimited ? '' : capacityType );
-	body.append( 'ticket[capacity]', isUnlimited ? '' : capacity );
-
-	if ( capacityType === TICKET_TYPES[ SHARED ] ) {
-		body.append( 'ticket[event_capacity]', yield select( selectors.getTicketsTempSharedCapacity ) );
+	// On a post that defers ticket saves the post save carries the changed tickets; a ticket moved in the block order is one.
+	if ( usesDeferredSave() ) {
+		yield call( deferredSagas.rememberPosition, clientId );
+	} else {
+		yield fork( saveTicketWithPostSave, clientId );
 	}
-
-	const showSalePrice = yield select( selectors.showSalePrice, props );
-
-	if ( showSalePrice ) {
-		body.append( 'ticket[sale_price][checked]', yield select( selectors.getTempSalePriceChecked, props ) );
-		body.append( 'ticket[sale_price][price]', yield select( selectors.getTempSalePrice, props ) );
-		body.append(
-			'ticket[sale_price][start_date]',
-			toRequestSaleDate( yield select( selectors.getTicketTempSaleStartDate, props ) )
-		);
-		body.append(
-			'ticket[sale_price][end_date]',
-			toRequestSaleDate( yield select( selectors.getTicketTempSaleEndDate, props ) )
-		);
-	}
-
-	/**
-	 * Fires after the body details have been set and before the request is sent.
-	 * The action will fire both when a ticket is being created and when an existing ticket is being updated.
-	 *
-	 * @since 5.16.0
-	 * @param {Object} body     The body of the request.
-	 * @param {string} clientId The client ID of the ticket block that is being created or updated.
-	 */
-	body = applyFilters( 'tec.tickets.blocks.setBodyDetails', body, clientId );
-
-	return body;
 }
 
 export function* removeTicketBlock( clientId ) {
@@ -731,12 +664,37 @@ export function* fetchTicket( action ) {
 	yield put( actions.setTicketIsLoading( clientId, false ) );
 }
 
+/**
+ * Makes the shared capacity typed in the ticket form the block's, when the block has none yet.
+ *
+ * The REST create does this once the ticket is saved; a staged create does it when it is staged, or a
+ * Cancel resets the shared capacity and every shared ticket becomes invalid.
+ *
+ * @since TBD
+ */
+export function* syncTempSharedCapacity() {
+	const sharedCapacity = yield select( selectors.getTicketsSharedCapacity );
+	const tempSharedCapacity = yield select( selectors.getTicketsTempSharedCapacity );
+
+	if ( sharedCapacity === '' && ! isNaN( tempSharedCapacity ) && tempSharedCapacity > 0 ) {
+		yield put( actions.setTicketsSharedCapacity( tempSharedCapacity ) );
+	}
+}
+
 export function* createNewTicket( action ) {
 	const { clientId } = action.payload;
 	const props = { clientId };
 
 	const { add_ticket_nonce = '' } = restNonce(); // eslint-disable-line camelcase
 	const body = yield call( setBodyDetails, clientId );
+
+	// On a post that defers ticket saves the change is staged and travels with the post save.
+	if ( usesDeferredSave() ) {
+		yield call( deferredSagas.stageTicket, clientId, [ ...body.entries() ] );
+		yield call( syncTempSharedCapacity );
+		return;
+	}
+
 	body.append( 'add_ticket_nonce', add_ticket_nonce );
 
 	try {
@@ -751,11 +709,7 @@ export function* createNewTicket( action ) {
 		} );
 
 		if ( response.ok ) {
-			const sharedCapacity = yield select( selectors.getTicketsSharedCapacity );
-			const tempSharedCapacity = yield select( selectors.getTicketsTempSharedCapacity );
-			if ( sharedCapacity === '' && ! isNaN( tempSharedCapacity ) && tempSharedCapacity > 0 ) {
-				yield put( actions.setTicketsSharedCapacity( tempSharedCapacity ) );
-			}
+			yield call( syncTempSharedCapacity );
 			const available = ticket.capacity_details.available === -1 ? 0 : ticket.capacity_details.available;
 
 			const { sale_price_data } = ticket; // eslint-disable-line camelcase
@@ -811,14 +765,18 @@ export function* createNewTicket( action ) {
 			 * @since 5.16.0
 			 * @since 5.20.0 The `ticketId` and `ticketDetails` parameters were added.
 			 * @since 5.31.0 The `ticket` parameter was added.
+			 * @since TBD On a post that defers ticket saves, fires after the post save that created the ticket, without the
+			 *            `ticket` parameter: the post save does not answer with the ticket.
 			 * @param {string} clientId      The ticket's client ID.
 			 * @param {number} ticketId      The ticket's ID.
 			 * @param {Object} ticketDetails The ticket details.
-			 * @param {Object} ticket        The ticket, as the tickets REST API answered the save.
+			 * @param {Object} [ticket]      The ticket, as the tickets REST API answered the save.
 			 */
 			doAction( 'tec.tickets.blocks.ticketCreated', clientId, ticket.id, ticketDetails, ticket );
 
-			yield fork( saveTicketWithPostSave, clientId );
+			if ( ! usesDeferredSave() ) {
+				yield fork( saveTicketWithPostSave, clientId );
+			}
 		} else {
 			yield call( noticeTicketNotSaved, clientId, response );
 		}
@@ -839,6 +797,13 @@ export function* updateTicket( action ) {
 
 	const { edit_ticket_nonce = '' } = restNonce(); // eslint-disable-line camelcase
 	const body = yield call( setBodyDetails, clientId );
+
+	// On a post that defers ticket saves the change is staged and travels with the post save.
+	if ( usesDeferredSave() ) {
+		yield call( deferredSagas.stageTicket, clientId, [ ...body.entries() ] );
+		return;
+	}
+
 	body.append( 'edit_ticket_nonce', edit_ticket_nonce );
 
 	const ticketId = yield select( selectors.getTicketId, props );
@@ -915,10 +880,12 @@ export function* updateTicket( action ) {
 			 * @since 5.16.0
 			 * @since 5.20.0 The `ticketId and `ticketDetails` parameters were added
 			 * @since 5.31.0 The `ticket` parameter was added.
+			 * @since TBD On a post that defers ticket saves, fires after the post save that updated the ticket, without the
+			 *            `ticket` parameter: the post save does not answer with the ticket.
 			 * @param {string} clientId      The ticket's client ID.
 			 * @param {number} ticketId      The ticket's ID.
 			 * @param {Object} ticketDetails The ticket details.
-			 * @param {Object} ticket        The ticket, as the tickets REST API answered the save.
+			 * @param {Object} [ticket]      The ticket, as the tickets REST API answered the save.
 			 */
 			doAction( 'tec.tickets.blocks.ticketUpdated', clientId, ticketId, ticketDetails, ticket );
 		} else {
@@ -958,6 +925,17 @@ export function* deleteTicket( action ) {
 		yield put( actions.removeTicketBlock( clientId ) );
 		yield call( [ wpDispatch( 'core/block-editor' ), 'clearSelectedBlock' ] );
 		yield call( [ wpDispatch( 'core/block-editor' ), 'removeBlocks' ], [ clientId ] );
+
+		// On a post that defers ticket saves the deletion is staged and happens with the post save; a staged
+		// ticket that was never saved just leaves the payload.
+		if ( usesDeferredSave() ) {
+			if ( hasBeenCreated ) {
+				yield call( deferredSagas.stageDelete, clientId, ticketId );
+			} else {
+				yield call( deferredSagas.dropStaged, clientId );
+			}
+			return;
+		}
 
 		if ( hasBeenCreated ) {
 			const { remove_ticket_nonce = '' } = restNonce(); // eslint-disable-line camelcase
@@ -1777,4 +1755,5 @@ export default function* watchers() {
 	);
 
 	yield fork( handleEventStartDateChanges );
+	yield fork( deferredSagas.watchPostSaves );
 }
