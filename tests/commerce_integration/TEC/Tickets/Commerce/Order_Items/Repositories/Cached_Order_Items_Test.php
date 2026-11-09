@@ -32,6 +32,17 @@ class Cached_Order_Items_Test extends WPTestCase {
 		$this->assertSame( $before + 1, $count(), 'A write through the decorator invalidates the cache.' );
 	}
 
+	public function test_it_caches_through_the_shared_tribe_cache(): void {
+		$order_id = static::factory()->post->create();
+		tribe_cache()->delete( 'tec_tickets_order_items_last_changed' );
+
+		tribe( Order_Items_Repository::class )->get_by_order( $order_id );
+		$token = tribe_cache()->get( 'tec_tickets_order_items_last_changed' );
+
+		$this->assertIsString( $token );
+		$this->assertSame( [], tribe_cache()->get( "tec_tickets_order_items_order_{$order_id}_{$token}" ) );
+	}
+
 	public function test_a_cached_read_can_be_serialized_and_loads_the_same_rows(): void {
 		$cached   = tribe( Order_Items_Repository::class );
 		$order_id = static::factory()->post->create();
@@ -40,7 +51,11 @@ class Cached_Order_Items_Test extends WPTestCase {
 		$read = $cached->get_by_order( $order_id );
 
 		// A persistent object cache serializes what it stores; the default one keeps it in a private property.
-		$stored = ( fn() => $this->cache )->call( $GLOBALS['wp_object_cache'] )['tec_tickets_order_items'];
+		$stored = array_filter(
+			( fn() => $this->cache )->call( $GLOBALS['wp_object_cache'] )['tribe-events'],
+			static fn( string $key ) => 0 === strpos( $key, 'tec_tickets_order_items_' ),
+			ARRAY_FILTER_USE_KEY
+		);
 		$this->assertCount( 1, $read );
 		$this->assertIsString( serialize( $stored ) );
 		$this->assertEquals(
@@ -51,7 +66,7 @@ class Cached_Order_Items_Test extends WPTestCase {
 
 	public function test_it_invalidates_the_cache_again_when_the_request_ends(): void {
 		// A new decorator: the shared one may have scheduled its shutdown flush on hooks a previous test removed.
-		$cached   = new Cached_Order_Items( tribe( Order_Items::class ) );
+		$cached   = new Cached_Order_Items( tribe( Order_Items::class ), tribe( 'cache' ) );
 		$order_id = static::factory()->post->create();
 
 		$cached->delete_by_order( $order_id );

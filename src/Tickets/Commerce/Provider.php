@@ -11,6 +11,7 @@ namespace TEC\Tickets\Commerce;
 use TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce\Cart\Agnostic_Cart;
 use TEC\Tickets\Commerce\Cart\Cart_Interface;
+use Tribe__Cache;
 use Tribe__Tickets__Main as Tickets_Plugin;
 
 /**
@@ -85,6 +86,9 @@ class Provider extends Service_Provider {
 		$this->container->singleton( Pending_Order::class );
 
 		// The Order Items repository is read through the object cache, whether or not the controller is active.
+		$this->container->when( Order_Items\Repositories\Cached_Order_Items::class )
+			->needs( Tribe__Cache::class )
+			->give( static fn() => tribe( 'cache' ) );
 		$this->container->singletonDecorators(
 			Order_Items\Repositories\Order_Items_Repository::class,
 			[ Order_Items\Repositories\Cached_Order_Items::class, Order_Items\Repositories\Order_Items::class ]

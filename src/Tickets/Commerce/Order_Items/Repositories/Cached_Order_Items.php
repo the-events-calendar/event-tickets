@@ -10,11 +10,12 @@
 namespace TEC\Tickets\Commerce\Order_Items\Repositories;
 
 use TEC\Tickets\Commerce\Order_Items\Models\Order_Item;
+use Tribe__Cache;
 
 /**
  * Class Cached_Order_Items.
  *
- * Decorates an Order Items repository with the object cache, which is persistent where the site has a persistent
+ * Decorates an Order Items repository with `tribe_cache()`, which is persistent where the site has a persistent
  * object cache. Every write goes to the decorated repository, then invalidates the cache, so a cached read is never
  * older than the last write.
  *
@@ -24,13 +25,13 @@ use TEC\Tickets\Commerce\Order_Items\Models\Order_Item;
  */
 final class Cached_Order_Items implements Order_Items_Repository {
 	/**
-	 * The object cache group.
+	 * The prefix of every cache key.
 	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-	private const GROUP = 'tec_tickets_order_items';
+	private const KEY_PREFIX = 'tec_tickets_order_items_';
 
 	/**
 	 * The cache key holding the token every cached read is keyed with.
@@ -39,7 +40,7 @@ final class Cached_Order_Items implements Order_Items_Repository {
 	 *
 	 * @var string
 	 */
-	private const TOKEN_KEY = 'last_changed';
+	private const TOKEN_KEY = self::KEY_PREFIX . 'last_changed';
 
 	/**
 	 * The decorated Order Items repository.
@@ -49,6 +50,15 @@ final class Cached_Order_Items implements Order_Items_Repository {
 	 * @var Order_Items_Repository
 	 */
 	private Order_Items_Repository $repository;
+
+	/**
+	 * The cache.
+	 *
+	 * @since TBD
+	 *
+	 * @var Tribe__Cache
+	 */
+	private Tribe__Cache $cache;
 
 	/**
 	 * Whether the cache is already set to be invalidated again when the request ends.
@@ -65,9 +75,11 @@ final class Cached_Order_Items implements Order_Items_Repository {
 	 * @since TBD
 	 *
 	 * @param Order_Items_Repository $repository The Order Items repository to decorate.
+	 * @param Tribe__Cache           $cache      The cache.
 	 */
-	public function __construct( Order_Items_Repository $repository ) {
+	public function __construct( Order_Items_Repository $repository, Tribe__Cache $cache ) {
 		$this->repository = $repository;
+		$this->cache      = $cache;
 	}
 
 	/**
@@ -80,24 +92,24 @@ final class Cached_Order_Items implements Order_Items_Repository {
 	 * @return Order_Item[] The rows, ordered by position, then ID, ascending.
 	 */
 	public function get_by_order( int $order_id ): array {
-		$token = wp_cache_get( self::TOKEN_KEY, self::GROUP );
+		$token = $this->cache->get( self::TOKEN_KEY );
 
 		if ( ! $token ) {
 			$this->flush();
-			$token = wp_cache_get( self::TOKEN_KEY, self::GROUP );
+			$token = $this->cache->get( self::TOKEN_KEY );
 		}
 
-		$key    = "order_{$order_id}_{$token}";
-		$cached = wp_cache_get( $key, self::GROUP, false, $found );
+		$key    = self::KEY_PREFIX . "order_{$order_id}_{$token}";
+		$cached = $this->cache->get( $key );
 
-		if ( $found && is_array( $cached ) ) {
+		if ( is_array( $cached ) ) {
 			return array_map( [ Order_Item::class, 'fromData' ], $cached );
 		}
 
 		$rows = $this->repository->get_by_order( $order_id );
 
 		// Models hold closures, which a persistent object cache cannot serialize: cache their values instead.
-		wp_cache_set( $key, array_map( static fn( Order_Item $row ) => $row->toArray(), $rows ), self::GROUP );
+		$this->cache->set( $key, array_map( static fn( Order_Item $row ) => $row->toArray(), $rows ) );
 
 		return $rows;
 	}
@@ -207,6 +219,6 @@ final class Cached_Order_Items implements Order_Items_Repository {
 	 * @return void
 	 */
 	private function bump_token(): void {
-		wp_cache_set( self::TOKEN_KEY, uniqid( '', true ), self::GROUP );
+		$this->cache->set( self::TOKEN_KEY, uniqid( '', true ) );
 	}
 }
