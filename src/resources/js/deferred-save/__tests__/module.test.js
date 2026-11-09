@@ -4,6 +4,9 @@
  */
 import $ from 'jquery';
 
+// The repository's mock fills only the first placeholder; the translated formats here are positional.
+jest.mock( '@wordpress/i18n', () => jest.requireActual( '@wordpress/i18n' ) );
+
 const rowTemplate = `
 <template id="tec-tickets-deferred-save-row">
 	<tr class="tec-tickets-deferred-save-row" data-tec-deferred-save-position="">
@@ -220,6 +223,29 @@ describe( 'deferred-save module', () => {
 		const $edit = $( 'tr[data-ticket-type-id="12"] .ticket_edit_button' );
 		expect( $edit.prop( 'disabled' ) ).toBe( true );
 		expect( $edit.attr( 'title' ) ).toBe( 'Undo the move to edit this ticket.' );
+	} );
+
+	it( 'tells a screen reader where a staged move goes in one translated sentence', () => {
+		const module = load( { strings: { markerSentences: { move: 'Se mueve a %s al guardar.' } } } );
+		module.stageMove( 12, 99, 'Other event' );
+
+		expect( $( 'tr[data-ticket-type-id="12"] [data-tec-slot="marker-text-sr"]' ).text() ).toBe( 'Se mueve a Other event al guardar.' );
+	} );
+
+	it( 'lists why a ticket is not valid in one translated sentence', () => {
+		const module = load( {
+			strings: {
+				invalidTicket: '«%1$s» : %2$s',
+				listSeparator: ' ; ',
+				rules: { name: 'nom requis', price: 'prix invalide' },
+			},
+		} );
+		module.state.stageCreate( [ [ 'ticket_name', '' ], [ 'ticket_price', '-1' ] ] );
+		module.render();
+
+		document.getElementById( 'post' ).dispatchEvent( new window.Event( 'submit', { cancelable: true } ) );
+
+		expect( $( '.tec-tickets-deferred-save-validation li' ).first().text() ).toMatch( /^«.*» : nom requis ; prix invalide$/ );
 	} );
 
 	it( 'offers no move on a ticket with a staged edit, and says why', () => {

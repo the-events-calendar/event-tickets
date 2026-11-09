@@ -48,10 +48,11 @@ class Assets_Test extends WPTestCase {
 
 		$this->assertSame( (int) ini_get( 'max_input_vars' ), $data['maxInputVars'] );
 		$this->assertSame( (int) \Tribe__Date_Utils::get_datepicker_format_index(), $data['dateFormat'] );
-		foreach ( [ 'inputLimit', 'moveBlocked', 'editBlocked', 'duplicateFailed', 'deleteConfirm', 'copySuffix' ] as $key ) {
+		foreach ( [ 'inputLimit', 'moveBlocked', 'editBlocked', 'duplicateFailed', 'deleteConfirm', 'copySuffix', 'invalidTicket', 'listSeparator' ] as $key ) {
 			$this->assertIsString( $data[ $key ] );
 			$this->assertNotSame( '', $data[ $key ], $key );
 		}
+		$this->assertStringContainsString( '%s', $data['markerSentences']['move'], 'The destination goes inside the sentence.' );
 	}
 
 	/**

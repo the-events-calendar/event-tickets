@@ -57,7 +57,7 @@ final class Assets {
 			$main,
 			self::SCRIPT,
 			'deferred-save.js',
-			[ 'jquery', 'wp-hooks', 'event-tickets-admin-js' ],
+			[ 'jquery', 'wp-hooks', 'wp-i18n', 'event-tickets-admin-js' ],
 			'admin_enqueue_scripts',
 			[
 				'groups'       => 'event-tickets-admin',
@@ -106,6 +106,15 @@ final class Assets {
 			'dateFormat'      => (int) \Tribe__Date_Utils::get_datepicker_format_index(),
 			'duplicateFailed' => __( 'The ticket could not be copied. Reload the page and try again.', 'event-tickets' ),
 			'invalidHeading'  => __( 'Some staged tickets are not valid. Fix them before saving the post.', 'event-tickets' ),
+			/* translators: %1$s: the ticket name, %2$s: the reasons it is not valid, as a list. */
+			'invalidTicket'   => __( '%1$s: %2$s', 'event-tickets' ),
+			'listSeparator'   => _x( ', ', 'separator between the reasons a ticket is not valid', 'event-tickets' ),
+			'markerSentences' => [
+				'staged' => __( 'Not saved yet.', 'event-tickets' ),
+				'delete' => __( 'Will be deleted when the post is saved.', 'event-tickets' ),
+				/* translators: %s: the title of the post the ticket moves to. */
+				'move'   => __( 'Moves to %s when the post is saved.', 'event-tickets' ),
+			],
 			'moveStaged'      => __( 'The move is staged and happens when you save the post. You may now close this window.', 'event-tickets' ),
 			// A ticket's own sales: with shared capacity its availability is the whole pool's.
 			'sold'            => $this->sold_counts(),

@@ -11,6 +11,7 @@
  */
 
 import { addFilter, addAction, doAction } from '@wordpress/hooks';
+import { sprintf } from '@wordpress/i18n';
 import { createState, buildHiddenFields, validateFields, duplicateFields, copyOfSaved } from './deferred-save/utils';
 
 const CONTAINER = '#tec-tickets-deferred-save';
@@ -220,6 +221,20 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 	};
 
 	/**
+	 * The marker as one sentence for screen readers, the destination of a move included.
+	 *
+	 * @param {string} kind   `staged`, `delete` or `move`.
+	 * @param {string} target The destination title for a move.
+	 *
+	 * @return {string} The sentence, or an empty string when there is none for the kind.
+	 */
+	const markerSentence = ( kind, target ) => {
+		const sentence = strings.markerSentences && strings.markerSentences[ kind ];
+
+		return sentence ? sprintf( sentence, target ) : '';
+	};
+
+	/**
 	 * Puts a marker on a saved ticket's row.
 	 *
 	 * @param {jQuery}  $row   The row.
@@ -236,7 +251,7 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 		badge.classList.add( `tec-tickets-deferred-save-badge--${ kind }` );
 		const text = markerText( kind );
 		fillSlot( badge, 'marker-text', text );
-		fillSlot( badge, 'marker-text-sr', `${ text }${ target ? ` ${ target }` : '' }.` );
+		fillSlot( badge, 'marker-text-sr', markerSentence( kind, target ) || text );
 		fillSlot( badge, 'marker-target', target );
 		if ( ! undo ) {
 			badge.querySelector( '.tec-tickets-deferred-save-badge__undo' ).remove();
@@ -504,9 +519,11 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 			problems.map( ( { name, rules } ) => {
 				const reasons = rules
 					.map( ( rule ) => ( strings.rules && strings.rules[ rule ] ) || rule )
-					.join( ', ' );
+					.join( strings.listSeparator || ', ' );
 
-				return `${ name }: ${ reasons }`;
+				// The format is translated on the server and localized with the script.
+				// eslint-disable-next-line @wordpress/valid-sprintf
+				return sprintf( strings.invalidTicket || '%1$s: %2$s', name, reasons );
 			} )
 		);
 	};
