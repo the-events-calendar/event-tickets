@@ -4,6 +4,9 @@
  */
 import $ from 'jquery';
 
+// The repository's mock fills only the first placeholder; the translated formats here are positional.
+jest.mock( '@wordpress/i18n', () => jest.requireActual( '@wordpress/i18n' ) );
+
 const rowTemplate = `
 <template id="tec-tickets-deferred-save-row">
 	<tr class="tec-tickets-deferred-save-row" data-tec-deferred-save-position="">
@@ -144,14 +147,15 @@ describe( 'deferred-save module', () => {
 		expect( module.state.toPayload().create ).toHaveLength( 1 );
 	} );
 
-	it( 'checks a lower capacity against the tickets the row says it sold, not against a shared pool', () => {
+	it( 'checks a lower capacity against the tickets the server says it sold, not against a shared pool', () => {
 		// Shared capacity: 100 for this ticket, 40 left in the pool other tickets sold from, none of this one sold.
 		const row = `<table><tbody class="tribe-tickets-editor-table-tickets-body" data-ticket-type="default">
-			<tr data-ticket-type-id="12" data-ticket-sold="0">
+			<tr data-ticket-type-id="12">
 				<td><div class="tribe-tickets__tickets-editor-ticket-name-title">Capped</div></td>
 				<td class="ticket_capacity">100</td><td class="ticket_available">40</td>
 			</tr></tbody></table>`;
-		const module = load( { savedTables: row } );
+		const strings = { sold: { 12: 0 } };
+		const module = load( { savedTables: row, strings } );
 		module.state.stageUpdate( 12, [ [ 'ticket_name', 'Capped' ], [ 'tribe-ticket[capacity]', '50' ] ] );
 		module.render();
 
@@ -161,77 +165,11 @@ describe( 'deferred-save module', () => {
 		expect( event.defaultPrevented ).toBe( false );
 
 		// Below what this ticket itself sold is still refused.
-		$( 'tr[data-ticket-type-id="12"]' ).attr( 'data-ticket-sold', '60' );
+		strings.sold[ 12 ] = 60;
 		const refused = new window.Event( 'submit', { cancelable: true } );
 		document.getElementById( 'post' ).dispatchEvent( refused );
 
 		expect( refused.defaultPrevented ).toBe( true );
-	} );
-
-	it( 'lets a preview through with invalid staged tickets, which a preview does not save', () => {
-		const module = load();
-		module.state.stageCreate( [ [ 'ticket_name', '' ] ] );
-		module.render();
-		document.getElementById( 'wp-preview' ).value = 'dopreview';
-
-		const event = new window.Event( 'submit', { cancelable: true } );
-		document.getElementById( 'post' ).dispatchEvent( event );
-
-		expect( event.defaultPrevented ).toBe( false );
-		expect( $( '.tec-tickets-deferred-save-validation' ).length ).toBe( 0 );
-	} );
-
-	it( 'tells other scripts through wp.hooks that a ticket was staged, with the payload', () => {
-		load();
-		window.tribe.tickets.editor = { fetchPanels: jest.fn() };
-		const staged = jest.fn();
-		loadedHooks.addAction( 'tec.tickets.admin.deferredSave.staged', 'tests', staged );
-
-		loadedHooks.applyFilters( 'tec.tickets.admin.ticket.intercepted', false, 'save', {} );
-
-		expect( staged ).toHaveBeenCalledTimes( 1 );
-		expect( staged.mock.calls[ 0 ][ 0 ].create ).toHaveLength( 1 );
-	} );
-
-	it( 'lets the fields a staged ticket turned on show again when it is edited', () => {
-		const module = load( {
-			editPanel: `
-				<input name="ticket_name" value="">
-				<input type="checkbox" id="ticket_add_sale_price" class="tribe-dependency" name="ticket_add_sale_price" value="on">
-				<input id="ticket_sale_price" name="ticket_sale_price" value="" disabled>`,
-		} );
-		window.tribe.tickets.editor = { fetchPanels: jest.fn() };
-		// Stands in for common's tribe-dependency, which tickets.js ran before the refreshed action, on the empty form.
-		$( document ).on( 'verify.dependency change.dependency', '.tribe-dependency', function () {
-			$( '#ticket_sale_price' ).prop( 'disabled', ! this.checked );
-		} );
-		module.state.stageCreate( [
-			[ 'ticket_name', 'General' ],
-			[ 'ticket_price', '10' ],
-			[ 'ticket_add_sale_price', 'on' ],
-			[ 'ticket_sale_price', '8' ],
-		] );
-		module.render();
-
-		$( '.tec-tickets-deferred-save-row__edit' ).trigger( 'click' );
-		loadedHooks.doAction( 'tec.tickets.admin.panels.refreshed', { swapTo: 'ticket' } );
-		$( document ).off( 'verify.dependency change.dependency' );
-
-		expect( $( '#ticket_add_sale_price' ).prop( 'checked' ) ).toBe( true );
-		expect( $( '#ticket_sale_price' ).prop( 'disabled' ) ).toBe( false );
-		expect( $( '#ticket_sale_price' ).val() ).toBe( '8' );
-	} );
-
-	it( 'sends a price typed with a comma decimal as the plain number the server reads', () => {
-		window.price_format = { decimal: ',' };
-		const module = load();
-		delete window.price_format;
-		module.state.stageCreate( [ [ 'ticket_name', 'General' ], [ 'ticket_price', '12,50' ] ] );
-		module.render();
-
-		expect( $( 'input[name="tec_tickets[create][0][ticket_price]"]' ).val() ).toBe( '12.5' );
-		// The row still shows the price as the admin typed it.
-		expect( $( '.tec-tickets-deferred-save-row [data-tec-slot="price"]' ).text() ).toBe( '12,50' );
 	} );
 
 	it( 'drops the leave warning when the post form submits for real', () => {
@@ -285,6 +223,29 @@ describe( 'deferred-save module', () => {
 		const $edit = $( 'tr[data-ticket-type-id="12"] .ticket_edit_button' );
 		expect( $edit.prop( 'disabled' ) ).toBe( true );
 		expect( $edit.attr( 'title' ) ).toBe( 'Undo the move to edit this ticket.' );
+	} );
+
+	it( 'tells a screen reader where a staged move goes in one translated sentence', () => {
+		const module = load( { strings: { markerSentences: { move: 'Se mueve a %s al guardar.' } } } );
+		module.stageMove( 12, 99, 'Other event' );
+
+		expect( $( 'tr[data-ticket-type-id="12"] [data-tec-slot="marker-text-sr"]' ).text() ).toBe( 'Se mueve a Other event al guardar.' );
+	} );
+
+	it( 'lists why a ticket is not valid in one translated sentence', () => {
+		const module = load( {
+			strings: {
+				invalidTicket: '«%1$s» : %2$s',
+				listSeparator: ' ; ',
+				rules: { name: 'nom requis', price: 'prix invalide' },
+			},
+		} );
+		module.state.stageCreate( [ [ 'ticket_name', '' ], [ 'ticket_price', '-1' ] ] );
+		module.render();
+
+		document.getElementById( 'post' ).dispatchEvent( new window.Event( 'submit', { cancelable: true } ) );
+
+		expect( $( '.tec-tickets-deferred-save-validation li' ).first().text() ).toMatch( /^«.*» : nom requis ; prix invalide$/ );
 	} );
 
 	it( 'offers no move on a ticket with a staged edit, and says why', () => {

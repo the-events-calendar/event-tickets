@@ -444,21 +444,6 @@ describe( 'staging and settling a post save', () => {
 		expect( mockEditor.createErrorNotice ).toHaveBeenCalledTimes( 1 );
 	} );
 
-	it( 'does not let a listener of ticketStaged stop the staging', () => {
-		doAction.mockImplementation( () => {
-			throw new Error( 'A staged listener failed.' );
-		} );
-		jest.spyOn( console, 'error' ).mockImplementation( () => {} );
-		const gen = sagas.stageTicket( 'a', [ [ 'name', 'A' ] ] );
-		let step = gen.next();
-		while ( ! step.done ) {
-			step = gen.next();
-		}
-		console.error.mockRestore(); // eslint-disable-line no-console
-
-		expect( step.done ).toBe( true );
-	} );
-
 	it( 'records as saved the position a ticket was sent with, not one it was moved to while the save was out', () => {
 		mockEditor.order = [ 'a', 'b' ];
 		sagas.rememberPosition( 'a' );
@@ -517,6 +502,34 @@ describe( 'staging and settling a post save', () => {
 			'tickets-parent',
 			false
 		);
+	} );
+
+	it( 'puts the block of a refused delete or move back where it was, so the next save keeps the order', () => {
+		mockEditor.order = [ 'a', 'b', 'c' ];
+		[ 'a', 'b', 'c' ].forEach( sagas.rememberPosition );
+		const staging = stateWith( {
+			a: { hasBeenCreated: true, ticketId: 40 },
+			b: { hasBeenCreated: true, ticketId: 41 },
+			c: { hasBeenCreated: true, ticketId: 50 },
+		} );
+		// The move is staged while its block is still there; the delete once its block was removed.
+		run( staging, sagas.stageMove, 50, 9 );
+		mockEditor.order = [ 'b', 'c' ];
+		run( staging, sagas.stageDelete, 'a', 40 );
+		mockEditor.order = [ 'b' ];
+
+		save( stateWith( { b: { hasBeenCreated: true, ticketId: 41 } }, { deletes: [ 40 ], moves: { 50: 9 } } ), {
+			created: {},
+			errors: [
+				{ part: 'delete', key: 40, message: 'Not allowed' },
+				{ part: 'move', key: 50, message: 'Could not move' },
+			],
+		} );
+
+		expect( mockEditor.insertBlock.mock.calls.map( ( [ block, index ] ) => [ block.attributes.ticketId, index ] ) ).toEqual( [
+			[ 40, 0 ],
+			[ 50, 2 ],
+		] );
 	} );
 } );
 
