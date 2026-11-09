@@ -1,0 +1,7 @@
+significance: patch
+type: fix
+entry: Allowed the Move Attendees dialog to move RSVP attendees to another
+  event's RSVP when the new RSVP system is active, stopped it from moving RSVP
+  attendees onto paid tickets or ticket attendees onto RSVPs, and left spot
+  counts unchanged when a Not Going RSVP attendee was moved.
+timestamp: 2026-11-09T18:54:31.113Z

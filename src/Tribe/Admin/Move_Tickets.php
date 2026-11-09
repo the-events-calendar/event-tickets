@@ -5,8 +5,11 @@ use TEC\Events\Custom_Tables\V1\WP_Query\Custom_Tables_Query;
 use Tribe__Events__Pro__Main as ECP;
 use Tribe__Events__Main as TEC;
 use TEC\Tickets\Admin\Attendees\Page as Attendees_Page;
+use TEC\Tickets\Commerce\Module as Commerce_Module;
 use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
 use TEC\Tickets\Event;
+use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
+use TEC\Tickets\RSVP\V2\Ticket as RSVP_V2_Ticket;
 
 /**
  * Handles moving attendees from a post to another.
@@ -464,6 +467,8 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * Builds a list of ticket types in the designated post and belonging to
 	 * the specified provider.
 	 *
+	 * @since TBD Offers only RSVP v2 tickets when moving RSVP v2 attendees, only non-RSVP v2 tickets otherwise, and none when the selection mixes both.
+	 *
 	 * @param int    $target_post_id
 	 * @param string $provider
 	 * @param array  $ticket_ids
@@ -473,9 +478,19 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	protected function get_ticket_type_matches( $target_post_id, $provider, $ticket_ids = array() ) {
 		$ticket_types = array();
 		$ticket_ids   = array_map( 'absint', array_filter( $ticket_ids, 'is_numeric' ) );
+		$moving_rsvps = $this->attendees_are_tc_rsvp( $ticket_ids );
+
+		if ( null === $moving_rsvps ) {
+			return $ticket_types;
+		}
 
 		foreach ( Tribe__Tickets__Tickets::get_event_tickets( $target_post_id ) as $ticket ) {
-			if ( stripslashes( $provider ) !== $ticket->provider_class ) {
+			$is_tc_rsvp = $this->is_tc_rsvp_ticket( $ticket->ID );
+
+			// The RSVP provider lists an RSVP v2 ticket, but Tickets Commerce owns it and its attendees.
+			$ticket_provider = $is_tc_rsvp ? Commerce_Module::class : $ticket->provider_class;
+
+			if ( stripslashes( $provider ) !== $ticket_provider || $moving_rsvps !== $is_tc_rsvp ) {
 				continue;
 			}
 
@@ -585,6 +600,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * a mix of RSVP and WooCommerce tickets be moved to a new ticket type).
 	 *
 	 * @since 5.30.3 Moves nothing, and filters no Attendees, when the target ticket type is not attached to the target post.
+	 * @since TBD Moves nothing between an RSVP v2 ticket and a non-RSVP v2 ticket; does not adjust stock for Not Going RSVP v2 attendees.
 	 *
 	 * @param array $ticket_ids
 	 * @param int   $tgt_ticket_type_id
@@ -656,6 +672,11 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			return 0;
 		}
 
+		// RSVP v2 and other Tickets Commerce tickets share a provider, but attendees only move between tickets of the same kind.
+		if ( $this->attendees_are_tc_rsvp( $ticket_ids ) !== $this->is_tc_rsvp_ticket( $tgt_ticket_type_id ) ) {
+			return 0;
+		}
+
 		$provider_class   = key( $providers );
 		$ticket_type_key  = constant( $provider_class . '::ATTENDEE_PRODUCT_KEY' );
 		$ticket_event_key = constant( $provider_class . '::ATTENDEE_EVENT_KEY' );
@@ -691,7 +712,8 @@ class Tribe__Tickets__Admin__Move_Tickets {
 				$rsvp = new Tribe__Tickets__RSVP();
 				$rsvp->decrease_ticket_sales_by( $src_ticket_type_id );
 				$rsvp->increase_ticket_sales_by( $tgt_ticket_type_id );
-			} else {
+			} elseif ( 'no' !== get_post_meta( $ticket_id, RSVP_V2_Constants::RSVP_STATUS_META_KEY, true ) ) {
+				// A Not Going RSVP v2 attendee holds no stock, so there is nothing to restore or deduct.
 				$c_ticket = new Commerce_Ticket();
 
 				// Check if the ticket type uses shared capacity.
@@ -942,5 +964,43 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Returns whether a ticket is an RSVP v2 ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|string $ticket_id The ticket ID.
+	 *
+	 * @return bool Whether the ticket is an RSVP v2 ticket.
+	 */
+	private function is_tc_rsvp_ticket( $ticket_id ): bool {
+		return tribe( RSVP_V2_Ticket::class )->is_rsvp( absint( $ticket_id ) );
+	}
+
+	/**
+	 * Returns whether the attendees all hold RSVP v2 tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @param int[] $attendee_ids The attendee IDs.
+	 *
+	 * @return bool|null Whether every attendee holds an RSVP v2 ticket, or `null` when only some do.
+	 */
+	private function attendees_are_tc_rsvp( array $attendee_ids ): ?bool {
+		$rsvp_count = 0;
+
+		foreach ( $attendee_ids as $attendee_id ) {
+			if ( $this->is_tc_rsvp_ticket( get_post_meta( $attendee_id, Commerce_Module::ATTENDEE_PRODUCT_KEY, true ) ) ) {
+				++$rsvp_count;
+			}
+		}
+
+		if ( 0 === $rsvp_count ) {
+			return false;
+		}
+
+		return count( $attendee_ids ) === $rsvp_count ? true : null;
 	}
 }

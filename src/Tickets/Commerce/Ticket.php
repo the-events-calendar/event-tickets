@@ -1116,6 +1116,7 @@ class Ticket extends Ticket_Data {
 	 *
 	 * @since 5.6.7 removed the use of `$this->decrease_ticket_sales_by` as the move method already takes care of stock.
 	 * @since 5.5.9
+	 * @since TBD Leaves ticket stock alone for a Not Going RSVP v2 attendee.
 	 *
 	 * @param int $ticket_id                The ticket which has been moved.
 	 * @param int $src_ticket_type_id       The ticket type it belonged to originally.
@@ -1138,9 +1139,11 @@ class Ticket extends Ticket_Data {
 
 		$attendee_data = $attendee->save();
 
-		// Update the ticket stock data.
-		$this->increase_ticket_stock_by( $src_ticket_type_id, 1 );
-		$this->decrease_ticket_stock_by( $tgt_ticket_type_id, 1 );
+		// A Not Going RSVP v2 attendee holds no stock, so there is nothing to restore or deduct.
+		if ( 'no' !== get_post_meta( $attendee_id, RSVP_V2_Constants::RSVP_STATUS_META_KEY, true ) ) {
+			$this->increase_ticket_stock_by( $src_ticket_type_id, 1 );
+			$this->decrease_ticket_stock_by( $tgt_ticket_type_id, 1 );
+		}
 
 		// Sync shared capacity.
 		/** @var \Tribe__Tickets__Tickets_Handler $handler */
