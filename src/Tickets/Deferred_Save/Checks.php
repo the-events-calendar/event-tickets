@@ -174,7 +174,7 @@ final class Checks {
 			$source_id = is_int( $source_id ) || ( is_string( $source_id ) && ctype_digit( $source_id ) ) ? (int) $source_id : 0;
 			$source    = $source_id > 0 ? $this->get_ticket_on_post( $source_id, $post_id ) : null;
 
-			if ( null === $source || ! $this->permissions->for_ticket( $source )->user_can_edit_ticket( $source ) ) {
+			if ( null === $source || ! $this->permissions->user_can_edit_ticket( $source ) ) {
 				$rejections = $rejections->with( Parser::CREATE, $position, __( 'The ticket to copy is not one you can edit on this post.', 'event-tickets' ) );
 				unset( $create[ $position ] );
 				continue;
