@@ -28,7 +28,7 @@ import { __ } from '@wordpress/i18n';
 import * as actions from './actions';
 import * as selectors from './selectors';
 import { buildPayload, reconcileSaveResponse, usesDeferredSave } from './deferred';
-import { setBodyDetails } from './sagas';
+import { setBodyDetails } from './body';
 
 const NAMESPACE = 'tec/tickets/deferred-save';
 
@@ -45,6 +45,11 @@ const bodies = {};
  * @type {Object<string, number>}
  */
 const positions = {};
+
+/**
+ * Ticket ID => the index its block had when its delete or move was staged, so a refusal puts the block back there.
+ */
+const removedAt = {};
 
 /**
  * What the post save in flight carries, recorded on `editor.preSavePost`; `null` when it carries nothing.
@@ -185,13 +190,32 @@ const restoreTicketBlock = ( ticketId ) => {
 	const [ parent ] =
 		editor && 'function' === typeof editor.getBlocksByName ? editor.getBlocksByName( 'tribe/tickets' ) : [];
 
+	const index = hasOwn( removedAt, ticketId ) ? removedAt[ ticketId ] : undefined;
+	delete removedAt[ ticketId ];
+
 	if ( parent && blocks && 'function' === typeof blocks.insertBlock ) {
 		blocks.insertBlock(
 			createBlock( 'tribe/tickets-item', { hasBeenCreated: true, ticketId } ),
-			undefined,
+			index,
 			parent,
 			false
 		);
+	}
+};
+
+/**
+ * Remembers where a ticket's block sits: now when it is still there, or where it was last saved when it is gone.
+ *
+ * @param {string} clientId The ticket block.
+ * @param {number} ticketId The ticket.
+ */
+const rememberRemovedAt = ( clientId, ticketId ) => {
+	const index = blockIndex( clientId );
+
+	if ( index >= 0 ) {
+		removedAt[ ticketId ] = index;
+	} else if ( hasOwn( positions, clientId ) ) {
+		removedAt[ ticketId ] = positions[ clientId ];
 	}
 };
 
@@ -334,7 +358,10 @@ export function* buildLivePayload( excluded = [] ) {
 
 	// Unstaged, not only left out: removing the block again with the toolbar, which stages nothing, must not resend them.
 	if ( heldDeletes.length || heldMoves.length ) {
-		heldDeletes.forEach( ( ticketId ) => delete deletedBlocks[ ticketId ] );
+		heldDeletes.forEach( ( ticketId ) => {
+			delete deletedBlocks[ ticketId ];
+			delete removedAt[ ticketId ];
+		} );
 		yield put( actions.clearStagedTickets( { deletes: heldDeletes, moves: heldMoves } ) );
 	}
 
@@ -380,17 +407,6 @@ export function* stageTicket( clientId, entries ) {
 	yield put( actions.setTicketSaveError( clientId, '' ) );
 	yield put( actions.setTicketHasChanges( clientId, false ) );
 	yield call( refreshPayload );
-
-	/**
-	 * Fires when a ticket block's create or update is staged for the post save, on a post that defers ticket
-	 * saves. `tec.tickets.blocks.ticketCreated` or `tec.tickets.blocks.ticketUpdated` fires once the post save
-	 * commits it.
-	 *
-	 * @since TBD
-	 *
-	 * @param {string} clientId The ticket block's client ID.
-	 */
-	runHook( 'tec.tickets.blocks.ticketStaged', clientId );
 }
 
 /**
@@ -403,6 +419,7 @@ export function* stageTicket( clientId, entries ) {
  */
 export function* stageDelete( clientId, ticketId ) {
 	forgetBody( clientId );
+	rememberRemovedAt( clientId, ticketId );
 	deletedBlocks[ ticketId ] = clientId;
 	yield put( actions.stageTicketDelete( ticketId ) );
 	yield call( refreshPayload );
@@ -436,18 +453,20 @@ export function* dropStaged( clientId ) {
 export function* stageMove( ticketId, destinationId ) {
 	const clientIds = yield select( selectors.getTicketsAllClientIds );
 	const byClientId = yield select( selectors.getTicketsByClientId );
-	const hasStagedEdit = clientIds.some( ( clientId ) => {
-		const ticket = byClientId[ clientId ];
+	const clientId = clientIds.find(
+		( id ) => byClientId[ id ] && Number( byClientId[ id ].ticketId ) === Number( ticketId )
+	);
 
-		return ticket && ticket.isStaged && Number( ticket.ticketId ) === Number( ticketId );
-	} );
-
-	if ( hasStagedEdit ) {
+	if ( clientId && byClientId[ clientId ].isStaged ) {
 		showNotice(
 			__( 'This ticket has changes waiting for the post save. Save the post before moving it.', 'event-tickets' )
 		);
 
 		return false;
+	}
+
+	if ( clientId ) {
+		rememberRemovedAt( clientId, ticketId );
 	}
 
 	yield put( actions.stageTicketMove( ticketId, destinationId ) );
@@ -706,9 +725,13 @@ export function* applySaveResponse( response, sentNow ) {
 		 */
 		runHook( 'tec.tickets.blocks.ticketDeleted', clientId, ticketId );
 		delete deletedBlocks[ ticketId ];
+		delete removedAt[ ticketId ];
 	} );
 	outcome.notices.forEach( showNotice );
-	outcome.restore.forEach( restoreTicketBlock );
+	// Lowest index first, so each block lands where it was with the ones before it already back.
+	[ ...outcome.restore ]
+		.sort( ( a, b ) => ( removedAt[ a ] ?? Infinity ) - ( removedAt[ b ] ?? Infinity ) )
+		.forEach( restoreTicketBlock );
 
 	// A created ticket's ID reaches its block after the content was saved: save again so the content has it,
 	// or a reload shows the block empty next to a second block for the saved ticket.
