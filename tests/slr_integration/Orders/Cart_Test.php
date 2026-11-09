@@ -33,6 +33,7 @@ class Cart_Test extends WPTestCase {
 	 */
 	public function truncate_tables(): void {
 		tribe( Sessions_Table::class )->empty_table();
+		unset( $_COOKIE[ Session::COOKIE_NAME ] );
 	}
 
 	/**
@@ -294,6 +295,68 @@ class Cart_Test extends WPTestCase {
 		$tc_cart->process( $data );
 
 		$this->assertEquals( 1, $tc_cart->get_items_in_cart()[ $ticket ]['quantity'] ?? null );
+	}
+
+	/**
+	 * A session on another event keeps the checkout cleanup from clearing the cart, so the posted
+	 * event having no session must leave its seated ticket out.
+	 *
+	 * @test
+	 * @covers Cart::handle_seat_selection
+	 */
+	public function test_cart_leaves_out_a_seated_ticket_when_only_another_event_has_a_session(): void {
+		[ $other_post ]    = $this->given_a_seated_ticket();
+		[ $post, $ticket ] = $this->given_a_seated_ticket();
+		tribe( Session::class )->add_entry( $other_post, 'other-token' );
+		$this->given_a_started_session( 'other-token', $other_post );
+
+		$tc_cart = tribe( TicketsCommerce_Cart::class );
+		$data    = $tc_cart->prepare_data( $this->seat_selection_checkout_request( $post, $ticket ) );
+		$tc_cart->process( $data );
+
+		$this->assertArrayNotHasKey( $ticket, $tc_cart->get_items_in_cart() );
+	}
+
+	/**
+	 * Completion deletes every session before the attendees are generated, so the seats must come
+	 * from the warmed-up session of the attendee's own event, not the earliest expiring one.
+	 *
+	 * @test
+	 * @covers Cart::save_seat_data_for_attendee
+	 * @covers Cart::warmup_caches
+	 */
+	public function test_save_seat_data_for_attendee_reads_the_session_of_the_attendee_event(): void {
+		[ $other_post, $other_ticket ] = $this->given_a_seated_ticket();
+		[ $post, $ticket ]             = $this->given_a_seated_ticket();
+
+		$session = tribe( Session::class );
+		$session->add_entry( $other_post, 'other-token' );
+		$session->add_entry( $post, 'test-token' );
+		$expiration = strtotime( '2030-01-01 00:00:00' );
+		$this->given_a_started_session( 'other-token', $other_post, $expiration );
+		$this->given_a_started_session( 'test-token', $post, $expiration + HOUR_IN_SECONDS );
+		$sessions_table = tribe( Sessions_Table::class );
+		$sessions_table->update_reservations( 'other-token', $this->create_mock_reservations_data( [ $other_ticket ], 1 ) );
+		$sessions_table->update_reservations( 'test-token', $this->create_mock_reservations_data( [ $ticket ], 2 ) );
+		$expected = $sessions_table->get_reservations_for_token( 'test-token' )[ $ticket ];
+
+		$cart = tribe( Cart::class );
+		$cart->warmup_caches();
+		$sessions_table->delete_token_session( 'other-token' );
+		$sessions_table->delete_token_session( 'test-token' );
+
+		$ticket_object = tribe( Module::class )->get_ticket( $post, $ticket );
+		foreach ( $expected as $reservation ) {
+			$attendee                    = $this->create_attendee_for_ticket( $ticket, $post );
+			$attendee_object             = get_post( $attendee );
+			$attendee_object->event_id   = $post;
+			$attendee_object->product_id = $ticket;
+
+			$cart->save_seat_data_for_attendee( $attendee_object, $ticket_object );
+
+			$this->assertEquals( $reservation['reservation_id'], get_post_meta( $attendee, Meta::META_KEY_RESERVATION_ID, true ) );
+			$this->assertEquals( $reservation['seat_label'], get_post_meta( $attendee, Meta::META_KEY_ATTENDEE_SEAT_LABEL, true ) );
+		}
 	}
 
 	/**

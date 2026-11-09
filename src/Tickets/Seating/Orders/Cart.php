@@ -109,10 +109,12 @@ class Cart {
 
 		/*
 		 * The earliest expiring session can belong to another event, so read the seats held by the
-		 * session of the posted one.
+		 * session of the posted one. A session on another event keeps the checkout cleanup from
+		 * clearing the cart, so the posted event having none means it holds no seats.
 		 */
-		$token = $this->session->get_entries()[ $data['post_id'] ?? 0 ] ?? '';
-		$held  = $token ? $this->sessions->get_reservations_for_token( $token ) : null;
+		$entries = $this->session->get_entries();
+		$token   = $entries[ $data['post_id'] ?? 0 ] ?? '';
+		$held    = $token ? $this->sessions->get_reservations_for_token( $token ) : ( $entries ? [] : null );
 
 		foreach ( $data['tickets'] as $key => $ticket_data ) {
 			$ticket_id  = $ticket_data['ticket_id'] ?? 0;
@@ -232,16 +234,17 @@ class Cart {
 	 *
 	 * @since 5.16.0
 	 * @since 5.29.5 Sanitized the seat label.
+	 * @since TBD Read the seats from the session of the attendee's event.
 	 *
 	 * @param WP_Post       $attendee   The generated attendee.
 	 * @param Ticket_Object $ticket     The ticket the attendee is generated for.
 	 */
 	public function save_seat_data_for_attendee( WP_Post $attendee, Ticket_Object $ticket ): void {
-		[ $token, $object_id ] = $this->get_session_token_object_id();
-		$event_id              = (int) $attendee->event_id;
+		$event_id = (int) $attendee->event_id;
+		$token    = $event_id ? ( $this->session->get_entries()[ $event_id ] ?? '' ) : '';
 
-		if ( $event_id && $event_id === (int) $object_id ) {
-			$session_stack    = $this->get_session_stack( (string) $token, (int) $object_id, (int) $ticket->ID );
+		if ( $token ) {
+			$session_stack    = $this->get_session_stack( $token, $event_id, (int) $ticket->ID );
 			$reservation_data = $session_stack->current();
 			$session_stack->next();
 			$reservation_id = $reservation_data['reservation_id'] ?? '';
@@ -316,6 +319,7 @@ class Cart {
 	 * Fetches the token reservations either from the cache or from the database.
 	 *
 	 * @since 5.17.0
+	 * @since TBD Memoize the reservations per token.
 	 *
 	 * @param string $token The token to fetch the reservations for.
 	 *
@@ -327,7 +331,7 @@ class Cart {
 	 */
 	private function get_token_reservations( string $token ): array {
 		$cache        = tribe_cache();
-		$memo_key     = 'tec_tc_session_token_reservations';
+		$memo_key     = 'tec_tc_session_token_reservations_' . $token;
 		$reservations = $cache[ $memo_key ] ?? null;
 
 		if ( ! is_array( $reservations ) ) {
@@ -342,17 +346,14 @@ class Cart {
 	 * Warms up the session caches that might be needed later.
 	 *
 	 * @since 5.17.0
+	 * @since TBD Warm up the reservations of every session in the cookie.
 	 *
 	 * @return void The method does not return a valued, the cache is warmed up.
 	 */
 	public function warmup_caches(): void {
-		[ $token ] = $this->get_session_token_object_id();
-
-		if ( empty( $token ) ) {
-			return;
+		foreach ( $this->session->get_entries() as $token ) {
+			/** @noinspection UnusedFunctionResultInspection */
+			$this->get_token_reservations( $token );
 		}
-
-		/** @noinspection UnusedFunctionResultInspection */
-		$this->get_token_reservations( $token );
 	}
 }
