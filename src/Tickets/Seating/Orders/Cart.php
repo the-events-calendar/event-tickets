@@ -94,7 +94,7 @@ class Cart {
 	 *
 	 * @since 5.16.0
 	 * @since 5.29.5.1 Cap each seated ticket's quantity, and its seat labels, at the number of seats the session holds.
-	 * @since TBD Leave out a seated ticket the session holds no seats for.
+	 * @since TBD Leave out a seated ticket the session holds no seats for, cap a seated ticket posted without seat labels, and read the session of the posted event.
 	 *
 	 * @param array $data The data to prepare for the cart.
 	 *
@@ -107,9 +107,12 @@ class Cart {
 			return $data;
 		}
 
-		[ $token ] = $this->get_session_token_object_id();
-
-		$held = $token ? $this->get_token_reservations( $token ) : null;
+		/*
+		 * The earliest expiring session can belong to another event, so read the seats held by the
+		 * session of the posted one.
+		 */
+		$token = $this->session->get_entries()[ $data['post_id'] ?? 0 ] ?? '';
+		$held  = $token ? $this->sessions->get_reservations_for_token( $token ) : null;
 
 		foreach ( $data['tickets'] as $key => $ticket_data ) {
 			$ticket_id  = $ticket_data['ticket_id'] ?? 0;
@@ -131,16 +134,17 @@ class Cart {
 				continue;
 			}
 
-			if ( ! $has_labels ) {
-				continue;
-			}
-
 			if ( null !== $seats_held && isset( $ticket_data['quantity'] ) && $ticket_data['quantity'] > $seats_held ) {
-				$ticket_data['quantity']    = $seats_held;
-				$ticket_data['seat_labels'] = array_slice( (array) $ticket_data['seat_labels'], 0, $seats_held );
+				$ticket_data['quantity'] = $seats_held;
+
+				if ( $has_labels ) {
+					$ticket_data['seat_labels'] = array_slice( (array) $ticket_data['seat_labels'], 0, $seats_held );
+				}
 			}
 
-			$ticket_data['extra']['seats'] = $ticket_data['seat_labels'];
+			if ( $has_labels ) {
+				$ticket_data['extra']['seats'] = $ticket_data['seat_labels'];
+			}
 
 			$data['tickets'][ $key ] = $ticket_data;
 		}

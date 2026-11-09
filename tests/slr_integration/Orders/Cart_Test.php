@@ -61,6 +61,7 @@ class Cart_Test extends WPTestCase {
 		$cart = tribe( Cart::class );
 		$data = $cart->handle_seat_selection(
 			[
+				'post_id' => $post,
 				'tickets' => [
 					[
 						'ticket_id'   => $ticket,
@@ -97,6 +98,7 @@ class Cart_Test extends WPTestCase {
 		$cart = tribe( Cart::class );
 		$data = $cart->handle_seat_selection(
 			[
+				'post_id' => $post,
 				'tickets' => [
 					[
 						'ticket_id'   => $ticket,
@@ -168,6 +170,7 @@ class Cart_Test extends WPTestCase {
 
 		$data = tribe( Cart::class )->handle_seat_selection(
 			[
+				'post_id' => $post,
 				'tickets' => [
 					[
 						'ticket_id'   => $ticket,
@@ -223,6 +226,74 @@ class Cart_Test extends WPTestCase {
 		$tc_cart->process( $data );
 
 		$this->assertArrayNotHasKey( $ticket, $tc_cart->get_items_in_cart() );
+	}
+
+	/**
+	 * Without the cap, the attendees past the held seats would sell with an empty seat label.
+	 *
+	 * @test
+	 * @covers Cart::handle_seat_selection
+	 */
+	public function test_handle_seat_selection_caps_a_seated_ticket_posted_without_seat_labels(): void {
+		[ $post, $ticket ] = $this->given_a_seated_ticket();
+		tribe( Session::class )->add_entry( $post, 'test-token' );
+		$this->given_a_started_session( 'test-token', $post );
+
+		$held = 1;
+		tribe( Sessions_Table::class )->update_reservations(
+			'test-token',
+			$this->create_mock_reservations_data( [ $ticket ], $held )
+		);
+
+		$data = tribe( Cart::class )->handle_seat_selection(
+			[
+				'post_id' => $post,
+				'tickets' => [
+					[
+						'ticket_id' => $ticket,
+						'quantity'  => $held + 2,
+					],
+				],
+			]
+		);
+
+		$this->assertEquals( $held, $data['tickets'][0]['quantity'] );
+		$this->assertArrayNotHasKey( 'seat_labels', $data['tickets'][0] );
+		$this->assertArrayNotHasKey( 'extra', $data['tickets'][0] );
+	}
+
+	/**
+	 * A session left open on another event, expiring first, must not stand in for this event's session.
+	 *
+	 * @test
+	 * @covers Cart::handle_seat_selection
+	 */
+	public function test_cart_reads_the_seats_held_by_the_session_of_the_posted_event(): void {
+		[ $other_post ]    = $this->given_a_seated_ticket();
+		[ $post, $ticket ] = $this->given_a_seated_ticket();
+
+		$session = tribe( Session::class );
+		$session->add_entry( $other_post, 'other-token' );
+		$session->add_entry( $post, 'test-token' );
+		$expiration = strtotime( '2030-01-01 00:00:00' );
+		$this->given_a_started_session( 'other-token', $other_post, $expiration );
+		$this->given_a_started_session( 'test-token', $post, $expiration + HOUR_IN_SECONDS );
+		tribe( Sessions_Table::class )->update_reservations(
+			'test-token',
+			$this->create_mock_reservations_data( [ $ticket ], 1 )
+		);
+
+		$this->assertEquals(
+			[ 'other-token', $other_post ],
+			$session->get_session_token_object_id(),
+			'The other event\'s session should be the earliest expiring one.'
+		);
+
+		$tc_cart = tribe( TicketsCommerce_Cart::class );
+		$data    = $tc_cart->prepare_data( $this->seat_selection_checkout_request( $post, $ticket ) );
+		$tc_cart->process( $data );
+
+		$this->assertEquals( 1, $tc_cart->get_items_in_cart()[ $ticket ]['quantity'] ?? null );
 	}
 
 	/**
