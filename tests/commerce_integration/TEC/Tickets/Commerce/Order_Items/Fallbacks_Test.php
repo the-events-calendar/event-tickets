@@ -158,6 +158,23 @@ class Fallbacks_Test extends Controller_Test_Case {
 		$this->assertSame( 'Early bird (no longer exists)', $name );
 	}
 
+	public function test_it_reads_the_stored_name_once_the_controller_is_switched_off(): void {
+		$event_id  = static::factory()->post->create( [ 'post_type' => 'page' ] );
+		$ticket_id = $this->create_tc_ticket( $event_id, 10, [ 'ticket_name' => 'Early bird' ] );
+		$this->register_controller();
+		$order = $this->create_order( [ $ticket_id => 1 ] );
+		$this->make_controller()->unregister();
+		tribe()->setVar( Controller::class . '_registered', false );
+		tribe( Module::class )->delete_ticket( $event_id, $ticket_id );
+		wp_cache_flush();
+		$order = tec_tc_get_order( $order->ID );
+		$key   = array_key_first( $order->items );
+
+		$name = tribe( Fallbacks::class )->get_missing_ticket( $order, $key, $order->items[ $key ] )['name'];
+
+		$this->assertSame( 'Early bird (no longer exists)', $name );
+	}
+
 	private function register_controller(): void {
 		add_filter( 'tec_tickets_commerce_order_items_active', '__return_true' );
 		$this->make_controller()->register();

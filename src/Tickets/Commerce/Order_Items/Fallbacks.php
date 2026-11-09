@@ -122,8 +122,8 @@ final class Fallbacks {
 	 *                                                                 not stored in the table.
 	 */
 	private function get_stored_rows( int $order_id ): array {
-		// Without the reader the table may not exist, and the order shows the items from its meta.
-		if ( ! Controller::is_registered() || Writer::VERSION !== absint( get_post_meta( $order_id, Writer::VERSION_META_KEY, true ) ) ) {
+		// Only an order whose rows reached the table carries the version, and the table is never dropped.
+		if ( Writer::VERSION !== absint( get_post_meta( $order_id, Writer::VERSION_META_KEY, true ) ) ) {
 			return [];
 		}
 
