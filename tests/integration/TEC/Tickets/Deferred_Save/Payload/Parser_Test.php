@@ -186,23 +186,40 @@ class Parser_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_should_keep_the_first_of_two_keys_that_normalise_to_the_same_integer_and_reject_the_second(): void {
-		$first  = [ 'ticket_name' => 'first' ];
-		$second = [ 'ticket_name' => 'second' ];
+	public function it_should_reject_every_entry_of_a_key_sent_twice_in_one_part(): void {
+		$first   = [ 'ticket_name' => 'first' ];
+		$second  = [ 'ticket_name' => 'second' ];
+		$kept    = [ 'ticket_name' => 'kept' ];
 		$payload = $this->parse(
 			[
-				'update' => [ '07' => $first, 7 => $second ],
-				'create' => [ '01' => $first, 1 => $second ],
-				'move'   => [ '09' => 5, 9 => 6 ],
+				'update' => [ '07' => $first, 7 => $second, 8 => $kept ],
+				'create' => [ '01' => $first, 1 => $second, 2 => $kept ],
+				'move'   => [ '09' => 5, 9 => 6, 10 => 5 ],
 			]
 		);
 
-		$this->assertSame( [ 7 => $first + [ 'ticket_id' => 7 ] ], $payload->get_update() );
-		$this->assertSame( [ 1 => $first ], $payload->get_create() );
-		$this->assertSame( [ 9 => 5 ], $payload->get_move() );
-		$this->assertSame( [ 7 ], $this->rejected_keys( 'update' ) );
-		$this->assertSame( [ 1 ], $this->rejected_keys( 'create' ) );
-		$this->assertSame( [ 9 ], $this->rejected_keys( 'move' ) );
+		// Which of the two was meant cannot be told, as for a ticket named in two parts.
+		$this->assertSame( [ 8 => $kept + [ 'ticket_id' => 8 ] ], $payload->get_update() );
+		$this->assertSame( [ 2 => $kept ], $payload->get_create() );
+		$this->assertSame( [ 10 => 5 ], $payload->get_move() );
+		$this->assertSame( [ 7, 7 ], $this->rejected_keys( 'update' ) );
+		$this->assertSame( [ 1, 1 ], $this->rejected_keys( 'create' ) );
+		$this->assertSame( [ 9, 9 ], $this->rejected_keys( 'move' ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_reject_the_valid_copy_of_a_key_sent_twice_when_the_other_is_malformed(): void {
+		$payload = $this->parse(
+			[
+				'update' => [ '07' => 'not an array', 7 => [ 'ticket_name' => 'second' ] ],
+				'move'   => [ '09' => 'not an ID', 9 => 6 ],
+			]
+		);
+
+		$this->assertSame( [], $payload->get_update() );
+		$this->assertSame( [], $payload->get_move() );
 	}
 
 	/**
