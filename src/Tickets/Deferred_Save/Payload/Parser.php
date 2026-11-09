@@ -184,7 +184,9 @@ final class Parser {
 			return [ [], $this->reject_part( self::UPDATE, $rejections ) ];
 		}
 
-		$update = [];
+		$update     = [];
+		$seen       = [];
+		$duplicates = [];
 
 		foreach ( $raw as $key => $data ) {
 			$ticket_id = $this->to_positive_int( $key );
@@ -194,10 +196,13 @@ final class Parser {
 				continue;
 			}
 
-			if ( array_key_exists( $ticket_id, $update ) ) {
-				$rejections = $rejections->with( self::UPDATE, $key, $this->duplicate_ticket_message( $ticket_id ) );
+			if ( in_array( $ticket_id, $seen, true ) ) {
+				$rejections   = $rejections->with( self::UPDATE, $key, $this->duplicate_ticket_message( $ticket_id ) );
+				$duplicates[] = $ticket_id;
 				continue;
 			}
+
+			$seen[] = $ticket_id;
 
 			if ( ! is_array( $data ) ) {
 				$rejections = $rejections->with( self::UPDATE, $key, __( 'The ticket data must be an array.', 'event-tickets' ) );
@@ -208,7 +213,7 @@ final class Parser {
 			$update[ $ticket_id ] = $data;
 		}
 
-		return [ $update, $rejections ];
+		return $this->drop_duplicates( self::UPDATE, $update, $duplicates, $rejections, [ $this, 'duplicate_ticket_message' ] );
 	}
 
 	/**
@@ -229,7 +234,9 @@ final class Parser {
 			return [ [], $this->reject_part( self::CREATE, $rejections ) ];
 		}
 
-		$create = [];
+		$create     = [];
+		$seen       = [];
+		$duplicates = [];
 
 		foreach ( $raw as $key => $data ) {
 			$position = $this->to_non_negative_int( $key );
@@ -239,18 +246,13 @@ final class Parser {
 				continue;
 			}
 
-			if ( array_key_exists( $position, $create ) ) {
-				$rejections = $rejections->with(
-					self::CREATE,
-					$key,
-					sprintf(
-						/* translators: %d: the position of the new ticket in the list sent. */
-						__( 'Position %d appears more than once.', 'event-tickets' ),
-						$position
-					)
-				);
+			if ( in_array( $position, $seen, true ) ) {
+				$rejections   = $rejections->with( self::CREATE, $key, $this->duplicate_position_message( $position ) );
+				$duplicates[] = $position;
 				continue;
 			}
+
+			$seen[] = $position;
 
 			if ( ! is_array( $data ) ) {
 				$rejections = $rejections->with( self::CREATE, $key, __( 'The ticket data must be an array.', 'event-tickets' ) );
@@ -261,7 +263,7 @@ final class Parser {
 			$create[ $position ] = $data;
 		}
 
-		return [ $create, $rejections ];
+		return $this->drop_duplicates( self::CREATE, $create, $duplicates, $rejections, [ $this, 'duplicate_position_message' ] );
 	}
 
 	/**
@@ -316,7 +318,9 @@ final class Parser {
 			return [ [], $this->reject_part( self::MOVE, $rejections ) ];
 		}
 
-		$move = [];
+		$move       = [];
+		$seen       = [];
+		$duplicates = [];
 
 		foreach ( $raw as $key => $value ) {
 			$ticket_id = $this->to_positive_int( $key );
@@ -326,10 +330,13 @@ final class Parser {
 				continue;
 			}
 
-			if ( array_key_exists( $ticket_id, $move ) ) {
-				$rejections = $rejections->with( self::MOVE, $key, $this->duplicate_ticket_message( $ticket_id ) );
+			if ( in_array( $ticket_id, $seen, true ) ) {
+				$rejections   = $rejections->with( self::MOVE, $key, $this->duplicate_ticket_message( $ticket_id ) );
+				$duplicates[] = $ticket_id;
 				continue;
 			}
+
+			$seen[] = $ticket_id;
 
 			$destination_id = $this->to_positive_int( $value );
 
@@ -341,7 +348,50 @@ final class Parser {
 			$move[ $ticket_id ] = $destination_id;
 		}
 
-		return [ $move, $rejections ];
+		return $this->drop_duplicates( self::MOVE, $move, $duplicates, $rejections, [ $this, 'duplicate_ticket_message' ] );
+	}
+
+	/**
+	 * Drops the entry kept for a key that was sent more than once in a part.
+	 *
+	 * Which of the entries was meant cannot be told, so none is applied, as for a ticket named in two parts.
+	 *
+	 * @since TBD
+	 *
+	 * @param string     $part       The part being parsed.
+	 * @param array      $entries    The accepted entries, by key.
+	 * @param int[]      $duplicates The keys sent more than once.
+	 * @param Rejections $rejections The rejections so far.
+	 * @param callable   $message    Builds the rejection message for a key.
+	 *
+	 * @return array{0: array, 1: Rejections} The entries without the duplicated keys, and the rejections after this part.
+	 */
+	private function drop_duplicates( string $part, array $entries, array $duplicates, Rejections $rejections, callable $message ): array {
+		foreach ( array_unique( $duplicates ) as $key ) {
+			if ( array_key_exists( $key, $entries ) ) {
+				unset( $entries[ $key ] );
+				$rejections = $rejections->with( $part, $key, $message( $key ) );
+			}
+		}
+
+		return [ $entries, $rejections ];
+	}
+
+	/**
+	 * The message for a new ticket position that appears more than once.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $position The position.
+	 *
+	 * @return string The message.
+	 */
+	private function duplicate_position_message( int $position ): string {
+		return sprintf(
+			/* translators: %d: the position of the new ticket in the list sent. */
+			__( 'Position %d appears more than once.', 'event-tickets' ),
+			$position
+		);
 	}
 
 	/**
