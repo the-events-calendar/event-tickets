@@ -49,11 +49,11 @@ final class Controller extends Controller_Contract {
 	 * @return bool Whether the feature is active.
 	 */
 	public function is_active(): bool {
-		if ( defined( self::DISABLED ) && constant( self::DISABLED ) ) {
+		if ( defined( self::DISABLED ) && tribe_is_truthy( constant( self::DISABLED ) ) ) {
 			return false;
 		}
 
-		if ( getenv( self::DISABLED ) ) {
+		if ( tribe_is_truthy( getenv( self::DISABLED ) ) ) {
 			return false;
 		}
 
