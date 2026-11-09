@@ -3,7 +3,11 @@
 namespace TEC\Tickets\Deferred_Save;
 
 use Codeception\TestCase\WPTestCase;
+use Generator;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
+use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
+use TEC\Tickets\Ticket_Data;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -638,6 +642,50 @@ class Commit_Test extends WPTestCase {
 	}
 
 	/**
+	 * @test
+	 */
+	public function it_should_treat_a_move_to_the_post_the_ticket_is_on_as_done(): void {
+		$this->log_in_as_admin();
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+		$moved     = false;
+		add_action(
+			'tribe_tickets_ticket_type_moved',
+			static function () use ( &$moved ) {
+				$moved = true;
+			}
+		);
+
+		$result = $this->commit()->run( [ 'move' => [ $ticket_id => $post_id ] ], $post_id );
+
+		$this->assertSame( [], $result->get_errors() );
+		$this->assertSame( [ $ticket_id ], tribe_tickets()->where( 'event', $post_id )->get_ids() );
+		$this->assertFalse( $moved, 'Nothing is moved.' );
+	}
+
+	public function ticket_types_that_cannot_be_moved_provider(): Generator {
+		yield 'series pass' => [ Series_Passes::TICKET_TYPE ];
+		yield 'RSVP' => [ RSVP_V2_Constants::TC_RSVP_TYPE ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider ticket_types_that_cannot_be_moved_provider
+	 */
+	public function it_should_refuse_to_move_a_ticket_whose_type_lives_with_its_post( string $type ): void {
+		$this->log_in_as_admin();
+		$post_id        = static::factory()->post->create();
+		$destination_id = static::factory()->post->create();
+		$ticket_id      = $this->create_tc_ticket( $post_id, 10, [ 'ticket_type' => $type ] );
+
+		$result = $this->commit()->run( [ 'move' => [ $ticket_id => $destination_id ] ], $post_id );
+
+		$this->assertSame( [ $ticket_id ], $this->error_keys( $result, 'move' ) );
+		$this->assertSame( [ $ticket_id ], tribe_tickets()->where( 'event', $post_id )->get_ids() );
+		$this->assertSame( [], tribe_tickets()->where( 'event', $destination_id )->get_ids() );
+	}
+
+	/**
 	 * @return \Generator<string,array{0:callable}>
 	 */
 	public function destinations_that_cannot_hold_tickets_provider(): \Generator {
@@ -746,13 +794,13 @@ class Commit_Test extends WPTestCase {
 	 */
 	public function it_should_report_a_refused_move_and_commit_the_rest(): void {
 		$this->log_in_as_admin();
-		$post_id   = static::factory()->post->create();
-		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+		$post_id        = static::factory()->post->create();
+		$destination_id = static::factory()->post->create();
+		$ticket_id      = $this->create_tc_ticket( $post_id, 10, [ 'ticket_type' => Series_Passes::TICKET_TYPE ] );
 
-		// The move function refuses a move to the post the ticket is already on.
 		$result = $this->commit()->run(
 			[
-				'move'   => [ $ticket_id => $post_id ],
+				'move'   => [ $ticket_id => $destination_id ],
 				'create' => [ $this->ticket_data( 'Still created' ) ],
 			],
 			$post_id
@@ -1202,7 +1250,7 @@ class Commit_Test extends WPTestCase {
 		$this->commit()->run( [ 'create' => [ $this->ticket_data( 'Sent again', [ Commit::CREATE_KEY => $key ] ) ] ], $post_id );
 
 		// A copy is another ticket: the key of the save that created the original must not find it.
-		$this->assertSame( '', get_post_meta( $copy_id, Commit::CREATE_KEY_META, true ) );
+		$this->assertSame( '', get_post_meta( $copy_id, Ticket_Data::DEFERRED_SAVE_CREATE_KEY_META, true ) );
 		$this->assertSame( 'Sent again', get_the_title( $original_id ) );
 		$this->assertSame( $copy_title, get_the_title( $copy_id ) );
 	}
