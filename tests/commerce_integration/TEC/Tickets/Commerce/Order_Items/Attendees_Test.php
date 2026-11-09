@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Order_Items;
 
+use Closure;
 use Codeception\TestCase\WPTestCase;
 use Generator;
 use TEC\Tickets\Commerce\Attendee;
