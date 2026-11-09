@@ -42,6 +42,13 @@ class Rest_Entry_Point_Test extends WPTestCase {
 		return rest_do_request( $request );
 	}
 
+	protected function refusals_after_saving( int $post_id, array $payload ): array {
+		$response = $this->save_through_rest( $post_id, $payload );
+		$this->assertSame( 200, $response->get_status() );
+
+		return array_map( fn( array $e ) => [ $e['part'], $e['key'] ], $this->result_of( $response )['errors'] ?? [] );
+	}
+
 	protected function result_of( WP_REST_Response $response ): ?array {
 		$data = $response->get_data();
 

@@ -4,6 +4,8 @@ namespace Tribe\Tests\Tickets\Traits;
 
 use Generator;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Deferred_Save\Commit;
+use TEC\Tickets\Ticket_Data;
 use Tribe__Tickets__Tickets as Tickets;
 
 /**
@@ -169,6 +171,71 @@ trait Deferred_Save_Attacks {
 		$saved_text = $stored['title'] . $stored['excerpt'];
 		$this->assertStringNotContainsString( '<script>', $saved_text );
 		$this->assertStringNotContainsString( 'onerror', $saved_text );
+	}
+
+	/**
+	 * Sends a payload for a post through the suite's entry point, as the current user.
+	 *
+	 * @return array<array{0: string|null, 1: int|string|null}> The refused entries, as `[ part, key ]`.
+	 */
+	abstract protected function refusals_after_saving( int $post_id, array $payload ): array;
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_let_a_create_key_reach_a_ticket_on_another_post(): void {
+		$this->given_two_posts_with_tickets();
+		wp_set_current_user( $this->owner_id );
+		// The key an earlier save of post B left on its ticket, sent again in a create on post A.
+		update_post_meta( $this->ticket_b, Ticket_Data::DEFERRED_SAVE_CREATE_KEY_META, 'key-of-ticket-b' );
+		$before = $this->snapshot();
+
+		$this->refusals_after_saving( $this->post_a, [ 'create' => [ $this->ticket_data( 'Created on A', [ Commit::CREATE_KEY => 'key-of-ticket-b' ] ) ] ] );
+
+		$this->assert_b_untouched_and_a_created( $before );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_let_a_contributor_delete_a_ticket_on_their_own_draft(): void {
+		$contributor = $this->log_in_as( 'contributor' );
+		$draft_id    = static::factory()->post->create( [ 'post_author' => $contributor, 'post_status' => 'draft' ] );
+		// Tickets are published posts: deleting one takes `delete_published_posts`, which a Contributor lacks.
+		$ticket_id = $this->create_tc_ticket( $draft_id, 10 );
+
+		$refusals = $this->refusals_after_saving( $draft_id, [ 'delete' => [ $ticket_id ] ] );
+
+		$this->assertSame( [ [ 'delete', $ticket_id ] ], $refusals );
+		$this->assertSame( [ $ticket_id ], tribe_tickets()->where( 'event', $draft_id )->get_ids() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_move_a_ticket_to_a_post_the_user_cannot_edit(): void {
+		$this->given_two_posts_with_tickets();
+		$author = $this->log_in_as( 'author' );
+		wp_update_post( [ 'ID' => $this->post_a, 'post_author' => $author ] );
+
+		$refusals = $this->refusals_after_saving( $this->post_a, [ 'move' => [ $this->ticket_a => $this->post_b ] ] );
+
+		$this->assertSame( [ [ 'move', $this->ticket_a ] ], $refusals );
+		$this->assertSame( [ $this->ticket_a ], tribe_tickets()->where( 'event', $this->post_a )->get_ids() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_move_a_ticket_to_a_post_that_cannot_hold_tickets(): void {
+		$this->given_two_posts_with_tickets();
+		wp_set_current_user( $this->owner_id );
+		$attachment_id = static::factory()->attachment->create_object( 'image.jpg', 0, [ 'post_author' => $this->owner_id, 'post_mime_type' => 'image/jpeg' ] );
+
+		$refusals = $this->refusals_after_saving( $this->post_a, [ 'move' => [ $this->ticket_a => $attachment_id ] ] );
+
+		$this->assertSame( [ [ 'move', $this->ticket_a ] ], $refusals );
+		$this->assertSame( [ $this->ticket_a ], tribe_tickets()->where( 'event', $this->post_a )->get_ids() );
 	}
 
 	protected function assert_world_unchanged( array $before, string $message = '' ): void {
