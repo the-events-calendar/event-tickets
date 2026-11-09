@@ -9,6 +9,7 @@ use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 class Checks_Test extends WPTestCase {
 	use Ticket_Maker;
@@ -334,7 +335,7 @@ class Checks_Test extends WPTestCase {
 
 		add_filter(
 			'tec_tickets_user_can_delete_ticket',
-			static function ( bool $can, \Tribe__Tickets__Ticket_Object $ticket ) use ( $denied, &$seen ): bool {
+			static function ( bool $can, Ticket_Object $ticket ) use ( $denied, &$seen ): bool {
 				$seen[] = $ticket->ID;
 
 				return $ticket->ID === $denied ? false : $can;
@@ -372,22 +373,15 @@ class Checks_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_should_ask_the_permissions_resolved_for_each_ticket(): void {
+	public function it_should_ask_the_edit_filter_for_each_ticket(): void {
 		$this->given_two_posts_with_tickets();
 		$this->log_in_as( 'editor' );
-		$data     = [ 'ticket_name' => 'x' ];
-		$stricter = new class() extends \TEC\Tickets\Ticket_Permissions {
-			protected function can_edit_ticket( \Tribe__Tickets__Ticket_Object $ticket, int $user_id ): bool {
-				return false;
-			}
-		};
+		$data            = [ 'ticket_name' => 'x' ];
 		$third_ticket_id = $this->create_tc_ticket( $this->post_id, 50 );
 		$denied          = [ $this->ticket_id, $this->second_ticket_id, $third_ticket_id ];
 		add_filter(
-			'tec_tickets_ticket_permissions',
-			static function ( $default, \Tribe__Tickets__Ticket_Object $ticket ) use ( $stricter, $denied ) {
-				return in_array( $ticket->ID, $denied, true ) ? $stricter : $default;
-			},
+			'tec_tickets_user_can_edit_ticket',
+			static fn( $can, Ticket_Object $ticket ) => in_array( $ticket->ID, $denied, true ) ? false : $can,
 			10,
 			2
 		);

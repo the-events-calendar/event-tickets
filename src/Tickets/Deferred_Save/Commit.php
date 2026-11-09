@@ -13,10 +13,14 @@ use TEC\Tickets\Deferred_Save\Payload\Malformed_Exception;
 use TEC\Tickets\Deferred_Save\Payload\Parser;
 use TEC\Tickets\Deferred_Save\Payload\Rejections;
 use TEC\Tickets\Event;
+use TEC\Tickets\Ticket_Data;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
+use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
 use Tribe__Tickets__Main as Tickets_Main;
 use Tribe__Tickets__Tickets as Tickets;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Throwable;
 use WP_Post;
 
@@ -52,15 +56,13 @@ final class Commit {
 	public const CREATE_KEY = 'tec_tickets_create_key';
 
 	/**
-	 * The meta key that keeps, on a ticket a save created, the key its `create` entry carried.
-	 *
-	 * Public so that copying a ticket can leave it out: a copy is another ticket.
+	 * The ticket types that belong to the post they were created on.
 	 *
 	 * @since TBD
 	 *
-	 * @var string
+	 * @var string[]
 	 */
-	public const CREATE_KEY_META = '_tec_tickets_deferred_save_create_key';
+	private const UNMOVABLE_TICKET_TYPES = [ Series_Passes::TICKET_TYPE, RSVP_V2_Constants::TC_RSVP_TYPE ];
 
 	/**
 	 * The field of a `create` entry that names the ticket on the same post it copies.
@@ -544,6 +546,22 @@ final class Commit {
 	 * @throws Throwable When the move throws before the ticket is on the destination; `guarded()` reports it.
 	 */
 	private function move( Result $result, int $ticket_id, int $destination_id ): Result {
+		if ( $this->is_on_post( $ticket_id, $destination_id ) ) {
+			return $result;
+		}
+
+		if ( ! $this->can_be_moved( $ticket_id ) ) {
+			return $result->with_error(
+				Parser::MOVE,
+				$ticket_id,
+				sprintf(
+					/* translators: %d: the ticket ID. */
+					__( 'Ticket %d belongs to the post it was created on and cannot be moved.', 'event-tickets' ),
+					$ticket_id
+				)
+			);
+		}
+
 		if ( ! $this->can_hold_tickets( $destination_id ) ) {
 			return $result->with_error(
 				Parser::MOVE,
@@ -588,6 +606,24 @@ final class Commit {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Whether a ticket is of a type the move tool offers.
+	 *
+	 * `move_ticket_type()` only rewrites the ticket's event meta: a Series Pass's occurrence copies and an RSVP's
+	 * order items would stay tied to the old post.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket to move.
+	 *
+	 * @return bool Whether the ticket can be moved.
+	 */
+	private function can_be_moved( int $ticket_id ): bool {
+		$ticket = Tickets::load_ticket_object( $ticket_id );
+
+		return $ticket instanceof Ticket_Object && ! in_array( $ticket->type(), self::UNMOVABLE_TICKET_TYPES, true );
 	}
 
 	/**
@@ -744,7 +780,7 @@ final class Commit {
 			$post_id,
 			[
 				[
-					'key'   => self::CREATE_KEY_META,
+					'key'   => Ticket_Data::DEFERRED_SAVE_CREATE_KEY_META,
 					'value' => $key,
 				],
 			]
@@ -780,7 +816,7 @@ final class Commit {
 	 */
 	private function remember_key( int $ticket_id, string $key ): void {
 		if ( '' !== $key ) {
-			update_post_meta( $ticket_id, self::CREATE_KEY_META, $key );
+			update_post_meta( $ticket_id, Ticket_Data::DEFERRED_SAVE_CREATE_KEY_META, $key );
 		}
 	}
 
