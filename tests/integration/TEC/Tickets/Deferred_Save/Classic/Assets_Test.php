@@ -4,8 +4,16 @@ namespace TEC\Tickets\Deferred_Save\Classic;
 
 use Codeception\TestCase\WPTestCase;
 use TEC\Common\StellarWP\Assets\Assets as Stellar_Assets;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
+use Tribe__Tickets__Tickets as Tickets;
 
 class Assets_Test extends WPTestCase {
+	use Ticket_Maker;
+	use Order_Maker;
+	use With_Tickets_Commerce;
+
 	/**
 	 * @test
 	 */
@@ -44,6 +52,24 @@ class Assets_Test extends WPTestCase {
 			$this->assertIsString( $data[ $key ] );
 			$this->assertNotSame( '', $data[ $key ], $key );
 		}
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_tell_the_module_how_many_of_each_ticket_on_the_post_are_sold(): void {
+		global $post;
+		$post_id = static::factory()->post->create();
+		$sold_id = $this->create_tc_ticket( $post_id, 10 );
+		$none_id = $this->create_tc_ticket( $post_id, 20 );
+		$this->create_order( [ $sold_id => 3 ] );
+		$post = get_post( $post_id );
+
+		$sold = tribe( Assets::class )->localized_data()['sold'];
+
+		$this->assertSame( 3, $sold[ $sold_id ] );
+		$this->assertSame( 0, $sold[ $none_id ] );
+		$this->assertSame( Tickets::load_ticket_object( $sold_id )->qty_sold(), $sold[ $sold_id ] );
 	}
 
 	/**

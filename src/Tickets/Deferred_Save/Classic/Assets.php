@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Deferred_Save\Classic;
 
 use TEC\Common\StellarWP\Assets\Assets as Stellar_Assets;
+use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Main as Tickets_Main;
 
 /**
@@ -106,6 +107,8 @@ final class Assets {
 			'duplicateFailed' => __( 'The ticket could not be copied. Reload the page and try again.', 'event-tickets' ),
 			'invalidHeading'  => __( 'Some staged tickets are not valid. Fix them before saving the post.', 'event-tickets' ),
 			'moveStaged'      => __( 'The move is staged and happens when you save the post. You may now close this window.', 'event-tickets' ),
+			// A ticket's own sales: with shared capacity its availability is the whole pool's.
+			'sold'            => $this->sold_counts(),
 			'rules'           => [
 				'name'        => __( 'a name is required', 'event-tickets' ),
 				'price'       => __( 'the price must be a non-negative number', 'event-tickets' ),
@@ -114,6 +117,28 @@ final class Assets {
 				'capacity'    => __( 'the capacity cannot be below the tickets already sold', 'event-tickets' ),
 			],
 		];
+	}
+
+	/**
+	 * How many of each ticket on the post being edited are sold, for the check against a lowered capacity.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<int,int> Ticket ID => sold count.
+	 */
+	private function sold_counts(): array {
+		$post_id = (int) get_the_ID();
+		$sold    = [];
+
+		if ( ! $post_id ) {
+			return $sold;
+		}
+
+		foreach ( Tickets::get_all_event_tickets( $post_id ) as $ticket ) {
+			$sold[ (int) $ticket->ID ] = (int) $ticket->qty_sold();
+		}
+
+		return $sold;
 	}
 
 	/**

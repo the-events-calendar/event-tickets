@@ -483,20 +483,17 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 	} );
 
 	/**
-	 * How many of a saved ticket the row says are sold.
+	 * How many of a saved ticket are sold, as the server counted them when the page loaded.
 	 *
-	 * Read from the count the row prints, not worked out from its capacity and availability: with shared
-	 * capacity, availability is the whole pool's, so other tickets' sales would count against this one.
+	 * Not worked out from the row's capacity and availability: with shared capacity, availability is the whole
+	 * pool's, so other tickets' sales would count against this one.
 	 *
 	 * @param {number} ticketId The ticket ID.
 	 *
-	 * @return {number|undefined} The sold count, or `undefined` when the row does not say.
+	 * @return {number|undefined} The sold count, or `undefined` when the server did not count it.
 	 */
-	const soldFromRow = ( ticketId ) => {
-		const sold = parseInt(
-			$panelBase().find( `tr[data-ticket-type-id="${ ticketId }"]` ).attr( 'data-ticket-sold' ),
-			10
-		);
+	const soldOf = ( ticketId ) => {
+		const sold = strings.sold ? parseInt( strings.sold[ ticketId ], 10 ) : NaN;
 
 		return Number.isNaN( sold ) ? undefined : sold;
 	};
@@ -542,7 +539,7 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 		} );
 
 		Object.entries( update ).forEach( ( [ ticketId, { fields, summary } ] ) => {
-			const rules = validateFields( fields, { sold: soldFromRow( ticketId ), dateFormat, decimal } );
+			const rules = validateFields( fields, { sold: soldOf( ticketId ), dateFormat, decimal } );
 			if ( rules.length ) {
 				problems.push( { name: summary.name || `#${ ticketId }`, rules } );
 				$panelBase()
