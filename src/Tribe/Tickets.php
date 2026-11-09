@@ -9,6 +9,7 @@ use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use Tribe__Cache_Listener as Cache;
 use Tribe__Utils__Array as Arr;
 use TEC\Tickets\Event;
+use TEC\Tickets\Ticket_Data;
 use TEC\Tickets\RSVP\V2\Constants;
 use TEC\Tickets\Commerce\Event_Provider_Heal;
 use TEC\Tickets\Commerce\Module as Commerce_Module;
@@ -4044,7 +4045,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				'_wp_old_slug',
 				'total_sales',
 				// The key of the save that created the original: a copy is another ticket.
-				\TEC\Tickets\Deferred_Save\Commit::CREATE_KEY_META,
+				Ticket_Data::DEFERRED_SAVE_CREATE_KEY_META,
 			];
 			$ticket_meta = get_post_meta( $ticket->ID );
 

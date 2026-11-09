@@ -98,7 +98,7 @@ final class Checks {
 				continue;
 			}
 
-			if ( ! $this->permissions->for_ticket( $ticket )->user_can_edit_ticket( $ticket ) ) {
+			if ( ! $this->permissions->user_can_edit_ticket( $ticket ) ) {
 				$rejections = $rejections->with( Parser::UPDATE, $ticket_id, $this->cannot_edit_message( $ticket_id ) );
 				unset( $update[ $ticket_id ] );
 			}
@@ -113,7 +113,7 @@ final class Checks {
 				continue;
 			}
 
-			if ( ! $this->permissions->for_ticket( $ticket )->user_can_edit_ticket( $ticket ) ) {
+			if ( ! $this->permissions->user_can_edit_ticket( $ticket ) ) {
 				$rejections = $rejections->with( Parser::MOVE, $ticket_id, $this->cannot_edit_message( $ticket_id ) );
 				unset( $move[ $ticket_id ] );
 				continue;
@@ -146,7 +146,7 @@ final class Checks {
 				continue;
 			}
 
-			if ( ! $this->permissions->for_ticket( $ticket )->user_can_delete_ticket( $ticket ) ) {
+			if ( ! $this->permissions->user_can_delete_ticket( $ticket ) ) {
 				$rejections = $rejections->with(
 					Parser::DELETE,
 					$ticket_id,
@@ -197,15 +197,13 @@ final class Checks {
 	 * @return Ticket_Object|null The ticket, or `null` when the ID is not a ticket on this post.
 	 */
 	private function get_ticket_on_post( int $ticket_id, int $post_id ): ?Ticket_Object {
-		$ticket = $this->ticket_data->load_ticket_object( $ticket_id );
-
-		if ( ! $ticket instanceof Ticket_Object ) {
+		if ( ! Event::ticket_belongs_to_post( $ticket_id, $post_id ) ) {
 			return null;
 		}
 
-		$ticket_post_id = (int) Event::filter_event_id( (int) $ticket->get_event_id(), 'deferred_save' );
+		$ticket = $this->ticket_data->load_ticket_object( $ticket_id );
 
-		return $ticket_post_id === $post_id ? $ticket : null;
+		return $ticket instanceof Ticket_Object ? $ticket : null;
 	}
 
 	/**
