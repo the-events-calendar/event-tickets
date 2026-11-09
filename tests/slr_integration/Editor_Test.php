@@ -48,6 +48,13 @@ class Editor_Test extends Controller_Test_Case {
 	}
 
 	/**
+	 * @after
+	 */
+	public function reset_screen(): void {
+		unset( $GLOBALS['current_screen'] );
+	}
+
+	/**
 	 * @test
 	 * @covers Editor::register_meta
 	 */
@@ -81,6 +88,34 @@ class Editor_Test extends Controller_Test_Case {
 		foreach ( $assets as $slug => $path ) {
 			yield $slug => [ $slug, $path ];
 		}
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_put_the_block_editor_style_in_the_editor_canvas_for_a_ticketable_post(): void {
+		$this->make_controller()->register();
+		$this->open_block_editor_for( self::factory()->post->create() );
+
+		Assets::init()->enqueue( 'tec-tickets-seating-block-editor-style' );
+		$iframe_styles = _wp_get_iframed_editor_assets()['styles'];
+
+		$this->assertStringContainsString( "id='tec-tickets-seating-block-editor-style-css'", $iframe_styles );
+		$this->assertTrue( wp_style_is( 'tec-tickets-seating-block-editor-style', 'enqueued' ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_put_the_block_editor_style_in_the_editor_canvas_for_a_non_ticketable_post(): void {
+		$this->make_controller()->register();
+		register_post_type( 'not_ticketable' );
+		$this->open_block_editor_for( self::factory()->post->create( [ 'post_type' => 'not_ticketable' ] ) );
+
+		Assets::init()->enqueue( 'tec-tickets-seating-block-editor-style' );
+		$iframe_styles = _wp_get_iframed_editor_assets()['styles'];
+
+		$this->assertStringNotContainsString( "id='tec-tickets-seating-block-editor-style-css'", $iframe_styles );
 	}
 
 	/**
@@ -715,5 +750,14 @@ class Editor_Test extends Controller_Test_Case {
 		$controller = $this->make_controller();
 
 		$this->assertEquals( $should_enqueue_assets, $controller->should_enqueue_assets() );
+	}
+
+	private function open_block_editor_for( int $post_id ): void {
+		tribe( 'tickets.editor.assets' );
+		wp_dequeue_style( 'tec-tickets-seating-block-editor-style' );
+		Assets::init()->get( 'tec-tickets-seating-block-editor-style' )->set_as_unenqueued();
+		$GLOBALS['post'] = get_post( $post_id );
+		set_current_screen( get_post_type( $post_id ) );
+		get_current_screen()->is_block_editor( true );
 	}
 }
