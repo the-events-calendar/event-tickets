@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Deferred_Save;
 
+use Generator;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use Tribe\Tests\Traits\With_Uopz;
 
@@ -49,26 +50,37 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertTrue( $this->make_controller()->is_active() );
 	}
 
-	/**
-	 * @test
-	 */
-	public function it_should_be_switched_off_by_the_constant(): void {
-		$this->set_const_value( 'TEC_TICKETS_DEFERRED_SAVE_DISABLED', true );
-		// The filter must not switch the feature back on.
-		add_filter( 'tec_tickets_deferred_save_active', '__return_true', 1000 );
-
-		$this->assertFalse( $this->make_controller()->is_active() );
+	public function disable_switch_values(): Generator {
+		yield 'true' => [ true, false ];
+		yield '"1"' => [ '1', false ];
+		yield '"yes"' => [ 'yes', false ];
+		yield '"false"' => [ 'false', true ];
+		yield '"0"' => [ '0', true ];
+		yield 'empty string' => [ '', true ];
 	}
 
 	/**
 	 * @test
+	 * @dataProvider disable_switch_values
 	 */
-	public function it_should_be_switched_off_by_the_environment_variable(): void {
-		putenv( 'TEC_TICKETS_DEFERRED_SAVE_DISABLED=1' );
+	public function it_should_read_the_constant_as_a_switch( $value, bool $active ): void {
+		$this->set_const_value( 'TEC_TICKETS_DEFERRED_SAVE_DISABLED', $value );
 		// The filter must not switch the feature back on.
 		add_filter( 'tec_tickets_deferred_save_active', '__return_true', 1000 );
 
-		$this->assertFalse( $this->make_controller()->is_active() );
+		$this->assertSame( $active, $this->make_controller()->is_active() );
+	}
+
+	/**
+	 * @test
+	 * @dataProvider disable_switch_values
+	 */
+	public function it_should_read_the_environment_variable_as_a_switch( $value, bool $active ): void {
+		putenv( 'TEC_TICKETS_DEFERRED_SAVE_DISABLED=' . ( true === $value ? '1' : $value ) );
+		// The filter must not switch the feature back on.
+		add_filter( 'tec_tickets_deferred_save_active', '__return_true', 1000 );
+
+		$this->assertSame( $active, $this->make_controller()->is_active() );
 	}
 
 	/**
