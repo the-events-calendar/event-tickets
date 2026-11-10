@@ -760,8 +760,51 @@ async function waitForModalElement() {
 	} );
 }
 
+/**
+ * The query argument checkout adds when it sends the buyer back because their seats were not held.
+ *
+ * Mirrors `Cart::SEATS_NOT_HELD_QUERY_ARG` in PHP.
+ *
+ * @since TBD
+ *
+ * @type {string}
+ */
+const seatsNotHeldQueryArg = 'tec-tickets-seating-seats-not-held';
+
+/**
+ * Removes the query argument from the address bar so a reload does not show the notice again.
+ *
+ * @since TBD
+ *
+ * @return {void} The address bar no longer carries the argument.
+ */
+export function stripSeatsNotHeldQueryArg() {
+	const url = new URL( window.location.href );
+
+	if ( ! url.searchParams.has( seatsNotHeldQueryArg ) ) {
+		return;
+	}
+
+	url.searchParams.delete( seatsNotHeldQueryArg );
+	window.history.replaceState( window.history.state, '', url.toString() );
+}
+
+/**
+ * Removes the notice telling the buyer their seats were not held.
+ *
+ * @since TBD
+ *
+ * @return {void} The notice is removed from the DOM.
+ */
+export function dismissSeatsNotHeldNotice() {
+	document.querySelector( '.tec-tickets-seating__notice' )?.remove();
+}
+
+stripSeatsNotHeldQueryArg();
+
 waitForModalElement().then( ( modalElement ) => {
 	modalElement.on( 'show', () => {
+		dismissSeatsNotHeldNotice();
 		disableCheckout();
 		bootstrapIframe( document );
 		addModalEventListeners();
