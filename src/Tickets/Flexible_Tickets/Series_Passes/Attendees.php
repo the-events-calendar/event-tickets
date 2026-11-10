@@ -389,6 +389,7 @@ class Attendees extends Controller {
 	 * Clones a Series Pass Attendee to an Attendee for the specified Event.
 	 *
 	 * @since 5.8.2
+	 * @since TBD Do not copy the original's check-in state or check-in log, and stop double-serializing array meta.
 	 *
 	 * @param int $attendee_id The ID of the Attendee to clone.
 	 * @param int $event_id    The ID of the Event to clone the Attendee to.
@@ -473,8 +474,13 @@ class Attendees extends Controller {
 		 * meta keys.
 		 */
 		foreach ( $original_meta as $meta_key => $meta_values ) {
+			if ( $this->is_checked_in_meta_key( $attendee_id, $meta_key ) ) {
+				continue;
+			}
+
 			foreach ( $meta_values as $meta_value ) {
-				add_post_meta( $clone_id, $meta_key, $meta_value );
+				// Read without a key, the values are still serialized: `add_post_meta()` would serialize them again.
+				add_post_meta( $clone_id, $meta_key, maybe_unserialize( $meta_value ) );
 			}
 		}
 
