@@ -53,6 +53,16 @@ class Attendees extends Controller {
 	private const ALREADY_CHECKED_IN = 'already-checked-in';
 
 	/**
+	 * The meta key of the per-Occurrence check-in failure log.
+	 *
+	 * Matches `TEC\Tickets_Plus\Checkin\Constants::CHECKIN_LOGGING_META_KEY`; event-tickets-plus is not a hard
+	 * dependency of this file, so the value is duplicated here.
+	 *
+	 * @since TBD
+	 */
+	private const CHECKIN_LOG_META_KEY = '_tec_tickets_checkin_log';
+
+	/**
 	 * A map of Attendees whose check in failed, a map from Attendee post ID to the data required
 	 * from the user to complete the check in process.
 	 *
@@ -389,7 +399,7 @@ class Attendees extends Controller {
 	 * Clones a Series Pass Attendee to an Attendee for the specified Event.
 	 *
 	 * @since 5.8.2
-	 * @since TBD Do not copy the original's check-in state or check-in log, and stop double-serializing array meta.
+	 * @since TBD Do not copy the original's check-in failure log, and stop double-serializing array meta.
 	 *
 	 * @param int $attendee_id The ID of the Attendee to clone.
 	 * @param int $event_id    The ID of the Event to clone the Attendee to.
@@ -474,7 +484,11 @@ class Attendees extends Controller {
 		 * meta keys.
 		 */
 		foreach ( $original_meta as $meta_key => $meta_values ) {
-			if ( $this->is_checked_in_meta_key( $attendee_id, $meta_key ) ) {
+			/*
+			 * The check-in status is copied on purpose: a Series Pass checked in on the Series as a whole stays
+			 * checked in on every Occurrence's clone. A refusal logged for one Occurrence is not copied.
+			 */
+			if ( $meta_key === self::CHECKIN_LOG_META_KEY ) {
 				continue;
 			}
 
@@ -1052,14 +1066,10 @@ class Attendees extends Controller {
 			$this->post_type_checkin_keys[ $post_type ] = $checkin_key;
 		}
 
-		/*
-		 * `_tec_tickets_checkin_log` matches TEC\Tickets_Plus\Checkin\Constants::CHECKIN_LOGGING_META_KEY;
-		 * event-tickets-plus is not a hard dependency of this file, so the literal is duplicated here.
-		 */
 		return $meta_key === $checkin_key
 			|| $meta_key === $checkin_key . '_details'
 			|| $meta_key === '_tribe_qr_status'
-			|| $meta_key === '_tec_tickets_checkin_log';
+			|| $meta_key === self::CHECKIN_LOG_META_KEY;
 	}
 
 	/**
