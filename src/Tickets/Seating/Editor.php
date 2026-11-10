@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Seating;
 
 use TEC\Common\Asset;
+use TEC\Common\Editor\Canvas_Styles;
 use TEC\Common\StellarWP\Assets\Assets;
 use TEC\Tickets\Seating\Service\Service;
 use Tribe__Tickets__Main as Tickets;
@@ -216,6 +217,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 	 * Registers the Block Editor JavaScript and CSS assets.
 	 *
 	 * @since 5.16.0
+	 * @since TBD Added the block editor style to the editor canvas styles group.
 	 *
 	 * @return void
 	 */
@@ -259,6 +261,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 			->enqueue_on( 'enqueue_block_editor_assets' )
 			->add_to_group( 'tec-tickets-seating-editor' )
 			->add_to_group( 'tec-tickets-seating' )
+			->add_to_group( Canvas_Styles::GROUP )
 			->register();
 	}
 

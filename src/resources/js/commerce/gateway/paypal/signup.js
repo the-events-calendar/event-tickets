@@ -103,7 +103,7 @@ window.tribe.tickets.commerce.gateway.paypal.signup = {};
 	 * Responses can arrive out of order, and a stale one would point the button at a country the seller
 	 * has already moved off.
 	 *
-	 * @since TBD
+	 * @since 5.30.1
 	 *
 	 * @type {number}
 	 */
@@ -200,7 +200,7 @@ window.tribe.tickets.commerce.gateway.paypal.signup = {};
 	 * The `disabled` class only sets `pointer-events: none`, which leaves the anchor focusable and
 	 * activatable with Enter.
 	 *
-	 * @since TBD
+	 * @since 5.30.1
 	 *
 	 * @param {Object} $button jQuery object of the connect button.
 	 *
@@ -213,7 +213,7 @@ window.tribe.tickets.commerce.gateway.paypal.signup = {};
 	/**
 	 * Restores the connect button.
 	 *
-	 * @since TBD
+	 * @since 5.30.1
 	 *
 	 * @param {Object} $button jQuery object of the connect button.
 	 *

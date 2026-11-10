@@ -3,6 +3,7 @@
  * The default sidebar for the settings pages.
  *
  * @since 6.7.0
+ * @since TBD Merged the two resource lists into one and updated the links.
  */
 
 declare( strict_types=1 );
@@ -60,55 +61,35 @@ $hero_section
 		)
 	);
 
-// Build Beginner Resources List.
-$beginner_list = new Unordered_List(
+$resources_list = new Unordered_List(
 	new Classes( 'tec-tickets__admin-banner-kb-list' )
 );
 
-$beginner_list->add_children(
+$resources_list->add_children(
 	[
 		( new List_Item( null, null ) )->add_child(
-			new Link( 'https://evnt.is/1aot', __( 'Getting Started Guide', 'event-tickets' ), null, $external_attributes )
+			new Link( 'https://evnt.is/1aot', __( 'Getting Started with Tickets', 'event-tickets' ), null, $external_attributes )
 		),
 		( new List_Item( null, null ) )->add_child(
-			new Link( 'https://evnt.is/1aoz', __( 'Event Tickets Manual', 'event-tickets' ), null, $external_attributes )
+			new Link( 'https://evnt.is/ticket-settings', __( 'Ticket Settings', 'event-tickets' ), null, $external_attributes )
 		),
 		( new List_Item( null, null ) )->add_child(
-			new Link( 'https://evnt.is/1axs', __( 'What is Tickets Commerce?', 'event-tickets' ), null, $external_attributes )
-		),
-		( new List_Item( null, null ) )->add_child(
-			new Link( 'https://evnt.is/1axt', __( 'Configuring Tickets Commerce', 'event-tickets' ), null, $external_attributes )
-		),
-		( new List_Item( null, null ) )->add_child(
-			new Link( 'https://evnt.is/1aox', __( 'Using RSVPs', 'event-tickets' ), null, $external_attributes )
-		),
-		( new List_Item( null, null ) )->add_child(
-			new Link( 'https://evnt.is/1aoy', __( 'Managing Orders and Attendees', 'event-tickets' ), null, $external_attributes )
-		),
-	]
-);
-
-// Build Advanced Plus Features List.
-$advanced_list = new Unordered_List(
-	new Classes( 'tec-tickets__admin-banner-kb-list' )
-);
-
-$advanced_list->add_children(
-	[
-		( new List_Item( null, null ) )->add_child(
-			new Link( 'https://evnt.is/1ap0', __( 'Setting Up E-Commerce Plugins for Selling Tickets', 'event-tickets' ), null, $external_attributes )
-		),
-		( new List_Item( null, null ) )->add_child(
-			new Link( 'https://evnt.is/1ap1', __( 'Tickets & WooCommerce', 'event-tickets' ), null, $external_attributes )
+			new Link( 'https://evnt.is/1axs', __( 'Using Tickets Commerce', 'event-tickets' ), null, $external_attributes )
 		),
 		( new List_Item( null, null ) )->add_child(
 			new Link( 'https://evnt.is/1ap2', __( 'Creating Tickets', 'event-tickets' ), null, $external_attributes )
 		),
 		( new List_Item( null, null ) )->add_child(
-			new Link( 'https://evnt.is/1ap3', __( 'Event Tickets and Event Tickets Plus Settings Overview', 'event-tickets' ), null, $external_attributes )
+			new Link( 'https://evnt.is/1aox', __( 'Using RSVPs', 'event-tickets' ), null, $external_attributes )
 		),
 		( new List_Item( null, null ) )->add_child(
-			new Link( 'https://evnt.is/1ap4', __( 'Event Tickets Plus Manual', 'event-tickets' ), null, $external_attributes )
+			new Link( 'https://evnt.is/1aoy', __( 'Managing Orders', 'event-tickets' ), null, $external_attributes )
+		),
+		( new List_Item( null, null ) )->add_child(
+			new Link( 'https://evnt.is/manage-attendees', __( 'Managing Attendees', 'event-tickets' ), null, $external_attributes )
+		),
+		( new List_Item( null, null ) )->add_child(
+			new Link( 'https://evnt.is/1ap1', __( 'Tickets & WooCommerce', 'event-tickets' ), null, $external_attributes )
 		),
 	]
 );
@@ -127,22 +108,7 @@ $hero_section->add_section(
 			( new Paragraph() )->add_child(
 				new Plain_Text( '' )
 			),
-			// Beginner Resources heading.
-			( new Paragraph() )->add_child(
-				new Plain_Text(
-					__( 'Beginner Resources', 'event-tickets' )
-				)
-			),
-			// Beginner List.
-			$beginner_list,
-			// Advanced Plus Features heading.
-			( new Paragraph() )->add_child(
-				new Plain_Text(
-					__( 'Advanced Plus Features', 'event-tickets' )
-				)
-			),
-			// Advanced List.
-			$advanced_list,
+			$resources_list,
 		]
 	) )
 );

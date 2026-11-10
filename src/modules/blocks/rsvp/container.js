@@ -35,10 +35,11 @@ const mapStateToProps = ( state ) => {
 	};
 };
 
-const mapDispatchToProps = ( dispatch, ownProps ) => ( {
+export const mapDispatchToProps = ( dispatch, ownProps ) => ( {
 	initializeRSVP: () => dispatch( actions.initializeRSVP() ),
 	onBlockRemoved: ( props ) => {
-		if ( props.created && props.rsvpId ) {
+		// The block of a moved RSVP unmounts while the move modal still shows: the RSVP must stay.
+		if ( props.created && props.rsvpId && ! props.isModalShowing ) {
 			// Only fire the REST DELETE when the block is genuinely removed from the
 			// block editor — not on unmount/remount cycles such as toggling the Code
 			// Editor, which would trash a live RSVP ticket unintentionally.

@@ -308,7 +308,7 @@ class AttendeesTest extends Controller_Test_Case {
 		);
 		// Create a Series Pass and an Attendee for the Series.
 		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
-		$series_attendee_id = $this->create_attendee_for_ticket( $series_pass_id, $series_id );
+		$series_attendee_id = $this->create_paid_attendee( $series_pass_id );
 		// Create a past Event part of the Series.
 		$past_series_event_id = tribe_events()->set_args(
 			[
@@ -321,7 +321,7 @@ class AttendeesTest extends Controller_Test_Case {
 		)->create()->ID;
 		// Create a Single Ticket and an Attendee for the past Event part of the Series.
 		$past_series_event_ticket_id = $this->create_tc_ticket( $past_series_event_id );
-		$past_series_event_attendee_id = $this->create_attendee_for_ticket( $past_series_event_ticket_id, $past_series_event_id );
+		$past_series_event_attendee_id = $this->create_paid_attendee( $past_series_event_ticket_id );
 		$past_series_event_provisional_id = Occurrence::find( $past_series_event_id, 'post_id' )->provisional_id;
 		// Create a current Event part of the Series.
 		$current_series_event_id = tribe_events()->set_args(
@@ -335,7 +335,7 @@ class AttendeesTest extends Controller_Test_Case {
 		)->create()->ID;
 		// Create a Single Ticket and an Attendee for the current Event part of the Series.
 		$current_series_event_ticket_id = $this->create_tc_ticket( $current_series_event_id );
-		$current_series_event_attendee_id = $this->create_attendee_for_ticket( $current_series_event_ticket_id, $current_series_event_id );
+		$current_series_event_attendee_id = $this->create_paid_attendee( $current_series_event_ticket_id );
 		$current_series_event_provisional_id = Occurrence::find( $current_series_event_id, 'post_id' )->provisional_id;
 		// Create a near feature Event part of the Series.
 		$near_future_series_event_id = tribe_events()->set_args(
@@ -349,7 +349,7 @@ class AttendeesTest extends Controller_Test_Case {
 		)->create()->ID;
 		// Create a Single Ticket and an Attendee for the near feature Event part of the Series.
 		$near_feature_series_event_ticket_id = $this->create_tc_ticket( $near_future_series_event_id );
-		$near_future_series_event_attendee_id = $this->create_attendee_for_ticket( $near_feature_series_event_ticket_id, $near_future_series_event_id );
+		$near_future_series_event_attendee_id = $this->create_paid_attendee( $near_feature_series_event_ticket_id );
 		$near_future_series_provisional_id = Occurrence::find( $near_future_series_event_id, 'post_id' )->provisional_id;
 		// Create a far feature Event part of the Series.
 		$far_future_series_event_id = tribe_events()->set_args(
@@ -363,7 +363,7 @@ class AttendeesTest extends Controller_Test_Case {
 		)->create()->ID;
 		// Create a Single Ticket and an Attendee for the far feature Event part of the Series.
 		$far_future_seriees_event_attendee_id = $this->create_tc_ticket( $far_future_series_event_id );
-		$far_future_series_event_attendee_id = $this->create_attendee_for_ticket( $far_future_seriees_event_attendee_id, $far_future_series_event_id );
+		$far_future_series_event_attendee_id = $this->create_paid_attendee( $far_future_seriees_event_attendee_id );
 		$far_future_series_provisional_id = Occurrence::find( $far_future_series_event_id, 'post_id' )->provisional_id;
 		// Create a Recurring Event part of the Series.
 		$near_future_recurring_event_id = tribe_events()->set_args(
@@ -411,7 +411,7 @@ class AttendeesTest extends Controller_Test_Case {
 		)->create()->ID;
 		// Create a Single Ticket and an Attendee for the Event.
 		$event_ticket_id = $this->create_tc_ticket( $event_id );
-		$event_attendee_id = $this->create_attendee_for_ticket( $event_ticket_id, $event_id );
+		$event_attendee_id = $this->create_paid_attendee( $event_ticket_id );
 		$commerce = Module::get_instance();
 		$checkin_key = $commerce->checkin_key;
 		$attendee_to_event_meta_key = Module::ATTENDEE_EVENT_KEY;
@@ -2031,7 +2031,7 @@ class AttendeesTest extends Controller_Test_Case {
 		);
 		// Create a Series Pass and an Attendee for the Series.
 		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
-		$series_attendee_id = $this->create_attendee_for_ticket( $series_pass_id, $series_id );
+		$series_attendee_id = $this->create_paid_attendee( $series_pass_id );
 		// Create a Single Event part of the Series.
 		$single_event = tribe_events()->set_args(
 			[
@@ -2257,7 +2257,7 @@ class AttendeesTest extends Controller_Test_Case {
 		);
 		// Create a Series Pass and an Attendee for the Series.
 		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
-		$series_attendee_id = $this->create_attendee_for_ticket( $series_pass_id, $series_id );
+		$series_attendee_id = $this->create_paid_attendee( $series_pass_id );
 		// Create a Single Event part of the Series.
 		$single_event = tribe_events()->set_args(
 			[
@@ -2393,7 +2393,7 @@ class AttendeesTest extends Controller_Test_Case {
 		);
 		// Create a Series Pass and an Attendee for the Series.
 		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
-		$series_attendee_id = $this->create_attendee_for_ticket( $series_pass_id, $series_id );
+		$series_attendee_id = $this->create_paid_attendee( $series_pass_id );
 		// Create a Single Event part of the Series.
 		$single_event = tribe_events()->set_args(
 			[
@@ -3307,5 +3307,18 @@ class AttendeesTest extends Controller_Test_Case {
 		$response = rest_get_server()->dispatch( $request );
 
 		$this->assertEquals( 403, $response->get_status() );
+	}
+
+	/**
+	 * Buys a ticket and returns the attendee the completed order created: only an attendee of a completed order can check in.
+	 *
+	 * @param int $ticket_id The ticket to buy.
+	 *
+	 * @return int The attendee's post ID.
+	 */
+	private function create_paid_attendee( int $ticket_id ): int {
+		$order_id = $this->create_order( [ $ticket_id => 1 ] )->ID;
+
+		return (int) tec_tc_attendees()->by( 'order_id', $order_id )->first_id();
 	}
 }

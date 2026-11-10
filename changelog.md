@@ -1,5 +1,58 @@
 # Changelog
 
+### [5.31.0] 2026-11-04
+
+* Feature - Added relative sale dates for Tickets Commerce tickets on events in the classic and block editors, so ticket sales and the sale price can start and end a set time before the event and follow the event when its date changes, and blocked saving a ticket whose sales window or sale price window ends before it starts, or whose sale price window starts outside the sales window, with the reason shown under the window.
+* Fix - Gave an event copied with Yoast Duplicate Post its own seating ID, and its tickets their seat settings and relative sale dates.
+* Fix - Included Tickets Commerce tickets whose sale price has no start or end date, or ends today, in the Discounted Tickets filter of the admin tickets list, and judged their sale price days in the event's timezone.
+* Fix - Kept the Ticket block from saving 1970-01-01 as the date of a sale price saved without dates when the ticket was updated.
+* Fix - Kept the Ticket block working for a ticket saved without an end date, whose form showed an invalid date and stopped the block from creating or updating any ticket on that post.
+* Fix - Made a Tickets Commerce ticket with a sale price read its sales dates and sale price days in the event's timezone instead of the site's, so it went on and off sale and showed its sale price at the right time.
+* Fix - Prevented the classic editor ticket form from breaking when it opens a ticket on sale from another provider, such as WooCommerce, on an event that sells through Tickets Commerce.
+* Language - 69 new strings added, 61 updated, 0 fuzzied, and 0 obsoleted.
+* Tweak - Rendered the sale dates and sale price fields of Tickets Commerce tickets on events from new templates that add the relative date options, so theme overrides of the original templates no longer change those fields on events.
+
+### [5.30.3.1] 2026-11-02
+
+* Security - Hardened how Stripe payments are matched to orders.
+* Security - Hardened the filtering of attendee and ticket data. Props to Aaron - WellKnown for reporting.
+* Security - Hardened the visibility checks for attendee data. Props to Aaron - WellKnown for reporting.
+* Security - Hardened the visibility rules for public attendee lists.
+* Language - 1 new strings added, 37 updated, 0 fuzzied, and 0 obsoleted.
+
+### [5.30.3] 2026-10-29
+
+* Fix - Kept an event's payment provider when an RSVP is saved in the Classic Editor or imported from CSV, showed the RSVP alongside tickets sold through another provider and on Classic Editor pages and posts, and restored the provider of events that had been switched to Tickets Commerce so their tickets show again.
+* Fix - Kept the Get Tickets button and ticket prices in calendar views for events saved in the block editor with an empty event price.
+* Fix - Made the Tickets block's Add a Ticket button open the new ticket form on the first click instead of leaving a blank ticket, and let keyboard users add and save tickets with Enter or Space.
+* Fix - Made WooCommerce or EDD, when active, the default payment provider for new events instead of Tickets Commerce, which RSVPs now turn on.
+* Security - Hardened how tickets and attendees are moved between posts. Props to awebitaL for reporting.
+* Security - Hardened PayPal payment confirmation.
+* Security - Hardened PayPal payment confirmation.
+* Security - Hardened the attendee updates submitted from the My Tickets page. Template overrides of `tickets/orders.php` must keep the `tribe_tickets_orders_before_submit` action.
+* Security - Hardened the handling of admin requests for attendee details. Props to Elieve for reporting.
+* Security - Hardened the ticket editor and attendee check-in.
+* Security - Hardened the validation of ticket prices.
+* Language - 6 new strings added, 120 updated, 1 fuzzied, and 0 obsoleted.
+
+### [5.30.2] 2026-10-15
+
+* Compatibility - Updated the RSVP and Attendee List blocks to Block API version 3, removing the deprecation notice shown in the block editor on WordPress 6.9 and later.
+* Fix - Resolved an issue where Square webhooks could be rejected for several hours when the generated webhook secret started or ended with a space.
+* Language - 0 new strings added, 31 updated, 0 fuzzied, and 0 obsoleted.
+* Security - Hardened the permission checks performed when deleting tickets and attendees. Props to "dzaku" for the report!
+
+### [5.30.1] 2026-10-13
+
+* Fix - Avoided a fatal error and a PHP warning on the Tickets Commerce Orders report when an order carried a fee or coupon for a ticket that was no longer part of the event's sales data.
+* Fix - Made the country selector on the Tickets Commerce PayPal connection screen update the Connect button.
+* Fix - Prevented a fatal error on pages with an RSVP shortcode limited to RSVPs that are no longer available.
+* Fix - Replaced the 404 link on the Tickets Commerce PayPal "Connect Automatically" button with an error notice when the connection link cannot be generated.
+* Fix - Restored deleting RSVP attendees from the Attendees report, and the View Attendees link in the Tickets box for events with RSVPs.
+* Language - 2 new strings added, 57 updated, 0 fuzzied, and 0 obsoleted.
+* Security - Tightened API key validation on the attendees REST endpoint.
+* Tweak - Improved the unified licensing page experience.
+
 ### [5.30.0.2] 2026-10-05
 
 * Fix - Corrected the ticket sale duration date picker so it closes when clicking elsewhere in the editor, and gave new tickets a one day sale window when the event has no dates saved yet, instead of an invalid end date.

@@ -45,6 +45,7 @@ class Tribe__Tickets__REST__V1__Endpoints__QR extends Tribe__Tickets__REST__V1__
 	 * Get attendee by id
 	 *
 	 * @since 5.7.0
+	 * @since TBD Returns a 401 to requests without manage access.
 	 *
 	 * @param WP_REST_Request $request The request.
 	 *
@@ -52,6 +53,11 @@ class Tribe__Tickets__REST__V1__Endpoints__QR extends Tribe__Tickets__REST__V1__
 	 */
 	public function get( WP_REST_Request $request ) {
 		$this->serving = $request;
+
+		/* The check-in state is only shown to requests with manage access, as on every attendee endpoint. */
+		if ( ! tribe( 'tickets.rest-v1.main' )->request_has_manage_access() ) {
+			return new WP_Error( 'attendee-not-accessible', $this->messages->get_message( 'attendee-not-accessible' ), [ 'status' => 401 ] );
+		}
 
 		$ticket      = get_post( $request['id'] );
 		$ticket_type = tribe( 'tickets.data_api' )->detect_by_id( $request['id'] );

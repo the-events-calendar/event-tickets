@@ -98,7 +98,7 @@ class Signup extends Abstract_Signup {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @since TBD Drops the cached URL and logs when the request fails.
+	 * @since 5.30.1 Drops the cached URL and logs when the request fails.
 	 *
 	 * @param string $country Which country code we are generating the URL for.
 	 * @param bool   $force   It prevents the system from using the cached version of the URL.

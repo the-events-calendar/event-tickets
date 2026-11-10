@@ -80,7 +80,7 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 
 			// remove listeners
 			const removeListeners = () => {
-				iframeWindow.removeEventListener( 'unload', handleUnload ); // eslint-disable-line no-use-before-define,max-len
+				iframeWindow.removeEventListener( 'pagehide', handleUnload ); // eslint-disable-line no-use-before-define,max-len
 				form.removeEventListener( 'submit', showOverlay );
 			};
 
@@ -89,17 +89,22 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 				// remove listeners
 				removeListeners( iframeWindow );
 
-				// check if there are meta fields
+				// A page without the fields, an error page for one, says nothing about them: the modal still closes.
 				const metaFields = iframeWindow.document.querySelector( '#tribe-tickets-attendee-sortables' );
-				const hasFields = Boolean( metaFields.firstElementChild );
+				if ( metaFields ) {
+					dispatch(
+						actions.setTicketHasAttendeeInfoFields(
+							ownProps.clientId,
+							Boolean( metaFields.firstElementChild )
+						)
+					);
+				}
 
-				// dispatch actions
-				dispatch( actions.setTicketHasAttendeeInfoFields( ownProps.clientId, hasFields ) );
 				dispatch( actions.setTicketIsModalOpen( ownProps.clientId, false ) );
 			};
 
-			// add handler to iframe window unload
-			iframeWindow.addEventListener( 'unload', handleUnload );
+			// Browsers no longer reliably fire `unload` on a same-origin iframe's form submit; `pagehide` replaces it.
+			iframeWindow.addEventListener( 'pagehide', handleUnload );
 
 			// add target blank to "Learn more" link
 			const introLink = iframeWindow.document.querySelector( '.tribe-intro > a' );

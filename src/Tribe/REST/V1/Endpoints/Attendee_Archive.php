@@ -86,7 +86,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 	 * @since 4.12.0 Returns 401 Unauthorized if Event Tickets Plus is not loaded.
 	 * @since TBD Gate an Occurrence request by its Event's status instead of the related post status filter.
 	 * @since 5.29.5 Reindexes the attendees so the response always encodes them as a JSON array.
-	 * @since TBD Rejects a provided-but-invalid api_key with a 401 instead of returning public results.
+	 * @since 5.30.1 Rejects a provided-but-invalid api_key with a 401 instead of returning public results.
+	 * @since TBD Applies the search, the slug ordering and the order, order status, check-in, price and attendee information filters only to requests with manage access.
 	 *
 	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
 	 */
@@ -109,28 +110,36 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 		$fetch_args = [];
 
 		$supported_args = [
-			'provider'                       => 'provider',
+			'provider'          => 'provider',
+			'post_id'           => 'event',
+			'ticket_id'         => 'ticket',
+			'include_post'      => 'event',
+			'include_ticket'    => 'ticket',
+			'exclude_post'      => 'event__not_in',
+			'exclude_ticket'    => 'ticket__not_in',
+			'after'             => 'after_date',
+			'before'            => 'before_date',
+			'include'           => 'post__in',
+			'exclude'           => 'post__not_in',
+			'post_status'       => 'event_status',
+			'status'            => 'post_status',
+			'rsvp_going_status' => 'rsvp_status__or_none',
+		];
+
+		/* Filters on fields that only requests with manage access can read. */
+		$private_args = [
 			'search'                         => 's',
-			'post_id'                        => 'event',
-			'ticket_id'                      => 'ticket',
-			'include_post'                   => 'event',
-			'include_ticket'                 => 'ticket',
-			'exclude_post'                   => 'event__not_in',
-			'exclude_ticket'                 => 'ticket__not_in',
-			'after'                          => 'after_date',
-			'before'                         => 'before_date',
-			'include'                        => 'post__in',
-			'exclude'                        => 'post__not_in',
 			'order_id'                       => 'order',
-			'post_status'                    => 'event_status',
-			'status'                         => 'post_status',
 			'order_status'                   => 'order_status',
 			'checkedin'                      => 'checkedin',
-			'rsvp_going_status'              => 'rsvp_status__or_none',
 			'price_min'                      => 'price_min',
 			'price_max'                      => 'price_max',
 			'attendee_information_available' => 'has_attendee_meta',
 		];
+
+		if ( $has_manage_access ) {
+			$supported_args = array_merge( $supported_args, $private_args );
+		}
 
 		foreach ( $supported_args as $request_arg => $query_arg ) {
 			if ( isset( $request[ $request_arg ] ) ) {
@@ -197,8 +206,15 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 			$query->void_query();
 		}
 
-		if ( $request['orderby'] ) {
-			$query->order_by( $request['orderby'] );
+		$order_by = $request['orderby'];
+
+		/* The slug is not part of the public response, so only requests with manage access can order by it. */
+		if ( 'slug' === $order_by && ! $has_manage_access ) {
+			$order_by = 'id';
+		}
+
+		if ( $order_by ) {
+			$query->order_by( $order_by );
 		}
 
 		if ( $request['order'] ) {
@@ -269,6 +285,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 	 * Process the search terms for attendees.
 	 *
 	 * @since 5.5.2
+	 * @since TBD Applies the email search only to requests with manage access.
 	 *
 	 * @param array $request_args Array of request args.
 	 * @param Tribe__Tickets__REST__V1__Attendee_Repository $query The query object.
@@ -278,9 +295,13 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 	protected function process_search( array $request_args, Tribe__Tickets__REST__V1__Attendee_Repository $query ) {
 
 		$search_keys = [
-			'name'  => 'holder_name__like',
-			'email' => 'holder_email__like',
+			'name' => 'holder_name__like',
 		];
+
+		/* Only requests with manage access can read the email, so only they can search by it. */
+		if ( tribe( 'tickets.rest-v1.main' )->request_has_manage_access() ) {
+			$search_keys['email'] = 'holder_email__like';
+		}
 
 		foreach ( $search_keys as $key => $search_term ) {
 			if ( isset( $request_args[ $key ] ) ) {
@@ -330,7 +351,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 				),
 			),
 			'search'   => array(
-				'description'       => __( 'Limit results to attendees containing the specified string in the title or description.', 'event-tickets' ),
+				'description'       => $this->get_private_arg_description( __( 'Limit results to attendees containing the specified string in the title or description.', 'event-tickets' ) ),
 				'type'              => 'string',
 				'required'          => false,
 				'validate_callback' => array( $this->validator, 'is_string' ),
@@ -351,7 +372,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 				),
 			),
 			'orderby' => array(
-				'description' => __( 'Order the results by one of date, relevance, id, include, title or slug. Defaults to id.', 'event-tickets' ),
+				'description' => __( 'Order the results by one of date, relevance, id, include, title or slug. Defaults to id.', 'event-tickets' ) . ' ' . __( 'Ordering by slug is only applied to requests with manage access: a user who can manage attendees or a valid API key.', 'event-tickets' ),
 				'type'        => 'string',
 				'required'    => false,
 				'enum'        => array(
@@ -413,13 +434,13 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 				),
 			),
 			'price_max' => array(
-				'description' => __( 'Limit results to attendees that paid tickets a price equal or below the specified value; if not specified no maximum price limit will be used.', 'event-tickets' ),
+				'description' => $this->get_private_arg_description( __( 'Limit results to attendees that paid tickets a price equal or below the specified value; if not specified no maximum price limit will be used.', 'event-tickets' ) ),
 				'type'        => 'integer',
 				'min'         => 0,
 				'required'    => false,
 			),
 			'price_min' => array(
-				'description' => __( 'Limit results to attendees that paid tickets a price equal or above the specified value; if not specified no minimum price limit will be used.', 'event-tickets' ),
+				'description' => $this->get_private_arg_description( __( 'Limit results to attendees that paid tickets a price equal or above the specified value; if not specified no minimum price limit will be used.', 'event-tickets' ) ),
 				'type'        => 'integer',
 				'min'         => 0,
 				'required'    => false,
@@ -497,7 +518,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 				),
 			),
 			'order_status' => array(
-				'description'       => __( 'Limit results to attendees whose order status is in one of post statuses specified in the CSV list or array; defaults to public.', 'event-tickets' ),
+				'description'       => $this->get_private_arg_description( __( 'Limit results to attendees whose order status is in one of post statuses specified in the CSV list or array; defaults to public.', 'event-tickets' ) ),
 				'required'          => false,
 				'sanitize_callback' => array( 'Tribe__Utils__Array', 'list_to_array' ),
 				'swagger_type' => array(
@@ -508,9 +529,9 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 				),
 			),
 			'checkedin' => array(
-				'description'       => __( 'Limit results to attendees that are or not checked-in.', 'event-tickets' ),
-				'required'          => false,
-				'type'           => 'boolean',
+				'description' => $this->get_private_arg_description( __( 'Limit results to attendees that are or not checked-in.', 'event-tickets' ) ),
+				'required'    => false,
+				'type'        => 'boolean',
 			),
 			'rsvp_going_status' => array(
 				'description'       => __( 'Limit results to RSVP Attendees that have one of the RSVP Going status specified in the CSV list or array.', 'event-tickets' ),
@@ -524,7 +545,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 				),
 			),
 			'attendee_information_available' => array(
-				'description' => __( 'Limit results to attendees for tickets that provide attendees the possibility to fill in additional information or not; requires ET+.', 'event-tickets' ),
+				'description' => $this->get_private_arg_description( __( 'Limit results to attendees for tickets that provide attendees the possibility to fill in additional information or not; requires ET+.', 'event-tickets' ) ),
 				'required'    => false,
 				'type'        => 'boolean',
 			),
@@ -534,7 +555,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 				'type'        => 'string',
 			),
 			'email' => array(
-				'description' => __( 'Limit results to attendees by email. It will search for emails that are like the specified value', 'event-tickets' ),
+				'description' => $this->get_private_arg_description( __( 'Limit results to attendees by email. It will search for emails that are like the specified value', 'event-tickets' ) ),
 				'required'    => false,
 				'type'        => 'string',
 			),
@@ -573,6 +594,23 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 					get_post_status( Occurrence::normalize_id( $provisional_id ) )
 				)
 			)
+		);
+	}
+
+	/**
+	 * Returns the description of an argument that is applied only to requests with manage access.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $description The description of what the argument does.
+	 *
+	 * @return string The description, followed by the note about manage access.
+	 */
+	private function get_private_arg_description( string $description ): string {
+		return sprintf(
+			/* translators: %s: the description of a REST API argument, ending with a period. */
+			__( '%s Only applied to requests with manage access: a user who can manage attendees or a valid API key.', 'event-tickets' ),
+			rtrim( $description, '. ' ) . '.'
 		);
 	}
 }

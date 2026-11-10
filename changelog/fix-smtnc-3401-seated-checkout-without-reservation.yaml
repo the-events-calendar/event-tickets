@@ -1,0 +1,6 @@
+significance: patch
+type: fix
+entry: Stopped checkout from selling an assigned seating ticket with no seat
+  when the seat was not held, and sent the buyer back to the event page to
+  choose their seats again.
+timestamp: 2026-11-04T02:18:41.287Z

@@ -374,6 +374,7 @@ class Ticket extends Ticket_Data {
 	 * @todo TribeCommerceLegacy: This method needs to make use of the Ticket Model.
 	 *
 	 * @since 5.1.9
+	 * @since 5.31.0 Set the provider before judging the sale price, so its dates are read in the event timezone.
 	 *
 	 * @param int|\WP_Post $ticket_id
 	 *
@@ -410,11 +411,11 @@ class Ticket extends Ticket_Data {
 		$return->name             = $product->post_title;
 		$return->menu_order       = $product->menu_order;
 		$return->post_type        = $product->post_type;
+		$return->provider_class   = Module::class;
 		$return->on_sale          = $this->is_on_sale( $return );
 		$return->price            = $this->get_price( $return );
 		$return->regular_price    = $this->get_regular_price( $return->ID );
 		$return->value            = Value::create( $return->price );
-		$return->provider_class   = Module::class;
 		$return->admin_link       = '';
 		$return->show_description = $return->show_description();
 		$return->start_date       = get_post_meta( $ticket_id, static::START_DATE_META_KEY, true );
@@ -1180,9 +1181,37 @@ class Ticket extends Ticket_Data {
 	}
 
 	/**
+	 * Returns whether the ticket data asks to save a sale price: checked, not negative, and lower than the price.
+	 *
+	 * Relative sale dates judge the sale price window only when the save keeps the sale price.
+	 *
+	 * @since 5.31.0
+	 *
+	 * @internal
+	 *
+	 * @param array<string,mixed> $raw_data The raw data from the request.
+	 *
+	 * @return bool Whether a save of the data keeps the sale price.
+	 */
+	public static function keeps_sale_price( array $raw_data ): bool {
+		if ( ! tribe_is_truthy( Arr::get( $raw_data, 'ticket_add_sale_price', false ) ) ) {
+			return false;
+		}
+
+		$sale_price = Arr::get( $raw_data, 'ticket_sale_price', false );
+
+		// Negated rather than `<`, so a sale price that cannot be compared is dropped as it always was.
+		return ! (
+			$sale_price >= Arr::get( $raw_data, 'ticket_price', false )
+			|| Value::create( $sale_price )->get_decimal() < 0
+		);
+	}
+
+	/**
 	 * Process the sale price data.
 	 *
 	 * @since 5.9.0
+	 * @since 5.30.3 Discards a negative sale price.
 	 *
 	 * @param Ticket_Object       $ticket   The ticket post object.
 	 * @param array<string,mixed> $raw_data The raw data from the request.
@@ -1193,20 +1222,12 @@ class Ticket extends Ticket_Data {
 		$sale_price_enabled = tribe_is_truthy( Arr::get( $raw_data, 'ticket_add_sale_price', false ) );
 		update_post_meta( $ticket->ID, static::$sale_price_checked_key, $sale_price_enabled );
 
-		if ( ! $sale_price_enabled ) {
+		if ( ! static::keeps_sale_price( $raw_data ) ) {
 			$this->remove_sale_price_data( $ticket );
 			return;
 		}
 
-		$sale_price    = Arr::get( $raw_data, 'ticket_sale_price', false );
-		$regular_price = Arr::get( $raw_data, 'ticket_price', false );
-
-		if ( $sale_price >= $regular_price ) {
-			$this->remove_sale_price_data( $ticket );
-			return;
-		}
-
-		update_post_meta( $ticket->ID, static::$sale_price_key, Value::create( $sale_price ) );
+		update_post_meta( $ticket->ID, static::$sale_price_key, Value::create( Arr::get( $raw_data, 'ticket_sale_price', false ) ) );
 
 		$this->process_sale_price_dates( $ticket, $raw_data );
 	}
@@ -1261,6 +1282,7 @@ class Ticket extends Ticket_Data {
 	 * Check if a ticket is on sale.
 	 *
 	 * @since 5.9.0
+	 * @since 5.30.3 A stored negative sale price is not on sale.
 	 *
 	 * @param Ticket_Object $ticket The ticket object.
 	 *
@@ -1276,6 +1298,13 @@ class Ticket extends Ticket_Data {
 		$sale_price = get_post_meta( $ticket->ID, static::$sale_price_key, true );
 
 		if ( empty( $sale_price ) ) {
+			return false;
+		}
+
+		// A negative value saved before the save paths rejected it must not lower the price.
+		$sale_amount = $sale_price instanceof Value ? $sale_price->get_decimal() : $sale_price;
+
+		if ( is_numeric( $sale_amount ) && $sale_amount < 0 ) {
 			return false;
 		}
 
