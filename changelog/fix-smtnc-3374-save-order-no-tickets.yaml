@@ -1,0 +1,6 @@
+significance: patch
+type: fix
+entry: Stopped the Community Events submission form from ending on a critical
+  error on PHP 8 when a new event was submitted with a ticket, which led
+  organizers to resubmit and create duplicate events.
+timestamp: 2026-11-03T00:08:59.429Z

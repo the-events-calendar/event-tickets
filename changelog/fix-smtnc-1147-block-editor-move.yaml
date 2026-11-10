@@ -1,0 +1,7 @@
+significance: patch
+type: fix
+entry: Restored Move Ticket and Move RSVP in the block editor, where a move
+  failed without an error and trashed the RSVP, made a failed move show its
+  reason, and stopped a newly added Tickets block from listing each existing
+  ticket twice in the editor.
+timestamp: 2026-10-30T22:49:13.510Z

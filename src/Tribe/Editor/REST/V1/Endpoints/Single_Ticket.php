@@ -1,5 +1,7 @@
 <?php
 
+use TEC\Tickets\Event;
+
 class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 	extends Tribe__Tickets__REST__V1__Endpoints__Base
 	implements Tribe__REST__Endpoints__DELETE_Endpoint_Interface,
@@ -224,6 +226,9 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 	 * @since 4.12.3 Update detecting ticket provider to account for possibly inactive provider.
 	 * @since 5.6.5  Validates if price is greater than 0 when provider is PayPal or Tickets Commerce
 	 * @since 5.9.0    Added support for sale price for Tickets Commerce.
+	 * @since 5.30.3      Rejects saving a ticket that is not attached to the requested post.
+	 * @since 5.31.0      Rejects ticket data that `validate_ticket_data()` rejects, and filters the ticket data through
+	 *                 `tec_tickets_rest_single_ticket_add_data`.
 	 *
 	 * @param WP_REST_Request $request      The request object.
 	 * @param string          $nonce_action The nonce action.
@@ -251,6 +256,20 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 			return new WP_Error(
 				'forbidden',
 				__( 'Invalid nonce', 'event-tickets' ),
+				[ 'status' => 403 ]
+			);
+		}
+
+		if ( $ticket_id && ! Event::ticket_belongs_to_post( absint( $ticket_id ), absint( $post_id ) ) ) {
+			return new WP_Error(
+				'forbidden',
+				esc_html(
+					sprintf(
+						/* translators: %s: The singular, lowercase ticket label. */
+						__( 'This %s can only be edited from the post it belongs to.', 'event-tickets' ),
+						tribe_get_ticket_label_singular_lowercase( 'rest_edit_ticket_error' )
+					)
+				),
 				[ 'status' => 403 ]
 			);
 		}
@@ -323,6 +342,24 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 				$ticket_data['ticket_sale_start_date'] = Tribe__Utils__Array::get( $sale_price_data, 'start_date', '' );
 				$ticket_data['ticket_sale_end_date']   = Tribe__Utils__Array::get( $sale_price_data, 'end_date', '' );
 			}
+		}
+
+		/**
+		 * Filters the ticket data the block editor sends, before it is validated and saved.
+		 *
+		 * @since 5.31.0
+		 *
+		 * @param array<string,mixed>     $ticket_data The ticket data built from the request body.
+		 * @param WP_REST_Request         $request     The request.
+		 * @param Tribe__Tickets__Tickets $provider    The provider that saves the ticket.
+		 */
+		$filtered_ticket_data = apply_filters( 'tec_tickets_rest_single_ticket_add_data', $ticket_data, $request, $provider );
+		$ticket_data          = is_array( $filtered_ticket_data ) ? $filtered_ticket_data : $ticket_data;
+
+		$valid = $provider->validate_ticket_data( $post_id, $ticket_data );
+
+		if ( is_wp_error( $valid ) ) {
+			return new WP_Error( $valid->get_error_code(), $valid->get_error_message(), [ 'status' => 400 ] );
 		}
 
 		// Get the Ticket Object

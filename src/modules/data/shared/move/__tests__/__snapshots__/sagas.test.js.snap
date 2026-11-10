@@ -289,6 +289,7 @@ exports[`Move Sagas moveTicket should error 2`] = `
   "PUT": {
     "action": {
       "error": "error",
+      "message": "The move could not be completed. Please reload the page and try again.",
       "type": "@@MT/TICKETS/MOVE_TICKET_ERROR",
     },
     "channel": null,

@@ -3,6 +3,7 @@
  * Template to display the Webhook's Setting Description.
  *
  * @since 5.11.0
+ * @since TBD Removed the "Learn more" link.
  *
  * @var Tribe__Tickets__Admin__Views $this     Template object.
  */
@@ -13,14 +14,7 @@ $webhooks = tribe( Webhooks::class );
 ?>
 <fieldset>
 <p class="tec-tickets__admin-settings-tickets-commerce-gateway-group-description-stripe-webhooks contained">
-	<?php
-	printf(
-		// Translators: %1$s A link to the KB article. %2$s closing `</a>` link.
-		esc_html__( 'Setting up webhooks will enable you to receive notifications on charge statuses and keep order information up to date for asynchronous payments. %1$sLearn more%2$s', 'event-tickets' ),
-		'<a target="_blank" rel="noopener noreferrer" href="https://evnt.is/1b3p">',
-		'</a>'
-	);
-	?>
+	<?php esc_html_e( 'Setting up webhooks will enable you to receive notifications on charge statuses and keep order information up to date for asynchronous payments.', 'event-tickets' ); ?>
 </p>
 <?php if ( ! $webhooks->has_valid_signing_secret() ) : ?>
 	<p class="tec-tickets__admin-settings-tickets-commerce-gateway-group-description-stripe-webhooks contained">
