@@ -84,7 +84,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 	 * @since 4.12.0 Returns 401 Unauthorized if Event Tickets Plus is not loaded.
 	 * @since 5.29.5 Reindexes the attendees so the response always encodes them as a JSON array.
 	 * @since 5.30.1 Rejects a provided-but-invalid api_key with a 401 instead of returning public results.
-	 * @since TBD Applies the order, order status, check-in and price filters only to requests with manage access.
+	 * @since TBD Applies the order, order status, check-in, price and attendee information filters only to requests with manage access.
 	 *
 	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
 	 */
@@ -107,31 +107,31 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 		$fetch_args = [];
 
 		$supported_args = [
-			'provider'                       => 'provider',
-			'search'                         => 's',
-			'post_id'                        => 'event',
-			'ticket_id'                      => 'ticket',
-			'include_post'                   => 'event',
-			'include_ticket'                 => 'ticket',
-			'exclude_post'                   => 'event__not_in',
-			'exclude_ticket'                 => 'ticket__not_in',
-			'after'                          => 'after_date',
-			'before'                         => 'before_date',
-			'include'                        => 'post__in',
-			'exclude'                        => 'post__not_in',
-			'post_status'                    => 'event_status',
-			'status'                         => 'post_status',
-			'rsvp_going_status'              => 'rsvp_status__or_none',
-			'attendee_information_available' => 'has_attendee_meta',
+			'provider'          => 'provider',
+			'search'            => 's',
+			'post_id'           => 'event',
+			'ticket_id'         => 'ticket',
+			'include_post'      => 'event',
+			'include_ticket'    => 'ticket',
+			'exclude_post'      => 'event__not_in',
+			'exclude_ticket'    => 'ticket__not_in',
+			'after'             => 'after_date',
+			'before'            => 'before_date',
+			'include'           => 'post__in',
+			'exclude'           => 'post__not_in',
+			'post_status'       => 'event_status',
+			'status'            => 'post_status',
+			'rsvp_going_status' => 'rsvp_status__or_none',
 		];
 
 		/* Filters on fields that only requests with manage access can read. */
 		$private_args = [
-			'order_id'     => 'order',
-			'order_status' => 'order_status',
-			'checkedin'    => 'checkedin',
-			'price_min'    => 'price_min',
-			'price_max'    => 'price_max',
+			'order_id'                       => 'order',
+			'order_status'                   => 'order_status',
+			'checkedin'                      => 'checkedin',
+			'price_min'                      => 'price_min',
+			'price_max'                      => 'price_max',
+			'attendee_information_available' => 'has_attendee_meta',
 		];
 
 		if ( $has_manage_access ) {

@@ -96,6 +96,28 @@ class AttendeeArchivePrivateFiltersCest extends BaseRestCest {
 	}
 
 	/**
+	 * It should keep the attendee information filter for a request that carries the QR API key.
+	 *
+	 * @test
+	 * @covers Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive::get
+	 */
+	public function should_filter_by_attendee_information_with_api_key( Restv1Tester $I ) {
+		$seed = $this->seed_attendees( $I );
+
+		$I->sendGET(
+			$this->attendees_url,
+			[
+				'include_post'                   => $seed['post'],
+				'attendee_information_available' => 'true',
+				'api_key'                        => $this->set_api_key(),
+			]
+		);
+
+		$I->seeResponseCodeIs( 200 );
+		$I->assertEquals( [ $seed['checked_in'] ], $I->grabDataFromResponseByJsonPath( '$.attendees[*].id' ) );
+	}
+
+	/**
 	 * It should keep the name search for a visitor, since names are shown to visitors.
 	 *
 	 * @test
@@ -125,6 +147,8 @@ class AttendeeArchivePrivateFiltersCest extends BaseRestCest {
 			'maximum price'      => [ 'filter' => 'price_max' ],
 			'exact email'        => [ 'filter' => 'email' ],
 			'non-matching email' => [ 'filter' => 'wrong_email' ],
+			'has answers'        => [ 'filter' => 'answered' ],
+			'has no answers'     => [ 'filter' => 'unanswered' ],
 		];
 	}
 
@@ -146,6 +170,8 @@ class AttendeeArchivePrivateFiltersCest extends BaseRestCest {
 			'price_max'     => [ 'price_max' => $seed['price'] - 1 ],
 			'email'         => [ 'email' => $seed['email'] ],
 			'wrong_email'   => [ 'email' => $this->faker->uuid() . '@example.org' ],
+			'answered'      => [ 'attendee_information_available' => 'true' ],
+			'unanswered'    => [ 'attendee_information_available' => 'false' ],
 		];
 
 		return $params[ $filter ];
@@ -153,7 +179,8 @@ class AttendeeArchivePrivateFiltersCest extends BaseRestCest {
 
 	/**
 	 * Seeds a public post showing its attendee list, with two going RSVP attendees: one checked in,
-	 * with a paid price and a known email and name, and one not checked in, who paid nothing.
+	 * with a paid price, a known email and name and an answer to an attendee question, and one not
+	 * checked in, who paid nothing and answered nothing.
 	 *
 	 * @param Restv1Tester $I The REST tester.
 	 *
@@ -170,12 +197,13 @@ class AttendeeArchivePrivateFiltersCest extends BaseRestCest {
 		$price       = $this->faker->numberBetween( 5, 50 );
 
 		$checked_in = $this->create_attendee_for_ticket( $ticket_id, $post_id, [
-			'rsvp_status' => 'yes',
-			'optout'      => false,
-			'checkin'     => true,
-			'email'       => $email_token . '@example.org',
-			'full_name'   => $this->faker->firstName() . ' ' . $name_token,
-			'_paid_price' => $price,
+			'rsvp_status'         => 'yes',
+			'optout'              => false,
+			'checkin'             => true,
+			'email'               => $email_token . '@example.org',
+			'full_name'           => $this->faker->firstName() . ' ' . $name_token,
+			'_paid_price'         => $price,
+			'_tribe_tickets_meta' => [ $this->faker->slug( 2 ) => $this->faker->sentence() ],
 		] );
 
 		$not_checked_in = $this->create_attendee_for_ticket( $ticket_id, $post_id, [
