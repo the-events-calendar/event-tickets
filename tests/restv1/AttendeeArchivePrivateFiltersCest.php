@@ -140,6 +140,57 @@ class AttendeeArchivePrivateFiltersCest extends BaseRestCest {
 	}
 
 	/**
+	 * It should not let a visitor order the attendee list by the slug, which the visitor cannot read.
+	 *
+	 * @test
+	 * @covers Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive::get
+	 */
+	public function should_ignore_slug_order_for_visitor( Restv1Tester $I ) {
+		$seed = $this->seed_attendees( $I );
+
+		$I->sendGET(
+			$this->attendees_url,
+			[
+				'include_post' => $seed['post'],
+				'orderby'      => 'slug',
+				'order'        => 'ASC',
+			]
+		);
+
+		$I->seeResponseCodeIs( 200 );
+		$I->assertEquals(
+			[ $seed['checked_in'], $seed['not_checked_in'] ],
+			$I->grabDataFromResponseByJsonPath( '$.attendees[*].id' )
+		);
+	}
+
+	/**
+	 * It should keep the slug order for a request that carries the QR API key.
+	 *
+	 * @test
+	 * @covers Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive::get
+	 */
+	public function should_order_by_slug_with_api_key( Restv1Tester $I ) {
+		$seed = $this->seed_attendees( $I );
+
+		$I->sendGET(
+			$this->attendees_url,
+			[
+				'include_post' => $seed['post'],
+				'orderby'      => 'slug',
+				'order'        => 'ASC',
+				'api_key'      => $this->set_api_key(),
+			]
+		);
+
+		$I->seeResponseCodeIs( 200 );
+		$I->assertEquals(
+			[ $seed['not_checked_in'], $seed['checked_in'] ],
+			$I->grabDataFromResponseByJsonPath( '$.attendees[*].id' )
+		);
+	}
+
+	/**
 	 * It should keep the name search for a visitor, since names are shown to visitors.
 	 *
 	 * @test
@@ -204,7 +255,8 @@ class AttendeeArchivePrivateFiltersCest extends BaseRestCest {
 	/**
 	 * Seeds a public post showing its attendee list, with two going RSVP attendees: one checked in,
 	 * with a paid price, a known email, name and title and an answer to an attendee question, and one
-	 * not checked in, who paid nothing and answered nothing.
+	 * not checked in, who paid nothing and answered nothing. The attendee created last has the slug
+	 * that sorts first.
 	 *
 	 * @param Restv1Tester $I The REST tester.
 	 *
@@ -218,8 +270,16 @@ class AttendeeArchivePrivateFiltersCest extends BaseRestCest {
 		/* Random tokens keep each search matching exactly one of the two attendees. */
 		$email_token = $this->faker->uuid();
 		$name_token  = $this->faker->lexify( '????????????' );
-		$order_token = $this->faker->numerify( '############' );
 		$full_name   = $this->faker->firstName() . ' ' . $name_token;
+		$other_name  = $this->faker->name();
+
+		/* Some providers start the attendee title, and so its slug, with the order number. */
+		$order_tokens = [
+			$this->faker->unique()->numerify( '############' ),
+			$this->faker->unique()->numerify( '############' ),
+		];
+		rsort( $order_tokens, SORT_STRING );
+		[ $order_token, $other_order_token ] = $order_tokens;
 		$price       = $this->faker->numberBetween( 5, 50 );
 
 		$checked_in = $this->create_attendee_for_ticket( $ticket_id, $post_id, [
@@ -228,7 +288,6 @@ class AttendeeArchivePrivateFiltersCest extends BaseRestCest {
 			'checkin'             => true,
 			'email'               => $email_token . '@example.org',
 			'full_name'           => $full_name,
-			/* Some providers start the attendee title with the order number. */
 			'post_title'          => $order_token . ' | ' . $full_name . ' | 1',
 			'_paid_price'         => $price,
 			'_tribe_tickets_meta' => [ $this->faker->slug( 2 ) => $this->faker->sentence() ],
@@ -239,7 +298,8 @@ class AttendeeArchivePrivateFiltersCest extends BaseRestCest {
 			'optout'      => false,
 			'checkin'     => false,
 			'email'       => $this->faker->uuid() . '@example.org',
-			'full_name'   => $this->faker->name(),
+			'full_name'   => $other_name,
+			'post_title'  => $other_order_token . ' | ' . $other_name . ' | 1',
 			'_paid_price' => 0,
 		] );
 
