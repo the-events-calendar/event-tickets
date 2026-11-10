@@ -1453,7 +1453,8 @@ class AttendeesTest extends Controller_Test_Case {
 	/**
 	 * A failure logged before any clone exists (e.g. a security code mismatch) can only land on the original
 	 * Attendee; the clone made later for another Occurrence must not inherit it. The clone must also carry the
-	 * original's array meta as arrays: `get_post_meta()` without a key returns raw, still-serialized values.
+	 * original's array meta as arrays, backslashes intact: `get_post_meta()` without a key returns raw,
+	 * still-serialized values, and `add_post_meta()` unslashes what it stores.
 	 *
 	 * @test
 	 */
@@ -1472,9 +1473,9 @@ class AttendeesTest extends Controller_Test_Case {
 				'series'     => $series_id,
 			]
 		)->create()->ID;
-		$array_meta = [ 'first-name' => 'Ada', 'last-name' => 'Lovelace' ];
+		$array_meta = [ 'first-name' => 'Ada', 'last-name' => 'Smith\\Lovelace' ];
 		add_post_meta( $original, '_tec_tickets_checkin_log', [ 'reason' => 'SECURITY', 'event_id' => $event_id ] );
-		add_post_meta( $original, '_test_array_meta', $array_meta );
+		add_post_meta( $original, '_test_array_meta', wp_slash( $array_meta ) );
 
 		$clone_id = $this->make_controller()->clone_attendee_to_event( $original, $event_id );
 

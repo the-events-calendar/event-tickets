@@ -493,8 +493,11 @@ class Attendees extends Controller {
 			}
 
 			foreach ( $meta_values as $meta_value ) {
-				// Read without a key, the values are still serialized: `add_post_meta()` would serialize them again.
-				add_post_meta( $clone_id, $meta_key, maybe_unserialize( $meta_value ) );
+				/*
+				 * Read without a key, the values are still serialized: `add_post_meta()` would serialize them again.
+				 * It also unslashes, recursively, so slash first to keep backslashes in the copied value.
+				 */
+				add_post_meta( $clone_id, $meta_key, wp_slash( maybe_unserialize( $meta_value ) ) );
 			}
 		}
 
