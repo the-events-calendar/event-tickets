@@ -41,6 +41,7 @@ class Tribe__Tickets__REST__V1__Validator__Base
 		 * Check if the ticket should be seen by the current request.
 		 *
 		 * @since 5.18.0
+		 * @since TBD Hides the tickets of a post that is not published unless the user can read it.
 		 *
 		 * @param int             $parent_id The parent's ID.
 		 * @param WP_REST_Request $request   The request object.
@@ -59,8 +60,11 @@ class Tribe__Tickets__REST__V1__Validator__Base
 				return false;
 			}
 
-			if ( ! 'publish' === $parent->post_status ) {
-				// Unauthorized users should not see tickets from not published events.
+			/*
+			 * Unauthorized users should not see tickets from not published events. A user who can read the
+			 * post, such as its author editing a draft in the block editor, still sees them.
+			 */
+			if ( 'publish' !== $parent->post_status && ! current_user_can( 'read_post', $parent->ID ) ) {
 				return false;
 			}
 

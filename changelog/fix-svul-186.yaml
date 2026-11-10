@@ -1,0 +1,5 @@
+significance: patch
+type: security
+entry: Hardened the handling of attendee data. Props to Phuong Nguyen for
+  reporting.
+timestamp: 2026-11-05T18:52:55.047Z
