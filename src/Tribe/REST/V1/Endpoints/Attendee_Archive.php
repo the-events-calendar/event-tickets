@@ -120,7 +120,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 			'after'             => 'after_date',
 			'before'            => 'before_date',
 			'include'           => 'post__in',
-			'exclude'           => 'post__not_in',
+			'exclude'           => 'post__not_in', // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude
 			'post_status'       => 'event_status',
 			'status'            => 'post_status',
 			'rsvp_going_status' => 'rsvp_status__or_none',
