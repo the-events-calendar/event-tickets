@@ -959,6 +959,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * Handles the Approval of the orders via PayPal.
 	 *
 	 * @since 5.2.0
+	 * @since TBD Sends the 3D Secure liability shift, which PayPal only reports to the card form.
 	 *
 	 * @param {Object} data       PayPal data passed to this method.
 	 * @param {Object} actions    PayPal actions available on approve.
@@ -971,6 +972,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 
 		const body = {
 			advanced_payment: true,
+			liability_shift: data.liabilityShift,
 		};
 
 		return fetch( obj.orderEndpointUrl + '/' + data.orderId, {
