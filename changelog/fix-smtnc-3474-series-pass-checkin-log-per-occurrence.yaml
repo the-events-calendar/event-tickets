@@ -1,0 +1,5 @@
+significance: patch
+type: fix
+entry: Stopped a Series Pass Attendee's check-in history from carrying over to
+  the next Occurrence they are checked into.
+timestamp: 2026-11-10T19:47:46.939Z
