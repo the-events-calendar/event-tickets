@@ -15,6 +15,7 @@ use TEC\Tickets\Flexible_Tickets\Series_Passes\Attendees;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe__Cache_Listener;
 use WP_REST_Request;
 
 class Attendee_Archive_Series_Pass_Test extends Controller_Test_Case {
@@ -99,6 +100,12 @@ class Attendee_Archive_Series_Pass_Test extends Controller_Test_Case {
 
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 		tribe_tickets_get_ticket_provider( $attendee_id )->checkin( $attendee_id, false, $checked_in_id );
+
+		/*
+		 * The App fetches in a later request. A non-QR check-in only writes meta, so in this same request the
+		 * cached clone Attendee built before the check-in would still be served.
+		 */
+		tribe_cache()->set_last_occurrence( Tribe__Cache_Listener::TRIGGER_SAVE_POST );
 
 		$checked_in_attendees = $this->fetch_occurrence_attendees( $checked_in_id );
 

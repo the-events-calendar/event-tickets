@@ -33,4 +33,20 @@ describe( 'Move modal reducer', () => {
 			reducer( undefined, { type: types.MOVE_TICKET_ERROR } ),
 		).toMatchSnapshot();
 	} );
+	it( 'should keep the error message of a failed move', () => {
+		const message = 'The move failed.';
+		expect(
+			reducer( undefined, { type: types.MOVE_TICKET_ERROR, message } ).errorMessage,
+		).toBe( message );
+	} );
+	it( 'should clear the error message when the move is tried again', () => {
+		const state = { ...DEFAULT_STATE, errorMessage: 'The move failed.' };
+		expect( reducer( state, { type: types.MOVE_TICKET } ).errorMessage ).toBe( '' );
+	} );
+	it( 'should clear the error message when the modal data changes', () => {
+		const state = { ...DEFAULT_STATE, errorMessage: 'The move failed.' };
+		const newState = reducer( state, actions.setModalData( { target_post_id: '12' } ) );
+		expect( newState.errorMessage ).toBe( '' );
+		expect( newState.target_post_id ).toBe( '12' );
+	} );
 } );

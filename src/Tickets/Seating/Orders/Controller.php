@@ -132,6 +132,7 @@ class Controller extends Controller_Contract {
 	 */
 	protected function do_register(): void {
 		add_filter( 'tec_tickets_commerce_cart_prepare_data', [ $this, 'handle_seat_selection' ] );
+		add_filter( 'tec_tickets_commerce_cart_to_checkout_redirect_url', [ $this, 'filter_checkout_redirect_url' ], 10, 2 );
 		add_action(
 			'tec_tickets_commerce_flag_action_generated_attendee',
 			[ $this, 'save_seat_data_for_attendee' ],
@@ -230,6 +231,7 @@ class Controller extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		remove_filter( 'tec_tickets_commerce_cart_prepare_data', [ $this, 'handle_seat_selection' ] );
+		remove_filter( 'tec_tickets_commerce_cart_to_checkout_redirect_url', [ $this, 'filter_checkout_redirect_url' ] );
 		remove_action(
 			'tec_tickets_commerce_flag_action_generated_attendee',
 			[ $this, 'save_seat_data_for_attendee' ]
@@ -378,6 +380,20 @@ class Controller extends Controller_Contract {
 	 */
 	public function handle_seat_selection( array $data ): array {
 		return $this->cart->handle_seat_selection( $data );
+	}
+
+	/**
+	 * Sends the buyer back to the event page when the cart left out a seated ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|null $url  The URL the cart redirects to.
+	 * @param array       $data The cart data that was processed.
+	 *
+	 * @return string|null The URL the cart redirects to.
+	 */
+	public function filter_checkout_redirect_url( $url, $data ) {
+		return $this->cart->filter_checkout_redirect_url( $url, $data );
 	}
 
 	/**

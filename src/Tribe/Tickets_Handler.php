@@ -1,5 +1,6 @@
 <?php
 
+use TEC\Tickets\Event;
 use Tribe__Tickets__REST__V1__Messages as Messages;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Utils__Array as Arr;
@@ -330,6 +331,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * if it wasn't manually updated
 	 *
 	 * @since 4.6
+	 * @since 5.31.0 Skips tickets whose sale end date no longer follows the event start.
 	 *
 	 * @param int    $meta_id    MID
 	 * @param int    $object_id  Which Post we are dealing with
@@ -362,6 +364,19 @@ class Tribe__Tickets__Tickets_Handler {
 		foreach ( $tickets as $ticket ) {
 			// Skip tickets with manual updates to that meta
 			if ( $this->has_manual_update( $ticket, $update_meta ) ) {
+				continue;
+			}
+
+			/**
+			 * Filters whether a ticket's sale end date is moved to its event's new start date.
+			 *
+			 * @since 5.31.0
+			 *
+			 * @param bool $follows   Whether the ticket's sale end date follows the event start. Default `true`.
+			 * @param int  $ticket_id The ticket post ID.
+			 * @param int  $event_id  The event post ID.
+			 */
+			if ( ! tribe_is_truthy( apply_filters( 'tec_tickets_ticket_end_date_follows_event_start', true, $ticket, $object_id ) ) ) {
 				continue;
 			}
 
@@ -1603,6 +1618,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since 4.6.2
 	 * @since 5.30.0.2 No longer clears the event's ticket provider when `default_provider` is not sent.
+	 * @since TBD No longer removes the event's header image when `header_image_id` is not sent.
 	 *
 	 * @param int   $post  Post that will be saved
 	 * @param array $data  Params that will be used to save
@@ -1646,9 +1662,13 @@ class Tribe__Tickets__Tickets_Handler {
 			tribe_tickets_update_capacity( $post, $data['event_capacity'] );
 		}
 
+		/*
+		 * The header image field is not rendered when Tickets Emails is enabled, so an absent value means
+		 * "keep the stored image"; only an empty value sent by the field removes it.
+		 */
 		if ( ! empty( $data['header_image_id'] ) ) {
 			update_post_meta( $post->ID, $this->key_image_header, $data['header_image_id'] );
-		} else {
+		} elseif ( array_key_exists( 'header_image_id', $data ) ) {
 			delete_post_meta( $post->ID, $this->key_image_header );
 		}
 
@@ -1681,6 +1701,8 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Save the the drag-n-drop ticket order
 	 *
 	 * @since 4.6
+	 * @since 5.30.3 Skips the IDs that are not tickets of the post.
+	 * @since TBD No longer errors when none of the listed tickets belong to the post.
 	 *
 	 * @param int $post
 	 */
@@ -1710,8 +1732,11 @@ class Tribe__Tickets__Tickets_Handler {
 			return false;
 		}
 
+		$updated = [];
+
 		foreach ( $tickets as $id => $ticket ) {
-			if ( ! isset( $ticket['order'] ) ) {
+			// The list comes from the request, so only this post's tickets are reordered.
+			if ( ! isset( $ticket['order'] ) || ! Event::ticket_belongs_to_post( absint( $id ), $post->ID ) ) {
 				continue;
 			}
 

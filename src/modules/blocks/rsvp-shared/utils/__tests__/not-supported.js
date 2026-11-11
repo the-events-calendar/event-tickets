@@ -24,16 +24,11 @@ describe( 'renderBlockNotSupported', () => {
 		expect( card.findByProps( { className: 'tickets-heading tickets-row-line' } ).children ).toEqual( [ 'RSVP' ] );
 	} );
 
-	it( 'should explain recurring events are not supported in a notice with the plans link', () => {
+	it( 'should explain recurring events are not supported in a notice without a link', () => {
 		const notice = render().findByProps( { className: 'tribe-editor__notice' } );
 
-		expect( JSON.stringify( notice.findByType( 'p' ).props.children ) ).toContain(
-			'RSVPs are not yet supported on recurring events.'
-		);
-		expect( notice.findByType( 'a' ).props ).toMatchObject( {
-			className: 'helper-link',
-			href: 'https://evnt.is/1b7a',
-		} );
+		expect( notice.findByType( 'p' ).props.children ).toBe( 'RSVPs are not supported on recurring events.' );
+		expect( notice.findAllByType( 'a' ) ).toHaveLength( 0 );
 	} );
 
 	it( 'should not render a remove block button', () => {

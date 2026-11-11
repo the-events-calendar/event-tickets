@@ -1,0 +1,5 @@
+significance: patch
+type: fix
+entry: Stopped Tickets Commerce PayPal card payments from being captured when
+  the buyer cancels or fails their bank's 3D Secure verification.
+timestamp: 2026-10-08T14:52:34.525Z

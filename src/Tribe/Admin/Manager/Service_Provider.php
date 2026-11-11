@@ -3,6 +3,8 @@
 namespace Tribe\Tickets\Admin\Manager;
 
 use TEC\Common\Contracts\Service_Provider as Service_Provider_Contract;
+use Tribe\Admin\Pages as Admin_Pages;
+use Tribe__Utils__Array as Arr;
 
 /**
  * Class Manager
@@ -37,7 +39,6 @@ class Service_Provider extends Service_Provider_Contract {
 		}
 
 		// Handle AJAX.
-		add_action( 'wp_ajax_nopriv_tribe_tickets_admin_manager', [ $this, 'ajax_handle_admin_manager' ] );
 		add_action( 'wp_ajax_tribe_tickets_admin_manager', [ $this, 'ajax_handle_admin_manager' ] );
 	}
 
@@ -45,9 +46,9 @@ class Service_Provider extends Service_Provider_Contract {
 	 * Handle response
 	 *
 	 * @since 5.1.0
+	 * @since 5.30.3 Requires the capability of the requested type before any handler runs.
 	 */
 	public function ajax_handle_admin_manager() {
-		// @todo Look at adding capability checks of some sort based on a filter that provides capability context for the specific request.
 		$response = [
 			'html' => '',
 		];
@@ -56,6 +57,12 @@ class Service_Provider extends Service_Provider_Contract {
 			$response['html'] = $this->render_error( __( 'Insecure request.', 'event-tickets' ) );
 
 			wp_send_json_error( $response );
+		}
+
+		if ( ! $this->user_can_make_request( Arr::get( $_REQUEST, 'request', '' ) ) ) {
+			$response['html'] = $this->render_error( __( 'You do not have permission to do this.', 'event-tickets' ) );
+
+			wp_send_json_error( $response, 403 );
 		}
 
 		/*
@@ -89,6 +96,28 @@ class Service_Provider extends Service_Provider_Contract {
 		$response['html'] = $this->render_error( __( 'Something happened here.', 'event-tickets' ) );
 
 		wp_send_json_error( $response );
+	}
+
+	/**
+	 * Whether the current user may make the given admin manager request.
+	 *
+	 * Request types not listed need `edit_posts`, the capability that hands out the nonce. Attendee details
+	 * are not listed: whether the user may manage attendees depends on the attendee's event, which only its
+	 * handler loads, and plugins filtering that check deny it when no event is given.
+	 *
+	 * @since 5.30.3
+	 *
+	 * @param mixed $request The request type, as sent by the client.
+	 *
+	 * @return bool
+	 */
+	private function user_can_make_request( $request ): bool {
+		switch ( is_string( $request ) ? $request : '' ) {
+			case 'tec_tickets_preview_email':
+				return current_user_can( Admin_Pages::get_capability() );
+			default:
+				return current_user_can( 'edit_posts' );
+		}
 	}
 
 	/**

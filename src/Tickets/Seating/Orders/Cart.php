@@ -25,6 +25,14 @@ use WP_Post;
  * @package TEC/Tickets/Seating/Orders
  */
 class Cart {
+	/**
+	 * The query argument that tells the seat selection block the buyer's seats were not held.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const SEATS_NOT_HELD_QUERY_ARG = 'tec-tickets-seating-seats-not-held';
 
 	/**
 	 * A reference to the Session handler.
@@ -60,6 +68,15 @@ class Cart {
 	private array $session_stacks = [];
 
 	/**
+	 * Whether the cart left out a seated ticket the session holds no seats for.
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
+	 */
+	private bool $left_out_unheld_seats = false;
+
+	/**
 	 * Cart constructor.
 	 *
 	 * @since 5.16.0
@@ -77,39 +94,84 @@ class Cart {
 	 *
 	 * @since 5.16.0
 	 * @since 5.29.5.1 Cap each seated ticket's quantity, and its seat labels, at the number of seats the session holds.
+	 * @since TBD Leave out a seated ticket the session holds no seats for, cap a seated ticket posted without seat labels, and read the session of the posted event.
 	 *
 	 * @param array $data The data to prepare for the cart.
 	 *
 	 * @return array The prepared data.
 	 */
 	public function handle_seat_selection( array $data ): array {
+		$this->left_out_unheld_seats = false;
+
 		if ( ! array_key_exists( 'tickets', $data ) ) {
 			return $data;
 		}
 
-		[ $token ] = $this->get_session_token_object_id();
-
-		$held = $token ? $this->get_token_reservations( $token ) : null;
+		/*
+		 * The earliest expiring session can belong to another event, so read the seats held by the
+		 * session of the posted one. A session on another event keeps the checkout cleanup from
+		 * clearing the cart, so the posted event having none means it holds no seats.
+		 */
+		$entries = $this->session->get_entries();
+		$token   = $entries[ $data['post_id'] ?? 0 ] ?? '';
+		$held    = $token ? $this->sessions->get_reservations_for_token( $token ) : ( $entries ? [] : null );
 
 		foreach ( $data['tickets'] as $key => $ticket_data ) {
-			if ( ! isset( $ticket_data['seat_labels'] ) ) {
+			$ticket_id  = $ticket_data['ticket_id'] ?? 0;
+			$has_labels = isset( $ticket_data['seat_labels'] );
+
+			if ( ! $has_labels && ! get_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true ) ) {
 				continue;
 			}
 
-			$ticket_id  = $ticket_data['ticket_id'] ?? 0;
 			$seats_held = null === $held ? null : count( $held[ $ticket_id ] ?? [] );
 
-			if ( null !== $seats_held && isset( $ticket_data['quantity'] ) && $ticket_data['quantity'] > $seats_held ) {
-				$ticket_data['quantity']    = $seats_held;
-				$ticket_data['seat_labels'] = array_slice( (array) $ticket_data['seat_labels'], 0, $seats_held );
+			/*
+			 * Capping to 0 is not enough: the cart repository reads a quantity under 1 as 1, and the
+			 * ticket would sell with no seat.
+			 */
+			if ( 0 === $seats_held ) {
+				unset( $data['tickets'][ $key ] );
+				$this->left_out_unheld_seats = true;
+				continue;
 			}
 
-			$ticket_data['extra']['seats'] = $ticket_data['seat_labels'];
+			if ( null !== $seats_held && isset( $ticket_data['quantity'] ) && $ticket_data['quantity'] > $seats_held ) {
+				$ticket_data['quantity'] = $seats_held;
+
+				if ( $has_labels ) {
+					$ticket_data['seat_labels'] = array_slice( (array) $ticket_data['seat_labels'], 0, $seats_held );
+				}
+			}
+
+			if ( $has_labels ) {
+				$ticket_data['extra']['seats'] = $ticket_data['seat_labels'];
+			}
 
 			$data['tickets'][ $key ] = $ticket_data;
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Sends the buyer back to the event page, instead of checkout, when the cart left out a seated ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|null $url  The URL the cart redirects to.
+	 * @param array       $data The cart data that was processed.
+	 *
+	 * @return string|null The URL the cart redirects to.
+	 */
+	public function filter_checkout_redirect_url( $url, $data ) {
+		if ( ! $this->left_out_unheld_seats || null === $url ) {
+			return $url;
+		}
+
+		$permalink = get_permalink( $data['post_id'] ?? 0 );
+
+		return $permalink ? add_query_arg( self::SEATS_NOT_HELD_QUERY_ARG, '1', $permalink ) : $url;
 	}
 
 	/**
@@ -172,16 +234,17 @@ class Cart {
 	 *
 	 * @since 5.16.0
 	 * @since 5.29.5 Sanitized the seat label.
+	 * @since TBD Read the seats from the session of the attendee's event.
 	 *
 	 * @param WP_Post       $attendee   The generated attendee.
 	 * @param Ticket_Object $ticket     The ticket the attendee is generated for.
 	 */
 	public function save_seat_data_for_attendee( WP_Post $attendee, Ticket_Object $ticket ): void {
-		[ $token, $object_id ] = $this->get_session_token_object_id();
-		$event_id              = (int) $attendee->event_id;
+		$event_id = (int) $attendee->event_id;
+		$token    = $event_id ? ( $this->session->get_entries()[ $event_id ] ?? '' ) : '';
 
-		if ( $event_id && $event_id === (int) $object_id ) {
-			$session_stack    = $this->get_session_stack( (string) $token, (int) $object_id, (int) $ticket->ID );
+		if ( $token ) {
+			$session_stack    = $this->get_session_stack( $token, $event_id, (int) $ticket->ID );
 			$reservation_data = $session_stack->current();
 			$session_stack->next();
 			$reservation_id = $reservation_data['reservation_id'] ?? '';
@@ -256,6 +319,7 @@ class Cart {
 	 * Fetches the token reservations either from the cache or from the database.
 	 *
 	 * @since 5.17.0
+	 * @since TBD Memoize the reservations per token.
 	 *
 	 * @param string $token The token to fetch the reservations for.
 	 *
@@ -267,7 +331,7 @@ class Cart {
 	 */
 	private function get_token_reservations( string $token ): array {
 		$cache        = tribe_cache();
-		$memo_key     = 'tec_tc_session_token_reservations';
+		$memo_key     = 'tec_tc_session_token_reservations_' . $token;
 		$reservations = $cache[ $memo_key ] ?? null;
 
 		if ( ! is_array( $reservations ) ) {
@@ -282,17 +346,14 @@ class Cart {
 	 * Warms up the session caches that might be needed later.
 	 *
 	 * @since 5.17.0
+	 * @since TBD Warm up the reservations of every session in the cookie.
 	 *
 	 * @return void The method does not return a valued, the cache is warmed up.
 	 */
 	public function warmup_caches(): void {
-		[ $token ] = $this->get_session_token_object_id();
-
-		if ( empty( $token ) ) {
-			return;
+		foreach ( $this->session->get_entries() as $token ) {
+			/** @noinspection UnusedFunctionResultInspection */
+			$this->get_token_reservations( $token );
 		}
-
-		/** @noinspection UnusedFunctionResultInspection */
-		$this->get_token_reservations( $token );
 	}
 }

@@ -3,6 +3,7 @@
 exports[`Move modal reducer should move ticket 1`] = `
 {
   "clientId": null,
+  "errorMessage": "",
   "isSubmitting": true,
   "post_type": "all",
   "search_terms": "",
@@ -14,6 +15,7 @@ exports[`Move modal reducer should move ticket 1`] = `
 exports[`Move modal reducer should move ticket with error 1`] = `
 {
   "clientId": null,
+  "errorMessage": "",
   "isSubmitting": false,
   "post_type": "all",
   "search_terms": "",
@@ -25,6 +27,7 @@ exports[`Move modal reducer should move ticket with error 1`] = `
 exports[`Move modal reducer should move ticket with success 1`] = `
 {
   "clientId": null,
+  "errorMessage": "",
   "isSubmitting": false,
   "post_type": "all",
   "search_terms": "",
@@ -36,6 +39,7 @@ exports[`Move modal reducer should move ticket with success 1`] = `
 exports[`Move modal reducer should set data 1`] = `
 {
   "clientId": null,
+  "errorMessage": "",
   "isSubmitting": false,
   "post_type": "some",
   "search_terms": "",
