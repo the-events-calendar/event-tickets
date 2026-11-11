@@ -311,7 +311,7 @@ class Upsell {
 	 * Any callback on the panel's content actions counts as a setting, whether or not it prints anything,
 	 * so the upsell never shows next to settings added by another plugin.
 	 *
-	 * @since TBD
+	 * @since 5.31.1
 	 *
 	 * @param array<array<string,mixed>> $active_providers The active ticket providers, not including RSVP.
 	 *

@@ -137,7 +137,7 @@ final class Assets extends Controller_Contract {
 	 * Registers the controller.
 	 *
 	 * @since 5.31.0
-	 * @since TBD Added the Ticket block style to the editor canvas styles group.
+	 * @since 5.31.1 Added the Ticket block style to the editor canvas styles group.
 	 *
 	 * @return void
 	 */

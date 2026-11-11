@@ -109,7 +109,7 @@ class Warnings {
 	 *
 	 * @since 5.0.4
 	 * @since 5.8.0 Removed `class` attribute, dynamize ticket and rsvp labels.
-	 * @since TBD Removed the link to the planned features article.
+	 * @since 5.31.1 Removed the link to the planned features article.
 	 *
 	 * @param int $post_id The Post ID.
 	 */

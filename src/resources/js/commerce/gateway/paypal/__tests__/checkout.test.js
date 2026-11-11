@@ -2,7 +2,7 @@
  * PayPal only tells the card form that a buyer closed their bank's 3D Secure verification: the order
  * it keeps carries no authentication result. The checkout has to pass that on, or the server captures.
  *
- * @since TBD
+ * @since 5.31.1
  */
 
 const $ = require( 'jquery' );

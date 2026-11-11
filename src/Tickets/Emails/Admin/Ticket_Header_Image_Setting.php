@@ -2,7 +2,7 @@
 /**
  * Hides the per-event Ticket Header Image setting when Tickets Emails is enabled.
  *
- * @since TBD
+ * @since 5.31.1
  *
  * @package TEC\Tickets\Emails\Admin
  */
@@ -15,7 +15,7 @@ namespace TEC\Tickets\Emails\Admin;
  * Tickets Emails reads the header image only from the Emails settings tab, so the per-event
  * image is used by the legacy email template alone.
  *
- * @since TBD
+ * @since 5.31.1
  *
  * @package TEC\Tickets\Emails\Admin
  */
@@ -23,7 +23,7 @@ final class Ticket_Header_Image_Setting {
 	/**
 	 * Prevents the classic editor header image setting from rendering when Tickets Emails is enabled.
 	 *
-	 * @since TBD
+	 * @since 5.31.1
 	 *
 	 * @param null|string $html The initial HTML.
 	 *
@@ -36,7 +36,7 @@ final class Ticket_Header_Image_Setting {
 	/**
 	 * Tells the block editor whether to show the header image setting.
 	 *
-	 * @since TBD
+	 * @since 5.31.1
 	 *
 	 * @param array{tickets?: array<string,mixed>} $config The editor configuration.
 	 *

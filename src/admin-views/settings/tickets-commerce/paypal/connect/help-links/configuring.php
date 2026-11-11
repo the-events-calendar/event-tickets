@@ -2,10 +2,10 @@
 /**
  * The Template for displaying the Tickets Commerce PayPal help links (configuring).
  *
- * @version TBD
+ * @version 5.31.1
  *
  * @since 5.2.0
- * @since TBD Linked the PayPal setup article.
+ * @since 5.31.1 Linked the PayPal setup article.
  *
  * @var Tribe__Tickets__Admin__Views                  $this                  [Global] Template object.
  * @var string                                        $plugin_url            [Global] The plugin URL.

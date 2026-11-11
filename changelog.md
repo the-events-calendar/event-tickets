@@ -1,5 +1,34 @@
 # Changelog
 
+### [5.31.1] 2026-11-11
+
+* Fix - Avoided a fatal error when a database table prefix of 31 or more characters pushed the migrations table name past MySQL's 64-character limit, added an admin notice explaining how to shorten the prefix, and stopped the Shepherd tables error notice from causing an error when displayed.
+* Fix - Changed the System Information copy button on the Troubleshooting page to copy plain text, so pasted system details take the destination's text color instead of arriving as invisible white text.
+* Fix - Closed the block editor's Attendee Information modal for tickets and RSVPs after its fields are saved, which stayed open in Chrome, including on WordPress 7.1.
+* Fix - Corrected the check-in of Series Pass Attendees from the Event Tickets Plus App, which appeared checked in and then reverted to unchecked on the next refresh.
+* Fix - Kept the event edit screen working when a translation breaks the placeholders of the Series Pass help text, falling back to English for that sentence.
+* Fix - Loaded the shared block editor stylesheet directly into the WordPress 7.1 editor canvas, removing the "added to the iframe incorrectly" browser console warning.
+* Fix - Loaded the Tickets block, ticket sale dates and Seating editor stylesheets directly into the WordPress 7.1 editor canvas, removing the "added to the iframe incorrectly" browser console warnings.
+* Fix - Prevented a fatal error when another plugin runs the save_post action with only the post ID.
+* Fix - Prevented fatal errors when another plugin runs the save_post action with only the post ID.
+* Fix - Re-enabled the Move option in the Bulk actions menu of an event's attendee list when Community is active, so several attendees can be moved at once again.
+* Fix - Removed broken and outdated help links from the Payments settings, the settings sidebar and the Tickets Help page, and pointed the remaining links to current articles.
+* Fix - Restored Move Ticket and Move RSVP in the block editor, where a move failed without an error and trashed the RSVP, made a failed move show its reason, and stopped a newly added Tickets block from listing each existing ticket twice in the editor.
+* Fix - Stopped a Series Pass Attendee's check-in history from carrying over to the next Occurrence they are checked into.
+* Fix - Stopped checkout from selling an assigned seating ticket with no seat when the seat was not held, and sent the buyer back to the event page to choose their seats again.
+* Fix - Stopped the Community Events submission form from ending on a critical error on PHP 8 when a new event was submitted with a ticket, which led organizers to resubmit and create duplicate events.
+* Fix - Stopped Tickets Commerce PayPal card payments from being captured when the buyer cancels or fails their bank's 3D Secure verification.
+* Language - 19 new strings added, 217 updated, 6 fuzzied, and 13 obsoleted.
+* Security - Hardened how HTML attributes are printed in templates. Props to Hatim Madmoune -DELTA for reporting.
+* Security - Hardened shortcode handling in post content shown by calendar views. Props to Filip Kowalski for reporting.
+* Security - Hardened the handling of attendee data. Props to Phuong Nguyen for reporting.
+* Security - Hardened the output of the settings page closing form element.
+* Tweak - Hid the per-event Ticket Header Image setting in the classic and block editors when Tickets Emails is enabled, because Tickets Emails uses the header image set under Tickets > Settings > Emails, and the classic editor's Ticket Settings panel shows a premium-settings note when it has no settings to show.
+* Tweak - Pointed the "Learn how to get live support" link on the Help page to a working page instead of a removed article.
+* Tweak - Pointed the Zapier API keys help link to the Zapier knowledgebase article and removed an outdated link from the Zapier Endpoint Dashboard.
+* Tweak - Removed the outdated planned features link from the notices that tickets and RSVPs are not supported on recurring events, and changed the RSVP notice to "RSVPs are not supported on recurring events."
+* Tweak - Simplified the Payment provider ticket setting by removing the helper text about running multiple ecommerce plugins, in both the classic and block editors.
+
 ### [5.31.0] 2026-11-04
 
 * Feature - Added relative sale dates for Tickets Commerce tickets on events in the classic and block editors, so ticket sales and the sale price can start and end a set time before the event and follow the event when its date changes, and blocked saving a ticket whose sales window or sale price window ends before it starts, or whose sale price window starts outside the sales window, with the reason shown under the window.

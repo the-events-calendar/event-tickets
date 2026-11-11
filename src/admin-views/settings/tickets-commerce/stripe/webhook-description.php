@@ -3,7 +3,7 @@
  * Template to display the Webhook's Setting Description.
  *
  * @since 5.11.0
- * @since TBD Removed the "Learn more" link.
+ * @since 5.31.1 Removed the "Learn more" link.
  *
  * @var Tribe__Tickets__Admin__Views $this     Template object.
  */

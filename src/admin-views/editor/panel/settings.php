@@ -2,7 +2,7 @@
 /**
  * Ticket Settings panel in the classic editor.
  *
- * @since TBD Shows an upsell when the panel has no settings to show.
+ * @since 5.31.1 Shows an upsell when the panel has no settings to show.
  *
  * @var int                        $post_id          The post ID.
  * @var array<array<string,mixed>> $active_providers The active ticket providers, not including RSVP.

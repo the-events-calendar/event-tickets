@@ -49,7 +49,7 @@ class Ticket_Panel_Data {
 	 *
 	 * @since 5.8.0
 	 * @since 5.18.0 Removed start and end date help text.
-	 * @since TBD Removed the multiple providers help text.
+	 * @since 5.31.1 Removed the multiple providers help text.
 	 *
 	 * @return array<string,mixed> The data in array format.
 	 */

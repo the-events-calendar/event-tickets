@@ -93,7 +93,7 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 	 * Variables attached into the group that is used to localize values into the client
 	 *
 	 * @since 4.9
-	 * @since TBD Removed the multiple providers help text.
+	 * @since 5.31.1 Removed the multiple providers help text.
 	 *
 	 * @return array<string,mixed> The data to be localized for the Tickets Block Editor components.
 	 */

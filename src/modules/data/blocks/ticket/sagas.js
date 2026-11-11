@@ -59,7 +59,7 @@ const getTicketNotUpdatedNoticeId = ( clientId ) => `tec-tickets-ticket-not-upda
 /**
  * Inserts a ticket block for each ticket the Tickets block does not hold yet.
  *
- * @since TBD Tickets the Tickets block already holds are skipped.
+ * @since 5.31.1 Tickets the Tickets block already holds are skipped.
  *
  * @yield
  * @param {number[]} tickets The IDs of the tickets to insert.

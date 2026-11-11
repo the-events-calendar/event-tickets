@@ -2,11 +2,11 @@
 /**
  * The Template for displaying the Tickets Commerce PayPal connect button.
  *
- * @version TBD
+ * @version 5.31.1
  *
  * @since 5.1.9
  * @since 5.30.1 Render an error notice when no signup URL could be obtained.
- * @since TBD Removed the "Learn more" link from the error notice.
+ * @since 5.31.1 Removed the "Learn more" link from the error notice.
  *
  * @var Tribe__Template $this         Template object.
  * @var string|false    $url          The PayPal signup URL, false when it could not be generated.

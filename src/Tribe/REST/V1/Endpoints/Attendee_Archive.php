@@ -84,10 +84,10 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 	 * @param WP_REST_Request $request
 	 *
 	 * @since 4.12.0 Returns 401 Unauthorized if Event Tickets Plus is not loaded.
-	 * @since TBD Gate an Occurrence request by its Event's status instead of the related post status filter.
+	 * @since 5.31.1 Gate an Occurrence request by its Event's status instead of the related post status filter.
 	 * @since 5.29.5 Reindexes the attendees so the response always encodes them as a JSON array.
 	 * @since 5.30.1 Rejects a provided-but-invalid api_key with a 401 instead of returning public results.
-	 * @since TBD Applies the search, the slug ordering and the order, order status, check-in, price and attendee information filters only to requests with manage access.
+	 * @since 5.31.1 Applies the search, the slug ordering and the order, order status, check-in, price and attendee information filters only to requests with manage access.
 	 *
 	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
 	 */
@@ -285,7 +285,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 	 * Process the search terms for attendees.
 	 *
 	 * @since 5.5.2
-	 * @since TBD Applies the email search only to requests with manage access.
+	 * @since 5.31.1 Applies the email search only to requests with manage access.
 	 *
 	 * @param array $request_args Array of request args.
 	 * @param Tribe__Tickets__REST__V1__Attendee_Repository $query The query object.
@@ -568,7 +568,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 	 * Mirrors `Tribe__Tickets__Attendee_Repository::filter_by_event_status()`, which cannot match an
 	 * Occurrence itself because its provisional ID has no `wp_posts` row.
 	 *
-	 * @since TBD
+	 * @since 5.31.1
 	 *
 	 * @param array<int|string>    $provisional_ids The Occurrence provisional IDs the request asked for.
 	 * @param string|array<string> $event_status    The requested Event statuses, `any` included.
@@ -600,7 +600,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 	/**
 	 * Returns the description of an argument that is applied only to requests with manage access.
 	 *
-	 * @since TBD
+	 * @since 5.31.1
 	 *
 	 * @param string $description The description of what the argument does.
 	 *

@@ -149,7 +149,7 @@ class Ticket_Cache_Controller extends Controller {
 	 * Clean the ticket cache when a related post is created, updated or deleted.
 	 *
 	 * @since 5.6.4
-	 * @since TBD The post is optional and loaded from the ID when it is not a post: some plugins fire `save_post` with the ID alone.
+	 * @since 5.31.1 The post is optional and loaded from the ID when it is not a post: some plugins fire `save_post` with the ID alone.
 	 *
 	 * @param int|mixed          $post_id The ID of the post being deleted.
 	 * @param WP_Post|mixed|null $post    The post object being deleted.

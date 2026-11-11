@@ -959,7 +959,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * Handles the Approval of the orders via PayPal.
 	 *
 	 * @since 5.2.0
-	 * @since TBD Sends the 3D Secure liability shift, which PayPal only reports to the card form.
+	 * @since 5.31.1 Sends the 3D Secure liability shift, which PayPal only reports to the card form.
 	 *
 	 * @param {Object} data       PayPal data passed to this method.
 	 * @param {Object} actions    PayPal actions available on approve.

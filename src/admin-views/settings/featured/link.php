@@ -3,7 +3,7 @@
  * Help link for featured settings box.
  *
  * @since 5.3.0
- * @since TBD Pointed the default link to the Tickets Commerce article.
+ * @since 5.31.1 Pointed the default link to the Tickets Commerce article.
  *
  * @var Tribe__Template $this  Template object.
  * @var array           $link  Array of link arguments.

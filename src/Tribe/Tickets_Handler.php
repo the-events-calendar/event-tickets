@@ -1618,7 +1618,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since 4.6.2
 	 * @since 5.30.0.2 No longer clears the event's ticket provider when `default_provider` is not sent.
-	 * @since TBD No longer removes the event's header image when `header_image_id` is not sent.
+	 * @since 5.31.1 No longer removes the event's header image when `header_image_id` is not sent.
 	 *
 	 * @param int   $post  Post that will be saved
 	 * @param array $data  Params that will be used to save
@@ -1702,7 +1702,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since 4.6
 	 * @since 5.30.3 Skips the IDs that are not tickets of the post.
-	 * @since TBD No longer errors when none of the listed tickets belong to the post.
+	 * @since 5.31.1 No longer errors when none of the listed tickets belong to the post.
 	 *
 	 * @param int $post
 	 */

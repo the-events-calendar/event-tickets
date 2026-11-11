@@ -28,7 +28,7 @@ class Cart {
 	/**
 	 * The query argument that tells the seat selection block the buyer's seats were not held.
 	 *
-	 * @since TBD
+	 * @since 5.31.1
 	 *
 	 * @var string
 	 */
@@ -70,7 +70,7 @@ class Cart {
 	/**
 	 * Whether the cart left out a seated ticket the session holds no seats for.
 	 *
-	 * @since TBD
+	 * @since 5.31.1
 	 *
 	 * @var bool
 	 */
@@ -94,7 +94,7 @@ class Cart {
 	 *
 	 * @since 5.16.0
 	 * @since 5.29.5.1 Cap each seated ticket's quantity, and its seat labels, at the number of seats the session holds.
-	 * @since TBD Leave out a seated ticket the session holds no seats for, cap a seated ticket posted without seat labels, and read the session of the posted event.
+	 * @since 5.31.1 Leave out a seated ticket the session holds no seats for, cap a seated ticket posted without seat labels, and read the session of the posted event.
 	 *
 	 * @param array $data The data to prepare for the cart.
 	 *
@@ -157,7 +157,7 @@ class Cart {
 	/**
 	 * Sends the buyer back to the event page, instead of checkout, when the cart left out a seated ticket.
 	 *
-	 * @since TBD
+	 * @since 5.31.1
 	 *
 	 * @param string|null $url  The URL the cart redirects to.
 	 * @param array       $data The cart data that was processed.
@@ -234,7 +234,7 @@ class Cart {
 	 *
 	 * @since 5.16.0
 	 * @since 5.29.5 Sanitized the seat label.
-	 * @since TBD Read the seats from the session of the attendee's event.
+	 * @since 5.31.1 Read the seats from the session of the attendee's event.
 	 *
 	 * @param WP_Post       $attendee   The generated attendee.
 	 * @param Ticket_Object $ticket     The ticket the attendee is generated for.
@@ -319,7 +319,7 @@ class Cart {
 	 * Fetches the token reservations either from the cache or from the database.
 	 *
 	 * @since 5.17.0
-	 * @since TBD Memoize the reservations per token.
+	 * @since 5.31.1 Memoize the reservations per token.
 	 *
 	 * @param string $token The token to fetch the reservations for.
 	 *
@@ -346,7 +346,7 @@ class Cart {
 	 * Warms up the session caches that might be needed later.
 	 *
 	 * @since 5.17.0
-	 * @since TBD Warm up the reservations of every session in the cookie.
+	 * @since 5.31.1 Warm up the reservations of every session in the cookie.
 	 *
 	 * @return void The method does not return a valued, the cache is warmed up.
 	 */

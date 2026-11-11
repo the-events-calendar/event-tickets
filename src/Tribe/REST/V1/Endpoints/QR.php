@@ -45,7 +45,7 @@ class Tribe__Tickets__REST__V1__Endpoints__QR extends Tribe__Tickets__REST__V1__
 	 * Get attendee by id
 	 *
 	 * @since 5.7.0
-	 * @since TBD Returns a 401 to requests without manage access.
+	 * @since 5.31.1 Returns a 401 to requests without manage access.
 	 *
 	 * @param WP_REST_Request $request The request.
 	 *
@@ -220,7 +220,7 @@ class Tribe__Tickets__REST__V1__Endpoints__QR extends Tribe__Tickets__REST__V1__
 	 * Check in attendee.
 	 *
 	 * @since 5.7.0
-	 * @since TBD Resolve the Series Pass Attendee's per-Occurrence clone before reading or reporting checkin status.
+	 * @since 5.31.1 Resolve the Series Pass Attendee's per-Occurrence clone before reading or reporting checkin status.
 	 *
 	 * @param WP_REST_Request $request The request.
 	 *
@@ -478,7 +478,7 @@ class Tribe__Tickets__REST__V1__Endpoints__QR extends Tribe__Tickets__REST__V1__
 	 * For a Series Pass Attendee, the checkin flag is recorded on the Attendee clone made for the specific
 	 * Occurrence, not on the original Series-level Attendee post; the Series Passes controller resolves it.
 	 *
-	 * @since TBD
+	 * @since 5.31.1
 	 *
 	 * @param int $attendee_id The Attendee ID as provided in the check-in request.
 	 * @param int $event_id    The ID of the ticket-able post the Attendee is being checked into.

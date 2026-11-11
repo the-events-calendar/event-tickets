@@ -188,7 +188,7 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @since 5.3.0
 	 * @since 5.23.0 Added new div.
-	 * @since TBD Removed the "Learn more" link from the Checkout Type tooltip.
+	 * @since 5.31.1 Removed the "Learn more" link from the Checkout Type tooltip.
 	 *
 	 * @return array The list of settings for the gateway.
 	 */

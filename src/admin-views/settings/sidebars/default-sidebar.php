@@ -3,7 +3,7 @@
  * The default sidebar for the settings pages.
  *
  * @since 6.7.0
- * @since TBD Merged the two resource lists into one and updated the links.
+ * @since 5.31.1 Merged the two resource lists into one and updated the links.
  */
 
 declare( strict_types=1 );

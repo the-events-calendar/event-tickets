@@ -289,7 +289,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * @since 5.1.9
 	 * @since 5.27.6.1 Removed order data from response for failed orders.
 	 * @since 5.29.4 Records what PayPal answered and fails when it did not acknowledge a capture.
-	 * @since TBD Refuses to capture a card payment that failed 3D Secure authentication.
+	 * @since 5.31.1 Refuses to capture a card payment that failed 3D Secure authentication.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -459,7 +459,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * @since 5.27.6.1 Removed order data from response for failed orders.
 	 * @since 5.29.4 Captures an approved order nothing captured yet, and stops writing unsettled PayPal
 	 *        states over the order.
-	 * @since TBD Refuses to capture a card payment that failed 3D Secure authentication, or an order
+	 * @since 5.31.1 Refuses to capture a card payment that failed 3D Secure authentication, or an order
 	 *        that is no longer in flight.
 	 *
 	 * @param string  $order_id The PayPal order ID.
@@ -812,7 +812,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Arguments used for the updating order for PayPal.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Added the `liability_shift` argument.
+	 * @since 5.31.1 Added the `liability_shift` argument.
 	 *
 	 * @return array
 	 */
@@ -934,7 +934,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Returns an array of error messages that are used by the API responses.
 	 *
 	 * @since 5.2.0
-	 * @since TBD Added the `failed-authentication` and `unverified-order` messages.
+	 * @since 5.31.1 Added the `failed-authentication` and `unverified-order` messages.
 	 *
 	 * @return array $messages Array of error messages.
 	 */
@@ -1001,7 +1001,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Reports the status of an order that is no longer in flight, instead of capturing it again.
 	 *
-	 * @since TBD
+	 * @since 5.31.1
 	 *
 	 * @param WP_Post $order           The Tickets Commerce order.
 	 * @param string  $paypal_order_id The PayPal order ID.
@@ -1034,7 +1034,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Captures a PayPal order, unless its card failed the 3D Secure authentication its bank asked for.
 	 *
-	 * @since TBD
+	 * @since 5.31.1
 	 *
 	 * @param WP_Post     $order           The Tickets Commerce order.
 	 * @param array       $paypal_order    The PayPal order response.
@@ -1063,7 +1063,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @link https://developer.paypal.com/docs/checkout/advanced/customize/3d-secure/response-parameters/
 	 *
-	 * @since TBD
+	 * @since 5.31.1
 	 *
 	 * @param array       $paypal_order    A PayPal order response.
 	 * @param string|null $liability_shift The liability shift PayPal reported to the card form, if any.
@@ -1097,7 +1097,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Denies an order whose card failed 3D Secure authentication, without capturing it.
 	 *
-	 * @since TBD
+	 * @since 5.31.1
 	 *
 	 * @param WP_Post $order        The Tickets Commerce order.
 	 * @param array   $paypal_order The PayPal order response.

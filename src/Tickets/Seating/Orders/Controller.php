@@ -385,7 +385,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Sends the buyer back to the event page when the cart left out a seated ticket.
 	 *
-	 * @since TBD
+	 * @since 5.31.1
 	 *
 	 * @param string|null $url  The URL the cart redirects to.
 	 * @param array       $data The cart data that was processed.

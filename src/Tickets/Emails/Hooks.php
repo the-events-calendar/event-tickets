@@ -58,7 +58,7 @@ class Hooks extends Service_Provider {
 	 * Adds the filters required by each Tickets Emails component.
 	 *
 	 * @since 5.5.6
-	 * @since TBD Hides the per-event Ticket Header Image setting when Tickets Emails is enabled.
+	 * @since 5.31.1 Hides the per-event Ticket Header Image setting when Tickets Emails is enabled.
 	 */
 	protected function add_filters() {
 		add_filter( 'tec_tickets_settings_tabs_ids', [ $this, 'filter_add_tab_id' ] );
@@ -311,7 +311,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Hides the classic editor Ticket Header Image setting when Tickets Emails is enabled.
 	 *
-	 * @since TBD
+	 * @since 5.31.1
 	 *
 	 * @param null|string $html The initial HTML.
 	 *
@@ -324,7 +324,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Tells the block editor whether to show the Ticket Header Image setting.
 	 *
-	 * @since TBD
+	 * @since 5.31.1
 	 *
 	 * @param array{tickets?: array<string,mixed>} $config The editor configuration.
 	 *

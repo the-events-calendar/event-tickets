@@ -175,7 +175,7 @@ class Frontend extends Controller_Contract {
 	 *
 	 * @since 5.16.0
 	 * @since 5.29.5.1 Mark a response embedding a seat selection token as non-cacheable.
-	 * @since TBD Pass whether the buyer's seats were not held to the template.
+	 * @since 5.31.1 Pass whether the buyer's seats were not held to the template.
 	 *
 	 * @param string              $html     The initial HTML.
 	 * @param string              $file     Complete path to include the PHP File.

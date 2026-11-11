@@ -254,7 +254,7 @@ class Settings {
 	 * Get the list of settings for Tickets Commerce.
 	 *
 	 * @since 5.1.6
-	 * @since TBD Pointed the payment options help link to the Tickets Commerce article.
+	 * @since 5.31.1 Pointed the payment options help link to the Tickets Commerce article.
 	 *
 	 * @return array The list of settings for Tickets Commerce.
 	 */

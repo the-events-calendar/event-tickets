@@ -3,9 +3,9 @@
  * The Template for displaying the Tickets Commerce Stripe help links.
  *
  * @since 5.3.0
- * @since TBD Removed the troubleshooting link.
+ * @since 5.31.1 Removed the troubleshooting link.
  *
- * @version TBD
+ * @version 5.31.1
  *
  * @var string                                        $plugin_url      [Global] The plugin URL.
  * @var TEC\Tickets\Commerce\Gateways\Stripe\Signup   $signup          [Global] The Signup class.

@@ -254,7 +254,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * is selected further handling will be managed via JS (and interaction will be
 	 * through a modal interface).
 	 *
-	 * @since TBD Checks whether the user can manage the attendees of the event being viewed.
+	 * @since 5.31.1 Checks whether the user can manage the attendees of the event being viewed.
 	 *
 	 * @param array $actions
 	 *

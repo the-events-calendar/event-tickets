@@ -6,9 +6,9 @@
  * [your-theme]/tribe/tickets-seating/tickets-block.php
  *
  * @since 5.16.0
- * @since TBD Added the notice shown when the buyer's seats were not held.
+ * @since 5.31.1 Added the notice shown when the buyer's seats were not held.
  *
- * @version TBD
+ * @version 5.31.1
  *
  * @var string $cost_range     The cost range of the tickets.
  * @var string $inventory      The inventory of the tickets.

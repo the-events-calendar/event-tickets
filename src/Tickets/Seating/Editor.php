@@ -217,7 +217,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 	 * Registers the Block Editor JavaScript and CSS assets.
 	 *
 	 * @since 5.16.0
-	 * @since TBD Added the block editor style to the editor canvas styles group.
+	 * @since 5.31.1 Added the block editor style to the editor canvas styles group.
 	 *
 	 * @return void
 	 */

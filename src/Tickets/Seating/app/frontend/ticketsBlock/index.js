@@ -765,7 +765,7 @@ async function waitForModalElement() {
  *
  * Mirrors `Cart::SEATS_NOT_HELD_QUERY_ARG` in PHP.
  *
- * @since TBD
+ * @since 5.31.1
  *
  * @type {string}
  */
@@ -774,7 +774,7 @@ const seatsNotHeldQueryArg = 'tec-tickets-seating-seats-not-held';
 /**
  * Removes the query argument from the address bar so a reload does not show the notice again.
  *
- * @since TBD
+ * @since 5.31.1
  *
  * @return {void} The address bar no longer carries the argument.
  */
@@ -792,7 +792,7 @@ export function stripSeatsNotHeldQueryArg() {
 /**
  * Removes the notice telling the buyer their seats were not held.
  *
- * @since TBD
+ * @since 5.31.1
  *
  * @return {void} The notice is removed from the DOM.
  */

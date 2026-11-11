@@ -86,7 +86,7 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 	 *   also handles maybe handling form submission
 	 *
 	 * @since 4.9
-	 * @since TBD Match the block editor's cross-origin isolation when rendered inside its modal.
+	 * @since 5.31.1 Match the block editor's cross-origin isolation when rendered inside its modal.
 	 *
 	 * @return null
 	 */
@@ -242,7 +242,7 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 	 * The block editor reads the modal iframe's document to close the modal after a save, and a
 	 * browser only allows that when both pages share the same isolation policy.
 	 *
-	 * @since TBD
+	 * @since 5.31.1
 	 *
 	 * @return void
 	 */

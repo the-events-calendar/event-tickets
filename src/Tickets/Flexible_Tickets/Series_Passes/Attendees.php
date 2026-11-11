@@ -58,7 +58,7 @@ class Attendees extends Controller {
 	 * Matches `TEC\Tickets_Plus\Checkin\Constants::CHECKIN_LOGGING_META_KEY`; event-tickets-plus is not a hard
 	 * dependency of this file, so the value is duplicated here.
 	 *
-	 * @since TBD
+	 * @since 5.31.1
 	 */
 	private const CHECKIN_LOG_META_KEY = '_tec_tickets_checkin_log';
 
@@ -361,7 +361,7 @@ class Attendees extends Controller {
 	 * the given Event or Occurrence ID, or from the Series when the request carries the Series ID, as a Series
 	 * Pass QR code does - and returns the clone for it, if one exists.
 	 *
-	 * @since TBD
+	 * @since 5.31.1
 	 *
 	 * @param int      $attendee_id The post ID of the Attendee as provided in the check-in request.
 	 * @param int|null $event_id    The ID of the post the Attendee is being checked into, if available.
@@ -399,7 +399,7 @@ class Attendees extends Controller {
 	 * Clones a Series Pass Attendee to an Attendee for the specified Event.
 	 *
 	 * @since 5.8.2
-	 * @since TBD Do not copy the original's check-in failure log, and stop double-serializing array meta.
+	 * @since 5.31.1 Do not copy the original's check-in failure log, and stop double-serializing array meta.
 	 *
 	 * @param int $attendee_id The ID of the Attendee to clone.
 	 * @param int $event_id    The ID of the Event to clone the Attendee to.
@@ -659,7 +659,7 @@ class Attendees extends Controller {
 	 * could check into.
 	 *
 	 * @since 5.8.2
-	 * @since TBD Let the check-in window restriction be filtered, so a manual check-in flagged as coming from
+	 * @since 5.31.1 Let the check-in window restriction be filtered, so a manual check-in flagged as coming from
 	 *            the App is not restricted the way an actual QR code scan is.
 	 *
 	 * @param int  $post_id     The post ID of the Series, or Event, to get the checkin times for.
@@ -679,7 +679,7 @@ class Attendees extends Controller {
 		 * sets it for the App's bulk check-in endpoint, which is a manual check-in, to have the check-in
 		 * recorded as coming from the App. This filter is how that endpoint opts out of the restriction.
 		 *
-		 * @since TBD
+		 * @since 5.31.1
 		 *
 		 * @param bool $restricted  Whether the candidate Occurrences are restricted to the check-in window.
 		 * @param int  $post_id     The post ID of the Series, or Event, to get the checkin times for.
@@ -746,7 +746,7 @@ class Attendees extends Controller {
 	/**
 	 * Returns the ID of the Event, or Occurrence, to check a Series Pass Attendee into.
 	 *
-	 * @since TBD
+	 * @since 5.31.1
 	 *
 	 * @param int      $attendee_id The Attendee ID to check in.
 	 * @param int      $series_id   The Series ID the Attendee holds a Series Pass for.
@@ -1038,7 +1038,7 @@ class Attendees extends Controller {
 	 * per-Occurrence check-in failure log.
 	 *
 	 * @since 5.8.2
-	 * @since TBD Also exclude the check-in failure log meta key: it records a failure for one specific
+	 * @since 5.31.1 Also exclude the check-in failure log meta key: it records a failure for one specific
 	 *            Occurrence and must not be copied onto every other Occurrence's clone Attendee.
 	 *
 	 * @param int    $post_id  The post ID of the Attendee to check.
@@ -1345,7 +1345,7 @@ class Attendees extends Controller {
 	 * same person. The `clone_of` entry closes that gap: it is absent for a regular Attendee and holds the
 	 * original Series-level Attendee ID for a clone.
 	 *
-	 * @since TBD
+	 * @since 5.31.1
 	 *
 	 * @param array<string,mixed> $attendee_data The Attendee data as assembled for the REST API.
 	 *
@@ -1438,7 +1438,7 @@ class Attendees extends Controller {
 	 * have not been cloned to the Event.
 	 *
 	 * @since 5.8.2
-	 * @since TBD Let the row actions render for the per-Occurrence clone Attendee, which carries a real checkin status.
+	 * @since 5.31.1 Let the row actions render for the per-Occurrence clone Attendee, which carries a real checkin status.
 	 *
 	 * @param array<int,string>   $row_actions Array of row action links.
 	 * @param array<string,mixed> $item        The array representation of the item.
@@ -1472,7 +1472,7 @@ class Attendees extends Controller {
 	 * Filters the attendee table check-in column.
 	 *
 	 * @since 5.9.1
-	 * @since TBD Let the column render for the per-Occurrence clone Attendee, which carries a real checkin status.
+	 * @since 5.31.1 Let the column render for the per-Occurrence clone Attendee, which carries a real checkin status.
 	 *
 	 * @param string              $html The HTML content of the column.
 	 * @param array<string,mixed> $item The array representation of the item.

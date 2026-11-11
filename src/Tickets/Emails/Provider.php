@@ -22,7 +22,7 @@ class Provider extends Service_Provider {
 	 * Register the provider singletons.
 	 *
 	 * @since 5.5.6
-	 * @since TBD Registers the Ticket Header Image setting singleton.
+	 * @since 5.31.1 Registers the Ticket Header Image setting singleton.
 	 */
 	public function register(): void {
 		$this->register_assets();

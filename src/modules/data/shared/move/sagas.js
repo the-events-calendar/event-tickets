@@ -109,7 +109,7 @@ export function* fetchPostChoices( { ignore, post_type, search_terms = '' } ) {
 /**
  * Moves ticket/RSVP from one post to another
  *
- * @since TBD A move the server rejects is reported as an error, with a message for the user.
+ * @since 5.31.1 A move the server rejects is reported as an error, with a message for the user.
  *
  * @yield
  * @param {Object} args                The move arguments.

@@ -277,7 +277,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	 * Adds the "Tickets & RSVPs" section.
 	 *
 	 * @since 5.24.0
-	 * @since TBD Linked the Tickets Commerce setup article and removed the Moving Tickets link.
+	 * @since 5.31.1 Linked the Tickets Commerce setup article and removed the Moving Tickets link.
 	 *
 	 * @param Link_Section_Builder $builder The section builder instance.
 	 */
@@ -309,7 +309,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	 * Adds the "Attendee Management" section.
 	 *
 	 * @since 5.24.0
-	 * @since TBD Renamed the links and linked the Managing Attendees article.
+	 * @since 5.31.1 Renamed the links and linked the Managing Attendees article.
 	 *
 	 * @param Link_Section_Builder $builder The section builder instance.
 	 */

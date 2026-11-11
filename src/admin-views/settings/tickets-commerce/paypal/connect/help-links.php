@@ -2,11 +2,11 @@
 /**
  * The Template for displaying the Tickets Commerce PayPal help links.
  *
- * @version TBD
+ * @version 5.31.1
  *
  * @since 5.2.0
  * @since 5.3.0 Using generic CSS classes for gateway instead of PayPal.
- * @since TBD Removed the troubleshooting link.
+ * @since 5.31.1 Removed the troubleshooting link.
  *
  * @var Tribe__Tickets__Admin__Views                  $this               [Global] Template object.
  * @var string                                        $plugin_url         [Global] The plugin URL.

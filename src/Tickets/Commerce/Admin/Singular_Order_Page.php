@@ -364,7 +364,7 @@ STR;
 	 * Updates the order status.
 	 *
 	 * @since 5.13.3
-	 * @since TBD The post is optional and loaded from the ID when it is not a post: some plugins fire `save_post` with the ID alone.
+	 * @since 5.31.1 The post is optional and loaded from the ID when it is not a post: some plugins fire `save_post` with the ID alone.
 	 *
 	 * @param int|mixed          $post_id The post ID.
 	 * @param WP_Post|mixed|null $post    The post object.

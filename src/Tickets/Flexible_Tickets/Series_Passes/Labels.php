@@ -23,7 +23,7 @@ class Labels {
 	/**
 	 * The English help text for the default ticket type of an Event in a Series, used when its translation is malformed.
 	 *
-	 * @since TBD
+	 * @since 5.31.1
 	 *
 	 * @var string
 	 */
@@ -182,7 +182,7 @@ class Labels {
 	 * of a Series.
 	 *
 	 * @since 5.8.0
-	 * @since TBD Falls back to the English template when the translation cannot be formatted.
+	 * @since 5.31.1 Falls back to the English template when the translation cannot be formatted.
 	 *
 	 * @return string The template for the help text for the default ticket type in the ticket form when the Event
 	 *                is part of a Series, with a `%s` placeholder for the Series edit link.
@@ -219,7 +219,7 @@ class Labels {
 	/**
 	 * Formats a template, returning an empty string when its placeholders do not match the values.
 	 *
-	 * @since TBD
+	 * @since 5.31.1
 	 *
 	 * @param string   $format The template to format.
 	 * @param string[] $values The values of the template placeholders.

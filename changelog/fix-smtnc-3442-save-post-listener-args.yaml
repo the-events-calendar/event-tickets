@@ -1,5 +1,0 @@
-significance: patch
-type: fix
-entry: Prevented fatal errors when another plugin runs the save_post action with
-  only the post ID.
-timestamp: 2026-11-05T23:40:24.498Z

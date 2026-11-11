@@ -18,7 +18,7 @@ import { Card, Notice } from '../../../elements';
  *
  * @since 5.20.0
  * @since 5.30.0 Matches the disabled state of the Tickets block.
- * @since TBD Removed the link to the planned features article.
+ * @since 5.31.1 Removed the link to the planned features article.
  * @return {Node} The not-supported message.
  */
 export const renderBlockNotSupported = () => (
