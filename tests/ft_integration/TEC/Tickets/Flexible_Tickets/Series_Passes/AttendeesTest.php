@@ -1426,8 +1426,10 @@ class AttendeesTest extends Controller_Test_Case {
 		$clone_2    = $controller->clone_attendee_to_event( $original, $event_2 );
 		$controller->register();
 
-		// A failed check-in against the 1st Occurrence's clone is logged as it would be by the Bulk Check-in
-		// endpoint (`Tribe\Tickets\Plus\REST\V1\Endpoints\Bulk_Checkin::log_failed_checkin()`).
+		/*
+		 * A failed check-in against the 1st Occurrence's clone is logged as it would be by the Bulk Check-in
+		 * endpoint (`Tribe\Tickets\Plus\REST\V1\Endpoints\Bulk_Checkin::log_failed_checkin()`).
+		 */
 		add_post_meta(
 			$clone_1,
 			'_tec_tickets_checkin_log', // TEC\Tickets_Plus\Checkin\Constants::CHECKIN_LOGGING_META_KEY
@@ -1446,6 +1448,42 @@ class AttendeesTest extends Controller_Test_Case {
 			get_post_meta( $clone_2, '_tec_tickets_checkin_log' ),
 			'The failure log must not be copied onto an unrelated Occurrence clone.'
 		);
+	}
+
+	/**
+	 * A failure logged before any clone exists (e.g. a security code mismatch) can only land on the original
+	 * Attendee; the clone made later for another Occurrence must not inherit it. The clone must also carry the
+	 * original's array meta as arrays, backslashes intact: `get_post_meta()` without a key returns raw,
+	 * still-serialized values, and `add_post_meta()` unslashes what it stores.
+	 *
+	 * @test
+	 */
+	public function should_not_copy_the_checkin_failure_log_onto_a_new_clone(): void {
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$series_id      = static::factory()->post->create( [ 'post_type' => Series_Post_Type::POSTTYPE ] );
+		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
+		$this->create_order( [ $series_pass_id => 1 ] );
+		$original = tribe_attendees()->where( 'event_id', $series_id )->first_id();
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '+3 hours',
+				'duration'   => 3 * HOUR_IN_SECONDS,
+				'series'     => $series_id,
+			]
+		)->create()->ID;
+		$array_meta = [ 'first-name' => 'Ada', 'last-name' => 'Smith\\Lovelace' ];
+		add_post_meta( $original, '_tec_tickets_checkin_log', [ 'reason' => 'SECURITY', 'event_id' => $event_id ] );
+		add_post_meta( $original, '_test_array_meta', wp_slash( $array_meta ) );
+
+		$clone_id = $this->make_controller()->clone_attendee_to_event( $original, $event_id );
+
+		$this->assertEmpty(
+			get_post_meta( $clone_id, '_tec_tickets_checkin_log' ),
+			'A failure logged on the original Attendee must not be copied onto a new Occurrence clone.'
+		);
+		$this->assertEquals( $array_meta, get_post_meta( $clone_id, '_test_array_meta', true ) );
 	}
 
 	/**
