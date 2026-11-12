@@ -184,6 +184,52 @@ class Singular_Order_PageTest extends WPTestCase {
 	}
 
 	/**
+	 * Some plugins fire `save_post` with the post ID alone.
+	 *
+	 * @test
+	 */
+	public function it_should_update_order_status_when_save_post_passes_only_the_post_id(): void {
+		$this->prepare_test_data();
+		$order                                     = reset( $this->orders );
+		$GLOBALS['current_screen']                 = WP_Screen::get( 'edit-' . Order::POSTTYPE );
+		$_REQUEST['tribe-tickets-commerce-status'] = tribe( Denied::class )->get_slug();
+		wp_set_current_user( 1 );
+
+		tribe( Singular_Order_Page::class )->update_order_status( $order->ID );
+
+		$this->assertEquals( tribe( Denied::class )->get_wp_slug(), get_post_status( $order->ID ) );
+	}
+
+	/**
+	 * `get_post()` answers an empty ID with the global post, which must not be acted on in its place.
+	 *
+	 * @test
+	 */
+	public function it_should_not_update_the_status_of_the_global_post_for_an_invalid_post_id(): void {
+		$this->prepare_test_data();
+		$order                                     = reset( $this->orders );
+		$status                                    = get_post_status( $order->ID );
+		$GLOBALS['post']                           = get_post( $order->ID );
+		$GLOBALS['current_screen']                 = WP_Screen::get( 'edit-' . Order::POSTTYPE );
+		$_REQUEST['tribe-tickets-commerce-status'] = tribe( Denied::class )->get_slug();
+		wp_set_current_user( 1 );
+
+		foreach ( [ 'not-a-post-id', 0 ] as $post_id ) {
+			tribe( Singular_Order_Page::class )->update_order_status( $post_id, 'not-a-post' );
+		}
+
+		$this->assertSame( $status, get_post_status( $order->ID ) );
+		unset( $GLOBALS['post'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_do_nothing_when_save_post_passes_something_that_is_not_a_post(): void {
+		$this->assertNull( tribe( Singular_Order_Page::class )->update_order_status( 'not-a-post-id', 'not-a-post' ) );
+	}
+
+	/**
 	 * @test
 	 */
 	public function it_should_render_coupons() {

@@ -22,6 +22,7 @@ class Provider extends Service_Provider {
 	 * Register the provider singletons.
 	 *
 	 * @since 5.5.6
+	 * @since 5.31.1 Registers the Ticket Header Image setting singleton.
 	 */
 	public function register(): void {
 		$this->register_assets();
@@ -46,6 +47,8 @@ class Provider extends Service_Provider {
 		$this->container->singleton( Admin\Emails_Tab::class );
 
 		$this->container->singleton( Admin\Preview_Modal::class );
+
+		$this->container->singleton( Admin\Ticket_Header_Image_Setting::class );
 
 		$this->container->singleton( Admin\Notice_Upgrade::class, Admin\Notice_Upgrade::class, [ 'hook' ] );
 		$this->container->singleton( Admin\Notice_Extension::class, Admin\Notice_Extension::class, [ 'hook' ] );

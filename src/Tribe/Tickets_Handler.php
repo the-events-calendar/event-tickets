@@ -1618,6 +1618,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since 4.6.2
 	 * @since 5.30.0.2 No longer clears the event's ticket provider when `default_provider` is not sent.
+	 * @since 5.31.1 No longer removes the event's header image when `header_image_id` is not sent.
 	 *
 	 * @param int   $post  Post that will be saved
 	 * @param array $data  Params that will be used to save
@@ -1661,9 +1662,13 @@ class Tribe__Tickets__Tickets_Handler {
 			tribe_tickets_update_capacity( $post, $data['event_capacity'] );
 		}
 
+		/*
+		 * The header image field is not rendered when Tickets Emails is enabled, so an absent value means
+		 * "keep the stored image"; only an empty value sent by the field removes it.
+		 */
 		if ( ! empty( $data['header_image_id'] ) ) {
 			update_post_meta( $post->ID, $this->key_image_header, $data['header_image_id'] );
-		} else {
+		} elseif ( array_key_exists( 'header_image_id', $data ) ) {
 			delete_post_meta( $post->ID, $this->key_image_header );
 		}
 
@@ -1697,6 +1702,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since 4.6
 	 * @since 5.30.3 Skips the IDs that are not tickets of the post.
+	 * @since 5.31.1 No longer errors when none of the listed tickets belong to the post.
 	 *
 	 * @param int $post
 	 */
@@ -1725,6 +1731,8 @@ class Tribe__Tickets__Tickets_Handler {
 		if ( empty( $tickets ) ) {
 			return false;
 		}
+
+		$updated = [];
 
 		foreach ( $tickets as $id => $ticket ) {
 			// The list comes from the request, so only this post's tickets are reordered.

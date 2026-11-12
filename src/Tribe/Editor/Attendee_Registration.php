@@ -86,10 +86,13 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 	 *   also handles maybe handling form submission
 	 *
 	 * @since 4.9
+	 * @since 5.31.1 Match the block editor's cross-origin isolation when rendered inside its modal.
 	 *
 	 * @return null
 	 */
 	public function admin_init() {
+		$this->maybe_match_editor_isolation();
+
 		if ( ! isset( $_GET['ticket_id'] ) ) {
 			return;
 		}
@@ -231,6 +234,33 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 
 		wp_redirect( add_query_arg( 'success', 1, $this->url() ) );
 		die;
+	}
+
+	/**
+	 * Sends the block editor's Document-Isolation-Policy on the page rendered inside its modal.
+	 *
+	 * The block editor reads the modal iframe's document to close the modal after a save, and a
+	 * browser only allows that when both pages share the same isolation policy.
+	 *
+	 * @since 5.31.1
+	 *
+	 * @return void
+	 */
+	private function maybe_match_editor_isolation() {
+		if ( 'attendee-registration' !== tec_get_request_var( 'page', '' ) || ! tec_get_request_var( 'tribe_events_modal', 0 ) ) {
+			return;
+		}
+
+		if ( ! function_exists( 'wp_start_cross_origin_isolation_output_buffer' ) || ! wp_is_client_side_media_processing_enabled() ) {
+			return;
+		}
+
+		// Core only isolates the block editor for users who can upload files.
+		if ( ! current_user_can( 'upload_files' ) ) {
+			return;
+		}
+
+		wp_start_cross_origin_isolation_output_buffer();
 	}
 
 	/**

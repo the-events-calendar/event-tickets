@@ -123,4 +123,36 @@ class Tickets_HandlerTest extends \Codeception\TestCase\WPTestCase {
 		// Default max is 100, but capacity is 50 so it's less and that's returned.
 		$this->assertEquals( 50, $max_quantity );
 	}
+
+	/**
+	 * @test
+	 * it should save the order of tickets that belong to the post
+	 */
+	public function it_should_save_the_order_of_tickets_that_belong_to_the_post() {
+		$sut       = $this->make_instance();
+		$post_id   = $this->factory()->post->create();
+		$ticket_id = $this->create_paypal_ticket( $post_id, 1 );
+		$new_order = get_post_field( 'menu_order', $ticket_id ) + 1;
+
+		$saved = $sut->save_order( $post_id, [ $ticket_id => [ 'order' => $new_order ] ] );
+
+		$this->assertTrue( $saved );
+		$this->assertEquals( $new_order, get_post_field( 'menu_order', $ticket_id ) );
+	}
+
+	/**
+	 * @test
+	 * it should skip tickets of another post without an error
+	 */
+	public function it_should_skip_tickets_of_another_post_without_an_error() {
+		$sut            = $this->make_instance();
+		$post_id        = $this->factory()->post->create();
+		$other_post_id  = $this->factory()->post->create();
+		$ticket_id      = $this->create_paypal_ticket( $post_id, 1 );
+		$original_order = get_post_field( 'menu_order', $ticket_id );
+
+		$sut->save_order( $other_post_id, [ $ticket_id => [ 'order' => $original_order + 1 ] ] );
+
+		$this->assertEquals( $original_order, get_post_field( 'menu_order', $ticket_id ) );
+	}
 }

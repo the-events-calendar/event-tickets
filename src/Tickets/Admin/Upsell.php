@@ -304,4 +304,46 @@ class Upsell {
 
 		return $fields;
 	}
+
+	/**
+	 * Shows an upsell in the classic editor's Ticket Settings panel when the panel has no settings to show.
+	 *
+	 * Any callback on the panel's content actions counts as a setting, whether or not it prints anything,
+	 * so the upsell never shows next to settings added by another plugin.
+	 *
+	 * @since 5.31.1
+	 *
+	 * @param array<array<string,mixed>> $active_providers The active ticket providers, not including RSVP.
+	 *
+	 * @return void
+	 */
+	public function maybe_show_empty_ticket_settings_upsell( array $active_providers ): void {
+		if ( ! is_admin() ) {
+			return;
+		}
+
+		// With more than one provider the panel shows the provider choice.
+		if ( count( $active_providers ) > 1 ) {
+			return;
+		}
+
+		if ( has_action( 'tribe_events_tickets_settings_content_before' ) || has_action( 'tribe_events_tickets_settings_content' ) ) {
+			return;
+		}
+
+		$upsell = new Inline_Upsell();
+
+		$upsell->render(
+			[
+				'slug'    => 'et-empty-ticket-settings',
+				'classes' => [ 'tec-admin__upsell-tec-tickets-empty-settings' ],
+				'text'    => esc_html__( 'Get more ticket settings with a premium license.', 'event-tickets' ),
+				'link'    => [
+					'classes' => [ 'tec-admin__upsell-link--underlined' ],
+					'text'    => esc_html__( 'Buy a license', 'event-tickets' ),
+					'url'     => 'https://evnt.is/1f4c',
+				],
+			]
+		);
+	}
 }

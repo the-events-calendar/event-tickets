@@ -175,6 +175,7 @@ class Frontend extends Controller_Contract {
 	 *
 	 * @since 5.16.0
 	 * @since 5.29.5.1 Mark a response embedding a seat selection token as non-cacheable.
+	 * @since 5.31.1 Pass whether the buyer's seats were not held to the template.
 	 *
 	 * @param string              $html     The initial HTML.
 	 * @param string              $file     Complete path to include the PHP File.
@@ -259,10 +260,11 @@ class Frontend extends Controller_Contract {
 		$html = $this->template->template(
 			'tickets-block',
 			[
-				'cost_range'    => $cost_range,
-				'inventory'     => $inventory,
-				'modal_content' => $modal_content,
-				'timeout'       => $timeout,
+				'cost_range'     => $cost_range,
+				'inventory'      => $inventory,
+				'modal_content'  => $modal_content,
+				'timeout'        => $timeout,
+				'seats_not_held' => tribe_is_truthy( tec_get_request_var( Cart::SEATS_NOT_HELD_QUERY_ARG ) ),
 			],
 			false
 		);

@@ -14,6 +14,7 @@ import { applyFilters } from '@wordpress/hooks';
 /**
  * Internal dependencies
  */
+import { globals } from '@moderntribe/common/utils';
 import { SettingsDashboard } from '../../../../../../modules/elements';
 import CapacityTable from '../capacity-table/container';
 import HeaderImage from '../header-image/container';
@@ -33,6 +34,8 @@ const TicketsSettingsDashboard = ( { hasTicketsPlus, isSettingsLoading, onCloseC
 		isSettingsLoading,
 	} );
 
+	const isHeaderImageEnabled = globals.tickets().ticketHeaderImageEnabled !== false;
+
 	return (
 		<SettingsDashboard
 			className={ classNames( 'tribe-editor__tickets__settings-dashboard', {
@@ -45,7 +48,7 @@ const TicketsSettingsDashboard = ( { hasTicketsPlus, isSettingsLoading, onCloseC
 					{ settingsFields.map( ( field, index ) => (
 						<Fragment key={ index }>{ field }</Fragment>
 					) ) }
-					<HeaderImage />
+					{ isHeaderImageEnabled && <HeaderImage /> }
 					{ isSettingsLoading && <Spinner /> }
 				</Fragment>
 			}

@@ -1,7 +1,7 @@
 /**
  * External Dependencies
  */
-import { call } from 'redux-saga/effects';
+import { call, put } from 'redux-saga/effects';
 
 /**
  * Internal dependencies
@@ -90,7 +90,7 @@ describe( 'Move Sagas', () => {
 			const gen = sagas.moveTicket( params );
 			expect( gen.next().value ).toMatchSnapshot();
 			expect( gen.next().value ).toMatchSnapshot();
-			expect( gen.next( { data: {} } ).value ).toMatchSnapshot();
+			expect( gen.next( { success: true, data: {} } ).value ).toMatchSnapshot();
 			expect( gen.next().done ).toBeTruthy();
 		} );
 		it( 'should error', () => {
@@ -98,6 +98,32 @@ describe( 'Move Sagas', () => {
 			expect( gen.next().value ).toMatchSnapshot();
 			expect( gen.throw( 'error' ).value ).toMatchSnapshot();
 			expect( gen.next().done ).toBeTruthy();
+		} );
+		it( 'should report the server message when the server rejects the move', () => {
+			const gen = sagas.moveTicket( params );
+			gen.next();
+			gen.next();
+			expect( gen.next( { success: false, data: { message: 'The move failed.' } } ).value ).toEqual(
+				put( { type: types.MOVE_TICKET_ERROR, message: 'The move failed.' } )
+			);
+			expect( gen.next().done ).toBeTruthy();
+		} );
+		it( 'should report a generic message when the server rejects the move without one', () => {
+			const gen = sagas.moveTicket( params );
+			gen.next();
+			gen.next();
+			const { type, message } = gen.next( { success: false } ).value.PUT.action;
+			expect( type ).toBe( types.MOVE_TICKET_ERROR );
+			expect( message ).toEqual( expect.any( String ) );
+			expect( message ).not.toBe( '' );
+		} );
+		it( 'should report a generic message when the request fails', () => {
+			const gen = sagas.moveTicket( params );
+			gen.next();
+			gen.next();
+			const { type, message } = gen.next().value.PUT.action;
+			expect( type ).toBe( types.MOVE_TICKET_ERROR );
+			expect( message ).not.toBe( '' );
 		} );
 	} );
 

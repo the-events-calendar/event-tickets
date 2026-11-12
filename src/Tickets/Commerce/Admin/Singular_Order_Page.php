@@ -364,16 +364,25 @@ STR;
 	 * Updates the order status.
 	 *
 	 * @since 5.13.3
+	 * @since 5.31.1 The post is optional and loaded from the ID when it is not a post: some plugins fire `save_post` with the ID alone.
 	 *
-	 * @param int     $post_id The post ID.
-	 * @param WP_Post $post    The post object.
+	 * @param int|mixed          $post_id The post ID.
+	 * @param WP_Post|mixed|null $post    The post object.
 	 *
 	 * @return void
 	 */
-	public function update_order_status( $post_id, $post ) {
-		if ( Order::POSTTYPE !== $post->post_type ) {
+	public function update_order_status( $post_id, $post = null ) {
+		if ( ! $post instanceof WP_Post ) {
+			// get_post() answers an empty ID with the global post, which is not the post being saved.
+			$post_id = filter_var( $post_id, FILTER_VALIDATE_INT, [ 'options' => [ 'min_range' => 1 ] ] );
+			$post    = $post_id ? get_post( $post_id ) : null;
+		}
+
+		if ( ! $post instanceof WP_Post || Order::POSTTYPE !== $post->post_type ) {
 			return;
 		}
+
+		$post_id = $post->ID;
 
 		if ( ! is_admin() ) {
 			return;

@@ -19,6 +19,7 @@ namespace TEC\Tickets\Emails;
 
 use \TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Emails\Admin\Emails_Tab;
+use TEC\Tickets\Emails\Admin\Ticket_Header_Image_Setting;
 use TEC\Tickets\Emails\Email\RSVP;
 use Tribe__Tickets__Tickets as Tickets_Module;
 
@@ -57,6 +58,7 @@ class Hooks extends Service_Provider {
 	 * Adds the filters required by each Tickets Emails component.
 	 *
 	 * @since 5.5.6
+	 * @since 5.31.1 Hides the per-event Ticket Header Image setting when Tickets Emails is enabled.
 	 */
 	protected function add_filters() {
 		add_filter( 'tec_tickets_settings_tabs_ids', [ $this, 'filter_add_tab_id' ] );
@@ -80,6 +82,9 @@ class Hooks extends Service_Provider {
 
 		// Remove json_ld schema data from email template arguments.
 		add_filter( 'tec_tickets_emails_template_args', [ $this, 'filter_remove_json_ld_from_template_args' ] );
+
+		add_filter( 'tribe_template_pre_html:tickets/admin-views/editor/panel/header-image', [ $this, 'filter_hide_ticket_header_image_setting' ] );
+		add_filter( 'tribe_editor_config', [ $this, 'filter_add_ticket_header_image_editor_config' ] );
 	}
 
 	/**
@@ -301,5 +306,35 @@ class Hooks extends Service_Provider {
 		}
 
 		return $args;
+	}
+
+	/**
+	 * Hides the classic editor Ticket Header Image setting when Tickets Emails is enabled.
+	 *
+	 * @since 5.31.1
+	 *
+	 * @param null|string $html The initial HTML.
+	 *
+	 * @return null|string|false The initial HTML, or `false` to prevent the template from rendering.
+	 */
+	public function filter_hide_ticket_header_image_setting( $html = null ) {
+		return $this->container->make( Ticket_Header_Image_Setting::class )->hide_classic_editor_setting( $html );
+	}
+
+	/**
+	 * Tells the block editor whether to show the Ticket Header Image setting.
+	 *
+	 * @since 5.31.1
+	 *
+	 * @param array{tickets?: array<string,mixed>} $config The editor configuration.
+	 *
+	 * @return array{tickets?: array<string,mixed>} The editor configuration.
+	 */
+	public function filter_add_ticket_header_image_editor_config( $config ) {
+		if ( ! is_array( $config ) ) {
+			return $config;
+		}
+
+		return $this->container->make( Ticket_Header_Image_Setting::class )->add_block_editor_config( $config );
 	}
 }
