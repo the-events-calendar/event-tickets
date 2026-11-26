@@ -5,10 +5,13 @@ namespace TEC\Tickets\RSVP\V2;
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Attendee;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Status\Completed;
+use TEC\Tickets\RSVP\V2\REST\Order_Endpoint;
 use TEC\Tickets\Tests\Commerce\RSVP\V2\Attendee_Maker;
 use TEC\Tickets\Tests\Commerce\RSVP\V2\Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe__Tickets__Tickets as Tickets;
+use WP_REST_Request;
 
 class Stock_Capacity_Test extends WPTestCase {
 	use Ticket_Maker;
@@ -277,5 +280,137 @@ class Stock_Capacity_Test extends WPTestCase {
 		foreach ( $attendees as $attendee ) {
 			update_post_meta( $attendee['attendee_id'], Constants::RSVP_STATUS_META_KEY, 'no' );
 		}
+	}
+
+	/**
+	 * An RSVP whose last place was taken by a concurrent submission is refused, with no completed order.
+	 *
+	 * @test
+	 */
+	public function should_refuse_an_rsvp_whose_last_place_a_concurrent_submission_took(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id, [ 'tribe-ticket' => [ 'capacity' => 1 ] ] );
+
+		// This request has cached the ticket with 1 place left; another submission takes it.
+		$this->assertEquals( 1, Tickets::load_ticket_object( $ticket_id )->stock() );
+		global $wpdb;
+		$wpdb->update( $wpdb->postmeta, [ 'meta_value' => 0 ], [ 'post_id' => $ticket_id, 'meta_key' => '_stock' ] );
+
+		$request = new WP_REST_Request();
+		$request->set_param(
+			'tribe_tickets',
+			[
+				$ticket_id => [
+					'ticket_id' => $ticket_id,
+					'quantity'  => 1,
+					'attendees' => [
+						[
+							'full_name'    => 'Late Visitor',
+							'email'        => 'late@example.com',
+							'order_status' => 'yes',
+						],
+					],
+				],
+			]
+		);
+
+		$result = tribe( Order_Endpoint::class )->process_rsvp_step(
+			[
+				'step'    => 'success',
+				'rsvp_id' => $ticket_id,
+				'post_id' => $post_id,
+				'rsvp'    => tribe( Module::class )->get_ticket( $post_id, $ticket_id ),
+			],
+			$request
+		);
+
+		$this->assertFalse( $result['success'] );
+		$this->assertNotEmpty( $result['errors'] );
+		$this->assertSame( 0, tec_tc_orders()->by( 'status', tribe( Completed::class )->get_wp_slug() )->count() );
+		$this->assertCount( 0, tribe( Module::class )->get_attendees_by_id( $ticket_id ) );
+	}
+
+	/**
+	 * A Not Going RSVP holds no place, so it is recorded even when the RSVP is full.
+	 *
+	 * @test
+	 */
+	public function should_record_a_not_going_rsvp_when_the_rsvp_is_full(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id, [ 'tribe-ticket' => [ 'capacity' => 1 ] ] );
+		$this->create_order( [ $ticket_id => [ 'quantity' => 1 ] ] );
+
+		$request = new WP_REST_Request();
+		$request->set_param(
+			'tribe_tickets',
+			[
+				$ticket_id => [
+					'ticket_id' => $ticket_id,
+					'quantity'  => 1,
+					'attendees' => [
+						[
+							'full_name'    => 'Absent Visitor',
+							'email'        => 'absent@example.com',
+							'order_status' => 'no',
+						],
+					],
+				],
+			]
+		);
+
+		$result = tribe( Order_Endpoint::class )->process_rsvp_step(
+			[
+				'step'    => 'success',
+				'rsvp_id' => $ticket_id,
+				'post_id' => $post_id,
+				'rsvp'    => tribe( Module::class )->get_ticket( $post_id, $ticket_id ),
+			],
+			$request
+		);
+
+		$this->assertTrue( $result['success'] );
+		$this->assertCount( 2, tribe( Module::class )->get_attendees_by_id( $ticket_id ) );
+	}
+
+	/**
+	 * A Not Going RSVP on a full RSVP is still held to the per-order maximum.
+	 *
+	 * @test
+	 */
+	public function should_refuse_a_not_going_rsvp_above_the_per_order_maximum(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id, [ 'tribe-ticket' => [ 'capacity' => 1 ] ] );
+		$this->create_order( [ $ticket_id => [ 'quantity' => 1 ] ] );
+		add_filter( 'tribe_tickets_get_ticket_default_max_purchase', static fn() => 2 );
+
+		$attendee = [
+			'full_name'    => 'Absent Visitor',
+			'email'        => 'absent@example.com',
+			'order_status' => 'no',
+		];
+		$request  = new WP_REST_Request();
+		$request->set_param(
+			'tribe_tickets',
+			[
+				$ticket_id => [
+					'ticket_id' => $ticket_id,
+					'quantity'  => 3,
+					'attendees' => [ $attendee, $attendee, $attendee ],
+				],
+			]
+		);
+
+		$result = tribe( Order_Endpoint::class )->process_rsvp_step(
+			[
+				'step'    => 'success',
+				'rsvp_id' => $ticket_id,
+				'post_id' => $post_id,
+				'rsvp'    => tribe( Module::class )->get_ticket( $post_id, $ticket_id ),
+			],
+			$request
+		);
+
+		$this->assertFalse( $result['success'] );
+		$this->assertCount( 1, tribe( Module::class )->get_attendees_by_id( $ticket_id ) );
 	}
 }

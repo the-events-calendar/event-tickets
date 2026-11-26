@@ -1414,6 +1414,125 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		return $ticket_id;
 	}
 
+	/**
+	 * A submission that loaded the RSVP before a concurrent one took its last place is refused.
+	 *
+	 * @test
+	 */
+	public function should_refuse_an_rsvp_whose_last_place_a_concurrent_submission_took() {
+		$ticket_id = $this->make_stock_ticket( 1, $this->event_id );
+		$sut       = $this->make_instance();
+
+		// This request has loaded the RSVP with 1 place left; another submission takes it.
+		$this->assertEquals( 1, $sut->get_ticket( $this->event_id, $ticket_id )->inventory() );
+		global $wpdb;
+		$wpdb->update( $wpdb->postmeta, [ 'meta_value' => 0 ], [ 'post_id' => $ticket_id, 'meta_key' => '_stock' ] );
+
+		$result = $sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false );
+
+		$this->assertWPError( $result );
+		$this->assertEquals( 'rsvp-invalid-stock-request', $result->get_error_code() );
+		$this->assertCount( 0, $sut->get_attendees_by_id( $ticket_id ) );
+	}
+
+	/**
+	 * A submission for a full RSVP reports that it is unavailable, not that it was received.
+	 *
+	 * @test
+	 */
+	public function should_report_a_submission_for_a_full_rsvp_as_unavailable() {
+		$ticket_id = $this->make_stock_ticket( 1, $this->event_id );
+		$sut       = $this->make_instance();
+		$sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false );
+		clean_post_cache( $ticket_id );
+
+		$_POST['tribe_tickets'] = [
+			$ticket_id => [
+				'ticket_id' => $ticket_id,
+				'quantity'  => 1,
+				'attendees' => [ [ 'full_name' => 'Late Visitor', 'email' => 'late@example.com', 'order_status' => 'yes', 'optout' => '' ] ],
+			],
+		];
+
+		$result = $sut->generate_tickets( $this->event_id, false );
+
+		unset( $_POST['tribe_tickets'] );
+
+		$this->assertWPError( $result );
+		$this->assertEquals( 'rsvp-invalid-stock-request', $result->get_error_code() );
+	}
+
+	/**
+	 * A submission for an available RSVP and a full one reserves neither.
+	 *
+	 * @test
+	 */
+	public function should_reserve_nothing_when_one_rsvp_of_the_submission_is_full() {
+		$available_id = $this->make_stock_ticket( 5, $this->event_id );
+		$full_id      = $this->make_stock_ticket( 1, $this->event_id );
+		$sut          = $this->make_instance();
+		$sut->generate_tickets_for( $full_id, 1, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false );
+		clean_post_cache( $full_id );
+
+		$attendee               = [ 'full_name' => 'Visitor', 'email' => 'visitor@example.com', 'order_status' => 'yes', 'optout' => '' ];
+		$_POST['tribe_tickets'] = [
+			$available_id => [ 'ticket_id' => $available_id, 'quantity' => 1, 'attendees' => [ $attendee ] ],
+			$full_id      => [ 'ticket_id' => $full_id, 'quantity' => 1, 'attendees' => [ $attendee ] ],
+		];
+
+		$result = $sut->generate_tickets( $this->event_id, false );
+
+		unset( $_POST['tribe_tickets'] );
+
+		$this->assertWPError( $result );
+		$this->assertEquals( 'rsvp-invalid-stock-request', $result->get_error_code() );
+		$this->assertCount( 0, $sut->get_attendees_by_id( $available_id ) );
+	}
+
+	/**
+	 * Listeners hear about a submission's attendees only once all of them are committed.
+	 *
+	 * @test
+	 */
+	public function should_announce_the_generated_attendees_only_after_the_submission_commits() {
+		$available_id = $this->make_stock_ticket( 5, $this->event_id );
+		$closed_id    = $this->make_stock_ticket( 5, $this->event_id );
+		update_post_meta( $closed_id, '_ticket_start_date', '2000-01-01 00:00:00' );
+		update_post_meta( $closed_id, '_ticket_end_date', '2000-01-02 00:00:00' );
+		$sut = $this->make_instance();
+
+		$announced = [];
+		add_action(
+			'event_tickets_rsvp_tickets_generated_for_product',
+			static function ( $product_id ) use ( &$announced ) {
+				$announced[] = $product_id;
+			}
+		);
+
+		$attendee = [ 'full_name' => 'Visitor', 'email' => 'visitor@example.com', 'order_status' => 'yes', 'optout' => '' ];
+
+		// The closed RSVP fails after the available one's attendees were created: the submission rolls back.
+		$_POST['tribe_tickets'] = [
+			$available_id => [ 'ticket_id' => $available_id, 'quantity' => 1, 'attendees' => [ $attendee ] ],
+			$closed_id    => [ 'ticket_id' => $closed_id, 'quantity' => 1, 'attendees' => [ $attendee ] ],
+		];
+
+		$result = $sut->generate_tickets( $this->event_id, false );
+
+		$this->assertWPError( $result );
+		$this->assertSame( [], $announced, 'Listeners heard about attendees that were rolled back.' );
+
+		$_POST['tribe_tickets'] = [
+			$available_id => [ 'ticket_id' => $available_id, 'quantity' => 1, 'attendees' => [ $attendee ] ],
+		];
+
+		$sut->generate_tickets( $this->event_id, false );
+
+		unset( $_POST['tribe_tickets'] );
+
+		$this->assertSame( [ $available_id ], $announced );
+	}
+
 	protected function make_stock_ticket( $stock, $post_id ) {
 		$ticket_id = $this->create_rsvp_ticket( $post_id, [
 			'meta_input' => [

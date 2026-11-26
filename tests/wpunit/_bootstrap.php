@@ -27,3 +27,5 @@ remove_action( 'tribe_tickets_promoter_trigger', [ tribe( Dispatcher::class ), '
 // Start the posts auto-increment from a high number to make it easier to replace the post IDs in HTML snapshots.
 global $wpdb;
 $wpdb->query( "ALTER TABLE $wpdb->posts AUTO_INCREMENT = 5096" );
+// RSVP v1 attendee generation runs in a transaction; its commit would end the test's own transaction and leak posts.
+tec_tickets_tests_fake_transactions_enable();

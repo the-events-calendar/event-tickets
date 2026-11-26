@@ -8,7 +8,7 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Traits\Requires_Login_To_Purchase;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
 use TEC\Tickets\Commerce\Gateways\PayPal\Status;
 use TEC\Tickets\Commerce\Order;
-use TEC\Tickets\Commerce\Stock_Validator;
+use TEC\Tickets\Commerce\Sale_Window_Validator;
 
 use TEC\Tickets\Commerce\Gateways\PayPal\Client;
 use TEC\Tickets\Commerce\Status\Denied;
@@ -100,6 +100,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * @since 5.1.9
 	 * @since 5.6.4 Include Event/Post title in the Ticket name.
 	 * @since 5.27.6.1 Removed order data from response for failed orders.
+	 * @since 5.31.2 Holds the order's stock before the buyer approves the payment, and returns an error when the stock is gone.
+	 * @since 5.31.2 Returns an error when a ticket in the cart is outside its sale window.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -118,15 +120,20 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return $purchaser;
 		}
 
-		// Validate stock availability with database locking before creating order.
-		$cart             = tribe( Cart::class );
-		$stock_validation = tribe( Stock_Validator::class )->validate_cart_stock_with_lock( $cart );
+		$cart = tribe( Cart::class );
 
-		if ( is_wp_error( $stock_validation ) ) {
-			return $stock_validation;
+		$sale_window_validation = tribe( Sale_Window_Validator::class )->validate_items( $cart->get_items_in_cart() );
+
+		if ( is_wp_error( $sale_window_validation ) ) {
+			return $sale_window_validation;
 		}
 
-		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
+		// Create the order and hold its stock before the buyer approves the payment: concurrent checkouts see the hold.
+		$order = tribe( Order::class )->create_from_cart_holding_stock( tribe( Gateway::class ), $purchaser );
+
+		if ( is_wp_error( $order ) ) {
+			return $order;
+		}
 
 		if ( ! $order ) {
 			return new WP_Error( 'tec-tc-gateway-paypal-failed-creating-order', $messages['failed-creating-order'] );
@@ -172,8 +179,9 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			'gateway_order_id' => $paypal_order['id'],
 		] );
 
-		if ( is_wp_error( $updated ) ) {
-			return $updated;
+		// A refused status change, e.g. for lack of stock, must not send the buyer to pay.
+		if ( ! $updated ) {
+			return new WP_Error( 'tec-tc-gateway-paypal-failed-creating-order', $messages['failed-creating-order'] );
 		}
 
 		// Respond with the ID for Paypal Usage.
@@ -293,6 +301,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * @since 5.27.6.1 Removed order data from response for failed orders.
 	 * @since 5.29.4 Records what PayPal answered and fails when it did not acknowledge a capture.
 	 * @since 5.31.1 Refuses to capture a card payment that failed 3D Secure authentication.
+	 * @since 5.31.2 Refuses to capture an order holding a ticket outside its sale window.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -371,7 +380,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return $this->settled_response( $order, $paypal_order_id, $status );
 		}
 
-		$paypal_capture_response = $this->capture_if_authenticated(
+		$paypal_capture_response = $this->capture_if_allowed(
 			$order,
 			$paypal_order_response,
 			$request->get_param( 'payer_id' ),
@@ -464,6 +473,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *        states over the order.
 	 * @since 5.31.1 Refuses to capture a card payment that failed 3D Secure authentication, or an order
 	 *        that is no longer in flight.
+	 * @since 5.31.2 Refuses to capture an order holding a ticket outside its sale window.
 	 *
 	 * @param string  $order_id The PayPal order ID.
 	 * @param WP_Post $order    The TC Order object.
@@ -502,7 +512,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				return $this->resolved_order_response( $order, $order_id );
 			}
 
-			$paypal_capture_response = $this->capture_if_authenticated( $order, $paypal_order_response );
+			$paypal_capture_response = $this->capture_if_allowed( $order, $paypal_order_response );
 
 			if ( is_wp_error( $paypal_capture_response ) ) {
 				return $paypal_capture_response;
@@ -1035,9 +1045,14 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	}
 
 	/**
-	 * Captures a PayPal order, unless its card failed the 3D Secure authentication its bank asked for.
+	 * Captures a PayPal order, unless a ticket in it is off sale or its card failed the 3D Secure
+	 * authentication its bank asked for.
+	 *
+	 * The order was created while its tickets were on sale, but the buyer can approve it at PayPal after
+	 * the sale window closes. Nothing is captured yet, so this is the last point a refusal costs them nothing.
 	 *
 	 * @since 5.31.1
+	 * @since 5.31.2 Renamed from `capture_if_authenticated()`, and refuses an order holding a ticket outside its sale window.
 	 *
 	 * @param WP_Post     $order           The Tickets Commerce order.
 	 * @param array       $paypal_order    The PayPal order response.
@@ -1046,9 +1061,26 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @return array|WP_Error|null The capture response, or an error when the order was denied instead.
 	 */
-	private function capture_if_authenticated( $order, array $paypal_order, ?string $payer_id = null, ?string $liability_shift = null ) {
+	private function capture_if_allowed( $order, array $paypal_order, ?string $payer_id = null, ?string $liability_shift = null ) {
+		$items       = tec_tc_get_order( $order )->items ?? [];
+		$sale_window = tribe( Sale_Window_Validator::class )->validate_items( is_array( $items ) ? $items : [] );
+
+		if ( is_wp_error( $sale_window ) ) {
+			return $this->deny_uncaptured_order( $order, $paypal_order, $sale_window );
+		}
+
 		if ( $this->card_authentication_failed( $paypal_order, $liability_shift ) ) {
-			return $this->deny_unauthenticated_order( $order, $paypal_order );
+			$messages = $this->get_error_messages();
+
+			return $this->deny_uncaptured_order(
+				$order,
+				$paypal_order,
+				new WP_Error(
+					'tec-tc-gateway-paypal-failed-authentication',
+					$messages['failed-authentication'],
+					[ 'status' => 402 ]
+				)
+			);
 		}
 
 		return tribe( Client::class )->capture_order( Arr::get( $paypal_order, 'id' ), $payer_id );
@@ -1098,16 +1130,18 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	}
 
 	/**
-	 * Denies an order whose card failed 3D Secure authentication, without capturing it.
+	 * Denies an order that must not be captured, without capturing it.
 	 *
 	 * @since 5.31.1
+	 * @since 5.31.2 Renamed from `deny_unauthenticated_order()`, and takes the reason the order is refused.
 	 *
-	 * @param WP_Post $order        The Tickets Commerce order.
-	 * @param array   $paypal_order The PayPal order response.
+	 * @param WP_Post  $order        The Tickets Commerce order.
+	 * @param array    $paypal_order The PayPal order response.
+	 * @param WP_Error $reason       Why the order is refused, answered once the order is denied.
 	 *
-	 * @return WP_Error A 402 when the order was denied, or a 502 when another request moved it on first.
+	 * @return WP_Error The reason when the order was denied, or a 502 when another request moved it on first.
 	 */
-	private function deny_unauthenticated_order( $order, array $paypal_order ): WP_Error {
+	private function deny_uncaptured_order( $order, array $paypal_order, WP_Error $reason ): WP_Error {
 		$messages = $this->get_error_messages();
 
 		$updated = tribe( Order::class )->modify_status(
@@ -1124,9 +1158,10 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				__CLASS__,
 				[
 					sprintf(
-						'Order %1$d failed 3D Secure authentication but could not be denied, its status is "%2$s".',
+						'Order %1$d was refused before capture (%3$s) but could not be denied, its status is "%2$s".',
 						$order->ID,
-						get_post_status( $order->ID )
+						get_post_status( $order->ID ),
+						$reason->get_error_code()
 					),
 				]
 			);
@@ -1138,10 +1173,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			);
 		}
 
-		return new WP_Error(
-			'tec-tc-gateway-paypal-failed-authentication',
-			$messages['failed-authentication'],
-			[ 'status' => 402 ]
-		);
+		return $reason;
 	}
 }

@@ -8,6 +8,7 @@ use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Status_Abstract;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Status\Status_Interface;
+use TEC\Tickets\Commerce\Stock_Validator;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Commerce\Traits\Is_Ticket;
 use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
@@ -88,12 +89,17 @@ class Decrease_Stock extends Flag_Action_Abstract {
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @since 5.31.2 Decreases the stored stock and sales, read under lock, and releases the checkout's stock hold.
 	 */
 	public function handle( Status_Interface $new_status, $old_status, \WP_Post $post ) {
 		// Bail if the order is empty.
 		if ( empty( $post->items ) ) {
 			return;
 		}
+
+		// Read the stored stock under lock, so the decrease starts from what concurrent checkouts committed.
+		tribe( Stock_Validator::class )->prepare_order_stock_decrease( $post );
 
 		// Loop through the order items.
 		foreach ( $post->items as $item ) {

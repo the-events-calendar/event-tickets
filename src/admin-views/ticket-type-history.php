@@ -10,16 +10,14 @@ $entry_list = $history->get_entries();
 		<label for="ticket_history" class="ticket_form_label ticket_form_left"> <?php
 			echo esc_html(
 				sprintf(
-					_x( '%s history:', 'ticket type history', 'event-tickets' ), tribe_get_ticket_label_singular( 'ticket_type_history' )
+					// translators: %s is the singular ticket label, "Ticket" by default.
+					_x( '%s History:', 'ticket type history', 'event-tickets' ),
+					tribe_get_ticket_label_singular( 'ticket_type_history' )
 				)
 			); ?>
 		</label>
 
 		<div class="ticket_form_right">
-			<a href="#" class="toggle-history">
-				<span><?php esc_html_e( 'Click to view the history', 'event-tickets' ); ?></span>
-				<span><?php esc_html_e( 'Click to hide history', 'event-tickets' ); ?></span>
-			</a>
 			<ul>
 				<?php foreach ( $entry_list as $entry ) : ?>
 					<li>

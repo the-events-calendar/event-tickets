@@ -102,6 +102,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 * Handle the Webhook requests coming from PayPal.
 	 *
 	 * @since 5.1.10
+	 * @since 5.31.2 Logged an unknown event by its type instead of the event body.
 	 *
 	 * @param WP_REST_Request $request   The request object.
 	 *
@@ -127,9 +128,9 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		if ( ! tribe( Webhooks\Events::class )->is_valid( $event['event_type'] ) ) {
 			tribe( 'logger' )->log_debug(
 				sprintf(
-				// Translators: %s: The PayPal payment event.
+				// Translators: %s: The PayPal webhook event type.
 					__( 'Invalid event type for webhook event: %s', 'event-tickets' ),
-					json_encode( $event )
+					$event['event_type']
 				),
 				'tickets-commerce-gateway-paypal'
 			);

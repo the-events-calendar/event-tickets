@@ -1393,6 +1393,54 @@ describe( 'classic editor script', () => {
 		expect( getWindowError() ).toBe( '' );
 	} );
 
+	describe( 'a Now start judged from the day the event was published', () => {
+		// Two weeks before the event ends is 2099-06-10 at 22:00.
+		const TWO_WEEKS_BEFORE_THE_END = { mode: 'relative', value: 2, unit: UNIT_WEEKS, anchor: 'end' };
+
+		const renderNowStart = () => {
+			renderEventForm( undefined, TWO_WEEKS_BEFORE_THE_END );
+			jQuery( '#ticket_sales_start_mode' ).html( '<option value="default" selected>Now</option>' );
+			jQuery( '#tribe_panel_edit' ).append( '<input id="ticket_start_date" value="" disabled /><input id="ticket_start_time" value="" disabled />' );
+		};
+
+		// The clock moves only after the script loads: loading waits on timers.
+		const loadOnJune22 = async () => {
+			await loadScript();
+			jest.useFakeTimers( { now: new Date( '2099-06-22T16:00:00Z' ) } );
+		};
+
+		afterEach( () => {
+			jest.useRealTimers();
+		} );
+
+		it( 'should block a save whose end falls before the day the event was published', async () => {
+			window.tec.tickets.relativeSaleDates.classicData.postDay = '2099-06-20 00:00:00';
+			renderNowStart();
+			await loadOnJune22();
+
+			expect( validateTicket() ).toBe( false );
+			expect( getWindowError() ).toBe( INVALID_WINDOW );
+		} );
+
+		it( 'should accept a save whose end falls after the day the event was published', async () => {
+			window.tec.tickets.relativeSaleDates.classicData.postDay = '2099-06-01 00:00:00';
+			renderNowStart();
+			await loadOnJune22();
+
+			expect( validateTicket() ).toBe( true );
+			expect( getWindowError() ).toBe( '' );
+		} );
+
+		it( 'should leave the window unjudged without the day the event was published', async () => {
+			window.tec.tickets.relativeSaleDates.classicData.postDay = null;
+			renderNowStart();
+			await loadOnJune22();
+
+			expect( validateTicket() ).toBe( true );
+			expect( getWindowError() ).toBe( '' );
+		} );
+	} );
+
 	/*
 	 * When a panel opens, the timepicker fires `change` before the dependency script disables a Now start's date. On an
 	 * event under way, that date, today, falls after the end an hour before the event started.

@@ -127,6 +127,8 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 * we validate the request using the webhook signature instead.
 	 *
 	 * @since 5.24.0
+	 * @since 5.31.2 Refused a missing or non-string key or hash instead of passing it to the verifiers.
+	 * @since 5.31.2 Logged a refusal without the supplied key, hash or body.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -140,16 +142,20 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		$whodat_hash = $request->get_header( 'X-WhoDat-Hash' );
 		$payload     = $request->get_body();
 
-		if ( ! ( $this->webhooks->verify_signature( $secret_key ) && $this->webhooks->verify_whodat_signature( $payload, $whodat_hash, $secret_key ) ) ) {
+		// Both are null when absent and the key can be an array, which the string-typed verifiers fatal on.
+		$has_key  = is_string( $secret_key ) && '' !== $secret_key;
+		$has_hash = is_string( $whodat_hash ) && '' !== $whodat_hash;
+
+		if ( ! ( $has_key && $has_hash && $this->webhooks->verify_signature( $secret_key ) && $this->webhooks->verify_whodat_signature( $payload, $whodat_hash, $secret_key ) ) ) {
 			do_action(
 				'tribe_log',
 				'error',
 				'Invalid Secret Key or Whodat Hash',
 				[
-					'source'      => 'tickets-commerce-square',
-					'secret_key'  => $secret_key,
-					'whodat_hash' => $whodat_hash,
-					'payload'     => $payload,
+					'source'       => 'tickets-commerce-square',
+					'key_present'  => $has_key,
+					'hash_present' => $has_hash,
+					'body_length'  => strlen( $payload ),
 				]
 			);
 
@@ -187,6 +193,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 * Handles incoming webhook events from Square.
 	 *
 	 * @since 5.24.0
+	 * @since 5.31.2 Logged the event by type and ID instead of its body.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -203,7 +210,6 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 				'Invalid Square webhook payload',
 				[
 					'source' => 'tickets-commerce-square',
-					'data'   => $event_data,
 				]
 			);
 
@@ -222,7 +228,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			[
 				'source'     => 'tickets-commerce-square',
 				'event_type' => $event_data['type'],
-				'data'       => $event_data,
+				'event_id'   => $event_data['event_id'] ?? '',
 			]
 		);
 
@@ -243,6 +249,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 * Process a webhook event based on its type.
 	 *
 	 * @since 5.24.0
+	 * @since 5.31.2 Logged an unsupported event by type and ID instead of its body.
 	 *
 	 * @param array $event_data The webhook event data.
 	 */
@@ -257,7 +264,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 				[
 					'source'     => 'tickets-commerce-square',
 					'event_type' => $event_type,
-					'data'       => $event_data,
+					'event_id'   => $event_data['event_id'] ?? '',
 				]
 			);
 			return;
@@ -319,7 +326,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 					[
 						'source'     => 'tickets-commerce-square',
 						'event_type' => $event_type,
-						'data'       => $event_data,
+						'event_id'   => $event_data['event_id'] ?? '',
 					]
 				);
 		}
@@ -339,6 +346,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 * Process an order event.
 	 *
 	 * @since 5.24.0
+	 * @since 5.31.2 Logged an unmatched order by ID instead of the event body.
 	 *
 	 * @param array $event_data The webhook event data.
 	 */
@@ -380,9 +388,9 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 				'warning',
 				'Square order webhook - no matching order found',
 				[
-					'source'     => 'tickets-commerce-square',
-					'order_id'   => $order_id,
-					'event_data' => $event_data,
+					'source'   => 'tickets-commerce-square',
+					'order_id' => $order_id,
+					'event_id' => $event_data['event_id'] ?? '',
 				]
 			);
 			return;
@@ -421,6 +429,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 * Process a refund event.
 	 *
 	 * @since 5.24.0
+	 * @since 5.31.2 Logged an unmatched refund by ID instead of the event body.
 	 *
 	 * @param array $event_data The webhook event data.
 	 */
@@ -457,7 +466,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 					'order_id'   => $order_id,
 					'payment_id' => $payment_id,
 					'refund_id'  => $refund_id,
-					'event_data' => $event_data,
+					'event_id'   => $event_data['event_id'] ?? '',
 				]
 			);
 			return;
@@ -531,6 +540,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 * Process a payment event.
 	 *
 	 * @since 5.24.0
+	 * @since 5.31.2 Logged a payment with no order by event ID instead of the event body.
 	 *
 	 * @param array $event_data The webhook event data.
 	 */
@@ -538,7 +548,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		$order_id = $event_data['data']['object']['payment']['order_id'] ?? false;
 
 		if ( ! $order_id ) {
-			do_action( 'tribe_log', 'warning', 'Square payment webhook - no order id found', [ 'event_data' => $event_data ] );
+			do_action( 'tribe_log', 'warning', 'Square payment webhook - no order id found', [ 'event_id' => $event_data['event_id'] ?? '' ] );
 			return;
 		}
 

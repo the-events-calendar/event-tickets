@@ -39,6 +39,7 @@ class Assets_Test extends Controller_Test_Case {
 		wp_dequeue_script( Assets::BLOCK_EDITOR_SCRIPT );
 		wp_dequeue_style( Assets::BLOCK_EDITOR_STYLE );
 		set_current_screen( 'front' );
+		$GLOBALS['post'] = null;
 
 		if ( null !== $this->tickets_commerce_env ) {
 			putenv( false === $this->tickets_commerce_env ? 'TEC_TICKETS_COMMERCE' : 'TEC_TICKETS_COMMERCE=' . $this->tickets_commerce_env );
@@ -161,6 +162,38 @@ class Assets_Test extends Controller_Test_Case {
 		add_filter( 'tribe_time_format', static fn(): string => 'G\\hi' );
 
 		$this->assertSame( 'G\\hi', $this->get_localized_data()['timeFormat'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_localize_midnight_of_the_day_the_event_was_published(): void {
+		$GLOBALS['post'] = get_post( static::factory()->post->create( [ 'post_type' => 'tribe_events', 'post_date' => '2026-11-12 15:57:27' ] ) );
+
+		$this->assertSame( '2026-11-12 00:00:00', $this->get_localized_data()['postDay'] );
+	}
+
+	/**
+	 * @return Generator<string,array{0: callable(): void}>
+	 */
+	public function post_without_a_day_provider(): Generator {
+		yield 'no post' => [ static fn() => $GLOBALS['post'] = null ];
+		yield 'a post saved without a date' => [
+			static function (): void {
+				$GLOBALS['post']            = get_post( static::factory()->post->create( [ 'post_type' => 'tribe_events' ] ) );
+				$GLOBALS['post']->post_date = '0000-00-00 00:00:00';
+			},
+		];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider post_without_a_day_provider
+	 */
+	public function should_localize_no_post_day_without_a_date_to_read( callable $fixture ): void {
+		$fixture();
+
+		$this->assertNull( $this->get_localized_data()['postDay'] );
 	}
 
 	/**

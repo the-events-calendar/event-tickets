@@ -185,6 +185,7 @@ class Attendees_List {
 	 * Get list of public attendees for display.
 	 *
 	 * @since 4.12.0
+	 * @since 5.31.2 Attendee names come back with their square brackets encoded.
 	 *
 	 * @param WP_Post|int $post_id Post object or ID.
 	 * @param int        $limit   Limit of attendees to be retrieved from database.
@@ -242,7 +243,7 @@ class Attendees_List {
 
 			$emails[ $attendee['purchaser_email'] ] = true;
 
-			$attendees_for_display[] = $attendee;
+			$attendees_for_display[] = $this->encode_name_brackets( $attendee );
 		}
 
 		return $attendees_for_display;
@@ -357,5 +358,27 @@ class Attendees_List {
 		 * @param int  $ticket_id           The RSVP ticket ID.
 		 */
 		return (bool) apply_filters( 'tec_tickets_rsvp_show_attendees_list', false, $post_id, $ticket_id );
+	}
+
+	/**
+	 * Encodes the square brackets in an attendee's names.
+	 *
+	 * Every caller prints these names into post content before core runs `do_shortcode()` on it,
+	 * and the names are visitor text. Encoded brackets display the same and cannot open a shortcode.
+	 *
+	 * @since 5.31.2
+	 *
+	 * @param array{purchaser_name?: string, holder_name?: string} $attendee The attendee data; the provider's other fields pass through unchanged.
+	 *
+	 * @return array{purchaser_name?: string, holder_name?: string} The attendee data with its names encoded.
+	 */
+	private function encode_name_brackets( array $attendee ): array {
+		foreach ( [ 'purchaser_name', 'holder_name' ] as $key ) {
+			if ( isset( $attendee[ $key ] ) && is_string( $attendee[ $key ] ) ) {
+				$attendee[ $key ] = str_replace( [ '[', ']' ], [ '&#91;', '&#93;' ], $attendee[ $key ] );
+			}
+		}
+
+		return $attendee;
 	}
 }

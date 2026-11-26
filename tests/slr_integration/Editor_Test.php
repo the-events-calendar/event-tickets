@@ -7,6 +7,8 @@ use Faker\Factory;
 use Generator;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
+use TEC\Tickets\Seating\Service\Layouts as Layouts_Service;
+use TEC\Tickets\Seating\Service\Seat_Types as Seat_Types_Service;
 use TEC\Tickets\Seating\Service\Service_Status;
 use TEC\Tickets\Seating\Tables\Layouts;
 use TEC\Tickets\Seating\Tables\Seat_Types;
@@ -612,6 +614,41 @@ class Editor_Test extends Controller_Test_Case {
 			wp_json_encode( $store_data, JSON_SNAPSHOT_OPTIONS )
 		);
 		$this->assertMatchesJsonSnapshot( $json );
+	}
+
+	/**
+	 * @test
+	 * It should not request layouts or seat types from the service when there is no license.
+	 */
+	public function test_get_store_data_does_not_call_service_without_license(): void {
+		add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
+			return new Service_Status( $backend_base_url, Service_Status::NO_LICENSE );
+		}, 1000, 2 );
+		test_remove_seating_license_key_callback();
+		/* Without the last-update markers the layouts and seat types look stale, so they would be fetched. */
+		delete_transient( Layouts_Service::update_transient_name() );
+		delete_transient( Seat_Types_Service::update_transient_name() );
+		global $pagenow, $post;
+		$pagenow = 'edit.php';
+		$post    = get_post( static::factory()->post->create() );
+		update_post_meta( $post->ID, Meta::META_KEY_LAYOUT_ID, 'layout-1' );
+		$requested_urls = [];
+		add_filter( 'pre_http_request', function ( $preempt, $args, $url ) use ( &$requested_urls ) {
+			$requested_urls[] = $url;
+
+			return [
+				'response' => [ 'code' => 401, 'message' => 'Unauthorized' ],
+				'body'     => '',
+				'headers'  => [],
+				'cookies'  => [],
+			];
+		}, 10, 3 );
+
+		$store_data = $this->make_controller()->get_store_data();
+
+		$this->assertSame( [], $requested_urls );
+		$this->assertSame( [], $store_data['layouts'] );
+		$this->assertSame( [], $store_data['seatTypes'] );
 	}
 
 	public function test_it_should_update_slr_flags_on_ticket_save() {

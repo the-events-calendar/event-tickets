@@ -11,7 +11,7 @@ use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent;
 use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent_Handler;
 use TEC\Tickets\Commerce\Gateways\Stripe\Status;
 use TEC\Tickets\Commerce\Order;
-use TEC\Tickets\Commerce\Stock_Validator;
+use TEC\Tickets\Commerce\Sale_Window_Validator;
 
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Created;
@@ -186,6 +186,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * @since 5.3.0
 	 * @since 5.29.0.1 Removed the cart hash query param from the return URL. See SVUL-L34.
 	 * @since 5.30.3.1 Return the handler's own error code and message, without its data, so the buyer sees how to recover.
+	 * @since 5.31.2 Holds the order's stock before the payment intent, so concurrent checkouts cannot pay for the same seats.
+	 * @since 5.31.2 Returns an error when a ticket in the cart is outside its sale window.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -216,16 +218,21 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			);
 		}
 
-		// Validate stock availability with database locking before creating payment intent.
-		$cart             = tribe( Cart::class );
-		$stock_validation = tribe( Stock_Validator::class )->validate_cart_stock_with_lock( $cart );
+		$cart = tribe( Cart::class );
 
-		if ( is_wp_error( $stock_validation ) ) {
-			return $stock_validation;
+		$sale_window_validation = tribe( Sale_Window_Validator::class )->validate_items( $cart->get_items_in_cart() );
+
+		if ( is_wp_error( $sale_window_validation ) ) {
+			return $sale_window_validation;
 		}
 
-		// If an order was created for this hash, we will attempt to update it, otherwise create a new one.
-		$order = $orders->create_from_cart( tribe( Gateway::class ), $purchaser );
+		// Create the order and hold its stock before the payment intent: concurrent checkouts see the hold.
+		$order = $orders->create_from_cart_holding_stock( tribe( Gateway::class ), $purchaser );
+
+		if ( is_wp_error( $order ) ) {
+			return $order;
+		}
+
 		if ( ! $order instanceof WP_Post ) {
 			return new WP_Error(
 				'tec-tc-gateway-stripe-order-creation-failed',
@@ -237,9 +244,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				]
 			);
 		}
-
-		// Flag the order as on checkout screen hold.
-		$orders->set_on_checkout_screen_hold( $order->ID );
 
 		$payment_intent = tribe( Payment_Intent_Handler::class )->update_payment_intent( $data, $order );
 
@@ -363,6 +367,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since 5.3.0
 	 * @since 5.30.3.1 Refuse to complete a gateway order id held by more than one local order.
+	 * @since 5.31.2 Returns an error, not a success, when the order refuses the paid status, e.g. because the stock is gone.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -430,7 +435,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return new WP_Error( 'tec-tc-gateway-stripe-invalid-payment-intent-status', $messages['invalid-payment-intent-status'], [ 'status' => $status ] );
 		}
 
-		$orders->modify_status(
+		$updated = $orders->modify_status(
 			$order->ID,
 			$status->get_slug(),
 			[
@@ -448,6 +453,31 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 					'status'       => $status->get_slug(),
 					'payment_data' => $payment_intent,
 				]
+			);
+		}
+
+		/*
+		 * A refused paid status, e.g. a buyer who paid after their stock hold expired and lost the seat, must not
+		 * be reported as a success. The order keeps its Payment Intent id for a refund. An order a webhook already
+		 * moved to this status is not a refusal.
+		 */
+		if ( ! $updated && $status->get_wp_slug() !== get_post_status( $order->ID ) ) {
+			do_action(
+				'tribe_log',
+				'error',
+				__METHOD__,
+				[
+					'message'          => 'The buyer paid, but the order refused the paid status.',
+					'order_id'         => $order->ID,
+					'gateway_order_id' => $gateway_order_id,
+					'status'           => $status->get_slug(),
+				]
+			);
+
+			return new WP_Error(
+				'tec-tc-gateway-stripe-unconfirmed-order',
+				$messages['unconfirmed-order'],
+				[ 'status' => 409 ]
 			);
 		}
 
@@ -551,6 +581,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			'failed-payment'                   => __( 'Your payment method has failed. Please try again.', 'event-tickets' ),
 			'invalid-payment-intent-status'    => __( 'Your payment status was not recognized. Please try again.', 'event-tickets' ),
 			'empty-cart'                       => __( 'Cannot generate an order for an empty cart, please select new items to checkout.', 'event-tickets' ),
+			'unconfirmed-order'                => __( 'Your payment went through, but the tickets you selected are no longer available. Do not pay again: contact the site for a refund.', 'event-tickets' ),
 		];
 		/**
 		 * Filter the error messages for Stripe checkout.

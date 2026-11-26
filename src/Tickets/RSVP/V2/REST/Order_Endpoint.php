@@ -211,6 +211,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * @since 5.30.0
 	 * @since 5.30.0.2 Refuses a cart whose total is greater than zero and guards a failed order creation.
 	 * @since 5.31.1.1 Refuses a quantity the ticket cannot take and reports a refused status change.
+	 * @since 5.31.2 Refuses the RSVP when its order cannot take the stock, instead of reporting success.
 	 *
 	 * @param array           $args    {
 	 *     The list of step template arguments.
@@ -273,8 +274,10 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				];
 			}
 
-			// The same per-order maximum, stock and sale window checks the carts apply.
-			$has_capacity = tribe( 'tickets.handler' )->ticket_has_capacity( $ticket_id, $quantity, $args['rsvp'] );
+			// The same per-order maximum, stock and sale window checks the carts apply. A Not Going RSVP holds no place, so it skips the stock.
+			$has_capacity = tribe_is_truthy( $first_attendee['order_status'] ?? 'yes' )
+				? tribe( 'tickets.handler' )->ticket_has_capacity( $ticket_id, $quantity, $args['rsvp'] )
+				: $this->check_not_going_quantity( $quantity, $args['rsvp'] );
 
 			if ( is_wp_error( $has_capacity ) ) {
 				return $this->wp_error_to_result( $has_capacity );
@@ -325,15 +328,16 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				];
 			}
 
-			$created = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
-			$updated = $created && tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
+			// The status changes re-check the stock under lock; a refusal means the RSVP is full.
+			$completed = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG )
+				&& tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
 
-			if ( ! $updated ) {
+			if ( ! $completed ) {
 				$this->discard_order( $order->ID );
 
 				return [
 					'success' => false,
-					'errors'  => [ _x( 'The RSVP order could not be created.', 'error message', 'event-tickets' ) ],
+					'errors'  => [ _x( 'Sorry, this RSVP is no longer available.', 'error message', 'event-tickets' ) ],
 				];
 			}
 
@@ -655,6 +659,31 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		return $quantity;
+	}
+
+	/**
+	 * Checks a Not Going RSVP against the sale window and the per-order maximum, but not the stock: it holds no place.
+	 *
+	 * @since 5.31.2
+	 *
+	 * @param int                           $quantity The quantity requested.
+	 * @param Tribe__Tickets__Ticket_Object $ticket   The RSVP ticket.
+	 *
+	 * @return true|WP_Error True if the quantity is allowed, WP_Error otherwise.
+	 */
+	private function check_not_going_quantity( int $quantity, Tribe__Tickets__Ticket_Object $ticket ) {
+		// The same per-order cap Tickets_Handler::get_ticket_max_purchase() applies before it counts the stock.
+		$max = absint( apply_filters( 'tribe_tickets_get_ticket_default_max_purchase', 100, $ticket ) );
+		$max = $max < 1 ? 100 : $max;
+
+		if ( $quantity <= $max && $ticket->date_in_range() ) {
+			return true;
+		}
+
+		return new WP_Error(
+			'ticket-capacity-not-available',
+			sprintf( tribe( 'tickets.rest-v1.messages' )->get_message( 'ticket-capacity-not-available' ), $ticket->name )
+		);
 	}
 
 	/**

@@ -46,6 +46,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 	 * Returns the store data used to hydrate the store in Block Editor context.
 	 *
 	 * @since 5.16.0
+	 * @since 5.31.2 Layouts and seat types are no longer requested from the service when there is no license.
 	 *
 	 * @return array{
 	 *     isUsingAssignedSeating: bool,
@@ -85,12 +86,20 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 
 		$service        = tribe( Service::class );
 		$service_status = $service->get_status();
+		$has_license    = ! $service_status->has_no_license();
+
+		/*
+		 * Without a license the service rejects the request, and the failure is not cached, so it would be
+		 * repeated on every editor load. The editor shows no layout or seat type controls in this case.
+		 */
+		$layouts    = $has_license ? $service->get_layouts_in_option_format() : [];
+		$seat_types = $has_license && $layout_id ? $service->get_seat_types_by_layout( $layout_id ) : [];
 
 		return [
 			// isUsingAssignedSeating should never be true when there is no license. The ASC controls are hidden when no license is there.
-			'isUsingAssignedSeating' => ! $service_status->has_no_license() && $is_using_assigned_seating,
-			'layouts'                => $service->get_layouts_in_option_format(),
-			'seatTypes'              => $layout_id ? $service->get_seat_types_by_layout( $layout_id ) : [],
+			'isUsingAssignedSeating' => $has_license && $is_using_assigned_seating,
+			'layouts'                => $layouts,
+			'seatTypes'              => $seat_types,
 			'currentLayoutId'        => $layout_id,
 			'seatTypesByPostId'      => $seat_types_by_post_id,
 			'isLayoutLocked'         => $is_layout_locked,

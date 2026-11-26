@@ -71,6 +71,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	 * Handle registration for blocks-functionality separately.
 	 *
 	 * @since 5.0.4
+	 * @since 5.31.2 Registers the RSVP parent permission check.
 	 */
 	public function register_for_blocks() {
 		/** @var \Tribe__Editor $editor */
@@ -84,6 +85,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 
 		$this->container->singleton( 'tickets.editor.assets', Assets::class, [ 'register' ] );
 		$this->container->singleton( 'tickets.editor.meta', Meta::class );
+		$this->container->singleton( RSVP_Parent_Permission::class );
 		$this->container->singleton( 'tickets.editor.rest.compatibility', REST_Compatibility::class, [ 'hook' ] );
 		$this->container->singleton( 'tickets.editor.attendees_table', Attendees_Table::class );
 
@@ -140,6 +142,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	 * In place of delegating the hooking responsibility to the single classes they are all hooked here.
 	 *
 	 * @since 4.9
+	 * @since 5.31.2 Checks the parent post of RSVPs saved through the core REST API.
 	 */
 	protected function hook() {
 		// Setup the Meta registration.
@@ -149,6 +152,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 
 		// Handle REST specific meta filtering.
 		add_filter( 'rest_dispatch_request', tribe_callback( 'tickets.editor.meta', 'filter_rest_dispatch_request' ), 10, 3 );
+		add_filter( 'rest_pre_insert_tribe_rsvp_tickets', tribe_callback( RSVP_Parent_Permission::class, 'filter_rest_pre_insert' ), 10, 2 );
 
 		// Setup the Rest compatibility layer for WP.
 		tribe( 'tickets.editor.rest.compatibility' );
@@ -265,6 +269,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	 * {@inheritDoc}
 	 *
 	 * @since 5.8.0
+	 * @since 5.31.2 Removes the RSVP parent permission check.
 	 *
 	 * @return void
 	 */
@@ -273,6 +278,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 		remove_filter( 'register_meta_args', tribe_callback( 'tickets.editor.meta', 'register_meta_args' ) );
 		remove_action( 'tribe_plugins_loaded', [ $this, 'register_blocks' ], 300 );
 		remove_filter( 'rest_dispatch_request', tribe_callback( 'tickets.editor.meta', 'filter_rest_dispatch_request' ) );
+		remove_filter( 'rest_pre_insert_tribe_rsvp_tickets', tribe_callback( RSVP_Parent_Permission::class, 'filter_rest_pre_insert' ) );
 		remove_action( 'block_categories', tribe_callback( 'tickets.editor', 'block_categories' ) );
 		remove_action( 'block_categories_all', tribe_callback( 'tickets.editor', 'block_categories' ) );
 		remove_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle_buttons' ] );

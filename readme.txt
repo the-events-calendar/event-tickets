@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, stellarwp, nexcess, bordoni, deblynprado, dpantazis, filipecouto, jehromegriffiths1, jentheo, larodiel, leahkoerper, sdokus, vicskf
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.31.1.1
+Stable tag: 5.31.2
 Requires at least: 6.9
 Tested up to: 7.1
 Requires PHP: 7.4
@@ -205,6 +205,34 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.31.2] 2026-11-25 =
+
+* Fix - Allowed new users to activate their accounts on multisite networks with Event Tickets network activated, instead of the activation link ending in a critical error.
+* Fix - Corrected the domain sent with license validation and plugin download requests on multisite networks whose network site address was saved without http:// or https://, so licenses validate instead of failing with "missing a valid domain".
+* Fix - Displayed Tickets Commerce tickets on the event page again for events with no saved payment provider, which were hidden from visitors when WooCommerce or Easy Digital Downloads was also active, by using the provider that owns the event's tickets.
+* Fix - Enforced ticket and RSVP capacity, including shared capacity, when several people checked out or submitted an RSVP at the same moment, which had let Tickets Commerce, RSVP v1 and RSVP v2 sell more places than were available; paid buyers who lost the race were refused before being charged, a Stripe or Square buyer who paid after their hold ran out was told to ask for a refund instead of being shown a success page, and refused RSVP visitors were told the RSVP was unavailable instead of being shown a confirmation.
+* Fix - Guarded the Square webhook endpoint against requests missing their webhook key or signature, which ended in a fatal error instead of being refused as an invalid signature.
+* Fix - Guarded the tickets footer total against a ticket provider that could not be resolved, which logged a PHP warning and deprecation notices on the Attendee Registration page.
+* Fix - Kept the Event Date Time panel open when navigating months in a recurrence date picker in the block editor, so the calendar no longer closed the panel or jumped to the corner of the screen.
+* Fix - Kept the RSVP block's "Add an RSVP" card inside the block in the block editor; on themes that don't set border-box sizing it ran 50px past the right edge.
+* Fix - Kept the Tickets block's ticket form inside the block in the block editor; its grey panel ran 40px past the right edge.
+* Fix - Restored the Support Access grant on the Help page, which failed with "Encryption key could not be fetched" because the vendor public key was requested from an address that had started redirecting to another site.
+* Fix - Stopped the block editor from requesting seating layouts from the Seating service on every load when the site has no Seating license.
+* Fix - Stopped the classic editor from saving a ticket whose sales start Now and end on a relative date that falls before the day the event was published, which left the ticket off sale. The form now shows the same error as the block editor. The event's edit screen now also warns about any ticket whose relative sales or sale price dates end before they start, such as after the event is moved.
+* Security - Added additional access checks to the Attendees page, its check-in, delete and email actions, and the Tickets Commerce Attendees report. Props to Dthangws for reporting.
+* Security - Added additional escaping to the attendee names shown in the front-end attendee lists. Props to Santh for reporting.
+* Security - Added additional protection to the attendees REST API endpoint. Props to kta1kri for reporting.
+* Security - Added additional sale-window validation to Tickets Commerce checkout. Props to mohamed fawzi for reporting.
+* Security - Added additional validation when RSVPs are saved through the REST API.
+* Security - Improved the security of the Tickets Commerce payment gateway connections.
+* Security - Improved the security of the Tickets Commerce payment gateway webhooks.
+* Security - Limited the RSVP tooltips to the tooltip content each RSVP printed.
+* Security - Restricted attendee moves to tickets of the same provider, keeping ticket stock and sales counts accurate.
+* Tweak - Changed the attendee history entry for a moved attendee to say "This attendee was moved" instead of "This ticket was moved".
+* Tweak - Changed views: `v2/tickets/footer/total`
+* Tweak - Showed the ticket history directly in the Advanced section of the classic editor ticket form, under a "Ticket History" label, replacing the "Click to view the history" link that did nothing when clicked.
+* Language - 7 new strings added, 193 updated, 3 fuzzied, and 2 obsoleted.
 
 = [5.31.1.1] 2026-11-17 =
 

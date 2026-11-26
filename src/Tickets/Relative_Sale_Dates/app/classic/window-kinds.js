@@ -35,6 +35,8 @@ import { SALE_PRICE_WINDOW, SALES_WINDOW } from '../window-kinds';
  *                                                                 server judges it.
  * @property {ClassicWindowKind|null}               parent         The window this one must start inside, as the form
  *                                                                 holds it, or `null`.
+ * @property {boolean}                              postDayStart   Whether a Now start, sent without a date, opens on the
+ *                                                                 day the event was published.
  */
 
 /** @typedef {WindowKind & ClassicWindowKindFields} ClassicWindowKind */
@@ -88,6 +90,7 @@ export const CLASSIC_SALES_WINDOW = Object.freeze( {
 	} ),
 	lengthId: null,
 	errorId: 'ticket_sales_window_error',
+	postDayStart: true,
 	enabledFieldId: null,
 	isEnabled: () => true,
 } );
@@ -110,6 +113,7 @@ export const CLASSIC_SALE_PRICE_WINDOW = Object.freeze( {
 	} ),
 	lengthId: 'ticket_sale_price_length',
 	errorId: 'ticket_sale_price_error',
+	postDayStart: false,
 	enabledFieldId: SALE_PRICE_FIELDS.enabled,
 	isEnabled: isSalePriceSaved,
 } );

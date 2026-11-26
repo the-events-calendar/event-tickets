@@ -63,6 +63,7 @@ class Attendees extends Report_Abstract {
 	 * Registers the Tickets Commerce orders page as a plugin options page.
 	 *
 	 * @since 5.2.0
+	 * @since 5.31.2 Registers the page only for an event the current user can access.
 	 */
 	public function register_attendees_page() {
 		$candidate_post_id = tribe_get_request_var( 'post_id', 0 );
@@ -70,6 +71,10 @@ class Attendees extends Report_Abstract {
 		$post_id           = absint( $candidate_post_id );
 
 		if ( $post_id !== (int) $candidate_post_id ) {
+			return;
+		}
+
+		if ( ! $this->can_access_page( $post_id ) ) {
 			return;
 		}
 
@@ -105,19 +110,22 @@ class Attendees extends Report_Abstract {
 	 * Uses the event title.
 	 *
 	 * @since 5.2.0
+	 * @since 5.31.2 Names the event only when the current user can access it.
 	 *
 	 * @param string $admin_title The page title in the admin.
 	 *
 	 * @return string
 	 */
 	public function filter_admin_title( $admin_title ) {
-		if ( ! empty( (int) $_GET['event_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			$event = get_post( (int) $_GET['event_id'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			// translators: The title of an event's Attendee List page in the dashboard. %1$s is the name of the event.
-			$admin_title = sprintf( __( '%1$s - Attendee list', 'event-tickets' ), $event->post_title );
+		$post_id = tribe_get_request_var( 'post_id', 0 );
+		$post_id = absint( tribe_get_request_var( 'event_id', $post_id ) );
+
+		if ( ! $post_id || ! $this->can_access_page( $post_id ) ) {
+			return $admin_title;
 		}
 
-		return $admin_title;
+		// translators: The title of an event's Attendee List page in the dashboard. %1$s is the name of the event.
+		return sprintf( __( '%1$s - Attendee list', 'event-tickets' ), get_post_field( 'post_title', $post_id ) );
 	}
 
 	/**

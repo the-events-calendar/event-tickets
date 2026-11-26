@@ -46,6 +46,15 @@ class ControllerTest extends Controller_Test_Case {
 		$this->assertStringContainsString( 'migration is in progress', $html, 'RSVP button should show migration tooltip.' );
 	}
 
+	public function test_register_checks_the_parent_of_rsvps_saved_through_rest(): void {
+		$this->make_controller()->register();
+
+		$this->assertSame(
+			10,
+			has_filter( 'rest_pre_insert_tribe_rsvp_tickets', tribe_callback( RSVP_Parent_Permission::class, 'filter_rest_pre_insert' ) )
+		);
+	}
+
 	public function test_render_form_toggle_buttons_shows_enabled_rsvp_button_by_default(): void {
 		$post_id = static::factory()->post->create();
 

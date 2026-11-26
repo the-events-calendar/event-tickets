@@ -3,9 +3,9 @@
 namespace TEC\Tickets\Commerce\Status;
 
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Sale_Window_Validator;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Event;
-use Tribe__Date_Utils as Dates;
 
 use WP_Error;
 
@@ -58,6 +58,8 @@ class Pending extends Status_Abstract {
 
 	/**
 	 * {@inheritdoc}
+	 *
+	 * @since 5.31.2 Gets the message for a ticket outside its sale window from `Sale_Window_Validator`.
 	 */
 	public function can_apply_to( $order, $new_status ) {
 		$status = parent::can_apply_to( $order, $new_status );
@@ -152,21 +154,10 @@ class Pending extends Status_Abstract {
 				}
 			}
 
-			if ( ! $ticket->date_in_range( Dates::build_date_object() ) ) {
-				$now             = Dates::build_date_object();
-				$start_sale_date = $ticket->start_date;
-				$start_sale_time = Dates::reformat( $ticket->start_time, tribe_get_time_format() );
-
-				if ( $ticket->date_is_earlier( $now ) ) {
-					$message = sprintf( __( '%s will be available on %s at %s', 'event-tickets' ), tribe_get_ticket_label_plural( 'unavailable_future_display_date' ), $start_sale_date, $start_sale_time );
-				} elseif ( $ticket->date_is_later( $now ) ) {
-					$message = sprintf( __( '%s are no longer available.', 'event-tickets' ), tribe_get_ticket_label_plural( 'unavailable_past' ) );
-				} else {
-					$message = sprintf( __( 'There are no %s available at this time.', 'event-tickets' ), tribe_get_ticket_label_plural( 'unavailable_mixed' ) );
-				}
+			if ( ! $ticket->date_in_range() ) {
 				return new WP_Error(
 					'tec-tc-ticket-unavailable',
-					$message,
+					tribe( Sale_Window_Validator::class )->get_unavailable_message( $ticket ),
 					[
 						'ticket'     => $item['ticket_id'],
 						'order'      => $order,

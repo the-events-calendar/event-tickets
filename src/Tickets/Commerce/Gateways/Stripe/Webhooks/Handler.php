@@ -27,6 +27,7 @@ class Handler {
 	 * These will be directly sent to the Rest API.
 	 *
 	 * @since 5.3.0
+	 * @since 5.31.2 Logged an unknown event by its type instead of the event body.
 	 *
 	 * @param WP_REST_Request  $request
 	 * @param WP_REST_Response $response
@@ -48,9 +49,9 @@ class Handler {
 		if ( ! Events::is_valid( $type ) ) {
 			tribe( 'logger' )->log_debug(
 				sprintf(
-				// Translators: %s: The Stripe payment event.
+				// Translators: %s: The Stripe event type.
 					__( 'Invalid event type for webhook event: %s', 'event-tickets' ),
-					json_encode( $event )
+					$type
 				),
 				'tickets-commerce-gateway-stripe'
 			);

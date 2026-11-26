@@ -1100,7 +1100,7 @@ class Order_Endpoint_Test extends WPTestCase {
 		$this->register_endpoint();
 		$data = $this->submit_rsvp_quantity( $ticket_id, 1 );
 
-		$this->assertStringContainsString( 'The RSVP order could not be created.', $data['html'] );
+		$this->assertStringContainsString( 'Sorry, this RSVP is no longer available.', $data['html'] );
 		$this->assertSame( $orders_before, $this->tc_order_count() );
 		$this->assertArrayNotHasKey( $cookie, $_COOKIE );
 	}
@@ -1127,7 +1127,7 @@ class Order_Endpoint_Test extends WPTestCase {
 		$this->register_endpoint();
 		$data = $this->submit_rsvp_quantity( $ticket_id, 2 );
 
-		$this->assertStringContainsString( 'The RSVP order could not be created.', $data['html'] );
+		$this->assertStringContainsString( 'Sorry, this RSVP is no longer available.', $data['html'] );
 		$this->assertSame( $orders_before, $this->tc_order_count() );
 		$this->assertEquals( 0, Tickets::load_ticket_object( $ticket_id )->stock() );
 	}

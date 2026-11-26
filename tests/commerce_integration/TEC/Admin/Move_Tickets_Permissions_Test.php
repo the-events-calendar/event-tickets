@@ -5,7 +5,10 @@ namespace TEC\Admin;
 use Codeception\TestCase\WPTestCase;
 use Faker\Factory as Faker;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Utils\Currency;
 use Tribe\Events\Test\Factories\Event;
+use Tribe\Tickets\Test\Commerce\Attendee_Maker;
+use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Tickets__Main as Tickets_Main;
@@ -18,6 +21,8 @@ use WPDieException;
 class Move_Tickets_Permissions_Test extends WPTestCase {
 	use Ticket_Maker;
 	use Order_Maker;
+	use RSVP_Ticket_Maker;
+	use Attendee_Maker;
 
 	private int $admin_id;
 	private int $contributor_id;
@@ -315,6 +320,42 @@ class Move_Tickets_Permissions_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_not_move_tickets_commerce_attendees_to_an_rsvp_ticket(): void {
+		$target_event_id = $this->create_event_as( $this->admin_id );
+
+		$this->assert_move_refused(
+			$this->admin_attendee_ids,
+			$this->admin_ticket_id,
+			$this->create_rsvp_ticket( $target_event_id ),
+			$target_event_id
+		);
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_move_rsvp_attendees_to_a_tickets_commerce_ticket(): void {
+		/*
+		 * A data provider elsewhere in the suite leaves a currency the legacy RSVP currency map lacks.
+		 * Filtered rather than saved, since a saved option leaks into later tests through the options cache.
+		 */
+		add_filter( 'tribe_get_option_' . Currency::$currency_code_option, static fn() => 'USD' );
+
+		$rsvp_ticket_id  = $this->create_rsvp_ticket( $this->admin_event_id );
+		$rsvp_attendees  = $this->create_many_attendees_for_ticket( Faker::create()->numberBetween( 1, 3 ), $rsvp_ticket_id, $this->admin_event_id );
+		$target_event_id = $this->create_event_as( $this->admin_id );
+
+		$this->assert_move_refused(
+			array_map( 'intval', $rsvp_attendees ),
+			$rsvp_ticket_id,
+			$this->create_tc_ticket( $target_event_id, 5 ),
+			$target_event_id
+		);
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_move_attendees_between_events_the_user_can_manage(): void {
 		$target_event_id  = $this->create_event_as( $this->admin_id );
 		$target_ticket_id = $this->create_tc_ticket( $target_event_id, 5 );
@@ -535,6 +576,46 @@ class Move_Tickets_Permissions_Test extends WPTestCase {
 		clean_post_cache( $ticket_id );
 
 		return absint( get_post_meta( $ticket_id, tribe( Module::class )->get_event_key(), true ) );
+	}
+
+	/**
+	 * Asserts a move of attendees from the administrator's event to a ticket of another provider changes nothing.
+	 *
+	 * @param int[] $attendee_ids     The attendees to move, all of the source ticket.
+	 * @param int   $source_ticket_id The ticket the attendees belong to.
+	 * @param int   $target_ticket_id A ticket of another provider on the target event.
+	 * @param int   $target_event_id  The event the attendees are moved to.
+	 */
+	private function assert_move_refused( array $attendee_ids, int $source_ticket_id, int $target_ticket_id, int $target_event_id ): void {
+		$expected_source_sold = $this->ticket_sold( $source_ticket_id );
+		$expected_target_sold = $this->ticket_sold( $target_ticket_id );
+
+		$response = $this->request_as(
+			$this->admin_id,
+			[ Tickets_Main::instance()->move_tickets(), 'move_tickets_request' ],
+			[
+				'ticket_ids'     => $attendee_ids,
+				'target_type_id' => $target_ticket_id,
+				'src_post_id'    => $this->admin_event_id,
+				'target_post_id' => $target_event_id,
+			]
+		);
+
+		$this->assertFalse( $response['success'] );
+		$this->assertEmpty( array_diff( $attendee_ids, $this->attendee_ids( $this->admin_event_id ) ) );
+		$this->assertSame( [], $this->attendee_ids( $target_event_id ) );
+		$this->assertSame( $expected_source_sold, $this->ticket_sold( $source_ticket_id ) );
+		$this->assertSame( $expected_target_sold, $this->ticket_sold( $target_ticket_id ) );
+		$this->assertSame(
+			0,
+			Tickets_Main::instance()->move_tickets()->move_tickets( $attendee_ids, $target_ticket_id, $this->admin_event_id, $target_event_id )
+		);
+	}
+
+	private function ticket_sold( int $ticket_id ): int {
+		clean_post_cache( $ticket_id );
+
+		return absint( get_post_meta( $ticket_id, 'total_sales', true ) );
 	}
 
 	private function attendee_ids( int $event_id ): array {

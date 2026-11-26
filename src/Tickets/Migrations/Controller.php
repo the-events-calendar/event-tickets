@@ -22,6 +22,20 @@ use function TEC\Common\StellarWP\Migrations\migrations;
  */
 class Controller extends Controller_Contract {
 	/**
+	 * Whether the controller is active or not.
+	 *
+	 * While WordPress is installing, for example on the multisite `wp-activate.php` page, Shepherd does not
+	 * signal that its tables are ready, so the migrations library never loads `migrations()`.
+	 *
+	 * @since 5.31.2
+	 *
+	 * @return bool Whether the controller is active or not.
+	 */
+	public function is_active(): bool {
+		return ! wp_installing() && function_exists( 'TEC\Common\StellarWP\Migrations\migrations' );
+	}
+
+	/**
 	 * Registers the controller.
 	 *
 	 * @since 5.30.0

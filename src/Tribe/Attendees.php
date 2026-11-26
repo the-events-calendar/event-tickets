@@ -302,10 +302,17 @@ class Tribe__Tickets__Attendees {
 	 * Registers the Attendees admin page
 	 *
 	 * @since 4.6.2
+	 * @since 5.31.2 Checks access to the event the page reads from the request.
 	 */
 	public function register_page() {
 		$cap      = 'edit_posts';
-		$event_id = absint( ! empty( $_GET['event_id'] ) && is_numeric( $_GET['event_id'] ) ? $_GET['event_id'] : 0 );
+		$event_id = $this->get_request_event_id();
+
+		// Parts of the page read the event from the query string alone, so it must be the one checked below.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		if ( isset( $_GET['event_id'] ) && absint( $_GET['event_id'] ) !== $event_id ) {
+			return;
+		}
 
 		if ( ! $this->can_access_page( $event_id ) ) {
 			return;
@@ -496,6 +503,7 @@ class Tribe__Tickets__Attendees {
 	 * Uses the event title.
 	 *
 	 * @since 4.6.2
+	 * @since 5.31.2 Names the event only when the current user can access it.
 	 *
 	 * @param string $admin_title The admin title.
 	 * @param string $unused_title An unused title.
@@ -503,20 +511,30 @@ class Tribe__Tickets__Attendees {
 	 * @return string
 	 */
 	public function filter_admin_title( $admin_title, $unused_title ) {
-		if ( ! empty( $_GET['event_id'] ) ) {
-			$event       = get_post( $_GET['event_id'] );
-			$admin_title = sprintf( __( '%s - Attendee list', 'event-tickets' ), $event->post_title );
+		$event_id = $this->get_request_event_id();
+
+		if ( ! $event_id || ! $this->can_access_page( $event_id ) ) {
+			return $admin_title;
 		}
 
-		return $admin_title;
+		// translators: %s is the title of the event.
+		return sprintf( __( '%s - Attendee list', 'event-tickets' ), get_post_field( 'post_title', $event_id ) );
 	}
 
 	/**
 	 * Renders the Attendees page
 	 *
 	 * @since 4.6.2
+	 * @since 5.31.2 Stops when the current user cannot access the requested event.
 	 */
 	public function render() {
+		$post_id = tribe_get_request_var( 'post_id', 0 );
+		$post_id = $this->to_event_id( tribe_get_request_var( 'event_id', $post_id ) );
+
+		if ( ! $this->can_access_page( $post_id ) ) {
+			wp_die( esc_html__( 'Sorry, you are not allowed to access this page.', 'event-tickets' ), 403 );
+		}
+
 		/**
 		 * Fires immediately before the content of the attendees screen
 		 * is rendered.
@@ -524,9 +542,6 @@ class Tribe__Tickets__Attendees {
 		 * @param Tribe__Tickets__Tickets_Handler $handler The current ticket handler instance.
 		 */
 		do_action( 'tribe_tickets_attendees_page_inside', $this );
-
-		$post_id = tribe_get_request_var( 'post_id', 0 );
-		$post_id = tribe_get_request_var( 'event_id', $post_id );
 
 		$context = $this->get_render_context( (int) $post_id );
 
@@ -844,6 +859,7 @@ class Tribe__Tickets__Attendees {
 	 * Checks if the current user has the capability to perform a certain action on a given event and it's attendees list.
 	 *
 	 * @since 5.8.2
+	 * @since 5.31.2 Requires the current user to be able to manage the attendees of the event.
 	 *
 	 * @param ?int|?string $event_id The event ID.
 	 * @param ?string      $nonce    The nonce.
@@ -863,20 +879,10 @@ class Tribe__Tickets__Attendees {
 			return $error;
 		}
 
-		$cap = 'edit_posts';
-
-		if ( ! current_user_can( 'edit_posts' ) ) {
-			$event = get_post( $event_id );
-
-			if ( $event instanceof WP_Post && get_current_user_id() === (int) $event->post_author ) {
-				$cap = 'read';
-			}
-		}
-
 		if (
 			empty( $nonce )
 			|| ! wp_verify_nonce( $nonce, 'email-attendees-list' )
-			|| ! $this->user_can( $cap, $event_id )
+			|| ! $this->user_can_manage_attendees( 0, $event_id )
 		) {
 			$error->add( 'nonce-fail', esc_html__( 'Cheatin Huh?', 'event-tickets' ), [ 'type' => 'general' ] );
 
@@ -1407,5 +1413,31 @@ class Tribe__Tickets__Attendees {
 		return $event_id
 			&& absint( get_post_field( 'post_author', $event_id ) ) === $user_id
 			&& user_can( $user_id, 'edit_post', $event_id );
+	}
+
+	/**
+	 * Returns the ID of the event the request is for, read the way the page reads it: the body wins over the query.
+	 *
+	 * @since 5.31.2
+	 *
+	 * @return int The event ID, or 0 when the request carries none or one that is not a positive integer.
+	 */
+	private function get_request_event_id(): int {
+		return $this->to_event_id( tec_get_request_var( 'event_id' ) );
+	}
+
+	/**
+	 * Returns a requested value as an event ID, accepting only a positive integer as the Attendees table does.
+	 *
+	 * @since 5.31.2
+	 *
+	 * @param int|string|string[]|null $value The requested value.
+	 *
+	 * @return int The event ID, or 0 when the value is not a positive integer.
+	 */
+	private function to_event_id( $value ): int {
+		$event_id = filter_var( $value, FILTER_VALIDATE_INT, [ 'options' => [ 'min_range' => 1 ] ] );
+
+		return false === $event_id ? 0 : $event_id;
 	}
 }

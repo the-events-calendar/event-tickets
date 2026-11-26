@@ -779,9 +779,15 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 	/**
 	 * Handler for the different bulk actions
+	 *
+	 * @since 5.31.2 Requires the current user to be able to manage the attendees of the page's event.
 	 */
 	public function process_actions() {
 		if ( ! $this->validate_action_nonce() ) {
+			return;
+		}
+
+		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $this->get_post_id() ) ) {
 			return;
 		}
 
@@ -876,6 +882,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 	/**
 	 * Process the checking-in of selected attendees from the Attendees table.
+	 *
+	 * @since 5.31.2 Skips the attendees the current user cannot check in.
 	 */
 	protected function do_check_in() {
 		$attendee_ids = $this->get_action_ids();
@@ -884,10 +892,14 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			return;
 		}
 
+		/** @var Tribe__Tickets__Attendees $attendees */
+		$attendees = tribe( 'tickets.attendees' );
+		$event_id  = $this->get_post_id();
+
 		foreach ( $attendee_ids as $attendee ) {
 			list( $id, $addon ) = $this->attendee_reference( $attendee );
 
-			if ( false === $id ) {
+			if ( false === $id || ! $attendees->user_can_check_in_attendee( $id, $event_id ) ) {
 				continue;
 			}
 
@@ -897,6 +909,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 	/**
 	 * Process the undoing of a check-in of selected attendees from the Attendees table.
+	 *
+	 * @since 5.31.2 Skips the attendees the current user cannot check in.
 	 */
 	protected function do_uncheck_in() {
 		$attendee_ids = $this->get_action_ids();
@@ -905,11 +919,15 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			return;
 		}
 
+		/** @var Tribe__Tickets__Attendees $attendees */
+		$attendees = tribe( 'tickets.attendees' );
+		$event_id  = $this->get_post_id();
+
 		foreach ( $attendee_ids as $attendee ) {
 
 			list( $id, $addon ) = $this->attendee_reference( $attendee );
 
-			if ( false === $id ) {
+			if ( false === $id || ! $attendees->user_can_check_in_attendee( $id, $event_id ) ) {
 				continue;
 			}
 
@@ -921,7 +939,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * Process the deletion of selected attendees from the Attendees table.
 	 *
 	 * @since 4.10.4 add redirect after completing action
-	 *
+	 * @since 5.31.2 Skips the attendees of events the current user cannot manage.
 	 */
 	protected function do_delete() {
 		$attendee_ids = $this->get_action_ids();
@@ -939,10 +957,16 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			return;
 		}
 
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
 		foreach ( $attendee_ids as $attendee ) {
 			list( $id, $addon ) = $this->attendee_reference( $attendee );
 
-			if ( false === $id ) {
+			if (
+				false === $id
+				|| ! $attendees->user_can_manage_attendees( 0, $tickets_handler->get_object_connections( $id )->event )
+			) {
 				continue;
 			}
 
@@ -1026,6 +1050,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 *
 	 * @since 5.8.4 Adding caching to eliminate method running multiple times.
 	 * @since 5.29.5.1 Only a sortable column and an `ASC`/`DESC` direction are read from the request.
+	 * @since 5.31.2 Lists the attendees of the event the table was built for, not of the one in the request.
 	 *
 	 * @return void
 	 */
@@ -1047,7 +1072,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'order'              => 'DESC',
 		];
 
-		$event_id = Event::filter_event_id( filter_var( tribe_get_request_var( 'event_id' ), FILTER_VALIDATE_INT ), 'attendees-table' );
+		$event_id = Event::filter_event_id( $this->get_post_id(), 'attendees-table' );
 		$search   = sanitize_text_field( tribe_get_request_var( $this->search_box_input_name ) );
 
 		if ( empty( $event_id ) ) {

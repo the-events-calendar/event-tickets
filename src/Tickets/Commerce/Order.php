@@ -13,13 +13,17 @@ use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Gateways\Contracts\Gateway_Interface;
 use TEC\Tickets\Commerce\Status\Created;
+use TEC\Tickets\Commerce\Status\Denied;
+use TEC\Tickets\Commerce\Status\Not_Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Refunded;
 use TEC\Tickets\Commerce\Status\Reversed;
 use TEC\Tickets\Commerce\Status\Status_Interface;
+use TEC\Tickets\Commerce\Status\Voided;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\RSVP\V2\Constants as RSVP_Constants;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use WP_Error;
 use WP_Post;
 
 /**
@@ -449,6 +453,7 @@ class Order extends Abstract_Order {
 	 *
 	 * @since 5.1.9
 	 * @since 5.18.1 Wrap status update in a transaction to prevent race conditions.
+	 * @since 5.31.2 Refuses a status whose required previous status is refused, locks the stock first, releases held stock.
 	 *
 	 * @param int                     $order_id        Which order ID will be updated.
 	 * @param string|Status_Interface $new_status      Which Order Status we are modifying to.
@@ -474,13 +479,40 @@ class Order extends Abstract_Order {
 					continue;
 				}
 
+				// An order already in the required status meets it, even without a log entry.
+				if ( $order->post_status === $required_status->get_wp_slug() ) {
+					continue;
+				}
+
 				// Recursively call the modify_status method to ensure all required statuses are met.
-				$this->modify_status( $order_id, $required_status, $extra_args );
+				if ( ! $this->modify_status( $order_id, $required_status, $extra_args ) ) {
+					// A refused required status, e.g. for lack of stock, refuses this one too.
+					return false;
+				}
 			}
 		}
 
+		$stock_validator = tribe( Stock_Validator::class );
+		$order_items     = (array) ( tec_tc_get_order( $order_id )->items ?? [] );
+
+		$stock_validator->disable_snapshot_isolation();
+
 		// we specifically only lock the order transactions after the required statuses have been met.
 		DB::beginTransaction();
+
+		/*
+		 * Every status change locks its tickets' stock first, before the order row and before the shared rows
+		 * a post save writes, so concurrent changes always lock in the same order and cannot deadlock.
+		 */
+		if ( $order_items ) {
+			try {
+				$stock_validator->lock_ticket_stock( array_column( $order_items, 'ticket_id' ), array_column( $order_items, 'event_id' ) );
+			} catch ( DatabaseQueryException $e ) {
+				DB::rollback();
+
+				return false;
+			}
+		}
 
 		// During these operations - the order should be locked!
 		$locked = $this->lock_order( $order_id );
@@ -513,6 +545,11 @@ class Order extends Abstract_Order {
 			->set_args( $args )
 			->save();
 
+		// An order that can no longer be paid gives its held seats back now, not when its checkout hold expires.
+		if ( $updated && $order_items && in_array( $new_status->get_slug(), [ Denied::SLUG, Not_Completed::SLUG, Voided::SLUG ], true ) ) {
+			$stock_validator->release_order_stock_holds( $order_id, $order_items );
+		}
+
 		$this->unlock_order( $order_id );
 
 		DB::commit();
@@ -529,6 +566,7 @@ class Order extends Abstract_Order {
 	 * Whether an order's status be transitioned to another status.
 	 *
 	 * @since 5.18.1
+	 * @since 5.31.2 Logs a status change refused for lack of stock.
 	 *
 	 * @param Status_Interface $new_status The new status to transition to.
 	 * @param int              $order_id   The order ID to check the transition for.
@@ -570,6 +608,18 @@ class Order extends Abstract_Order {
 			$stock_validation = $stock_validator->validate_order_stock( $order );
 
 			if ( is_wp_error( $stock_validation ) ) {
+				do_action(
+					'tribe_log',
+					'warning',
+					__METHOD__,
+					[
+						'message'    => 'Order status change refused: the stock is not available.',
+						'order_id'   => $order_id,
+						'new_status' => $new_status->get_slug(),
+						'errors'     => $stock_validation->get_error_data(),
+					]
+				);
+
 				return false;
 			}
 		}
@@ -615,6 +665,7 @@ class Order extends Abstract_Order {
 	 *            `Cart::get_repository()`, so TC-RSVP orders read from `RSVP_Cart` instead of the
 	 *            generic cart.
 	 * @since 5.31.1.1 Returns false for a logged-out visitor when the login setting of the ticket type requires login.
+	 * @since 5.31.2 Returns false when a ticket in the cart is outside its sale window.
 	 *
 	 * @param Gateway_Interface $gateway     The payment gateway.
 	 * @param array|null        $purchaser   The purchaser information.
@@ -631,6 +682,12 @@ class Order extends Abstract_Order {
 
 		$cart        = tribe( Cart::class );
 		$cart_reader = $cart->get_repository( $ticket_type );
+		$cart_items  = $cart_reader->get_items_in_cart( true, $ticket_type );
+
+		// The cart is kept after a ticket's sale window closes, and every gateway creates its order here.
+		if ( is_wp_error( tribe( Sale_Window_Validator::class )->validate_items( $cart_items ) ) ) {
+			return false;
+		}
 
 		// Prepare the items for the order.
 		$items = array_filter(
@@ -670,7 +727,7 @@ class Order extends Abstract_Order {
 						'type'              => $item['type'] ?? 'ticket',
 					];
 				},
-				$cart_reader->get_items_in_cart( true, $ticket_type )
+				$cart_items
 			)
 		);
 
@@ -768,6 +825,49 @@ class Order extends Abstract_Order {
 		if ( ! $order ) {
 			return false;
 		}
+
+		return $order;
+	}
+
+	/**
+	 * Creates an order from the cart and holds its stock for the checkout, before the buyer pays.
+	 *
+	 * The order is created first; then, in a transaction that only locks the stock and writes the hold,
+	 * the stock is checked and held, so the next checkout sees the hold. The hold lasts as long as the
+	 * order's checkout screen hold. Creating the order outside the transaction keeps the writes every post
+	 * save makes to shared rows out of it, which snapshot isolation (MariaDB 11.6+) would otherwise fail.
+	 *
+	 * @since 5.31.2
+	 *
+	 * @internal
+	 *
+	 * @param Gateway_Interface $gateway   The payment gateway.
+	 * @param array|null        $purchaser The purchaser information.
+	 *
+	 * @return WP_Post|WP_Error|false The order, WP_Error if the stock is not available, false if the order could not be created.
+	 */
+	public function create_from_cart_holding_stock( Gateway_Interface $gateway, ?array $purchaser = null ) {
+		$order = $this->create_from_cart( $gateway, $purchaser );
+
+		if ( ! $order instanceof WP_Post ) {
+			return false;
+		}
+
+		$this->set_on_checkout_screen_hold( $order->ID );
+
+		tribe( Stock_Validator::class )->disable_snapshot_isolation();
+		DB::beginTransaction();
+
+		$held = tribe( Stock_Validator::class )->hold_order_stock( $order );
+
+		if ( is_wp_error( $held ) ) {
+			DB::rollback();
+			$this->remove_on_checkout_screen_hold( $order->ID );
+
+			return $held;
+		}
+
+		DB::commit();
 
 		return $order;
 	}

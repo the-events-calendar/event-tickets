@@ -4455,6 +4455,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since 4.12.3
 		 * @since 5.30.3 A post wrongly stored as Tickets Commerce heals to the provider that owns its tickets.
+		 * @since 5.31.2 A post storing no provider heals to the provider that owns its tickets.
 		 *
 		 * @param int $post_id The post ID of the event to which the ticket is attached.
 		 *
@@ -4467,15 +4468,18 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			// 'Tribe__Tickets__RSVP' unless filtered.
 			$provider = self::get_default_module();
 
-			// If post ID is set and a value has been saved.
 			if ( ! empty( $post_id ) ) {
 				$saved = get_post_meta( $post_id, $tickets_handler->key_provider_field, true );
 
-				if ( ! empty( $saved ) ) {
-					// Saving an RSVP v2 used to store Tickets Commerce over the event's real provider.
-					$provider = Commerce_Module::class === $saved
-						? tribe( Event_Provider_Heal::class )->heal( (int) $post_id )
-						: $saved;
+				if ( ! $saved || Commerce_Module::class === $saved ) {
+					/*
+					 * Saving an RSVP v2 used to store Tickets Commerce over the event's real provider, and
+					 * the default a post storing none falls back to can belong to another provider: either
+					 * hides the event's tickets on the frontend.
+					 */
+					$provider = tribe( Event_Provider_Heal::class )->heal( absint( $post_id ), $saved ?: '' );
+				} else {
+					$provider = $saved;
 				}
 			}
 

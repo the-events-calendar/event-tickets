@@ -9,6 +9,7 @@ namespace TEC\Tickets\Tests\Integration\Migrations;
 
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Migrations\Controller;
+use function TEC\Common\StellarWP\Migrations\migrations;
 
 /**
  * Class Controller_Test
@@ -86,5 +87,42 @@ class Controller_Test extends Controller_Test_Case {
 
 		$this->assertStringContainsString( 'notice notice-info inline notice-info--migration', $html );
 		$this->assertStringContainsString( 'We recommend doing a <a href="https://evnt.is/1bei" target="_blank" rel="noopener noreferrer">site backup</a> before starting migration.', $html );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_be_active_outside_of_installation(): void {
+		$controller = $this->make_controller();
+
+		$this->assertTrue( $controller->is_active() );
+
+		$controller->register();
+
+		$this->assertTrue( migrations()->get_registry()->offsetExists( 'rsvp-to-tc' ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_not_register_while_wordpress_is_installing(): void {
+		/*
+		 * Requests such as the multisite `wp-activate.php` page define `WP_INSTALLING`, and the migrations library
+		 * does not load its functions during them.
+		 */
+		wp_installing( true );
+
+		try {
+			$controller = $this->make_controller();
+
+			$this->assertFalse( $controller->is_active() );
+
+			$controller->register();
+
+			$this->assertFalse( migrations()->get_registry()->offsetExists( 'rsvp-to-tc' ) );
+			$this->assertFalse( has_filter( 'tec_tickets_settings_tabs_ids', [ $controller, 'settings_add_migrations_tab_id' ] ) );
+		} finally {
+			wp_installing( false );
+		}
 	}
 }

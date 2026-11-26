@@ -14,6 +14,7 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Contracts\Traits\Requires_Login_To_Purchase;
 use TEC\Tickets\Commerce\Gateways\Free\Gateway;
 use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Sale_Window_Validator;
 use TEC\Tickets\Commerce\Stock_Validator;
 
 use TEC\Tickets\Commerce\Status\Completed;
@@ -77,6 +78,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * @since 5.26.6 Added cart validation to reject empty carts and carts containing paid tickets.
 	 * @since 5.30.3 Rejects carts containing a negative-priced ticket.
 	 * @since 5.31.1.1 Returns an error when the order could not be created.
+	 * @since 5.31.2 Returns an error when a concurrent checkout took the stock, instead of a success with no attendee.
+	 * @since 5.31.2 Returns an error when a ticket in the cart is outside its sale window.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -120,6 +123,12 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return $purchaser;
 		}
 
+		$sale_window_validation = tribe( Sale_Window_Validator::class )->validate_items( $cart->get_items_in_cart() );
+
+		if ( is_wp_error( $sale_window_validation ) ) {
+			return $sale_window_validation;
+		}
+
 		// Validate stock availability with database locking before creating order.
 		$stock_validation = tribe( Stock_Validator::class )->validate_cart_stock_with_lock( $cart );
 
@@ -137,22 +146,16 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			);
 		}
 
-		$created = tribe( Order::class )->modify_status(
-			$order->ID,
-			Pending::SLUG,
-		);
+		// The status changes re-check the stock under lock; a refusal means a concurrent checkout took it.
+		$completed = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG )
+			&& tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
 
-		if ( is_wp_error( $created ) ) {
-			return $created;
-		}
-
-		$updated = tribe( Order::class )->modify_status(
-			$order->ID,
-			Completed::SLUG,
-		);
-
-		if ( is_wp_error( $updated ) ) {
-			return $updated;
+		if ( ! $completed ) {
+			return new WP_Error(
+				'tec-tc-insufficient-stock',
+				__( 'Sorry, the tickets you selected are no longer available.', 'event-tickets' ),
+				[ 'status' => 400 ]
+			);
 		}
 
 		tribe( Cart::class )->clear_cart();

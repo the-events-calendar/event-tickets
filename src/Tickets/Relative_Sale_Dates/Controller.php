@@ -52,6 +52,7 @@ final class Controller extends Controller_Contract {
 		remove_filter( 'tec_tickets_ticket_end_date_follows_event_start', $this->container->callback( Event_Listener::class, 'filter_end_date_follows_event_start' ) );
 		remove_action( 'tec_tickets_tickets_duplicated', $this->container->callback( Event_Listener::class, 'copy_rules_to_duplicates' ) );
 		remove_action( 'tec_tickets_tickets_duplicated', $this->container->callback( Event_Listener::class, 'update_duplicated_tickets' ), 20 );
+		remove_action( 'load-post.php', $this->container->callback( Inverted_Window_Notice::class, 'show_on_edit_screen' ) );
 		remove_filter( 'tec_tickets_rest_single_ticket_add_data', $this->container->callback( Rest::class, 'map_block_editor_rule' ) );
 		remove_filter( 'tribe_tickets_rest_api_ticket_data', $this->container->callback( Rest::class, 'add_rule_to_block_editor_ticket_data' ) );
 		remove_filter( 'tec_rest_swagger_ticket_request_body_definition', $this->container->callback( Rest::class, 'add_rule_to_definition' ) );
@@ -145,6 +146,11 @@ final class Controller extends Controller_Contract {
 		add_filter( 'tec_tickets_ticket_end_date_follows_event_start', $this->container->callback( Event_Listener::class, 'filter_end_date_follows_event_start' ), 10, 2 );
 		add_action( 'tec_tickets_tickets_duplicated', $this->container->callback( Event_Listener::class, 'copy_rules_to_duplicates' ) );
 		add_action( 'tec_tickets_tickets_duplicated', $this->container->callback( Event_Listener::class, 'update_duplicated_tickets' ), 20, 2 );
+
+		$this->container->singleton( Inverted_Window_Notice::class );
+
+		// An event's dates saved after its tickets', or an event move, can leave a window inverted with no ticket save to refuse it.
+		add_action( 'load-post.php', $this->container->callback( Inverted_Window_Notice::class, 'show_on_edit_screen' ) );
 
 		$this->container->singleton( Rest::class );
 

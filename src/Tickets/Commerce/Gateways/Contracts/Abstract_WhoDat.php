@@ -100,6 +100,8 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 	// phpcs:ignore Squiz.Commenting.FunctionComment.MissingParamTag
 	/**
 	 * @inheritDoc
+	 *
+	 * @since 5.31.2 Logged the size of an unexpected response instead of its body.
 	 */
 	public function post( $endpoint, array $query_args = [], array $request_arguments = [] ) {
 		$url = $this->get_api_url( $endpoint, $query_args );
@@ -139,28 +141,36 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 			return null;
 		}
 
-		$body = wp_remote_retrieve_body( $response );
-		$body = json_decode( $body, true );
+		$body    = wp_remote_retrieve_body( $response );
+		$decoded = json_decode( $body, true );
 
-		if ( ! is_array( $body ) ) {
-			$this->log_error( 'WhoDat unexpected response:', $body, $url );
-			$this->log_error( 'Response:', print_r( $response, true ), '--->' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
+		if ( ! is_array( $decoded ) ) {
+			// The body can carry credentials, so only its size is logged.
+			$this->log_error( 'WhoDat unexpected response:', sprintf( 'a %d-byte body that is not JSON', strlen( $body ) ), $url );
 
 			return null;
 		}
 
-		return $body;
+		return $decoded;
 	}
 
 	/**
-	 * @inheritDoc
+	 * Logs a failed WhoDat request.
+	 *
+	 * @since 5.1.9
+	 * @since 5.3.0 Moved to Abstract_WhoDat and made public.
+	 * @since 5.31.2 Logged URLs, in the URL and the message, without their query string, which carries access tokens and the webhook key.
+	 *
+	 * @param string $type    The error type.
+	 * @param string $message The error message.
+	 * @param string $url     The request URL.
 	 */
 	public function log_error( $type, $message, $url ) {
 		$log = sprintf(
 			'[%s] %s %s',
-			$url,
+			explode( '?', $url, 2 )[0],
 			$type,
-			$message
+			preg_replace( '/\?\S+/', '', $message )
 		);
 		do_action( 'tribe_log', 'error', __CLASS__, [ $log ] );
 	}

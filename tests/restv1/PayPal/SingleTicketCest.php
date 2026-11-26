@@ -234,6 +234,9 @@ class SingleTicketCest extends BaseRestCest {
 	 */
 	public function should_hide_private_fields_to_public_queries( Restv1Tester $I ) {
 		$post_id         = $I->havePostInDatabase( [ 'post_content' => '[tribe_attendees_list]' ] );
+
+		$I->havePostmetaInDatabase( $post_id, '_tribe_hide_attendees_list', '1' );
+
 		$attendees_count = 7;
 		$optout_count    = 3;
 		$ticket_id       = $this->create_paypal_ticket_basic( $post_id, 5, [

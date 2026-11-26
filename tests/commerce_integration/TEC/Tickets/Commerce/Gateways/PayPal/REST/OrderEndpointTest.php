@@ -11,11 +11,16 @@ use TEC\Tickets\Commerce\Pending_Order;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Denied;
 use TEC\Tickets\Commerce\Status\Pending;
+use TEC\Tickets\Commerce\Ticket;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe__Date_Utils as Dates;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
 
 class OrderEndpointTest extends \Codeception\TestCase\WPTestCase {
+
+	use Ticket_Maker;
 
 	/**
 	 * @var Generator
@@ -291,6 +296,38 @@ class OrderEndpointTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( tribe( Denied::class )->get_wp_slug(), get_post_status( $order_id ) );
 	}
 
+	public function test_update_does_not_capture_an_order_whose_ticket_sale_ended(): void {
+		$order_id  = $this->create_pending_order();
+		$ticket_id = $this->add_ticket_to_order( $order_id );
+		$this->end_sale( $ticket_id );
+		$this->stub_paypal( $this->approved_order( null ) );
+
+		$response = $this->make_endpoint()->handle_update_order( $this->make_update_request() );
+
+		$this->assert_refused_before_capture( $order_id, $response, $ticket_id );
+	}
+
+	public function test_recheck_does_not_capture_an_order_whose_ticket_sale_ended(): void {
+		$order_id  = $this->create_pending_order();
+		$ticket_id = $this->add_ticket_to_order( $order_id );
+		$this->end_sale( $ticket_id );
+		$this->stub_paypal( $this->approved_order( null ) );
+
+		$response = $this->make_endpoint()->handle_recheck_order( $this->paypal_order_id, get_post( $order_id ) );
+
+		$this->assert_refused_before_capture( $order_id, $response, $ticket_id );
+	}
+
+	public function test_update_captures_an_order_whose_ticket_is_on_sale(): void {
+		$order_id = $this->create_pending_order();
+		$this->add_ticket_to_order( $order_id );
+		$this->stub_paypal( $this->approved_order( null ) );
+
+		$response = $this->make_endpoint()->handle_update_order( $this->make_update_request() );
+
+		$this->assert_capture_outcome( $order_id, $response, true );
+	}
+
 	/**
 	 * @param int                       $order_id The Tickets Commerce order ID.
 	 * @param WP_Error|WP_REST_Response $response What the endpoint answered.
@@ -416,6 +453,54 @@ class OrderEndpointTest extends \Codeception\TestCase\WPTestCase {
 		update_post_meta( $order_id, Order::$gateway_order_id_meta_key, $this->paypal_order_id );
 
 		return $order_id;
+	}
+
+	/**
+	 * @param int                       $order_id  The Tickets Commerce order ID.
+	 * @param WP_Error|WP_REST_Response $response  What the endpoint answered.
+	 * @param int                       $ticket_id The ticket whose sale ended.
+	 */
+	private function assert_refused_before_capture( int $order_id, $response, int $ticket_id ): void {
+		$this->assertNotContains( 'POST ' . $this->paypal_order_id . '/capture', $this->requests );
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertEquals( 'tec-tc-ticket-unavailable', $response->get_error_code() );
+		$this->assertSame( $ticket_id, $response->get_error_data()['ticket_id'] );
+		$this->assertEquals( tribe( Denied::class )->get_wp_slug(), get_post_status( $order_id ) );
+	}
+
+	/**
+	 * Puts one ticket, on sale now, in an order.
+	 *
+	 * @param int $order_id The Tickets Commerce order ID.
+	 *
+	 * @return int The ticket ID.
+	 */
+	private function add_ticket_to_order( int $order_id ): int {
+		$ticket_id = $this->create_tc_ticket( static::factory()->post->create(), 10 );
+
+		update_post_meta(
+			$order_id,
+			Order::$items_meta_key,
+			[
+				[
+					'ticket_id' => $ticket_id,
+					'quantity'  => 1,
+				],
+			]
+		);
+
+		return $ticket_id;
+	}
+
+	/**
+	 * Moves the end of a ticket's sale window into the past, as an admin editing the ticket would.
+	 *
+	 * @param int $ticket_id The ticket ID.
+	 */
+	private function end_sale( int $ticket_id ): void {
+		$end = Dates::build_date_object( '-1 day' );
+		update_post_meta( $ticket_id, Ticket::END_DATE_META_KEY, $end->format( Dates::DBDATEFORMAT ) );
+		update_post_meta( $ticket_id, Ticket::END_TIME_META_KEY, $end->format( Dates::DBTIMEFORMAT ) );
 	}
 
 	private function make_endpoint(): Order_Endpoint {

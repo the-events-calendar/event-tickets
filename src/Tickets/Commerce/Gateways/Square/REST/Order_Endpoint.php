@@ -17,7 +17,7 @@ use TEC\Tickets\Commerce\Gateways\Square\Payment_Handler;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Gateways\Square\Order as Square_Order;
 use TEC\Tickets\Commerce\Gateways\Square\Status;
-use TEC\Tickets\Commerce\Stock_Validator;
+use TEC\Tickets\Commerce\Sale_Window_Validator;
 use TEC\Tickets\Commerce\Status\Created;
 use TEC\Tickets\Commerce\Status\Denied;
 use TEC\Tickets\Commerce\Status\Not_Completed;
@@ -91,6 +91,9 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since 5.24.0
 	 * @since 5.27.6.1 Removed order data from response for failed orders.
+	 * @since 5.31.2 Holds the order's stock before the payment, so concurrent checkouts cannot pay for the same seats.
+	 *            Returns an error, not a success, when the order refuses the paid status.
+	 * @since 5.31.2 Returns an error when a ticket in the cart is outside its sale window.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -117,25 +120,27 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			);
 		}
 
-		// Validate stock availability with database locking before creating order.
-		$cart             = tribe( Cart::class );
-		$stock_validation = tribe( Stock_Validator::class )->validate_cart_stock_with_lock( $cart );
+		$cart = tribe( Cart::class );
 
-		if ( is_wp_error( $stock_validation ) ) {
-			return $stock_validation;
+		$sale_window_validation = tribe( Sale_Window_Validator::class )->validate_items( $cart->get_items_in_cart() );
+
+		if ( is_wp_error( $sale_window_validation ) ) {
+			return $sale_window_validation;
 		}
 
-		// If an order was created for this hash, we will attempt to update it, otherwise create a new one.
-		$order = $orders->create_from_cart( tribe( Gateway::class ), $purchaser );
+		// Create the order and hold its stock before the payment: concurrent checkouts see the hold.
+		$order = $orders->create_from_cart_holding_stock( tribe( Gateway::class ), $purchaser );
+
+		if ( is_wp_error( $order ) ) {
+			return $order;
+		}
+
 		if ( ! $order instanceof WP_Post ) {
 			return new WP_Error(
 				'tec-tc-gateway-square-order-creation-failed',
 				$messages['failed-order-creation']
 			);
 		}
-
-		// Flag the order as on checkout screen hold.
-		$orders->set_on_checkout_screen_hold( $order->ID );
 
 		try {
 			$square_order_id = tribe( Square_Order::class )->upsert_square_from_local_order( $order );
@@ -177,9 +182,10 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			)
 			->save();
 
-		$orders->modify_status(
+		$status  = tribe( Status::class )->convert_to_commerce_status( $payment['status'] );
+		$updated = $orders->modify_status(
 			$order->ID,
-			tribe( Status::class )->convert_to_commerce_status( $payment['status'] )->get_slug(),
+			$status->get_slug(),
 			[
 				'gateway_payload'  => $payment,
 				'gateway_order_id' => $square_order_id,
@@ -187,6 +193,31 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		);
 
 		$orders->unlock_order( $order->ID );
+
+		/*
+		 * A refused paid status, e.g. a buyer whose stock hold expired before the payment and who lost the seat,
+		 * must not be reported as a success. The order keeps the Square payment for a refund. An order a webhook
+		 * already moved to this status is not a refusal.
+		 */
+		if ( ! $updated && $status->get_wp_slug() !== get_post_status( $order->ID ) ) {
+			do_action(
+				'tribe_log',
+				'error',
+				__METHOD__,
+				[
+					'message'          => 'The buyer paid, but the order refused the paid status.',
+					'order_id'         => $order->ID,
+					'gateway_order_id' => $square_order_id,
+					'payment_id'       => $payment['id'],
+				]
+			);
+
+			return new WP_Error(
+				'tec-tc-gateway-square-unconfirmed-order',
+				$messages['unconfirmed-order'],
+				[ 'status' => 409 ]
+			);
+		}
 
 		// Respond with the order data for Square usage.
 		$response['success']    = true;
@@ -294,6 +325,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			'failed-payment'          => esc_html__( 'Your payment method has failed. Please try again.', 'event-tickets' ),
 			'invalid-payment-status'  => esc_html__( 'Your payment status was not recognized. Please try again.', 'event-tickets' ),
 			'empty-cart'              => esc_html__( 'Cannot generate an order for an empty cart, please select new items to checkout.', 'event-tickets' ),
+			'unconfirmed-order'       => esc_html__( 'Your payment went through, but the tickets you selected are no longer available. Do not pay again: contact the site for a refund.', 'event-tickets' ),
 		];
 		/**
 		 * Filter the error messages for Square checkout.

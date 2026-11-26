@@ -123,6 +123,7 @@ class Order extends Abstract_Order {
 	 * Create a Square order from a Commerce order.
 	 *
 	 * @since 5.24.0
+	 * @since 5.31.2 Logged a failed push by IDs and Square's errors instead of the payload and response.
 	 *
 	 * @param WP_Post $order The order object.
 	 *
@@ -210,7 +211,7 @@ class Order extends Abstract_Order {
 		);
 
 		if ( empty( $calculated_order['order']['total_money']['amount'] ) ) {
-			do_action( 'tribe_log', 'error', 'Square order calculate failed', [ $calculated_order['errors'] ?? $calculated_order, $square_order, $square_order_id ] );
+			do_action( 'tribe_log', 'error', 'Square order calculate failed', [ $calculated_order['errors'] ?? [], $square_order_id, $order->ID ] );
 			throw new RuntimeException( __( 'Failed to calculate the Square order.', 'event-tickets' ), 1 );
 		}
 
@@ -272,7 +273,7 @@ class Order extends Abstract_Order {
 		);
 
 		if ( empty( $response['order']['id'] ) ) {
-			do_action( 'tribe_log', 'error', 'Square order upsert failed', [ $response['errors'] ?? $response, $square_order, $square_order_id ] );
+			do_action( 'tribe_log', 'error', 'Square order upsert failed', [ $response['errors'] ?? [], $square_order_id, $order->ID ] );
 			throw new RuntimeException( __( 'Failed to create or update Square order.', 'event-tickets' ), 1 );
 		}
 
@@ -290,7 +291,7 @@ class Order extends Abstract_Order {
 		)->save();
 
 		if ( ! $order_updated || ! isset( $order_updated[ $order->ID ] ) || ! $order_updated[ $order->ID ] ) {
-			do_action( 'tribe_log', 'error', 'Order update failed', [ $args, $order ] );
+			do_action( 'tribe_log', 'error', 'Order update failed', [ $order->ID, $response['order']['id'] ] );
 			throw new RuntimeException( __( 'Failed to update the order with the new Square order ID.', 'event-tickets' ), 2 );
 		}
 
@@ -314,6 +315,7 @@ class Order extends Abstract_Order {
 	 * Upsert a local order from a Square order.
 	 *
 	 * @since 5.24.0
+	 * @since 5.31.2 Logged an unreadable order by IDs instead of the event body.
 	 *
 	 * @param string $square_order_id The Square order ID.
 	 * @param array  $event_data The event data.
@@ -488,10 +490,10 @@ class Order extends Abstract_Order {
 				'error',
 				'Square order webhook - no status found',
 				[
-					'source'     => 'tickets-commerce-square',
-					'square_id'  => $square_order_id,
-					'order_id'   => $order->ID,
-					'event_data' => $event_data,
+					'source'    => 'tickets-commerce-square',
+					'square_id' => $square_order_id,
+					'order_id'  => $order->ID,
+					'event_id'  => $event_id,
 				]
 			);
 			return $order;
@@ -530,11 +532,11 @@ class Order extends Abstract_Order {
 				'error',
 				'Square order webhook - no matching status found',
 				[
-					'source'     => 'tickets-commerce-square',
-					'square_id'  => $square_order_id,
-					'order_id'   => $order->ID,
-					'status'     => $status,
-					'event_data' => $event_data,
+					'source'    => 'tickets-commerce-square',
+					'square_id' => $square_order_id,
+					'order_id'  => $order->ID,
+					'status'    => $status,
+					'event_id'  => $event_id,
 				]
 			);
 			return $order;
@@ -1255,6 +1257,7 @@ class Order extends Abstract_Order {
 	 * Refund a remote order.
 	 *
 	 * @since 5.24.0
+	 * @since 5.31.2 Logged a failed refund by IDs and Square's errors instead of the request and response.
 	 *
 	 * @param string       $square_order_id The Square order ID.
 	 * @param WP_Post|null $order           The order post object.
@@ -1293,7 +1296,7 @@ class Order extends Abstract_Order {
 			);
 
 			if ( empty( $response['refund'] ) ) {
-				do_action( 'tribe_log', 'error', 'Square refund failed', [ $body, $response ] );
+				do_action( 'tribe_log', 'error', 'Square refund failed', [ $square_order_id, $id, $response['errors'] ?? [] ] );
 				continue;
 			}
 

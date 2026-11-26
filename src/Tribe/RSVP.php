@@ -10,6 +10,9 @@
 use Tribe__Date_Utils as Dates;
 use Tribe__Repository__Interface as Repository_Interface;
 use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
+use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
+use TEC\Common\StellarWP\DB\DB;
+use TEC\Tickets\Commerce\Stock_Validator;
 
 // phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
 
@@ -189,6 +192,24 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @var boolean $is_frontend_tickets_form_done
 	 */
 	private $is_frontend_tickets_form_done = false;
+
+	/**
+	 * Whether a submission's transaction is open and holds the lock on all its tickets.
+	 *
+	 * @since 5.31.2
+	 *
+	 * @var bool
+	 */
+	private $submission_locked = false;
+
+	/**
+	 * The arguments of each `event_tickets_rsvp_tickets_generated_for_product` action a submission defers until it commits.
+	 *
+	 * @since 5.31.2
+	 *
+	 * @var array<array{0: int, 1: string, 2: int, 3: array}>
+	 */
+	private $submission_generated_products = [];
 
 	/**
 	 * Meta key that relates Attendees and Events.
@@ -1139,6 +1160,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Generate and store all the attendees information for a new order.
 	 *
+	 * @since 5.31.2 Refuses a submission with any requested RSVP out of places, and reserves all its RSVPs or none.
+	 *
 	 * @param int|null $post_id  Post ID for ticket, null to use current post ID.
 	 * @param boolean  $redirect Whether to redirect on error.
 	 *
@@ -1193,18 +1216,52 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$attendee_ids = [];
 
-		// Iterate over each product.
+		// Lock every requested ticket until all their attendees exist, so a submission is reserved in full or not at all.
+		$stock_validator = tribe( Stock_Validator::class );
+		$stock_validator->disable_snapshot_isolation();
+		DB::beginTransaction();
+
+		try {
+			$stock_validator->lock_ticket_stock( $product_ids );
+		} catch ( DatabaseQueryException $e ) {
+			DB::rollback();
+
+			return new WP_Error( 'rsvp-invalid-stock-request', __( 'Requested amount of Tickets are not available!', 'event-tickets' ) );
+		}
+
+		$this->submission_locked = true;
+
+		// Check every requested ticket before creating any attendee.
+		$quantities = [];
+
 		foreach ( $product_ids as $product_id ) {
 			$ticket_qty = $this->parse_ticket_quantity( $product_id );
 
-			if ( 0 === $ticket_qty ) {
-				// If there were no RSVP tickets for the product added to the cart, continue.
-				continue;
+			// Requested, but no places are left: refuse, rather than report a reservation that was not made.
+			if ( 0 === $ticket_qty && 0 < $this->get_requested_ticket_quantity( $product_id ) ) {
+				$this->end_submission( false );
+
+				if ( $redirect ) {
+					$url = add_query_arg( 'rsvp_error', 2, get_permalink( $post_id ) );
+					wp_safe_redirect( esc_url_raw( $url ) );
+					tribe_exit();
+				}
+
+				return new WP_Error( 'rsvp-invalid-stock-request', __( 'Requested amount of Tickets are not available!', 'event-tickets' ) );
 			}
 
+			// Products with no RSVP tickets added to the cart are skipped.
+			if ( 0 < $ticket_qty ) {
+				$quantities[ $product_id ] = $ticket_qty;
+			}
+		}
+
+		foreach ( $quantities as $product_id => $ticket_qty ) {
 			$tickets_generated = $this->generate_tickets_for( $product_id, $ticket_qty, $attendee_details, $redirect );
 
 			if ( is_wp_error( $tickets_generated ) ) {
+				$this->end_submission( false );
+
 				return $tickets_generated;
 			}
 
@@ -1216,6 +1273,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				$has_tickets = true;
 			}
 		}
+
+		$this->end_submission( true );
 
 		if ( ! empty( $attendee_ids ) ) {
 			$attendee_ids = array_merge( ...$attendee_ids );
@@ -3095,6 +3154,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @since 5.5.0 Return WP_Error in case of errors to show proper error messages.
 	 * @since 5.29.1 Reject the request unless the requesting user can access the ticket's event.
 	 * @since 5.31.1.1 Reject logged-out visitors when the RSVP login requirement is on.
+	 * @since 5.31.2 Locks the ticket's stock around the stock check and the attendee creation.
 	 *
 	 * @param int     $product_id       The ticket post ID.
 	 * @param int     $ticket_qty       The number of attendees that should be generated.
@@ -3181,8 +3241,34 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$qty = max( $ticket_qty, 0 );
 
+		/*
+		 * Lock the ticket's stock until its attendees exist, so concurrent submissions check it one at a time.
+		 * Inside a submission, its transaction already holds the lock, and an error here rolls back all of it.
+		 */
+		$owns_transaction = ! $this->submission_locked;
+
+		if ( $owns_transaction ) {
+			tribe( Stock_Validator::class )->disable_snapshot_isolation();
+			DB::beginTransaction();
+		}
+
+		try {
+			tribe( Stock_Validator::class )->lock_ticket_stock( [ $product_id ] );
+		} catch ( DatabaseQueryException $e ) {
+			DB::rollback();
+
+			return new WP_Error( 'rsvp-invalid-stock-request', __( 'Requested amount of Tickets are not available!', 'event-tickets' ) );
+		}
+
+		// The lock loaded the stored stock: reload the ticket, and do not trust an inventory cached earlier in the request.
+		$ticket_type  = $this->get_ticket( $post_id, $product_id );
+		$stored_stock = get_post_meta( $product_id, '_stock', true );
+		$available    = '' === $stored_stock ? $ticket_type->inventory() : min( $ticket_type->inventory(), (int) $stored_stock );
+
 		// Throw an error if Qty is bigger then Remaining.
-		if ( $ticket_type->managing_stock() && $ticket_type->inventory() < $qty ) {
+		if ( $ticket_type->managing_stock() && -1 !== $ticket_type->capacity() && $available < $qty ) {
+			DB::rollback();
+
 			if ( $redirect ) {
 				$url = add_query_arg( 'rsvp_error', 2, get_permalink( $post_id ) );
 				wp_safe_redirect( esc_url_raw( $url ) );
@@ -3220,20 +3306,20 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 				$attendee_ids[] = $this->create_attendee_for_ticket( $ticket_type, $attendee_data );
 			} catch ( Exception $exception ) {
+				DB::rollback();
+
 				// Stop processing and return false.
 				return new WP_Error( 'rsvp-invalid-stock-request', $exception->getMessage() );
 			}
 		}
 
-		/**
-		 * Action fired when an RSVP has had attendee tickets generated for it
-		 *
-		 * @param int    $product_id   RSVP ticket post ID
-		 * @param string $order_id     ID (hash) of the RSVP order
-		 * @param int    $qty          Quantity ordered
-		 * @param array  $attendee_ids List of attendee IDs generated.
-		 */
-		do_action( 'event_tickets_rsvp_tickets_generated_for_product', $product_id, $order_id, $qty, $attendee_ids );
+		if ( $owns_transaction ) {
+			DB::commit();
+			$this->announce_generated_product( $product_id, $order_id, $qty, $attendee_ids );
+		} else {
+			// Inside a submission a later RSVP can still roll these attendees back: announce them once it commits.
+			$this->submission_generated_products[] = [ $product_id, $order_id, $qty, $attendee_ids ];
+		}
 
 		// After Adding the Values we Update the Transient.
 		$this->clear_attendees_cache( $post_id );
@@ -3243,6 +3329,58 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Ends a submission's transaction and releases the lock on its tickets.
+	 *
+	 * @since 5.31.2
+	 *
+	 * @param bool $commit Whether to keep the attendees created, or roll the whole submission back.
+	 *
+	 * @return void
+	 */
+	private function end_submission( bool $commit ): void {
+		$this->submission_locked = false;
+		$generated_products      = $this->submission_generated_products;
+
+		$this->submission_generated_products = [];
+
+		if ( ! $commit ) {
+			DB::rollback();
+
+			return;
+		}
+
+		DB::commit();
+
+		foreach ( $generated_products as $generated_product ) {
+			$this->announce_generated_product( ...$generated_product );
+		}
+	}
+
+	/**
+	 * Fires the action that announces the attendees generated for an RSVP, once they are committed.
+	 *
+	 * @since 5.31.2
+	 *
+	 * @param int    $product_id   The RSVP ticket post ID.
+	 * @param string $order_id     The ID (hash) of the RSVP order.
+	 * @param int    $qty          The quantity ordered.
+	 * @param array  $attendee_ids The attendee IDs generated.
+	 *
+	 * @return void
+	 */
+	private function announce_generated_product( $product_id, $order_id, $qty, array $attendee_ids ): void {
+		/**
+		 * Action fired when an RSVP has had attendee tickets generated for it
+		 *
+		 * @param int    $product_id   RSVP ticket post ID
+		 * @param string $order_id     ID (hash) of the RSVP order
+		 * @param int    $qty          Quantity ordered
+		 * @param array  $attendee_ids List of attendee IDs generated.
+		 */
+		do_action( 'event_tickets_rsvp_tickets_generated_for_product', $product_id, $order_id, $qty, $attendee_ids );
 	}
 
 	/**
@@ -3319,20 +3457,30 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return int Either the requested quantity of tickets or `0` in any other case.
 	 */
 	public function parse_ticket_quantity( $ticket_id ) {
-		$quantity = 0;
+		return min( $this->get_requested_ticket_quantity( $ticket_id ), tribe( 'tickets.handler' )->get_ticket_max_purchase( $ticket_id ) );
+	}
 
+	/**
+	 * Reads the quantity of tickets requested for a product via the $_POST var, before any cap.
+	 *
+	 * @since 5.31.2
+	 *
+	 * @param int $ticket_id The ticket ID.
+	 *
+	 * @return int The requested quantity, or `0` if none was requested.
+	 */
+	private function get_requested_ticket_quantity( $ticket_id ): int {
 		// phpcs:disable WordPress.Security.NonceVerification.Missing
 		if ( isset( $_POST['tribe_tickets'][ $ticket_id ]['quantity'] ) ) {
-			$quantity = absint( $_POST['tribe_tickets'][ $ticket_id ]['quantity'] );
-		} elseif ( isset( $_POST[ "quantity_{$ticket_id}" ] ) ) {
-			$quantity = absint( $_POST[ "quantity_{$ticket_id}" ] );
+			return absint( $_POST['tribe_tickets'][ $ticket_id ]['quantity'] );
+		}
+
+		if ( isset( $_POST[ "quantity_{$ticket_id}" ] ) ) {
+			return absint( $_POST[ "quantity_{$ticket_id}" ] );
 		}
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
-		// Cap the requested quantity to the maximum allowed in a single purchase.
-		$quantity = min( $quantity, tribe( 'tickets.handler' )->get_ticket_max_purchase( $ticket_id ) );
-
-		return $quantity;
+		return 0;
 	}
 
 	/**

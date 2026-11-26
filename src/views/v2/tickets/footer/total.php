@@ -11,11 +11,12 @@
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since 5.0.3
+ * @since 5.31.2 Renders the total in the site currency when the provider did not resolve, instead of reading a property off it.
  *
- * @version 5.0.3
+ * @version 5.31.2
  *
  * @var Tribe__Tickets__Editor__Template   $this                        [Global] Template object.
- * @var Tribe__Tickets__Tickets            $provider                    [Global] The tickets provider class.
+ * @var Tribe__Tickets__Tickets|false      $provider                    [Global] The tickets provider class, or false when it did not resolve.
  * @var string                             $provider_id                 [Global] The tickets provider class name.
  * @var Tribe__Tickets__Ticket_Object[]    $tickets                     [Global] List of tickets.
  * @var array                              $cart_classes                [Global] CSS classes.
@@ -40,6 +41,6 @@
 		<?php echo esc_html_x( 'Total:', 'Total selected tickets price.', 'event-tickets' ); ?>
 	</span>
 	<span class="tribe-tickets__tickets-footer-total-wrap">
-		<?php echo $currency->get_formatted_currency_with_symbol( 0, $post_id, $provider->class_name ); ?>
+		<?php echo wp_kses_post( $currency->get_formatted_currency_with_symbol( 0, $post_id, $provider->class_name ?? '' ) ); ?>
 	</span>
 </div>

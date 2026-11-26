@@ -1,5 +1,7 @@
 <?php
 
+use TEC\Common\StellarWP\DB\DB;
+use Tribe\Tickets\Events\Attendees_List;
 use Tribe__Utils__Array as Arr;
 
 /**
@@ -494,17 +496,27 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Filters attendee to only get those related to posts with "Show attendees list on event page" set to true.
 	 *
+	 * A post shows its attendee list as decided by `Attendees_List::is_hidden_on()`: a post with no stored setting
+	 * does not, and the `tribe_tickets_hide_attendees_list` filter can hide the list of a post that does.
 	 *
 	 * @since 4.11.1
+	 * @since 5.31.2 Posts with no stored setting, and posts the `tribe_tickets_hide_attendees_list` filter hides, are no longer matched.
 	 */
 	public function filter_by_show_attendees() {
 		$this->where_meta_related_by_meta(
 			$this->attendee_to_event_keys(),
 			'=',
-			'_tribe_hide_attendees_list',
-			1,
-			true
+			Attendees_List::HIDE_META_KEY,
+			1
 		);
+
+		$hidden_post_ids = $this->get_post_ids_hidden_by_filter();
+
+		if ( ! $hidden_post_ids ) {
+			return;
+		}
+
+		$this->by( 'meta_not_in', $this->attendee_to_event_keys(), $hidden_post_ids );
 	}
 
 	/**
@@ -1763,5 +1775,44 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	public function filter_by_ticket_type_not_in( $ticket_type ): void {
 		$this->filter_by_ticket_type_operator( 'NOT IN', $ticket_type );
+	}
+
+	/**
+	 * Gets the posts that store a shown attendee list but that the `tribe_tickets_hide_attendees_list` filter hides.
+	 *
+	 * The filter runs per post in PHP, so it cannot be part of the SQL. Resolving these posts before the query, rather
+	 * than dropping attendees from its results, keeps the found count and the pagination right.
+	 *
+	 * @since 5.31.2
+	 *
+	 * @return array<int> The IDs of the posts whose attendee list the filter hides.
+	 */
+	private function get_post_ids_hidden_by_filter(): array {
+		if ( ! has_filter( 'tribe_tickets_hide_attendees_list' ) ) {
+			return [];
+		}
+
+		$post_ids = array_map(
+			'absint',
+			DB::get_col(
+				DB::prepare(
+					'SELECT DISTINCT post_id FROM %i WHERE meta_key = %s AND meta_value = %s',
+					DB::prefix( 'postmeta' ),
+					Attendees_List::HIDE_META_KEY,
+					'1'
+				)
+			)
+		);
+
+		_prime_post_caches( $post_ids, false, true );
+
+		return array_values(
+			array_filter(
+				$post_ids,
+				static function ( int $post_id ): bool {
+					return Attendees_List::is_hidden_on( $post_id );
+				}
+			)
+		);
 	}
 }

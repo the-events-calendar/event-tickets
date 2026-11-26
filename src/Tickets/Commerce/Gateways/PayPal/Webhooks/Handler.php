@@ -34,6 +34,7 @@ class Handler {
 	 * Process a given PayPal Webhook event, possibly updating the local order with the status sent by the request.
 	 *
 	 * @since 5.1.10
+	 * @since 5.31.2 Logged the event by type or ID instead of its body.
 	 *
 	 * @param array $event The PayPal payment event object.
 	 *
@@ -49,9 +50,9 @@ class Handler {
 		if ( ! tribe( Events::class )->is_valid( $event['event_type'] ) ) {
 			tribe( 'logger' )->log_debug(
 				sprintf(
-				// Translators: %s: The PayPal payment event.
+				// Translators: %s: The PayPal webhook event type.
 					__( 'Invalid event type for webhook event: %s', 'event-tickets' ),
-					json_encode( $event )
+					$event['event_type']
 				),
 				'tickets-commerce-gateway-paypal'
 			);
@@ -68,9 +69,9 @@ class Handler {
 		if ( ! $parent_payment ) {
 			tribe( 'logger' )->log_debug(
 				sprintf(
-				// Translators: %s: The PayPal payment event.
+				// Translators: %s: The PayPal webhook event ID.
 					__( 'Missing PayPal payment for webhook event: %s', 'event-tickets' ),
-					json_encode( $event )
+					$event['id'] ?? ''
 				),
 				'tickets-commerce-gateway-paypal'
 			);
@@ -108,11 +109,11 @@ class Handler {
 		if ( $new_status->get_wp_slug() === $order->post_status ) {
 			tribe( 'logger' )->log_debug(
 				sprintf(
-				// Translators: %s: The PayPal payment ID.
+				// Translators: %1$s: The PayPal payment ID; %2$s: The status; %3$s: The PayPal webhook event ID.
 					__( 'PayPal Order "%1$s" already on status "%2$s" from webhook: %3$s', 'event-tickets' ),
 					$parent_payment['id'],
 					$new_status->get_slug(),
-					json_encode( $event )
+					$event['id'] ?? ''
 				),
 				'tickets-commerce-gateway-paypal'
 			);

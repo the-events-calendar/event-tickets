@@ -56,9 +56,9 @@ export { ENDS_BEFORE_START, INVALID_DATE, OUTSIDE_PARENT, RELATIVE_VALUE_OUT_OF_
  * A specific boundary takes the date the form sends for it, read as the server reads it, or none.
  *
  * An open start takes what the server stores for it. A kind that leaves the ticket's own start, the sales window, takes
- * the date the form sends, or now when that date is later, as the server sells it from now on; sent without a date, it
- * has none, as the server takes the day the event was published, which the form does not know. A kind that stores its
- * open start itself, the sale price, opens now.
+ * the date the form sends, or now when that date is later, as the server sells it from now on; sent without a date,
+ * it takes the day the event was published (`postDay`), which the server stores for it, or has none when the form is
+ * not given that day. A kind that stores its open start itself, the sale price, opens now.
  *
  * @since 5.31.0
  *
@@ -201,7 +201,8 @@ function isBefore( date, other, kind ) {
  * - the window's own start must fall inside the parent window, judged only with both of the parent's ends.
  *
  * Each boundary takes the date `getFormWindow()` gives it. A date that is not known, such as a default start sent
- * without one, leaves what it is part of unjudged: the server judges it with the day the event was published.
+ * without one when the form has no `postDay`, leaves what it is part of unjudged: the server judges it with the day the
+ * event was published.
  *
  * @since 5.31.0
  *

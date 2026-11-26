@@ -228,11 +228,13 @@ final class Assets extends Controller_Contract {
 	 * Gets the data the classic ticket editor script reads the event dates and writes the helper text with.
 	 *
 	 * @since 5.31.0
+	 * @since 5.31.2 Added the day the event was published, `postDay`.
 	 *
-	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, windows: array<string,array{endsBeforeStart: string, outsideParent?: string, invalidDate: string, valueOutOfRange: string}>}, errorCodes: array<string,array{endsBeforeStart: string, outsideParent?: string, invalidRule: string, invalidDate: string}>} The script data.
+	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, windows: array<string,array{endsBeforeStart: string, outsideParent?: string, invalidDate: string, valueOutOfRange: string}>}, errorCodes: array<string,array{endsBeforeStart: string, outsideParent?: string, invalidRule: string, invalidDate: string}>, postDay: string|null} The script data.
 	 */
 	private function get_classic_script_data(): array {
 		return [
+			'postDay'      => $this->get_post_day(),
 			'timeFormat'   => $this->get_time_format(),
 			'dateWithYear' => $this->get_date_format( true ),
 			'dateNoYear'   => $this->get_date_format( false ),
@@ -247,6 +249,24 @@ final class Assets extends Controller_Contract {
 			],
 			'errorCodes'   => $this->get_window_error_codes(),
 		];
+	}
+
+	/**
+	 * Gets the day the event being edited was published, as the start the server stores for a Now sales start.
+	 *
+	 * The classic form sends no date for a Now start, and the server stores midnight of that day instead
+	 * (`Sales_Window_Effects::fill_saved_ends()`). The form judges the window from the same day.
+	 *
+	 * @since 5.31.2
+	 *
+	 * @return string|null Midnight of the day, `Y-m-d H:i:s` in the event timezone, or `null` when it cannot be read.
+	 */
+	private function get_post_day(): ?string {
+		$post = get_post();
+		// A post can be saved without a date, which PHP would read as the year -1.
+		$date = $post && '0000-00-00 00:00:00' !== $post->post_date ? date_create_immutable( $post->post_date ) : false;
+
+		return $date ? $date->format( 'Y-m-d 00:00:00' ) : null;
 	}
 
 	/**

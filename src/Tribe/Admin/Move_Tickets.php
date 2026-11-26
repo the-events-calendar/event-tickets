@@ -589,6 +589,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * a mix of RSVP and WooCommerce tickets be moved to a new ticket type).
 	 *
 	 * @since 5.30.3 Moves nothing, and filters no Attendees, when the target ticket type is not attached to the target post.
+	 * @since 5.31.2 Moves nothing when the target ticket type's provider is not the Attendees' provider.
 	 *
 	 * @param array $ticket_ids
 	 * @param int   $tgt_ticket_type_id
@@ -660,7 +661,13 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			return 0;
 		}
 
-		$provider_class   = key( $providers );
+		$provider_class = key( $providers );
+
+		// The meta keys and stock routines below are the attendees' provider's, so another provider's ticket type would be corrupted.
+		if ( $provider_class !== $ticket_type->provider_class ) {
+			return 0;
+		}
+
 		$ticket_type_key  = constant( $provider_class . '::ATTENDEE_PRODUCT_KEY' );
 		$ticket_event_key = constant( $provider_class . '::ATTENDEE_EVENT_KEY' );
 
@@ -711,7 +718,8 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			}
 
 			$history_message = sprintf(
-				__( 'This ticket was moved to %1$s %2$s from %3$s %4$s', 'event-tickets' ),
+				// translators: %1$s is the linked title of the destination event, %2$s is the linked title of the destination ticket type, %3$s is the linked title of the source event, %4$s is the linked title of the source ticket type.
+				__( 'This attendee was moved to %1$s %2$s from %3$s %4$s', 'event-tickets' ),
 				'<a href="' . esc_url( get_the_permalink( $tgt_event_id ) ) . '" target="_blank">' . esc_html( get_the_title( $tgt_event_id ) ) . '</a>',
 				'<a href="' . esc_url( get_the_permalink( $tgt_ticket_type_id ) ) . '" target="_blank">(' . esc_html( get_the_title( $tgt_ticket_type_id ) ) . ')</a>',
 				'<a href="' . esc_url( get_the_permalink( $src_event_id ) ) . '" target="_blank">' . esc_html( get_the_title( $src_event_id ) ) . '</a>',

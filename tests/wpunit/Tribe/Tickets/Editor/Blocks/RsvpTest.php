@@ -239,6 +239,38 @@ class RsvpTest extends \Codeception\TestCase\WPAjaxTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_report_an_rsvp_for_a_full_ticket_as_unavailable_not_received() {
+		wp_set_current_user( 0 );
+
+		$post_id   = $this->factory()->post->create( [ 'post_status' => 'publish' ] );
+		$ticket_id = $this->create_rsvp_ticket(
+			$post_id,
+			[
+				'meta_input' => [
+					'_capacity'   => 1,
+					'_stock'      => 1,
+					'total_sales' => 0,
+				],
+			]
+		);
+
+		$this->set_process_request( $ticket_id );
+		$this->assertTrue( $this->process_and_capture()['success'], 'The first RSVP takes the only place.' );
+		clean_post_cache( $ticket_id );
+
+		$this->_last_response = '';
+		$this->set_process_request( $ticket_id );
+		$response = $this->process_and_capture();
+
+		$this->assertFalse( $response['success'], 'An RSVP for a full ticket must not be reported as received.' );
+		$this->assertStringNotContainsString( 'has been received', $response['data']['html'] );
+		$this->assertStringContainsString( 'tribe-block__rsvp__message__error', $response['data']['html'] );
+		$this->assertCount( 1, $this->get_rsvp_provider()->get_attendees_by_id( $ticket_id ) );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_refuse_a_guest_rsvp_with_an_error_when_rsvp_requires_login() {
 		add_filter( 'tribe_get_option_ticket-authentication-requirements', static fn() => [ 'event-tickets_rsvp' ] );
 		wp_set_current_user( 0 );

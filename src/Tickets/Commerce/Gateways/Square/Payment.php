@@ -140,6 +140,7 @@ class Payment {
 	 * Creates a payment from order.
 	 *
 	 * @since 5.24.0
+	 * @since 5.31.2 Logged the payment by ID and status instead of the payment response and order.
 	 *
 	 * @param string  $source_id       The source ID.
 	 * @param WP_Post $order           The order post object.
@@ -174,7 +175,7 @@ class Payment {
 
 		$payment = static::create( $source_id, $value, $order, $square_order_id );
 
-		do_action( 'tribe_log', 'debug', 'Square Payment', [ $payment, $source_id, $value, $order, $square_order_id ] );
+		do_action( 'tribe_log', 'debug', 'Square Payment', [ $payment['payment']['id'] ?? '', $payment['payment']['status'] ?? '', $order->ID, $square_order_id ] );
 
 		return $payment['payment'] ?? [];
 	}

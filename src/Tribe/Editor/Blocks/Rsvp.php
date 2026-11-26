@@ -433,6 +433,7 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 	 * @since 5.29.1 Reject the request unless the requesting user can access the ticket's event.
 	 * @since 5.29.3.1 Reject requests without a valid nonce and tickets outside their sale window.
 	 * @since 5.31.1.1 Reply with the error when no attendee could be generated, such as for a logged-out visitor when login is required.
+	 * @since 5.31.2 Reports an RSVP that reserved no place as unavailable, not as received, and never redirects mid-request.
 	 *
 	 * @return void
 	 */
@@ -516,7 +517,8 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 				continue;
 			}
 
-			$generated = $rsvp->generate_tickets_for( $product_id, $ticket_qty, $attendee_details );
+			// No redirect: this is an AJAX request, and a refusal must reach the visitor as a message.
+			$generated = $rsvp->generate_tickets_for( $product_id, $ticket_qty, $attendee_details, false );
 
 			if ( is_wp_error( $generated ) ) {
 				$error ??= $generated;
@@ -527,9 +529,17 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 			$has_tickets = true;
 		}
 
-		// Nothing was created, for example a logged-out visitor when login is required: say why instead of confirming.
-		if ( ! $has_tickets && $error instanceof WP_Error ) {
-			$response['html'] = sprintf( '<div class="tribe-block__rsvp__message__error" role="alert">%s</div>', esc_html( $error->get_error_message() ) );
+		/*
+		 * Nothing was created, for example a logged-out visitor when login is required, or an RSVP that is full:
+		 * say why instead of confirming.
+		 */
+		if ( ! $has_tickets ) {
+			$message = $error instanceof WP_Error
+				? $error->get_error_message()
+				: __( 'Requested amount of Tickets are not available!', 'event-tickets' );
+
+			$response['remaining_html'] = tribe( 'tickets.editor.template' )->template( 'blocks/rsvp/details/availability', [ 'ticket' => $ticket ], false );
+			$response['html']           = sprintf( '<div class="tribe-block__rsvp__message__error" role="alert">%s</div>', esc_html( $message ) );
 
 			wp_send_json_error( $response );
 		}

@@ -88,11 +88,13 @@ export function getEventDates( { settings, dynamic } ) {
 /**
  * Reads the dates the form sends for the specific boundaries of a window of a kind.
  *
- * A disabled field, like the date a Now start hides, is not sent, so the server does not judge it either. A date sent
- * that cannot be read is told apart from one not sent: the server rejects it rather than leave the boundary without a
- * date.
+ * A disabled field, like the date a Now start hides, is not sent, so the server does not judge it either. The sales
+ * window's Now start is the exception: the server stores it as the day the event was published, so it takes that day
+ * here and its end is judged as the server judges it. A date sent that cannot be read is told apart from one not sent:
+ * the server rejects it rather than leave the boundary without a date.
  *
  * @since 5.31.0
+ * @since 5.31.2 A Now sales start takes the day the event was published.
  *
  * @param {ClassicWindowKind} kind    The kind of the window.
  * @param {FormContext}       context The data this script is localized with.
@@ -100,7 +102,7 @@ export function getEventDates( { settings, dynamic } ) {
  * @return {{start: string|null|false, end: string|null|false}} Each date, `YYYY-MM-DD HH:mm:ss`, `null` when it is not
  *                                                               sent, or `false` when it cannot be read.
  */
-export function readFormDates( kind, { dynamic } ) {
+export function readFormDates( kind, { settings, dynamic } ) {
 	const field = ( id ) => {
 		const input = id ? document.getElementById( id ) : null;
 
@@ -116,5 +118,8 @@ export function readFormDates( kind, { dynamic } ) {
 		return readDateTime( date, field( kind.dateFields[ key ].time ), dynamic.datepicker_format ) ?? false;
 	};
 
-	return { start: read( 'start' ), end: read( 'end' ) };
+	const startInput = document.getElementById( kind.dateFields.start.date );
+	const start = kind.postDayStart && startInput?.disabled ? settings?.postDay ?? null : read( 'start' );
+
+	return { start, end: read( 'end' ) };
 }

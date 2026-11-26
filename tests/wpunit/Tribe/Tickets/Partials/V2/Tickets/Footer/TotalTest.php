@@ -3,6 +3,7 @@
 namespace Tribe\Tickets\Partials\V2\Tickets\Footer;
 
 use Codeception\TestCase\WPTestCase;
+use Generator;
 use Spatie\Snapshots\MatchesSnapshots;
 use tad\WP\Snapshots\WPHtmlOutputDriver;
 
@@ -45,6 +46,32 @@ class TotalTest extends WPTestCase {
 		$this->assertContains( '<span class="tribe-amount">0.00</span>', $html );
 
 		$this->assertMatchesSnapshot( $html, $driver );
+	}
+
+	/**
+	 * Provider values the Attendee Registration mini-cart can pass when its cart provider does not resolve.
+	 *
+	 * @return Generator<string, array{0: false|null}> The cases, each holding the unresolved provider value.
+	 */
+	public function unresolved_provider_data_provider(): Generator {
+		yield 'false' => [ false ];
+		yield 'null' => [ null ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider unresolved_provider_data_provider
+	 *
+	 * @param false|null $provider The unresolved provider.
+	 */
+	public function test_should_render_footer_total_with_an_unresolved_provider( $provider ): void {
+		$template = tribe( 'tickets.editor.template' );
+		$args     = array_merge( $this->get_default_args(), [ 'provider' => $provider ] );
+
+		$html = $template->template( $this->partial_path, $args, false );
+
+		$this->assertContains( '<span class="tribe-currency-symbol">', $html );
+		$this->assertContains( '<span class="tribe-amount">0.00</span>', $html );
 	}
 
 }

@@ -75,6 +75,7 @@ class Provider extends Service_Provider {
 		$this->container->singleton( Cart\Unmanaged_Cart::class );
 		$this->container->singleton( Cart_Interface::class, Agnostic_Cart::class );
 		$this->container->singleton( Stock_Validator::class );
+		$this->container->singleton( Sale_Window_Validator::class );
 
 		$this->container->singleton( Checkout::class );
 		$this->container->singleton( Settings::class );
