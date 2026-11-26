@@ -17,7 +17,9 @@ use TEC\Tickets\Commerce\Gateways\Free\Gateway;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Completed;
+use TEC\Tickets\Commerce\Status\Not_Completed;
 use TEC\Tickets\Commerce\Status\Pending;
+use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Success;
 use TEC\Tickets\RSVP\V2\Constants;
 use Tribe\Tickets\Events\Attendees_List;
@@ -113,11 +115,10 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				'callback'            => [ $this, 'handle_steps' ],
 
 				/*
-				 * RSVPs are publicly accessible: any site visitor, including guests, can submit an RSVP.
-				 * Additional validation (post status, password protection, login requirements) is handled
-				 * within the callback.
+				 * RSVPs are publicly accessible: any site visitor, including guests, can submit an RSVP,
+				 * unless the "Require users to log in before they RSVP" setting is on.
 				 */
-				'permission_callback' => '__return_true',
+				'permission_callback' => [ $this, 'can_rsvp' ],
 			]
 		);
 
@@ -164,6 +165,25 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	}
 
 	/**
+	 * Returns whether the current visitor may RSVP, honoring the "Require users to log in before they RSVP" setting.
+	 *
+	 * @since 5.31.1.1
+	 *
+	 * @return true|WP_Error True when the visitor may RSVP, a WP_Error when they must log in first.
+	 */
+	public function can_rsvp() {
+		if ( ! tribe( Order::class )->must_login( Constants::TC_RSVP_TYPE ) ) {
+			return true;
+		}
+
+		return new WP_Error(
+			'tec_tickets_rsvp_login_required',
+			__( 'You must be logged in to RSVP.', 'event-tickets' ),
+			[ 'status' => rest_authorization_required_code() ]
+		);
+	}
+
+	/**
 	 * Handle RSVP error rendering.
 	 *
 	 * @since 5.30.0
@@ -190,6 +210,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since 5.30.0
 	 * @since 5.30.0.2 Refuses a cart whose total is greater than zero and guards a failed order creation.
+	 * @since 5.31.1.1 Refuses a quantity the ticket cannot take and reports a refused status change.
 	 *
 	 * @param array           $args    {
 	 *     The list of step template arguments.
@@ -244,36 +265,49 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			$ticket_id = $args['rsvp_id'];
 			$quantity  = $this->parse_ticket_quantity( $ticket_id, $request );
 
-			if ( $quantity > 0 ) {
-				$extra_args = [
-					'type'         => Constants::TC_RSVP_TYPE,
-					'order_status' => $first_attendee['order_status'],
-					'optout'       => $first_attendee['optout'],
+			// The form asks for at least one guest: without one the order would complete with no attendees.
+			if ( $quantity < 1 ) {
+				return [
+					'success' => false,
+					'errors'  => [ _x( 'Please choose at least one guest.', 'error message', 'event-tickets' ) ],
 				];
-
-				/**
-				 * Filter the extra arguments passed to cart upsert for RSVP tickets.
-				 *
-				 * This allows Event Tickets Plus to inject attendee meta into the cart item.
-				 *
-				 * @since 5.30.0
-				 *
-				 * @param array           $extra_args     The extra arguments for the cart item.
-				 * @param int             $ticket_id      The ticket ID.
-				 * @param int             $quantity       The quantity of tickets.
-				 * @param array           $first_attendee The parsed attendee details.
-				 * @param WP_REST_Request $request        The REST API request object.
-				 */
-				$extra_args = apply_filters( 'tec_tickets_rsvp_v2_cart_upsert_item_args', $extra_args, $ticket_id, $quantity, $first_attendee, $request );
-
-				$cart->upsert_item(
-					$ticket_id,
-					$quantity,
-					$extra_args
-				);
-
-				$cart->save();
 			}
+
+			// The same per-order maximum, stock and sale window checks the carts apply.
+			$has_capacity = tribe( 'tickets.handler' )->ticket_has_capacity( $ticket_id, $quantity, $args['rsvp'] );
+
+			if ( is_wp_error( $has_capacity ) ) {
+				return $this->wp_error_to_result( $has_capacity );
+			}
+
+			$extra_args = [
+				'type'         => Constants::TC_RSVP_TYPE,
+				'order_status' => $first_attendee['order_status'],
+				'optout'       => $first_attendee['optout'],
+			];
+
+			/**
+			 * Filter the extra arguments passed to cart upsert for RSVP tickets.
+			 *
+			 * This allows Event Tickets Plus to inject attendee meta into the cart item.
+			 *
+			 * @since 5.30.0
+			 *
+			 * @param array           $extra_args     The extra arguments for the cart item.
+			 * @param int             $ticket_id      The ticket ID.
+			 * @param int             $quantity       The quantity of tickets.
+			 * @param array           $first_attendee The parsed attendee details.
+			 * @param WP_REST_Request $request        The REST API request object.
+			 */
+			$extra_args = apply_filters( 'tec_tickets_rsvp_v2_cart_upsert_item_args', $extra_args, $ticket_id, $quantity, $first_attendee, $request );
+
+			$cart->upsert_item(
+				$ticket_id,
+				$quantity,
+				$extra_args
+			);
+
+			$cart->save();
 
 			if ( $cart->get_cart_total() > 0 ) {
 				return [
@@ -292,15 +326,15 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			}
 
 			$created = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
+			$updated = $created && tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
 
-			if ( is_wp_error( $created ) ) {
-				return $this->wp_error_to_result( $created );
-			}
+			if ( ! $updated ) {
+				$this->discard_order( $order->ID );
 
-			$updated = tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
-
-			if ( is_wp_error( $updated ) ) {
-				return $this->wp_error_to_result( $updated );
+				return [
+					'success' => false,
+					'errors'  => [ _x( 'The RSVP order could not be created.', 'error message', 'event-tickets' ) ],
+				];
 			}
 
 			tribe( Cart::class )->clear_cart();
@@ -422,7 +456,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			'post_id'    => $post_id,
 			'rsvp'       => $ticket,
 			'step'       => $step,
-			'must_login' => ! is_user_logged_in() && $this->module->login_required(),
+			'must_login' => tribe( Order::class )->must_login( Constants::TC_RSVP_TYPE ),
 			'login_url'  => tribe( Checkout::class )->get_login_url(),
 			'threshold'  => $this->blocks_rsvp->get_threshold( $post_id ),
 			'going'      => $request->get_param( 'going' ) ?? 'yes',
@@ -637,5 +671,25 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			'success' => false,
 			'errors'  => $error->get_error_messages(),
 		];
+	}
+
+	/**
+	 * Discards an RSVP order whose confirmation was refused, so it holds no stock or attendees,
+	 * leaves the order list, and the visitor's cart starts over.
+	 *
+	 * @since 5.31.1.1
+	 *
+	 * @param int $order_id The order ID.
+	 */
+	private function discard_order( int $order_id ): void {
+		$stock_marker = Order::get_flag_action_marker_meta_key( 'decrease_stock', tribe( Status_Handler::class )->get_inventory_decrease_status() );
+
+		// Only hand stock back when this order actually took it, or the places are inflated.
+		if ( metadata_exists( 'post', $order_id, $stock_marker ) ) {
+			tribe( Order::class )->modify_status( $order_id, Not_Completed::SLUG );
+		}
+
+		wp_trash_post( $order_id );
+		tribe( Cart::class )->clear_cart();
 	}
 }

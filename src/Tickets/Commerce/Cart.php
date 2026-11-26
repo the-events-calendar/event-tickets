@@ -564,12 +564,18 @@ class Cart {
 	 * @since 5.1.9
 	 * @since 5.29.0.1 Stopped adding the cart hash to the checkout redirect URL. See SVUL-L34.
 	 * @since 5.29.2 Sent no-cache headers on the cart-to-checkout redirect so the cart-hash cookie survives edge caches.
+	 * @since 5.31.1.1 Refuses to fill the cart of a logged-out visitor when purchasing tickets requires login.
 	 *
 	 * @return bool
 	 */
 	public function parse_request() {
 		// When it's not the current page we just bail.
 		if ( ! $this->is_current_page() ) {
+			return false;
+		}
+
+		// The tickets form hides its button from these visitors, but this handler takes any request.
+		if ( tribe( Order::class )->must_login() ) {
 			return false;
 		}
 
@@ -701,6 +707,7 @@ class Cart {
 	 * Map the ticket data to a more usable format.
 	 *
 	 * @since 5.21.0
+	 * @since 5.31.1.1 Drops the tickets of a password-protected post until its password is entered.
 	 *
 	 * @param array $ticket_data  Array of raw ticket data.
 	 * @param array $tickets_meta Array of ticket meta data.
@@ -734,6 +741,11 @@ class Cart {
 				// Normalize and validate the ticket ID.
 				$ticket['ticket_id'] = (int) $ticket['ticket_id'];
 				if ( true !== $handler->is_ticket_readable( $ticket['ticket_id'] ) ) {
+					return false;
+				}
+
+				// The tickets of a password-protected post are only for visitors who entered its password.
+				if ( post_password_required( tribe_events_get_ticket_event( $ticket['ticket_id'] ) ) ) {
 					return false;
 				}
 

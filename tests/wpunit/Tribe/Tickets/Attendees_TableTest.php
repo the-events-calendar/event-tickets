@@ -403,6 +403,29 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( 5, $sut->get_pagination_arg( 'total_items' ) );
 	}
 
+	/**
+	 * @test
+	 */
+	public function should_escape_attendee_name_in_primary_info_column(): void {
+		set_current_screen( 'tribe_events_page_tickets-attendees' );
+
+		$post_id   = $this->factory->post->create();
+		$ticket_id = $this->create_rsvp_ticket( $post_id );
+		$name      = 'Bob< b >';
+		$this->create_attendee_for_ticket( $ticket_id, $post_id, [ 'full_name' => $name ] );
+
+		$_GET['event_id'] = $post_id;
+		$_GET['search']   = '';
+
+		$table = $this->make_instance();
+		$table->prepare_items();
+
+		$html = $table->column_primary_info( $table->items[0] );
+
+		$this->assertStringNotContainsString( '<b>', $html );
+		$this->assertStringContainsString( esc_html( $name ), $html );
+	}
+
 	public function test_display(): void {
 		$this->set_fn_return( 'wp_create_nonce', '1234567890' );
 

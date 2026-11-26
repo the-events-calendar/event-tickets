@@ -17,9 +17,18 @@ class Controller_Test extends Controller_Test_Case {
 	protected string $controller_class = Controller::class;
 
 	/**
+	 * The request URI before the test changed it.
+	 *
+	 * @var string|null
+	 */
+	private ?string $request_uri_backup = null;
+
+	/**
 	 * @before
 	 */
 	public function setup_conditions() {
+		$this->request_uri_backup = $_SERVER['REQUEST_URI'] ?? null;
+
 		$this->set_fn_return( 'wp_create_nonce', 'xxxxxx' );
 		$this->set_fn_return( 'is_admin', true );
 		$this->set_fn_return( 'get_column_headers', [] );
@@ -60,7 +69,13 @@ class Controller_Test extends Controller_Test_Case {
 	public function tearDown() {
 		parent::tearDown();
 		Layouts_Service::invalidate_cache();
-		unset( $_GET['layout'] );
+		unset( $_GET['layout'], $_GET['post_status'] );
+
+		if ( null === $this->request_uri_backup ) {
+			unset( $_SERVER['REQUEST_URI'] );
+		} else {
+			$_SERVER['REQUEST_URI'] = $this->request_uri_backup;
+		}
 	}
 
 	public function events_list_data_provider(): Generator {
@@ -287,6 +302,65 @@ class Controller_Test extends Controller_Test_Case {
 		}
 
 		$this->assertMatchesHtmlSnapshot( $html );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_build_view_links_from_the_admin_url(): void {
+		$_GET['layout']         = 'some-layout-1';
+		$_SERVER['REQUEST_URI'] = '/wp-admin/admin.php?page=tec-tickets-seating-events&layout=some-layout-1&probe%22%3E%3Cb%3E=1';
+
+		$this->make_controller()->register();
+
+		ob_start();
+		$this->make_controller()->render();
+		$html = ob_get_clean();
+
+		$this->assertStringNotContainsString( '<b>', $html );
+		$this->assertStringNotContainsString( 'probe"', $html );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_mark_only_the_displayed_status_view_as_current(): void {
+		$_GET['layout']         = 'some-layout-1';
+		$_GET['post_status']    = 'draft';
+		$_SERVER['REQUEST_URI'] = '/wp-admin/admin.php?page=tec-tickets-seating-events&layout=some-layout-1&post_status=draft';
+
+		$this->make_controller()->register();
+
+		ob_start();
+		$this->make_controller()->render();
+		$html = ob_get_clean();
+
+		preg_match( "#<ul class='subsubsub'>.*?</ul>#s", $html, $views );
+
+		$this->assertSame( 1, substr_count( $views[0], 'aria-current="page"' ) );
+		$this->assertStringContainsString( 'post_status=draft" class="current" aria-current="page"', $views[0] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_link_each_status_view_to_the_current_layout(): void {
+		$_GET['layout']         = 'some-layout-1';
+		$_SERVER['REQUEST_URI'] = '/wp-admin/admin.php?page=tec-tickets-seating-events&layout=some-layout-1&paged=3';
+
+		$this->make_controller()->register();
+
+		ob_start();
+		$this->make_controller()->render();
+		$html = ob_get_clean();
+
+		preg_match( "#<ul class='subsubsub'>.*?</ul>#s", $html, $views );
+
+		$this->assertStringContainsString(
+			'href="' . esc_url( admin_url( 'admin.php?page=tec-tickets-seating-events&layout=some-layout-1&post_status=draft' ) ) . '"',
+			$views[0]
+		);
+		$this->assertStringNotContainsString( 'paged=3', $views[0] );
 	}
 
 	/**

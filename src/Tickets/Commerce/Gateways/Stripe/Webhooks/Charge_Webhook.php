@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Stripe\Webhooks;
 
 use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Gateways\Contracts\Webhook_Event_Interface;
 use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent;
@@ -20,6 +21,8 @@ class Charge_Webhook implements Webhook_Event_Interface {
 
 	/**
 	 * @inheritDoc
+	 *
+	 * @since 5.31.1.1 Does not complete an order whose Payment Intent amount does not match the order total.
 	 */
 	public static function handle( array $event, Status_Interface $new_status, \WP_REST_Request $request, \WP_REST_Response $response ) {
 		$charge_data       = static::get_charge_data( $event );
@@ -47,7 +50,7 @@ class Charge_Webhook implements Webhook_Event_Interface {
 		 * @since 5.13.0 - Process Refunds requests always.
 		 */
 		if (
-			$payment_intent
+			is_array( $payment_intent )
 			&& isset( $payment_intent['status'] )
 			&& Status::SUCCEEDED === $payment_intent['status']
 			&& Events::CHARGE_REFUNDED !== Arr::get( $event, 'type' )
@@ -93,6 +96,24 @@ class Charge_Webhook implements Webhook_Event_Interface {
 				__( 'Payment Intent %s does not correspond to a known order.', 'event-tickets' ),
 				esc_html( $payment_intent_id )
 			) );
+		}
+
+		// Only a Payment Intent that still pays this order's total may complete it; one that cannot be read cannot be checked.
+		if (
+			Completed::SLUG === $new_status->get_slug()
+			&& ( ! is_array( $payment_intent ) || ! Payment_Intent::is_valid_for_order( $payment_intent, $order ) )
+		) {
+			$response->set_status( 200 );
+			$response->set_data(
+				sprintf(
+					// Translators: %1$s is the event id and %2$s is the payment intent id.
+					__( 'Event %1$s was received and will not be handled because the Payment Intent %2$s does not match its order total.', 'event-tickets' ),
+					esc_html( Arr::get( $event, 'id' ) ),
+					esc_html( $payment_intent_id )
+				)
+			);
+
+			return $response;
 		}
 
 		$meta = [

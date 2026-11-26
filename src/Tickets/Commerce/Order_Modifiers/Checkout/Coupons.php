@@ -14,6 +14,9 @@ use TEC\Common\StellarWP\Assets\Assets;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Coupon as Coupon_Model;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Coupon;
+use TEC\Tickets\Commerce\Order_Modifiers\Traits\Coupons as Coupons_Trait;
+use TEC\Tickets\Commerce\Status\Created;
+use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Values\Value_Interface;
 use TEC\Tickets\Commerce\Traits\Type;
 use TEC\Tickets\Commerce\Utils\Value;
@@ -29,6 +32,7 @@ use WP_Post;
  */
 class Coupons extends Controller_Contract {
 
+	use Coupons_Trait;
 	use Type;
 
 	/**
@@ -198,12 +202,13 @@ class Coupons extends Controller_Contract {
 	 * Add coupon item parameters to the cart item.
 	 *
 	 * @since 5.21.0
+	 * @since 5.31.1.1 Drops the coupon from the cart when it is no longer valid.
 	 *
 	 * @param ?array $full_item The full item parameters, or null.
 	 * @param array  $item      The cart item details.
 	 * @param string $type      The item type.
 	 *
-	 * @return array
+	 * @return ?array The full item parameters, or `null` to drop the item from the cart.
 	 */
 	public function add_coupon_item_params( $full_item, array $item, string $type ) {
 		if ( 'coupon' !== $type ) {
@@ -217,8 +222,16 @@ class Coupons extends Controller_Contract {
 				$coupon_id = (int) $this->get_id_from_unique_id( $item['coupon_id'] );
 			}
 
-			/** @var Coupon_Model $coupon */
 			$coupon = Coupon_Model::find( $coupon_id );
+
+			// The coupon was valid when it was applied; it may since have been used up, deactivated or expired.
+			if ( ! $coupon instanceof Coupon_Model ) {
+				return null;
+			}
+
+			if ( ! $this->is_coupon_valid( $coupon ) && ! $this->is_use_held_by_cart_order( $coupon ) ) {
+				return null;
+			}
 
 			$full_item = [
 				'id'           => $coupon_id,
@@ -280,5 +293,49 @@ class Coupons extends Controller_Contract {
 		);
 
 		return array_merge( $items, $coupons );
+	}
+
+	/**
+	 * Determines whether the open order of the current cart already holds one of the coupon's uses.
+	 *
+	 * A use is counted when that order reaches the stock-handling status, Pending by default, so
+	 * the cart that took a coupon's last use must keep its discount on later reads.
+	 *
+	 * @since 5.31.1.1
+	 *
+	 * @param Coupon_Model $coupon The coupon.
+	 *
+	 * @return bool Whether the coupon is active, in its date range, and counted by the cart's open order.
+	 */
+	private function is_use_held_by_cart_order( Coupon_Model $coupon ): bool {
+		if ( 'active' !== $coupon->status ) {
+			return false;
+		}
+
+		try {
+			$this->is_coupon_within_date_range( $coupon );
+		} catch ( Exception $e ) {
+			return false;
+		}
+
+		$hash = tribe( Cart::class )->get_cart_hash();
+
+		if ( ! $hash ) {
+			return false;
+		}
+
+		$order = tec_tc_orders()->by_args(
+			[
+				'status' => [ tribe( Pending::class )->get_wp_slug(), tribe( Created::class )->get_wp_slug() ],
+				'hash'   => $hash,
+			]
+		)->first();
+
+		if ( ! $order instanceof WP_Post || empty( $order->coupons[ $coupon->get_type_id() ] ) ) {
+			return false;
+		}
+
+		// The flag Abstract_Coupon_Usage sets once it has counted this order's coupons.
+		return '' !== get_post_meta( $order->ID, '_tec_tickets_coupon_usage_calculated', true );
 	}
 }

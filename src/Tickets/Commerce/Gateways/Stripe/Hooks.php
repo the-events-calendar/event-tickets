@@ -454,6 +454,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 * Handles the checkout request pieces related to Stripe Gateway.
 	 *
 	 * @since 5.19.3
+	 * @since 5.31.1.1 Leaves the order unchanged when the Payment Intent amount does not match the order total.
 	 *
 	 * @return void
 	 */
@@ -494,6 +495,22 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		)->first();
 
 		if ( ! $order ) {
+			return;
+		}
+
+		// Only a Payment Intent whose amount still equals the order total may settle the order.
+		if ( ! Payment_Intent::is_valid_for_order( $payment_intent, $order ) ) {
+			do_action(
+				'tribe_log',
+				'warning',
+				__METHOD__,
+				[
+					'message'           => 'The Payment Intent amount does not match the order total; the order status was not changed.',
+					'order_id'          => $order->ID,
+					'payment_intent_id' => $payment_intent['id'],
+				]
+			);
+
 			return;
 		}
 

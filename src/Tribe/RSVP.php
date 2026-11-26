@@ -3094,6 +3094,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.5.0 Return WP_Error in case of errors to show proper error messages.
 	 * @since 5.29.1 Reject the request unless the requesting user can access the ticket's event.
+	 * @since 5.31.1.1 Reject logged-out visitors when the RSVP login requirement is on.
 	 *
 	 * @param int     $product_id       The ticket post ID.
 	 * @param int     $ticket_qty       The number of attendees that should be generated.
@@ -3123,6 +3124,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		// Reject RSVPs for tickets outside their sale window.
 		if ( ! $ticket_type->date_in_range() ) {
 			return new WP_Error( 'rsvp-ticket-not-available', __( 'This RSVP is not currently available.', 'event-tickets' ) );
+		}
+
+		// The RSVP form hides itself from logged-out visitors when login is required; refuse direct submissions too.
+		if ( ! is_user_logged_in() && $this->login_required() ) {
+			return new WP_Error( 'rsvp-login-required', __( 'You must be logged in to RSVP.', 'event-tickets' ) );
 		}
 
 		$rsvp_options = $this->tickets_view->get_rsvp_options( null, false );

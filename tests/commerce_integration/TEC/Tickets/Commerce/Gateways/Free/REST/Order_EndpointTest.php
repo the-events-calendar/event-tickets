@@ -11,9 +11,11 @@ namespace TEC\Tickets\Commerce\Gateways\Free\REST;
 
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Ticket;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
+use WP_Query;
 use WP_REST_Request;
 
 /**
@@ -250,5 +252,127 @@ class Order_EndpointTest extends WPTestCase {
 		// WITH THE FIX: Empty carts should be rejected
 		$this->assertTrue( $response->is_error(), 'Response should be an error for empty cart' );
 		$this->assertEquals( 400, $response->get_status() );
+	}
+
+	/**
+	 * @test
+	 * @covers Order_Endpoint::handle_create_order
+	 */
+	public function should_reject_purchaser_name_with_angle_brackets() {
+		$event_id       = self::factory()->post->create( [ 'post_title' => 'Free Event' ] );
+		$free_ticket_id = $this->create_tc_ticket( $event_id, 0 );
+
+		tribe( Cart::class )->add_ticket( $free_ticket_id, 1 );
+
+		$request = new WP_REST_Request( 'POST', '/tribe/tickets/v1/commerce/free/order' );
+		$request->set_header( 'Content-Type', 'application/json' );
+		$request->set_body(
+			wp_json_encode(
+				[
+					'purchaser' => [
+						'name'  => 'Bob Visitor< b >',
+						'email' => 'new.visitor@example.test',
+					],
+				]
+			)
+		);
+
+		$response = rest_do_request( $request );
+
+		$this->assertTrue( $response->is_error(), 'A purchaser name containing markup should be rejected' );
+		$this->assertEquals( 400, $response->get_status() );
+		$this->assertEquals( 'invalid-purchaser-info', $response->as_error()->get_error_code() );
+	}
+
+	/**
+	 * @test
+	 * @covers Order_Endpoint::handle_create_order
+	 */
+	public function should_reject_a_guest_order_when_purchase_requires_login() {
+		$event_id  = self::factory()->post->create( [ 'post_title' => 'Members Only Event' ] );
+		$ticket_id = $this->create_tc_ticket( $event_id, 0, [ 'tribe-ticket' => [ 'mode' => 'own', 'capacity' => 1 ] ] );
+		tribe( Cart::class )->add_ticket( $ticket_id, 1 );
+		$this->require_purchase_login( true );
+		wp_set_current_user( 0 );
+		$orders_before = $this->order_count();
+
+		$response = rest_do_request( $this->free_order_request() );
+
+		$this->assertTrue( $response->is_error() );
+		$this->assertSame( 401, $response->get_status() );
+		$this->assertSame( 'tec_tickets_commerce_login_required', $response->as_error()->get_error_code() );
+		$this->assertSame( $orders_before, $this->order_count() );
+		$this->assertEquals( 1, get_post_meta( $ticket_id, '_stock', true ) );
+	}
+
+	/**
+	 * @test
+	 * @covers Order_Endpoint::handle_create_order
+	 */
+	public function should_accept_a_logged_in_order_when_purchase_requires_login() {
+		$event_id  = self::factory()->post->create( [ 'post_title' => 'Members Only Event' ] );
+		$ticket_id = $this->create_tc_ticket( $event_id, 0 );
+		tribe( Cart::class )->add_ticket( $ticket_id, 1 );
+		$this->require_purchase_login( true );
+		wp_set_current_user( self::factory()->user->create( [ 'role' => 'subscriber' ] ) );
+		$orders_before = $this->order_count();
+
+		$response = rest_do_request( $this->free_order_request() );
+
+		$this->assertFalse( $response->is_error() );
+		$this->assertTrue( $response->get_data()['success'] );
+		$this->assertSame( $orders_before + 1, $this->order_count() );
+	}
+
+	/**
+	 * Builds a free-order request with a valid purchaser.
+	 *
+	 * @return WP_REST_Request The request.
+	 */
+	private function free_order_request(): WP_REST_Request {
+		$request = new WP_REST_Request( 'POST', '/tribe/tickets/v1/commerce/free/order' );
+		$request->set_header( 'Content-Type', 'application/json' );
+		$request->set_body(
+			wp_json_encode(
+				[
+					'purchaser' => [
+						'name'  => 'Test User',
+						'email' => 'test@example.com',
+					],
+				]
+			)
+		);
+
+		return $request;
+	}
+
+	/**
+	 * Counts the Tickets Commerce orders in any status.
+	 *
+	 * @return int The number of orders.
+	 */
+	private function order_count(): int {
+		return ( new WP_Query(
+			[
+				'post_type'      => Order::POSTTYPE,
+				'post_status'    => 'any',
+				'fields'         => 'ids',
+				'posts_per_page' => -1,
+			]
+		) )->found_posts;
+	}
+
+	/**
+	 * Turns the "Require users to log in before they purchase tickets" setting on or off for this test.
+	 *
+	 * A filter rather than the option, because the settings cache outlives the test's database rollback.
+	 *
+	 * @param bool $required Whether purchase requires login.
+	 */
+	private function require_purchase_login( bool $required ): void {
+		add_filter(
+			'tribe_get_option_ticket-authentication-requirements',
+			static fn() => $required ? [ 'event-tickets_all' ] : []
+		);
 	}
 }

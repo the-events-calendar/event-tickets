@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, stellarwp, nexcess, bordoni, deblynprado, dpantazis, filipecouto, jehromegriffiths1, jentheo, larodiel, leahkoerper, sdokus, vicskf
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.31.1
+Stable tag: 5.31.1.1
 Requires at least: 6.9
 Tested up to: 7.1
 Requires PHP: 7.4
@@ -205,6 +205,17 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.31.1.1] 2026-11-17 =
+
+* Security - Hardened how attendee and purchaser names are saved and shown on the Attendees page. Props to ytaero for reporting.
+* Security - Hardened how dependent form fields look up the field they depend on. Props to ytaero for reporting.
+* Security - Hardened the coupon and password-protection checks for Tickets Commerce. Props to Elaprendiz1927 for reporting.
+* Security - Hardened the escaping of the Seating Associated Events view links. Props to Elaprendiz1927 for reporting.
+* Security - Hardened the quantity and sale-window checks for RSVPs. Props to Abdel Majid BOUKHLIK HAJJI for reporting.
+* Security - Hardened the Stripe payment confirmation checks. Props to Elaprendiz1927 for reporting.
+* Security - Improved how Tickets Commerce and RSVP apply the login setting when tickets are added to the cart and when an order is created. Props to ytaero for reporting.
+* Language - 5 new strings added, 119 updated, 0 fuzzied, and 0 obsoleted.
 
 = [5.31.1] 2026-11-12 =
 

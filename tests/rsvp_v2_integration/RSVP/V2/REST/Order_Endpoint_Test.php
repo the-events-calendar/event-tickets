@@ -4,14 +4,21 @@ namespace TEC\Tickets\RSVP\V2\REST;
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Status\Completed;
+use TEC\Tickets\Commerce\Status\Pending;
+use TEC\Tickets\Commerce\Ticket as TC_Ticket;
 use TEC\Tickets\RSVP\V2\Controller;
 use TEC\Tickets\Tests\Commerce\RSVP\V2\Ticket_Maker;
+use Tribe\Tests\Traits\With_Uopz;
 use Traits\With_No_Query_Commit;
+use Tribe__Tickets__Tickets as Tickets;
+use WP_Query;
 use WP_REST_Request;
 use WP_REST_Server;
 
 class Order_Endpoint_Test extends WPTestCase {
 	use Ticket_Maker;
+	use With_Uopz;
 
 	// The Order class will call COMMIT during tests, with this we prevent it.
 	use With_No_Query_Commit;
@@ -214,25 +221,7 @@ class Order_Endpoint_Test extends WPTestCase {
 	 * @return array The endpoint response data.
 	 */
 	private function submit_rsvp( int $ticket_id ): array {
-		$request = new WP_REST_Request( 'POST', '/tribe/tickets/v1/rsvp/v2/order' );
-		$request->set_param( 'ticket_id', $ticket_id );
-		$request->set_param( 'step', 'success' );
-		$request->set_param(
-			'tribe_tickets',
-			[
-				$ticket_id => [
-					'quantity'  => 2,
-					'attendees' => [
-						[
-							'email'        => 'guest@example.com',
-							'full_name'    => 'Guest Alpha',
-							'order_status' => 'going',
-							'optout'       => false,
-						],
-					],
-				],
-			]
-		);
+		$request = $this->rsvp_request( $ticket_id );
 
 		$response = rest_get_server()->dispatch( $request );
 		$data     = $response->get_data();
@@ -955,18 +944,192 @@ class Order_Endpoint_Test extends WPTestCase {
 		);
 	}
 
-	private function tc_order_count(): int {
-		$query = new \WP_Query(
+	/**
+	 * @test
+	 */
+	public function it_should_accept_an_rsvp_at_the_per_order_maximum(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id, [ 'tribe-ticket' => [ 'capacity' => 5 ] ] );
+		add_filter( 'tribe_tickets_get_ticket_default_max_purchase', static fn() => 2 );
+		$orders_before = $this->tc_order_count();
+
+		$this->register_endpoint();
+		$data = $this->submit_rsvp_quantity( $ticket_id, 2 );
+
+		$this->assertTrue( $data['success'] );
+		$this->assertStringNotContainsString( 'does not have that many available', $data['html'] );
+		$this->assertSame( $orders_before + 1, $this->tc_order_count() );
+		$this->assertEquals( 3, Tickets::load_ticket_object( $ticket_id )->stock() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_refuse_an_rsvp_above_the_per_order_maximum(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id, [ 'tribe-ticket' => [ 'capacity' => 5 ] ] );
+		add_filter( 'tribe_tickets_get_ticket_default_max_purchase', static fn() => 2 );
+		$orders_before = $this->tc_order_count();
+
+		$this->register_endpoint();
+		$data = $this->submit_rsvp_quantity( $ticket_id, 3 );
+
+		$this->assertStringContainsString( 'does not have that many available', $data['html'] );
+		$this->assertSame( $orders_before, $this->tc_order_count() );
+		$this->assertEquals( 5, Tickets::load_ticket_object( $ticket_id )->stock() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_refuse_an_rsvp_above_the_remaining_stock(): void {
+		$post_id       = static::factory()->post->create();
+		$ticket_id     = $this->create_tc_rsvp_ticket( $post_id, [ 'tribe-ticket' => [ 'capacity' => 3 ] ] );
+		$orders_before = $this->tc_order_count();
+
+		$this->register_endpoint();
+		$data = $this->submit_rsvp_quantity( $ticket_id, 10 );
+
+		$this->assertStringContainsString( 'does not have that many available', $data['html'] );
+		$this->assertSame( $orders_before, $this->tc_order_count() );
+		$this->assertEquals( 3, Tickets::load_ticket_object( $ticket_id )->stock() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_refuse_an_rsvp_after_the_sale_window_closed(): void {
+		$post_id       = static::factory()->post->create();
+		$ticket_id     = $this->create_tc_rsvp_ticket(
+			$post_id,
 			[
-				'post_type'      => 'tec_tc_order',
-				'post_status'    => 'any',
-				'fields'         => 'ids',
-				'posts_per_page' => -1,
-				'no_found_rows'  => false,
+				'tribe-ticket'      => [ 'capacity' => 5 ],
+				'ticket_start_date' => '1994-01-01',
+				'ticket_start_time' => '08:00:00',
+				'ticket_end_date'   => '1994-03-01',
+				'ticket_end_time'   => '20:00:00',
+			]
+		);
+		$orders_before = $this->tc_order_count();
+
+		$this->register_endpoint();
+		$data = $this->submit_rsvp_quantity( $ticket_id, 1 );
+
+		$this->assertStringContainsString( 'does not have that many available', $data['html'] );
+		$this->assertSame( $orders_before, $this->tc_order_count() );
+		$this->assertEquals( 5, Tickets::load_ticket_object( $ticket_id )->stock() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_refuse_an_rsvp_above_the_maximum_sent_as_a_quantity_field(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id, [ 'tribe-ticket' => [ 'capacity' => 5 ] ] );
+		add_filter( 'tribe_tickets_get_ticket_default_max_purchase', static fn() => 2 );
+		$orders_before = $this->tc_order_count();
+
+		$this->register_endpoint();
+
+		$request = new WP_REST_Request( 'POST', '/tribe/tickets/v1/rsvp/v2/order' );
+		$request->set_param( 'ticket_id', $ticket_id );
+		$request->set_param( 'step', 'success' );
+		$request->set_param( "quantity_{$ticket_id}", 3 );
+		$request->set_param(
+			'attendee',
+			[
+				'full_name'    => 'Field Guest',
+				'email'        => 'field-guest@example.test',
+				'order_status' => 'yes',
 			]
 		);
 
-		return (int) $query->found_posts;
+		$data = rest_get_server()->dispatch( $request )->get_data();
+
+		$this->assertStringContainsString( 'does not have that many available', $data['html'] );
+		$this->assertSame( $orders_before, $this->tc_order_count() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_refuse_an_rsvp_without_a_quantity(): void {
+		$post_id       = static::factory()->post->create();
+		$ticket_id     = $this->create_tc_rsvp_ticket( $post_id, [ 'tribe-ticket' => [ 'capacity' => 5 ] ] );
+		$orders_before = $this->tc_order_count();
+
+		$this->register_endpoint();
+		$data = $this->submit_rsvp_quantity( $ticket_id, 0 );
+
+		$this->assertStringContainsString( 'Please choose at least one guest.', $data['html'] );
+		$this->assertSame( $orders_before, $this->tc_order_count() );
+	}
+
+	/**
+	 * Order statuses the order system may refuse while the endpoint confirms an RSVP.
+	 *
+	 * @return array<string,array{0:string}>
+	 */
+	public function refused_status_provider(): array {
+		return [
+			'Pending refused'   => [ Pending::SLUG ],
+			'Completed refused' => [ Completed::SLUG ],
+		];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider refused_status_provider
+	 */
+	public function it_should_discard_an_rsvp_whose_status_change_was_refused( string $refused_status ): void {
+		$post_id       = static::factory()->post->create();
+		$ticket_id     = $this->create_tc_rsvp_ticket( $post_id, [ 'tribe-ticket' => [ 'capacity' => 5 ] ] );
+		$orders_before = $this->tc_order_count();
+		$cookie        = Cart::get_cart_hash_cookie_name();
+
+		$_COOKIE[ $cookie ] = 'visitor-cart-hash';
+
+		/* Refuse only the given status, so each case reaches and fails on its own status change. */
+		$this->set_class_fn_return(
+			Order::class,
+			'modify_status',
+			static fn( $order_id, $new_status ) => $refused_status !== $new_status,
+			true
+		);
+
+		$this->register_endpoint();
+		$data = $this->submit_rsvp_quantity( $ticket_id, 1 );
+
+		$this->assertStringContainsString( 'The RSVP order could not be created.', $data['html'] );
+		$this->assertSame( $orders_before, $this->tc_order_count() );
+		$this->assertArrayNotHasKey( $cookie, $_COOKIE );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_restore_stock_it_never_took_when_pending_is_refused(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id, [ 'tribe-ticket' => [ 'capacity' => 5 ] ] );
+
+		/* Simulate a racing request taking the places after the capacity check passed. */
+		add_filter(
+			'tec_tickets_rsvp_v2_cart_upsert_item_args',
+			static function ( $args ) use ( $ticket_id ) {
+				update_post_meta( $ticket_id, TC_Ticket::$stock_meta_key, 0 );
+
+				return $args;
+			}
+		);
+
+		$orders_before = $this->tc_order_count();
+
+		$this->register_endpoint();
+		$data = $this->submit_rsvp_quantity( $ticket_id, 2 );
+
+		$this->assertStringContainsString( 'The RSVP order could not be created.', $data['html'] );
+		$this->assertSame( $orders_before, $this->tc_order_count() );
+		$this->assertEquals( 0, Tickets::load_ticket_object( $ticket_id )->stock() );
 	}
 
 	/**
@@ -975,5 +1138,137 @@ class Order_Endpoint_Test extends WPTestCase {
 	protected function avoid_query_commit_rollback_handler( string $query ): string {
 		// No-op.
 		return $query;
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_refuse_a_guest_rsvp_when_rsvp_requires_login(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id, [ 'tribe-ticket' => [ 'capacity' => 5 ] ] );
+		$this->require_rsvp_login( true );
+		wp_set_current_user( 0 );
+		$orders_before = $this->tc_order_count();
+
+		$this->register_endpoint();
+		$response = rest_get_server()->dispatch( $this->rsvp_request( $ticket_id ) );
+
+		$this->assertSame( 401, $response->get_status() );
+		$this->assertSame( 'tec_tickets_rsvp_login_required', $response->as_error()->get_error_code() );
+		$this->assertSame( $orders_before, $this->tc_order_count() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_accept_a_logged_in_rsvp_when_rsvp_requires_login(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id, [ 'tribe-ticket' => [ 'capacity' => 5 ] ] );
+		$this->require_rsvp_login( true );
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'subscriber' ] ) );
+
+		$this->register_endpoint();
+		$data = $this->submit_rsvp( $ticket_id );
+
+		$this->assertTrue( $data['success'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_ask_a_guest_to_log_in_to_rsvp_when_only_purchases_require_login(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id, [ 'tribe-ticket' => [ 'capacity' => 5 ] ] );
+		add_filter( 'tribe_get_option_ticket-authentication-requirements', static fn() => [ 'event-tickets_all' ] );
+		wp_set_current_user( 0 );
+
+		$this->register_endpoint();
+		$request = new WP_REST_Request( 'POST', '/tribe/tickets/v1/rsvp/v2/order' );
+		$request->set_param( 'ticket_id', $ticket_id );
+		$request->set_param( 'step', 'going' );
+		$data = rest_get_server()->dispatch( $request )->get_data();
+
+		$this->assertStringNotContainsString( 'must be logged in', $data['html'] );
+	}
+
+	/**
+	 * Turns the "Require users to log in before they RSVP" setting on or off for this test.
+	 *
+	 * A filter rather than the option, because the settings cache outlives the test's database rollback.
+	 *
+	 * @param bool $required Whether RSVP requires login.
+	 */
+	private function require_rsvp_login( bool $required ): void {
+		add_filter(
+			'tribe_get_option_ticket-authentication-requirements',
+			static fn() => $required ? [ 'event-tickets_rsvp' ] : []
+		);
+	}
+
+	/**
+	 * Builds a Going RSVP request.
+	 *
+	 * @param int $ticket_id The TC-RSVP ticket ID.
+	 * @param int $quantity  The quantity requested.
+	 *
+	 * @return WP_REST_Request The request.
+	 */
+	private function rsvp_request( int $ticket_id, int $quantity = 2 ): WP_REST_Request {
+		$request = new WP_REST_Request( 'POST', '/tribe/tickets/v1/rsvp/v2/order' );
+		$request->set_param( 'ticket_id', $ticket_id );
+		$request->set_param( 'step', 'success' );
+		$request->set_param(
+			'tribe_tickets',
+			[
+				$ticket_id => [
+					'quantity'  => $quantity,
+					'attendees' => [
+						[
+							'email'        => 'guest@example.com',
+							'full_name'    => 'Guest Alpha',
+							'order_status' => 'going',
+							'optout'       => false,
+						],
+					],
+				],
+			]
+		);
+
+		return $request;
+	}
+
+	/**
+	 * Submits a Going RSVP for the given quantity through the order endpoint.
+	 *
+	 * @param int $ticket_id The TC-RSVP ticket ID.
+	 * @param int $quantity  The quantity requested.
+	 *
+	 * @return array The endpoint response data.
+	 */
+	private function submit_rsvp_quantity( int $ticket_id, int $quantity ): array {
+		$response = rest_get_server()->dispatch( $this->rsvp_request( $ticket_id, $quantity ) );
+
+		$this->assertEquals( 200, $response->get_status() );
+
+		return $response->get_data();
+	}
+
+	/**
+	 * Counts the Tickets Commerce orders in any status.
+	 *
+	 * @return int The number of orders.
+	 */
+	private function tc_order_count(): int {
+		$query = new WP_Query(
+			[
+				'post_type'      => Order::POSTTYPE,
+				'post_status'    => 'any',
+				'fields'         => 'ids',
+				'posts_per_page' => -1,
+				'no_found_rows'  => false,
+			]
+		);
+
+		return $query->found_posts;
 	}
 }

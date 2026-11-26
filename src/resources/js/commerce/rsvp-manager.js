@@ -262,6 +262,23 @@ window.tribe.tickets.rsvp.manager = {};
 	obj.ajaxError = function ( jqXHR, settings ) {
 		const $container = this;
 
+		// A refused request (e.g. a session that expired after the page loaded) carries its reason as a REST error.
+		const message = jqXHR?.responseJSON?.message;
+
+		if ( message ) {
+			// Replace any earlier error, so a stale reason never hides this one.
+			$container.find( obj.selectors.messageError ).remove();
+			$container.prepend(
+				$(
+					'<div class="tribe-tickets__rsvp-message tribe-tickets__rsvp-message--error tribe-common-b3" role="alert"></div>'
+				).append(
+					$( '<span class="tribe-tickets__rsvp-message-text"></span>' ).append(
+						$( '<strong></strong>' ).text( message )
+					)
+				)
+			);
+		}
+
 		$container.trigger( 'beforeAjaxError.tribeTicketsRsvp', [ jqXHR, settings ] );
 
 		$container.trigger( 'afterAjaxError.tribeTicketsRsvp', [ jqXHR, settings ] );

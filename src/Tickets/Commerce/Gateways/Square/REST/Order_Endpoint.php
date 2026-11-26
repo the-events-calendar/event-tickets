@@ -11,6 +11,7 @@ namespace TEC\Tickets\Commerce\Gateways\Square\REST;
 
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
+use TEC\Tickets\Commerce\Gateways\Contracts\Traits\Requires_Login_To_Purchase;
 use TEC\Tickets\Commerce\Gateways\Square\Gateway;
 use TEC\Tickets\Commerce\Gateways\Square\Payment_Handler;
 use TEC\Tickets\Commerce\Order;
@@ -39,6 +40,8 @@ use RuntimeException;
  * @package TEC\Tickets\Commerce\Gateways\Square\REST
  */
 class Order_Endpoint extends Abstract_REST_Endpoint {
+	use Requires_Login_To_Purchase;
+
 
 	/**
 	 * The REST API endpoint path.
@@ -65,7 +68,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				'methods'             => WP_REST_Server::CREATABLE,
 				'args'                => $this->create_order_args(),
 				'callback'            => [ $this, 'handle_create_order' ],
-				'permission_callback' => '__return_true',
+				'permission_callback' => [ $this, 'can_purchase' ],
 			]
 		);
 

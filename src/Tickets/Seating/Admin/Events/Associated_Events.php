@@ -266,6 +266,7 @@ class Associated_Events extends WP_Posts_List_Table {
 	 * - `'id' => 'link'`
 	 *
 	 * @since 5.16.0
+	 * @since 5.31.1.1 Builds every link from the admin URL and escapes it.
 	 *
 	 * @return array<string, string> The list of views.
 	 */
@@ -275,31 +276,31 @@ class Associated_Events extends WP_Posts_List_Table {
 		$statuses    = self::get_supported_status_list();
 		$counts      = self::get_status_count_for_layout( $layout_id );
 
+		// Only page, layout and post_status are carried into the view links.
+		$all_url = add_query_arg(
+			[
+				'page'   => self::SLUG,
+				'layout' => $layout_id,
+			],
+			admin_url( 'admin.php' )
+		);
+
 		$views = [];
 
 		foreach ( $statuses as $status ) {
-			$class         = $post_status === $status ? 'current' : '';
 			$status_object = get_post_status_object( $status );
 
-			$views[ $status ] = sprintf(
-				'<a href="%s" class="%s">%s <span class="count">(%d)</span></a>',
-				add_query_arg( [ 'post_status' => $status ] ),
-				$class,
+			$views[ $status ] = $this->get_view_link(
+				add_query_arg( [ 'post_status' => $status ], $all_url ),
+				$post_status === $status,
 				$status_object->label,
 				$counts[ $status ] ?? 0
 			);
 		}
 
-		$all['all'] = sprintf(
-			'<a href="%s" class="%s">%s <span class="count">(%d)</span></a>',
-			add_query_arg(
-				[
-					'page'   => self::SLUG,
-					'layout' => $layout_id,
-				],
-				admin_url( 'admin.php' )
-			),
-			empty( $post_status ) ? 'current' : '',
+		$all['all'] = $this->get_view_link(
+			$all_url,
+			empty( $post_status ),
 			_x( 'All', 'Associated events post filter list label for all status', 'event-tickets' ),
 			array_sum( $counts )
 		);
@@ -404,5 +405,28 @@ class Associated_Events extends WP_Posts_List_Table {
 		}
 
 		return wp_list_pluck( $counts_by_status, 'post_count', 'post_status' );
+	}
+
+	/**
+	 * Builds the markup of one view link.
+	 *
+	 * @since 5.31.1.1
+	 *
+	 * @param string $url        The link URL.
+	 * @param bool   $is_current Whether the view is the one being displayed.
+	 * @param string $label      The view label.
+	 * @param int    $count      The number of posts in the view.
+	 *
+	 * @return string The view link markup.
+	 */
+	private function get_view_link( string $url, bool $is_current, string $label, int $count ): string {
+		return sprintf(
+			'<a href="%1$s" class="%2$s"%3$s>%4$s <span class="count">(%5$d)</span></a>',
+			esc_url( $url ),
+			$is_current ? 'current' : '',
+			$is_current ? ' aria-current="page"' : '',
+			esc_html( $label ),
+			$count
+		);
 	}
 }

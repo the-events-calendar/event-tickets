@@ -92,19 +92,27 @@ abstract class Abstract_Order {
 	 * Prepare purchaser data received from the checkout page to include in orders.
 	 *
 	 * @since 5.3.0
+	 * @since 5.31.1.1 Rejects purchaser names that contain angle brackets.
 	 *
 	 * @param array $data user data input in the checkout page.
 	 *
 	 * @return array|WP_Error
 	 */
 	public function get_purchaser_data( $data ) {
+		$purchaser_name = sanitize_text_field( $data['purchaser']['name'] ?? '' );
+
 		if ( is_user_logged_in() ) {
 			$user                              = wp_get_current_user();
 			$purchaser['purchaser_user_id']    = $user->ID;
-			$purchaser['purchaser_full_name']  = ! empty( $user->first_name ) || ! empty( $user->last_name ) ? trim( $user->first_name . ' ' . $user->last_name ) : ( $data['purchaser']['name'] ?? '' );
-			$purchaser['purchaser_first_name'] = ! empty( $user->first_name ) ? $user->first_name : ( $data['purchaser']['name'] ?? '' );
+			$purchaser['purchaser_full_name']  = ! empty( $user->first_name ) || ! empty( $user->last_name ) ? trim( $user->first_name . ' ' . $user->last_name ) : $purchaser_name;
+			$purchaser['purchaser_first_name'] = ! empty( $user->first_name ) ? $user->first_name : $purchaser_name;
 			$purchaser['purchaser_last_name']  = $user->last_name;
 			$purchaser['purchaser_email']      = $user->user_email;
+
+			// Purchaser names are plain text: angle brackets are never valid in one.
+			if ( false !== strpbrk( $purchaser['purchaser_full_name'] . $purchaser['purchaser_first_name'], '<>' ) ) {
+				return new WP_Error( 'invalid-purchaser-info', __( 'Please provide a valid purchaser name.', 'event-tickets' ), [ 'status' => 400 ] );
+			}
 
 			return $purchaser;
 		}
@@ -115,7 +123,7 @@ abstract class Abstract_Order {
 
 		$purchaser_data = array_map( 'sanitize_text_field', $data['purchaser'] );
 
-		if ( empty( $purchaser_data['name'] ) ) {
+		if ( empty( $purchaser_data['name'] ) || false !== strpbrk( $purchaser_data['name'], '<>' ) ) {
 			return new WP_Error( 'invalid-purchaser-info', __( 'Please provide a valid purchaser name.', 'event-tickets' ), [ 'status' => 400 ] );
 		}
 

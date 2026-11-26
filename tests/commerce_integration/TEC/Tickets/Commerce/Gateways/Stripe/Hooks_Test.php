@@ -241,6 +241,7 @@ class Hooks_Test extends WPTestCase {
 				$payment_intent = [
 					'id' => 'pi_123',
 					'client_secret' => 'pi_123_secret',
+					'amount'        => 1000,
 					'status' => 'canceled',
 				];
 
@@ -278,6 +279,7 @@ class Hooks_Test extends WPTestCase {
 				$payment_intent = [
 					'id'            => 'pi_123',
 					'client_secret' => 'pi_123_secret',
+					'amount'        => 1000,
 					'status'        => 'canceled',
 				];
 
@@ -319,6 +321,7 @@ class Hooks_Test extends WPTestCase {
 				$payment_intent = [
 					'id'            => 'pi_123',
 					'client_secret' => 'pi_123_secret',
+					'amount'        => 1000,
 					'status'        => 'canceled',
 				];
 
@@ -359,6 +362,7 @@ class Hooks_Test extends WPTestCase {
 				$payment_intent = [
 					'id'            => 'pi_123',
 					'client_secret' => 'pi_123_secret',
+					'amount'        => 1000,
 					'status'        => 'succeeded',
 				];
 
@@ -399,6 +403,7 @@ class Hooks_Test extends WPTestCase {
 				$payment_intent = [
 					'id'            => 'pi_123',
 					'client_secret' => 'pi_123_secret',
+					'amount'        => 1000,
 					'status'        => 'succeeded',
 				];
 
@@ -422,6 +427,70 @@ class Hooks_Test extends WPTestCase {
 
 				$this->set_class_fn_return( Payment_Intent::class, 'get', $payment_intent );
 				return [ $order->ID, Completed::SLUG ];
+			},
+		];
+
+		yield 'with request params - succeeded payment intent in memory for less than the order total' => [
+			function () {
+				$post        = self::factory()->post->create( [ 'post_type' => 'page' ] );
+				$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
+				$order       = $this->create_order_through_stripe( [ $ticket_id_1 => 1 ], [ 'order_status' => Pending::SLUG ] );
+				$_REQUEST['payment_intent']               = 'pi_123';
+				$_REQUEST['payment_intent_client_secret'] = 'pi_123_secret';
+				$payment_intent                           = [
+					'id'            => 'pi_123',
+					'client_secret' => 'pi_123_secret',
+					'amount'        => 100,
+					'status'        => 'succeeded',
+				];
+
+				$order = get_post( $order->ID );
+
+				tec_tc_orders()
+					->by_args(
+						[
+							'id'     => $order->ID,
+							'status' => $order->post_status,
+						]
+					)
+					->set_args( [ 'gateway_order_id' => $payment_intent['id'] ] )
+					->save();
+
+				tribe( Payment_Intent_Handler::class )->set( $payment_intent );
+
+				return [ $order->ID, false ];
+			},
+		];
+
+		yield 'with request params - succeeded payment intent from stripe for less than the order total' => [
+			function () {
+				$post        = self::factory()->post->create( [ 'post_type' => 'page' ] );
+				$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
+				$order       = $this->create_order_through_stripe( [ $ticket_id_1 => 1 ], [ 'order_status' => Pending::SLUG ] );
+				$_REQUEST['payment_intent']               = 'pi_123';
+				$_REQUEST['payment_intent_client_secret'] = 'pi_123_secret';
+				$payment_intent                           = [
+					'id'            => 'pi_123',
+					'client_secret' => 'pi_123_secret',
+					'amount'        => 100,
+					'status'        => 'succeeded',
+				];
+
+				$order = get_post( $order->ID );
+
+				tec_tc_orders()
+					->by_args(
+						[
+							'id'     => $order->ID,
+							'status' => $order->post_status,
+						]
+					)
+					->set_args( [ 'gateway_order_id' => $payment_intent['id'] ] )
+					->save();
+
+				$this->set_class_fn_return( Payment_Intent::class, 'get', $payment_intent );
+
+				return [ $order->ID, false ];
 			},
 		];
 	}

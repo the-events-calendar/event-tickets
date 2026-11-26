@@ -3,18 +3,21 @@
 namespace TEC\Tickets\Commerce;
 
 use Codeception\TestCase\WPTestCase;
+use PasswordHash;
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Cart\Agnostic_Cart;
 use TEC\Tickets\Commerce\Cart\Cart_Interface;
 use TEC\Tickets\Commerce\Traits\Cart as Cart_Trait;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 
 class CartTest extends WPTestCase {
 
 	use Cart_Trait;
 	use Ticket_Maker;
 	use With_Uopz;
+	use With_Tickets_Commerce;
 
 	private static $cart_hash;
 
@@ -244,5 +247,76 @@ class CartTest extends WPTestCase {
 		$this->assertEquals( 'different_cookie_name', $different_cookie_name );
 
 		$this->assertNotEquals( $original_cookie_name, $different_cookie_name );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_keep_a_ticket_of_a_public_post_in_the_prepared_cart_data(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+
+		$data = tribe( Cart::class )->prepare_data( $this->get_cart_request_data( $post_id, $ticket_id ) );
+
+		$this->assertSame( [ $ticket_id ], array_column( $data['tickets'], 'ticket_id' ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_drop_a_ticket_of_a_password_protected_post_from_the_prepared_cart_data(): void {
+		$post_id   = static::factory()->post->create( [ 'post_password' => 'the-secret' ] );
+		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+
+		$data = tribe( Cart::class )->prepare_data( $this->get_cart_request_data( $post_id, $ticket_id ) );
+
+		$this->assertSame( [], $data['tickets'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_keep_a_ticket_of_a_password_protected_post_once_the_password_was_entered(): void {
+		$post_id     = static::factory()->post->create( [ 'post_password' => 'the-secret' ] );
+		$ticket_id   = $this->create_tc_ticket( $post_id, 10 );
+		$cookie_name = 'wp-postpass_' . COOKIEHASH;
+
+		require_once ABSPATH . WPINC . '/class-phpass.php';
+		$_COOKIE[ $cookie_name ] = ( new PasswordHash( 8, true ) )->HashPassword( 'the-secret' );
+
+		try {
+			$data = tribe( Cart::class )->prepare_data( $this->get_cart_request_data( $post_id, $ticket_id ) );
+		} finally {
+			unset( $_COOKIE[ $cookie_name ] );
+		}
+
+		$this->assertSame( [ $ticket_id ], array_column( $data['tickets'], 'ticket_id' ) );
+	}
+
+	/**
+	 * Builds the request data the tickets form sends to add a ticket to the cart.
+	 *
+	 * @param int $post_id   The post ID.
+	 * @param int $ticket_id The ticket ID.
+	 *
+	 * @return array The request data.
+	 */
+	private function get_cart_request_data( int $post_id, int $ticket_id ): array {
+		return [
+			'provider'              => Module::class,
+			'tribe_tickets_ar_data' => wp_json_encode(
+				[
+					'tribe_tickets_tickets' => [
+						[
+							'ticket_id' => $ticket_id,
+							'quantity'  => 1,
+							'optout'    => '1',
+						],
+					],
+					'tribe_tickets_meta'    => [],
+					'tribe_tickets_post_id' => $post_id,
+				]
+			),
+		];
 	}
 }

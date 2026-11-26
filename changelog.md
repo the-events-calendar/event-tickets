@@ -1,5 +1,16 @@
 # Changelog
 
+### [5.31.1.1] 2026-11-17
+
+* Security - Hardened how attendee and purchaser names are saved and shown on the Attendees page. Props to ytaero for reporting.
+* Security - Hardened how dependent form fields look up the field they depend on. Props to ytaero for reporting.
+* Security - Hardened the coupon and password-protection checks for Tickets Commerce. Props to Elaprendiz1927 for reporting.
+* Security - Hardened the escaping of the Seating Associated Events view links. Props to Elaprendiz1927 for reporting.
+* Security - Hardened the quantity and sale-window checks for RSVPs. Props to Abdel Majid BOUKHLIK HAJJI for reporting.
+* Security - Hardened the Stripe payment confirmation checks. Props to Elaprendiz1927 for reporting.
+* Security - Improved how Tickets Commerce and RSVP apply the login setting when tickets are added to the cart and when an order is created. Props to ytaero for reporting.
+* Language - 5 new strings added, 119 updated, 0 fuzzied, and 0 obsoleted.
+
 ### [5.31.1] 2026-11-12
 
 * Fix - Avoided a fatal error when a database table prefix of 31 or more characters pushed the migrations table name past MySQL's 64-character limit, added an admin notice explaining how to shorten the prefix, and stopped the Shepherd tables error notice from causing an error when displayed.

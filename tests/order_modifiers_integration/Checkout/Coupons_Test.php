@@ -10,6 +10,7 @@ use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Cart as Commerce_Cart;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Coupons;
+use TEC\Tickets\Commerce\Order_Modifiers\Models\Coupon as Coupon_Model;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Meta;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Coupons as Coupon_Trait;
@@ -33,6 +34,8 @@ use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe\Tickets\Test\Traits\With_No_Object_Storage;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 use Tribe\Tests\Tickets\Traits\Tribe_URL;
+use WP_REST_Request;
+use WP_REST_Response;
 
 class Coupons_Test extends Controller_Test_Case {
 
@@ -575,5 +578,197 @@ class Coupons_Test extends Controller_Test_Case {
 		Assert::assertArrayHasKey( $coupon->get_type_id(), $order->coupons, 'The order should have the specific coupon' );
 		Assert::assertEquals( -11.28, $order->coupons[ $coupon->get_type_id() ]['price'], 'The order coupon price should be the maximum discount' );
 		Assert::assertEquals( -11.28, $order->coupons[ $coupon->get_type_id() ]['sub_total']->get_float(), 'The order coupon sub_total should be the maximum discount' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_keep_a_coupon_with_uses_remaining_in_the_cart_total(): void {
+		$this->make_controller()->register();
+		$coupon = $this->create_limited_flat_coupon( 100, 1 );
+		$cart   = $this->set_up_cart_with_coupon( 100, $coupon );
+
+		Assert::assertEquals( 0, $cart->get_cart_total() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_drop_a_coupon_with_no_uses_remaining_from_the_cart_total(): void {
+		$this->make_controller()->register();
+		$coupon = $this->create_limited_flat_coupon( 100, 1 );
+		$cart   = $this->set_up_cart_with_coupon( 100, $coupon );
+
+		$this->add_coupon_use( $coupon->id );
+
+		Assert::assertEquals( 100, $cart->get_cart_total() );
+		Assert::assertEmpty( $cart->get_repository()->get_calculated_items( 'coupon' ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_drop_a_deactivated_coupon_from_the_cart_total(): void {
+		$this->make_controller()->register();
+		$coupon = $this->create_limited_flat_coupon( 100, 0 );
+		$cart   = $this->set_up_cart_with_coupon( 100, $coupon );
+
+		$coupon->status = 'inactive';
+		$coupon->save();
+
+		Assert::assertEquals( 100, $cart->get_cart_total() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_drop_an_expired_coupon_from_the_cart_total(): void {
+		$this->make_controller()->register();
+		$coupon = $this->create_limited_flat_coupon( 100, 0 );
+		$cart   = $this->set_up_cart_with_coupon( 100, $coupon );
+
+		$coupon->end_time = '2020-01-01 00:00:00';
+		$coupon->save();
+
+		Assert::assertEquals( 100, $cart->get_cart_total() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_keep_the_coupon_for_the_cart_whose_pending_order_took_its_last_use(): void {
+		$this->make_controller()->register();
+		$coupon = $this->create_limited_flat_coupon( 100, 1 );
+		$cart   = $this->set_up_cart_with_coupon( 100, $coupon );
+
+		$this->create_order_from_cart( [ 'order_status' => Pending::SLUG ] );
+		Assert::assertSame( 1, $this->get_coupon_uses( $coupon->id ), 'The Pending order should hold the only use.' );
+
+		// A later request, e.g. a checkout reload, reads the same cart again.
+		$coupon->add_to_cart( $cart->get_repository() );
+
+		Assert::assertEquals( 0, $cart->get_cart_total() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_complete_a_free_order_from_a_cart_holding_a_valid_coupon(): void {
+		$this->make_controller()->register();
+		$coupon = $this->create_limited_flat_coupon( 100, 1 );
+		$this->set_up_cart_with_coupon( 100, $coupon );
+
+		$response = $this->submit_free_order();
+
+		Assert::assertSame( 200, $response->get_status() );
+		Assert::assertTrue( $response->get_data()['success'] );
+		Assert::assertSame( Completed::SLUG, str_replace( 'tec-tc-', '', get_post_status( $response->get_data()['id'] ) ) );
+		Assert::assertSame( 1, $this->get_coupon_uses( $coupon->id ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_refuse_a_free_order_from_a_cart_holding_a_used_up_coupon(): void {
+		$this->make_controller()->register();
+		$coupon = $this->create_limited_flat_coupon( 100, 1 );
+		$this->set_up_cart_with_coupon( 100, $coupon );
+
+		// Another visitor redeems the only use after this cart applied the coupon.
+		$this->add_coupon_use( $coupon->id );
+		$orders_before = $this->tc_order_count();
+
+		$response = $this->submit_free_order();
+
+		Assert::assertSame( 400, $response->get_status() );
+		Assert::assertSame( 'tec_tickets_commerce_free_order_invalid_cart', $response->as_error()->get_error_code() );
+		Assert::assertSame( $orders_before, $this->tc_order_count() );
+		Assert::assertSame( 1, $this->get_coupon_uses( $coupon->id ) );
+	}
+
+	/**
+	 * Creates an active flat coupon with a usage limit.
+	 *
+	 * @param float $amount The flat discount.
+	 * @param int   $limit  The usage limit, `0` for unlimited.
+	 *
+	 * @return Coupon_Model The coupon.
+	 */
+	private function create_limited_flat_coupon( float $amount, int $limit ): Coupon_Model {
+		$coupon = $this->create_coupon(
+			[
+				'sub_type'   => 'flat',
+				'raw_amount' => $amount,
+			]
+		);
+
+		tribe( Order_Modifiers_Meta::class )->upsert_meta(
+			new Order_Modifier_Meta(
+				[
+					'order_modifier_id' => $coupon->id,
+					'meta_key'          => 'coupons_available',
+					'meta_value'        => $limit,
+				]
+			)
+		);
+
+		return $coupon;
+	}
+
+	/**
+	 * Puts one ticket and the coupon in the current cart.
+	 *
+	 * @param float        $price  The ticket price.
+	 * @param Coupon_Model $coupon The coupon.
+	 *
+	 * @return Commerce_Cart The cart.
+	 */
+	private function set_up_cart_with_coupon( float $price, Coupon_Model $coupon ): Commerce_Cart {
+		$post      = static::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post, $price );
+
+		/** @var Commerce_Cart $cart */
+		$cart = tribe( Commerce_Cart::class );
+		$cart->clear_cart();
+		$cart->add_ticket( $ticket_id );
+		$coupon->add_to_cart( $cart->get_repository() );
+		$cart->get_repository()->save();
+
+		return $cart;
+	}
+
+	/**
+	 * Submits the current cart to the Free gateway order endpoint.
+	 *
+	 * @return WP_REST_Response The response.
+	 */
+	private function submit_free_order(): WP_REST_Response {
+		$request = new WP_REST_Request( 'POST', '/tribe/tickets/v1/commerce/free/order' );
+		$request->set_header( 'Content-Type', 'application/json' );
+		$request->set_body(
+			wp_json_encode(
+				[
+					'purchaser' => [
+						'name'  => 'Coupon Guest',
+						'email' => 'coupon-guest@example.test',
+					],
+				]
+			)
+		);
+
+		return rest_do_request( $request );
+	}
+
+	private function tc_order_count(): int {
+		return count(
+			get_posts(
+				[
+					'post_type'      => Order::POSTTYPE,
+					'post_status'    => array_keys( get_post_stati() ),
+					'fields'         => 'ids',
+					'posts_per_page' => -1,
+				]
+			)
+		);
 	}
 }

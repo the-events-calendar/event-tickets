@@ -432,6 +432,7 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 	 * @since 4.9
 	 * @since 5.29.1 Reject the request unless the requesting user can access the ticket's event.
 	 * @since 5.29.3.1 Reject requests without a valid nonce and tickets outside their sale window.
+	 * @since 5.31.1.1 Reply with the error when no attendee could be generated, such as for a logged-out visitor when login is required.
 	 *
 	 * @return void
 	 */
@@ -504,6 +505,8 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 		$products = array_map( 'absint', $products );
 		$products = array_filter( $products );
 
+		$error = null;
+
 		// Iterate over each product.
 		foreach ( $products as $product_id ) {
 			$ticket_qty = $rsvp->parse_ticket_quantity( $product_id );
@@ -513,7 +516,22 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 				continue;
 			}
 
-			$has_tickets = ! is_wp_error( $rsvp->generate_tickets_for( $product_id, $ticket_qty, $attendee_details ) );
+			$generated = $rsvp->generate_tickets_for( $product_id, $ticket_qty, $attendee_details );
+
+			if ( is_wp_error( $generated ) ) {
+				$error ??= $generated;
+
+				continue;
+			}
+
+			$has_tickets = true;
+		}
+
+		// Nothing was created, for example a logged-out visitor when login is required: say why instead of confirming.
+		if ( ! $has_tickets && $error instanceof WP_Error ) {
+			$response['html'] = sprintf( '<div class="tribe-block__rsvp__message__error" role="alert">%s</div>', esc_html( $error->get_error_message() ) );
+
+			wp_send_json_error( $response );
 		}
 
 		$order_id              = $attendee_details['order_id'];

@@ -235,4 +235,49 @@ class RsvpTest extends \Codeception\TestCase\WPAjaxTestCase {
 			'An attendee should have been created for the public event.'
 		);
 	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_refuse_a_guest_rsvp_with_an_error_when_rsvp_requires_login() {
+		add_filter( 'tribe_get_option_ticket-authentication-requirements', static fn() => [ 'event-tickets_rsvp' ] );
+		wp_set_current_user( 0 );
+
+		$post_id   = $this->factory()->post->create( [ 'post_status' => 'publish' ] );
+		$ticket_id = $this->create_rsvp_ticket( $post_id );
+
+		$this->set_process_request( $ticket_id );
+
+		$response = $this->process_and_capture();
+
+		$this->assertFalse( $response['success'], 'A refused RSVP must not be reported as received.' );
+		$this->assertStringContainsString( 'You must be logged in to RSVP.', $response['data']['html'] );
+		$this->assertCount( 0, $this->get_rsvp_provider()->get_attendees_by_id( $ticket_id ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_confirm_the_rsvps_it_created_when_another_rsvp_in_the_request_is_refused() {
+		wp_set_current_user( 0 );
+
+		$post_id   = $this->factory()->post->create( [ 'post_status' => 'publish' ] );
+		$open_id   = $this->create_rsvp_ticket( $post_id );
+		$closed_id = $this->create_rsvp_ticket( $post_id, [
+			'meta_input' => [
+				'_ticket_start_date' => date( 'Y-m-d H:i:s', strtotime( '-2 days' ) ),
+				'_ticket_end_date'   => date( 'Y-m-d H:i:s', strtotime( '-1 day' ) ),
+			],
+		] );
+
+		$this->set_process_request( $open_id );
+		$_POST['product_id']               = [ $open_id, $closed_id ];
+		$_POST[ "quantity_{$closed_id}" ] = 1;
+
+		$response = $this->process_and_capture();
+
+		$this->assertTrue( $response['success'], 'The RSVP that was created must be confirmed.' );
+		$this->assertCount( 1, $this->get_rsvp_provider()->get_attendees_by_id( $open_id ) );
+		$this->assertCount( 0, $this->get_rsvp_provider()->get_attendees_by_id( $closed_id ) );
+	}
 }

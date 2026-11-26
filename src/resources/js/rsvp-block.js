@@ -267,6 +267,15 @@ const tribe_tickets_rsvp_block = {
 			my.tribe_rsvp_loader_start();
 
 			$.post( TribeRsvp.ajaxurl, params, function ( response ) {
+				// A refused RSVP carries its error message and no availability to update.
+				if ( ! response.success ) {
+					$ticket.closest( '.tribe-block__rsvp' ).find( '> .tribe-block__rsvp__message__error' ).remove();
+					$ticket.closest( '.tribe-block__rsvp' ).append( response.data.html );
+					my.tribe_rsvp_loader_end();
+
+					return;
+				}
+
 				// Get the remaining number
 				const remaining = response.data.remaining;
 

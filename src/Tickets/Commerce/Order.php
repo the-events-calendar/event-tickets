@@ -18,6 +18,7 @@ use TEC\Tickets\Commerce\Status\Refunded;
 use TEC\Tickets\Commerce\Status\Reversed;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Utils\Value;
+use TEC\Tickets\RSVP\V2\Constants as RSVP_Constants;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use WP_Post;
 
@@ -613,6 +614,7 @@ class Order extends Abstract_Order {
 	 * @since 5.30.0 Resolves the cart repository by passing `$ticket_type` directly into
 	 *            `Cart::get_repository()`, so TC-RSVP orders read from `RSVP_Cart` instead of the
 	 *            generic cart.
+	 * @since 5.31.1.1 Returns false for a logged-out visitor when the login setting of the ticket type requires login.
 	 *
 	 * @param Gateway_Interface $gateway     The payment gateway.
 	 * @param array|null        $purchaser   The purchaser information.
@@ -622,6 +624,11 @@ class Order extends Abstract_Order {
 	 * @throws \Tribe__Repository__Usage_Error When there is a repository usage error.
 	 */
 	public function create_from_cart( Gateway_Interface $gateway, $purchaser = null, $ticket_type = 'ticket' ) {
+		// Every gateway and the RSVP flow create their order here, so the login setting holds even on a path that skipped its own check.
+		if ( $this->must_login( (string) $ticket_type ) ) {
+			return false;
+		}
+
 		$cart        = tribe( Cart::class );
 		$cart_reader = $cart->get_repository( $ticket_type );
 
@@ -1669,5 +1676,47 @@ class Order extends Abstract_Order {
 		 * @param string $created_by The order created by.
 		 */
 		return apply_filters( 'tec_tickets_commerce_order_created_by', $translated, $order_id );
+	}
+
+	/**
+	 * Returns whether the current visitor must log in before ordering tickets of a type.
+	 *
+	 * The one place the login settings are read for orders: the create-order routes, the cart and
+	 * order creation all ask here. TC-RSVP orders follow the RSVP setting; any other order follows the
+	 * purchase setting, plus the RSVP setting when the cart holds a TC-RSVP ticket.
+	 *
+	 * @since 5.31.1.1
+	 *
+	 * @param string $ticket_type The type of ticket in the order.
+	 *
+	 * @return bool Whether the visitor must log in first.
+	 */
+	public function must_login( string $ticket_type = 'ticket' ): bool {
+		if ( is_user_logged_in() ) {
+			return false;
+		}
+
+		$rsvp_login_required = in_array( 'event-tickets_rsvp', (array) tribe_get_option( 'ticket-authentication-requirements', [] ), true );
+
+		if ( RSVP_Constants::TC_RSVP_TYPE === $ticket_type ) {
+			return $rsvp_login_required;
+		}
+
+		if ( tribe( Module::class )->login_required() ) {
+			return true;
+		}
+
+		if ( ! $rsvp_login_required ) {
+			return false;
+		}
+
+		// The generic cart takes any ticket ID, so a TC-RSVP ticket can reach a gateway order through it.
+		foreach ( tribe( Cart::class )->get_repository( $ticket_type )->get_items_in_cart() as $item ) {
+			if ( RSVP_Constants::TC_RSVP_TYPE === get_post_meta( (int) ( $item['ticket_id'] ?? 0 ), Ticket::$type_meta_key, true ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

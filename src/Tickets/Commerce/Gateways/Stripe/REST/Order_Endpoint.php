@@ -5,6 +5,7 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe\REST;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Checkout;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
+use TEC\Tickets\Commerce\Gateways\Contracts\Traits\Requires_Login_To_Purchase;
 use TEC\Tickets\Commerce\Gateways\Stripe\Gateway;
 use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent;
 use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent_Handler;
@@ -31,6 +32,8 @@ use WP_Post;
  * @package TEC\Tickets\Commerce\Gateways\Stripe\REST
  */
 class Order_Endpoint extends Abstract_REST_Endpoint {
+	use Requires_Login_To_Purchase;
+
 
 	/**
 	 * The REST API endpoint path.
@@ -57,7 +60,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				'methods'             => WP_REST_Server::CREATABLE,
 				'args'                => $this->create_order_args(),
 				'callback'            => [ $this, 'handle_create_order' ],
-				'permission_callback' => '__return_true',
+				'permission_callback' => [ $this, 'can_purchase' ],
 			]
 		);
 

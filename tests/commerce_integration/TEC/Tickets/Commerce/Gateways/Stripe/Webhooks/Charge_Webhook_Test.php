@@ -7,11 +7,13 @@ use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent;
 use TEC\Tickets\Commerce\Gateways\Stripe\Webhooks;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Completed;
+use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Refunded;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
 
@@ -217,5 +219,82 @@ class Charge_Webhook_Test extends \Codeception\TestCase\WPTestCase {
 		);
 
 		$this->assertInstanceOf( \WP_Error::class, $result );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_complete_an_order_on_charge_succeeded_for_the_order_total(): void {
+		$order_id = $this->create_pending_stripe_order_for( 'pi_test_full' );
+		$this->set_class_fn_return( Payment_Intent::class, 'get', [ 'id' => 'pi_test_full', 'amount' => 1000, 'status' => 'processing' ] );
+
+		$this->handle_charge_succeeded( 'pi_test_full' );
+
+		$this->assertSame( Completed::SLUG, str_replace( 'tec-tc-', '', get_post_status( $order_id ) ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_complete_an_order_on_charge_succeeded_for_less_than_the_order_total(): void {
+		$order_id = $this->create_pending_stripe_order_for( 'pi_test_under' );
+		$this->set_class_fn_return( Payment_Intent::class, 'get', [ 'id' => 'pi_test_under', 'amount' => 100, 'status' => 'processing' ] );
+
+		$this->handle_charge_succeeded( 'pi_test_under' );
+
+		$this->assertSame( Pending::SLUG, str_replace( 'tec-tc-', '', get_post_status( $order_id ) ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_complete_an_order_on_charge_succeeded_when_the_payment_intent_cannot_be_read(): void {
+		$order_id = $this->create_pending_stripe_order_for( 'pi_test_unreadable' );
+		$this->set_class_fn_return( Payment_Intent::class, 'get', new WP_Error( 'stripe-unavailable' ) );
+
+		$this->handle_charge_succeeded( 'pi_test_unreadable' );
+
+		$this->assertSame( Pending::SLUG, str_replace( 'tec-tc-', '', get_post_status( $order_id ) ) );
+	}
+
+	/**
+	 * Creates a pending $10 Stripe order bound to the given Payment Intent.
+	 *
+	 * @param string $payment_intent_id The Payment Intent ID.
+	 *
+	 * @return int The order ID.
+	 */
+	private function create_pending_stripe_order_for( string $payment_intent_id ): int {
+		$post      = self::factory()->post->create( [ 'post_type' => 'page' ] );
+		$ticket_id = $this->create_tc_ticket( $post, 10 );
+		$order     = $this->create_order_through_stripe( [ $ticket_id => 1 ], [ 'order_status' => Pending::SLUG ] );
+		$order     = tec_tc_get_order( $order->ID );
+
+		tec_tc_orders()
+			->by_args( [ 'id' => $order->ID, 'status' => $order->post_status ] )
+			->set_args( [ 'gateway_order_id' => $payment_intent_id ] )
+			->save();
+
+		return $order->ID;
+	}
+
+	/**
+	 * Runs a `charge.succeeded` event for the given Payment Intent through the webhook handler.
+	 *
+	 * @param string $payment_intent_id The Payment Intent ID.
+	 *
+	 * @return void
+	 */
+	private function handle_charge_succeeded( string $payment_intent_id ): void {
+		Charge_Webhook::handle(
+			[
+				'id'   => 'evt_test_charge',
+				'type' => Events::CHARGE_SUCCEEDED,
+				'data' => [ 'object' => [ 'payment_intent' => $payment_intent_id, 'metadata' => [] ] ],
+			],
+			tribe( Status_Handler::class )->get_by_slug( Completed::SLUG ),
+			new WP_REST_Request( 'POST', '/' ),
+			new WP_REST_Response()
+		);
 	}
 }
